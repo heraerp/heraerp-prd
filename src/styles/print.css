@@ -1,0 +1,160 @@
+/* HERA Logo Print Optimization Styles */
+
+@media print {
+  /* Remove all backgrounds and shadows for clean printing */
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Ensure proper page margins */
+  @page {
+    margin: 0.5in;
+    size: letter;
+  }
+  
+  /* Hide screen-only elements */
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+  
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+  
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+  
+  /* Logo-specific print styles */
+  .hera-logo-print {
+    /* Ensure crisp edges */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* Prevent distortion */
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Text optimization for print */
+  .hera-text {
+    font-family: Arial, Helvetica, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Ensure proper alignment */
+  .hera-baseline {
+    vertical-align: baseline;
+  }
+  
+  /* Registration marks for professional printing */
+  .print-registration {
+    position: absolute;
+    width: 2mm;
+    height: 2mm;
+    border: 0.5pt solid black;
+    border-radius: 50%;
+  }
+  
+  .print-registration.top-left {
+    top: 5mm;
+    left: 5mm;
+  }
+  
+  .print-registration.top-right {
+    top: 5mm;
+    right: 5mm;
+  }
+  
+  .print-registration.bottom-left {
+    bottom: 5mm;
+    left: 5mm;
+  }
+  
+  .print-registration.bottom-right {
+    bottom: 5mm;
+    right: 5mm;
+  }
+  
+  /* Business card specific */
+  .business-card {
+    width: 3.5in !important;
+    height: 2in !important;
+    border: 1pt solid #ccc;
+    page-break-inside: avoid;
+  }
+  
+  /* Letterhead specific */
+  .letterhead {
+    width: 8.5in !important;
+    min-height: 11in !important;
+  }
+  
+  /* Ensure logos don't break across pages */
+  .hera-logo-container {
+    page-break-inside: avoid;
+    display: inline-block;
+  }
+  
+  /* High contrast for B&W printing */
+  .mono-print {
+    filter: contrast(1.2) brightness(0.9);
+  }
+  
+  /* Optimize gradients for print */
+  .gradient-fallback {
+    background: #1E293B !important;
+  }
+}
+
+/* Screen preview of print styles */
+@media screen {
+  .print-preview {
+    background: white;
+    box-shadow: 0 0 0 1px #ccc, 0 4px 8px rgba(0,0,0,0.1);
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .print-only {
+    display: none !important;
+  }
+}
+
+/* Font optimization for all media */
+.hera-logo-text {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ensure consistent spacing across different printers */
+.hera-spacing {
+  letter-spacing: -0.02em;
+  word-spacing: normal;
+}
+
+/* Color accuracy hints for professional printing */
+.print-color-profile {
+  color-profile: sRGB;
+}
+
+/* Bleed area for professional printing */
+.print-bleed {
+  padding: 0.125in; /* Standard bleed area */
+}
+
+/* Safe area for important elements */
+.print-safe-area {
+  margin: 0.25in;
+}

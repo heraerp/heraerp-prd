@@ -1,0 +1,116 @@
+
+> hera-restaurant-platform@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.31
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1819ms
+ ○ Compiling /restaurant-complete ...
+(node:88897) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ Compiled /restaurant-complete in 7s (1063 modules)
+ GET /restaurant-complete 200 in 7869ms
+ ✓ Compiled in 876ms (513 modules)
+ GET /restaurant-complete 200 in 75ms
+ GET /restaurant-complete 200 in 85ms
+ ○ Compiling /api/v1/version ...
+ ✓ Compiled /api/v1/version in 1424ms (561 modules)
+ GET /api/v1/version 200 in 1581ms
+ GET /api/v1/version 200 in 1583ms
+ ○ Compiling /_not-found ...
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /_not-found in 1424ms (1063 modules)
+ GET /api/placeholder/32/32 404 in 2463ms
+ GET /restaurant-complete 200 in 765ms
+ GET /api/v1/version 200 in 427ms
+ GET /api/v1/version 200 in 498ms
+ ○ Compiling /_error ...
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /_error in 13.2s (1289 modules)
+ GET /api/placeholder/32/32 404 in 23010ms
+ GET /restaurant-complete 200 in 15368ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/aria-hidden.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/aria-hidden' in /Users/san/Documents/PRD/heraerp-prd/.next/server for build dependencies doesn't lead to expected result '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/aria-hidden.js', but to 'Error: Can't resolve './vendor-chunks/aria-hidden' in '/Users/san/Documents/PRD/heraerp-prd/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/aria-hidden (expected /Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/aria-hidden.js)
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/get-nonce' in /Users/san/Documents/PRD/heraerp-prd/.next/server for build dependencies doesn't lead to expected result '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/get-nonce.js', but to 'Error: Can't resolve './vendor-chunks/get-nonce' in '/Users/san/Documents/PRD/heraerp-prd/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/get-nonce (expected /Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/get-nonce.js)
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/webidl-conversions' in /Users/san/Documents/PRD/heraerp-prd/.next/server for build dependencies doesn't lead to expected result '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/webidl-conversions.js', but to 'Error: Can't resolve './vendor-chunks/webidl-conversions' in '/Users/san/Documents/PRD/heraerp-prd/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/webidl-conversions (expected /Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/webidl-conversions.js)
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/class-variance-authority' in /Users/san/Documents/PRD/heraerp-prd/.next/server for build dependencies doesn't lead to expected result '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/class-variance-authority.js', but to 'Error: Can't resolve './vendor-chunks/class-variance-authority' in '/Users/san/Documents/PRD/heraerp-prd/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/class-variance-authority (expected /Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/class-variance-authority.js)
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/clsx' in /Users/san/Documents/PRD/heraerp-prd/.next/server for build dependencies doesn't lead to expected result '/Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/clsx.js', but to 'Error: Can't resolve './vendor-chunks/clsx' in '/Users/san/Documents/PRD/heraerp-prd/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/clsx (expected /Users/san/Documents/PRD/heraerp-prd/.next/server/vendor-chunks/clsx.js)
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/.next/server/pages/_error.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+ GET /_next/static/css/app/layout.css?v=1755081483872 404 in 1492ms
+ GET /_next/static/chunks/main-app.js?v=1755081483872 404 in 1840ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 370ms
+ GET /_next/static/chunks/app/restaurant-complete/page.js 404 in 366ms
+ GET /_next/static/chunks/app/layout.js 404 in 365ms
+[?25h

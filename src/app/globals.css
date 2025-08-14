@@ -1,0 +1,1366 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enhanced animations for enterprise-grade UI */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s ease-out;
+}
+
+/* Calendar styles will be handled by shadcn/ui components */
+
+/* HERA Universal CSS Variables */
+:root {
+  --radius: 0.625rem;
+  
+  /* HERA Universal Brand Colors - Enhanced oklch palette */
+  --hera-50: oklch(0.98 0.012 250);
+  --hera-100: oklch(0.93 0.048 250);
+  --hera-200: oklch(0.85 0.096 250);
+  --hera-300: oklch(0.74 0.144 250);
+  --hera-400: oklch(0.65 0.168 250);
+  --hera-500: oklch(0.57 0.192 250); /* Primary blue */
+  --hera-600: oklch(0.49 0.216 250);
+  --hera-700: oklch(0.41 0.192 250);
+  --hera-800: oklch(0.33 0.168 250);
+  --hera-900: oklch(0.25 0.144 250);
+  --hera-950: oklch(0.15 0.096 250);
+  
+  /* HERA Cyan - Secondary Brand */
+  --hera-cyan-50: oklch(0.98 0.024 190);
+  --hera-cyan-100: oklch(0.91 0.072 190);
+  --hera-cyan-200: oklch(0.83 0.12 190);
+  --hera-cyan-300: oklch(0.74 0.144 190);
+  --hera-cyan-400: oklch(0.65 0.144 190);
+  --hera-cyan-500: oklch(0.68 0.12 200); /* Secondary cyan */
+  --hera-cyan-600: oklch(0.59 0.144 200);
+  --hera-cyan-700: oklch(0.5 0.12 200);
+  --hera-cyan-800: oklch(0.41 0.096 200);
+  --hera-cyan-900: oklch(0.32 0.072 200);
+  --hera-cyan-950: oklch(0.23 0.048 200);
+  
+  /* HERA Emerald - Accent Green */
+  --hera-emerald-50: oklch(0.97 0.024 155);
+  --hera-emerald-100: oklch(0.91 0.048 155);
+  --hera-emerald-200: oklch(0.84 0.072 155);
+  --hera-emerald-300: oklch(0.76 0.096 155);
+  --hera-emerald-400: oklch(0.68 0.12 155);
+  --hera-emerald-500: oklch(0.64 0.12 160); /* Accent green */
+  --hera-emerald-600: oklch(0.56 0.12 160);
+  --hera-emerald-700: oklch(0.48 0.096 160);
+  --hera-emerald-800: oklch(0.4 0.072 160);
+  --hera-emerald-900: oklch(0.32 0.048 160);
+  --hera-emerald-950: oklch(0.24 0.024 160);
+  
+  /* HERA Amber - Gold Accent */
+  --hera-amber-50: oklch(0.98 0.024 85);
+  --hera-amber-100: oklch(0.93 0.072 85);
+  --hera-amber-200: oklch(0.87 0.12 85);
+  --hera-amber-300: oklch(0.8 0.144 85);
+  --hera-amber-400: oklch(0.73 0.144 85);
+  --hera-amber-500: oklch(0.69 0.12 85); /* Gold */
+  --hera-amber-600: oklch(0.61 0.144 85);
+  --hera-amber-700: oklch(0.53 0.12 85);
+  --hera-amber-800: oklch(0.45 0.096 85);
+  --hera-amber-900: oklch(0.37 0.072 85);
+  --hera-amber-950: oklch(0.29 0.048 85);
+  
+  /* HERA Purple - Additional Brand Color */
+  --hera-purple-50: oklch(0.97 0.024 280);
+  --hera-purple-100: oklch(0.92 0.048 280);
+  --hera-purple-200: oklch(0.85 0.096 280);
+  --hera-purple-300: oklch(0.76 0.144 280);
+  --hera-purple-400: oklch(0.67 0.168 280);
+  --hera-purple-500: oklch(0.58 0.192 280);
+  --hera-purple-600: oklch(0.49 0.216 280);
+  --hera-purple-700: oklch(0.41 0.192 280);
+  --hera-purple-800: oklch(0.33 0.168 280);
+  --hera-purple-900: oklch(0.25 0.144 280);
+  --hera-purple-950: oklch(0.17 0.096 280);
+  
+  /* Light theme - Enhanced with HERA branding */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  
+  /* HERA Primary as system primary */
+  --primary: var(--hera-500);
+  --primary-foreground: oklch(0.985 0 0);
+  
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: var(--hera-500);
+  
+  /* HERA-enhanced chart colors */
+  --chart-1: var(--hera-500);
+  --chart-2: var(--hera-cyan-500);
+  --chart-3: var(--hera-emerald-500);
+  --chart-4: var(--hera-amber-500);
+  --chart-5: var(--hera-purple-500);
+  
+  /* HERA Sidebar theme */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: var(--hera-500);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: var(--hera-500);
+  
+  /* HERA Glass morphism - using rgba for better compatibility */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  /* HERA Gradients - Enhanced for Universal Usage */
+  --hera-gradient: linear-gradient(45deg, var(--hera-500), var(--hera-cyan-500), var(--hera-emerald-500));
+  --hera-gradient-subtle: linear-gradient(135deg, var(--hera-50), var(--hera-cyan-50));
+  --hera-gradient-wealth: linear-gradient(135deg, var(--hera-500) 0%, var(--hera-cyan-600) 50%, var(--hera-emerald-500) 100%);
+  --hera-gradient-dark: linear-gradient(135deg, var(--hera-900) 0%, var(--hera-800) 50%, var(--hera-700) 100%);
+  --hera-gradient-success: linear-gradient(135deg, var(--hera-emerald-500) 0%, var(--hera-emerald-400) 100%);
+  --hera-gradient-warning: linear-gradient(135deg, var(--hera-amber-500) 0%, var(--hera-amber-400) 100%);
+  --hera-gradient-danger: linear-gradient(135deg, hsl(0 84% 60%) 0%, hsl(0 74% 42%) 100%);
+  --hera-mesh: radial-gradient(circle at 1px 1px, var(--hera-500) 1px, transparent 0);
+  
+  /* HERA Advanced Glass Effects */
+  --glass-card-bg: rgba(255, 255, 255, 0.03);
+  --glass-card-border: rgba(255, 255, 255, 0.08);
+  --glass-card-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+  --glass-card-backdrop: blur(16px);
+  
+  /* HERA Dark Mode Enhanced Variables */
+  --dark-surface-1: oklch(0.09 0.01 250);
+  --dark-surface-2: oklch(0.12 0.02 250);
+  --dark-surface-3: oklch(0.15 0.03 250);
+  --dark-surface-elevated: oklch(0.18 0.04 250);
+  
+  /* HERA Animation Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-ultra-slow: 800ms;
+  
+  /* HERA Animation Easings */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark {
+  /* HERA Dark Theme - Enhanced Premium Experience */
+  --background: var(--dark-surface-1);
+  --foreground: oklch(0.98 0.005 250);
+  --card: var(--dark-surface-2);
+  --card-foreground: oklch(0.95 0.01 250);
+  --popover: var(--dark-surface-elevated);
+  --popover-foreground: oklch(0.95 0.01 250);
+  
+  /* HERA Primary in dark mode - Enhanced visibility */
+  --primary: var(--hera-400);
+  --primary-foreground: oklch(0.02 0.02 250);
+  
+  /* HERA Dark surfaces with subtle brand tinting */
+  --secondary: var(--dark-surface-3);
+  --secondary-foreground: oklch(0.9 0.02 250);
+  --muted: var(--dark-surface-2);
+  --muted-foreground: oklch(0.6 0.03 250);
+  --accent: var(--dark-surface-3);
+  --accent-foreground: oklch(0.9 0.02 250);
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(0.25 0.02 250);
+  --input: oklch(0.15 0.03 250);
+  --ring: var(--hera-400);
+  
+  /* HERA Dark chart colors - Vibrant but balanced */
+  --chart-1: var(--hera-400);
+  --chart-2: var(--hera-cyan-400);
+  --chart-3: var(--hera-emerald-400);
+  --chart-4: var(--hera-amber-400);
+  --chart-5: var(--hera-purple-400);
+  
+  /* HERA Dark sidebar - Premium glass effect */
+  --sidebar: var(--dark-surface-2);
+  --sidebar-foreground: oklch(0.9 0.02 250);
+  --sidebar-primary: var(--hera-400);
+  --sidebar-primary-foreground: oklch(0.02 0.02 250);
+  --sidebar-accent: var(--dark-surface-3);
+  --sidebar-accent-foreground: oklch(0.85 0.03 250);
+  --sidebar-border: oklch(0.22 0.02 250);
+  --sidebar-ring: var(--hera-400);
+  
+  /* HERA Dark glass effects - Enhanced depth */
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.1);
+  --glass-card-bg: rgba(15, 23, 42, 0.4);
+  --glass-card-border: rgba(148, 163, 184, 0.08);
+  --glass-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  
+  /* HERA Dark gradients - Sophisticated and modern */
+  --hera-gradient: linear-gradient(135deg, var(--hera-500) 0%, var(--hera-cyan-500) 50%, var(--hera-emerald-500) 100%);
+  --hera-gradient-subtle: linear-gradient(135deg, var(--dark-surface-2) 0%, var(--dark-surface-3) 100%);
+  --hera-gradient-wealth: linear-gradient(135deg, var(--hera-500) 0%, var(--hera-cyan-500) 50%, var(--hera-emerald-400) 100%);
+  --hera-gradient-dark: linear-gradient(135deg, var(--dark-surface-1) 0%, var(--dark-surface-3) 100%);
+}
+
+/* Base styles */
+* {
+  border-color: var(--border);
+  outline-color: var(--ring);
+  outline-width: 2px;
+  outline-offset: 2px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* HERA Typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* Smooth scroll for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Modal and container smooth scrolling */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced scrolling for modal content */
+.modal-scroll {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.7 0.1 250) oklch(0.95 0.02 250);
+}
+
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: oklch(0.95 0.02 250);
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: oklch(0.7 0.1 250);
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.6 0.15 250);
+}
+
+/* HERA Universal Components - Using standard CSS */
+.hera-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.hera-card-glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  /* backdrop-filter alternative for better compatibility */
+  position: relative;
+}
+
+.hera-card-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  border-radius: inherit;
+  filter: blur(12px);
+  z-index: -1;
+}
+
+.hera-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  background-color: var(--hera-500);
+  color: white;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.hera-button:hover {
+  background-color: var(--hera-600);
+}
+
+.hera-button:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.hera-button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.hera-button-secondary {
+  background-color: var(--hera-cyan-500);
+}
+
+.hera-button-secondary:hover {
+  background-color: var(--hera-cyan-600);
+}
+
+.hera-button-success {
+  background-color: var(--hera-emerald-500);
+}
+
+.hera-button-success:hover {
+  background-color: var(--hera-emerald-600);
+}
+
+.hera-button-warning {
+  background-color: var(--hera-amber-500);
+  color: black;
+}
+
+.hera-button-warning:hover {
+  background-color: var(--hera-amber-600);
+}
+
+.hera-button-outline {
+  border: 1px solid var(--hera-500);
+  background: transparent;
+  color: var(--hera-500);
+}
+
+.hera-button-outline:hover {
+  background-color: var(--hera-500);
+  color: white;
+}
+
+.hera-button-ghost {
+  background: transparent;
+  color: var(--hera-500);
+}
+
+.hera-button-ghost:hover {
+  background-color: var(--hera-50);
+}
+
+.dark .hera-button-ghost:hover {
+  background-color: var(--hera-950);
+}
+
+.hera-input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--input);
+  background-color: var(--background);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.hera-input:focus {
+  outline: 2px solid var(--hera-500);
+  outline-offset: 2px;
+  border-color: var(--hera-500);
+}
+
+.hera-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.hera-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.hera-badge-primary {
+  background-color: var(--hera-500);
+  color: white;
+}
+
+.hera-badge-secondary {
+  background-color: var(--hera-cyan-500);
+  color: white;
+}
+
+.hera-badge-success {
+  background-color: var(--hera-emerald-500);
+  color: white;
+}
+
+.hera-badge-warning {
+  background-color: var(--hera-amber-500);
+  color: black;
+}
+
+.hera-badge-outline {
+  border-color: var(--hera-500);
+  color: var(--hera-500);
+  background: transparent;
+}
+
+/* HERA Footer - Steve Jobs Inspired */
+.hera-footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  transition: all 300ms var(--ease-out-expo);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.02);
+  text-decoration: none;
+}
+
+.hera-footer-badge:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+}
+
+.hera-footer-badge:active {
+  transform: scale(0.95);
+}
+
+.hera-footer-badge .hera-logo {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.hera-footer-badge .hera-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  color: rgb(107, 114, 128);
+  transition: color 200ms ease;
+}
+
+.hera-footer-badge:hover .hera-text {
+  color: rgb(55, 65, 81);
+}
+
+.hera-footer-badge .hera-brand {
+  margin-left: 0.25rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #3B82F6, #06B6D4, #10B981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hera-footer-badge .network-dots {
+  display: flex;
+  gap: 0.125rem;
+  margin-left: 0.25rem;
+}
+
+.hera-footer-badge .network-dot {
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  background-color: rgb(156, 163, 175);
+  transition: all 300ms ease;
+}
+
+.hera-footer-badge:hover .network-dot:nth-child(1) {
+  background-color: rgb(16, 185, 129);
+  transform: scale(1.25);
+}
+
+.hera-footer-badge:hover .network-dot:nth-child(2) {
+  background-color: rgb(59, 130, 246);
+  transform: scale(1.25);
+  transition-delay: 75ms;
+}
+
+.hera-footer-badge:hover .network-dot:nth-child(3) {
+  background-color: rgb(6, 182, 212);
+  transform: scale(1.25);
+  transition-delay: 150ms;
+}
+
+/* Dark mode adjustments */
+.dark .hera-footer-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .hera-footer-badge:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.dark .hera-footer-badge .hera-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .hera-footer-badge:hover .hera-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .hera-footer-badge .network-dot {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* HERA Gradient Text */
+.hera-gradient-text {
+  background: var(--hera-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* HERA Navigation */
+.hera-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background: var(--glass-bg);
+}
+
+/* HERA Table */
+.hera-table {
+  width: 100%;
+  caption-side: bottom;
+  font-size: 0.875rem;
+}
+
+.hera-table thead {
+  border-bottom: 1px solid var(--border);
+}
+
+.hera-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.hera-table th {
+  height: 3rem;
+  padding: 0 1rem;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.hera-table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+/* HERA Loading States */
+.hera-skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--radius);
+  background-color: var(--muted);
+}
+
+/* HERA Focus Ring */
+.hera-focus-ring:focus {
+  outline: 2px solid var(--hera-500);
+  outline-offset: 2px;
+}
+
+/* HERA Universal Animation System */
+.animate-fade-in {
+  animation: fadeIn var(--duration-slow) var(--ease-out-expo);
+}
+
+.animate-slide-up {
+  animation: slideUp var(--duration-normal) var(--ease-out-quart);
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-fast) var(--ease-spring);
+}
+
+.animate-slide-down {
+  animation: slideDown var(--duration-normal) var(--ease-out-quart);
+}
+
+.animate-slide-left {
+  animation: slideLeft var(--duration-normal) var(--ease-out-quart);
+}
+
+.animate-slide-right {
+  animation: slideRight var(--duration-normal) var(--ease-out-quart);
+}
+
+.animate-bounce-in {
+  animation: bounceIn var(--duration-slow) var(--ease-spring);
+}
+
+.animate-glow {
+  animation: glow 2s var(--ease-in-out-circ) infinite alternate;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s var(--ease-in-out-circ) infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s var(--ease-in-out-circ) infinite;
+}
+
+/* Animation delays - Extended */
+.animate-delay-75 {
+  animation-delay: 75ms;
+}
+
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animate-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animate-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animate-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animate-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+/* HERA Scrollbar */
+.hera-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.hera-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--muted);
+}
+
+.hera-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--hera-300);
+  border-radius: 9999px;
+}
+
+.hera-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hera-400);
+}
+
+/* HERA Business-specific styles */
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    gap: 2rem;
+  }
+}
+
+.transaction-flow {
+  position: relative;
+}
+
+.transaction-flow::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 2rem;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border);
+}
+
+.entity-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.entity-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* HERA Universal Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px var(--hera-400), 0 0 10px var(--hera-400), 0 0 15px var(--hera-400);
+  }
+  to {
+    box-shadow: 0 0 10px var(--hera-500), 0 0 20px var(--hera-500), 0 0 30px var(--hera-500);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* HERA Universal Glass Components */
+.hera-glass-card {
+  background: var(--glass-card-bg);
+  border: 1px solid var(--glass-card-border);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 1.5rem;
+  backdrop-filter: var(--glass-card-backdrop);
+  -webkit-backdrop-filter: var(--glass-card-backdrop);
+  box-shadow: var(--glass-card-shadow);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+}
+
+.hera-glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
+}
+
+.hera-wealth-card {
+  background: linear-gradient(135deg, var(--dark-surface-2) 0%, var(--dark-surface-3) 100%);
+  border: 1px solid var(--glass-card-border);
+  border-radius: calc(var(--radius) + 6px);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.hera-wealth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--hera-gradient-wealth);
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.hera-wealth-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 40px 80px -12px rgba(0, 0, 0, 0.4);
+}
+
+.hera-wealth-card:hover::before {
+  opacity: 0.08;
+}
+
+/* HERA Universal Metric Cards */
+.hera-metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.5rem;
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  position: relative;
+  overflow: hidden;
+}
+
+.hera-metric-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--hera-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out-expo);
+}
+
+.hera-metric-card:hover::after {
+  transform: scaleX(1);
+}
+
+.hera-metric-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--hera-400);
+  box-shadow: 0 8px 25px -8px var(--hera-500);
+}
+
+/* HERA Universal Status Indicators */
+.hera-status-positive {
+  color: var(--hera-emerald-400);
+  background: var(--hera-emerald-500);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hera-status-negative {
+  color: oklch(0.65 0.2 25);
+}
+
+.hera-status-neutral {
+  color: var(--hera-400);
+}
+
+/* HERA Universal Progress Indicators */
+.hera-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--muted);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hera-progress-fill {
+  height: 100%;
+  background: var(--hera-gradient);
+  border-radius: 999px;
+  transition: all var(--duration-slow) var(--ease-out-expo);
+  position: relative;
+}
+
+.hera-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* HERA Universal Interactive Elements */
+.hera-interactive {
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  cursor: pointer;
+}
+
+.hera-interactive:hover {
+  transform: translateY(-1px);
+}
+
+.hera-interactive:active {
+  transform: translateY(0);
+}
+
+/* HERA Universal Shimmer Effect */
+.hera-shimmer {
+  background: linear-gradient(90deg, 
+    var(--muted) 25%, 
+    var(--muted-foreground) 50%, 
+    var(--muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* HERA Universal Glow Effects */
+.hera-glow-primary {
+  box-shadow: 0 0 20px var(--hera-500);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.hera-glow-success {
+  box-shadow: 0 0 20px var(--hera-emerald-500);
+}
+
+.hera-glow-warning {
+  box-shadow: 0 0 20px var(--hera-amber-500);
+}
+
+/* HERA Universal Layout Utilities */
+.hera-stack-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hera-stack-horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hera-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hera-surface-1 {
+  background: var(--background);
+  border: 1px solid var(--border);
+}
+
+.hera-surface-2 {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.hera-surface-elevated {
+  background: var(--popover);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.2);
+}
+
+/* HERA Mobile optimizations */
+@media (max-width: 768px) {
+  .hera-card {
+    padding: 1rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* HERA High contrast mode support */
+@media (prefers-contrast: high) {
+  .hera-card {
+    border-width: 2px;
+  }
+  
+  .hera-button {
+    border: 2px solid transparent;
+  }
+  
+  .hera-button:focus {
+    border-color: white;
+  }
+}
+
+/* HERA Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Confetti animation for lottery wins */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10px) rotateZ(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotateZ(720deg);
+    opacity: 0;
+  }
+}
+
+/* PWA Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* ===============================================
+   HERA DNA STANDARD FEATURE: DROPDOWN VISIBILITY FIX
+   ===============================================
+   Universal fix for transparent Radix Select dropdowns
+   Applied automatically across all HERA applications
+   =============================================== */
+
+/* Primary fix for Radix Select dropdowns */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
+
+/* Ensure all Select dropdowns have proper backgrounds */
+[role="listbox"],
+[data-radix-select-content] {
+  background-color: white !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+/* Dark mode support for dropdowns */
+.dark [role="listbox"],
+.dark [data-radix-select-content] {
+  background-color: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+/* Select items visibility and interaction */
+[role="option"] {
+  background-color: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  cursor: pointer !important;
+  transition: background-color 150ms ease-in-out !important;
+}
+
+[role="option"]:hover,
+[role="option"]:focus {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+[role="option"][data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+[role="option"][data-state="checked"] {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Custom HERA select content class for enhanced styling */
+.hera-select-content {
+  background-color: white !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  z-index: 50 !important;
+}
+
+.dark .hera-select-content {
+  background-color: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+/* Alternative class name for backward compatibility */
+.salon-select-content {
+  @apply hera-select-content;
+}
+
+/* Ensure select items have proper contrast in all themes */
+.hera-select-item {
+  background-color: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  cursor: pointer !important;
+  transition: background-color 150ms ease-in-out !important;
+}
+
+.hera-select-item:hover,
+.hera-select-item:focus {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* ===============================================
+   END HERA DNA DROPDOWN VISIBILITY FIX
+   =============================================== */
+
+/* ===============================================
+   HERA DNA ACCESSIBILITY STANDARDS
+   WCAG AA Compliance for Text Contrast
+   =============================================== */
+
+/* Minimum contrast ratios for accessibility compliance */
+.text-accessible-primary {
+  color: oklch(0.15 0.096 250) !important; /* Dark gray - 4.5:1 contrast */
+}
+
+.text-accessible-secondary {
+  color: oklch(0.25 0.144 250) !important; /* Medium gray - 3:1 contrast */
+}
+
+.text-accessible-muted {
+  color: oklch(0.35 0.168 250) !important; /* Light gray - minimum readable */
+}
+
+/* Enhanced text utilities for better contrast */
+.text-contrast-high {
+  color: oklch(0.1 0.096 250) !important; /* Very dark - maximum contrast */
+}
+
+.text-contrast-medium {
+  color: oklch(0.2 0.144 250) !important; /* Dark - high contrast */
+}
+
+.text-contrast-readable {
+  color: oklch(0.3 0.168 250) !important; /* Medium-dark - readable */
+}
+
+/* Override Tailwind gray utilities with accessible versions */
+.text-gray-500 {
+  color: oklch(0.3 0.168 250) !important; /* More contrast than default */
+}
+
+.text-gray-600 {
+  color: oklch(0.25 0.144 250) !important; /* Enhanced contrast */
+}
+
+.text-gray-700 {
+  color: oklch(0.2 0.144 250) !important; /* High contrast */
+}
+
+/* Link accessibility standards */
+.link-accessible {
+  color: oklch(0.4 0.18 250) !important;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.link-accessible:hover {
+  color: oklch(0.15 0.096 250) !important;
+  font-weight: 600;
+}
+
+/* Dark mode overrides for accessibility */
+.dark .text-accessible-primary,
+.dark .text-accessible-secondary,
+.dark .text-accessible-muted {
+  color: oklch(0.85 0.05 250) !important;
+}
+
+.dark .text-contrast-high,
+.dark .text-contrast-medium,
+.dark .text-contrast-readable {
+  color: oklch(0.9 0.03 250) !important;
+}
+
+/* ===============================================
+   END HERA DNA ACCESSIBILITY STANDARDS
+   =============================================== */

@@ -1,0 +1,50 @@
+{
+  "test_date": "2025-08-14T08:38:11.297Z",
+  "organization_id": "6f591f1a-ea86-493e-8ae4-639d28a7e3c8",
+  "execution_time_ms": 14330,
+  "results": {
+    "ingredientsCreated": 22,
+    "categoriesCreated": 0,
+    "suppliersCreated": 5,
+    "purchaseOrdersCreated": 0,
+    "transactionsProcessed": 2,
+    "reportsGenerated": 2,
+    "errors": [
+      "Failed to create PO line items: Could not find the 'line_entity_id' column of 'universal_transaction_lines' in the schema cache"
+    ],
+    "success": [
+      "✅ Created Fresh Tomatoes with dynamic inventory fields",
+      "✅ Created Fresh Mozzarella with dynamic inventory fields",
+      "✅ Created Fresh Basil with dynamic inventory fields",
+      "✅ Created Parmesan Cheese with dynamic inventory fields",
+      "✅ Created Extra Virgin Olive Oil with dynamic inventory fields",
+      "✅ Created Ground Beef (80/20) with dynamic inventory fields",
+      "✅ Created Italian Sausage with dynamic inventory fields",
+      "✅ Created Prosciutto di Parma with dynamic inventory fields",
+      "✅ Created Atlantic Salmon with dynamic inventory fields",
+      "✅ Created Spaghetti Pasta with dynamic inventory fields",
+      "✅ Created Penne Pasta with dynamic inventory fields",
+      "✅ Created Linguine Pasta with dynamic inventory fields",
+      "✅ Created Pizza Dough Mix with dynamic inventory fields",
+      "✅ Created Italian Bread with dynamic inventory fields",
+      "✅ Created Chianti Classico Wine with dynamic inventory fields",
+      "✅ Created Pinot Grigio Wine with dynamic inventory fields",
+      "✅ Created San Pellegrino Water with dynamic inventory fields",
+      "✅ Created Italian Coffee Beans with dynamic inventory fields",
+      "✅ Created Dried Oregano with dynamic inventory fields",
+      "✅ Created Fresh Garlic with dynamic inventory fields",
+      "✅ Created Black Pepper with dynamic inventory fields",
+      "✅ Created Sea Salt with dynamic inventory fields",
+      "✅ Created supplier: Roma Fresh Foods",
+      "✅ Created supplier: Giuseppe's Meat Market",
+      "✅ Created supplier: Pasta Bella Wholesale",
+      "✅ Created supplier: Vino & More",
+      "✅ Created supplier: Spice of Italy",
+      "✅ Created goods receipt transaction",
+      "✅ Created inventory adjustment for spoilage",
+      "✅ Inventory Valuation Report: $9989.50",
+      "✅ Transaction Summary: 3 transactions"
+    ],
+    "integrationTests": []
+  }
+}

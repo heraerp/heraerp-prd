@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 HERA Jewelry Login Test</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; padding: 20px; max-width: 800px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .credentials { background: #fff3cd; padding: 15px; border: 1px solid #ffeaa7; border-radius: 5px; margin: 15px 0; }
+        code { background: #f8f9fa; padding: 2px 4px; border-radius: 3px; font-family: 'SF Mono', Monaco, monospace; }
+        button { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 HERA Jewelry Authentication Test</h1>
+    <p>This test verifies that the jewelry demo credentials work correctly with the global DualAuthProvider.</p>
+    
+    <div class="credentials">
+        <h3>🔐 Demo Credentials</h3>
+        <p><strong>Email:</strong> <code>sarah@luxurygems.com</code></p>
+        <p><strong>Password:</strong> <code>jewelry123</code></p>
+        <p><strong>Business:</strong> Luxury Gems & Jewelry</p>
+    </div>
+
+    <h2>📋 Test Instructions</h2>
+    <ol>
+        <li>Open <a href="http://localhost:3002/jewelry/login" target="_blank">http://localhost:3002/jewelry/login</a></li>
+        <li>Open browser Developer Tools (F12) → Console tab</li>
+        <li>Copy and paste the test script below into the console</li>
+        <li>Check the results below</li>
+    </ol>
+
+    <h2>🧪 Browser Console Test Script</h2>
+    <button onclick="copyTestScript()">📋 Copy Test Script</button>
+    <pre id="testScript">// 🧪 HERA Jewelry Login Test
+console.log('🧪 Starting HERA Jewelry Authentication Test...')
+
+// Test 1: Check if page elements exist
+const emailInput = document.querySelector('input[type="email"]')
+const passwordInput = document.querySelector('input[type="password"]')
+const submitButton = document.querySelector('button[type="submit"]')
+
+console.log('📋 Page Elements Check:')
+console.log('  Email input:', emailInput ? '✅ Found' : '❌ Not found')
+console.log('  Password input:', passwordInput ? '✅ Found' : '❌ Not found')  
+console.log('  Submit button:', submitButton ? '✅ Found' : '❌ Not found')
+
+// Test 2: Fill demo credentials and submit
+if (emailInput && passwordInput && submitButton) {
+    console.log('🔑 Filling demo credentials...')
+    emailInput.value = 'sarah@luxurygems.com'
+    emailInput.dispatchEvent(new Event('input', { bubbles: true }))
+    
+    passwordInput.value = 'jewelry123'
+    passwordInput.dispatchEvent(new Event('input', { bubbles: true }))
+    
+    console.log('📤 Submitting login form...')
+    console.log('⏰ Watch for DualAuthProvider logs:')
+    console.log('   Expected: "🔐 Login attempt:", "Jewelry demo credentials detected"')
+    
+    // Submit the form
+    submitButton.click()
+} else {
+    console.error('❌ Login form elements not found - page may not have loaded correctly')
+}
+
+// Test 3: Monitor for redirect after 3 seconds
+setTimeout(() => {
+    if (window.location.pathname === '/jewelry') {
+        console.log('✅ SUCCESS: Redirected to jewelry dashboard!')
+    } else if (window.location.pathname === '/jewelry/login') {
+        console.log('⚠️  Still on login page - check for errors above')
+        console.log('   Current URL:', window.location.href)
+    }
+}, 3000)</pre>
+
+    <h2>📊 Expected Results</h2>
+    <div class="test-result info">
+        <h4>✅ Successful Login Should Show:</h4>
+        <ol>
+            <li><code>💎 Jewelry Auth State: { isAuthenticated: false, isLoading: false }</code></li>
+            <li><code>🔐 Login attempt: { email: "sarah@luxurygems.com", passwordLength: 10 }</code></li>
+            <li><code>Jewelry demo credentials detected, using demo authentication</code></li>
+            <li><code>✅ Jewelry demo login successful</code></li>
+            <li><code>💎 Jewelry user authenticated, redirecting to /jewelry</code></li>
+            <li>Page redirects to <strong>http://localhost:3002/jewelry</strong></li>
+        </ol>
+    </div>
+
+    <div class="test-result error">
+        <h4>❌ Common Failure Signs:</h4>
+        <ul>
+            <li><code>Auth state changed: INITIAL_SESSION</code> (stuck in loading)</li>
+            <li>No "Jewelry demo credentials detected" message</li>
+            <li>Login form submits but nothing happens</li>
+            <li>JavaScript errors in console</li>
+            <li>Page stays on login screen</li>
+        </ul>
+    </div>
+
+    <h2>🔧 Troubleshooting</h2>
+    <button onclick="testAPI()">🧪 Test API Directly</button>
+    <button onclick="checkAuthProvider()">🔍 Check Auth Provider</button>
+    <div id="troubleshootResults"></div>
+
+    <script>
+        function copyTestScript() {
+            const script = document.getElementById('testScript').textContent
+            navigator.clipboard.writeText(script).then(() => {
+                alert('✅ Test script copied to clipboard!')
+            })
+        }
+
+        async function testAPI() {
+            const results = document.getElementById('troubleshootResults')
+            results.innerHTML = '<p>🧪 Testing API directly...</p>'
+            
+            try {
+                const response = await fetch('/api/test-jewelry-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'sarah@luxurygems.com',
+                        password: 'jewelry123'
+                    })
+                })
+                
+                const result = await response.json()
+                results.innerHTML = '<div class="test-result success"><h4>✅ API Test Results:</h4><pre>' + 
+                    JSON.stringify(result, null, 2) + '</pre></div>'
+            } catch (error) {
+                results.innerHTML = '<div class="test-result error"><h4>❌ API Test Error:</h4><p>' + 
+                    error.message + '</p></div>'
+            }
+        }
+
+        function checkAuthProvider() {
+            const results = document.getElementById('troubleshootResults')
+            results.innerHTML = '<div class="test-result info"><h4>🔍 Auth Provider Check:</h4>' +
+                '<p>Open <a href="http://localhost:3002/jewelry/login" target="_blank">jewelry login</a> and check browser console for:</p>' +
+                '<ul><li><code>DualAuthProvider</code> initialization logs</li>' +
+                '<li><code>💎 Jewelry Auth State</code> messages</li>' +
+                '<li>Any JavaScript errors</li></ul></div>'
+        }
+    </script>
+</body>
+</html>

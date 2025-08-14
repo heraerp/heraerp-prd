@@ -1,0 +1,332 @@
+
+> heraerp@1.2.0 dev
+> next dev -p 3002
+
+   ▲ Next.js 15.4.2
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.1.101:3002
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 3.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 5.3s (791 modules)
+ GET / 200 in 5886ms
+ ✓ Compiled in 1057ms (323 modules)
+ ○ Compiling /api/v1/auth/login ...
+ ✓ Compiled /api/v1/auth/login in 1545ms (946 modules)
+(node:99508) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ POST /api/v1/auth/login 401 in 3812ms
+ POST /api/v1/auth/login 401 in 691ms
+ POST /api/v1/auth/login 401 in 1300ms
+ ✓ Compiled in 801ms (555 modules)
+ ✓ Compiled /middleware in 354ms (187 modules)
+ ✓ Compiled /api/v1/test-users in 116ms (557 modules)
+ GET /api/v1/test-users 200 in 643ms
+ ✓ Compiled in 735ms (744 modules)
+ ✓ Compiled /api/v1/debug-login in 211ms (559 modules)
+Debug login attempt: { email: 'mario@restaurant.com', password: 'demo123' }
+Found user: {
+  id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  email: 'mario@restaurant.com',
+  name: 'Mario Rossi',
+  organization_id: '8ff61959-7738-4471-9e10-fcdb3a913fab',
+  entity_id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  role: 'owner',
+  permissions: [
+    'entities:*',
+    'transactions:*',
+    'relationships:*',
+    'users:manage',
+    'settings:manage',
+    'reports:all'
+  ]
+}
+Password valid: false
+ POST /api/v1/debug-login 200 in 1503ms
+Debug login attempt: { email: 'mario@restaurant.com', password: 'production_password_123' }
+Found user: {
+  id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  email: 'mario@restaurant.com',
+  name: 'Mario Rossi',
+  organization_id: '8ff61959-7738-4471-9e10-fcdb3a913fab',
+  entity_id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  role: 'owner',
+  permissions: [
+    'entities:*',
+    'transactions:*',
+    'relationships:*',
+    'users:manage',
+    'settings:manage',
+    'reports:all'
+  ]
+}
+Password valid: false
+ POST /api/v1/debug-login 200 in 1123ms
+Debug login attempt: { email: 'mario@restaurant.com', password: 'demo123' }
+Found user: {
+  id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  email: 'mario@restaurant.com',
+  name: 'Mario Rossi',
+  organization_id: '8ff61959-7738-4471-9e10-fcdb3a913fab',
+  entity_id: '03065573-9ded-4640-af31-b03d331f8a4b',
+  role: 'owner',
+  permissions: [
+    'entities:*',
+    'transactions:*',
+    'relationships:*',
+    'users:manage',
+    'settings:manage',
+    'reports:all'
+  ]
+}
+Password valid: true
+ POST /api/v1/debug-login 200 in 905ms
+ POST /api/v1/auth/login 200 in 1296ms
+ POST /api/v1/auth/login 200 in 1215ms
+ ✓ Compiled /api/v1/auth/verify in 336ms (559 modules)
+ GET /api/v1/auth/verify 200 in 1144ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1279ms (899 modules)
+ GET /api/v1/organizations 404 in 1775ms
+ ✓ Compiled in 1341ms (1084 modules)
+ ✓ Compiled in 3.4s (324 modules)
+ ✓ Compiled in 928ms (324 modules)
+ ✓ Compiled in 643ms (324 modules)
+ ✓ Compiled in 808ms (324 modules)
+ ✓ Compiled in 616ms (324 modules)
+ ✓ Compiled in 682ms (324 modules)
+ ✓ Compiled in 638ms (324 modules)
+ ✓ Compiled in 623ms (324 modules)
+ ✓ Compiled in 697ms (324 modules)
+ ✓ Compiled in 619ms (324 modules)
+ ✓ Compiled in 669ms (324 modules)
+ ✓ Compiled in 580ms (324 modules)
+ ○ Compiling /login ...
+ ✓ Compiled /login in 685ms (738 modules)
+ GET /login 200 in 1003ms
+ ✓ Compiled /dashboard in 353ms (819 modules)
+ ⨯ ReferenceError: useAuth is not defined
+    at ProgressiveBanner (src/components/auth/ProgressiveBanner.tsx:25:6)
+  23 |     daysRemaining,
+  24 |     saveWithEmail
+> 25 |   } = useAuth()
+     |      ^
+  26 |   
+  27 |   const [showEmailForm, setShowEmailForm] = useState(false)
+  28 |   const [email, setEmail] = useState('') {
+  digest: '2048095015'
+}
+ GET /dashboard 500 in 494ms
+ ✓ Compiled in 932ms (1019 modules)
+ ⨯ Error: useProgressiveAuth must be used within a ProgressiveAuthProvider
+    at useProgressiveAuth (src/components/auth/ProgressiveAuthProvider.tsx:294:10)
+    at ProgressiveBanner (src/components/auth/ProgressiveBanner.tsx:25:24)
+  292 |   const context = useContext(ProgressiveAuthContext)
+  293 |   if (context === undefined) {
+> 294 |     throw new Error('useProgressiveAuth must be used within a ProgressiveAuthProvider')
+      |          ^
+  295 |   }
+  296 |   return context
+  297 | } {
+  digest: '304399778'
+}
+ GET /dashboard 500 in 161ms
+ ✓ Compiled in 567ms (824 modules)
+ GET /dashboard 200 in 170ms
+ GET /login 200 in 92ms
+ GET /dashboard 200 in 44ms
+ ✓ Compiled /api/v1/auth/login in 322ms (628 modules)
+ POST /api/v1/auth/login 200 in 1445ms
+ ✓ Compiled in 594ms (365 modules)
+ ✓ Compiled in 944ms (365 modules)
+ ✓ Compiled in 952ms (365 modules)
+ ✓ Compiled in 1212ms (365 modules)
+ ✓ Compiled in 899ms (365 modules)
+ ✓ Compiled in 751ms (366 modules)
+ ✓ Compiled in 1089ms (451 modules)
+ ✓ Compiled /login in 352ms (416 modules)
+ GET /login 200 in 1271ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1174ms (538 modules)
+ GET /dashboard 200 in 1502ms
+ ✓ Compiled /api/v1/auth/login in 161ms (707 modules)
+ POST /api/v1/auth/login 200 in 2802ms
+ POST /api/v1/auth/login 200 in 1358ms
+ ○ Compiling /api/v1/entities ...
+ ✓ Compiled /api/v1/entities in 514ms (1158 modules)
+ POST /api/v1/entities 400 in 711ms
+ POST /api/v1/auth/login 200 in 1551ms
+ POST /api/v1/entities 400 in 17ms
+ POST /api/v1/auth/login 200 in 1168ms
+ GET /api/v1/entities?entity_type=customer 400 in 25ms
+ ✓ Compiled /api/v1/universal in 385ms (702 modules)
+🌐 Universal API GET: read { table: 'core_entities', id: null, organizationId: 'undefined' }
+Error reading core_entities: {
+  code: '22P02',
+  details: null,
+  hint: null,
+  message: 'invalid input syntax for type uuid: "undefined"'
+}
+ GET /api/v1/universal?action=read&table=core_entities&organization_id=undefined 500 in 585ms
+ ✓ Compiled in 398ms (187 modules)
+ ✓ Compiled in 84ms (187 modules)
+ POST /api/v1/auth/login 200 in 1459ms
+🔒 Middleware processing: /api/v1/entities
+⏭️ Skipping auth for: /api/v1/entities
+ POST /api/v1/entities 400 in 74ms
+ ✓ Compiled in 112ms (187 modules)
+ POST /api/v1/auth/login 200 in 1636ms
+🔒 Middleware processing: /api/v1/entities
+⏭️ Skipping auth for: /api/v1/entities
+ POST /api/v1/entities 400 in 29ms
+ ✓ Compiled in 155ms (187 modules)
+ POST /api/v1/auth/login 200 in 1173ms
+🔒 Middleware processing: /api/v1/entities
+⏭️ Skipping auth for: /api/v1/entities
+ POST /api/v1/entities 400 in 34ms
+ ✓ Compiled in 140ms (187 modules)
+ POST /api/v1/auth/login 200 in 1052ms
+🔒 Middleware processing: /api/v1/entities
+⏭️ Skipping auth for: /api/v1/entities
+ POST /api/v1/entities 400 in 28ms
+ ✓ Compiled in 109ms (187 modules)
+ POST /api/v1/auth/login 200 in 1131ms
+🔒 Middleware processing: /api/v1/entities
+🔍 Checking skip for /api/v1/entities: true
+🔍 Routes checked: /api/health, /api/v1/auth/, /, /login, /register, /_next, /favicon.ico
+⏭️ Skipping auth for: /api/v1/entities
+ POST /api/v1/entities 400 in 35ms
+ ✓ Compiled in 137ms (187 modules)
+ POST /api/v1/auth/login 200 in 1631ms
+🔒 Middleware processing: /api/v1/entities
+🔍 Auth required for: /api/v1/entities
+🛡️ Processing API auth for: /api/v1/entities
+🔐 Auth header present: true
+❌ Auth failed: The edge runtime does not support Node.js 'crypto' module.
+Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime
+ ⚠ nodejs runtime support for middleware requires experimental.nodeMiddleware be enabled in your next.config
+ ✓ Compiled in 118ms (187 modules)
+ POST /api/v1/auth/login 200 in 1576ms
+🔒 Middleware processing: /api/v1/entities
+🔍 Auth required for: /api/v1/entities
+🛡️ Processing API auth for: /api/v1/entities
+🔐 Auth header present: true
+❌ Auth failed: The edge runtime does not support Node.js 'crypto' module.
+Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+[CanaryOnlyError: The experimental feature "experimental.nodeMiddleware" can only be enabled when using the latest canary version of Next.js.]
+
+Node.js v22.11.0
+[?25h
+
+> hera-restaurant-platform@1.0.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+  ▲ Next.js 14.2.31
+  - Local:        http://localhost:3002
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.6s
+ ○ Compiling /restaurant-complete ...
+ ✓ Compiled /restaurant-complete in 6.2s (1047 modules)
+(node:98448) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET /restaurant-complete 200 in 6985ms
+ ✓ Compiled in 813ms (514 modules)
+ ✓ Compiled in 78ms (500 modules)
+ GET /restaurant-complete 200 in 135ms
+ ✓ Compiled /offline in 423ms (1039 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /offline 200 in 604ms
+ GET /restaurant-complete 200 in 159ms
+ ✓ Compiled /api/v1/version in 411ms (566 modules)
+ GET /api/v1/version 200 in 646ms
+ GET /api/v1/version 200 in 651ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 632ms (1071 modules)
+ GET /api/placeholder/32/32 404 in 969ms
+ GET /restaurant-complete 200 in 624ms
+ GET /api/v1/version 200 in 186ms
+ GET /api/v1/version 200 in 210ms
+ GET /api/placeholder/32/32 404 in 1152ms
+ ✓ Compiled in 59.7s (1049 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development.pack.gz: Error: unexpected end of file
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 60.4s (1049 modules)
+ GET /restaurant-complete 200 in 62387ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /restaurant-complete 200 in 2983ms
+ ○ Compiling /api/v1/version ...
+ ✓ Compiled /_not-found in 75.4s (1067 modules)
+ GET /api/placeholder/32/32 404 in 72836ms
+ GET /api/v1/version 200 in 80431ms
+ GET /api/v1/version 200 in 84473ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 24.8s (1293 modules)
+ GET /_next/static/webpack/e1ddc552ac1c3770.webpack.hot-update.json 404 in 27640ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /restaurant-complete 200 in 3414ms
+ GET /api/v1/version 200 in 1262ms
+ GET /api/v1/version 200 in 1192ms
+[Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'
+}
+ ⨯ unhandledRejection: [Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'
+}
+ ⨯ unhandledRejection: [Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/client-development/0.pack.gz'
+[Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'
+}
+ ⨯ unhandledRejection: [Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'
+}
+ ⨯ unhandledRejection: [Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/12.pack.gz'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, stat '/Users/san/Documents/PRD/heraerp-prd/.next/cache/webpack/server-development/7.pack.gz'
+ GET /api/placeholder/32/32 404 in 11854ms
+ GET /restaurant-complete 200 in 834ms
+ GET /api/v1/version 200 in 306ms
+ GET /api/v1/version 200 in 305ms
+ GET /api/placeholder/32/32 404 in 197ms
+ ✓ Compiled in 46.5s (1273 modules)
+ ✓ Compiled in 11.4s (1259 modules)
+ ✓ Compiled in 4.5s (1259 modules)
+ ✓ Compiled in 17.4s (1259 modules)
+ ✓ Compiled in 1729ms (1259 modules)
+[?25h

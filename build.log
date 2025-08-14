@@ -1,0 +1,60 @@
+
+> hera-restaurant-platform@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.31
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+(node:89795) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Failed to compile.
+
+./src/lib/auth/progressive-auth.ts
+Module not found: Can't resolve 'uuid'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/components/auth/ProgressiveAuthProvider.tsx
+./src/hooks/use-progressive-data.ts
+./src/app/financial-progressive/page.tsx
+
+./src/lib/demo-data.ts
+Module not found: Can't resolve 'uuid'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/components/auth/DualAuthProvider.tsx
+./src/app/coa/page.tsx
+
+./src/lib/hera-docs.ts
+Module not found: Can't resolve 'marked'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/components/docs/DocSearch.tsx
+./src/components/docs/DocLayout.tsx
+
+./src/lib/hera-docs.ts
+Module not found: Can't resolve 'isomorphic-dompurify'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/components/docs/DocSearch.tsx
+./src/components/docs/DocLayout.tsx
+
+./src/lib/inventory/universal-ai-inventory.ts
+Module not found: Can't resolve 'uuid'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/components/inventory/UniversalAIInventoryDashboard.tsx
+./src/app/jewelry-progressive/inventory/page.tsx
+
+
+> Build failed because of webpack errors

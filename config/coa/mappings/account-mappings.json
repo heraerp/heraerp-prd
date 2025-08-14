@@ -1,0 +1,228 @@
+{
+  "mapping_definitions": {
+    "financial_statement_mappings": {
+      "balance_sheet": {
+        "assets": {
+          "current_assets": {
+            "display_order": 1,
+            "account_ranges": ["1100000-1499999"],
+            "required_accounts": ["1100000", "1200000"],
+            "subtotal_label": "Total Current Assets"
+          },
+          "non_current_assets": {
+            "display_order": 2,
+            "account_ranges": ["1500000-1999999"],
+            "subtotal_label": "Total Non-Current Assets"
+          },
+          "total_assets": {
+            "display_order": 3,
+            "formula": "current_assets + non_current_assets",
+            "subtotal_label": "Total Assets"
+          }
+        },
+        "liabilities": {
+          "current_liabilities": {
+            "display_order": 4,
+            "account_ranges": ["2100000-2499999"],
+            "required_accounts": ["2100000"],
+            "subtotal_label": "Total Current Liabilities"
+          },
+          "non_current_liabilities": {
+            "display_order": 5,
+            "account_ranges": ["2500000-2999999"],
+            "subtotal_label": "Total Non-Current Liabilities"
+          },
+          "total_liabilities": {
+            "display_order": 6,
+            "formula": "current_liabilities + non_current_liabilities",
+            "subtotal_label": "Total Liabilities"
+          }
+        },
+        "equity": {
+          "display_order": 7,
+          "account_ranges": ["3000000-3999999"],
+          "required_accounts": ["3100000", "3300000"],
+          "subtotal_label": "Total Equity"
+        }
+      },
+      "income_statement": {
+        "revenue": {
+          "display_order": 1,
+          "account_ranges": ["4000000-4999999"],
+          "required_accounts": ["4100000"],
+          "subtotal_label": "Total Revenue",
+          "calculation_method": "credit_balance"
+        },
+        "cost_of_sales": {
+          "display_order": 2,
+          "account_ranges": ["5000000-5099999"],
+          "subtotal_label": "Total Cost of Sales",
+          "calculation_method": "debit_balance"
+        },
+        "gross_profit": {
+          "display_order": 3,
+          "formula": "revenue - cost_of_sales",
+          "subtotal_label": "Gross Profit"
+        },
+        "operating_expenses": {
+          "display_order": 4,
+          "account_ranges": ["5100000-5899999"],
+          "subtotal_label": "Total Operating Expenses",
+          "calculation_method": "debit_balance"
+        },
+        "operating_income": {
+          "display_order": 5,
+          "formula": "gross_profit - operating_expenses",
+          "subtotal_label": "Operating Income"
+        },
+        "other_expenses": {
+          "display_order": 6,
+          "account_ranges": ["5900000-5999999"],
+          "subtotal_label": "Total Other Expenses",
+          "calculation_method": "debit_balance"
+        },
+        "net_income": {
+          "display_order": 7,
+          "formula": "operating_income - other_expenses",
+          "subtotal_label": "Net Income"
+        }
+      }
+    },
+    "tax_mappings": {
+      "india_gst": {
+        "input_tax_accounts": ["2150000"],
+        "output_tax_accounts": ["2250000"],
+        "gst_rates": {
+          "0%": "exempt_supplies",
+          "5%": "essential_goods",
+          "12%": "standard_goods",
+          "18%": "most_goods_services",
+          "28%": "luxury_items"
+        }
+      },
+      "usa_sales_tax": {
+        "sales_tax_payable": ["2250000"],
+        "tax_jurisdictions": {
+          "state_level": "varies_by_state",
+          "local_level": "varies_by_locality",
+          "combined_rates": "0%-12%"
+        }
+      }
+    },
+    "industry_mappings": {
+      "restaurant": {
+        "key_performance_accounts": {
+          "food_sales": ["4110000"],
+          "beverage_sales": ["4120000"],
+          "food_cost": ["5010000"],
+          "beverage_cost": ["5020000"],
+          "labor_cost": ["5220000", "5230000"]
+        },
+        "cost_centers": {
+          "kitchen": ["5220000", "5010000", "5410000"],
+          "service": ["5230000", "5240000"],
+          "management": ["5200000"],
+          "facility": ["5300000", "5400000"]
+        }
+      },
+      "healthcare": {
+        "key_performance_accounts": {
+          "patient_revenue": ["4110000"],
+          "insurance_revenue": ["4120000", "4130000", "4140000"],
+          "medical_supplies_cost": ["1330000"],
+          "staff_costs": ["5220000", "5230000"]
+        },
+        "payer_mix_accounts": {
+          "private_insurance": ["4120000"],
+          "medicare": ["4130000"],
+          "medicaid": ["4140000"],
+          "self_pay": ["4110000"]
+        }
+      }
+    },
+    "reporting_mappings": {
+      "cash_flow_statement": {
+        "operating_activities": {
+          "net_income": "from_income_statement",
+          "depreciation": ["5810000", "5820000"],
+          "accounts_receivable_change": ["1200000"],
+          "inventory_change": ["1300000", "1310000", "1320000"],
+          "accounts_payable_change": ["2100000"]
+        },
+        "investing_activities": {
+          "equipment_purchases": ["1500000", "1530000"],
+          "asset_sales": "contra_accounts",
+          "investments": ["1110000", "1800000"]
+        },
+        "financing_activities": {
+          "debt_proceeds": ["2500000", "2510000"],
+          "debt_payments": "contra_entries",
+          "equity_contributions": ["3100000"],
+          "dividend_payments": "retained_earnings_reduction"
+        }
+      },
+      "trial_balance": {
+        "account_order": [
+          "assets",
+          "liabilities",
+          "equity",
+          "revenue",
+          "expenses"
+        ],
+        "balance_validation": {
+          "debit_accounts": ["1000000-1999999", "5000000-5999999"],
+          "credit_accounts": ["2000000-2999999", "3000000-3999999", "4000000-4999999"],
+          "total_debits_equals_credits": true
+        }
+      }
+    }
+  },
+  "account_code_ranges": {
+    "assets": {
+      "range": "1000000-1999999",
+      "normal_balance": "debit",
+      "subcategories": {
+        "current_assets": "1100000-1499999",
+        "non_current_assets": "1500000-1999999"
+      }
+    },
+    "liabilities": {
+      "range": "2000000-2999999",
+      "normal_balance": "credit",
+      "subcategories": {
+        "current_liabilities": "2100000-2499999",
+        "non_current_liabilities": "2500000-2999999"
+      }
+    },
+    "equity": {
+      "range": "3000000-3999999",
+      "normal_balance": "credit"
+    },
+    "revenue": {
+      "range": "4000000-4999999",
+      "normal_balance": "credit"
+    },
+    "expenses": {
+      "range": "5000000-5999999",
+      "normal_balance": "debit",
+      "subcategories": {
+        "cost_of_sales": "5000000-5099999",
+        "operating_expenses": "5100000-5899999",
+        "other_expenses": "5900000-5999999"
+      }
+    }
+  },
+  "template_inheritance": {
+    "layer_priority": [
+      "universal_base",
+      "country_specific",
+      "industry_specific",
+      "organization_custom"
+    ],
+    "conflict_resolution": {
+      "duplicate_account_codes": "use_highest_priority_layer",
+      "conflicting_properties": "merge_with_override",
+      "missing_required_accounts": "auto_add_from_base"
+    }
+  }
+}

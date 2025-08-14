@@ -1,0 +1,365 @@
+{
+  "template_info": {
+    "template_id": "manufacturing",
+    "template_name": "Manufacturing Industry COA",
+    "version": "1.0.0",
+    "description": "Manufacturing industry specific chart of accounts",
+    "extends": "universal_base",
+    "industry_code": "NAICS_31-33",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "industry_specific_accounts": {
+    "inventory_accounts": [
+      {
+        "code": "1330000",
+        "name": "Raw Materials Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Materials used in production process",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.INV.RAW.v1"
+      },
+      {
+        "code": "1340000",
+        "name": "Work in Process Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Partially completed goods in production",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.INV.WIP.v1"
+      },
+      {
+        "code": "1350000",
+        "name": "Finished Goods Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Completed products ready for sale",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.INV.FG.v1"
+      },
+      {
+        "code": "1360000",
+        "name": "Maintenance Supplies Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Spare parts and maintenance materials",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.INV.MNT.v1"
+      },
+      {
+        "code": "1370000",
+        "name": "Packaging Materials Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Materials used for product packaging",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.INV.PKG.v1"
+      }
+    ],
+    "equipment_accounts": [
+      {
+        "code": "1540000",
+        "name": "Manufacturing Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Production machinery and equipment",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.PPE.MFG.v1"
+      },
+      {
+        "code": "1550000",
+        "name": "Factory Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Assembly lines, conveyor systems, tools",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.PPE.FAC.v1"
+      },
+      {
+        "code": "1560000",
+        "name": "Quality Control Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Testing and inspection equipment",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.PPE.QC.v1"
+      },
+      {
+        "code": "1650000",
+        "name": "Accumulated Depreciation - Manufacturing Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Contra asset for manufacturing equipment depreciation",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.AST.DEP.MFG.v1"
+      }
+    ],
+    "cost_accounts": [
+      {
+        "code": "5010000",
+        "name": "Direct Materials Cost",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Cost of raw materials used in production",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.MAT.DIR.v1"
+      },
+      {
+        "code": "5020000",
+        "name": "Direct Labor Cost",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Wages for production workers directly involved in manufacturing",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.LAB.DIR.v1"
+      },
+      {
+        "code": "5030000",
+        "name": "Factory Overhead",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Indirect manufacturing costs",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.OH.FAC.v1"
+      },
+      {
+        "code": "5040000",
+        "name": "Indirect Materials Cost",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Cost of materials not directly traceable to products",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.MAT.IND.v1"
+      },
+      {
+        "code": "5050000",
+        "name": "Indirect Labor Cost",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Wages for support staff (supervisors, maintenance)",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.LAB.IND.v1"
+      }
+    ],
+    "operating_expenses": [
+      {
+        "code": "5220000",
+        "name": "Production Staff Wages",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Wages for manufacturing and production workers",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.PROD.WAG.v1"
+      },
+      {
+        "code": "5230000",
+        "name": "Quality Control Wages",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Wages for quality assurance and inspection staff",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.QC.WAG.v1"
+      },
+      {
+        "code": "5240000",
+        "name": "Maintenance Staff Wages",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Wages for equipment maintenance personnel",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.MNT.WAG.v1"
+      },
+      {
+        "code": "5420000",
+        "name": "Equipment Maintenance Expense",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Maintenance and repair of manufacturing equipment",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.EQP.MNT.v1"
+      },
+      {
+        "code": "5430000",
+        "name": "Factory Utilities",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Electricity, gas, water for manufacturing facility",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.UTL.FAC.v1"
+      },
+      {
+        "code": "5440000",
+        "name": "Safety and Compliance Expense",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Safety equipment, training, regulatory compliance",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.SAF.COM.v1"
+      },
+      {
+        "code": "5450000",
+        "name": "Quality Control Expense",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Testing materials, calibration, certification costs",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.EXP.QC.v1"
+      }
+    ],
+    "liability_accounts": [
+      {
+        "code": "2120000",
+        "name": "Warranty Liability",
+        "type": "liabilities",
+        "subtype": "current_liabilities",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Estimated costs of warranty claims",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.LIA.WAR.v1"
+      },
+      {
+        "code": "2130000",
+        "name": "Environmental Liability",
+        "type": "liabilities",
+        "subtype": "current_liabilities",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Environmental cleanup and compliance costs",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.LIA.ENV.v1"
+      }
+    ],
+    "revenue_accounts": [
+      {
+        "code": "4110000",
+        "name": "Product Sales Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Revenue from manufactured products",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.REV.PROD.v1"
+      },
+      {
+        "code": "4120000",
+        "name": "Custom Manufacturing Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from contract manufacturing services",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.REV.CUS.v1"
+      },
+      {
+        "code": "4130000",
+        "name": "Licensing Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from licensing manufacturing processes or designs",
+        "industry_specific": true,
+        "smart_code": "HERA.MFG.REV.LIC.v1"
+      }
+    ]
+  },
+  "industry_kpis": {
+    "key_ratios": [
+      "Inventory Turnover Ratio",
+      "Direct Labor Efficiency",
+      "Overall Equipment Effectiveness (OEE)",
+      "Manufacturing Cost per Unit",
+      "First Pass Yield",
+      "On-Time Delivery Rate"
+    ],
+    "benchmarks": {
+      "inventory_turnover": "4-12 times per year",
+      "direct_labor_efficiency": "85-95%",
+      "overall_equipment_effectiveness": "85%+",
+      "first_pass_yield": "95%+"
+    }
+  },
+  "compliance_requirements": {
+    "regulations": [
+      "OSHA Safety Standards",
+      "Environmental Protection Agency (EPA) Regulations",
+      "ISO 9001 Quality Management",
+      "FDA Regulations (if applicable)",
+      "Industry-specific Safety Standards"
+    ],
+    "required_reports": [
+      "OSHA Injury and Illness Log",
+      "Environmental Compliance Report",
+      "Quality Assurance Reports",
+      "Production Efficiency Reports"
+    ]
+  },
+  "posting_rules": {
+    "material_purchase": {
+      "debit": ["1330000"],
+      "credit": ["2100000"],
+      "smart_code": "HERA.MFG.TXN.MAT.PUR.v1"
+    },
+    "production_completion": {
+      "debit": ["1350000"],
+      "credit": ["1340000"],
+      "smart_code": "HERA.MFG.TXN.PROD.COM.v1"
+    },
+    "product_sale": {
+      "debit": ["1200000"],
+      "credit": ["4110000"],
+      "smart_code": "HERA.MFG.TXN.PROD.SAL.v1"
+    },
+    "cost_of_goods_sold": {
+      "debit": ["5000000"],
+      "credit": ["1350000"],
+      "smart_code": "HERA.MFG.TXN.COGS.v1"
+    }
+  }
+}

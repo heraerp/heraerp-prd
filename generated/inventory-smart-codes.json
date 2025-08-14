@@ -1,0 +1,167 @@
+[
+  {
+    "smart_code": "HERA.INV.ITM.ENT.PROD.v1",
+    "module": "INV",
+    "sub_module": "ITM",
+    "function_type": "ENT",
+    "entity_type": "PROD",
+    "version": "v1",
+    "description": "INV ITM - Entity management for PROD",
+    "generated_at": "2025-07-31T08:41:14.089Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.ITM.ENT.CAT.v1",
+    "module": "INV",
+    "sub_module": "ITM",
+    "function_type": "ENT",
+    "entity_type": "CAT",
+    "version": "v1",
+    "description": "INV ITM - Entity management for CAT",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.ITM.ENT.LOC.v1",
+    "module": "INV",
+    "sub_module": "ITM",
+    "function_type": "ENT",
+    "entity_type": "LOC",
+    "version": "v1",
+    "description": "INV ITM - Entity management for LOC",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.SUP.ENT.VEN.v1",
+    "module": "INV",
+    "sub_module": "SUP",
+    "function_type": "ENT",
+    "entity_type": "VEN",
+    "version": "v1",
+    "description": "INV SUP - Entity management for VEN",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.RCV.TXN.IN.v1",
+    "module": "INV",
+    "sub_module": "RCV",
+    "function_type": "TXN",
+    "entity_type": "IN",
+    "version": "v1",
+    "description": "INV RCV - Transaction processing for IN",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.ISS.TXN.OUT.v1",
+    "module": "INV",
+    "sub_module": "ISS",
+    "function_type": "TXN",
+    "entity_type": "OUT",
+    "version": "v1",
+    "description": "INV ISS - Transaction processing for OUT",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.ADJ.TXN.CNT.v1",
+    "module": "INV",
+    "sub_module": "ADJ",
+    "function_type": "TXN",
+    "entity_type": "CNT",
+    "version": "v1",
+    "description": "INV ADJ - Transaction processing for CNT",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.TRF.TXN.LOC.v1",
+    "module": "INV",
+    "sub_module": "TRF",
+    "function_type": "TXN",
+    "entity_type": "LOC",
+    "version": "v1",
+    "description": "INV TRF - Transaction processing for LOC",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.VAL.RPT.STK.v1",
+    "module": "INV",
+    "sub_module": "VAL",
+    "function_type": "RPT",
+    "entity_type": "STK",
+    "version": "v1",
+    "description": "INV VAL - Report generation for STK",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.MOV.RPT.HIS.v1",
+    "module": "INV",
+    "sub_module": "MOV",
+    "function_type": "RPT",
+    "entity_type": "HIS",
+    "version": "v1",
+    "description": "INV MOV - Report generation for HIS",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.ABC.RPT.ANL.v1",
+    "module": "INV",
+    "sub_module": "ABC",
+    "function_type": "RPT",
+    "entity_type": "ANL",
+    "version": "v1",
+    "description": "INV ABC - Report generation for ANL",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.REO.RPT.SUG.v1",
+    "module": "INV",
+    "sub_module": "REO",
+    "function_type": "RPT",
+    "entity_type": "SUG",
+    "version": "v1",
+    "description": "INV REO - Report generation for SUG",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.STK.VAL.MIN.v1",
+    "module": "INV",
+    "sub_module": "STK",
+    "function_type": "VAL",
+    "entity_type": "MIN",
+    "version": "v1",
+    "description": "INV STK - Validation rule for MIN",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.PRC.VAL.CST.v1",
+    "module": "INV",
+    "sub_module": "PRC",
+    "function_type": "VAL",
+    "entity_type": "CST",
+    "version": "v1",
+    "description": "INV PRC - Validation rule for CST",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.INV.EXP.VAL.DAT.v1",
+    "module": "INV",
+    "sub_module": "EXP",
+    "function_type": "VAL",
+    "entity_type": "DAT",
+    "version": "v1",
+    "description": "INV EXP - Validation rule for DAT",
+    "generated_at": "2025-07-31T08:41:14.095Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  }
+]

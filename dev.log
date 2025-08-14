@@ -1,0 +1,194 @@
+
+> hera-restaurant-platform@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.31
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 4.4s
+ ○ Compiling / ...
+(node:81567) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ⨯ ./src/app/globals.css
+Module not found: Can't resolve 'react-day-picker/dist/style.css'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/globals.css
+ ⨯ ./src/app/globals.css
+Module not found: Can't resolve 'react-day-picker/dist/style.css'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/globals.css
+ ⨯ ./src/app/globals.css
+Module not found: Can't resolve 'react-day-picker/dist/style.css'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/globals.css
+ HEAD / 500 in 26109ms
+ ⨯ ./src/components/providers/QueryProvider.tsx:5:1
+Module not found: Can't resolve '@tanstack/react-query-devtools'
+[0m [90m 3 |[39m [36mimport[39m [33mReact[39m [36mfrom[39m [32m'react'[39m[33m;[39m[0m
+[0m [90m 4 |[39m [36mimport[39m { [33mQueryClient[39m[33m,[39m [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { [33mReactQueryDevtools[39m } [36mfrom[39m [32m'@tanstack/react-query-devtools'[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[0m
+[0m [90m 6 |[39m[0m
+[0m [90m 7 |[39m [90m// Create a client[39m[0m
+[0m [90m 8 |[39m [36mconst[39m queryClient [33m=[39m [36mnew[39m [33mQueryClient[39m({[0m
+
+https://nextjs.org/docs/messages/module-not-found
+ HEAD / 500 in 61ms
+ ⨯ ./src/components/providers/QueryProvider.tsx:5:1
+Module not found: Can't resolve '@tanstack/react-query-devtools'
+[0m [90m 3 |[39m [36mimport[39m [33mReact[39m [36mfrom[39m [32m'react'[39m[33m;[39m[0m
+[0m [90m 4 |[39m [36mimport[39m { [33mQueryClient[39m[33m,[39m [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { [33mReactQueryDevtools[39m } [36mfrom[39m [32m'@tanstack/react-query-devtools'[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[0m
+[0m [90m 6 |[39m[0m
+[0m [90m 7 |[39m [90m// Create a client[39m[0m
+[0m [90m 8 |[39m [36mconst[39m queryClient [33m=[39m [36mnew[39m [33mQueryClient[39m({[0m
+
+https://nextjs.org/docs/messages/module-not-found
+ GET /restaurant-complete 500 in 1088ms
+ ⨯ ./src/components/providers/QueryProvider.tsx:5:1
+Module not found: Can't resolve '@tanstack/react-query-devtools'
+[0m [90m 3 |[39m [36mimport[39m [33mReact[39m [36mfrom[39m [32m'react'[39m[33m;[39m[0m
+[0m [90m 4 |[39m [36mimport[39m { [33mQueryClient[39m[33m,[39m [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { [33mReactQueryDevtools[39m } [36mfrom[39m [32m'@tanstack/react-query-devtools'[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[0m
+[0m [90m 6 |[39m[0m
+[0m [90m 7 |[39m [90m// Create a client[39m[0m
+[0m [90m 8 |[39m [36mconst[39m queryClient [33m=[39m [36mnew[39m [33mQueryClient[39m({[0m
+
+https://nextjs.org/docs/messages/module-not-found
+ GET /offline 500 in 508ms
+ ⚠ ./src/app/restaurant-complete/page.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=Award,BarChart3,Bell,Camera,ChefHat,Clock,DollarSign,Filter,Gift,Mail,Plus,Restaurant,Search,Share2,ShoppingCart,Star,TrendingUp,Users!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/app/restaurant-complete/page.tsx
+
+./src/app/restaurant-complete/page.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=Award,BarChart3,Bell,Camera,ChefHat,Clock,DollarSign,Filter,Gift,Mail,Plus,Restaurant,Search,Share2,ShoppingCart,Star,TrendingUp,Users!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/app/restaurant-complete/page.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=Award,BarChart3,Bell,Camera,ChefHat,Clock,DollarSign,Filter,Gift,Mail,Plus,Restaurant,Search,Share2,ShoppingCart,Star,TrendingUp,Users!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/app/restaurant-complete/page.tsx
+
+./src/app/restaurant-complete/page.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=Award,BarChart3,Bell,Camera,ChefHat,Clock,DollarSign,Filter,Gift,Mail,Plus,Restaurant,Search,Share2,ShoppingCart,Star,TrendingUp,Users!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+
+./src/components/restaurant/OnboardingTour.tsx
+Attempted import error: 'Restaurant' is not exported from '__barrel_optimize__?names=CheckCircle,ChefHat,ChevronLeft,ChevronRight,Lightbulb,Play,Restaurant,Settings,ShoppingCart,TrendingUp,Users,X!=!lucide-react' (imported as 'Restaurant').
+
+Import trace for requested module:
+./src/components/restaurant/OnboardingTour.tsx
+./src/app/restaurant-complete/page.tsx
+ GET /_next/static/webpack/044873d40ede37d8.webpack.hot-update.json 404 in 271ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /restaurant-complete 200 in 661ms
+ GET /offline 200 in 315ms
+ HEAD / 200 in 347ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /offline in 60.3s (1328 modules)
+ HEAD /restaurant-complete 200 in 1154ms
+ GET /restaurant-complete 200 in 35986ms
+ ○ Compiling /api/v1/version ...
+ ✓ Compiled /api/v1/version in 7.1s (601 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 1202ms (626 modules)
+ GET /api/v1/version 200 in 10826ms
+ GET /api/v1/version 200 in 10559ms
+ HEAD / 200 in 4531ms
+ GET /restaurant-complete 200 in 944ms
+ GET /api/v1/version 200 in 95ms
+ GET /api/v1/version 200 in 126ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 2.4s (1325 modules)
+ GET /restaurant-complete 200 in 1094ms
+ GET /api/v1/version 200 in 205ms
+ GET /api/v1/version 200 in 673ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 4.7s (1325 modules)
+ GET /restaurant-complete 200 in 5630ms
+ HEAD /restaurant-complete 200 in 1524ms
+ GET /api/v1/version 200 in 482ms
+ GET /api/v1/version 200 in 495ms
+ GET /restaurant-complete 200 in 88ms
+ GET /api/v1/version 200 in 115ms
+ GET /api/v1/version 200 in 108ms
+ ○ Compiling /_not-found ...
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /_not-found in 4s (1314 modules)
+ GET /api/placeholder/32/32 404 in 5904ms
+ GET /restaurant-complete 200 in 5001ms
+ GET /api/v1/version 200 in 446ms
+ GET /api/v1/version 200 in 442ms
+ GET /api/placeholder/32/32 404 in 498ms
+[?25h

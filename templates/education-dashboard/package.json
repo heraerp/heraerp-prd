@@ -1,0 +1,79 @@
+{
+  "name": "@hera/universal-education-dashboard",
+  "version": "1.0.0",
+  "description": "HERA Universal Education Dashboard - AI-powered learning platform template",
+  "main": "index.js",
+  "scripts": {
+    "create": "node scripts/create-education-dashboard.js",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "hera",
+    "education",
+    "learning",
+    "ai",
+    "universal",
+    "dashboard",
+    "template",
+    "ca-final",
+    "cpa",
+    "medical",
+    "legal"
+  ],
+  "author": "HERA Universal Systems",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heraerp/heraprd.git",
+    "directory": "templates/education-dashboard"
+  },
+  "dependencies": {
+    "next": "^15.4.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-progress": "^1.0.3",
+    "lucide-react": "^0.263.1",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.8.3",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@hera/universal-ai": "^1.0.0"
+  },
+  "bin": {
+    "create-hera-education": "./scripts/create-education-dashboard.js"
+  },
+  "files": [
+    "templates/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "hera": {
+    "template": "education-dashboard",
+    "category": "learning",
+    "features": [
+      "AI-powered learning modes",
+      "Gamification system",
+      "Progress tracking",
+      "Real-time AI feedback",
+      "Mobile-first design",
+      "Universal architecture"
+    ],
+    "smartCodes": [
+      "HERA.EDU.DASHBOARD.v1",
+      "HERA.EDU.AI.TUTOR.v1",
+      "HERA.EDU.PROGRESS.TRACK.v1",
+      "HERA.EDU.GAMIFICATION.v1"
+    ]
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "template_info": {
+    "template_id": "professional_services",
+    "template_name": "Professional Services COA",
+    "version": "1.0.0",
+    "description": "Professional services industry specific chart of accounts (consulting, legal, accounting, etc.)",
+    "extends": "universal_base",
+    "industry_code": "NAICS_54",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "industry_specific_accounts": {
+    "asset_accounts": [
+      {
+        "code": "1230000",
+        "name": "Unbilled Services",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Services performed but not yet billed to clients",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.AST.UNBIL.v1"
+      },
+      {
+        "code": "1240000",
+        "name": "Client Advances",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Payments received from clients in advance of services",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.AST.CLI.ADV.v1"
+      },
+      {
+        "code": "1550000",
+        "name": "Office Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Computers, printers, office furniture",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.AST.OFF.EQP.v1"
+      },
+      {
+        "code": "1560000",
+        "name": "Software and Technology",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Professional software licenses, technology systems",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.AST.SOFT.v1"
+      },
+      {
+        "code": "1710000",
+        "name": "Client Lists and Relationships",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Intangible asset value of client relationships",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.AST.CLI.REL.v1"
+      }
+    ],
+    "liability_accounts": [
+      {
+        "code": "2120000",
+        "name": "Client Retainers",
+        "type": "liabilities",
+        "subtype": "current_liabilities",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Retainer fees received from clients for future services",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.LIA.RET.v1"
+      },
+      {
+        "code": "2130000",
+        "name": "Professional Liability Insurance Payable",
+        "type": "liabilities",
+        "subtype": "current_liabilities",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Accrued professional liability insurance premiums",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.LIA.INS.v1"
+      },
+      {
+        "code": "2140000",
+        "name": "Deferred Revenue - Services",
+        "type": "liabilities",
+        "subtype": "current_liabilities",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue received for services not yet performed",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.LIA.DEF.REV.v1"
+      }
+    ],
+    "revenue_accounts": [
+      {
+        "code": "4110000",
+        "name": "Professional Service Fees",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Revenue from professional services provided",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.REV.SRV.v1"
+      },
+      {
+        "code": "4120000",
+        "name": "Consulting Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from consulting services",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.REV.CON.v1"
+      },
+      {
+        "code": "4130000",
+        "name": "Retainer Fees",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Monthly or periodic retainer fees from clients",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.REV.RET.v1"
+      },
+      {
+        "code": "4140000",
+        "name": "Project-Based Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from fixed-price project work",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.REV.PROJ.v1"
+      },
+      {
+        "code": "4150000",
+        "name": "Training and Workshop Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from training sessions and workshops",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.REV.TRA.v1"
+      }
+    ],
+    "expense_accounts": [
+      {
+        "code": "5010000",
+        "name": "Direct Project Costs",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Direct costs attributable to specific client projects",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.PROJ.DIR.v1"
+      },
+      {
+        "code": "5020000",
+        "name": "Subcontractor Costs",
+        "type": "expenses",
+        "subtype": "cost_of_sales",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Payments to external consultants and contractors",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.SUB.v1"
+      },
+      {
+        "code": "5220000",
+        "name": "Professional Staff Salaries",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Salaries for professional staff (lawyers, consultants, etc.)",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.PROF.SAL.v1"
+      },
+      {
+        "code": "5230000",
+        "name": "Administrative Staff Salaries",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Salaries for administrative and support staff",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.ADM.SAL.v1"
+      },
+      {
+        "code": "5240000",
+        "name": "Partner/Owner Compensation",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Compensation for business partners and owners",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.PAR.COM.v1"
+      },
+      {
+        "code": "5410000",
+        "name": "Professional Development",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Training, conferences, continuing education",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.DEV.v1"
+      },
+      {
+        "code": "5420000",
+        "name": "Professional Subscriptions",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Industry publications, research databases, software subscriptions",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.SUB.v1"
+      },
+      {
+        "code": "5430000",
+        "name": "Client Entertainment",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Business meals, entertainment, client relationship expenses",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.ENT.v1"
+      },
+      {
+        "code": "5440000",
+        "name": "Travel and Transportation",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Client travel, transportation, accommodation costs",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.TRA.v1"
+      },
+      {
+        "code": "5450000",
+        "name": "Office Supplies",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Stationery, printing, office consumables",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.OFF.SUP.v1"
+      },
+      {
+        "code": "5870000",
+        "name": "Professional Liability Insurance",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Errors and omissions insurance, malpractice coverage",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.INS.v1"
+      },
+      {
+        "code": "5880000",
+        "name": "Professional Licenses and Dues",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Bar dues, CPA licenses, professional association memberships",
+        "industry_specific": true,
+        "smart_code": "HERA.PROF.EXP.LIC.v1"
+      }
+    ]
+  },
+  "industry_kpis": {
+    "key_ratios": [
+      "Revenue per Employee",
+      "Billable Hour Utilization Rate",
+      "Average Hourly Rate",
+      "Client Retention Rate",
+      "Project Profit Margin",
+      "Days Sales Outstanding (DSO)"
+    ],
+    "benchmarks": {
+      "billable_utilization": "65-80%",
+      "client_retention": "90%+",
+      "project_margin": "20-40%",
+      "days_sales_outstanding": "45-60 days"
+    }
+  },
+  "compliance_requirements": {
+    "regulations": [
+      "Professional Licensing Requirements",
+      "Client Confidentiality Rules",
+      "Continuing Education Requirements",
+      "Professional Ethics Standards"
+    ],
+    "required_reports": [
+      "Time and Billing Reports",
+      "Professional License Status",
+      "Client Trust Account Reports (if applicable)",
+      "Professional Development Hours"
+    ]
+  },
+  "posting_rules": {
+    "service_billing": {
+      "debit": ["1200000"],
+      "credit": ["4110000"],
+      "smart_code": "HERA.PROF.TXN.SRV.BIL.v1"
+    },
+    "retainer_receipt": {
+      "debit": ["1100000"],
+      "credit": ["2120000"],
+      "smart_code": "HERA.PROF.TXN.RET.REC.v1"
+    },
+    "direct_costs": {
+      "debit": ["5010000"],
+      "credit": ["2100000"],
+      "smart_code": "HERA.PROF.TXN.DIR.CST.v1"
+    }
+  }
+}

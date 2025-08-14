@@ -1,0 +1,477 @@
+{
+  "environment": "demo",
+  "executionTime": "2025-08-05T12:03:04.912Z",
+  "organizationId": "mock_1754395384877_3yd80d86n",
+  "createdEntities": {
+    "organizations": 1,
+    "users": 4,
+    "contacts": 4,
+    "companies": 4,
+    "deals": 4,
+    "activities": 4
+  },
+  "totalValue": 1600000,
+  "weightedValue": 1263750,
+  "executionLog": [
+    {
+      "timestamp": "2025-08-05T12:03:04.876Z",
+      "type": "info",
+      "message": "🚀 Starting HERA CRM Demo Data Setup"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "📊 Environment: demo"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "🌐 API Base: http://localhost:3000/api/v1"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "🏢 Setting up organization..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "POST /organizations"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "success",
+      "message": "✅ Organization created: TechVantage Solutions (mock_1754395384877_3yd80d86n)"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "👥 Setting up sales team..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "success",
+      "message": "✅ User created: Sarah Mitchell - VP of Sales"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.877Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ User created: David Rodriguez - Senior Account Executive"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ User created: Emma Chen - Sales Development Manager"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ User created: Marcus Johnson - Account Executive"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "🏢 Setting up target companies..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Company created: Global Manufacturing Corp"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Company created: InnovateAI Startup"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Company created: Healthcare Systems LLC"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Company created: RetailTech Innovations"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "👤 Setting up key contacts..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Contact created: Michael Thompson - Chief Technology Officer"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Contact created: Lisa Park - VP of Operations"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Contact created: Dr. James Wilson - Chief Medical Officer"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "success",
+      "message": "✅ Contact created: Jennifer Martinez - Director of IT"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /dynamic-data"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "💰 Setting up sales opportunities..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.878Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.911Z",
+      "type": "success",
+      "message": "✅ Deal created: Global Manufacturing - Digital Transformation Initiative - $750,000"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.911Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.911Z",
+      "type": "success",
+      "message": "✅ Deal created: InnovateAI - ML Platform Integration - $125,000"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.911Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.911Z",
+      "type": "success",
+      "message": "✅ Deal created: Healthcare Systems - HIPAA Compliance Suite - $450,000"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Deal created: RetailTech - Omnichannel Customer Platform - $275,000"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "📋 Setting up sales activities..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Activity logged: Discovery Call - Global Manufacturing"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Activity logged: InnovateAI Product Demo Follow-up"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Activity logged: Healthcare Systems Security Review"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /entities"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Activity logged: RetailTech Platform Demonstration"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "🔗 Creating entity relationships..."
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: Global Manufacturing Corp employs Michael Thompson"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: InnovateAI Startup employs Lisa Park"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: Healthcare Systems LLC employs Dr. James Wilson"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: RetailTech Innovations employs Jennifer Martinez"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: Global Manufacturing - Digital Transformation Initiative -> Michael Thompson"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: InnovateAI - ML Platform Integration -> Lisa Park"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: Healthcare Systems - HIPAA Compliance Suite -> Dr. James Wilson"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "info",
+      "message": "POST /relationships"
+    },
+    {
+      "timestamp": "2025-08-05T12:03:04.912Z",
+      "type": "success",
+      "message": "✅ Relationship created: RetailTech - Omnichannel Customer Platform -> Jennifer Martinez"
+    }
+  ]
+}

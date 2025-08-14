@@ -1,0 +1,100 @@
+<svg width="240" height="80" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pentagram-designed HERA Logo: Micro to Enterprise -->
+  <defs>
+    <!-- Scale gradient: From individual to enterprise -->
+    <linearGradient id="scaleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0F172A" /> <!-- Micro: Deep, focused -->
+      <stop offset="25%" style="stop-color:#1E40AF" /> <!-- Small: Ambitious blue -->
+      <stop offset="50%" style="stop-color:#0EA5E9" /> <!-- Medium: Growth cyan -->
+      <stop offset="75%" style="stop-color:#10B981" /> <!-- Large: Success green -->
+      <stop offset="100%" style="stop-color:#F59E0B" /> <!-- Enterprise: Gold standard -->
+    </linearGradient>
+    
+    <!-- Hierarchical shadow for depth -->
+    <filter id="enterpriseShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Subtle architectural grid -->
+    <pattern id="architecturalGrid" patternUnits="userSpaceOnUse" width="20" height="20">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E2E8F0" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background architectural grid (subtle) -->
+  <rect width="240" height="80" fill="url(#architecturalGrid)" opacity="0.3"/>
+  
+  <!-- HERA Typography - Optimized for all scales -->
+  <text x="20" y="50" 
+        font-family="Inter, -apple-system, system-ui, sans-serif" 
+        font-size="42" 
+        font-weight="800" 
+        fill="url(#scaleGradient)"
+        filter="url(#enterpriseShadow)"
+        letter-spacing="-0.04em">HERA</text>
+  
+  <!-- Universal Scale Indicator -->
+  <g transform="translate(170, 15)">
+    <!-- Micro Business: Single point of truth -->
+    <circle cx="0" cy="45" r="2" fill="#0F172A" opacity="0.9">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="0" y="60" font-family="Inter" font-size="6" fill="#64748B" text-anchor="middle" font-weight="500">MICRO</text>
+    
+    <!-- Small Business: Structured growth -->
+    <rect x="15" y="35" width="3" height="20" fill="#1E40AF" rx="1.5" opacity="0.8">
+      <animate attributeName="height" values="15;25;15" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+    </rect>
+    <text x="16.5" y="60" font-family="Inter" font-size="6" fill="#64748B" text-anchor="middle" font-weight="500">SMALL</text>
+    
+    <!-- Medium Business: Expanding capabilities -->
+    <rect x="30" y="25" width="4" height="30" fill="#0EA5E9" rx="2" opacity="0.7">
+      <animate attributeName="height" values="25;35;25" dur="3s" repeatCount="indefinite" begin="1s"/>
+    </rect>
+    <text x="32" y="60" font-family="Inter" font-size="6" fill="#64748B" text-anchor="middle" font-weight="500">MEDIUM</text>
+    
+    <!-- Large Business: Complex operations -->
+    <rect x="45" y="15" width="5" height="40" fill="#10B981" rx="2.5" opacity="0.6">
+      <animate attributeName="height" values="35;45;35" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+    </rect>
+    <text x="47.5" y="60" font-family="Inter" font-size="6" fill="#64748B" text-anchor="middle" font-weight="500">LARGE</text>
+    
+    <!-- Enterprise: Maximum scale -->
+    <rect x="60" y="5" width="6" height="50" fill="#F59E0B" rx="3" opacity="0.5">
+      <animate attributeName="height" values="45;55;45" dur="3s" repeatCount="indefinite" begin="2s"/>
+    </rect>
+    <text x="63" y="60" font-family="Inter" font-size="6" fill="#64748B" text-anchor="middle" font-weight="500">ENTERPRISE</text>
+  </g>
+  
+  <!-- Hierarchical connection lines -->
+  <g transform="translate(170, 15)" stroke="url(#scaleGradient)" stroke-width="0.8" fill="none" opacity="0.4">
+    <path d="M 2 45 Q 8 40 16.5 45">
+      <animate attributeName="stroke-dasharray" values="0,100;20,80;0,100" dur="6s" repeatCount="indefinite"/>
+    </path>
+    <path d="M 18.5 45 Q 24 35 32 45">
+      <animate attributeName="stroke-dasharray" values="0,100;20,80;0,100" dur="6s" repeatCount="indefinite" begin="1s"/>
+    </path>
+    <path d="M 34 45 Q 39.5 30 47.5 45">
+      <animate attributeName="stroke-dasharray" values="0,100;20,80;0,100" dur="6s" repeatCount="indefinite" begin="2s"/>
+    </path>
+    <path d="M 50.5 45 Q 56.5 25 63 45">
+      <animate attributeName="stroke-dasharray" values="0,100;20,80;0,100" dur="6s" repeatCount="indefinite" begin="3s"/>
+    </path>
+  </g>
+  
+  <!-- Universal foundation line -->
+  <line x1="20" y1="68" x2="160" y2="68" 
+        stroke="url(#scaleGradient)" 
+        stroke-width="1.5" 
+        opacity="0.3"/>
+  
+  <!-- Tagline: The universal promise -->
+  <text x="20" y="75" 
+        font-family="Inter" 
+        font-size="8" 
+        font-weight="600" 
+        fill="#64748B" 
+        letter-spacing="0.15em" 
+        opacity="0.8">ONE SYSTEM • ANY SCALE • EVERY BUSINESS</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- HERA Typography Logo -->
+  <defs>
+    <!-- Gradient for modern look -->
+    <linearGradient id="heraGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="50%" style="stop-color:#06B6D4"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+    
+    <!-- Shadow filter for depth -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- H -->
+  <g filter="url(#shadow)">
+    <path d="M15 12 L15 48 M15 30 L35 30 M35 12 L35 48" 
+          stroke="url(#heraGradient)" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+  </g>
+  
+  <!-- E -->
+  <g filter="url(#shadow)">
+    <path d="M55 12 L55 48 M55 12 L75 12 M55 30 L70 30 M55 48 L75 48" 
+          stroke="url(#heraGradient)" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+  </g>
+  
+  <!-- R -->
+  <g filter="url(#shadow)">
+    <path d="M95 12 L95 48 M95 12 L115 12 Q125 12 125 22 Q125 30 115 30 L95 30 M110 30 L125 48" 
+          stroke="url(#heraGradient)" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+  </g>
+  
+  <!-- A -->
+  <g filter="url(#shadow)">
+    <path d="M135 48 L145 12 L155 48 M140 35 L150 35" 
+          stroke="url(#heraGradient)" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+  </g>
+  
+  <!-- Modern accent dot -->
+  <circle cx="170" cy="42" r="3" fill="url(#heraGradient)" filter="url(#shadow)"/>
+  
+  <!-- Subtle underline -->
+  <line x1="15" y1="54" x2="165" y2="54" 
+        stroke="url(#heraGradient)" 
+        stroke-width="1" 
+        opacity="0.3"/>
+</svg>

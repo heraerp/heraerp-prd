@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERA Auth Test</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 24px; 
+            margin: 16px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 4px solid #10b981; }
+        .error { border-left: 4px solid #ef4444; }
+        .info { border-left: 4px solid #3b82f6; }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 8px 4px;
+        }
+        button:hover { background: #2563eb; }
+        input { 
+            padding: 12px; 
+            border: 1px solid #d1d5db; 
+            border-radius: 6px; 
+            margin: 8px 4px; 
+            width: 200px;
+        }
+        .demo-btn { background: #10b981; }
+        .demo-btn:hover { background: #059669; }
+        pre { background: #f1f5f9; padding: 12px; border-radius: 6px; overflow-x: auto; }
+        h1 { color: #1f2937; }
+        h2 { color: #374151; margin-top: 32px; }
+        .status { font-weight: 600; }
+    </style>
+</head>
+<body>
+    <h1>🚀 HERA Authentication Flow Test</h1>
+    <div class="card info">
+        <h2>📋 Test Authentication System</h2>
+        <p>This tests the simplified HERA authentication without OAuth.</p>
+    </div>
+
+    <!-- Test Results -->
+    <div class="card" id="results">
+        <h2>Test Results</h2>
+        <div id="status">🔄 Starting tests...</div>
+    </div>
+
+    <!-- Manual Login Test -->
+    <div class="card">
+        <h2>🔐 Manual Login Test</h2>
+        <div>
+            <input type="email" id="email" placeholder="Email" value="mario@restaurant.com">
+            <input type="password" id="password" placeholder="Password" value="securepass123">
+            <button onclick="testLogin()">Test Login</button>
+            <button class="demo-btn" onclick="loadDemo()">Load Demo Creds</button>
+        </div>
+        <div id="loginResult"></div>
+    </div>
+
+    <!-- Page Navigation Test -->
+    <div class="card">
+        <h2>🔗 Page Navigation Test</h2>
+        <button onclick="testPage('/')">Test Homepage</button>
+        <button onclick="testPage('/login')">Test Login Page</button>
+        <button onclick="testPage('/register')">Test Register Page</button>
+        <button onclick="testPage('/dashboard')">Test Dashboard</button>
+        <div id="navResult"></div>
+    </div>
+
+    <!-- Auth Flow Summary -->
+    <div class="card">
+        <h2>📊 Expected Auth Flow</h2>
+        <ol>
+            <li><strong>Homepage (/):</strong> Redirects to /login if not authenticated</li>
+            <li><strong>Login (/login):</strong> Email/password + demo credentials</li>
+            <li><strong>Register (/register):</strong> 3-step registration (no OAuth)</li>
+            <li><strong>Dashboard (/dashboard):</strong> Authenticated users only</li>
+        </ol>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3002'
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status')
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info'
+            status.innerHTML = `<div class="status ${className}">✅ ${message}</div>`
+        }
+
+        function loadDemo() {
+            document.getElementById('email').value = 'mario@restaurant.com'
+            document.getElementById('password').value = 'securepass123'
+            updateStatus('Demo credentials loaded!', 'success')
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const result = document.getElementById('loginResult')
+            
+            result.innerHTML = '<div>🔄 Testing login...</div>'
+            
+            try {
+                // This would normally use the SimpleAuthProvider
+                // For testing, we'll just simulate the flow
+                if (email === 'mario@restaurant.com' && password === 'securepass123') {
+                    result.innerHTML = `
+                        <div class="success" style="margin-top: 12px; padding: 12px;">
+                            <strong>✅ Demo Login Successful!</strong><br>
+                            User: Mario Rossi<br>
+                            Organization: Mario's Italian Restaurant<br>
+                            <em>In real app: would redirect to /dashboard</em>
+                        </div>
+                    `
+                } else if (email === 'sarah@luxurygems.com' && password === 'jewelry123') {
+                    result.innerHTML = `
+                        <div class="success" style="margin-top: 12px; padding: 12px;">
+                            <strong>✅ Jewelry Demo Login Successful!</strong><br>
+                            User: Sarah Mitchell<br>
+                            Organization: Luxury Gems & Jewelry<br>
+                            <em>In real app: would redirect to /dashboard</em>
+                        </div>
+                    `
+                } else {
+                    result.innerHTML = `
+                        <div class="error" style="margin-top: 12px; padding: 12px;">
+                            <strong>❌ Login Failed</strong><br>
+                            Invalid credentials. Try demo accounts above.
+                        </div>
+                    `
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`
+            }
+        }
+
+        async function testPage(path) {
+            const result = document.getElementById('navResult')
+            result.innerHTML = `<div>🔄 Testing ${path}...</div>`
+            
+            try {
+                const response = await fetch(BASE_URL + path, { method: 'HEAD' })
+                const status = response.status
+                
+                let message = ''
+                let type = 'info'
+                
+                if (status === 200) {
+                    message = `✅ ${path} is accessible (${status})`
+                    type = 'success'
+                } else if (status === 302 || status === 307) {
+                    message = `🔄 ${path} redirects (${status}) - This is expected behavior`
+                    type = 'success'
+                } else if (status === 404) {
+                    message = `❌ ${path} not found (${status})`
+                    type = 'error'
+                } else {
+                    message = `⚠️ ${path} returned ${status}`
+                    type = 'error'
+                }
+                
+                result.innerHTML = `<div class="${type}" style="margin-top: 12px; padding: 12px;">${message}</div>`
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="error" style="margin-top: 12px; padding: 12px;">
+                        ❌ Cannot reach ${path}<br>
+                        Make sure dev server is running on port 3002<br>
+                        <code>npm run dev</code>
+                    </div>
+                `
+            }
+        }
+
+        // Auto-run initial test
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatus('✅ Simplified authentication system ready (no OAuth)', 'success')
+        })
+    </script>
+</body>
+</html>

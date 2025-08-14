@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERA Badge - Network Effect Demo</title>
+    <style>
+        /* Steve Jobs-Inspired HERA Badge */
+        .hera-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.02);
+            text-decoration: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        .hera-badge:hover {
+            transform: scale(1.05);
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .hera-badge:active {
+            transform: scale(0.95);
+        }
+
+        .hera-badge img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hera-badge .text {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            color: rgb(107, 114, 128);
+            transition: color 200ms ease;
+        }
+
+        .hera-badge:hover .text {
+            color: rgb(55, 65, 81);
+        }
+
+        .hera-badge .brand {
+            margin-left: 4px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #3B82F6, #06B6D4, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .network-dots {
+            display: flex;
+            gap: 2px;
+            margin-left: 4px;
+        }
+
+        .network-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgb(156, 163, 175);
+            transition: all 300ms ease;
+        }
+
+        .hera-badge:hover .network-dot:nth-child(1) {
+            background-color: rgb(16, 185, 129);
+            transform: scale(1.25);
+        }
+
+        .hera-badge:hover .network-dot:nth-child(2) {
+            background-color: rgb(59, 130, 246);
+            transform: scale(1.25);
+            transition-delay: 75ms;
+        }
+
+        .hera-badge:hover .network-dot:nth-child(3) {
+            background-color: rgb(6, 182, 212);
+            transform: scale(1.25);
+            transition-delay: 150ms;
+        }
+
+        /* Demo page styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            margin: 0;
+            padding: 40px;
+        }
+
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 32px;
+            font-size: 18px;
+        }
+
+        .example {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .example h3 {
+            margin-top: 0;
+            color: #334155;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🚀 HERA Badge - Network Effect</h1>
+        <p class="subtitle">Subtle Steve Jobs-inspired "Powered by HERA" badge that builds network effect for the universal ERP platform.</p>
+
+        <div class="example">
+            <h3>✨ Live Demo</h3>
+            <p>Hover over the badge to see the network effect animation:</p>
+            
+            <a href="https://www.heraerp.com" class="hera-badge">
+                <img src="hera-logo.svg" alt="H" />
+                <span class="text">Powered by <span class="brand">HERA</span></span>
+                <div class="network-dots">
+                    <div class="network-dot"></div>
+                    <div class="network-dot"></div>
+                    <div class="network-dot"></div>
+                </div>
+            </a>
+        </div>
+
+        <div class="example">
+            <h3>📋 Implementation</h3>
+            <p>Simply add this HTML to your footer:</p>
+            
+            <div class="code-block">&lt;a href="https://www.heraerp.com" class="hera-badge"&gt;
+  &lt;img src="hera-logo.svg" alt="H" /&gt;
+  &lt;span class="text"&gt;Powered by &lt;span class="brand"&gt;HERA&lt;/span&gt;&lt;/span&gt;
+  &lt;div class="network-dots"&gt;
+    &lt;div class="network-dot"&gt;&lt;/div&gt;
+    &lt;div class="network-dot"&gt;&lt;/div&gt;
+    &lt;div class="network-dot"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/a&gt;</div>
+        </div>
+
+        <div class="example">
+            <h3>🎨 Steve Jobs Design Principles</h3>
+            <ul>
+                <li><strong>Subtle</strong> - Non-intrusive, elegant placement</li>
+                <li><strong>Premium Feel</strong> - Smooth animations and glass morphism</li>
+                <li><strong>Network Effect</strong> - Animated dots suggest growing connections</li>
+                <li><strong>Trust Building</strong> - Professional badge builds platform credibility</li>
+                <li><strong>Brand Awareness</strong> - Gentle HERA gradient creates recognition</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h3>🌐 Network Effect Strategy</h3>
+            <p>Every HERA customer becomes a showcase for the platform:</p>
+            <ul>
+                <li><strong>Customer Confidence</strong> - "If XYZ Corp trusts HERA, so can we"</li>
+                <li><strong>Platform Validation</strong> - Visible customer success stories</li>
+                <li><strong>Organic Growth</strong> - Word-of-mouth through subtle branding</li>
+                <li><strong>Trust Signals</strong> - Professional companies using HERA creates credibility</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h3>📱 Responsive & Accessible</h3>
+            <ul>
+                <li>Works perfectly on mobile and desktop</li>
+                <li>Maintains Steve Jobs-level attention to detail</li>
+                <li>Follows Apple's Human Interface Guidelines</li>
+                <li>Optimized for screen readers and keyboard navigation</li>
+            </ul>
+        </div>
+
+        <p style="text-align: center; margin-top: 40px; color: #64748b; font-size: 14px;">
+            <a href="https://www.heraerp.com" class="hera-badge">
+                <img src="hera-logo.svg" alt="H" />
+                <span class="text">Powered by <span class="brand">HERA</span></span>
+                <div class="network-dots">
+                    <div class="network-dot"></div>
+                    <div class="network-dot"></div>
+                    <div class="network-dot"></div>
+                </div>
+            </a>
+            <br><br>
+            Join the network of leading businesses powered by universal architecture
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,227 @@
+{
+  "template_info": {
+    "template_id": "healthcare",
+    "template_name": "Healthcare Industry COA",
+    "version": "1.0.0",
+    "description": "Healthcare and medical services industry specific chart of accounts",
+    "extends": "universal_base",
+    "industry_code": "NAICS_621",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "industry_specific_accounts": {
+    "revenue_accounts": [
+      {
+        "code": "4110000",
+        "name": "Patient Service Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Revenue from medical services provided to patients",
+        "industry_specific": true
+      },
+      {
+        "code": "4120000",
+        "name": "Insurance Reimbursements",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": true,
+        "description": "Payments received from insurance companies",
+        "industry_specific": true
+      },
+      {
+        "code": "4130000",
+        "name": "Medicare Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from Medicare patients",
+        "industry_specific": true
+      },
+      {
+        "code": "4140000",
+        "name": "Medicaid Revenue",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Revenue from Medicaid patients",
+        "industry_specific": true
+      }
+    ],
+    "receivables_accounts": [
+      {
+        "code": "1240000",
+        "name": "Patient Accounts Receivable",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Outstanding balances owed by patients",
+        "industry_specific": true
+      },
+      {
+        "code": "1250000",
+        "name": "Insurance Claims Receivable",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Claims submitted to insurance companies awaiting payment",
+        "industry_specific": true
+      },
+      {
+        "code": "1260000",
+        "name": "Medicare Receivable",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Outstanding Medicare claims",
+        "industry_specific": true
+      }
+    ],
+    "inventory_accounts": [
+      {
+        "code": "1330000",
+        "name": "Medical Supplies Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Medical supplies and consumables",
+        "industry_specific": true
+      },
+      {
+        "code": "1340000",
+        "name": "Pharmaceutical Inventory",
+        "type": "assets",
+        "subtype": "current_assets",
+        "normal_balance": "debit",
+        "required": false,
+        "description": "Medications and pharmaceuticals",
+        "industry_specific": true
+      }
+    ],
+    "equipment_accounts": [
+      {
+        "code": "1540000",
+        "name": "Medical Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Medical devices, diagnostic equipment, and instruments",
+        "industry_specific": true
+      },
+      {
+        "code": "1650000",
+        "name": "Accumulated Depreciation - Medical Equipment",
+        "type": "assets",
+        "subtype": "non_current_assets",
+        "normal_balance": "credit",
+        "required": false,
+        "description": "Contra asset for medical equipment depreciation",
+        "industry_specific": true
+      }
+    ],
+    "operating_expenses": [
+      {
+        "code": "5220000",
+        "name": "Physician Salaries",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Salaries for medical doctors and specialists",
+        "industry_specific": true
+      },
+      {
+        "code": "5230000",
+        "name": "Nursing Staff Salaries",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Salaries for registered nurses and nursing staff",
+        "industry_specific": true
+      },
+      {
+        "code": "5870000",
+        "name": "Medical Malpractice Insurance",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Professional liability insurance for medical practice",
+        "industry_specific": true
+      },
+      {
+        "code": "5880000",
+        "name": "Medical Licenses and Certifications",
+        "type": "expenses",
+        "subtype": "operating_expenses",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Medical licenses, board certifications, and renewals",
+        "industry_specific": true
+      }
+    ],
+    "contra_revenue_accounts": [
+      {
+        "code": "4190000",
+        "name": "Contractual Allowances",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Difference between billed charges and insurance contracted rates",
+        "industry_specific": true
+      },
+      {
+        "code": "4195000",
+        "name": "Bad Debt - Patient Accounts",
+        "type": "revenue",
+        "subtype": "revenue",
+        "normal_balance": "debit",
+        "required": true,
+        "description": "Uncollectible patient account balances",
+        "industry_specific": true
+      }
+    ]
+  },
+  "industry_kpis": {
+    "key_ratios": [
+      "Days Sales Outstanding (DSO)",
+      "Net Collection Rate",
+      "Denial Rate",
+      "Cost per Patient",
+      "Revenue per Patient Visit"
+    ],
+    "benchmarks": {
+      "days_sales_outstanding": "30-45 days",
+      "net_collection_rate": "95-98%",
+      "denial_rate": "5-10%",
+      "staff_to_patient_ratio": "Varies by specialty"
+    }
+  },
+  "reporting_requirements": {
+    "industry_reports": [
+      "Aging of Accounts Receivable",
+      "Insurance Claims Status Report",
+      "Provider Productivity Report",
+      "Payer Mix Analysis",
+      "Cost Center Analysis"
+    ],
+    "compliance_requirements": [
+      "HIPAA Privacy and Security Rules",
+      "Medicare/Medicaid Compliance",
+      "Joint Commission Standards",
+      "State Medical Board Requirements",
+      "DEA Registration (if applicable)"
+    ]
+  }
+}

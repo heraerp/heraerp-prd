@@ -1,0 +1,178 @@
+[
+  {
+    "smart_code": "HERA.FIN.GL.ENT.ACC.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "ENT",
+    "entity_type": "ACC",
+    "version": "v1",
+    "description": "FIN GL - Entity management for ACC",
+    "generated_at": "2025-07-31T08:44:39.773Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.GL.TXN.JE.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "TXN",
+    "entity_type": "JE",
+    "version": "v1",
+    "description": "FIN GL - Transaction processing for JE",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.GL.RPT.TB.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "RPT",
+    "entity_type": "TB",
+    "version": "v1",
+    "description": "FIN GL - Report generation for TB",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.GL.RPT.IS.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "RPT",
+    "entity_type": "IS",
+    "version": "v1",
+    "description": "FIN GL - Report generation for IS",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.GL.RPT.BS.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "RPT",
+    "entity_type": "BS",
+    "version": "v1",
+    "description": "FIN GL - Report generation for BS",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AR.ENT.CUS.v1",
+    "module": "FIN",
+    "sub_module": "AR",
+    "function_type": "ENT",
+    "entity_type": "CUS",
+    "version": "v1",
+    "description": "FIN AR - Entity management for CUS",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AR.TXN.INV.v1",
+    "module": "FIN",
+    "sub_module": "AR",
+    "function_type": "TXN",
+    "entity_type": "INV",
+    "version": "v1",
+    "description": "FIN AR - Transaction processing for INV",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AR.TXN.PAY.v1",
+    "module": "FIN",
+    "sub_module": "AR",
+    "function_type": "TXN",
+    "entity_type": "PAY",
+    "version": "v1",
+    "description": "FIN AR - Transaction processing for PAY",
+    "generated_at": "2025-07-31T08:44:39.778Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AR.RPT.AGE.v1",
+    "module": "FIN",
+    "sub_module": "AR",
+    "function_type": "RPT",
+    "entity_type": "AGE",
+    "version": "v1",
+    "description": "FIN AR - Report generation for AGE",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AP.ENT.VEN.v1",
+    "module": "FIN",
+    "sub_module": "AP",
+    "function_type": "ENT",
+    "entity_type": "VEN",
+    "version": "v1",
+    "description": "FIN AP - Entity management for VEN",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AP.TXN.BIL.v1",
+    "module": "FIN",
+    "sub_module": "AP",
+    "function_type": "TXN",
+    "entity_type": "BIL",
+    "version": "v1",
+    "description": "FIN AP - Transaction processing for BIL",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AP.TXN.PAY.v1",
+    "module": "FIN",
+    "sub_module": "AP",
+    "function_type": "TXN",
+    "entity_type": "PAY",
+    "version": "v1",
+    "description": "FIN AP - Transaction processing for PAY",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AP.RPT.AGE.v1",
+    "module": "FIN",
+    "sub_module": "AP",
+    "function_type": "RPT",
+    "entity_type": "AGE",
+    "version": "v1",
+    "description": "FIN AP - Report generation for AGE",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.GL.VAL.BAL.v1",
+    "module": "FIN",
+    "sub_module": "GL",
+    "function_type": "VAL",
+    "entity_type": "BAL",
+    "version": "v1",
+    "description": "FIN GL - Validation rule for BAL",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AR.VAL.CRD.v1",
+    "module": "FIN",
+    "sub_module": "AR",
+    "function_type": "VAL",
+    "entity_type": "CRD",
+    "version": "v1",
+    "description": "FIN AR - Validation rule for CRD",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  },
+  {
+    "smart_code": "HERA.FIN.AP.VAL.DUP.v1",
+    "module": "FIN",
+    "sub_module": "AP",
+    "function_type": "VAL",
+    "entity_type": "DUP",
+    "version": "v1",
+    "description": "FIN AP - Validation rule for DUP",
+    "generated_at": "2025-07-31T08:44:39.779Z",
+    "generated_by": "HERA_SMART_CODE_GENERATOR"
+  }
+]

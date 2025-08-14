@@ -1,0 +1,302 @@
+[
+  {
+    "smart_code": "HERA.INV.ITM.ENT.PROD.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.ITM.ENT.CAT.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.ITM.ENT.LOC.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.SUP.ENT.VEN.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.RCV.TXN.IN.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.ISS.TXN.OUT.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.ADJ.TXN.CNT.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.TRF.TXN.LOC.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.VAL.RPT.STK.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.MOV.RPT.HIS.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.ABC.RPT.ANL.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.REO.RPT.SUG.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.STK.VAL.MIN.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.PRC.VAL.CST.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  },
+  {
+    "smart_code": "HERA.INV.EXP.VAL.DAT.v1",
+    "validation_rules": {
+      "syntax": {
+        "pattern": {},
+        "required_parts": 6,
+        "version_format": {}
+      },
+      "semantic": {
+        "module_exists": true,
+        "function_valid": true,
+        "industry_alignment": true
+      },
+      "performance": {
+        "max_length": 50,
+        "indexable": true,
+        "cache_friendly": true
+      }
+    }
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "name": "staff",
+  "type": "restaurant",
+  "prefix": "STA",
+  "description": "Restaurant staff that makes money",
+  "customer_description": "Manage your team, track hours, control labor costs",
+  "entities": [
+    "item",
+    "order",
+    "customer",
+    "supplier"
+  ],
+  "transactions": [
+    "sale",
+    "purchase",
+    "waste",
+    "reorder"
+  ],
+  "apis": [
+    "entities",
+    "transactions",
+    "reports",
+    "validations"
+  ],
+  "ui": [
+    "dashboard",
+    "list",
+    "form",
+    "reports"
+  ],
+  "generated_at": "2025-08-01T14:11:59.764Z",
+  "generated_by": "HERA_MODULE_GENERATOR_CUSTOMER_FOCUSED",
+  "version": "2.0.0",
+  "steve_jobs_principle": "Simplicity is the ultimate sophistication"
+}

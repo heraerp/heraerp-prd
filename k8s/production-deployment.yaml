@@ -1,0 +1,361 @@
+# HERA AI Finance Integrator - Production Kubernetes Deployment
+# Production-ready deployment with all reliability features
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hera-ai-finance
+  namespace: hera-production
+  labels:
+    app: hera-ai-finance
+    version: v1.0.0
+    component: backend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: hera-ai-finance
+  template:
+    metadata:
+      labels:
+        app: hera-ai-finance
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        prometheus.io/path: "/api/metrics"
+    spec:
+      serviceAccountName: hera-ai-finance-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      
+      # Init container for database migrations
+      initContainers:
+      - name: db-migrate
+        image: hera/ai-finance:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "Running database migrations..."
+          npm run db:migrate
+          echo "Database migrations completed"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hera-database-secret
+              key: url
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+
+      containers:
+      - name: hera-ai-finance
+        image: hera/ai-finance:latest
+        imagePullPolicy: IfNotPresent
+        
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        
+        # Resource limits and requests
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        # Environment variables
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        - name: NEXT_TELEMETRY_DISABLED
+          value: "1"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hera-database-secret
+              key: url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: hera-redis-secret
+              key: url
+        - name: AI_SERVICE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hera-ai-secret
+              key: api-key
+        - name: MONITORING_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hera-monitoring-secret
+              key: api-key
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /api/health/liveness
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        
+        readinessProbe:
+          httpGet:
+            path: /api/health/readiness
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
+        
+        startupProbe:
+          httpGet:
+            path: /api/health/startup
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 30
+          successThreshold: 1
+        
+        # Volume mounts
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+        - name: logs-volume
+          mountPath: /app/logs
+        
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+            - ALL
+      
+      # Volumes
+      volumes:
+      - name: config-volume
+        configMap:
+          name: hera-ai-finance-config
+      - name: logs-volume
+        emptyDir: {}
+      
+      # Pod disruption settings
+      terminationGracePeriodSeconds: 60
+      
+      # Node selector for production workloads
+      nodeSelector:
+        node-type: compute-optimized
+      
+      # Tolerations for dedicated nodes
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "hera-production"
+        effect: "NoSchedule"
+      
+      # Pod anti-affinity for high availability
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - hera-ai-finance
+              topologyKey: kubernetes.io/hostname
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: hera-ai-finance-service
+  namespace: hera-production
+  labels:
+    app: hera-ai-finance
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: hera-ai-finance
+
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hera-ai-finance-sa
+  namespace: hera-production
+  labels:
+    app: hera-ai-finance
+
+---
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hera-ai-finance-config
+  namespace: hera-production
+data:
+  app.properties: |
+    # Application Configuration
+    ai.confidence.threshold=0.85
+    ai.retry.max.attempts=3
+    ai.circuit.breaker.failure.threshold=5
+    ai.circuit.breaker.reset.timeout=30000
+    
+    # Cache Configuration
+    cache.default.ttl=3600
+    cache.max.size=10000
+    
+    # Rate Limiting
+    rate.limit.requests.per.minute=100
+    rate.limit.burst.size=20
+    
+    # Monitoring
+    monitoring.metrics.enabled=true
+    monitoring.tracing.enabled=true
+    monitoring.health.check.interval=30
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hera-ai-finance-hpa
+  namespace: hera-production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hera-ai-finance
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: ai_processing_queue_length
+      target:
+        type: AverageValue
+        averageValue: "50"
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 60
+
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hera-ai-finance-pdb
+  namespace: hera-production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: hera-ai-finance
+
+---
+# Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hera-ai-finance-netpol
+  namespace: hera-production
+spec:
+  podSelector:
+    matchLabels:
+      app: hera-ai-finance
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 3000
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: database
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443  # HTTPS for external AI APIs
+    - protocol: TCP
+      port: 53   # DNS
+    - protocol: UDP
+      port: 53

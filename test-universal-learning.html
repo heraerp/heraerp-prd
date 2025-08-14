@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Universal Learning API</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 HERA Universal Learning Platform Test</h1>
+        
+        <div class="info">Enter educational content for any domain (CA, Medical, Law, Engineering, etc.)</div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="fileInput">📁 Upload PDF, Text, or Word files:</label>
+            <input type="file" id="fileInput" accept=".pdf,.txt,.md,.docx" multiple style="margin-top: 10px; width: 100%; padding: 8px; border: 2px dashed #ccc; border-radius: 8px;">
+        </div>
+        
+        <textarea id="content" rows="8" placeholder="Enter educational content here or upload files above...">The Chartered Accountancy profession requires understanding of financial statements, audit procedures, and tax compliance. Key concepts include materiality, professional skepticism, and ethical conduct. Auditors must maintain independence and apply professional judgment when evaluating evidence.</textarea>
+        
+        <button id="processBtn" onclick="processContent()">Process Universal Learning</button>
+        
+        <div id="result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        // Handle file selection
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const content = document.getElementById('content');
+            
+            if (files.length > 0) {
+                let fileInfo = `📁 Selected ${files.length} file(s):\n`;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    fileInfo += `• ${file.name} (${(file.size / 1024).toFixed(1)} KB)\n`;
+                }
+                fileInfo += '\nFiles will be processed when you click "Process Universal Learning"';
+                content.value = fileInfo;
+            }
+        });
+
+        async function processContent() {
+            const content = document.getElementById('content').value.trim();
+            const files = document.getElementById('fileInput').files;
+            const resultDiv = document.getElementById('result');
+            const button = document.getElementById('processBtn');
+            
+            if (!content && files.length === 0) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please enter some content or upload files to process';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            button.disabled = true;
+            button.textContent = 'Processing...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                let response;
+                
+                if (files.length > 0) {
+                    // Handle file upload
+                    console.log(`📁 Processing ${files.length} file(s)`);
+                    const formData = new FormData();
+                    formData.append('action', 'complete_pipeline');
+                    formData.append('domain', 'CA');
+                    formData.append('options', JSON.stringify({
+                        target_audience: 'mixed',
+                        learning_style: 'adaptive',
+                        time_constraint: 'flexible',
+                        assessment_frequency: 'adaptive',
+                        extract_images: true,
+                        generate_summaries: true,
+                        create_flashcards: true,
+                        difficulty_adjustment: true,
+                        personalization: true,
+                        gamification: true,
+                        cross_domain_insights: true,
+                        universal_patterns: true,
+                        learning_science_enhanced: true
+                    }));
+                    formData.append('metadata', JSON.stringify({
+                        source: 'test_page_upload',
+                        author: 'Test User',
+                        subject: 'CA',
+                        grade_level: 'Professional'
+                    }));
+                    
+                    // Add files
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append(`file_${i}`, files[i]);
+                    }
+                    
+                    // Add text content if not file info
+                    if (content && !content.includes('Selected') && !content.includes('file(s)')) {
+                        formData.append('content', content);
+                    }
+                    
+                    response = await fetch('/api/v1/universal-learning', {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    // Handle text-only processing
+                    response = await fetch('/api/v1/universal-learning', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'complete_pipeline',
+                            domain: 'CA',
+                            content: content,
+                            options: {
+                                target_audience: 'mixed',
+                                learning_style: 'adaptive',
+                                time_constraint: 'flexible',
+                                assessment_frequency: 'adaptive',
+                                extract_images: true,
+                                generate_summaries: true,
+                                create_flashcards: true,
+                                difficulty_adjustment: true,
+                                personalization: true,
+                                gamification: true,
+                                cross_domain_insights: true,
+                                universal_patterns: true,
+                                learning_science_enhanced: true
+                            },
+                            metadata: {
+                                source: 'test_page',
+                                author: 'Test User',
+                                subject: 'CA',
+                                grade_level: 'Professional'
+                            }
+                        })
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ SUCCESS! Universal Learning Pipeline Complete\n\n`;
+                    resultDiv.textContent += `Pipeline Summary:\n`;
+                    resultDiv.textContent += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    resultDiv.textContent += `📚 Universal Elements: ${data.data.pipeline_summary.total_universal_elements}\n`;
+                    resultDiv.textContent += `🎯 Domain Elements: ${data.data.pipeline_summary.total_domain_elements}\n`;
+                    resultDiv.textContent += `🏗️ HERA Entities Created: ${data.data.pipeline_summary.total_entities_created}\n`;
+                    resultDiv.textContent += `🛤️ Learning Paths: ${data.data.pipeline_summary.total_learning_paths}\n`;
+                    resultDiv.textContent += `📝 Learning Steps: ${data.data.pipeline_summary.total_learning_steps}\n`;
+                    resultDiv.textContent += `✨ Specialization Enhancements: ${data.data.pipeline_summary.specialization_enhancements}\n`;
+                    resultDiv.textContent += `🔗 Cross-Domain Insights: ${data.data.pipeline_summary.cross_domain_insights}\n`;
+                    resultDiv.textContent += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                    resultDiv.textContent += `Processing Time: ${data.processing_metadata.processing_time}ms\n`;
+                    resultDiv.textContent += `Confidence Score: ${(data.processing_metadata.confidence_score * 100).toFixed(0)}%\n`;
+                    resultDiv.textContent += `\n✨ The Universal Learning Platform successfully processed your content!`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.error}`;
+                }
+                
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Process Universal Learning';
+            }
+        }
+    </script>
+</body>
+</html>

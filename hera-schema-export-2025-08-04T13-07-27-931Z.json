@@ -1,0 +1,1826 @@
+{
+  "project_info": {
+    "project_id": "hsumtzuqzoqccpjiaikh",
+    "project_url": "https://hsumtzuqzoqccpjiaikh.supabase.co",
+    "export_date": "2025-08-04T13:07:25.650Z",
+    "export_purpose": "Migration to new Supabase account"
+  },
+  "tables": [
+    {
+      "table_name": "core_entities",
+      "columns": [
+        {
+          "column_name": "id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440010",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440000",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_type",
+          "sample_value": "menu_item",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_name",
+          "sample_value": "Margherita Pizza",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_code",
+          "sample_value": "PIZZA_MARG",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_category",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "entity_subcategory",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "description",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "tags",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "status",
+          "sample_value": "active",
+          "data_type": "string"
+        },
+        {
+          "column_name": "effective_date",
+          "sample_value": "2025-07-29",
+          "data_type": "string"
+        },
+        {
+          "column_name": "expiry_date",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "metadata",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_confidence",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "ai_classification",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_tags",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "parent_entity_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "hierarchy_level",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "sort_order",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "created_at",
+          "sample_value": "2025-07-29T08:16:22.388167+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "updated_at",
+          "sample_value": "2025-07-29T08:16:22.388167+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "updated_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "version",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "auth_user_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "is_system_user",
+          "sample_value": false,
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "last_login_at",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "login_count",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "smart_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "smart_code_version",
+          "sample_value": "v1",
+          "data_type": "string"
+        },
+        {
+          "column_name": "smart_code_status",
+          "sample_value": "DRAFT",
+          "data_type": "string"
+        }
+      ],
+      "row_count": 5
+    },
+    {
+      "table_name": "core_dynamic_data",
+      "columns": [
+        {
+          "column_name": "id",
+          "sample_value": "d3726eb4-30a3-4af4-80a2-786d9abea4c6",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440000",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_id",
+          "sample_value": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+          "data_type": "string"
+        },
+        {
+          "column_name": "field_name",
+          "sample_value": "price",
+          "data_type": "string"
+        },
+        {
+          "column_name": "field_label",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_description",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_type",
+          "sample_value": "decimal",
+          "data_type": "string"
+        },
+        {
+          "column_name": "field_category",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_value",
+          "sample_value": "4",
+          "data_type": "string"
+        },
+        {
+          "column_name": "field_value_number",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_value_boolean",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_value_date",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_value_datetime",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "field_value_json",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "display_order",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "is_required",
+          "sample_value": false,
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "is_searchable",
+          "sample_value": false,
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "validation_rules",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_enhanced_value",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_confidence",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "validation_status",
+          "sample_value": "pending",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_at",
+          "sample_value": "2025-07-29T09:35:53.677212+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "updated_at",
+          "sample_value": "2025-07-29T09:35:53.677212+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "updated_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "smart_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "smart_code_context",
+          "sample_value": null,
+          "data_type": "object"
+        }
+      ],
+      "row_count": 5
+    },
+    {
+      "table_name": "core_organizations",
+      "columns": [
+        {
+          "column_name": "id",
+          "sample_value": "719dfed1-09b4-4ca8-bfda-f682460de945",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_name",
+          "sample_value": "HERA System Organization",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_code",
+          "sample_value": "HERA-SYS-1753709453.408411",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_type",
+          "sample_value": "system",
+          "data_type": "string"
+        },
+        {
+          "column_name": "industry",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "business_size",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "tax_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "registration_number",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "email",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "phone",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "website",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "address",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "status",
+          "sample_value": "active",
+          "data_type": "string"
+        },
+        {
+          "column_name": "subscription_tier",
+          "sample_value": "starter",
+          "data_type": "string"
+        },
+        {
+          "column_name": "settings",
+          "sample_value": {
+            "system": true,
+            "doc_type": "system",
+            "client_id": "94bff0ab-f605-449a-9e86-2514d5f39428",
+            "client_name": "HERA System Client",
+            "created_for": "auto_documentation",
+            "access_level": "internal",
+            "auto_generated": true
+          },
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_insights",
+          "sample_value": {
+            "purpose": "system_documentation",
+            "confidence": 1,
+            "classification": "system_organization"
+          },
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_classification",
+          "sample_value": "system_organization",
+          "data_type": "string"
+        },
+        {
+          "column_name": "ai_confidence",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "created_at",
+          "sample_value": "2025-07-28T13:30:53.408411+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "updated_at",
+          "sample_value": "2025-07-28T13:30:53.408411+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "updated_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "version",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "client_id",
+          "sample_value": "94bff0ab-f605-449a-9e86-2514d5f39428",
+          "data_type": "string"
+        },
+        {
+          "column_name": "legal_entity_name",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "subsidiary_type",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "country_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "region",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "regulatory_requirements",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "intercompany_code",
+          "sample_value": "HERA-SYS-1753709453.408411_IC",
+          "data_type": "string"
+        },
+        {
+          "column_name": "consolidation_method",
+          "sample_value": "full",
+          "data_type": "string"
+        },
+        {
+          "column_name": "functional_currency",
+          "sample_value": "USD",
+          "data_type": "string"
+        },
+        {
+          "column_name": "reporting_currency",
+          "sample_value": "USD",
+          "data_type": "string"
+        },
+        {
+          "column_name": "auth_provider",
+          "sample_value": "supabase",
+          "data_type": "string"
+        },
+        {
+          "column_name": "subscription_plan",
+          "sample_value": "starter",
+          "data_type": "string"
+        },
+        {
+          "column_name": "max_users",
+          "sample_value": 5,
+          "data_type": "number"
+        },
+        {
+          "column_name": "auth_settings",
+          "sample_value": {},
+          "data_type": "object"
+        }
+      ],
+      "row_count": 3
+    },
+    {
+      "table_name": "universal_transactions",
+      "columns": [
+        {
+          "column_name": "id",
+          "sample_value": "2b9c1bb1-c635-4a9c-b1a7-f90cf9140722",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440000",
+          "data_type": "string"
+        },
+        {
+          "column_name": "transaction_type",
+          "sample_value": "order",
+          "data_type": "string"
+        },
+        {
+          "column_name": "transaction_number",
+          "sample_value": "TXN-891260",
+          "data_type": "string"
+        },
+        {
+          "column_name": "transaction_date",
+          "sample_value": "2025-07-29",
+          "data_type": "string"
+        },
+        {
+          "column_name": "reference_number",
+          "sample_value": "ORD-2025-891260",
+          "data_type": "string"
+        },
+        {
+          "column_name": "external_reference",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "source_entity_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "target_entity_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "total_amount",
+          "sample_value": 18.5,
+          "data_type": "number"
+        },
+        {
+          "column_name": "tax_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "discount_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "net_amount",
+          "sample_value": 18.5,
+          "data_type": "number"
+        },
+        {
+          "column_name": "currency",
+          "sample_value": "USD",
+          "data_type": "string"
+        },
+        {
+          "column_name": "status",
+          "sample_value": "pending",
+          "data_type": "string"
+        },
+        {
+          "column_name": "workflow_state",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "priority",
+          "sample_value": "normal",
+          "data_type": "string"
+        },
+        {
+          "column_name": "department",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "project_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "cost_center",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "due_date",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "completed_date",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "description",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "notes",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "metadata",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "attachments",
+          "sample_value": [],
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_insights",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_risk_score",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "ai_anomaly_score",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "created_at",
+          "sample_value": "2025-07-29T08:14:51.723778+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "updated_at",
+          "sample_value": "2025-07-29T08:14:51.723778+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "updated_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "version",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "is_intercompany",
+          "sample_value": false,
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "intercompany_source_org",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "intercompany_target_org",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "intercompany_reference",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "elimination_required",
+          "sample_value": false,
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "session_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "user_agent",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "ip_address",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "smart_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "hera_task_id",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "business_context",
+          "sample_value": null,
+          "data_type": "object"
+        }
+      ],
+      "row_count": 5
+    },
+    {
+      "table_name": "universal_transaction_lines",
+      "columns": [
+        {
+          "column_name": "id",
+          "sample_value": "c4f7df77-e6b3-43a9-a063-f2d11a89375b",
+          "data_type": "string"
+        },
+        {
+          "column_name": "transaction_id",
+          "sample_value": "2f051211-f80d-4ea9-94b0-0b81d565cd7c",
+          "data_type": "string"
+        },
+        {
+          "column_name": "organization_id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440000",
+          "data_type": "string"
+        },
+        {
+          "column_name": "entity_id",
+          "sample_value": "550e8400-e29b-41d4-a716-446655440012",
+          "data_type": "string"
+        },
+        {
+          "column_name": "line_description",
+          "sample_value": "Caesar Salad",
+          "data_type": "string"
+        },
+        {
+          "column_name": "line_order",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "quantity",
+          "sample_value": 1,
+          "data_type": "number"
+        },
+        {
+          "column_name": "unit_of_measure",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "unit_price",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "line_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "discount_percentage",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "discount_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "tax_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "tax_percentage",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "tax_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "net_line_amount",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "gl_account_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "cost_center",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "department",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "project_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "delivery_date",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "service_period_start",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "service_period_end",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "notes",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "metadata",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_gl_suggestion",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_confidence",
+          "sample_value": 0,
+          "data_type": "number"
+        },
+        {
+          "column_name": "ai_cost_prediction",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "ai_margin_analysis",
+          "sample_value": {},
+          "data_type": "object"
+        },
+        {
+          "column_name": "created_at",
+          "sample_value": "2025-07-29T09:24:05.268171+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "updated_at",
+          "sample_value": "2025-07-29T09:24:05.268171+00:00",
+          "data_type": "string"
+        },
+        {
+          "column_name": "created_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "updated_by",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "smart_code",
+          "sample_value": null,
+          "data_type": "object"
+        },
+        {
+          "column_name": "line_context",
+          "sample_value": null,
+          "data_type": "object"
+        }
+      ],
+      "row_count": 5
+    }
+  ],
+  "sample_data": {
+    "core_entities": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440010",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_type": "menu_item",
+        "entity_name": "Margherita Pizza",
+        "entity_code": "PIZZA_MARG",
+        "entity_category": null,
+        "entity_subcategory": null,
+        "description": null,
+        "tags": null,
+        "status": "active",
+        "effective_date": "2025-07-29",
+        "expiry_date": null,
+        "metadata": {},
+        "ai_confidence": 0,
+        "ai_classification": null,
+        "ai_tags": null,
+        "parent_entity_id": null,
+        "hierarchy_level": 0,
+        "sort_order": 0,
+        "created_at": "2025-07-29T08:16:22.388167+00:00",
+        "updated_at": "2025-07-29T08:16:22.388167+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "auth_user_id": null,
+        "is_system_user": false,
+        "last_login_at": null,
+        "login_count": 0,
+        "smart_code": null,
+        "smart_code_version": "v1",
+        "smart_code_status": "DRAFT"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440011",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_type": "menu_item",
+        "entity_name": "Spaghetti Carbonara",
+        "entity_code": "PASTA_CARB",
+        "entity_category": null,
+        "entity_subcategory": null,
+        "description": null,
+        "tags": null,
+        "status": "active",
+        "effective_date": "2025-07-29",
+        "expiry_date": null,
+        "metadata": {},
+        "ai_confidence": 0,
+        "ai_classification": null,
+        "ai_tags": null,
+        "parent_entity_id": null,
+        "hierarchy_level": 0,
+        "sort_order": 0,
+        "created_at": "2025-07-29T08:16:22.388167+00:00",
+        "updated_at": "2025-07-29T08:16:22.388167+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "auth_user_id": null,
+        "is_system_user": false,
+        "last_login_at": null,
+        "login_count": 0,
+        "smart_code": null,
+        "smart_code_version": "v1",
+        "smart_code_status": "DRAFT"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440012",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_type": "menu_item",
+        "entity_name": "Caesar Salad",
+        "entity_code": "SALAD_CAES",
+        "entity_category": null,
+        "entity_subcategory": null,
+        "description": null,
+        "tags": null,
+        "status": "active",
+        "effective_date": "2025-07-29",
+        "expiry_date": null,
+        "metadata": {},
+        "ai_confidence": 0,
+        "ai_classification": null,
+        "ai_tags": null,
+        "parent_entity_id": null,
+        "hierarchy_level": 0,
+        "sort_order": 0,
+        "created_at": "2025-07-29T08:16:22.388167+00:00",
+        "updated_at": "2025-07-29T08:16:22.388167+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "auth_user_id": null,
+        "is_system_user": false,
+        "last_login_at": null,
+        "login_count": 0,
+        "smart_code": null,
+        "smart_code_version": "v1",
+        "smart_code_status": "DRAFT"
+      },
+      {
+        "id": "3bbf81db-3ea9-40c9-99a7-456b2fa4ea17",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_type": "menu_item",
+        "entity_name": "Margherita Pizza",
+        "entity_code": "MARGHERITA_PIZZA",
+        "entity_category": null,
+        "entity_subcategory": null,
+        "description": null,
+        "tags": null,
+        "status": "active",
+        "effective_date": "2025-07-29",
+        "expiry_date": null,
+        "metadata": {},
+        "ai_confidence": 0,
+        "ai_classification": null,
+        "ai_tags": null,
+        "parent_entity_id": null,
+        "hierarchy_level": 0,
+        "sort_order": 0,
+        "created_at": "2025-07-29T08:49:19.335733+00:00",
+        "updated_at": "2025-07-29T08:49:19.335733+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "auth_user_id": null,
+        "is_system_user": false,
+        "last_login_at": null,
+        "login_count": 0,
+        "smart_code": null,
+        "smart_code_version": "v1",
+        "smart_code_status": "DRAFT"
+      },
+      {
+        "id": "0f48f15d-8da0-4040-a031-36a1a9aad781",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_type": "menu_item",
+        "entity_name": "Margarita Pizza",
+        "entity_code": "M",
+        "entity_category": null,
+        "entity_subcategory": null,
+        "description": null,
+        "tags": null,
+        "status": "active",
+        "effective_date": "2025-07-29",
+        "expiry_date": null,
+        "metadata": {},
+        "ai_confidence": 0,
+        "ai_classification": null,
+        "ai_tags": null,
+        "parent_entity_id": null,
+        "hierarchy_level": 0,
+        "sort_order": 0,
+        "created_at": "2025-07-29T08:56:55.548781+00:00",
+        "updated_at": "2025-07-29T08:56:55.548781+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "auth_user_id": null,
+        "is_system_user": false,
+        "last_login_at": null,
+        "login_count": 0,
+        "smart_code": null,
+        "smart_code_version": "v1",
+        "smart_code_status": "DRAFT"
+      }
+    ],
+    "core_dynamic_data": [
+      {
+        "id": "d3726eb4-30a3-4af4-80a2-786d9abea4c6",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "field_name": "price",
+        "field_label": null,
+        "field_description": null,
+        "field_type": "decimal",
+        "field_category": null,
+        "field_value": "4",
+        "field_value_number": null,
+        "field_value_boolean": null,
+        "field_value_date": null,
+        "field_value_datetime": null,
+        "field_value_json": null,
+        "display_order": 0,
+        "is_required": false,
+        "is_searchable": false,
+        "validation_rules": {},
+        "ai_enhanced_value": null,
+        "ai_confidence": 0,
+        "validation_status": "pending",
+        "created_at": "2025-07-29T09:35:53.677212+00:00",
+        "updated_at": "2025-07-29T09:35:53.677212+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "smart_code_context": null
+      },
+      {
+        "id": "24622125-082b-49cf-8e8c-94daa7051e6b",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "field_name": "description",
+        "field_label": null,
+        "field_description": null,
+        "field_type": "text",
+        "field_category": null,
+        "field_value": "Delicious Dosa",
+        "field_value_number": null,
+        "field_value_boolean": null,
+        "field_value_date": null,
+        "field_value_datetime": null,
+        "field_value_json": null,
+        "display_order": 0,
+        "is_required": false,
+        "is_searchable": false,
+        "validation_rules": {},
+        "ai_enhanced_value": null,
+        "ai_confidence": 0,
+        "validation_status": "pending",
+        "created_at": "2025-07-29T09:35:53.677212+00:00",
+        "updated_at": "2025-07-29T09:35:53.677212+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "smart_code_context": null
+      },
+      {
+        "id": "0a61c273-655f-4a27-9d72-87efe07ecf73",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "field_name": "category",
+        "field_label": null,
+        "field_description": null,
+        "field_type": "text",
+        "field_category": null,
+        "field_value": "Appetizers",
+        "field_value_number": null,
+        "field_value_boolean": null,
+        "field_value_date": null,
+        "field_value_datetime": null,
+        "field_value_json": null,
+        "display_order": 0,
+        "is_required": false,
+        "is_searchable": false,
+        "validation_rules": {},
+        "ai_enhanced_value": null,
+        "ai_confidence": 0,
+        "validation_status": "pending",
+        "created_at": "2025-07-29T09:35:53.677212+00:00",
+        "updated_at": "2025-07-29T09:35:53.677212+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "smart_code_context": null
+      },
+      {
+        "id": "6cb00d47-f56f-4a81-85ee-1a4bb21b3b1f",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "field_name": "prep_time",
+        "field_label": null,
+        "field_description": null,
+        "field_type": "integer",
+        "field_category": null,
+        "field_value": "10",
+        "field_value_number": null,
+        "field_value_boolean": null,
+        "field_value_date": null,
+        "field_value_datetime": null,
+        "field_value_json": null,
+        "display_order": 0,
+        "is_required": false,
+        "is_searchable": false,
+        "validation_rules": {},
+        "ai_enhanced_value": null,
+        "ai_confidence": 0,
+        "validation_status": "pending",
+        "created_at": "2025-07-29T09:35:53.677212+00:00",
+        "updated_at": "2025-07-29T09:35:53.677212+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "smart_code_context": null
+      },
+      {
+        "id": "080da782-8080-4cf0-aeb7-5cc40768847a",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "field_name": "dietary_tags",
+        "field_label": null,
+        "field_description": null,
+        "field_type": "json",
+        "field_category": null,
+        "field_value": "[\"vegetarian\"]",
+        "field_value_number": null,
+        "field_value_boolean": null,
+        "field_value_date": null,
+        "field_value_datetime": null,
+        "field_value_json": null,
+        "display_order": 0,
+        "is_required": false,
+        "is_searchable": false,
+        "validation_rules": {},
+        "ai_enhanced_value": null,
+        "ai_confidence": 0,
+        "validation_status": "pending",
+        "created_at": "2025-07-29T09:35:53.677212+00:00",
+        "updated_at": "2025-07-29T09:35:53.677212+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "smart_code_context": null
+      }
+    ],
+    "core_relationships": [],
+    "core_organizations": [
+      {
+        "id": "719dfed1-09b4-4ca8-bfda-f682460de945",
+        "organization_name": "HERA System Organization",
+        "organization_code": "HERA-SYS-1753709453.408411",
+        "organization_type": "system",
+        "industry": null,
+        "business_size": null,
+        "tax_id": null,
+        "registration_number": null,
+        "email": null,
+        "phone": null,
+        "website": null,
+        "address": null,
+        "status": "active",
+        "subscription_tier": "starter",
+        "settings": {
+          "system": true,
+          "doc_type": "system",
+          "client_id": "94bff0ab-f605-449a-9e86-2514d5f39428",
+          "client_name": "HERA System Client",
+          "created_for": "auto_documentation",
+          "access_level": "internal",
+          "auto_generated": true
+        },
+        "ai_insights": {
+          "purpose": "system_documentation",
+          "confidence": 1,
+          "classification": "system_organization"
+        },
+        "ai_classification": "system_organization",
+        "ai_confidence": 1,
+        "created_at": "2025-07-28T13:30:53.408411+00:00",
+        "updated_at": "2025-07-28T13:30:53.408411+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "client_id": "94bff0ab-f605-449a-9e86-2514d5f39428",
+        "legal_entity_name": null,
+        "subsidiary_type": null,
+        "country_code": null,
+        "region": null,
+        "regulatory_requirements": {},
+        "intercompany_code": "HERA-SYS-1753709453.408411_IC",
+        "consolidation_method": "full",
+        "functional_currency": "USD",
+        "reporting_currency": "USD",
+        "auth_provider": "supabase",
+        "subscription_plan": "starter",
+        "max_users": 5,
+        "auth_settings": {}
+      },
+      {
+        "id": "7aad4cfa-c207-4af6-9564-6da8e9299d42",
+        "organization_name": "Mario's Italian Restaurant",
+        "organization_code": "MARIO-ITALIAN-001",
+        "organization_type": "restaurant",
+        "industry": null,
+        "business_size": null,
+        "tax_id": null,
+        "registration_number": null,
+        "email": null,
+        "phone": null,
+        "website": null,
+        "address": null,
+        "status": "active",
+        "subscription_tier": "starter",
+        "settings": {
+          "cuisine": "italian",
+          "seating": 120
+        },
+        "ai_insights": {},
+        "ai_classification": null,
+        "ai_confidence": 0,
+        "created_at": "2025-07-28T15:17:34.039574+00:00",
+        "updated_at": "2025-07-28T15:17:34.039574+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "client_id": "7d2be253-dbef-497e-a3b8-424e89c5cb30",
+        "legal_entity_name": null,
+        "subsidiary_type": null,
+        "country_code": null,
+        "region": null,
+        "regulatory_requirements": {},
+        "intercompany_code": "MARIO-ITALIAN-001_IC",
+        "consolidation_method": "full",
+        "functional_currency": "USD",
+        "reporting_currency": "USD",
+        "auth_provider": "supabase",
+        "subscription_plan": "starter",
+        "max_users": 5,
+        "auth_settings": {}
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "organization_name": "Mario's Italian Bistro",
+        "organization_code": "MARIO_BISTRO",
+        "organization_type": "restaurant",
+        "industry": null,
+        "business_size": null,
+        "tax_id": null,
+        "registration_number": null,
+        "email": null,
+        "phone": null,
+        "website": null,
+        "address": null,
+        "status": "active",
+        "subscription_tier": "starter",
+        "settings": {},
+        "ai_insights": {},
+        "ai_classification": null,
+        "ai_confidence": 0,
+        "created_at": "2025-07-29T06:56:17.026598+00:00",
+        "updated_at": "2025-07-29T09:01:21.530241+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 2,
+        "client_id": "550e8400-e29b-41d4-a716-446655440001",
+        "legal_entity_name": null,
+        "subsidiary_type": null,
+        "country_code": null,
+        "region": null,
+        "regulatory_requirements": {},
+        "intercompany_code": "MARIO_BISTRO_IC",
+        "consolidation_method": "full",
+        "functional_currency": "USD",
+        "reporting_currency": "USD",
+        "auth_provider": "supabase",
+        "subscription_plan": "professional",
+        "max_users": 5,
+        "auth_settings": {}
+      }
+    ],
+    "universal_transactions": [
+      {
+        "id": "2b9c1bb1-c635-4a9c-b1a7-f90cf9140722",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "transaction_type": "order",
+        "transaction_number": "TXN-891260",
+        "transaction_date": "2025-07-29",
+        "reference_number": "ORD-2025-891260",
+        "external_reference": null,
+        "source_entity_id": null,
+        "target_entity_id": null,
+        "total_amount": 18.5,
+        "tax_amount": 0,
+        "discount_amount": 0,
+        "net_amount": 18.5,
+        "currency": "USD",
+        "status": "pending",
+        "workflow_state": null,
+        "priority": "normal",
+        "department": null,
+        "project_code": null,
+        "cost_center": null,
+        "due_date": null,
+        "completed_date": null,
+        "description": null,
+        "notes": null,
+        "metadata": {},
+        "attachments": [],
+        "ai_insights": {},
+        "ai_risk_score": 0,
+        "ai_anomaly_score": 0,
+        "created_at": "2025-07-29T08:14:51.723778+00:00",
+        "updated_at": "2025-07-29T08:14:51.723778+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "is_intercompany": false,
+        "intercompany_source_org": null,
+        "intercompany_target_org": null,
+        "intercompany_reference": null,
+        "elimination_required": false,
+        "session_id": null,
+        "user_agent": null,
+        "ip_address": null,
+        "smart_code": null,
+        "hera_task_id": null,
+        "business_context": null
+      },
+      {
+        "id": "b3199a88-d7ea-4c1d-b39a-4160c5a5daa0",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "transaction_type": "order",
+        "transaction_number": "TXN-910058",
+        "transaction_date": "2025-07-29",
+        "reference_number": "ORD-2025-910058",
+        "external_reference": null,
+        "source_entity_id": null,
+        "target_entity_id": null,
+        "total_amount": 18.5,
+        "tax_amount": 0,
+        "discount_amount": 0,
+        "net_amount": 18.5,
+        "currency": "USD",
+        "status": "pending",
+        "workflow_state": null,
+        "priority": "normal",
+        "department": null,
+        "project_code": null,
+        "cost_center": null,
+        "due_date": null,
+        "completed_date": null,
+        "description": null,
+        "notes": null,
+        "metadata": {},
+        "attachments": [],
+        "ai_insights": {},
+        "ai_risk_score": 0,
+        "ai_anomaly_score": 0,
+        "created_at": "2025-07-29T08:15:10.325973+00:00",
+        "updated_at": "2025-07-29T08:15:10.325973+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "is_intercompany": false,
+        "intercompany_source_org": null,
+        "intercompany_target_org": null,
+        "intercompany_reference": null,
+        "elimination_required": false,
+        "session_id": null,
+        "user_agent": null,
+        "ip_address": null,
+        "smart_code": null,
+        "hera_task_id": null,
+        "business_context": null
+      },
+      {
+        "id": "2f051211-f80d-4ea9-94b0-0b81d565cd7c",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "transaction_type": "order",
+        "transaction_number": "TXN-044683",
+        "transaction_date": "2025-07-29",
+        "reference_number": "ORD-2025-044683",
+        "external_reference": null,
+        "source_entity_id": null,
+        "target_entity_id": null,
+        "total_amount": 0,
+        "tax_amount": 0,
+        "discount_amount": 0,
+        "net_amount": 0,
+        "currency": "USD",
+        "status": "pending",
+        "workflow_state": null,
+        "priority": "normal",
+        "department": null,
+        "project_code": null,
+        "cost_center": null,
+        "due_date": null,
+        "completed_date": null,
+        "description": null,
+        "notes": null,
+        "metadata": {},
+        "attachments": [],
+        "ai_insights": {},
+        "ai_risk_score": 0,
+        "ai_anomaly_score": 0,
+        "created_at": "2025-07-29T09:24:05.017023+00:00",
+        "updated_at": "2025-07-29T09:24:05.017023+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "is_intercompany": false,
+        "intercompany_source_org": null,
+        "intercompany_target_org": null,
+        "intercompany_reference": null,
+        "elimination_required": false,
+        "session_id": null,
+        "user_agent": null,
+        "ip_address": null,
+        "smart_code": null,
+        "hera_task_id": null,
+        "business_context": null
+      },
+      {
+        "id": "371baca0-1a52-4623-b8a8-ed5fa3c20f2b",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "transaction_type": "order",
+        "transaction_number": "TXN-875833",
+        "transaction_date": "2025-07-29",
+        "reference_number": "ORD-2025-875833",
+        "external_reference": null,
+        "source_entity_id": null,
+        "target_entity_id": null,
+        "total_amount": 18.5,
+        "tax_amount": 0,
+        "discount_amount": 0,
+        "net_amount": 18.5,
+        "currency": "USD",
+        "status": "approved",
+        "workflow_state": null,
+        "priority": "normal",
+        "department": null,
+        "project_code": null,
+        "cost_center": null,
+        "due_date": null,
+        "completed_date": null,
+        "description": null,
+        "notes": null,
+        "metadata": {},
+        "attachments": [],
+        "ai_insights": {},
+        "ai_risk_score": 0,
+        "ai_anomaly_score": 0,
+        "created_at": "2025-07-29T08:14:36.047948+00:00",
+        "updated_at": "2025-07-29T16:04:27.991761+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 3,
+        "is_intercompany": false,
+        "intercompany_source_org": null,
+        "intercompany_target_org": null,
+        "intercompany_reference": null,
+        "elimination_required": false,
+        "session_id": null,
+        "user_agent": null,
+        "ip_address": null,
+        "smart_code": null,
+        "hera_task_id": null,
+        "business_context": null
+      },
+      {
+        "id": "0cf40b48-4cd1-4311-95b3-f472462e54bb",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "transaction_type": "purchase_order",
+        "transaction_number": "PO-2025-322784",
+        "transaction_date": "2025-07-29",
+        "reference_number": null,
+        "external_reference": null,
+        "source_entity_id": "64da19af-b8ed-4a66-900a-749cac4adf91",
+        "target_entity_id": null,
+        "total_amount": 1250,
+        "tax_amount": 0,
+        "discount_amount": 0,
+        "net_amount": 1250,
+        "currency": "USD",
+        "status": "draft",
+        "workflow_state": null,
+        "priority": "normal",
+        "department": null,
+        "project_code": null,
+        "cost_center": null,
+        "due_date": null,
+        "completed_date": null,
+        "description": "Urgent order for production line maintenance",
+        "notes": null,
+        "metadata": {
+          "created_by": "current_user_id",
+          "payment_terms": "NET30",
+          "expected_delivery": "2025-08-15"
+        },
+        "attachments": [],
+        "ai_insights": {},
+        "ai_risk_score": 0,
+        "ai_anomaly_score": 0,
+        "created_at": "2025-07-29T16:58:42.991369+00:00",
+        "updated_at": "2025-07-29T16:58:42.991369+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "version": 1,
+        "is_intercompany": false,
+        "intercompany_source_org": null,
+        "intercompany_target_org": null,
+        "intercompany_reference": null,
+        "elimination_required": false,
+        "session_id": null,
+        "user_agent": null,
+        "ip_address": null,
+        "smart_code": null,
+        "hera_task_id": null,
+        "business_context": null
+      }
+    ],
+    "universal_transaction_lines": [
+      {
+        "id": "c4f7df77-e6b3-43a9-a063-f2d11a89375b",
+        "transaction_id": "2f051211-f80d-4ea9-94b0-0b81d565cd7c",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "550e8400-e29b-41d4-a716-446655440012",
+        "line_description": "Caesar Salad",
+        "line_order": 1,
+        "quantity": 1,
+        "unit_of_measure": null,
+        "unit_price": 0,
+        "line_amount": 0,
+        "discount_percentage": 0,
+        "discount_amount": 0,
+        "tax_code": null,
+        "tax_percentage": 0,
+        "tax_amount": 0,
+        "net_line_amount": 0,
+        "gl_account_code": null,
+        "cost_center": null,
+        "department": null,
+        "project_code": null,
+        "delivery_date": null,
+        "service_period_start": null,
+        "service_period_end": null,
+        "notes": null,
+        "metadata": {},
+        "ai_gl_suggestion": null,
+        "ai_confidence": 0,
+        "ai_cost_prediction": null,
+        "ai_margin_analysis": {},
+        "created_at": "2025-07-29T09:24:05.268171+00:00",
+        "updated_at": "2025-07-29T09:24:05.268171+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "line_context": null
+      },
+      {
+        "id": "6b5658da-ce91-4f6a-810a-ff9307e5e37b",
+        "transaction_id": "0cf40b48-4cd1-4311-95b3-f472462e54bb",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "eee6e00f-6d92-4f7d-9c87-f926e1f892e4",
+        "line_description": "Industrial Ball Bearings",
+        "line_order": 1,
+        "quantity": 100,
+        "unit_of_measure": "each",
+        "unit_price": 12.5,
+        "line_amount": 1250,
+        "discount_percentage": 0,
+        "discount_amount": 0,
+        "tax_code": null,
+        "tax_percentage": 0,
+        "tax_amount": 0,
+        "net_line_amount": 1250,
+        "gl_account_code": null,
+        "cost_center": null,
+        "department": null,
+        "project_code": null,
+        "delivery_date": null,
+        "service_period_start": null,
+        "service_period_end": null,
+        "notes": null,
+        "metadata": {
+          "notes": "Need premium grade",
+          "product_code": "BEAR_6205",
+          "product_name": "Industrial Ball Bearings",
+          "unit_of_measure": "each",
+          "expected_delivery": "2025-08-15"
+        },
+        "ai_gl_suggestion": null,
+        "ai_confidence": 0,
+        "ai_cost_prediction": null,
+        "ai_margin_analysis": {},
+        "created_at": "2025-07-29T16:58:43.138522+00:00",
+        "updated_at": "2025-07-29T16:58:43.138522+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "line_context": null
+      },
+      {
+        "id": "c9eda5da-2bcc-4c87-8ad6-b57b7e8ed218",
+        "transaction_id": "70621a6b-99d2-4278-baf4-52dac53d0207",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "d80a302e-bd6f-421f-9609-ce0cf1ab037b",
+        "line_description": "Electronic Resistor Pack",
+        "line_order": 1,
+        "quantity": 50,
+        "unit_of_measure": "pack",
+        "unit_price": 8.75,
+        "line_amount": 437.5,
+        "discount_percentage": 0,
+        "discount_amount": 0,
+        "tax_code": null,
+        "tax_percentage": 0,
+        "tax_amount": 0,
+        "net_line_amount": 437.5,
+        "gl_account_code": null,
+        "cost_center": null,
+        "department": null,
+        "project_code": null,
+        "delivery_date": null,
+        "service_period_start": null,
+        "service_period_end": null,
+        "notes": null,
+        "metadata": {
+          "notes": "",
+          "product_code": "PROD_ELECTRONIC_RESISTOR__3022",
+          "product_name": "Electronic Resistor Pack",
+          "unit_of_measure": "pack",
+          "expected_delivery": "2025-08-10"
+        },
+        "ai_gl_suggestion": null,
+        "ai_confidence": 0,
+        "ai_cost_prediction": null,
+        "ai_margin_analysis": {},
+        "created_at": "2025-07-29T17:02:35.729918+00:00",
+        "updated_at": "2025-07-29T17:02:35.729918+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "line_context": null
+      },
+      {
+        "id": "a3899e1d-eb20-401b-a2fe-e9ab535073d1",
+        "transaction_id": "2981adec-9177-4c65-93e2-7bca1a85a2ab",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "08e24d75-7209-4e3a-a62e-f1c7956f06ea",
+        "line_description": "Dosa",
+        "line_order": 1,
+        "quantity": 2,
+        "unit_of_measure": null,
+        "unit_price": 4,
+        "line_amount": 0,
+        "discount_percentage": 0,
+        "discount_amount": 0,
+        "tax_code": null,
+        "tax_percentage": 0,
+        "tax_amount": 0,
+        "net_line_amount": 0,
+        "gl_account_code": null,
+        "cost_center": null,
+        "department": null,
+        "project_code": null,
+        "delivery_date": null,
+        "service_period_start": null,
+        "service_period_end": null,
+        "notes": null,
+        "metadata": {},
+        "ai_gl_suggestion": null,
+        "ai_confidence": 0,
+        "ai_cost_prediction": null,
+        "ai_margin_analysis": {},
+        "created_at": "2025-08-01T06:58:37.424344+00:00",
+        "updated_at": "2025-08-01T06:58:37.424344+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "line_context": null
+      },
+      {
+        "id": "54ccb5b1-ac18-4976-9fea-5f3e46e13e07",
+        "transaction_id": "2981adec-9177-4c65-93e2-7bca1a85a2ab",
+        "organization_id": "550e8400-e29b-41d4-a716-446655440000",
+        "entity_id": "fc0b5a28-4ec6-4d86-aa06-138a2a028987",
+        "line_description": "Pathiri",
+        "line_order": 1,
+        "quantity": 1,
+        "unit_of_measure": null,
+        "unit_price": 30,
+        "line_amount": 0,
+        "discount_percentage": 0,
+        "discount_amount": 0,
+        "tax_code": null,
+        "tax_percentage": 0,
+        "tax_amount": 0,
+        "net_line_amount": 0,
+        "gl_account_code": null,
+        "cost_center": null,
+        "department": null,
+        "project_code": null,
+        "delivery_date": null,
+        "service_period_start": null,
+        "service_period_end": null,
+        "notes": null,
+        "metadata": {},
+        "ai_gl_suggestion": null,
+        "ai_confidence": 0,
+        "ai_cost_prediction": null,
+        "ai_margin_analysis": {},
+        "created_at": "2025-08-01T06:58:37.424344+00:00",
+        "updated_at": "2025-08-01T06:58:37.424344+00:00",
+        "created_by": null,
+        "updated_by": null,
+        "smart_code": null,
+        "line_context": null
+      }
+    ]
+  },
+  "known_tables": [
+    "core_entities",
+    "core_dynamic_data",
+    "core_relationships",
+    "core_organizations",
+    "universal_transactions",
+    "universal_transaction_lines"
+  ]
+}

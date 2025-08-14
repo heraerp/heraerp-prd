@@ -1,0 +1,381 @@
+{
+  "template_info": {
+    "template_id": "universal_base",
+    "template_name": "Universal Base Chart of Accounts",
+    "version": "1.0.0",
+    "description": "Foundation COA that works for any business worldwide following GAAP/IFRS standards",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "account_structure": {
+    "assets": {
+      "range": "1000000-1999999",
+      "current_assets": {
+        "range": "1100000-1499999",
+        "accounts": [
+          {
+            "code": "1100000",
+            "name": "Cash and Cash Equivalents",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": true,
+            "description": "Petty cash, bank accounts, and short-term highly liquid investments"
+          },
+          {
+            "code": "1110000",
+            "name": "Short-term Investments",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Marketable securities with maturity less than one year"
+          },
+          {
+            "code": "1200000",
+            "name": "Accounts Receivable",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": true,
+            "description": "Money owed by customers for goods or services delivered"
+          },
+          {
+            "code": "1210000",
+            "name": "Allowance for Doubtful Accounts",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Contra asset account for estimated uncollectible receivables"
+          },
+          {
+            "code": "1220000",
+            "name": "Notes Receivable",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Formal written promises to pay specific amounts"
+          },
+          {
+            "code": "1300000",
+            "name": "Inventory - Raw Materials",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Materials used in production process"
+          },
+          {
+            "code": "1310000",
+            "name": "Inventory - Work in Process",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Partially completed goods in production"
+          },
+          {
+            "code": "1320000",
+            "name": "Inventory - Finished Goods",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Completed products ready for sale"
+          },
+          {
+            "code": "1400000",
+            "name": "Prepaid Expenses",
+            "type": "assets",
+            "subtype": "current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Expenses paid in advance"
+          }
+        ]
+      },
+      "non_current_assets": {
+        "range": "1500000-1999999",
+        "accounts": [
+          {
+            "code": "1500000",
+            "name": "Property, Plant & Equipment",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Long-term tangible assets used in operations"
+          },
+          {
+            "code": "1510000",
+            "name": "Land",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Real estate owned by the company"
+          },
+          {
+            "code": "1520000",
+            "name": "Buildings",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Structures owned by the company"
+          },
+          {
+            "code": "1530000",
+            "name": "Equipment",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Machinery and equipment used in operations"
+          },
+          {
+            "code": "1620000",
+            "name": "Accumulated Depreciation - Buildings",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Contra asset account for building depreciation"
+          },
+          {
+            "code": "1700000",
+            "name": "Intangible Assets",
+            "type": "assets",
+            "subtype": "non_current_assets",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Non-physical assets like patents and trademarks"
+          }
+        ]
+      }
+    },
+    "liabilities": {
+      "range": "2000000-2999999",
+      "current_liabilities": {
+        "range": "2100000-2499999",
+        "accounts": [
+          {
+            "code": "2100000",
+            "name": "Accounts Payable",
+            "type": "liabilities",
+            "subtype": "current_liabilities",
+            "normal_balance": "credit",
+            "required": true,
+            "description": "Money owed to suppliers for goods or services received"
+          },
+          {
+            "code": "2110000",
+            "name": "Notes Payable - Short Term",
+            "type": "liabilities",
+            "subtype": "current_liabilities",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Short-term borrowings and promissory notes"
+          },
+          {
+            "code": "2200000",
+            "name": "Accrued Liabilities",
+            "type": "liabilities",
+            "subtype": "current_liabilities",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Expenses incurred but not yet paid"
+          },
+          {
+            "code": "2210000",
+            "name": "Accrued Wages",
+            "type": "liabilities",
+            "subtype": "current_liabilities",
+            "normal_balance": "credit",
+            "required": true,
+            "description": "Employee wages earned but not yet paid"
+          },
+          {
+            "code": "2400000",
+            "name": "Unearned Revenue",
+            "type": "liabilities",
+            "subtype": "current_liabilities",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Payment received before goods or services are delivered"
+          }
+        ]
+      },
+      "non_current_liabilities": {
+        "range": "2500000-2999999",
+        "accounts": [
+          {
+            "code": "2500000",
+            "name": "Long-term Debt",
+            "type": "liabilities",
+            "subtype": "non_current_liabilities",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Borrowings with maturity greater than one year"
+          },
+          {
+            "code": "2510000",
+            "name": "Bonds Payable",
+            "type": "liabilities",
+            "subtype": "non_current_liabilities",
+            "normal_balance": "credit",
+            "required": false,
+            "description": "Long-term debt securities issued by the company"
+          }
+        ]
+      }
+    },
+    "equity": {
+      "range": "3000000-3999999",
+      "accounts": [
+        {
+          "code": "3100000",
+          "name": "Share Capital",
+          "type": "equity",
+          "subtype": "equity",
+          "normal_balance": "credit",
+          "required": true,
+          "description": "Capital contributed by shareholders"
+        },
+        {
+          "code": "3300000",
+          "name": "Retained Earnings",
+          "type": "equity",
+          "subtype": "equity",
+          "normal_balance": "credit",
+          "required": true,
+          "description": "Accumulated profits retained in the business"
+        }
+      ]
+    },
+    "revenue": {
+      "range": "4000000-4999999",
+      "accounts": [
+        {
+          "code": "4100000",
+          "name": "Sales Revenue",
+          "type": "revenue",
+          "subtype": "revenue",
+          "normal_balance": "credit",
+          "required": true,
+          "description": "Income from primary business operations"
+        },
+        {
+          "code": "4200000",
+          "name": "Service Revenue",
+          "type": "revenue",
+          "subtype": "revenue",
+          "normal_balance": "credit",
+          "required": false,
+          "description": "Income from services provided"
+        },
+        {
+          "code": "4300000",
+          "name": "Interest Income",
+          "type": "revenue",
+          "subtype": "revenue",
+          "normal_balance": "credit",
+          "required": false,
+          "description": "Income from investments and loans"
+        }
+      ]
+    },
+    "expenses": {
+      "range": "5000000-5999999",
+      "cost_of_sales": {
+        "range": "5000000-5099999",
+        "accounts": [
+          {
+            "code": "5000000",
+            "name": "Cost of Goods Sold",
+            "type": "expenses",
+            "subtype": "cost_of_sales",
+            "normal_balance": "debit",
+            "required": true,
+            "description": "Direct costs of producing goods sold"
+          },
+          {
+            "code": "5100000",
+            "name": "Cost of Services",
+            "type": "expenses",
+            "subtype": "cost_of_sales",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Direct costs of providing services"
+          }
+        ]
+      },
+      "operating_expenses": {
+        "range": "5100000-5899999",
+        "accounts": [
+          {
+            "code": "5200000",
+            "name": "Salaries and Wages",
+            "type": "expenses",
+            "subtype": "operating_expenses",
+            "normal_balance": "debit",
+            "required": true,
+            "description": "Employee compensation expenses"
+          },
+          {
+            "code": "5300000",
+            "name": "Rent Expense",
+            "type": "expenses",
+            "subtype": "operating_expenses",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Cost of renting facilities and equipment"
+          },
+          {
+            "code": "5400000",
+            "name": "Utilities",
+            "type": "expenses",
+            "subtype": "operating_expenses",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Electricity, water, gas, and other utilities"
+          },
+          {
+            "code": "5810000",
+            "name": "Depreciation Expense",
+            "type": "expenses",
+            "subtype": "operating_expenses",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Allocation of asset costs over their useful lives"
+          }
+        ]
+      },
+      "other_expenses": {
+        "range": "5900000-5999999",
+        "accounts": [
+          {
+            "code": "5900000",
+            "name": "Interest Expense",
+            "type": "expenses",
+            "subtype": "other_expenses",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Cost of borrowing money"
+          },
+          {
+            "code": "5910000",
+            "name": "Income Tax Expense",
+            "type": "expenses",
+            "subtype": "other_expenses",
+            "normal_balance": "debit",
+            "required": false,
+            "description": "Corporate income tax liability"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<svg width="144" height="144" viewBox="0 0 144 144" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="144" height="144" rx="24" fill="url(#heraGradient)"/>
+  <text x="72" y="85" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="48" font-weight="bold">H</text>
+</svg>
+EOF < /dev/null

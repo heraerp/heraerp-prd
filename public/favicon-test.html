@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERA Favicon Test</title>
+    
+    <!-- HERA Favicon References -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="/favicon-16.svg">
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="/favicon-32.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg">
+    <link rel="shortcut icon" href="/favicon.svg">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        .favicon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .favicon-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .favicon-preview {
+            margin: 1rem 0;
+        }
+        h1 {
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .preview-16 { width: 16px; height: 16px; }
+        .preview-32 { width: 32px; height: 32px; }
+        .preview-64 { width: 64px; height: 64px; }
+        .preview-180 { width: 180px; height: 180px; max-width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>🏢 HERA Favicon Design Preview</h1>
+    
+    <div class="favicon-grid">
+        <div class="favicon-card">
+            <h3>16×16 (Browser Tab)</h3>
+            <div class="favicon-preview">
+                <img src="/favicon-16.svg" alt="HERA 16x16" class="preview-16">
+            </div>
+            <p>Small browser tab icon</p>
+        </div>
+        
+        <div class="favicon-card">
+            <h3>32×32 (Standard)</h3>
+            <div class="favicon-preview">
+                <img src="/favicon-32.svg" alt="HERA 32x32" class="preview-32">
+            </div>
+            <p>Standard browser icon</p>
+        </div>
+        
+        <div class="favicon-card">
+            <h3>64×64 (Preview)</h3>
+            <div class="favicon-preview">
+                <img src="/favicon.svg" alt="HERA 64x64" class="preview-64">
+            </div>
+            <p>Larger preview size</p>
+        </div>
+        
+        <div class="favicon-card">
+            <h3>180×180 (Apple Touch)</h3>
+            <div class="favicon-preview">
+                <img src="/apple-touch-icon.svg" alt="HERA Apple Touch" class="preview-180">
+            </div>
+            <p>iOS home screen icon</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: 12px;">
+        <h2 style="color: #1e293b;">Modern HERA Design</h2>
+        <p style="color: #64748b; line-height: 1.6;">
+            Clean, minimalist favicon with the HERA 'H' in a sophisticated circle design. 
+            Features a dark gradient background with crisp white letterform for excellent visibility 
+            across all contexts - from browser tabs to mobile home screens.
+        </p>
+    </div>
+</body>
+</html>
