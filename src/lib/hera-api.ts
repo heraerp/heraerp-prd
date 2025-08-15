@@ -1,8 +1,7 @@
 // HERA API Client for business operations
 // Integrates with Supabase authentication
 
-import { DEMO_MODE } from './supabase'
-import { demoApi } from './demo-api'
+// Production-only HERA API implementation
 
 interface HeraApiConfig {
   baseUrl: string
@@ -250,33 +249,6 @@ class HeraApiClient {
 
   // Entity operations
   async getEntities(entityType?: string): Promise<any[]> {
-    // Use demo API in demo mode
-    if (DEMO_MODE) {
-      switch (entityType) {
-        case 'gl_account':
-          const { data: accounts } = await demoApi.getChartOfAccounts()
-          return accounts
-        case 'customer':
-          const { data: customers } = await demoApi.getCustomers()
-          return customers
-        case 'vendor':
-          const { data: vendors } = await demoApi.getVendors()
-          return vendors
-        case 'product':
-          const { data: products } = await demoApi.getProducts()
-          return products
-        default:
-          // Return all entities if no type specified
-          const allData = await Promise.all([
-            demoApi.getChartOfAccounts(),
-            demoApi.getCustomers(),
-            demoApi.getVendors(),
-            demoApi.getProducts()
-          ])
-          return allData.flatMap(result => result.data)
-      }
-    }
-    
     const params = entityType ? `?entity_type=${entityType}` : ''
     return this.request(`/entities${params}`, {
       method: 'GET',
@@ -299,24 +271,12 @@ class HeraApiClient {
 
   // Transaction operations
   async getTransactions(limit = 10): Promise<any[]> {
-    // Use demo API in demo mode
-    if (DEMO_MODE) {
-      const { data } = await demoApi.getTransactions()
-      return data.slice(0, limit)
-    }
-    
     return this.request(`/transactions?limit=${limit}`, {
       method: 'GET',
     })
   }
 
   async createTransaction(transactionData: any): Promise<any> {
-    // Use demo API in demo mode
-    if (DEMO_MODE) {
-      const { data } = await demoApi.createTransaction(transactionData)
-      return data
-    }
-    
     return this.request('/transactions', {
       method: 'POST',
       body: JSON.stringify(transactionData),
@@ -333,19 +293,6 @@ class HeraApiClient {
 
   // Enhanced dynamic data operations - supports both single and multi-field access
   async getDynamicData(entityId: string, fields?: string[]): Promise<any> {
-    if (DEMO_MODE) {
-      // Return mock dynamic data for demo mode
-      if (fields) {
-        const mockData: any = {}
-        fields.forEach(field => {
-          mockData[field] = `demo_${field}_value`
-        })
-        return mockData
-      } else {
-        return []
-      }
-    }
-    
     return this.request(`/entities/${entityId}/dynamic-data`, {
       method: 'GET',
       body: fields ? JSON.stringify({ fields }) : undefined,
@@ -353,10 +300,6 @@ class HeraApiClient {
   }
 
   async setDynamicData(entityId: string, data: any): Promise<any> {
-    if (DEMO_MODE) {
-      return { success: true, data }
-    }
-    
     return this.request(`/entities/${entityId}/dynamic-data`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -365,10 +308,6 @@ class HeraApiClient {
 
   // Relationship operations
   async getRelationships(entityId: string, relationshipTypes?: string[]): Promise<any[]> {
-    if (DEMO_MODE) {
-      return []
-    }
-    
     return this.request(`/entities/${entityId}/relationships`, {
       method: 'GET',
       body: JSON.stringify({ relationship_types: relationshipTypes }),
@@ -376,10 +315,6 @@ class HeraApiClient {
   }
 
   async createRelationship(relationshipData: any): Promise<any> {
-    if (DEMO_MODE) {
-      return { success: true, data: relationshipData }
-    }
-    
     return this.request('/relationships', {
       method: 'POST',
       body: JSON.stringify(relationshipData),
@@ -388,16 +323,6 @@ class HeraApiClient {
 
   // Enhanced entity operations
   async getEntity(entityId: string, entityType?: string): Promise<any> {
-    if (DEMO_MODE) {
-      return {
-        id: entityId,
-        entity_type: entityType || 'demo_entity',
-        entity_name: `Demo ${entityType || 'Entity'}`,
-        status: 'active',
-        metadata: {}
-      }
-    }
-    
     return this.request(`/entities/${entityId}`, {
       method: 'GET',
       body: entityType ? JSON.stringify({ entity_type: entityType }) : undefined,
@@ -405,35 +330,21 @@ class HeraApiClient {
   }
 
   // Enhanced transaction operations  
-  async getTransactions(filters: any): Promise<any[]> {
-    if (DEMO_MODE) {
-      return []
-    }
-    
+  async getFilteredTransactions(filters: any): Promise<any[]> {
     return this.request('/transactions', {
       method: 'GET',
       body: JSON.stringify(filters),
     })
   }
   
-  // Additional methods for demo mode
+  // Dashboard operations
   async getDashboardData(): Promise<any> {
-    if (DEMO_MODE) {
-      const { data } = await demoApi.getDashboardKPIs()
-      return data
-    }
-    
     return this.request('/dashboard/kpis', {
       method: 'GET',
     })
   }
   
   async getFinancialReport(reportType: string, params?: any): Promise<any> {
-    if (DEMO_MODE) {
-      const { data } = await demoApi.getFinancialReport(reportType, params)
-      return data
-    }
-    
     return this.request(`/reports/${reportType}`, {
       method: 'GET',
       body: JSON.stringify(params),

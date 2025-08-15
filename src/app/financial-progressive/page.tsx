@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-// Progressive Authentication - Don Norman Pattern
-import { useAuth } from '@/contexts/auth-context'
+// Progressive pattern - no authentication required
 import { FinancialTeamsSidebar } from '@/components/financial-progressive/FinancialTeamsSidebar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,9 +18,17 @@ import {
 } from 'lucide-react'
 
 export default function FinancialProgressivePage() {
-  const { workspace, isAnonymous, startAnonymous, isLoading } = useAuth()
   const router = useRouter()
   const [selectedModule, setSelectedModule] = useState<string>('dashboard')
+  const [isLoading, setIsLoading] = useState(false)
+  
+  // Mock workspace for progressive mode
+  const workspace = {
+    type: 'progressive',
+    organization_name: 'Demo Financial Organization',
+    data_status: 'sample'
+  }
+  const isAnonymous = true
   
   // Use progressive data hook for financial data persistence
   const { 
@@ -49,15 +56,14 @@ export default function FinancialProgressivePage() {
     router.push(module.url)
   }
   
-  // Automatically create workspace on first visit
+  // Progressive mode - no authentication setup needed
   useEffect(() => {
-    if (!isLoading && !workspace) {
-      startAnonymous()
-    }
-  }, [isLoading, workspace, startAnonymous])
+    // Progressive setup can be done here if needed
+    setIsLoading(false)
+  }, [])
   
   // Show loading state
-  if (isLoading || !workspace) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-white">
         <div className="text-center">
@@ -82,7 +88,7 @@ export default function FinancialProgressivePage() {
       features: ['Journal Entries', 'Trial Balance', 'Financial Statements'],
       status: 'Production Ready',
       transactions: workspace.data_status === 'sample' ? '247' : '247+',
-      url: '/financial/gl'
+      url: '/salon-progressive/finance/coa'  // Updated to use IFRS-compliant COA
     },
     {
       id: 'ar',
@@ -135,14 +141,14 @@ export default function FinancialProgressivePage() {
     {
       id: 'budget',
       title: 'Budgeting',
-      description: 'Budget planning and variance analysis',
+      description: 'Universal budgeting, forecasting & variance analysis',
       icon: Target,
       color: 'from-indigo-500 to-indigo-600',
-      smartCode: 'HERA.FIN.BD',
-      features: ['Budget Creation', 'Variance Analysis', 'Forecasting'],
+      smartCode: 'HERA.FIN.BUDGET',
+      features: ['Multi-Dimensional Budgets', 'Rolling Forecasts', 'AI Variance Analysis'],
       status: 'Production Ready',
-      transactions: workspace.data_status === 'sample' ? '9' : '9+',
-      url: '/financial/budgets'
+      transactions: workspace.data_status === 'sample' ? '12' : '12+',
+      url: '/financial-progressive/budgets'  // Updated to use new universal budgeting page
     },
     {
       id: 'tax',
@@ -525,7 +531,7 @@ export default function FinancialProgressivePage() {
               <Button 
                 size="lg"
                 className="bg-white text-green-600 hover:bg-green-50 font-semibold"
-                onClick={() => router.push('/auth/register')}
+                onClick={() => router.push('/login')}
               >
                 <BookmarkPlus className="w-5 h-5 mr-2" />
                 Save My Financial Data

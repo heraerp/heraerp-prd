@@ -27,11 +27,22 @@ const TooltipTrigger = React.forwardRef<
   const [showTooltip, setShowTooltip] = React.useState(false)
   
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
+    return React.cloneElement(children as any, {
       ...props,
+      ...(children.props || {}),
       ref,
-      onMouseEnter: () => setShowTooltip(true),
-      onMouseLeave: () => setShowTooltip(false),
+      onMouseEnter: (e: any) => {
+        setShowTooltip(true)
+        if (children.props?.onMouseEnter) {
+          children.props.onMouseEnter(e)
+        }
+      },
+      onMouseLeave: (e: any) => {
+        setShowTooltip(false)
+        if (children.props?.onMouseLeave) {
+          children.props.onMouseLeave(e)
+        }
+      },
     })
   }
   

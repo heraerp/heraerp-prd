@@ -26,7 +26,16 @@ import {
   Scissors,
   Sparkles,
   Receipt,
-  CheckCircle
+  CheckCircle,
+  Printer,
+  Smartphone,
+  Banknote,
+  Wallet,
+  QrCode,
+  Gift,
+  Split,
+  Calculator,
+  Zap
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -138,6 +147,12 @@ export default function SalonPOS() {
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [hasChanges, setHasChanges] = useState(false)
   const [lastSaved, setLastSaved] = useState(null)
+  const [splitPayment, setSplitPayment] = useState(false)
+  const [paymentMethods, setPaymentMethods] = useState([
+    { method: 'cash', amount: 0 }
+  ])
+  const [receiptPrinted, setReceiptPrinted] = useState(false)
+  const [lastTransaction, setLastTransaction] = useState(null)
 
   // Filter items
   const filteredItems = allItems.filter(item => {
@@ -191,20 +206,151 @@ export default function SalonPOS() {
   const processPayment = () => {
     if (cart.length === 0) return
     
-    console.log('Processing payment:', {
+    const transaction = {
+      id: `TXN-${Date.now()}`,
+      date: new Date(),
       items: cart,
       subtotal: getCartTotal(),
       tax: getTax(),
       total: getFinalTotal(),
-      paymentMethod,
-      customer: selectedCustomer
-    })
+      paymentMethod: splitPayment ? paymentMethods : paymentMethod,
+      customer: selectedCustomer,
+      receiptNumber: `RCP-${Math.floor(Math.random() * 100000)}`
+    }
+    
+    console.log('Processing payment:', transaction)
+    setLastTransaction(transaction)
     
     // Clear cart after successful payment
     setCart([])
     setSelectedCustomer(null)
     setHasChanges(false)
+    setSplitPayment(false)
+    setPaymentMethods([{ method: 'cash', amount: 0 }])
+    setReceiptPrinted(false)
     alert('Payment processed successfully!')
+  }
+
+  const printReceipt = () => {
+    if (!lastTransaction) return
+    
+    // Create receipt content
+    const receiptContent = `
+      BELLA SALON & SPA
+      ================================
+      Receipt #: ${lastTransaction.receiptNumber}
+      Date: ${lastTransaction.date.toLocaleString()}
+      ================================
+      
+      ITEMS:
+      ${lastTransaction.items.map(item => 
+        `${item.name} x${item.quantity}
+         $${(item.price * item.quantity).toFixed(2)}`
+      ).join('\n')}
+      
+      --------------------------------
+      Subtotal: $${lastTransaction.subtotal.toFixed(2)}
+      Tax (8%): $${lastTransaction.tax.toFixed(2)}
+      ================================
+      TOTAL: $${lastTransaction.total.toFixed(2)}
+      ================================
+      
+      Payment Method: ${
+        Array.isArray(lastTransaction.paymentMethod) 
+          ? lastTransaction.paymentMethod.map(p => `${p.method}: $${p.amount.toFixed(2)}`).join(', ')
+          : lastTransaction.paymentMethod
+      }
+      
+      Thank you for your visit!
+      www.bellasalon.com
+    `
+    
+    // Open print dialog
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Receipt - ${lastTransaction.receiptNumber}</title>
+            <style>
+              body { font-family: monospace; padding: 20px; max-width: 400px; margin: 0 auto; }
+              pre { font-size: 14px; line-height: 1.4; }
+              @media print { body { margin: 0; padding: 10px; } }
+            </style>
+          </head>
+          <body>
+            <pre>${receiptContent}</pre>
+            <script>window.print(); window.close();</script>
+          </body>
+        </html>
+      `)
+      printWindow.document.close()
+      setReceiptPrinted(true)
+    }
+  }
+
+  const addPaymentMethod = () => {
+    setPaymentMethods([...paymentMethods, { method: 'card', amount: 0 }])
+  }
+
+  const updatePaymentMethodAmount = (index, amount) => {
+    const updated = [...paymentMethods]
+    updated[index].amount = parseFloat(amount) || 0
+    setPaymentMethods(updated)
+  }
+
+  const updatePaymentMethodType = (index, method) => {
+    const updated = [...paymentMethods]
+    updated[index].method = method
+    setPaymentMethods(updated)
+  }
+
+  const removePaymentMethod = (index) => {
+    if (paymentMethods.length > 1) {
+      setPaymentMethods(paymentMethods.filter((_, i) => i !== index))
+    }
+  }
+
+  const getTotalPaymentAmount = () => {
+    return paymentMethods.reduce((sum, p) => sum + p.amount, 0)
+  }
+
+  const getRemainingAmount = () => {
+    return getFinalTotal() - getTotalPaymentAmount()
+  }
+
+  const autoFillRemaining = (index) => {
+    const remaining = getRemainingAmount()
+    if (remaining > 0) {
+      updatePaymentMethodAmount(index, remaining)
+    }
+  }
+
+  const autoCompletePayments = () => {
+    const remaining = getRemainingAmount()
+    if (remaining > 0) {
+      // Find the first payment method with amount 0 or add new one
+      const emptyIndex = paymentMethods.findIndex(pm => pm.amount === 0)
+      if (emptyIndex >= 0) {
+        updatePaymentMethodAmount(emptyIndex, remaining)
+      } else {
+        // Add a new payment method with remaining amount
+        setPaymentMethods([...paymentMethods, { method: 'cash', amount: remaining }])
+      }
+    }
+  }
+
+  const getPaymentIcon = (method) => {
+    switch(method) {
+      case 'cash': return <Banknote className="h-4 w-4" />
+      case 'card': return <CreditCard className="h-4 w-4" />
+      case 'digital': return <Smartphone className="h-4 w-4" />
+      case 'apple_pay': return <Smartphone className="h-4 w-4" />
+      case 'google_pay': return <Wallet className="h-4 w-4" />
+      case 'venmo': return <QrCode className="h-4 w-4" />
+      case 'gift_card': return <Gift className="h-4 w-4" />
+      default: return <DollarSign className="h-4 w-4" />
+    }
   }
 
   const handleSaveProgress = () => {
@@ -441,35 +587,261 @@ export default function SalonPOS() {
               {cart.length > 0 && (
                 <Card className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl">
                   <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-3 text-slate-800">
-                      <div className="p-2 bg-emerald-500/20 rounded-lg">
-                        <CreditCard className="h-6 w-6 text-emerald-600" />
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-slate-800">
+                        <div className="p-2 bg-emerald-500/20 rounded-lg">
+                          <CreditCard className="h-6 w-6 text-emerald-600" />
+                        </div>
+                        <span className="text-lg font-semibold">Payment</span>
                       </div>
-                      <span className="text-lg font-semibold">Payment</span>
+                      <Button
+                        size="sm"
+                        variant={splitPayment ? "default" : "outline"}
+                        onClick={() => setSplitPayment(!splitPayment)}
+                        className="text-xs"
+                      >
+                        <Split className="h-3 w-3 mr-1" />
+                        Split Payment
+                      </Button>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
-                      <Label className="text-slate-700 font-medium">Payment Method</Label>
-                      <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                        <SelectTrigger className="bg-white/60 backdrop-blur-sm border-white/30 text-slate-800 hover:bg-white/80 transition-all">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="hera-select-content">
-                          <SelectItem value="cash" className="hera-select-item">Cash</SelectItem>
-                          <SelectItem value="card" className="hera-select-item">Credit/Debit Card</SelectItem>
-                          <SelectItem value="digital" className="hera-select-item">Digital Payment</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    {!splitPayment ? (
+                      <div>
+                        <Label className="text-slate-700 font-medium mb-2 block">Payment Method</Label>
+                        <div className="grid grid-cols-2 gap-2 mb-3">
+                          <Button
+                            variant={paymentMethod === 'cash' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('cash')}
+                            className="justify-start"
+                          >
+                            <Banknote className="h-4 w-4 mr-2" />
+                            Cash
+                          </Button>
+                          <Button
+                            variant={paymentMethod === 'card' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('card')}
+                            className="justify-start"
+                          >
+                            <CreditCard className="h-4 w-4 mr-2" />
+                            Card
+                          </Button>
+                          <Button
+                            variant={paymentMethod === 'apple_pay' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('apple_pay')}
+                            className="justify-start"
+                          >
+                            <Smartphone className="h-4 w-4 mr-2" />
+                            Apple Pay
+                          </Button>
+                          <Button
+                            variant={paymentMethod === 'google_pay' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('google_pay')}
+                            className="justify-start"
+                          >
+                            <Wallet className="h-4 w-4 mr-2" />
+                            Google Pay
+                          </Button>
+                          <Button
+                            variant={paymentMethod === 'venmo' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('venmo')}
+                            className="justify-start"
+                          >
+                            <QrCode className="h-4 w-4 mr-2" />
+                            Venmo
+                          </Button>
+                          <Button
+                            variant={paymentMethod === 'gift_card' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPaymentMethod('gift_card')}
+                            className="justify-start"
+                          >
+                            <Gift className="h-4 w-4 mr-2" />
+                            Gift Card
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-slate-700 font-medium">Split Payment Methods</Label>
+                          {getRemainingAmount() > 0 && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={autoCompletePayments}
+                              className="text-xs bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                            >
+                              <Zap className="h-3 w-3 mr-1" />
+                              Auto-Complete
+                            </Button>
+                          )}
+                        </div>
+                        {paymentMethods.map((pm, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <Select value={pm.method} onValueChange={(value) => updatePaymentMethodType(index, value)}>
+                              <SelectTrigger className="w-32 bg-white/60 backdrop-blur-sm border-white/30">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="hera-select-content">
+                                <SelectItem value="cash" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <Banknote className="h-3 w-3" />
+                                    Cash
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="card" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <CreditCard className="h-3 w-3" />
+                                    Card
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="apple_pay" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <Smartphone className="h-3 w-3" />
+                                    Apple Pay
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="google_pay" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <Wallet className="h-3 w-3" />
+                                    Google Pay
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="venmo" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <QrCode className="h-3 w-3" />
+                                    Venmo
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="gift_card" className="hera-select-item">
+                                  <div className="flex items-center gap-2">
+                                    <Gift className="h-3 w-3" />
+                                    Gift Card
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <div className="flex-1 relative">
+                              <Input
+                                type="number"
+                                placeholder="Amount"
+                                value={pm.amount || ''}
+                                onChange={(e) => updatePaymentMethodAmount(index, e.target.value)}
+                                className="bg-white/60 backdrop-blur-sm border-white/30 pr-10"
+                              />
+                              {getRemainingAmount() > 0 && pm.amount === 0 && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => autoFillRemaining(index)}
+                                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+                                  title={`Fill remaining $${getRemainingAmount().toFixed(2)}`}
+                                >
+                                  <Calculator className="h-3 w-3" />
+                                </Button>
+                              )}
+                            </div>
+                            {paymentMethods.length > 1 && (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => removePaymentMethod(index)}
+                                className="h-8 w-8 p-0"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={addPaymentMethod}
+                          className="w-full"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Payment Method
+                        </Button>
+                        {splitPayment && (
+                          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+                            <div className="flex justify-between text-sm font-medium">
+                              <span>Total Entered:</span>
+                              <span className={getTotalPaymentAmount() === getFinalTotal() ? 'text-green-600' : 'text-red-600'}>
+                                ${getTotalPaymentAmount().toFixed(2)} / ${getFinalTotal().toFixed(2)}
+                              </span>
+                            </div>
+                            {getRemainingAmount() > 0 ? (
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-orange-600 font-medium">Remaining:</span>
+                                <span className="text-orange-600 font-bold">${getRemainingAmount().toFixed(2)}</span>
+                              </div>
+                            ) : getRemainingAmount() < 0 ? (
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-red-600 font-medium">Overpaid:</span>
+                                <span className="text-red-600 font-bold">${Math.abs(getRemainingAmount()).toFixed(2)}</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-center text-sm">
+                                <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
+                                <span className="text-green-600 font-medium">Payment Complete</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={processPayment}
+                        disabled={splitPayment && Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01}
+                        className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Receipt className="h-5 w-5 mr-2" />
+                        {splitPayment ? (
+                          Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01 ? (
+                            `Remaining: $${getRemainingAmount().toFixed(2)}`
+                          ) : (
+                            `Process Split Payment (${paymentMethods.length} methods)`
+                          )
+                        ) : (
+                          `Process Payment (${getFinalTotal().toFixed(2)})`
+                        )}
+                      </Button>
+                      {lastTransaction && (
+                        <Button
+                          onClick={printReceipt}
+                          variant="outline"
+                          className="px-4"
+                        >
+                          <Printer className="h-5 w-5" />
+                        </Button>
+                      )}
                     </div>
 
-                    <Button 
-                      onClick={processPayment}
-                      className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3"
-                    >
-                      <Receipt className="h-5 w-5 mr-2" />
-                      Process Payment (${getFinalTotal().toFixed(2)})
-                    </Button>
+                    {lastTransaction && (
+                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-800">
+                              Last Transaction: #{lastTransaction.receiptNumber}
+                            </span>
+                          </div>
+                          {receiptPrinted && (
+                            <Badge className="bg-green-100 text-green-700">
+                              Receipt Printed
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}

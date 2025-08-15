@@ -1,12 +1,14 @@
--- HERA Auto-Posting System - Production Ready
--- This is the complete, tested auto-posting system that replaces SAP T030
--- Run this script to set up automatic GL posting based on Smart Codes
+-- HERA Auto-Journal Database Functions - DNA Component Integration
+-- Part of HERA.FIN.AUTO.JOURNAL.ENGINE.v1 - Core DNA Component
+-- Database-level functions supporting the AI-powered Auto-Journal Engine
 
 -- =============================================================================
--- HERA SMART CODE AUTO-POSTING SYSTEM
+-- HERA AUTO-JOURNAL DATABASE INTEGRATION
 -- =============================================================================
 -- 
--- This system automatically creates journal entries based on Smart Code patterns:
+-- This system provides database-level support for auto-journal processing:
+-- Used by the Auto-Journal DNA Component for trigger-based processing
+--
 -- - HERA.PROC.PO.CREATE.v1    → No GL posting (commitment only)
 -- - HERA.REST.SALE.ORDER.v1   → Creates Cash/Revenue entries
 -- - HERA.INV.GR.RECEIPT.v1    → Creates Inventory/Payable entries

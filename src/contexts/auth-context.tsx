@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabase, DEMO_MODE } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 interface AuthContext {
   user: User | null
@@ -26,57 +26,57 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    let mounted = true
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (mounted) {
+          if (error) {
+            console.warn('Auth session error:', error.message)
+          }
+          setSession(session)
+          setUser(session?.user ?? null)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        if (mounted) {
+          console.warn('Auth initialization error:', error)
+          setIsLoading(false)
+        }
+      }
+    }
 
     // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    let subscription: any = null
+    try {
+      const {
+        data: { subscription: authSubscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (mounted) {
+          setSession(session)
+          setUser(session?.user ?? null)
+          setIsLoading(false)
+        }
+      })
+      subscription = authSubscription
+    } catch (error) {
+      console.warn('Auth listener error:', error)
+    }
 
-    return () => subscription.unsubscribe()
+    initializeAuth()
+
+    return () => {
+      mounted = false
+      if (subscription) {
+        subscription.unsubscribe()
+      }
+    }
   }, [])
 
   const login = async (email: string, password: string) => {
-    if (DEMO_MODE) {
-      // In demo mode, create a mock user for testing
-      const mockUser = {
-        id: 'demo-user-123',
-        email: email,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        email_confirmed_at: new Date().toISOString(),
-        last_sign_in_at: new Date().toISOString(),
-        role: 'authenticated',
-        aud: 'authenticated',
-        app_metadata: {},
-        user_metadata: { name: 'Demo User' },
-        identities: [],
-        factors: []
-      } as User
-
-      const mockSession = {
-        access_token: 'demo-token',
-        refresh_token: 'demo-refresh',
-        expires_in: 3600,
-        expires_at: Date.now() + 3600000,
-        token_type: 'bearer',
-        user: mockUser
-      } as Session
-
-      setSession(mockSession)
-      setUser(mockUser)
-      return
-    }
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -90,12 +90,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const logout = async () => {
-    if (DEMO_MODE) {
-      setSession(null)
-      setUser(null)
-      return
-    }
-
     const { error } = await supabase.auth.signOut()
     if (error) {
       throw error
@@ -103,10 +97,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const register = async (email: string, password: string, userData: any = {}) => {
-    if (DEMO_MODE) {
-      throw new Error('Registration is disabled in demo mode. Please configure Supabase.')
-    }
-
     const { data, error } = await supabase.auth.signUp({
       email,
       password,

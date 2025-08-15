@@ -46,9 +46,9 @@ HERA.FIN.FA.TXN.DSP.v1    // Disposal transactions
 
 ## Integration Points
 
-### 1. Universal GL Service Integration
+### 1. Auto-Journal Engine Integration
 
-The `UniversalGLService` now includes Smart Code generation for all financial transactions:
+The HERA Auto-Journal DNA Component (HERA.FIN.AUTO.JOURNAL.ENGINE.v1) includes Smart Code generation for all financial transactions:
 
 ```typescript
 // Automatic Smart Code generation

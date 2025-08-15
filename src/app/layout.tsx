@@ -5,7 +5,6 @@ import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { UpdateNotification } from "@/components/pwa/UpdateNotification";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
-import { SupabaseAuthProvider } from "@/contexts/supabase-auth-context";
 import { AuthProvider } from "@/contexts/auth-context";
 import ProgressiveLayout from "@/components/layout/ProgressiveLayout";
 import "./globals.css";
@@ -88,14 +87,12 @@ export default function RootLayout({
         <HeraThemeProvider defaultTheme="light">
           <ServiceWorkerProvider>
             <QueryProvider>
-              <SupabaseAuthProvider>
-                <AuthProvider>
-                  <ProgressiveLayout>
-                    {children}
-                  </ProgressiveLayout>
-                  <UpdateNotification />
-                </AuthProvider>
-              </SupabaseAuthProvider>
+              <AuthProvider>
+                <ProgressiveLayout>
+                  {children}
+                </ProgressiveLayout>
+                <UpdateNotification />
+              </AuthProvider>
             </QueryProvider>
           </ServiceWorkerProvider>
         </HeraThemeProvider>

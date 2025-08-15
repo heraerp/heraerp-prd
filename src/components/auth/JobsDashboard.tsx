@@ -5,8 +5,7 @@ import { useProgressiveAuth } from './ProgressiveAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getHeraApi } from '@/lib/hera-api'
-import { DemoDashboard } from '@/components/demo/DemoDashboard'
-import { DEMO_MODE } from '@/lib/supabase'
+// Production-only dashboard implementation
 import { 
   Apple,
   LogOut,
@@ -59,15 +58,10 @@ interface GettingStartedItem {
 }
 
 export function JobsDashboard({ onLogout, className = '' }: JobsDashboardProps) {
-  // In demo mode, show the full demo dashboard
-  if (DEMO_MODE) {
-    return <DemoDashboard />
-  }
-  
   const { 
     user,
     logout 
-  } = useAuth()
+  } = useProgressiveAuth()
   
   const [stats, setStats] = useState<BusinessStats | null>(null)
   const [isLoadingStats, setIsLoadingStats] = useState(true)

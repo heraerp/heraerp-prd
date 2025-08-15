@@ -45,9 +45,10 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section - Above the Fold Optimized */}
-      <section className="py-8 md:py-16 min-h-[80vh] flex items-center">
-        <div className="container mx-auto px-4 md:px-6">
+      {/* Hero Section - Above the Fold Optimized with Glassmorphism */}
+      <section className="py-8 md:py-16 min-h-[80vh] flex items-center relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40"></div>
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-6xl mx-auto text-center">
             
             {/* Optimized Headline - Mobile Responsive */}
@@ -93,24 +94,24 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Proof Points - Mobile Optimized */}
+            {/* Proof Points - Mobile Optimized with Glassmorphism */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 px-4">
-              <div className="text-center">
+              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">70%</div>
                 <p className="text-sm md:text-base text-gray-600 font-light">Cost Savings</p>
               </div>
               
-              <div className="text-center">
+              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">2</div>
                 <p className="text-sm md:text-base text-gray-600 font-light">Week Guarantee</p>
               </div>
               
-              <div className="text-center">
+              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">92%</div>
                 <p className="text-sm md:text-base text-gray-600 font-light">Success Rate</p>
               </div>
               
-              <div className="text-center">
+              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">0</div>
                 <p className="text-sm md:text-base text-gray-600 font-light">Configuration</p>
               </div>
@@ -119,9 +120,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Comparison Section - Minimal Table */}
-      <section className="py-32 bg-gradient-to-b from-gray-50/40 to-white backdrop-blur-sm">
-        <div className="container mx-auto px-6">
+      {/* Comparison Section - Minimal Table with Enhanced Glassmorphism */}
+      <section className="py-32 bg-gradient-to-b from-gray-50/40 to-white backdrop-blur-sm relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-blue-50/60 to-indigo-50/40"></div>
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto">
             
             {/* Breathing Space */}
@@ -131,10 +133,10 @@ export default function HomePage() {
               </h2>
             </div>
 
-            {/* Clean Comparison Table */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100/50 overflow-hidden">
+            {/* Clean Comparison Table with Enhanced Glassmorphism */}
+            <div className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-white/20 backdrop-blur-sm">
                   <tr>
                     <th className="text-left py-8 px-8 font-light text-xl text-gray-600">Solution</th>
                     <th className="text-center py-8 px-8 font-light text-xl text-black">HERA</th>
@@ -143,19 +145,19 @@ export default function HomePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t border-gray-100">
+                  <tr className="border-t border-white/10">
                     <td className="py-8 px-8 font-light text-gray-600">Implementation</td>
                     <td className="py-8 px-8 text-center font-light text-black">2 weeks</td>
                     <td className="py-8 px-8 text-center font-light text-gray-400">12-21 months</td>
                     <td className="py-8 px-8 text-center font-light text-gray-400">6+ months</td>
                   </tr>
-                  <tr className="border-t border-gray-100">
+                  <tr className="border-t border-white/10">
                     <td className="py-8 px-8 font-light text-gray-600">Annual Cost</td>
                     <td className="py-8 px-8 text-center font-light text-black">$50,000</td>
                     <td className="py-8 px-8 text-center font-light text-gray-400">$150,000+</td>
                     <td className="py-8 px-8 text-center font-light text-gray-400">$144,000+</td>
                   </tr>
-                  <tr className="border-t border-gray-100">
+                  <tr className="border-t border-white/10">
                     <td className="py-8 px-8 font-light text-gray-600">Success Rate</td>
                     <td className="py-8 px-8 text-center font-light text-black">92%</td>
                     <td className="py-8 px-8 text-center font-light text-gray-400">40%</td>
@@ -164,6 +166,95 @@ export default function HomePage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Apps Section */}
+      <section className="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-thin text-gray-900 mb-4">Try HERA Apps Now</h2>
+            <p className="text-xl font-light text-gray-600 max-w-3xl mx-auto">
+              Experience enterprise-grade functionality with industry-specific apps. 
+              No signup required - start planning your business immediately.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <a 
+              href="/budgeting/salon" 
+              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span className="text-2xl">✂️</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Budgeting</h3>
+              <p className="text-gray-600 font-light mb-4">
+                Complete budgeting for beauty salons with service-based revenue planning, staff productivity tracking, and seasonal analysis.
+              </p>
+              <div className="flex items-center text-pink-600 font-medium">
+                <span>Try Demo</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+
+            <a 
+              href="/budgeting" 
+              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Universal Budgeting</h3>
+              <p className="text-gray-600 font-light mb-4">
+                Enterprise budgeting for any industry. Multi-dimensional planning, variance analysis, and rolling forecasts built-in.
+              </p>
+              <div className="flex items-center text-blue-600 font-medium">
+                <span>Explore Apps</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+
+            <a 
+              href="/financial-progressive" 
+              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <DollarSign className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Financial Management</h3>
+              <p className="text-gray-600 font-light mb-4">
+                Complete financial suite with GL, AR, AP, budgeting, and real-time reporting. IFRS-compliant from day one.
+              </p>
+              <div className="flex items-center text-green-600 font-medium">
+                <span>Try Financial</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+
+            <a 
+              href="/auto-journal" 
+              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span className="text-2xl">🤖</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Auto-Journal Engine</h3>
+              <p className="text-gray-600 font-light mb-4">
+                Intelligent journal entry automation with AI. 85%+ automation rate, 92% time savings, zero manual intervention.
+              </p>
+              <div className="flex items-center text-indigo-600 font-medium">
+                <span>Try Auto-Journal</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-sm text-gray-500 font-light">
+              ✨ All apps include sample data - no setup required. Experience enterprise features instantly.
+            </p>
           </div>
         </div>
       </section>

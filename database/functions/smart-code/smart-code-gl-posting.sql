@@ -1,5 +1,6 @@
-  -- This runs AUTOMATICALLY when any transaction is created
-  CREATE OR REPLACE FUNCTION process_smart_code_posting()
+-- HERA Auto-Journal Trigger Function - Part of DNA Component HERA.FIN.AUTO.JOURNAL.ENGINE.v1
+-- This runs AUTOMATICALLY when any transaction is created
+CREATE OR REPLACE FUNCTION process_smart_code_posting()
   RETURNS TRIGGER AS $$
   DECLARE
     v_action_type TEXT;

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useProgressiveAuth } from "@/components/auth/ProgressiveAuthProvider"
+import { useAuth } from "@/contexts/auth-context"
 // import { MenuManager } from '@/components/restaurant/MenuManager'
 import { RestaurantLogin } from '@/components/restaurant/RestaurantLogin'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ import { Home, LogOut, Loader2, ChefHat } from 'lucide-react'
 import Link from 'next/link'
 
 export default function MenuPage() {
-  const { isRegistered, isLoading, logout } = useProgressiveAuth()
+  const { isAuthenticated, isLoading, logout } = useAuth()
 
   // Show loading state
   if (isLoading) {
@@ -31,7 +31,7 @@ export default function MenuPage() {
   }
 
   // Show login if not authenticated
-  if (!isRegistered) {
+  if (!isAuthenticated) {
     return <RestaurantLogin />
   }
 

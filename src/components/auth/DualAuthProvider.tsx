@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabase, DEMO_MODE } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 // Types for dual authentication
 interface DualUser {
@@ -180,43 +180,6 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    if (DEMO_MODE) {
-      // Create mock user for demo mode
-      const mockUser: DualUser = {
-        id: 'demo-user-123',
-        email: email,
-        name: 'Demo User',
-        full_name: 'Demo User',
-        role: 'admin',
-        organizationName: 'Demo Restaurant'
-      }
-
-      const mockSession = {
-        access_token: 'demo-token',
-        refresh_token: 'demo-refresh',
-        expires_in: 3600,
-        expires_at: Date.now() + 3600000,
-        token_type: 'bearer',
-        user: {
-          id: 'demo-user-123',
-          email: email,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          user_metadata: { name: 'Demo User' }
-        }
-      } as Session
-
-      setSession(mockSession)
-      setUser(mockUser)
-      setOrganization({
-        id: 'demo-org-123',
-        organization_name: 'Demo Restaurant',
-        organization_type: 'restaurant',
-        subscription_plan: 'premium'
-      })
-      return
-    }
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -233,11 +196,6 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
   }
 
   const logout = async () => {
-    if (DEMO_MODE) {
-      clearState()
-      return
-    }
-
     const { error } = await supabase.auth.signOut()
     if (error) {
       throw error
@@ -246,10 +204,6 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
   }
 
   const register = async (email: string, password: string, userData: any = {}) => {
-    if (DEMO_MODE) {
-      throw new Error('Registration is disabled in demo mode. Please configure Supabase.')
-    }
-
     const { data, error } = await supabase.auth.signUp({
       email,
       password,

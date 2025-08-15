@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useProgressiveAuth } from "@/components/auth/ProgressiveAuthProvider"
+import { useAuth } from "@/contexts/auth-context"
 import { UnifiedRestaurantInterface } from '@/components/restaurant/UnifiedRestaurantInterface'
 import { RestaurantLogin } from '@/components/restaurant/RestaurantLogin'
 import { Card } from '@/components/ui/card'
@@ -9,7 +9,7 @@ import { Loader2, ChefHat } from 'lucide-react'
 
 // Restaurant Management System - Powered by HERA Universal Platform
 function RestaurantApp() {
-  const { isRegistered, isLoading } = useProgressiveAuth()
+  const { isAuthenticated, isLoading } = useAuth()
   const [appLoading, setAppLoading] = useState(true)
 
   useEffect(() => {
@@ -36,7 +36,7 @@ function RestaurantApp() {
     )
   }
 
-  if (isRegistered) {
+  if (isAuthenticated) {
     return <UnifiedRestaurantInterface />
   }
 

@@ -28,11 +28,12 @@ export function SalonTeamsSidebar() {
   const pathname = usePathname()
   const [isExpanded, setIsExpanded] = useState(false)
   const [showQuickActionsModal, setShowQuickActionsModal] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  // Debug modal state changes
+  // Ensure client-side only rendering for Tooltips
   useEffect(() => {
-    console.log('Modal state changed:', showQuickActionsModal)
-  }, [showQuickActionsModal])
+    setMounted(true)
+  }, [])
 
   const sidebarItems: SidebarItem[] = [
     {
@@ -168,6 +169,14 @@ export function SalonTeamsSidebar() {
       description: 'Financial reports and analysis'
     },
     {
+      id: 'coa',
+      label: 'Chart of Accounts',
+      icon: <Calculator className="w-5 h-5" />,
+      href: '/salon-progressive/finance/coa',
+      color: 'hover:bg-indigo-100',
+      description: 'Dubai Salon COA with 4-digit structure'
+    },
+    {
       id: 'pos',
       label: 'Point of Sale',
       icon: <ShoppingCart className="w-5 h-5" />,
@@ -210,8 +219,28 @@ export function SalonTeamsSidebar() {
   ]
 
   const handleNavigation = (href: string) => {
-    router.push(href)
-    setShowQuickActionsModal(false) // Close modal when navigating
+    try {
+      router.push(href)
+      setShowQuickActionsModal(false) // Close modal when navigating
+    } catch (error) {
+      console.error('Navigation error:', error)
+    }
+  }
+
+  // Prevent hydration errors by only rendering tooltips after mount
+  if (!mounted) {
+    return (
+      <div className="fixed left-0 top-0 h-full w-16 bg-white/20 backdrop-blur-xl border-r border-white/20 shadow-2xl shadow-black/10 z-40 flex flex-col">
+        <div className="p-3 border-b border-white/20">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="w-10 h-10 bg-gradient-to-br from-indigo-500/90 to-purple-600/90 rounded-xl flex items-center justify-center shadow-xl shadow-indigo-500/20 backdrop-blur-sm border border-white/20"
+          >
+            <span className="text-white font-black text-xl drop-shadow-sm">H</span>
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

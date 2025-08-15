@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { useProgressiveAuth } from "@/components/auth/ProgressiveAuthProvider"
-import { FinancialDashboard } from '@/components/financial/FinancialDashboard'
+import { useAuth } from "@/contexts/auth-context"
+// FinancialDashboard component removed - using simple card layout instead
 import { Card } from '@/components/ui/card'
 import { 
   ArrowLeft, 
@@ -15,10 +15,10 @@ import {
 import Link from 'next/link'
 
 export default function FinancialReportsPage() {
-  const { isRegistered, isLoading, user, workspace } = useProgressiveAuth()
+  const { isAuthenticated, isLoading, user } = useAuth()
 
   // If user is already signed in (which they are), show Financial Dashboard immediately
-  if (isRegistered) {
+  if (isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">
         {/* Navigation Header */}
@@ -62,7 +62,13 @@ export default function FinancialReportsPage() {
 
         {/* Financial Dashboard */}
         <main className="py-8">
-          <FinancialDashboard />
+          <Card className="p-6">
+            <div className="text-center space-y-4">
+              <BarChart3 className="w-12 h-12 text-blue-500 mx-auto" />
+              <h3 className="text-xl font-semibold">Restaurant Financial Dashboard</h3>
+              <p className="text-gray-600">Financial reports and analytics coming soon</p>
+            </div>
+          </Card>
         </main>
 
         {/* Footer with HERA Info */}
