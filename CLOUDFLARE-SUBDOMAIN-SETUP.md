@@ -20,7 +20,19 @@ HERA ERP creates unique subdomains for each business (e.g., `marinas-salon.herae
    - **TTL**: Auto
 4. Click **Save**
 
-### Step 3: Configure Railway
+### Step 3: Configure SSL for Wildcard (CRITICAL)
+1. **Turn OFF Cloudflare proxying** on `_acme-challenge` record:
+   - Navigate to **DNS** → **Records**
+   - Find any `_acme-challenge` records
+   - Click the orange cloud to turn it **gray** (DNS only)
+   - If no `_acme-challenge` records exist, this step is automatic
+
+2. **Enable Universal SSL**:
+   - Navigate to **SSL/TLS** → **Overview**
+   - Ensure **Universal SSL** is **ON**
+   - Set encryption mode to **Full (strict)**
+
+### Step 4: Configure Railway
 ```bash
 # In your terminal with Railway CLI
 railway domain add "*.heraerp.com"
@@ -143,10 +155,38 @@ When a business completes production conversion:
 3. Check Railway domain configuration
 4. Test with: `dig *.heraerp.com`
 
-### SSL Certificate Issues
-1. Ensure Cloudflare proxy is ON (orange cloud)
-2. Set SSL/TLS to "Full (strict)"
-3. Wait 15 minutes for certificate generation
+### SSL Certificate Issues (Wildcard Specific)
+1. **Check Universal SSL Status**:
+   - Go to SSL/TLS → Overview
+   - Ensure "Universal SSL" shows as **Active**
+   - If inactive, click "Enable Universal SSL"
+
+2. **Verify _acme-challenge Configuration**:
+   - Go to DNS → Records
+   - Find `_acme-challenge` records (if any)
+   - Ensure they are **NOT proxied** (gray cloud, DNS only)
+   - If proxied, click orange cloud to turn gray
+
+3. **SSL Mode Configuration**:
+   - Go to SSL/TLS → Overview  
+   - Set encryption mode to **"Full (strict)"**
+   - Avoid "Flexible" mode for wildcard domains
+
+4. **Certificate Generation Wait Time**:
+   - Wildcard certificates take **5-15 minutes** to generate
+   - Check SSL/TLS → Edge Certificates → Universal SSL
+   - Status should show "Active Certificate"
+
+5. **Test SSL for Wildcard**:
+   ```bash
+   # Test main domain
+   curl -I https://heraerp.com
+   
+   # Test wildcard subdomain
+   curl -I https://test-subdomain.heraerp.com
+   
+   # Both should return 200 OK with valid SSL
+   ```
 
 ### 404 Errors
 1. Verify Railway deployment is live
