@@ -459,7 +459,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Users className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                  <p className="text-2xl font-bold text-blue-600">{stats.totalMembers}</p>
+                  <p className="text-2xl font-bold text-blue-600">{loyaltyStats.totalMembers}</p>
                   <p className="text-xs text-gray-600">Total Members</p>
                 </div>
               </CardContent>
@@ -468,7 +468,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Heart className="h-8 w-8 mx-auto mb-2 text-red-500" />
-                  <p className="text-2xl font-bold text-red-600">{stats.activeMembers}</p>
+                  <p className="text-2xl font-bold text-red-600">{loyaltyStats.activeMembers}</p>
                   <p className="text-xs text-gray-600">Active</p>
                 </div>
               </CardContent>
@@ -477,7 +477,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Sparkles className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                  <p className="text-2xl font-bold text-purple-600">{stats.newThisMonth}</p>
+                  <p className="text-2xl font-bold text-purple-600">{loyaltyStats.newThisMonth}</p>
                   <p className="text-xs text-gray-600">New This Month</p>
                 </div>
               </CardContent>
@@ -486,7 +486,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Zap className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-                  <p className="text-2xl font-bold text-yellow-600">{stats.totalPointsAwarded}</p>
+                  <p className="text-2xl font-bold text-yellow-600">{loyaltyStats.totalPointsAwarded}</p>
                   <p className="text-xs text-gray-600">Total Points</p>
                 </div>
               </CardContent>
@@ -495,7 +495,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Target className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                  <p className="text-2xl font-bold text-green-600">{stats.avgPointsPerMember}</p>
+                  <p className="text-2xl font-bold text-green-600">{loyaltyStats.avgPointsPerMember}</p>
                   <p className="text-xs text-gray-600">Avg Points</p>
                 </div>
               </CardContent>
@@ -504,7 +504,7 @@ export default function LoyaltyProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Crown className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                  <p className="text-2xl font-bold text-purple-600">{stats.tierDistribution.platinum}</p>
+                  <p className="text-2xl font-bold text-purple-600">{loyaltyStats.tierDistribution.platinum}</p>
                   <p className="text-xs text-gray-600">Platinum VIPs</p>
                 </div>
               </CardContent>
