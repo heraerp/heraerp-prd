@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.SUPABASE_URL || 'https://hsumtzuqzoqccpjiaikh.supabase.co'
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzdW10enVxem9xY2NwamlhaWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM2MDA3ODcsImV4cCI6MjA2OTE3Njc4N30.MeQGn3wi7WFDLfw_DNUKzvfOYle9vGX9BEN67wusTLQ'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || ''
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Bella Vista Salon organization ID
-const SALON_ORG_ID = 'bella_vista_salon_test'
+const SALON_ORG_ID = '44d2d8f8-167d-46a7-a704-c0e5435863d6' // HERA Software Inc
 
 export async function GET(request: NextRequest) {
   try {
