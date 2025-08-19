@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SalonTeamsSidebar } from '@/components/salon-progressive/SalonTeamsSidebar'
 import { 
   CreditCard, 
@@ -37,7 +38,8 @@ import {
   XCircle,
   Clock,
   Filter,
-  Download
+  Download,
+  AlertCircle
 } from 'lucide-react'
 import Link from 'next/link'
 
