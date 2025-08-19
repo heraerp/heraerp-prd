@@ -257,7 +257,7 @@ export default function ServicesProgressive() {
     }
   }
 
-  const stats = getServiceStats()
+  const serviceStats = getServiceStats()
 
 
   if (!isAuthenticated) {
@@ -429,7 +429,7 @@ export default function ServicesProgressive() {
             <CardContent className="p-4">
               <div className="text-center">
                 <Scissors className="h-8 w-8 mx-auto mb-2 text-pink-500" />
-                <p className="text-2xl font-bold text-pink-600">{stats.totalServices}</p>
+                <p className="text-2xl font-bold text-pink-600">{serviceStats.totalServices}</p>
                 <p className="text-xs text-gray-600">Active Services</p>
               </div>
             </CardContent>
@@ -438,7 +438,7 @@ export default function ServicesProgressive() {
             <CardContent className="p-4">
               <div className="text-center">
                 <DollarSign className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                <p className="text-2xl font-bold text-green-600">${stats.totalRevenue}</p>
+                <p className="text-2xl font-bold text-green-600">${serviceStats.totalRevenue}</p>
                 <p className="text-xs text-gray-600">Total Revenue</p>
               </div>
             </CardContent>
@@ -447,7 +447,7 @@ export default function ServicesProgressive() {
             <CardContent className="p-4">
               <div className="text-center">
                 <Users className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                <p className="text-2xl font-bold text-blue-600">{stats.totalBookings}</p>
+                <p className="text-2xl font-bold text-blue-600">{serviceStats.totalBookings}</p>
                 <p className="text-xs text-gray-600">Total Bookings</p>
               </div>
             </CardContent>
@@ -456,7 +456,7 @@ export default function ServicesProgressive() {
             <CardContent className="p-4">
               <div className="text-center">
                 <TrendingUp className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                <p className="text-2xl font-bold text-purple-600">${stats.averagePrice}</p>
+                <p className="text-2xl font-bold text-purple-600">${serviceStats.averagePrice}</p>
                 <p className="text-xs text-gray-600">Avg Price</p>
               </div>
             </CardContent>
@@ -465,7 +465,7 @@ export default function ServicesProgressive() {
             <CardContent className="p-4">
               <div className="text-center">
                 <Star className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-                <p className="text-lg font-bold text-yellow-600">{stats.topService}</p>
+                <p className="text-lg font-bold text-yellow-600">{serviceStats.topService}</p>
                 <p className="text-xs text-gray-600">Most Popular</p>
               </div>
             </CardContent>

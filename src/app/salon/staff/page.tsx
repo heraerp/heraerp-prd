@@ -260,7 +260,7 @@ export default function StaffProgressive() {
     return [...new Set(staff.map(s => s.department))]
   }
 
-  const stats = getStaffStats()
+  const staffStats = getStaffStats()
   const departments = getDepartments()
 
 
@@ -437,7 +437,7 @@ export default function StaffProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Users className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                  <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                  <p className="text-2xl font-bold text-blue-600">{staffStats.total}</p>
                   <p className="text-xs text-gray-600">Total Staff</p>
                 </div>
               </CardContent>
@@ -446,7 +446,7 @@ export default function StaffProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Briefcase className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                  <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                  <p className="text-2xl font-bold text-green-600">{staffStats.active}</p>
                   <p className="text-xs text-gray-600">Active</p>
                 </div>
               </CardContent>
@@ -455,7 +455,7 @@ export default function StaffProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <DollarSign className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                  <p className="text-2xl font-bold text-green-600">${stats.totalEarnings}</p>
+                  <p className="text-2xl font-bold text-green-600">${staffStats.totalEarnings}</p>
                   <p className="text-xs text-gray-600">Total Earnings</p>
                 </div>
               </CardContent>
@@ -464,7 +464,7 @@ export default function StaffProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <Star className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-                  <p className="text-2xl font-bold text-yellow-600">{stats.avgRating.toFixed(1)}</p>
+                  <p className="text-2xl font-bold text-yellow-600">{staffStats.avgRating.toFixed(1)}</p>
                   <p className="text-xs text-gray-600">Avg Rating</p>
                 </div>
               </CardContent>
@@ -473,7 +473,7 @@ export default function StaffProgressive() {
               <CardContent className="p-4">
                 <div className="text-center">
                   <TrendingUp className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                  <p className="text-2xl font-bold text-purple-600">{stats.avgCommission.toFixed(0)}%</p>
+                  <p className="text-2xl font-bold text-purple-600">{staffStats.avgCommission.toFixed(0)}%</p>
                   <p className="text-xs text-gray-600">Avg Commission</p>
                 </div>
               </CardContent>

@@ -229,7 +229,7 @@ export default function InventoryProduction() {
   const [testMode, setTestMode] = useState(false)
   const [inventory, setInventory] = useState<InventoryItem[]>(fallbackInventory)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [inventoryError, setInventoryError] = useState<string | null>(null)
   const [hasChanges, setHasChanges] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -258,13 +258,13 @@ export default function InventoryProduction() {
   useEffect(() => {
     const loadInventoryData = async () => {
       setIsLoading(true)
-      setError(null)
+      setInventoryError(null)
       
       try {
         const data = await fetchInventoryData()
         setInventory(data)
       } catch (err) {
-        setError('Failed to load inventory data')
+        setInventoryError('Failed to load inventory data')
         console.error('Error loading inventory:', err)
       } finally {
         setIsLoading(false)
@@ -372,7 +372,7 @@ export default function InventoryProduction() {
     }
   }
 
-  const stats = getInventoryStats()
+  const inventoryStats = getInventoryStats()
 
 
   if (!isAuthenticated) {
@@ -548,7 +548,7 @@ export default function InventoryProduction() {
             <CardContent className="p-4">
               <div className="text-center">
                 <Package className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                <p className="text-2xl font-bold text-blue-600">{stats.totalItems}</p>
+                <p className="text-2xl font-bold text-blue-600">{inventoryStats.totalItems}</p>
                 <p className="text-xs text-gray-600">Total Items</p>
               </div>
             </CardContent>
@@ -557,7 +557,7 @@ export default function InventoryProduction() {
             <CardContent className="p-4">
               <div className="text-center">
                 <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-                <p className="text-2xl font-bold text-yellow-600">{stats.lowStock}</p>
+                <p className="text-2xl font-bold text-yellow-600">{inventoryStats.lowStock}</p>
                 <p className="text-xs text-gray-600">Low Stock</p>
               </div>
             </CardContent>
@@ -566,7 +566,7 @@ export default function InventoryProduction() {
             <CardContent className="p-4">
               <div className="text-center">
                 <AlertCircle className="h-8 w-8 mx-auto mb-2 text-red-500" />
-                <p className="text-2xl font-bold text-red-600">{stats.outOfStock}</p>
+                <p className="text-2xl font-bold text-red-600">{inventoryStats.outOfStock}</p>
                 <p className="text-xs text-gray-600">Out of Stock</p>
               </div>
             </CardContent>
@@ -575,7 +575,7 @@ export default function InventoryProduction() {
             <CardContent className="p-4">
               <div className="text-center">
                 <DollarSign className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                <p className="text-2xl font-bold text-green-600">${stats.totalValue}</p>
+                <p className="text-2xl font-bold text-green-600">${inventoryStats.totalValue}</p>
                 <p className="text-xs text-gray-600">Inventory Value</p>
               </div>
             </CardContent>
@@ -584,7 +584,7 @@ export default function InventoryProduction() {
             <CardContent className="p-4">
               <div className="text-center">
                 <TrendingUp className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                <p className="text-2xl font-bold text-purple-600">${stats.totalRevenue}</p>
+                <p className="text-2xl font-bold text-purple-600">${inventoryStats.totalRevenue}</p>
                 <p className="text-xs text-gray-600">Revenue</p>
               </div>
             </CardContent>
