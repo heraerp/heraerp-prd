@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SalonTeamsSidebar } from '@/components/salon-progressive/SalonTeamsSidebar'
+import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Package, 
   Plus,
@@ -484,7 +484,7 @@ export default function InventoryProduction() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex">
       {/* Teams-Style Sidebar */}
-      <SalonTeamsSidebar />
+      <SalonProductionSidebar />
       
       <div className="flex-1 flex flex-col ml-16">
         {/* Progressive Header */}

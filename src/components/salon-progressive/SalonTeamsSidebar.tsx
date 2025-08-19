@@ -40,14 +40,14 @@ export function SalonTeamsSidebar() {
       id: 'dashboard',
       label: 'Dashboard',
       icon: <Home className="w-5 h-5" />,
-      href: '/salon',
+      href: '/salon-progressive',
       color: 'hover:bg-blue-100'
     },
     {
       id: 'appointments',
       label: 'Appointments',
       icon: <Calendar className="w-5 h-5" />,
-      href: '/salon/appointments',
+      href: '/salon-progressive/appointments',
       badge: '12',
       color: 'hover:bg-green-100'
     },
@@ -55,7 +55,7 @@ export function SalonTeamsSidebar() {
       id: 'clients',
       label: 'Clients',
       icon: <Users className="w-5 h-5" />,
-      href: '/salon/clients',
+      href: '/salon-progressive/clients',
       badge: 'New',
       color: 'hover:bg-purple-100'
     },
@@ -63,21 +63,21 @@ export function SalonTeamsSidebar() {
       id: 'services',
       label: 'Services',
       icon: <Scissors className="w-5 h-5" />,
-      href: '/salon/services',
+      href: '/salon-progressive/services',
       color: 'hover:bg-pink-100'
     },
     {
       id: 'staff',
       label: 'Staff',
       icon: <User className="w-5 h-5" />,
-      href: '/salon/staff',
+      href: '/salon-progressive/staff',
       color: 'hover:bg-orange-100'
     },
     {
       id: 'inventory',
       label: 'Inventory',
       icon: <Sparkles className="w-5 h-5" />,
-      href: '/salon/inventory',
+      href: '/salon-progressive/inventory',
       badge: '5',
       color: 'hover:bg-yellow-100'
     },
@@ -85,14 +85,14 @@ export function SalonTeamsSidebar() {
       id: 'payments',
       label: 'Payments',
       icon: <CreditCard className="w-5 h-5" />,
-      href: '/salon/payments',
+      href: '/salon-progressive/payments',
       color: 'hover:bg-emerald-100'
     },
     {
       id: 'loyalty',
       label: 'Loyalty Program',
       icon: <Crown className="w-5 h-5" />,
-      href: '/salon/loyalty',
+      href: '/salon-progressive/loyalty',
       badge: 'VIP',
       color: 'hover:bg-indigo-100'
     },
@@ -100,21 +100,21 @@ export function SalonTeamsSidebar() {
       id: 'marketing',
       label: 'Marketing',
       icon: <Zap className="w-5 h-5" />,
-      href: '/salon/marketing',
+      href: '/salon-progressive/marketing',
       color: 'hover:bg-cyan-100'
     },
     {
       id: 'reports',
       label: 'Reports',
       icon: <BarChart3 className="w-5 h-5" />,
-      href: '/salon/reports',
+      href: '/salon-progressive/reports',
       color: 'hover:bg-teal-100'
     }
   ]
 
   const isActive = (href: string) => {
-    if (href === '/salon') {
-      return pathname === '/salon'
+    if (href === '/salon-progressive') {
+      return pathname === '/salon-progressive'
     }
     return pathname.startsWith(href)
   }
@@ -124,7 +124,7 @@ export function SalonTeamsSidebar() {
       id: 'new-appointment',
       label: 'New Appointment',
       icon: <Calendar className="w-5 h-5" />,
-      href: '/salon/appointments?action=new',
+      href: '/salon-progressive/appointments?action=new',
       color: 'hover:bg-blue-100',
       description: 'Schedule a new appointment'
     },
@@ -132,7 +132,7 @@ export function SalonTeamsSidebar() {
       id: 'new-client',
       label: 'Add Client',
       icon: <User className="w-5 h-5" />,
-      href: '/salon/clients?action=new',
+      href: '/salon-progressive/clients?action=new',
       color: 'hover:bg-purple-100',
       description: 'Register a new client'
     },
@@ -140,7 +140,7 @@ export function SalonTeamsSidebar() {
       id: 'new-service',
       label: 'Add Service',
       icon: <Scissors className="w-5 h-5" />,
-      href: '/salon/services?action=new',
+      href: '/salon-progressive/services?action=new',
       color: 'hover:bg-pink-100',
       description: 'Create a new service offering'
     },
@@ -172,7 +172,7 @@ export function SalonTeamsSidebar() {
       id: 'coa',
       label: 'Chart of Accounts',
       icon: <Calculator className="w-5 h-5" />,
-      href: '/salon/finance/coa',
+      href: '/salon-progressive/finance/coa',
       color: 'hover:bg-indigo-100',
       description: 'Dubai Salon COA with 4-digit structure'
     },
@@ -180,7 +180,7 @@ export function SalonTeamsSidebar() {
       id: 'pos',
       label: 'Point of Sale',
       icon: <ShoppingCart className="w-5 h-5" />,
-      href: '/salon/pos',
+      href: '/salon-progressive/pos',
       color: 'hover:bg-orange-100',
       description: 'Salon POS for services and products'
     },
@@ -188,7 +188,7 @@ export function SalonTeamsSidebar() {
       id: 'inventory-restock',
       label: 'Restock Items',
       icon: <Sparkles className="w-5 h-5" />,
-      href: '/salon/inventory?action=restock',
+      href: '/salon-progressive/inventory?action=restock',
       color: 'hover:bg-yellow-100',
       description: 'Update inventory stock levels'
     },
@@ -196,7 +196,7 @@ export function SalonTeamsSidebar() {
       id: 'loyalty-rewards',
       label: 'Loyalty Points',
       icon: <Crown className="w-5 h-5" />,
-      href: '/salon/loyalty?action=points',
+      href: '/salon-progressive/loyalty?action=points',
       color: 'hover:bg-indigo-100',
       description: 'Manage customer rewards'
     },
@@ -204,7 +204,7 @@ export function SalonTeamsSidebar() {
       id: 'marketing-campaign',
       label: 'Send Promotion',
       icon: <Zap className="w-5 h-5" />,
-      href: '/salon/marketing?action=campaign',
+      href: '/salon-progressive/marketing?action=campaign',
       color: 'hover:bg-cyan-100',
       description: 'Launch marketing campaign'
     },
@@ -212,7 +212,7 @@ export function SalonTeamsSidebar() {
       id: 'daily-report',
       label: 'Today\'s Report',
       icon: <BarChart3 className="w-5 h-5" />,
-      href: '/salon/reports?period=today',
+      href: '/salon-progressive/reports?period=today',
       color: 'hover:bg-teal-100',
       description: 'View today\'s performance'
     }
@@ -387,7 +387,7 @@ export function SalonTeamsSidebar() {
               <Button
                 size="sm"
                 className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
-                onClick={() => handleNavigation('/salon/settings')}
+                onClick={() => handleNavigation('/salon-progressive/settings')}
               >
                 <Settings className="w-5 h-5" />
               </Button>

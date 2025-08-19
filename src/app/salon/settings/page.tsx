@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SalonTeamsSidebar } from '@/components/salon-progressive/SalonTeamsSidebar'
+import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Settings, 
   Save,
@@ -303,7 +303,7 @@ export default function SettingsProgressive() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex">
       {/* Teams-Style Sidebar */}
-      <SalonTeamsSidebar />
+      <SalonProductionSidebar />
       
       <div className="flex-1 flex flex-col ml-16">
         {/* Progressive Header */}

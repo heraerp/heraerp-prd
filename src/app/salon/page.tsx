@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { SalonTeamsSidebar } from '@/components/salon-progressive/SalonTeamsSidebar'
+import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Scissors, 
   User, 
@@ -153,7 +153,7 @@ export default function SalonProduction({ initialTestMode = false }: SalonProgre
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex">
       {/* Teams-Style Sidebar */}
-      <SalonTeamsSidebar />
+      <SalonProductionSidebar />
       
       <div className="flex-1 flex flex-col ml-16">
         {/* Progressive Header */}
