@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   BarChart3, 
   TrendingUp,
@@ -38,7 +39,9 @@ import {
   Award,
   Activity,
   PieChart,
-  LineChart
+  LineChart,
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 

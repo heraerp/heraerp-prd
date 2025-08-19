@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SalonTeamsSidebar } from '@/components/salon-progressive/SalonTeamsSidebar'
 import { 
   User, 
@@ -42,7 +43,9 @@ import {
   Award,
   Users,
   Briefcase,
-  TrendingUp
+  TrendingUp,
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 

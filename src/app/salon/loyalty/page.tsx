@@ -260,112 +260,6 @@ export default function LoyaltyProgressive() {
     const nextTierMin = member.tier === 'gold' ? 1000 : 
                        member.tier === 'silver' ? 500 : 250
 
-    
-    if (!isAuthenticated) {
-
-    
-      return (
-
-    
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
-
-    
-          <Alert>
-
-    
-            <AlertCircle className="h-4 w-4" />
-
-    
-            <AlertDescription>
-
-    
-              Please log in to access loyalty management.
-
-    
-            </AlertDescription>
-
-    
-          </Alert>
-
-    
-        </div>
-
-    
-      )
-
-    
-    }
-
-
-    
-    if (contextLoading) {
-
-    
-      return (
-
-    
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
-
-    
-          <div className="text-center">
-
-    
-            <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
-
-    
-            <p className="text-gray-600">Loading your profile...</p>
-
-    
-          </div>
-
-    
-        </div>
-
-    
-      )
-
-    
-    }
-
-
-    
-    if (!organizationId) {
-
-    
-      return (
-
-    
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
-
-    
-          <Alert variant="destructive">
-
-    
-            <AlertCircle className="h-4 w-4" />
-
-    
-            <AlertDescription>
-
-    
-              Organization not found. Please contact support.
-
-    
-            </AlertDescription>
-
-    
-          </Alert>
-
-    
-        </div>
-
-    
-      )
-
-    
-    }
-
-
-    
     return ((member.points - currentMin) / (nextTierMin - currentMin)) * 100
   }
 
@@ -527,7 +421,7 @@ export default function LoyaltyProgressive() {
                       {details.icon}
                       {details.name}
                     </div>
-                    <p className="font-semibold text-gray-800">{stats.tierDistribution[tier as keyof typeof stats.tierDistribution]} members</p>
+                    <p className="font-semibold text-gray-800">{loyaltyStats.tierDistribution[tier as keyof typeof loyaltyStats.tierDistribution]} members</p>
                     <p className="text-xs text-gray-600 mt-1">{details.minPoints}+ points</p>
                     <div className="mt-3 text-xs text-gray-500">
                       {details.benefits.slice(0, 2).map((benefit, idx) => (
@@ -671,7 +565,7 @@ export default function LoyaltyProgressive() {
                            <Award className="h-8 w-8 text-white" />}
                         </div>
                         <h3 className="font-semibold text-lg">{selectedMember.clientName}</h3>
-                        <Badge className={loyaltyTiers[selectedMember.tier].color} className="mt-2">
+                        <Badge className={`${loyaltyTiers[selectedMember.tier].color} mt-2`}>
                           {loyaltyTiers[selectedMember.tier].name} Member
                         </Badge>
                       </div>
