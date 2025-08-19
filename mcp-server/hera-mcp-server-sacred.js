@@ -401,7 +401,16 @@ async function startServer() {
 
       // Tool execution with SACRED enforcement
       this.server.setRequestHandler("tools/call", async (request) => {
-        const { name, arguments: args } = request.params;
+        const { name, arguments: args } = request.params || {};
+        
+        if (!name) {
+          return { 
+            content: [{ 
+              type: "text", 
+              text: "❌ Error: Tool name is required" 
+            }] 
+          };
+        }
 
         try {
           // SACRED: Use provided org_id or fall back to current context

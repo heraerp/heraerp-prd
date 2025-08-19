@@ -2,6 +2,42 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚨 QUICK REFERENCE - USE THESE TOOLS ALWAYS
+
+```bash
+# ALWAYS USE THESE CLI TOOLS (Prevents memory issues)
+cd mcp-server
+
+# View database
+node hera-query.js summary          # Overview of all tables
+node hera-query.js entities         # List entities  
+node hera-query.js transactions     # List transactions
+
+# Create data
+node hera-cli.js create-entity customer "Company Name"
+node hera-cli.js create-transaction sale 50000
+node hera-cli.js set-field <entity-id> email "test@example.com"
+
+# Status workflows (NEVER use status columns)
+node status-workflow-example.js     # Learn the pattern
+
+# Check your organization ID
+node hera-cli.js query core_organizations
+# Update .env: DEFAULT_ORGANIZATION_ID=your-uuid
+
+# HERA System Organization (Master Templates)
+node explore-system-org.js summary        # View all templates
+node explore-system-org.js statuses       # Standard workflow statuses
+node explore-system-org.js entity-types   # Entity type catalog
+node use-system-templates.js demo-complete-flow  # See templates in action
+```
+
+**SACRED RULES:**
+1. NO STATUS COLUMNS - Use relationships
+2. NO SCHEMA CHANGES - Use dynamic fields
+3. ALWAYS USE CLI TOOLS - Not manual queries
+4. ORGANIZATION_ID REQUIRED - Multi-tenant isolation
+
 ## Project Overview
 
 HERA (Hierarchical Enterprise Resource Architecture) is a revolutionary ERP platform built on a **universal 6-table database architecture**, designed to handle infinite business complexity without requiring schema changes. HERA eliminates the traditional ERP implementation nightmare through mathematical proof that **any business process can be modeled with just 6 universal tables**.
@@ -12,6 +48,7 @@ Our complete implementation proves HERA's universal architecture works for sophi
 - ✅ **Complete operations** - Menu management, order processing, advanced costing, accounting integration
 - ✅ **Universal COA integration** - Automatic GL posting, dual documents, complete audit trails
 - ✅ **Advanced costing system** - Batch production, combination meals, waste tracking, real-time profitability
+- ✅ **Progressive to Production** - Seamless conversion from trial to production with custom subdomain
 - ✅ **$463,000 cost savings** vs traditional restaurant POS systems with 100% success rate
 
 ## Tech Stack
@@ -28,71 +65,88 @@ Our complete implementation proves HERA's universal architecture works for sophi
 
 ## 🔌 MCP-FIRST DEVELOPMENT (REVOLUTIONARY)
 
-**HERA now includes a Model Context Protocol (MCP) server that gives Claude Desktop direct access to your entire Supabase database and universal architecture through natural language commands.**
+**HERA now includes a Model Context Protocol (MCP) server that gives direct access to your entire Supabase database through CLI tools, preventing memory issues and ensuring consistent universal architecture usage.**
 
-### **Quick MCP Setup (30 seconds)**
+### **🚀 Quick MCP Terminal Access (No Claude Desktop Required)**
 ```bash
-# 1. Start HERA MCP Server
-cd mcp-server && npm start
+# 1. Setup (one-time)
+cd mcp-server
+npm install
 
-# 2. Configure Claude Desktop (automatic)
-# Already configured in ~/Library/Application Support/Claude/claude_desktop_config.json
+# 2. Direct CLI Tools (Use These ALWAYS)
+node hera-query.js summary              # View all tables and record counts
+node hera-cli.js tables                 # List universal tables with details
+node hera-cli.js query core_entities    # Query any table
+node hera-cli.js create-entity customer "Company Name"  # Create entities
+node hera-cli.js create-transaction sale 50000          # Create transactions
+node hera-cli.js set-field <entity-id> email "test@example.com"  # Dynamic fields
 
-# 3. Use Natural Language Commands in Claude Desktop
-"Create a customer entity for Acme Corp"
-"Add a credit limit field of $50,000 to customer"
-"Create a sale transaction for $5,000"
-"Setup enterprise security for my organization"
+# 3. Status Workflows (Use Relationships, NOT status columns)
+node status-workflow-example.js         # See how to implement status via relationships
 ```
+
+### **⚠️ CRITICAL: Organization ID Setup**
+```bash
+# Check your organization ID first
+node hera-cli.js query core_organizations
+
+# Update .env with your organization UUID
+DEFAULT_ORGANIZATION_ID=your-org-uuid-here
+```
+
+### **⚠️ Important Schema Details**
+The actual database schema uses different column names than some documentation:
+- **Transactions**: Use `transaction_code` NOT `transaction_number`
+- **Relationships**: Use `from_entity_id/to_entity_id` NOT `parent_entity_id/child_entity_id`
+- **Status Fields**: NEVER add status columns - always use relationships
+- **Check Schema**: Always run `node check-schema.js` to see actual columns
 
 ### **MCP vs Manual Development**
 | Traditional | MCP-Powered |
 |-------------|-------------|
-| Write API endpoints | "Create customer API for me" |
-| Manual database operations | "Add 100 demo customers" |
-| Complex auth setup | "Setup user roles and permissions" |
-| Manual testing | "Test the authorization flow" |
-| Architecture compliance | "verify-hera-compliance" |
-| Manual quality gates | "check-quality-gates" |
-| Build progress tracking | "check-hera-formula" |
-| Read documentation | Ask Claude directly |
+| Write API endpoints | Use CLI tools directly |
+| Manual database operations | `node hera-cli.js create-entity` |
+| Complex auth setup | Built-in organization isolation |
+| Manual testing | `node hera-query.js summary` |
+| Status workflows | `node status-workflow-example.js` |
+| Schema verification | `node check-schema.js` |
+| Build progress tracking | Universal patterns enforced |
+| Read documentation | CLI tools show examples |
 
-### **🔧 Key MCP Tools Available**
+### **🔧 Key CLI Tools Available (USE THESE ALWAYS)**
 ```bash
-# HERA Master Verification
-"verify-hera-compliance"      # Complete architecture verification (26 checks)
-"check-hera-formula"          # HERA = UT + UA + UUI + SC + BM + IA + AJ + UP progress
-"validate-architecture"       # Real-time SACRED rules compliance
-"check-quality-gates"         # Manufacturing-grade quality assessment
-"generate-architecture-report" # Executive compliance summary
+# Quick Query Tools
+node hera-query.js summary              # Database overview
+node hera-query.js entities             # List all entities
+node hera-query.js transactions         # List all transactions
+node hera-query.js relationships        # Show entity relationships
+node hera-query.js dynamic              # Show dynamic field data
 
-# Universal Data Operations  
-"create-entity"               # Universal business entity creation
-"create-transaction"          # Universal transaction processing
-"set-dynamic-field"           # Schema-less custom field addition
-"create-relationship"         # Universal entity relationships
-"query-universal"             # SACRED-compliant data queries
+# Entity Management
+node hera-cli.js create-entity <type> <name>    # Create any entity
+node hera-cli.js query core_entities entity_type:customer  # Query with filters
+node hera-cli.js set-field <id> <field> <value> # Set dynamic fields
 
-# Universal COA & Auto-Journal System
-"setup-universal-coa"         # Complete Chart of Accounts for any industry
-"create-journal-entry"        # Automatic GL posting with dual documents
-"generate-financial-reports"  # Real-time P&L, Balance Sheet, Cash Flow
-"setup-advanced-costing"      # Multi-level BOM, batch costing, waste tracking
+# Transaction Management  
+node hera-cli.js create-transaction <type> <amount>  # Create transactions
+node hera-cli.js query universal_transactions        # List transactions
 
-# Universal POS DNA Component
-"generate-universal-pos"      # Complete POS system for any industry in 30 seconds
-"configure-industry-pos"      # Salon, Restaurant, Retail, Healthcare, etc.
-"setup-split-payments"        # Advanced split payment with auto-complete
-"create-pos-receipts"         # Professional receipt printing system
-"enable-auto-journal-engine"  # AI-powered automatic journal entry creation
-"process-auto-journal-batch"  # Intelligent batch processing for small transactions
+# Relationship Management (FOR STATUS WORKFLOWS)
+node status-workflow-example.js         # Learn status via relationships
+node hera-cli.js query core_relationships  # View all relationships
 
-# Authorization & Security
-"create-hera-user"            # Two-tier user creation
-"setup-organization-security" # Enterprise security configuration
-"check-user-authorization"    # Permission validation
-"test-authorization-flow"     # Complete auth workflow testing
+# Schema Inspection
+node check-schema.js                    # View actual table structures
+node hera-cli.js show-schema [table]    # Show table columns
+node hera-cli.js count <table>          # Count records in table
 ```
+
+### **🛡️ SACRED RULES - NEVER VIOLATE**
+1. **NO STATUS COLUMNS** - Use relationships table for status workflows
+2. **NO SCHEMA CHANGES** - Use core_dynamic_data for custom fields
+3. **ALWAYS USE ORGANIZATION_ID** - Multi-tenant isolation is sacred
+4. **USE CLI TOOLS FIRST** - Prevents memory issues and ensures consistency
+5. **SMART CODES REQUIRED** - Every operation needs intelligent context
 
 ## Common Commands
 
@@ -111,6 +165,12 @@ cd mcp-server && npm run test           # Test authorization tools
 # Testing (when implemented)
 npm test           # Run test suite
 
+# Monitoring System (Production Ready)
+npm run monitoring:dev    # Start monitoring stack (Prometheus, Grafana, Node Exporter)
+npm run monitoring:stop   # Stop monitoring stack
+npm run monitoring:logs   # View monitoring logs
+npm run monitoring:status # Check monitoring health
+
 # Documentation System (Auto-maintained)
 npm run docs:setup-hooks      # Set up Git hooks for automatic documentation
 npm run docs:generate         # Generate documentation from code changes
@@ -121,13 +181,8 @@ npm run docs:cleanup         # Clean up old documentation files
 npm run docs:full-maintenance # Run complete maintenance suite
 npm run docs:ai-generate     # AI-powered documentation generation
 
-# 🚀 REVOLUTIONARY UNIVERSAL TEMPLATE SYSTEM (World's fastest enterprise delivery)
-npx @hera/universal-template create --type=crm        # Enterprise CRM in 30 seconds (90% vs Salesforce savings)
-npx @hera/universal-template create --type=uat-testing # UAT framework in 5 minutes (92% success rate)
-npx @hera/universal-template create --type=sales-demo  # Professional demo in 30 seconds (85% conversion rate)
 
-# 🧬 HERA DNA + MCP - MANDATORY 200x ACCELERATION (USE BEFORE MANUAL DEVELOPMENT)
-# PRIORITY 1: Use Claude Desktop MCP for instant development
+# 🧬 Use Claude Desktop MCP for instant development:
 "Generate a restaurant POS system with inventory tracking"     # Complete system in 30 seconds via MCP
 "Create a healthcare patient management module"                # Complete module via natural language
 "Setup smart codes for manufacturing BOM system"              # Smart codes via MCP conversation
@@ -137,57 +192,13 @@ npx @hera/universal-template create --type=sales-demo  # Professional demo in 30
 "Enable intelligent auto-journal processing for transactions"  # AI-powered automatic GL posting
 "Setup batch journal automation for small transactions"       # Efficient batch processing system
 
-# PRIORITY 2: Fallback to traditional generators (if MCP unavailable)
-npm run generate-progressive-app --industry=restaurant --template=jewelry-progressive  # Complete app in 30 seconds
-npm run generate-module --name=X --type=business     # Complete module (26 weeks → 30 seconds)
-npm run generate-smart-codes --module=X              # Smart codes + SQL (4 weeks → 5 seconds)
-npm run generate-api --module=X                      # Universal APIs (8 weeks → 15 seconds)
-npm run generate-ui --module=X                       # Steve Jobs UI (12 weeks → 10 seconds)
-npm run generate-demo --module=X                     # Demo data + stories (2 weeks → 5 seconds)
-
-# 🔍 HERA MASTER VERIFICATION - MANDATORY BEFORE DEPLOYMENT
-"verify-hera-compliance"                              # Complete HERA architecture verification via MCP
-npm run test:verification                             # Test verification system locally
-# Chief Architect sign-off required for production deployment
-
-# 📱 PROGRESSIVE PWA GENERATION (NEW)
+# Progressive Web Apps
 npm run generate-progressive-pwa --business="Restaurant" --type=restaurant  # Complete PWA in 30 seconds
 npm run generate-progressive-pwa --business="Clinic" --type=healthcare     # Healthcare PWA ready instantly
 npm run generate-progressive-pwa --business="Store" --type=retail          # Retail PWA with offline sync
 
-# UAT Testing & Quality Assurance (Enterprise-grade)
-npm run demo:setup            # Setup realistic enterprise demo data
-npm run uat:execute           # Run comprehensive 50-test UAT suite
-npm run test:crm              # Full CRM functionality validation (92% success rate proven)
-npm run test:crm-mobile       # Mobile responsiveness testing
-npm run test:crm-performance  # Performance benchmarking vs competitors (43% faster than Salesforce)
-npm run reports:generate      # Executive UAT summary reports
-npm run sales:demo-ready      # Complete sales demo environment
 ```
 
-## 🔥 META BREAKTHROUGH: HERA GOVERNS HERA 🔥
-
-**REVOLUTIONARY SELF-GOVERNING PRINCIPLE**: HERA manages its own standards, data quality, and governance using the same 6 universal tables that power any business. This is the ultimate proof of universal architecture.
-
-### The Self-Governing Proof
-HERA uses zero additional tables to govern itself - standards, field definitions, validation rules, and quality monitoring all stored in the sacred 6 tables:
-
-1. **`core_organizations`** - System governance orgs (hera_system_standards, hera_quality_assurance)
-2. **`core_entities`** - Standards definitions stored as entities
-3. **`core_dynamic_data`** - Field registry and smart code definitions
-4. **`core_relationships`** - Validation rules and enforcement relationships
-5. **`universal_transactions`** - Quality monitoring and change tracking
-6. **`universal_transaction_lines`** - Detailed compliance metrics and audit trails
-
-**MANDATORY DEVELOPMENT PRINCIPLE**: All HERA development MUST be tracked and managed using HERA itself.
-
-**Before ANY development task:**
-1. Create a HERA task entity (entity_type='development_task')
-2. Track time via universal_transactions
-3. Document changes in core_dynamic_data
-4. Link dependencies through core_relationships
-
-This recursive implementation proves: **If HERA can govern itself with 6 tables, it can govern any business.**
 
 ## Core Architecture
 
@@ -219,14 +230,50 @@ Sacred `organization_id` filtering prevents ALL data leakage between businesses
 Business data IS training data - no separate AI infrastructure needed
 **Proof**: AI fields embedded in every table, real-time learning from operations
 
+### 🏛️ HERA System Organization - Master Template Repository
+
+**REVOLUTIONARY**: HERA includes a system organization (ID: `f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944`) that serves as the master template for all universal patterns.
+
+#### What's in the System Organization:
+- **16 Entity Type Templates** - Customer, Vendor, Product, Employee, GL Account, etc.
+- **24 Standard Fields** - Email, Phone, Address, Credit Limit, Payment Terms, etc.
+- **10 Workflow Statuses** - Draft → Pending → Approved → Completed (with colors!)
+- **15 Relationship Types** - Has Status, Parent Of, Reports To, Customer Of, etc.
+- **16 Transaction Types** - Sale, Purchase, Payment, Journal Entry, etc.
+- **5 Smart Code Patterns** - Standard formats for all smart codes
+
+#### Using System Templates:
+```bash
+# Explore templates
+node explore-system-org.js summary       # Overview
+node explore-system-org.js entity-types  # All entity types
+node explore-system-org.js statuses      # Workflow statuses
+node explore-system-org.js fields        # Standard fields
+
+# Use templates in practice
+node use-system-templates.js create-customer     # Create with template
+node use-system-templates.js assign-status <id> PENDING  # Workflow
+node use-system-templates.js demo-complete-flow  # Full demo
+
+# Copy all templates to new organization
+node explore-system-org.js copy-to <org-id>
+```
+
+#### Benefits:
+- **Instant Setup** - Copy templates to new orgs in seconds
+- **Consistent Patterns** - Every org uses same standards
+- **No Hardcoding** - All templates are data, not code
+- **Extensible** - Add your own templates to system org
+- **Version Control** - Templates evolve with HERA
+
 ### Universal-First Development Philosophy 🎯
 
 **CORE PRINCIPLE**: Default to universal architecture. Build specific APIs/UI only when universal patterns are insufficient.
 
 #### Development Workflow:
-1. **Start Universal** - Use existing universal tables and APIs
+1. **Start with System Templates** - Use HERA System Organization patterns
 2. **Leverage Dynamic Data** - Store custom properties in `core_dynamic_data` 
-3. **Extend Gradually** - Only create new APIs/UI when universal approach reaches limits
+3. **Use Relationships for Workflows** - Never add status columns
 4. **Maintain Universality** - Even specific implementations should integrate back to universal system
 
 #### Universal Architecture Components:
@@ -359,18 +406,13 @@ const business = await universalApi.setupBusiness({
 
 - **`src/app/`** - Next.js App Router with PWA setup and universal routing patterns
 - **`src/components/`** - Reusable React components with universal design patterns
-  - **`src/components/admin/`** - Schema administration interface with governance tab
 - **`src/lib/`** - Utility functions, universal API client, and business logic
-  - **`src/lib/governance/`** - Self-governing standards integration layer
-  - **`src/lib/schema/`** - Enhanced schema management with universal table fallback
-- **`applications/`** - Business-specific implementations (healthcare, manufacturing, etc.)
 - **`database/`** - Universal schema, migrations, functions, and seeds
-  - **`database/governance/`** - Self-governing standards SQL (zero new tables)
-  - **`database/system/`** - Traditional schema management (for reference/fallback)
 - **`config/`** - Business configuration files and industry templates
-- **`docs/`** - Comprehensive documentation including self-governing integration
+- **`docs/`** - Comprehensive documentation
 - **`auth-service/`** - Authentication microservice with universal authorization
 - **`ai-service/`** - Multi-provider AI integration with intelligent routing
+- **`monitoring/`** - Complete monitoring system with Prometheus, Grafana, and Node Exporter
 
 ## 🔌 HERA MCP Server - Revolutionary Natural Language Database Control
 
@@ -421,25 +463,6 @@ const business = await universalApi.setupBusiness({
 - **Zero Training**: Natural language eliminates learning curve
 - **Enterprise-Grade**: Multi-tenant isolation with audit trails
 
-## 🔍 HERA Master Verification System - MANDATORY COMPLIANCE CHECKER ✅ PRODUCTION READY
-
-**BREAKTHROUGH**: World's first comprehensive ERP architecture verification system with Chief Architect sign-off.
-
-### **🛡️ Master Verification Features** 
-- **26-Point Checklist**: Comprehensive compliance across 6 categories (SACRED, Build Formula, Patterns, Quality, Governance, Architecture)
-- **Chief Architect Sign-Off**: Professional review workflow with risk assessment and digital signatures
-- **Real-Time Violation Detection**: Critical/High/Medium/Low severity with automatic blocking
-- **Mathematical Scoring**: Weighted compliance scoring (0-100%) with deployment thresholds
-- **Self-Governing Verification**: HERA manages its own standards using the 6 universal tables
-- **Live System Status**: Current HERA compliance at 78% (PARTIALLY_COMPLIANT, deployment blocked)
-
-### **🎯 Usage in Claude Desktop**
-```bash
-"verify-hera-compliance"  # Complete architecture verification with Chief Architect review
-"check-hera-formula"      # Build progress against UT+UA+UUI+SC+BM+IA+AJ formula  
-"validate-architecture"   # Real-time SACRED rules compliance checking
-"check-quality-gates"     # Manufacturing-grade quality assessment
-```
 
 ## 🤖 HERA Universal AI System - Multi-Provider Intelligence
 
@@ -479,6 +502,43 @@ POST /api/v1/ai/docs
 | **Code Generation** | OpenAI | Claude | Gemini | GPT-4 strong for code |
 | **Data Analysis** | Claude | Gemini | OpenAI | Claude excellent for analysis |
 | **Creative Writing** | OpenAI | Gemini | Claude | GPT-4 for creativity |
+
+## 📊 Production Monitoring System
+
+HERA includes a complete production-ready monitoring stack for enterprise observability:
+
+### **Monitoring Architecture** ✅ PRODUCTION READY
+- **Prometheus**: Time-series metrics collection and storage
+- **Grafana**: Beautiful dashboards with 4 pre-configured panels
+- **Node Exporter**: System metrics (CPU, memory, disk, network)
+- **Custom Metrics**: Business KPIs, API performance, error rates
+
+### **Pre-configured Dashboards**
+1. **System Overview**: CPU, memory, disk usage with alerting thresholds
+2. **API Performance**: Request rates, response times, error tracking
+3. **Business Metrics**: Active users, transactions, revenue tracking
+4. **Database Health**: Connection pools, query performance, deadlocks
+
+### **Quick Start**
+```bash
+# Start complete monitoring stack
+npm run monitoring:dev
+
+# Access dashboards
+Grafana: http://localhost:3000 (admin/admin)
+Prometheus: http://localhost:9090
+Node Exporter: http://localhost:9100/metrics
+
+# Health check endpoint
+curl http://localhost:3001/api/health
+```
+
+### **Railway Deployment**
+Complete monitoring stack deploys to Railway with one click:
+- Automatic SSL/TLS configuration
+- Custom domain support (monitoring.yourdomain.com)
+- Persistent storage for metrics history
+- Zero-downtime updates
 
 ## PWA Implementation
 
@@ -575,8 +635,8 @@ const customer = {
   entity_name: 'ACME Corp',
   entity_code: 'CUST001',
   organization_id: user.organization_id,  // SACRED: Multi-tenant isolation
-  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1',  // Universal business intelligence
-  status: 'active'
+  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'  // Universal business intelligence
+  // NO STATUS FIELD - Use relationships for status!
 }
 
 // Custom properties via core_dynamic_data (no schema changes needed)
@@ -610,10 +670,11 @@ const transaction = {
   transaction_type: 'sale', // sale, purchase, payment, transfer, journal_entry, budget_line, forecast_line
   transaction_date: new Date(),
   organization_id: user.organization_id,  // SACRED: Multi-tenant isolation
-  transaction_number: generateTransactionNumber(),
+  transaction_code: generateTransactionCode(), // NOTE: Use transaction_code, NOT transaction_number
   smart_code: 'HERA.CRM.SALE.TXN.ORDER.v1',  // Automatic GL posting
   total_amount: 1000.00,
-  reference_entity_id: customer_id  // Links to customer entity
+  from_entity_id: customer_id,  // Customer making the purchase
+  to_entity_id: store_id        // Store receiving the payment
 }
 
 // Transaction lines with flexible structure (THE CRITICAL 6TH TABLE)
@@ -652,6 +713,55 @@ const lines = [
 // - AI-powered insights and recommendations
 // - Dynamic UI component selection
 // - Intelligent API routing and processing
+```
+
+### 🔄 Universal Status Workflows (CRITICAL PATTERN)
+**NEVER ADD STATUS COLUMNS** - Use relationships for all status workflows:
+
+```typescript
+// WRONG - Never do this:
+const entity = {
+  status: 'active'  // ❌ VIOLATES UNIVERSAL ARCHITECTURE
+}
+
+// CORRECT - Use relationships:
+// 1. Create status entities (one-time setup)
+const statuses = ['draft', 'pending', 'approved', 'rejected', 'completed']
+statuses.forEach(status => {
+  createEntity({
+    entity_type: 'workflow_status',
+    entity_name: `${status} Status`,
+    entity_code: `STATUS-${status.toUpperCase()}`,
+    smart_code: `HERA.WORKFLOW.STATUS.${status.toUpperCase()}.v1`
+  })
+})
+
+// 2. Assign status via relationship
+createRelationship({
+  from_entity_id: transaction.id,    // NOTE: Use from_entity_id
+  to_entity_id: pendingStatus.id,    // NOTE: Use to_entity_id
+  relationship_type: 'has_status',
+  smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1',
+  metadata: {
+    assigned_at: new Date(),
+    assigned_by: currentUser.id
+  }
+})
+
+// 3. Query entities with their status
+SELECT e.*, s.entity_name as current_status
+FROM core_entities e
+LEFT JOIN core_relationships r ON e.id = r.from_entity_id 
+  AND r.relationship_type = 'has_status'
+LEFT JOIN core_entities s ON r.to_entity_id = s.id
+WHERE e.organization_id = ?
+
+// Benefits:
+// ✅ Complete audit trail
+// ✅ Multiple simultaneous statuses
+// ✅ Status history tracking
+// ✅ No schema changes ever
+// ✅ Works for ANY entity type
 ```
 
 ### Universal Development Guidelines
@@ -727,15 +837,27 @@ const lines = [
 - **ROI Calculators**: Customizable business case generators
 - **Training Materials**: Complete sales team certification program
 
-#### **📱 Progressive PWA Generator** - *Complete PWAs instantly* ✅ PRODUCTION READY
-- **Generation Time**: 30 seconds from business requirements to deployable PWA
-- **Offline-First**: IndexedDB storage with 30-day expiry and auto-cleanup
-- **DNA Integration**: Reuses all existing glassmorphism and Fiori components
-- **MVP Guaranteed**: Auto-enhancement to 80%+ completeness using DNA patterns
-- **Industry-Specific**: Restaurant, Healthcare, Retail, Manufacturing presets
-- **Instant Deploy**: Edge CDN deployment with global availability
-- **Trial-to-Production**: Seamless migration path preserving all user data
-- **Cost Savings**: 95% reduction vs traditional PWA development ($5K vs $100K)
+
+### 🎯 Universal API Best Practices
+
+**Start with Universal API** - It handles 95%+ of use cases:
+- Complete CRUD for all 7 tables with multi-tenant security
+- Batch operations for high-performance scenarios  
+- Built-in validation and schema introspection
+- Mock mode for development without database
+- Smart Code integration for business intelligence
+
+**Add specialized endpoints only when**:
+- Performance requires optimization (complex aggregations, real-time analytics)
+- External systems need specific formats (payment gateways, third-party APIs)
+- Complex business logic spans multiple tables with heavy calculations
+- Bulk operations exceed 100K+ records requiring streaming
+
+**Always integrate back to universal tables**:
+- Even specialized APIs should store data in the 7 sacred tables
+- Maintain Smart Code patterns for business intelligence
+- Use organization_id filtering for multi-tenant isolation
+- Leverage universal authorization for security
 
 ### When to Build Specific APIs/UI
 
@@ -1168,150 +1290,85 @@ interface AuthContextType {
 4. **Universal Entity Creation** → User stored as entity in core_entities
 5. **Dynamic Permissions** → Role-based access through core_relationships
 
-## 🏛️ Self-Governing Standards Architecture
 
-### **Revolutionary Zero New Tables Policy**
-HERA proves its universal architecture by managing its own standards using only the sacred 6 tables:
+## 🐛 Troubleshooting Common Issues
 
-#### **System Organizations** (`core_organizations`)
-```sql
--- Governance organizations
-'hera_system_standards'   -- Master standards registry
-'hera_quality_assurance'  -- Quality monitoring and compliance
+### **Column Not Found Errors**
+```bash
+# ERROR: column "transaction_number" does not exist
+# FIX: Use transaction_code instead
+
+# ERROR: column "parent_entity_id" does not exist  
+# FIX: Use from_entity_id/to_entity_id instead
+
+# ERROR: column "status" does not exist
+# FIX: Use relationships for status (run node status-workflow-example.js)
+
+# Always check actual schema:
+node check-schema.js
 ```
 
-#### **Standards as Entities** (`core_entities`)
-```sql
--- Standards stored as business entities
-entity_type: 'standard_entity_type'     -- Universal entity standards
-entity_type: 'dna_component_standard'   -- Component definitions  
-entity_type: 'field_registry'           -- Field standards registry
-entity_type: 'smart_code_registry'      -- Smart code definitions
+### **Organization ID Errors**
+```bash
+# ERROR: DEFAULT_ORGANIZATION_ID not set
+# FIX: 
+node hera-cli.js query core_organizations  # Find your org
+# Update .env with the UUID
 ```
 
-#### **Field Definitions** (`core_dynamic_data`)
-```sql
--- Universal field library
-field_name: 'std_field_email'           -- Email field standard
-field_name: 'std_field_phone'           -- Phone field standard  
-field_name: 'HERA.STD.ENTITY.CUSTOMER.v1' -- Smart code definition
+### **Status Workflow Confusion**
+```bash
+# NEVER do this:
+UPDATE core_entities SET status = 'active'  # ❌ WRONG
+
+# Instead, use relationships:
+node status-workflow-example.js  # Learn the pattern
 ```
 
-#### **Validation Rules** (`core_relationships`)
-```sql
--- Standards enforcement relationships
-relationship_type: 'validates_with_standards'
-relationship_type: 'enforces_smart_code_pattern'
-relationship_type: 'provides_standard_fields'
+### **Memory Issues with Large Queries**
+```bash
+# Use CLI tools instead of manual queries:
+node hera-query.js entities  # Handles pagination automatically
+node hera-cli.js query core_entities --limit 100  # Limit results
 ```
 
-#### **Quality Monitoring** (`universal_transactions`)
-```sql
--- Quality tracking and compliance monitoring
-transaction_type: 'quality_assessment'
-transaction_type: 'standards_violation'
-transaction_type: 'compliance_check'
+### **Smart Code Validation**
+```bash
+# Check if smart code is valid:
+node hera-cli.js validate-smart-code "HERA.CRM.CUST.ENT.PROF.v1"
 ```
-
-### **Integration Layer**
-- **`/src/lib/governance/self-governing-integration.ts`** - Seamless integration layer
-- **Enhanced Schema Manager** - Intelligent fallback from traditional to universal tables
-- **Quality Metrics API** - Real-time compliance monitoring and violation tracking
-- **Admin Interface** - Complete governance controls in Schema Administration
-
-### **Key Benefits**
-✅ **Zero New Tables** - Proves universal architecture works for governance  
-✅ **Self-Documenting** - HERA governs itself using its own patterns  
-✅ **Real-Time Quality** - Continuous compliance monitoring  
-✅ **Seamless Fallback** - Works with or without traditional schema tables  
-✅ **Ultimate Proof** - If HERA can govern itself with 6 tables, it can govern any business
 
 ## Important Notes
 
-- **META PRINCIPLE IS SACRED**: Every line of code must be tracked in HERA first using development_task entities
-- **SELF-GOVERNING PRINCIPLE**: HERA manages its own standards using the sacred 6 tables (zero new tables)
 - **Multi-tenant by design**: Always include `organization_id` filtering (SACRED security boundary)
 - **Universal-first approach**: Default to universal tables, APIs, and patterns
 - **Smart Code Integration**: Every data point should have intelligent business context
-- **Quality-first development**: All data must meet self-governing standards
 - **Version-driven builds**: Version automatically injected during build process
 - **AI-native preparation**: System designed for multi-provider AI integration
 - **PWA-first**: Offline support and installability are core requirements
-- **Template-first development**: Use generators for 200x acceleration before manual coding
 - **Authorization-aware**: All components respect universal authorization patterns
+- **Monitoring-ready**: Production monitoring stack included with Prometheus and Grafana
+- **Schema Accuracy**: Always verify column names with `node check-schema.js`
+- **Status Patterns**: Use relationships for all status workflows, never add status columns
 
-## 🧬 HERA Development Workflow (MANDATORY)
+## 🧬 HERA Development Workflow
 
-### **BEFORE ANY DEVELOPMENT TASK:**
+### **USE CLAUDE DESKTOP MCP FIRST** (HIGHEST PRIORITY):
+```bash
+# Start HERA MCP Server
+cd mcp-server && npm start
 
-1. **🔌 USE CLAUDE DESKTOP MCP FIRST** (HIGHEST PRIORITY):
-   ```bash
-   # Start HERA MCP Server
-   cd mcp-server && npm start
-   
-   # Then in Claude Desktop use natural language:
-   "Create a complete restaurant POS system with inventory"
-   "Build a healthcare patient management module"
-   "Setup authorization for multi-tenant jewelry store"
-   "Generate APIs for manufacturing BOM management"
-   "Create demo data for financial analytics dashboard"
-   ```
+# Then in Claude Desktop use natural language:
+"Create a complete restaurant POS system with inventory"
+"Build a healthcare patient management module"
+"Setup authorization for multi-tenant jewelry store"
+"Generate APIs for manufacturing BOM management"
+"Create demo data for financial analytics dashboard"
+```
 
-2. **📱 Check Progressive PWA Generator Second**:
-   ```bash
-   # 📱 Complete PWAs in 30 seconds (if MCP unavailable)
-   npm run generate-progressive-pwa --business="Restaurant" --type=restaurant
-   npm run generate-progressive-pwa --business="Clinic" --type=healthcare
-   npm run generate-progressive-pwa --business="Store" --type=retail
-   ```
 
-3. **⚡ Check Universal Templates Third**:
-   ```bash
-   # 💼 Enterprise systems in 30 seconds (traditional fallback)
-   npx @hera/universal-template create --type=crm --industry=technology
-   npx @hera/universal-template create --type=uat-testing --scenarios=50
-   npx @hera/universal-template create --type=sales-demo --competitors=salesforce
-   ```
 
-3. **🧬 Use HERA DNA Generators** (200x acceleration):
-   ```bash
-   # Complete modules in 30 seconds vs 26 weeks
-   npm run generate-progressive-app --industry=X --template=jewelry-progressive
-   npm run generate-module --name=X --type=business
-   npm run generate-api --module=X  # 8 weeks → 15 seconds
-   npm run generate-ui --module=X   # 12 weeks → 10 seconds
-   ```
 
-4. **📋 Create HERA Task** (Meta principle):
-   ```typescript
-   // MANDATORY: Track all development in HERA
-   const task = {
-     entity_type: 'development_task',
-     entity_name: 'Implement customer dashboard',
-     entity_code: 'TASK-2025-001',
-     smart_code: 'HERA.DEV.TASK.ENT.IMPL.v1',
-     organization_id: 'hera_software_inc',  // HERA builds HERA
-     status: 'in_progress'
-   }
-   ```
-
-5. **⏱️ Track development work**:
-   ```typescript
-   // Log time as universal transaction
-   const workLog = {
-     transaction_type: 'development_work',
-     smart_code: 'HERA.DEV.WORK.TXN.TIME.v1',
-     reference_entity_id: task_id,
-     total_amount: 2.5, // hours worked
-     organization_id: 'hera_software_inc'
-   }
-   ```
-
-### **🎯 Progressive-First Development Priority**
-1. **Progressive PWA Generator** → Complete apps in 30 seconds
-2. **Universal Templates** → Enterprise features ready instantly  
-3. **DNA Generators** → Custom components with 200x acceleration
-4. **Manual Development** → Only when generators can't handle the requirement
 
 ## Auto-Documentation System 🤖
 
@@ -1408,6 +1465,33 @@ const UniversalPOS = dnaComponents['HERA.UI.POS.UNIVERSAL.ENGINE.v1']
 - **Trial-to-Production**: Zero-friction upgrade preserving all data
 - **Edge Deployment**: Instant CDN delivery globally
 
+### **🚀 Progressive to Production Conversion** ✅ PRODUCTION READY
+HERA features seamless conversion from progressive trial to full production deployment:
+
+**One-Click Conversion Process**:
+1. **Domain Assignment**: Assign a subdomain (e.g., `mario.heraerp.com`)
+2. **Data Migration**: All IndexedDB data automatically migrates to Supabase
+3. **Authentication Setup**: User accounts created with proper organization context
+4. **Feature Activation**: Full enterprise features enabled instantly
+5. **Zero Data Loss**: Complete preservation of trial period data
+
+**Conversion Benefits**:
+- **Instant Deployment**: Progressive app becomes production-ready in minutes
+- **Custom Subdomain**: Professional branded URL for each business
+- **SSL Certificate**: Automatic HTTPS configuration
+- **Full Authentication**: Supabase auth with organization isolation
+- **Enterprise Features**: Unlock multi-user, API access, integrations
+- **Continuous Operation**: No downtime during conversion
+
+**Example Conversion**:
+```bash
+# Progressive Trial (30 days)
+https://hera-trial.app/mario-pizza-demo
+
+# After Conversion (Production)
+https://mario.heraerp.com
+```
+
 ### **🎯 Industry Templates**
 - **Restaurant**: Menu management, order tracking, POS, inventory, auto-journal
 - **Healthcare**: Patient records, appointments, prescriptions, billing, auto-journal  
@@ -1481,29 +1565,10 @@ universal_transaction_lines → Invoice lines + journal entry lines
 ### **✅ Complete & Production Ready**: 
 - **Universal 6-Table Schema** with perfect multi-tenant isolation
 - **🌐 Universal API** - Complete CRUD for all 6 tables with enterprise security
-- **🔍 HERA Master Verification System** - World's first comprehensive ERP architecture verification
-  - **26-Point Compliance Checklist** - SACRED principles, build formula, patterns, quality gates
-  - **👨‍💼 Chief Architect Sign-Off** - Professional review workflow with risk assessment
-  - **🚨 Real-Time Violation Detection** - Critical/High/Medium/Low severity blocking
-  - **📊 Mathematical Scoring** - Weighted compliance (0-100%) with deployment thresholds
-  - **🛡️ Build Police System** - HERA = UT + UA + UUI + SC + BM + IA + AJ + UP formula tracking
-    - **AJ (Auto-Journal)**: AI-powered intelligent journal automation with 85% automation rate
-    - **UP (Universal POS)**: Cross-industry POS DNA component with 200x development acceleration
-  - **Current Status**: 78% compliant (PARTIALLY_COMPLIANT, deployment blocked)
-- **🏛️ Self-Governing Standards** - HERA manages itself using the sacred 6 tables (zero new tables)
-  - **🎯 Real-time Quality Monitoring** - Compliance scoring and violation tracking
-  - **🔍 Standards Registry** - Universal field definitions and smart codes in core_dynamic_data
-  - **⚖️ Governance Interface** - Admin controls for data quality and standards compliance
-  - **📊 Quality Metrics** - Automated compliance monitoring through universal_transactions
-  - **🔄 Seamless Integration** - Fallback system from traditional schema to universal tables
 - **Universal Authorization** - Organization-first security with dynamic RBAC
 - **Universal UI Components** - Complete component library with Steve Jobs design
 - **🤖 Universal AI System** - Multi-provider orchestration with intelligent routing
-- **🚀 Universal Template System** - World's fastest enterprise delivery (30 seconds vs months)
-  - **💼 Enterprise CRM** - 90% cost savings vs Salesforce, 92% UAT success rate
-  - **🧪 UAT Testing Framework** - Comprehensive testing with competitive benchmarking  
-  - **🎯 Sales Demo Environment** - Professional demos with 85% conversion rate
-  - **📱 Progressive PWA Generator** - Complete PWAs with DNA integration and offline sync
+- **📱 Progressive PWA Generator** - Complete PWAs with DNA integration and offline sync
 - **🧬 HERA DNA System** - 200x acceleration generators for all development
   - **Production DNA**: Complete glassmorphism + Fiori component library
   - **Progressive Adapter**: IndexedDB storage with 30-day expiry system
@@ -1531,35 +1596,20 @@ universal_transaction_lines → Invoice lines + journal entry lines
 - **📋 Authentication System** - Dual-provider architecture with universal entities
 - **PWA Implementation** - Advanced offline support with universal data sync
 - **Auto-Documentation** - AI-powered documentation generation and maintenance
+- **📊 Production Monitoring** - Complete observability stack with Prometheus, Grafana, and custom dashboards
 
-### **🟡 Active Development**:
-- **Progressive PWA Enhancements**: Additional industry templates and advanced offline features
-- **DNA System Evolution**: Cross-industry pattern learning and auto-optimization
-- **Edge Deployment**: Global CDN integration for instant PWA delivery
-- **Trial Analytics**: Conversion tracking and user behavior insights
-
-### **❌ Future Roadmap**: 
-- **AI-Powered Generation**: Intelligent component composition from natural language
-- **Blockchain Integration**: Supply chain transparency and verification
-- **IoT Device Support**: Smart device integration frameworks
-- **Advanced Analytics**: Embedded BI and predictive insights
 
 ---
 
 ## 🎯 The HERA Promise Delivered
 
-**6 Tables. Infinite Business Complexity. Zero Schema Changes. Self-Governing Architecture.**
+**6 Tables. Infinite Business Complexity. Zero Schema Changes.**
 
 ### **🚀 Revolutionary Achievements**:
 - **Traditional ERP**: 18-36 months, $5M-50M+, 20-40% failure rate
 - **HERA Production**: 4-8 weeks, 90% cost savings, 92% proven success rate
 - **HERA Progressive**: 30 seconds, 95% cost savings, instant deployment
 
-### **🏛️ Self-Governing Breakthrough**:
-- **Zero New Tables**: HERA manages its own standards using the sacred 6 tables
-- **Meta-Principle Proven**: If HERA can govern itself with 6 tables, it can govern any business
-- **Real-Time Quality**: Continuous compliance monitoring and violation tracking
-- **Ultimate Validation**: The system that builds ERPs uses ERP architecture to govern itself
 
 ### **📱 Progressive PWA Revolution**:
 - **Same Codebase**: Progressive trial and production use identical components
@@ -1574,6 +1624,6 @@ universal_transaction_lines → Invoice lines + journal entry lines
 - **Smart Evolution**: DNA patterns learn and improve over time
 
 ### **🏆 The Ultimate Proof**:
-**HERA doesn't just claim universal architecture works - it proves it by governing itself with the same 6 tables that handle any business.** Standards, quality monitoring, field definitions, validation rules, and compliance tracking all stored in the universal schema without a single additional table.
+**HERA's universal architecture handles any business complexity with just 6 tables.** From restaurant operations to healthcare management, from manufacturing to professional services - all running on the same sacred foundation without schema changes.
 
-**This isn't just better ERP - it's the mathematical proof that universal architecture can eliminate enterprise software complexity, deployment barriers, AND governance overhead that have plagued businesses for decades.** 🚀
+**This isn't just better ERP - it's the mathematical proof that universal architecture can eliminate enterprise software complexity and deployment barriers that have plagued businesses for decades.** 🚀

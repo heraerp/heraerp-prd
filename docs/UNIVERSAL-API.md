@@ -13,6 +13,12 @@ The Universal API provides comprehensive CRUD operations for all tables in HERA'
 - **Zero schema changes** needed for new business requirements
 - **Multi-tenant by design** with perfect data isolation
 
+### **⚠️ Critical Schema Notes**
+- **Transactions**: Use `transaction_code` NOT `transaction_number`
+- **Relationships**: Use `from_entity_id/to_entity_id` NOT `parent_entity_id/child_entity_id`
+- **Status Fields**: NEVER add status columns - use relationships pattern
+- **Schema Verification**: Always run `node check-schema.js` to verify actual column names
+
 ## Universal 7-Table Schema with Client Consolidation
 
 | Table | Purpose | Primary Key | Org Filtered | Hierarchy |
@@ -256,16 +262,16 @@ await universalApi.create('core_dynamic_data', {
 // Create comprehensive business transaction
 const transaction = await universalApi.createTransaction({
   transaction_type: 'sale',
-  transaction_number: 'SALE-2024-001', // Auto-generated if not provided
+  transaction_code: 'SALE-2024-001', // Auto-generated if not provided
   transaction_date: '2024-08-08',
   reference_number: 'INV-001',
-  source_entity_id: customerId,
-  target_entity_id: storeLocationId,
+  from_entity_id: customerId,      // Customer making purchase
+  to_entity_id: storeLocationId,   // Store receiving payment
   total_amount: 15000.00,
   tax_amount: 1200.00,
   discount_amount: 500.00,
   currency: 'USD',
-  status: 'completed',
+  // NOTE: Status handled via relationships, not column
   priority: 'high',
   department: 'jewelry_retail',
   cost_center: 'STORE_NYC',
@@ -593,6 +599,27 @@ const tables = [
   'universal_transaction_lines' // Transaction details
 ]
 ```
+
+## 🎯 Universal API Best Practices
+
+### **Start with Universal API** - It handles 95%+ of use cases:
+- Complete CRUD for all 7 tables with multi-tenant security
+- Batch operations for high-performance scenarios  
+- Built-in validation and schema introspection
+- Mock mode for development without database
+- Smart Code integration for business intelligence
+
+### **Add specialized endpoints only when**:
+- Performance requires optimization (complex aggregations, real-time analytics)
+- External systems need specific formats (payment gateways, third-party APIs)
+- Complex business logic spans multiple tables with heavy calculations
+- Bulk operations exceed 100K+ records requiring streaming
+
+### **Always integrate back to universal tables**:
+- Even specialized APIs should store data in the 7 sacred tables
+- Maintain Smart Code patterns for business intelligence
+- Use organization_id filtering for multi-tenant isolation
+- Leverage universal authorization for security
 
 ## Migration Guide
 

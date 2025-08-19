@@ -1,4 +1,14 @@
+// TODO: Update this page to use production data from useLoyalty_program
+// 1. Replace hardcoded data arrays with: const data = items.map(transformToUILoyalty_program)
+// 2. Update create handlers to use: await createLoyalty_program(formData)
+// 3. Update delete handlers to use: await deleteLoyalty_program(id)
+// 4. Replace loading states with: loading ? <Skeleton /> : <YourComponent />
+
 'use client'
+
+import { useAuth } from '@/contexts/auth-context'
+import { useUserContext } from '@/hooks/useUserContext'
+import { useLoyalty_program } from '@/hooks/useLoyalty_program'
 
 import React, { useState, useEffect } from 'react'
 import '../salon-styles.css'
@@ -169,6 +179,19 @@ interface LoyaltyMember {
 }
 
 export default function LoyaltyProgressive() {
+  const { isAuthenticated } = useAuth()
+  const { organizationId, userContext, loading: contextLoading } = useUserContext()
+  const { 
+    items, 
+    stats, 
+    loading, 
+    error, 
+    refetch, 
+    createLoyalty_program, 
+    updateLoyalty_program, 
+    deleteLoyalty_program 
+  } = useLoyalty_program(organizationId)
+
   const [testMode, setTestMode] = useState(true)
   const [members, setMembers] = useState<LoyaltyMember[]>(initialLoyaltyMembers)
   const [hasChanges, setHasChanges] = useState(false)
@@ -236,6 +259,112 @@ export default function LoyaltyProgressive() {
     const currentMin = loyaltyTiers[member.tier].minPoints
     const nextTierMin = member.tier === 'gold' ? 1000 : 
                        member.tier === 'silver' ? 500 : 250
+
+    
+    if (!isAuthenticated) {
+
+    
+      return (
+
+    
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+
+    
+          <Alert>
+
+    
+            <AlertCircle className="h-4 w-4" />
+
+    
+            <AlertDescription>
+
+    
+              Please log in to access loyalty management.
+
+    
+            </AlertDescription>
+
+    
+          </Alert>
+
+    
+        </div>
+
+    
+      )
+
+    
+    }
+
+
+    
+    if (contextLoading) {
+
+    
+      return (
+
+    
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+
+    
+          <div className="text-center">
+
+    
+            <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+
+    
+            <p className="text-gray-600">Loading your profile...</p>
+
+    
+          </div>
+
+    
+        </div>
+
+    
+      )
+
+    
+    }
+
+
+    
+    if (!organizationId) {
+
+    
+      return (
+
+    
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+
+    
+          <Alert variant="destructive">
+
+    
+            <AlertCircle className="h-4 w-4" />
+
+    
+            <AlertDescription>
+
+    
+              Organization not found. Please contact support.
+
+    
+            </AlertDescription>
+
+    
+          </Alert>
+
+    
+        </div>
+
+    
+      )
+
+    
+    }
+
+
     
     return ((member.points - currentMin) / (nextTierMin - currentMin)) * 100
   }
@@ -272,6 +401,14 @@ export default function LoyaltyProgressive() {
         <div className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-50">
           <div className="px-8 py-4">
             <div className="flex items-center justify-between">
+            <div className="text-right">
+              {userContext && (
+                <>
+                  <p className="text-sm font-medium">{userContext.user.name}</p>
+                  <p className="text-xs text-gray-600">{userContext.organization.name}</p>
+                </>
+              )}
+            </div>
               <div className="flex items-center gap-4">
                 <Button variant="outline" asChild>
                   <Link href="/salon-progressive">

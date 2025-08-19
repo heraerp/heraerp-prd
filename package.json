@@ -19,7 +19,13 @@
     "validate-pwa": "node scripts/generate-progressive-pwa.js validate",
     "migrate-pwa": "node scripts/generate-progressive-pwa.js migrate",
     "test-progressive": "node scripts/test-progressive-system.js",
-    "demo-simple": "node scripts/demo-progressive-simple.js"
+    "demo-simple": "node scripts/demo-progressive-simple.js",
+    "convert-progressive": "node scripts/convert-progressive-page.js",
+    "convert-universal": "node scripts/convert-progressive-universal.js",
+    "convert-industry": "node scripts/convert-industry.js",
+    "conversion-progress": "node scripts/conversion-progress.js",
+    "convert-page": "node scripts/convert-page-to-production.js",
+    "smart-convert": "node scripts/smart-page-converter.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

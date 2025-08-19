@@ -1,0 +1,17 @@
+# ================================================================================
+# GRAFANA DASHBOARD PROVISIONING
+# Automatically loads HERA ERP dashboards on startup
+# ================================================================================
+
+apiVersion: 1
+
+providers:
+  - name: 'HERA ERP Dashboards'
+    orgId: 1
+    folder: 'HERA ERP'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

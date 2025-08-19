@@ -1,0 +1,115 @@
+# ================================================================================
+# PROMETHEUS CONFIGURATION FOR HERA ERP
+# Monitors HERA application and system metrics
+# ================================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'hera-erp-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alert_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # HERA ERP Application Metrics
+  - job_name: 'hera-erp'
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    static_configs:
+      # Local development
+      - targets: ['host.docker.internal:3000']
+        labels:
+          service: 'hera-erp'
+          environment: 'development'
+      
+      # Production Railway deployment
+      - targets: ['heraerp.com']
+        labels:
+          service: 'hera-erp'
+          environment: 'production'
+    
+    # Custom metric relabeling for HERA
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'hera_.*'
+        target_label: 'app'
+        replacement: 'hera-erp'
+
+  # System Metrics (Node Exporter)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'system'
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Grafana Metrics
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+        labels:
+          service: 'grafana'
+
+# ================================================================================
+# HERA SPECIFIC MONITORING TARGETS
+# ================================================================================
+
+  # Multi-tenant Subdomain Monitoring
+  - job_name: 'hera-subdomains'
+    metrics_path: '/api/metrics'
+    scrape_interval: 60s
+    dns_sd_configs:
+      - names:
+        - '*.heraerp.com'
+        type: 'A'
+        port: 443
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: heraerp.com
+
+  # Health Check Endpoints
+  - job_name: 'hera-health-checks'
+    metrics_path: '/api/health'
+    scrape_interval: 30s
+    static_configs:
+      - targets: 
+        - 'heraerp.com'
+        - 'marinas-salon-demo.heraerp.com'
+        - 'techcorp-demo.heraerp.com'
+    
+    # Mark failed scrapes
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'up'
+        target_label: 'health_status'
+        replacement: 'monitored'
+
+# ================================================================================
+# RECORDING RULES FOR HERA BUSINESS METRICS
+# ================================================================================
+
+# Business conversion rates, customer lifecycle metrics, etc.
+# These will be defined in a separate rules file for complex calculations

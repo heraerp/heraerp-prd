@@ -5,9 +5,19 @@
 ## 🎯 **QUICK NAVIGATION**
 
 ### **🚀 Getting Started**
+- [**CLI Tools & Terminal Access**](../mcp-server/README.md) - Direct database access without memory issues
+- [**Troubleshooting Guide**](./TROUBLESHOOTING-GUIDE.md) - Common issues and solutions
+- [**Schema Migration Guide**](./SCHEMA-MIGRATION-GUIDE.md) - Update code to use correct column names
 - [**Production Deployment Guide**](./PRODUCTION-DEPLOYMENT-GUIDE.md) - Complete deployment instructions
 - [**Reusable Components Library**](./REUSABLE-COMPONENTS-LIBRARY.md) - Copy-paste production components
 - [**Production Architecture**](./HERA-PRODUCTION-ARCHITECTURE.md) - Deep technical architecture
+
+### **⚠️ Critical Schema Information**
+- **Transactions**: Use `transaction_code` NOT `transaction_number`
+- **Relationships**: Use `from_entity_id/to_entity_id` NOT `parent/child`
+- **Status**: NEVER add status columns - use relationships pattern
+- **Verification**: Always run `node check-schema.js` for actual column names
+- **Help**: See [Troubleshooting Guide](./TROUBLESHOOTING-GUIDE.md) for solutions
 
 ### **🏗️ Architecture & Design**
 - [**Universal Schema Documentation**](../database/migrations/schema.md) - 7-table universal database
@@ -51,6 +61,37 @@
 | **K8s Deployment** | `k8s/production-deployment.yaml` | Complete K8s config | ✅ Ready |
 | **Load Balancer** | `k8s/ingress.yaml` | Traffic routing | ✅ Ready |
 | **Monitoring Stack** | `k8s/monitoring/` | Prometheus + Grafana | ✅ Ready |
+
+## 🛠️ **CLI TOOLS FOR DEVELOPMENT**
+
+### **Essential CLI Commands**
+```bash
+# Setup (one-time)
+cd mcp-server
+npm install
+cp .env.example .env  # Add your Supabase credentials
+
+# Find your organization
+node hera-cli.js query core_organizations
+# Update .env: DEFAULT_ORGANIZATION_ID=your-org-uuid
+
+# Daily development workflow
+node hera-query.js summary          # Database overview
+node check-schema.js                # View actual table schemas
+node status-workflow-example.js     # Learn status patterns
+
+# Create entities
+node hera-cli.js create-entity customer "Company Name"
+node hera-cli.js create-entity product "Product Name"
+
+# Set dynamic fields
+node hera-cli.js set-field <entity-id> email "test@example.com"
+node hera-cli.js set-field <entity-id> price "99.99"
+
+# Create transactions
+node hera-cli.js create-transaction sale 5000
+node hera-cli.js create-transaction purchase 3000
+```
 
 ## 🎯 **USAGE PATTERNS**
 

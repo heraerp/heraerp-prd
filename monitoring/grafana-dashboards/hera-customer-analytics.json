@@ -1,0 +1,245 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HERA ERP - Customer Analytics & Business Intelligence",
+    "tags": ["hera", "customer", "analytics", "business"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "🌍 Global Visitor Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(hera_page_views_total[5m])) * 60",
+            "legendFormat": "Page Views/Min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "reqps"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "📱 Device Types",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (device_type) (hera_page_views_total)",
+            "legendFormat": "{{device_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "🌐 Geographic Distribution",
+        "type": "geomap",
+        "targets": [
+          {
+            "expr": "sum by (country) (hera_page_views_total)",
+            "legendFormat": "{{country}}"
+          }
+        ],
+        "gridPos": {"h": 12, "w": 24, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "🚀 Business Conversion Funnel",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum by (step) (hera_business_conversions_total{success=\"true\"})",
+            "legendFormat": "{{step}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-GrYlRd"
+            },
+            "mappings": [
+              {
+                "options": {
+                  "started": {"color": "blue", "index": 0},
+                  "form_completed": {"color": "yellow", "index": 1},
+                  "payment_initiated": {"color": "orange", "index": 2},
+                  "production_deployed": {"color": "green", "index": 3}
+                },
+                "type": "value"
+              }
+            ]
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20}
+      },
+      {
+        "id": 5,
+        "title": "💰 Revenue by Business Type",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "sum by (business_type) (hera_business_value{metric=\"revenue\"})",
+            "legendFormat": "{{business_type}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "currencyUSD"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20}
+      },
+      {
+        "id": 6,
+        "title": "⚡ Progressive to Production Conversions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(hera_progressive_conversions_total{success=\"true\"})",
+            "legendFormat": "Successful Conversions"
+          },
+          {
+            "expr": "avg(hera_conversion_duration_seconds) / 60",
+            "legendFormat": "Avg Duration (minutes)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds",
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "red", "value": 80}
+                ]
+              }
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 28}
+      },
+      {
+        "id": 7,
+        "title": "🏢 Active Subdomains",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, sum by (subdomain_hash, business_type) (hera_subdomain_activity_total))",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 28}
+      },
+      {
+        "id": 8,
+        "title": "🔥 API Performance & Usage",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(hera_api_requests_total[5m])",
+            "legendFormat": "{{endpoint}} - {{method}}"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(hera_api_duration_milliseconds_bucket[5m]))",
+            "legendFormat": "95th Percentile Latency"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "ms"
+          }
+        },
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 36}
+      },
+      {
+        "id": 9,
+        "title": "💡 Progressive Trial Behavior",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "sum by (action, business_type) (hera_progressive_actions_total)",
+            "format": "time_series"
+          }
+        ],
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 44}
+      },
+      {
+        "id": 10,
+        "title": "🛡️ System Health Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "hera_system_health",
+            "legendFormat": "{{component}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds",
+              "thresholds": {
+                "steps": [
+                  {"color": "red", "value": null},
+                  {"color": "yellow", "value": 0.5},
+                  {"color": "green", "value": 1}
+                ]
+              }
+            },
+            "mappings": [
+              {
+                "options": {
+                  "0": {"text": "DOWN"},
+                  "1": {"text": "HEALTHY"}
+                },
+                "type": "value"
+              }
+            ]
+          }
+        },
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 54}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 36,
+    "version": 1,
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": true,
+        "title": "HERA ERP Dashboard",
+        "tooltip": "",
+        "type": "link",
+        "url": "https://heraerp.com/dashboard"
+      }
+    ]
+  }
+}

@@ -4,6 +4,35 @@
 
 **HERA MCP Server provides 16 production-ready tools for comprehensive ERP development through natural language commands in Claude Desktop.**
 
+## 🛠️ CLI Tools for Direct Terminal Access
+
+**For development without Claude Desktop, use these command-line tools directly:**
+
+### Essential CLI Commands
+```bash
+# Setup
+cd mcp-server && npm install
+node hera-cli.js query core_organizations  # Get org ID
+# Update .env: DEFAULT_ORGANIZATION_ID=your-uuid
+
+# Daily Development
+node hera-query.js summary              # Database overview
+node check-schema.js                    # View actual schemas
+node status-workflow-example.js         # Learn status patterns
+
+# Data Operations
+node hera-cli.js create-entity customer "Name"
+node hera-cli.js create-transaction sale 1000
+node hera-cli.js set-field <id> email "test@example.com"
+node hera-cli.js query core_entities entity_type:customer
+```
+
+### Schema Verification
+**⚠️ CRITICAL: Always verify actual column names**
+- Use `transaction_code` NOT `transaction_number`
+- Use `from_entity_id/to_entity_id` NOT `parent/child`
+- NEVER add status columns - use relationships
+
 ---
 
 ## 🔍 **HERA Master Verification Tools**

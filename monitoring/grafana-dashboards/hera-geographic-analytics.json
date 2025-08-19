@@ -1,0 +1,237 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HERA ERP - Geographic Customer Analytics",
+    "tags": ["hera", "geography", "customers", "global"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "🌍 Global Visitor Distribution",
+        "type": "geomap",
+        "targets": [
+          {
+            "expr": "sum(hera_page_views_location) by (country, country_code)",
+            "legendFormat": "{{country}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "vis": false
+              }
+            },
+            "color": {
+              "mode": "continuous-GrYlRd"
+            }
+          }
+        },
+        "gridPos": {"h": 12, "w": 24, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "🌎 Top Countries by Visitors",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "topk(10, sum(hera_page_views_location) by (country))",
+            "legendFormat": "{{country}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12}
+      },
+      {
+        "id": 3,
+        "title": "🏙️ Top Cities by Engagement",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(15, sum(hera_page_views_location) by (city, country))",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12}
+      },
+      {
+        "id": 4,
+        "title": "🌏 Continental Distribution",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum(hera_page_views_location) by (continent)",
+            "legendFormat": "{{continent}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 20}
+      },
+      {
+        "id": 5,
+        "title": "🕐 Timezone Distribution",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum(hera_timezone_distribution) by (timezone)",
+            "legendFormat": "{{timezone}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-BlPu"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 20}
+      },
+      {
+        "id": 6,
+        "title": "📱 Device Types by Geography",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "sum(hera_page_views_location) by (country, device_type)",
+            "format": "time_series"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 20}
+      },
+      {
+        "id": 7,
+        "title": "💰 Premium Market Activity",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(hera_premium_market_activity)",
+            "legendFormat": "Premium Markets"
+          },
+          {
+            "expr": "sum(hera_premium_market_activity{conversion_type=\"production_converted\", success=\"true\"})",
+            "legendFormat": "Premium Conversions"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds",
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 50},
+                  {"color": "red", "value": 100}
+                ]
+              }
+            }
+          }
+        },
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 28}
+      },
+      {
+        "id": 8,
+        "title": "🚀 Geographic Conversion Rates",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "sum(hera_geo_conversions{success=\"true\"}) by (country, business_type) / sum(hera_geo_conversions) by (country, business_type) * 100",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "color-background"
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 28}
+      },
+      {
+        "id": 9,
+        "title": "📊 Business Type Preferences by Region",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum(hera_page_views_location) by (continent, business_type)",
+            "legendFormat": "{{continent}} - {{business_type}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 34}
+      },
+      {
+        "id": 10,
+        "title": "🌐 Network/ISP Analytics",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, sum(hera_network_analytics) by (country, isp))",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto"
+            }
+          }
+        },
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 42}
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 36,
+    "version": 1,
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": true,
+        "title": "HERA ERP Dashboard",
+        "tooltip": "",
+        "type": "link",
+        "url": "https://heraerp.com/dashboard"
+      }
+    ]
+  }
+}

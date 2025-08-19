@@ -1,15 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import '../salon-styles.css'
+import React, { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { 
   User, 
   Search, 
@@ -24,68 +23,23 @@ import {
   Calendar,
   DollarSign,
   Clock,
-  Save,
-  TestTube,
   UserPlus,
   ArrowLeft,
-  Sparkles
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
+import { useAuth } from '@/contexts/auth-context'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useUserContext } from '@/hooks/useUserContext'
+import { 
+  transformToUICustomer, 
+  filterCustomers, 
+  getTierDisplayProps,
+  formatPhoneNumber 
+} from '@/lib/transformers/customer-transformer'
 
-// Progressive Demo Data
-const initialCustomers = [
-  {
-    id: 1,
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    phone: '(555) 123-4567',
-    address: '123 Main St, City, ST 12345',
-    dateOfBirth: '1992-05-15',
-    preferences: 'Prefers Emma as stylist, allergic to sulfates',
-    notes: 'Regular customer, always books monthly appointments',
-    totalSpent: 1240,
-    visits: 12,
-    lastVisit: '2025-01-05',
-    favoriteServices: ['Haircut & Style', 'Hair Color'],
-    loyaltyTier: 'Gold',
-    createdDate: '2024-06-15'
-  },
-  {
-    id: 2,
-    name: 'Mike Chen',
-    email: 'mike.chen@email.com',
-    phone: '(555) 987-6543',
-    address: '456 Oak Ave, City, ST 12345',
-    dateOfBirth: '1988-09-22',
-    preferences: 'Quick service, prefers David',
-    notes: 'Busy schedule, likes early morning appointments',
-    totalSpent: 380,
-    visits: 8,
-    lastVisit: '2025-01-02',
-    favoriteServices: ['Beard Trim', 'Quick Cut'],
-    loyaltyTier: 'Silver',
-    createdDate: '2024-08-20'
-  },
-  {
-    id: 3,
-    name: 'Lisa Wang',
-    email: 'lisa.wang@email.com',
-    phone: '(555) 456-7890',
-    address: '789 Pine St, City, ST 12345',
-    dateOfBirth: '1995-12-08',
-    preferences: 'Loves trying new colors, experimental styles',
-    notes: 'Social media influencer, takes lots of photos',
-    totalSpent: 2150,
-    visits: 18,
-    lastVisit: '2025-01-08',
-    favoriteServices: ['Hair Color', 'Styling', 'Treatment'],
-    loyaltyTier: 'Platinum',
-    createdDate: '2024-03-10'
-  }
-]
-
-interface Customer {
-  id: number
+interface NewCustomerForm {
   name: string
   email: string
   phone: string
@@ -93,26 +47,32 @@ interface Customer {
   dateOfBirth: string
   preferences: string
   notes: string
-  totalSpent: number
-  visits: number
-  lastVisit: string
-  favoriteServices: string[]
-  loyaltyTier: string
-  createdDate: string
 }
 
-export default function CustomersProgressive() {
-  const [testMode, setTestMode] = useState(true)
-  const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
-  const [hasChanges, setHasChanges] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+export default function CustomersProduction() {
+  const { isAuthenticated } = useAuth()
+  const { organizationId, userContext, loading: contextLoading } = useUserContext()
+
+  const { 
+    customers, 
+    stats, 
+    loading, 
+    error, 
+    refetch, 
+    createCustomer, 
+    updateCustomer, 
+    deleteCustomer 
+  } = useCustomers(organizationId)
+
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
-  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null)
+  const [isCreating, setIsCreating] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
 
   // New customer form state
-  const [newCustomer, setNewCustomer] = useState({
+  const [newCustomer, setNewCustomer] = useState<NewCustomerForm>({
     name: '',
     email: '',
     phone: '',
@@ -122,71 +82,129 @@ export default function CustomersProgressive() {
     notes: ''
   })
 
-  // Filter customers based on search
-  const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.phone.includes(searchTerm)
+  // Transform customers to UI format
+  const uiCustomers = useMemo(() => 
+    customers.map(transformToUICustomer),
+    [customers]
   )
 
-  const handleSaveProgress = () => {
-    setLastSaved(new Date())
-    setHasChanges(false)
-    console.log('Customer data saved:', customers)
-  }
+  // Filter customers based on search
+  const filteredCustomers = useMemo(() => 
+    filterCustomers(uiCustomers, searchTerm),
+    [uiCustomers, searchTerm]
+  )
 
-  const handleAddCustomer = () => {
-    if (!newCustomer.name || !newCustomer.email) return
+  // Get selected customer details
+  const selectedCustomerData = useMemo(() => 
+    uiCustomers.find(c => c.id === selectedCustomer),
+    [uiCustomers, selectedCustomer]
+  )
 
-    const customer: Customer = {
-      id: Date.now(),
-      ...newCustomer,
-      totalSpent: 0,
-      visits: 0,
-      lastVisit: 'Never',
-      favoriteServices: [],
-      loyaltyTier: 'Bronze',
-      createdDate: new Date().toISOString().split('T')[0]
+  const handleAddCustomer = async () => {
+    if (!newCustomer.name || !newCustomer.email) {
+      setFormError('Name and email are required')
+      return
     }
 
-    setCustomers(prev => [...prev, customer])
-    setNewCustomer({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      dateOfBirth: '',
-      preferences: '',
-      notes: ''
-    })
-    setShowAddForm(false)
-    setHasChanges(true)
+    setIsCreating(true)
+    setFormError(null)
+
+    try {
+      await createCustomer({
+        name: newCustomer.name,
+        email: newCustomer.email,
+        phone: newCustomer.phone,
+        address: newCustomer.address,
+        dateOfBirth: newCustomer.dateOfBirth,
+        preferences: newCustomer.preferences,
+        notes: newCustomer.notes
+      })
+
+      // Reset form
+      setNewCustomer({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        dateOfBirth: '',
+        preferences: '',
+        notes: ''
+      })
+      setShowAddForm(false)
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Failed to create customer')
+    } finally {
+      setIsCreating(false)
+    }
   }
 
-  const handleDeleteCustomer = (id: number) => {
-    setCustomers(prev => prev.filter(c => c.id !== id))
-    setHasChanges(true)
-    setSelectedCustomer(null)
+  const handleDeleteCustomer = async (customerId: string) => {
+    if (!confirm('Are you sure you want to delete this customer?')) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      await deleteCustomer(customerId)
+      setSelectedCustomer(null)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete customer')
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const getTierColor = (tier: string) => {
-    switch (tier) {
-      case 'Platinum': return 'bg-purple-100 text-purple-800 border-purple-200'
-      case 'Gold': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'Silver': return 'bg-gray-100 text-gray-800 border-gray-200'
-      default: return 'bg-orange-100 text-orange-800 border-orange-200'
-    }
+    const props = getTierDisplayProps(tier)
+    return `${props.bgClass} ${props.textClass} ${props.borderClass}`
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access customer management.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Organization not found. Please contact support.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
-      {/* Progressive Header */}
+      {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button variant="outline" asChild>
-                <Link href="/salon-progressive">
+                <Link href="/salon">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Dashboard
                 </Link>
@@ -198,36 +216,27 @@ export default function CustomersProgressive() {
                 <p className="text-sm text-gray-600">Manage your clients and their preferences</p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-3">
-              {testMode && hasChanges && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={handleSaveProgress}
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
-                >
-                  <Save className="h-4 w-4" />
-                  Save Progress
-                </Button>
+            <div className="text-right">
+              {userContext && (
+                <>
+                  <p className="text-sm font-medium">{userContext.user.name}</p>
+                  <p className="text-xs text-gray-600">{userContext.organization.name}</p>
+                </>
               )}
-
-              {lastSaved && (
-                <div className="text-xs text-gray-500">
-                  Saved: {lastSaved.toLocaleTimeString()}
-                </div>
-              )}
-
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <TestTube className="h-3 w-3" />
-                Test Mode
-              </Badge>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto p-6">
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         {/* Search and Actions */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
@@ -242,6 +251,7 @@ export default function CustomersProgressive() {
           <Button 
             onClick={() => setShowAddForm(true)}
             className="bg-pink-600 hover:bg-pink-700"
+            disabled={loading}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Customer
@@ -250,44 +260,58 @@ export default function CustomersProgressive() {
 
         {/* Customer Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">{customers.length}</p>
-                <p className="text-xs text-gray-600">Total Customers</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  ${customers.reduce((sum, c) => sum + c.totalSpent, 0)}
-                </p>
-                <p className="text-xs text-gray-600">Total Revenue</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">
-                  {Math.round(customers.reduce((sum, c) => sum + c.totalSpent, 0) / customers.length)}
-                </p>
-                <p className="text-xs text-gray-600">Avg Spend</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-pink-600">
-                  {customers.filter(c => c.loyaltyTier === 'Platinum').length}
-                </p>
-                <p className="text-xs text-gray-600">VIP Clients</p>
-              </div>
-            </CardContent>
-          </Card>
+          {loading ? (
+            <>
+              {[...Array(4)].map((_, i) => (
+                <Card key={i} className="bg-white/80 backdrop-blur-sm">
+                  <CardContent className="p-4">
+                    <Skeleton className="h-12 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          ) : (
+            <>
+              <Card className="bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-purple-600">{stats.totalCustomers}</p>
+                    <p className="text-xs text-gray-600">Total Customers</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-green-600">
+                      ${stats.totalRevenue.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-600">Total Revenue</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-blue-600">
+                      ${stats.avgSpend}
+                    </p>
+                    <p className="text-xs text-gray-600">Avg Spend</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-pink-600">
+                      {stats.vipCount}
+                    </p>
+                    <p className="text-xs text-gray-600">VIP Clients</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -301,40 +325,54 @@ export default function CustomersProgressive() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {filteredCustomers.map((customer) => (
-                    <div 
-                      key={customer.id} 
-                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                        selectedCustomer?.id === customer.id 
-                          ? 'border-pink-300 bg-pink-50' 
-                          : 'border-gray-200 hover:border-pink-200 hover:bg-pink-25'
-                      }`}
-                      onClick={() => setSelectedCustomer(customer)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <User className="h-5 w-5 text-white" />
+                {loading ? (
+                  <div className="space-y-3">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="p-4 border rounded-lg">
+                        <Skeleton className="h-20 w-full" />
+                      </div>
+                    ))}
+                  </div>
+                ) : filteredCustomers.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    {searchTerm ? 'No customers found matching your search.' : 'No customers yet.'}
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {filteredCustomers.map((customer) => (
+                      <div 
+                        key={customer.id} 
+                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                          selectedCustomer === customer.id 
+                            ? 'border-pink-300 bg-pink-50' 
+                            : 'border-gray-200 hover:border-pink-200 hover:bg-pink-25'
+                        }`}
+                        onClick={() => setSelectedCustomer(customer.id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                              <User className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{customer.name}</p>
+                              <p className="text-sm text-gray-600">{customer.email}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium">{customer.name}</p>
-                            <p className="text-sm text-gray-600">{customer.email}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={getTierColor(customer.loyaltyTier)}>
-                            {customer.loyaltyTier}
-                          </Badge>
-                          <div className="text-right text-sm">
-                            <p className="font-medium">${customer.totalSpent}</p>
-                            <p className="text-gray-500">{customer.visits} visits</p>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getTierColor(customer.loyaltyTier)}>
+                              {customer.loyaltyTier}
+                            </Badge>
+                            <div className="text-right text-sm">
+                              <p className="font-medium">${customer.totalSpent}</p>
+                              <p className="text-gray-500">{customer.visits} visits</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -350,6 +388,13 @@ export default function CustomersProgressive() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {formError && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{formError}</AlertDescription>
+                    </Alert>
+                  )}
+                  
                   <div>
                     <Label htmlFor="name">Full Name *</Label>
                     <Input
@@ -411,21 +456,34 @@ export default function CustomersProgressive() {
                     <Button 
                       onClick={handleAddCustomer}
                       className="flex-1 bg-pink-600 hover:bg-pink-700"
-                      disabled={!newCustomer.name || !newCustomer.email}
+                      disabled={!newCustomer.name || !newCustomer.email || isCreating}
                     >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Customer
+                      {isCreating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Customer
+                        </>
+                      )}
                     </Button>
                     <Button 
                       variant="outline" 
-                      onClick={() => setShowAddForm(false)}
+                      onClick={() => {
+                        setShowAddForm(false)
+                        setFormError(null)
+                      }}
+                      disabled={isCreating}
                     >
                       Cancel
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ) : selectedCustomer ? (
+            ) : selectedCustomerData ? (
               <Card className="bg-white/80 backdrop-blur-sm">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -436,9 +494,14 @@ export default function CustomersProgressive() {
                     <Button 
                       variant="destructive" 
                       size="sm"
-                      onClick={() => handleDeleteCustomer(selectedCustomer.id)}
+                      onClick={() => handleDeleteCustomer(selectedCustomerData.id)}
+                      disabled={isDeleting}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {isDeleting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 </CardHeader>
@@ -447,51 +510,53 @@ export default function CustomersProgressive() {
                     <div className="h-16 w-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                       <User className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="font-semibold text-lg">{selectedCustomer.name}</h3>
-                    <Badge className={getTierColor(selectedCustomer.loyaltyTier)}>
-                      {selectedCustomer.loyaltyTier} Member
+                    <h3 className="font-semibold text-lg">{selectedCustomerData.name}</h3>
+                    <Badge className={getTierColor(selectedCustomerData.loyaltyTier)}>
+                      {selectedCustomerData.loyaltyTier} Member
                     </Badge>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <Mail className="h-4 w-4 text-gray-400" />
-                      <span>{selectedCustomer.email}</span>
+                      <span>{selectedCustomerData.email}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <Phone className="h-4 w-4 text-gray-400" />
-                      <span>{selectedCustomer.phone}</span>
-                    </div>
-                    {selectedCustomer.address && (
+                    {selectedCustomerData.phone && (
+                      <div className="flex items-center gap-3 text-sm">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        <span>{formatPhoneNumber(selectedCustomerData.phone)}</span>
+                      </div>
+                    )}
+                    {selectedCustomerData.address && (
                       <div className="flex items-center gap-3 text-sm">
                         <MapPin className="h-4 w-4 text-gray-400" />
-                        <span>{selectedCustomer.address}</span>
+                        <span>{selectedCustomerData.address}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-3 text-sm">
                       <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>Last visit: {selectedCustomer.lastVisit}</span>
+                      <span>Last visit: {selectedCustomerData.lastVisit}</span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 pt-4">
                     <div className="text-center p-3 bg-green-50 rounded-lg">
                       <DollarSign className="h-6 w-6 text-green-600 mx-auto mb-1" />
-                      <p className="font-semibold text-green-600">${selectedCustomer.totalSpent}</p>
+                      <p className="font-semibold text-green-600">${selectedCustomerData.totalSpent}</p>
                       <p className="text-xs text-gray-600">Total Spent</p>
                     </div>
                     <div className="text-center p-3 bg-blue-50 rounded-lg">
                       <Star className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                      <p className="font-semibold text-blue-600">{selectedCustomer.visits}</p>
+                      <p className="font-semibold text-blue-600">{selectedCustomerData.visits}</p>
                       <p className="text-xs text-gray-600">Visits</p>
                     </div>
                   </div>
 
-                  {selectedCustomer.favoriteServices.length > 0 && (
+                  {selectedCustomerData.favoriteServices.length > 0 && (
                     <div>
                       <Label className="text-sm font-medium">Favorite Services</Label>
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {selectedCustomer.favoriteServices.map((service, index) => (
+                        {selectedCustomerData.favoriteServices.map((service, index) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             {service}
                           </Badge>
@@ -500,17 +565,17 @@ export default function CustomersProgressive() {
                     </div>
                   )}
 
-                  {selectedCustomer.preferences && (
+                  {selectedCustomerData.preferences && (
                     <div>
                       <Label className="text-sm font-medium">Preferences</Label>
-                      <p className="text-sm text-gray-600 mt-1">{selectedCustomer.preferences}</p>
+                      <p className="text-sm text-gray-600 mt-1">{selectedCustomerData.preferences}</p>
                     </div>
                   )}
 
-                  {selectedCustomer.notes && (
+                  {selectedCustomerData.notes && (
                     <div>
                       <Label className="text-sm font-medium">Notes</Label>
-                      <p className="text-sm text-gray-600 mt-1">{selectedCustomer.notes}</p>
+                      <p className="text-sm text-gray-600 mt-1">{selectedCustomerData.notes}</p>
                     </div>
                   )}
                 </CardContent>
@@ -532,24 +597,6 @@ export default function CustomersProgressive() {
             )}
           </div>
         </div>
-
-        {/* Progressive Features Notice */}
-        {testMode && (
-          <Card className="mt-6 bg-blue-50 border-blue-200">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <TestTube className="h-5 w-5 text-blue-600" />
-                <div>
-                  <p className="font-medium text-blue-900">Test Mode Active</p>
-                  <p className="text-sm text-blue-700">
-                    Add, edit, and manage customers freely. All changes are saved locally in test mode. 
-                    Click "Save Progress" to persist your customer database.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   )

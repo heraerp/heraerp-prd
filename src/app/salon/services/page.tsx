@@ -1,4 +1,14 @@
+// TODO: Update this page to use production data from useService
+// 1. Replace hardcoded data arrays with: const data = items.map(transformToUIService)
+// 2. Update create handlers to use: await createService(formData)
+// 3. Update delete handlers to use: await deleteService(id)
+// 4. Replace loading states with: loading ? <Skeleton /> : <YourComponent />
+
 'use client'
+
+import { useAuth } from '@/contexts/auth-context'
+import { useUserContext } from '@/hooks/useUserContext'
+import { useService } from '@/hooks/useService'
 
 import React, { useState, useEffect } from 'react'
 import '../salon-styles.css'
@@ -138,6 +148,19 @@ interface Service {
 }
 
 export default function ServicesProgressive() {
+  const { isAuthenticated } = useAuth()
+  const { organizationId, userContext, loading: contextLoading } = useUserContext()
+  const { 
+    items, 
+    stats, 
+    loading, 
+    error, 
+    refetch, 
+    createService, 
+    updateService, 
+    deleteService 
+  } = useService(organizationId)
+
   const [testMode, setTestMode] = useState(true)
   const [services, setServices] = useState<Service[]>(initialServices)
   const [hasChanges, setHasChanges] = useState(false)
@@ -236,12 +259,126 @@ export default function ServicesProgressive() {
 
   const stats = getServiceStats()
 
+
+  if (!isAuthenticated) {
+
+
+    return (
+
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+
+
+        <Alert>
+
+
+          <AlertCircle className="h-4 w-4" />
+
+
+          <AlertDescription>
+
+
+            Please log in to access services management.
+
+
+          </AlertDescription>
+
+
+        </Alert>
+
+
+      </div>
+
+
+    )
+
+
+  }
+
+
+
+  if (contextLoading) {
+
+
+    return (
+
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+
+
+        <div className="text-center">
+
+
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+
+
+          <p className="text-gray-600">Loading your profile...</p>
+
+
+        </div>
+
+
+      </div>
+
+
+    )
+
+
+  }
+
+
+
+  if (!organizationId) {
+
+
+    return (
+
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+
+
+        <Alert variant="destructive">
+
+
+          <AlertCircle className="h-4 w-4" />
+
+
+          <AlertDescription>
+
+
+            Organization not found. Please contact support.
+
+
+          </AlertDescription>
+
+
+        </Alert>
+
+
+      </div>
+
+
+    )
+
+
+  }
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
       {/* Progressive Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
+            <div className="text-right">
+              {userContext && (
+                <>
+                  <p className="text-sm font-medium">{userContext.user.name}</p>
+                  <p className="text-xs text-gray-600">{userContext.organization.name}</p>
+                </>
+              )}
+            </div>
             <div className="flex items-center gap-4">
               <Button variant="outline" asChild>
                 <Link href="/salon-progressive">

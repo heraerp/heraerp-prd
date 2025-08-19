@@ -1,5 +1,24 @@
 # 🚀 HERA Restaurant Module - Quick Reference Card
 
+## 🛠️ Essential CLI Tools (Use These First!)
+
+```bash
+# Setup
+cd mcp-server && npm install
+node hera-cli.js query core_organizations  # Get your org ID
+# Update .env: DEFAULT_ORGANIZATION_ID=your-uuid
+
+# Daily Commands
+node hera-query.js summary              # Database overview
+node check-schema.js                    # View actual schemas
+node status-workflow-example.js         # Learn status patterns
+
+# Create Data
+node hera-cli.js create-entity customer "Name"
+node hera-cli.js create-transaction sale 1000
+node hera-cli.js set-field <id> email "test@example.com"
+```
+
 ## 30-Second Module Generation
 
 ```bash
@@ -18,14 +37,19 @@ npm run generate-ui --module=[MODULE]
 
 ## Universal 6-Table Pattern
 
-| Table | Purpose | Example Data |
-|-------|---------|--------------|
-| `core_entities` | Main objects | menu_item, inventory_item, employee |
-| `core_dynamic_data` | Custom fields | price, quantity, hourly_rate |
-| `core_relationships` | Connections | category→item, supplier→product |
-| `universal_transactions` | Business events | sales, purchases, payments |
-| `universal_transaction_lines` | Transaction details | order lines, payment splits |
-| `core_organizations` | Multi-tenancy | restaurant_id isolation |
+| Table | Purpose | Example Data | Key Columns |
+|-------|---------|--------------|-------------|
+| `core_entities` | Main objects | menu_item, inventory_item, employee | id, entity_type, entity_name, organization_id |
+| `core_dynamic_data` | Custom fields | price, quantity, hourly_rate | entity_id, field_name, field_value_* |
+| `core_relationships` | Connections | category→item, supplier→product | from_entity_id, to_entity_id, relationship_type |
+| `universal_transactions` | Business events | sales, purchases, payments | transaction_code (NOT transaction_number) |
+| `universal_transaction_lines` | Transaction details | order lines, payment splits | transaction_id, entity_id, line_amount |
+| `core_organizations` | Multi-tenancy | restaurant_id isolation | id, organization_name |
+
+⚠️ **Schema Notes**:
+- Use `transaction_code` NOT `transaction_number`
+- Use `from_entity_id/to_entity_id` NOT `parent/child`
+- NEVER add status columns - use relationships
 
 ## API Pattern Template
 

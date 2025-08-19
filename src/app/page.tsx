@@ -11,7 +11,8 @@ import {
   Zap,
   Rocket,
   Target,
-  Star
+  Star,
+  Wand2
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -246,6 +247,23 @@ export default function HomePage() {
               </p>
               <div className="flex items-center text-indigo-600 font-medium">
                 <span>Try Auto-Journal</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+
+            <a 
+              href="/mcp-tools" 
+              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Wand2 className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">MCP Conversion Tools</h3>
+              <p className="text-gray-600 font-light mb-4">
+                Convert progressive demos to production. SQL generation, code transformation, batch conversion, and automated deployment.
+              </p>
+              <div className="flex items-center text-purple-600 font-medium">
+                <span>Open Tools</span>
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </div>
             </a>
