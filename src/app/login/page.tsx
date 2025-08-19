@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 export default function LoginPage() {
   useEffect(() => {
     // Redirect to Supabase login
-    window.location.href = '/login-supabase'
+    window.location.href = '/salon-auth'
   }, [])
 
   return (

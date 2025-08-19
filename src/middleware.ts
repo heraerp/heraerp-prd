@@ -70,6 +70,7 @@ function shouldSkipAuth(pathname: string): boolean {
     '/auth/login',
     '/auth/register',
     '/auth/callback',
+    '/salon-auth',           // Combined login/register page
     '/test-auth-tokens',
     '/dashboard-simple',    // For testing
     '/dashboard-progressive' // Public progressive apps showcase
