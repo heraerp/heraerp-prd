@@ -262,7 +262,7 @@ export default function AppointmentsProgressive() {
     }
   }
 
-  const stats = getWeeklyStats()
+  const weeklyStats = getWeeklyStats()
 
 
   if (!isAuthenticated) {

@@ -322,7 +322,7 @@ export default function MarketingProgressive() {
     }
   }
 
-  const stats = getMarketingStats()
+  const marketingStats = getMarketingStats()
 
 
   if (!isAuthenticated) {

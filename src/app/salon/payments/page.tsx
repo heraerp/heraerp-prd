@@ -223,7 +223,7 @@ export default function PaymentsProgressive() {
     }
   }
 
-  const stats = getPaymentStats()
+  const paymentStats = getPaymentStats()
 
 
   if (!isAuthenticated) {
