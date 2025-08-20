@@ -184,7 +184,7 @@ export function ConversionFlow({ appName, industry, currentUrl }: ConversionFlow
             <Button 
               size="lg" 
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
-              onClick={() => window.location.href = '/register-supabase?app=' + encodeURIComponent(appName)}
+              onClick={() => window.location.href = '/auth/register?app=' + encodeURIComponent(appName)}
             >
               <Rocket className="w-5 h-5 mr-2" />
               Start Free Trial

@@ -6,7 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
+import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useUserContext } from '@/hooks/useUserContext'
 import { 
   Scissors, 
   User, 
@@ -26,7 +29,9 @@ import {
   UserPlus,
   Play,
   Save,
-  TestTube
+  TestTube,
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -81,6 +86,9 @@ interface SalonProgressiveProps {
 }
 
 export default function SalonProduction({ initialTestMode = false }: SalonProgressiveProps) {
+  const { isAuthenticated } = useAuth()
+  const { organizationId, userContext, loading: contextLoading } = useUserContext()
+  
   const [testMode, setTestMode] = useState(initialTestMode)
   const [hasChanges, setHasChanges] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
@@ -148,6 +156,44 @@ export default function SalonProduction({ initialTestMode = false }: SalonProgre
     if (!testMode) {
       setHasChanges(false)
     }
+  }
+
+  // Authentication checks - prevent unauthorized access
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access the salon dashboard.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your salon profile...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No organization context found. Please contact support or try logging in again.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
   }
 
   return (

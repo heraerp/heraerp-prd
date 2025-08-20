@@ -69,18 +69,10 @@ function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean
   // Public routes that don't require authentication
   const publicRoutes = [
     '/',
-    '/login',
-    '/login-supabase', 
-    '/register-supabase',
     '/auth/login',
     '/auth/register',
     '/auth/callback',
-    '/salon-auth',           // Combined login/register page
-    '/test-auth-tokens',
-    '/dashboard-simple',    // For testing
-    '/dashboard-progressive', // Public progressive apps showcase
     '/get-started',          // Get started page
-    '/test-page',            // Test page
     '/select-app',           // App selector for multi-app users
     '/onboarding'            // Onboarding for new organizations
   ]

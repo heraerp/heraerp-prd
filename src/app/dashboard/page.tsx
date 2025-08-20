@@ -459,7 +459,7 @@ function DashboardContent() {
 
   const handleLogout = async () => {
     await logout()
-    window.location.href = '/login-supabase'
+    window.location.href = '/auth/login'
   }
 
   // Display user info from auth
@@ -1311,7 +1311,7 @@ export default function Dashboard() {
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    window.location.href = '/login-supabase'
+    window.location.href = '/auth/login'
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
