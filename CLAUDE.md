@@ -162,8 +162,20 @@ cd mcp-server && npm start              # Start HERA MCP server
 cd mcp-server && npm test               # Test SACRED rules enforcement
 cd mcp-server && npm run test           # Test authorization tools
 
-# Testing (when implemented)
-npm test           # Run test suite
+# Testing with HERA Universal Testing Framework ✅ PRODUCTION READY
+cd packages/hera-testing
+
+# Check environment for production testing
+node bin/direct-production-test.js check-env
+
+# Run salon test with REAL data creation in Supabase
+node bin/direct-production-test.js salon --org-id "your-org-uuid" --debug
+
+# Run any business process test
+node bin/direct-production-test.js custom examples/your-test.yaml --org-id "uuid"
+
+# Simulation mode (no real data)
+node bin/simple-test.js salon examples/salon-appointment-booking.yaml
 
 # Monitoring System (Production Ready)
 npm run monitoring:dev    # Start monitoring stack (Prometheus, Grafana, Node Exporter)

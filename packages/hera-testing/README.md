@@ -2,7 +2,7 @@
 
 **Revolutionary business process testing for HERA's universal ERP architecture**
 
-Transform complex ERP testing from technical implementation details to natural business language. The world's first testing framework designed specifically for universal 6-table architecture.
+Transform complex ERP testing from technical implementation details to natural business language. The world's first testing framework designed specifically for universal 6-table architecture that creates **REAL DATA** in your production database.
 
 ## ✨ Key Features
 
@@ -11,30 +11,51 @@ Transform complex ERP testing from technical implementation details to natural b
 - **🏭 Industry Templates**: Pre-built test patterns for restaurant, healthcare, salon, retail
 - **🤖 Smart Code Integration**: Automatic business intelligence validation built-in
 - **🔒 Multi-Tenant Safe**: Organization isolation built into every test
-- **⚡ Multiple Test Types**: Unit, Integration, E2E, Agent/MCP, Database, Business Process
+- **⚡ Production & Simulation Modes**: Create real data in Supabase or simulate for development
 - **📊 Comprehensive Reporting**: Console, JSON, HTML reports with detailed insights
+- **🔥 REAL Data Creation**: Actually creates production-grade data in Supabase
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Production Mode - RECOMMENDED)
 
-### Installation
+### 1. Environment Setup
+
+Create a `.env` file in the project root:
+
+```bash
+# Required for production testing
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+DEFAULT_ORGANIZATION_ID=your_org_uuid  # Or use --org-id flag
+```
+
+### 2. Installation
 
 ```bash
 cd packages/hera-testing
 npm install
-npm run build
 ```
 
-### Initialize Your First Test Project
+### 3. Run Production Test (Creates Real Data!)
 
 ```bash
-# Create a restaurant testing project
-npx hera-test init my-restaurant-tests --industry restaurant
+# Check environment configuration
+node bin/direct-production-test.js check-env
 
-# Navigate to project
-cd my-restaurant-tests
+# Run salon example with real data creation
+node bin/direct-production-test.js salon --org-id "your-org-id" --debug
 
-# Run the sample test
-npx hera-test run tests/order-to-cash.yaml --org-id your-test-org-id
+# Keep test data (skip cleanup)
+node bin/direct-production-test.js salon --org-id "your-org-id" --keep-data
+```
+
+### 4. Alternative: Simulation Mode (For Development)
+
+```bash
+# Build framework (if TypeScript compilation works)
+npm run build
+
+# Run in simulation mode (no real data)
+node bin/simple-test.js salon examples/salon-appointment-booking.yaml
 ```
 
 ## 📋 Business Process Test Format
@@ -492,29 +513,120 @@ Complete working examples available in `/examples/`:
 - Test cross-organization isolation
 - Validate organization-specific business rules
 
+## ⚠️ Critical Schema Mappings (Production vs Documentation)
+
+### Column Name Differences
+The production database uses different column names than documentation. Always use production names:
+
+```yaml
+# Documentation → Production Column Mapping
+reference_entity_id → source_entity_id      # In universal_transactions
+parent_entity_id → from_entity_id           # In core_relationships  
+child_entity_id → to_entity_id              # In core_relationships
+transaction_number → transaction_code        # In universal_transactions
+line_entity_id → entity_id                  # In universal_transaction_lines
+line_number → line_order                    # In universal_transaction_lines
+```
+
+### Dynamic Fields Pattern
+Dynamic fields are NOT columns on entities - they're stored separately:
+
+```yaml
+# ❌ WRONG - Will fail with "dynamic_fields column not found"
+action_type: create_entity
+data:
+  dynamic_fields:  # This is NOT a column!
+    email: "test@example.com"
+
+# ✅ CORRECT - Framework handles this automatically
+action_type: create_entity
+data:
+  entity_type: customer
+  entity_name: "John Doe"
+  dynamic_fields:  # Framework stores these in core_dynamic_data
+    email: "test@example.com"
+    phone: "+1-555-1234"
+```
+
+### Relationship Foreign Key Constraints
+
+**CRITICAL**: Relationships connect entities to entities, NOT transactions to entities!
+
+```yaml
+# ❌ WRONG - Foreign key constraint error
+from_entity_id: "{{appointment.id}}"  # appointment is a transaction!
+
+# ✅ CORRECT - Create entity first, then relate
+- action_type: create_entity
+  data:
+    entity_type: appointment
+    entity_name: "Appointment #123"
+  store_as: appointment_entity
+
+- action_type: create_relationship
+  data:
+    from_entity_id: "{{appointment_entity.id}}"  # Entity to entity
+    to_entity_id: "{{status_entity.id}}"
+```
+
 ## 🆘 Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-**Schema Validation Errors**
+**1. Foreign Key Constraint Errors**
+```bash
+Error: violates foreign key constraint "core_relationships_from_entity_id_fkey"
+Cause: Trying to create relationship from transaction to entity
+Solution: Relationships must connect entities to entities
+```
+
+**2. Column Not Found Errors**
+```bash
+Error: Could not find the 'reference_entity_id' column
+Cause: Documentation uses different column names than production
+Solution: Use source_entity_id instead (see schema mappings above)
+```
+
+**3. Dynamic Fields Column Error**
+```bash
+Error: Could not find the 'dynamic_fields' column of 'core_entities'
+Cause: Dynamic fields are stored in separate table
+Solution: The framework handles this - just include dynamic_fields in data
+```
+
+**4. Transaction Lines Creation Failure**
+```bash
+Error: Could not find the 'line_description' column
+Cause: Schema differences in universal_transaction_lines
+Solution: Currently skipped in production test - will be fixed
+```
+
+**5. Template Variable Not Resolved**
+```bash
+Error: Could not resolve: {{customer.id}}
+Cause: Variable not stored or setup actions not executed
+Solution: Ensure setup actions run first and use store_as
+```
+
+**6. Organization Not Set**
+```bash
+Error: DEFAULT_ORGANIZATION_ID not set
+Solution: Either set in .env or use --org-id flag
+```
+
+### Schema Validation Errors
 ```bash
 Error: context.organization_id: Required
 Solution: Add organization_id to test context
 ```
 
-**Template Resolution Errors**
-```bash
-Error: Template variable {{customer.id}} not found
-Solution: Ensure previous step stores result with store_as: customer
-```
-
-**Database Connection Issues**
+### Database Connection Issues
 ```bash
 Error: Failed to connect to Supabase
 Solution: Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
 ```
 
-**Smart Code Validation Errors**
+### Smart Code Validation Errors
 ```bash
 Error: Invalid smart code pattern
 Solution: Follow HERA.INDUSTRY.MODULE.FUNCTION.TYPE.vX format

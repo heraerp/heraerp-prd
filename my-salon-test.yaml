@@ -1,0 +1,388 @@
+id: salon-appointment-booking-complete
+title: Salon Appointment Booking and Service Delivery
+description: Complete salon workflow from booking to payment with commission tracking
+industry: salon
+version: 1.0.0
+author: HERA Testing Framework
+
+context:
+  tenant: elite-salon-test
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  currency: USD
+  timezone: UTC
+  locale: en-US
+  fiscal_year: 2024
+  clock: "2024-03-20T10:00:00Z"
+  smart_code_prefix: HERA.SALON
+  industry: salon
+
+personas:
+  receptionist:
+    role: sales
+    organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    permissions: ["appointments:create", "customers:create", "services:read"]
+  
+  stylist:
+    role: user
+    organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    permissions: ["appointments:read", "services:perform", "inventory:use"]
+  
+  manager:
+    role: manager
+    organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    permissions: ["payments:process", "commissions:calculate", "reports:view"]
+
+setup:
+  - action_type: create_entity
+    data:
+      entity_type: customer
+      entity_name: Sarah Johnson
+      entity_code: CUST-SARAH-001
+      smart_code: HERA.SALON.CUST.ENT.PROF.v1
+      dynamic_fields:
+        phone: "+1-555-7890"
+        email: "sarah.johnson@email.com"
+        preferred_stylist: "Emma Wilson"
+        allergies: "None"
+    store_as: customer
+    
+  - action_type: create_entity
+    data:
+      entity_type: employee
+      entity_name: Emma Wilson
+      entity_code: EMP-EMMA-001
+      smart_code: HERA.SALON.EMP.ENT.STYLIST.v1
+      dynamic_fields:
+        employee_type: "Senior Stylist"
+        commission_rate: 0.40
+        hourly_rate: 25.00
+        specialties: ["Color", "Cut", "Styling"]
+    store_as: stylist_employee
+    
+  - action_type: create_entity
+    data:
+      entity_type: service
+      entity_name: Hair Cut and Color
+      entity_code: SVC-CUT-COLOR
+      smart_code: HERA.SALON.SVC.ENT.COMBO.v1
+      dynamic_fields:
+        service_category: "Hair Services"
+        duration_minutes: 180
+        base_price: 150.00
+        commission_eligible: true
+        requires_consultation: true
+    store_as: service_combo
+    
+  - action_type: create_entity
+    data:
+      entity_type: product
+      entity_name: Premium Hair Color
+      entity_code: PROD-COLOR-001
+      smart_code: HERA.SALON.PROD.ENT.COLOR.v1
+      dynamic_fields:
+        category: "Hair Color"
+        cost: 12.00
+        retail_price: 35.00
+        brand: "Professional Color Co"
+        stock_quantity: 25
+    store_as: hair_color_product
+
+steps:
+  - id: book_appointment
+    description: Receptionist books appointment for customer
+    persona: receptionist
+    actions:
+      - action_type: create_transaction
+        data:
+          transaction_type: appointment
+          transaction_code: "APPT-{{timestamp}}"
+          smart_code: HERA.SALON.APPT.TXN.BOOK.v1
+          reference_entity_id: "{{customer.id}}"
+          metadata:
+            stylist_id: "{{stylist_employee.id}}"
+            appointment_date: "2024-03-20T14:00:00Z"
+            duration_minutes: 180
+            service_notes: "Full color and cut, wants to go lighter"
+          line_items:
+            - line_number: 1
+              line_entity_id: "{{service_combo.id}}"
+              quantity: 1
+              unit_price: 150.00
+              line_amount: 150.00
+              smart_code: HERA.SALON.APPT.LINE.SVC.v1
+              metadata:
+                estimated_duration: 180
+                requires_consultation: true
+        store_as: appointment
+    timeout: 10000
+
+  - id: appointment_confirmation
+    description: Send appointment confirmation and set status
+    persona: receptionist
+    actions:
+      - action_type: create_entity
+        data:
+          entity_type: workflow_status
+          entity_name: Confirmed
+          entity_code: STATUS-CONFIRMED
+          smart_code: HERA.SALON.STATUS.CONFIRMED.v1
+        store_as: confirmed_status
+        
+      - action_type: create_relationship
+        data:
+          from_entity_id: "{{appointment.id}}"
+          to_entity_id: "{{confirmed_status.id}}"
+          relationship_type: has_status
+          smart_code: HERA.WORKFLOW.STATUS.ASSIGN.v1
+          relationship_data:
+            status: "confirmed"
+            confirmed_at: "{{clock}}"
+            confirmed_by: "{{receptionist.entity_id}}"
+
+  - id: customer_arrival
+    description: Customer arrives for appointment
+    persona: receptionist
+    actions:
+      - action_type: create_entity
+        data:
+          entity_type: workflow_status
+          entity_name: Arrived
+          entity_code: STATUS-ARRIVED
+          smart_code: HERA.SALON.STATUS.ARRIVED.v1
+        store_as: arrived_status
+        
+      - action_type: create_relationship
+        data:
+          from_entity_id: "{{appointment.id}}"
+          to_entity_id: "{{arrived_status.id}}"
+          relationship_type: has_status
+          smart_code: HERA.WORKFLOW.STATUS.ASSIGN.v1
+          relationship_data:
+            status: "arrived"
+            arrival_time: "{{clock+14400}}" # 4 hours later (2pm appointment)
+
+  - id: service_consultation
+    description: Stylist conducts pre-service consultation
+    persona: stylist
+    actions:
+      - action_type: set_dynamic_field
+        entity_id: "{{appointment.id}}"
+        field_name: consultation_notes
+        field_value: "Customer wants to go from dark brown to honey blonde. Hair is healthy, no previous chemical treatments."
+        smart_code: HERA.SALON.APPT.CONSUL.NOTES.v1
+        
+      - action_type: set_dynamic_field
+        entity_id: "{{appointment.id}}"
+        field_name: consultation_completed
+        field_value: true
+        smart_code: HERA.SALON.APPT.CONSUL.DONE.v1
+
+  - id: service_start
+    description: Stylist begins service delivery
+    persona: stylist
+    actions:
+      - action_type: create_entity
+        data:
+          entity_type: workflow_status
+          entity_name: In Progress
+          entity_code: STATUS-IN-PROGRESS
+          smart_code: HERA.SALON.STATUS.PROGRESS.v1
+        store_as: progress_status
+        
+      - action_type: create_relationship
+        data:
+          from_entity_id: "{{appointment.id}}"
+          to_entity_id: "{{progress_status.id}}"
+          relationship_type: has_status
+          smart_code: HERA.WORKFLOW.STATUS.ASSIGN.v1
+          relationship_data:
+            status: "in_progress"
+            service_start_time: "{{clock+14400}}"
+            performing_stylist: "{{stylist_employee.id}}"
+
+  - id: product_usage
+    description: Track product usage during service
+    persona: stylist
+    actions:
+      - action_type: create_transaction
+        data:
+          transaction_type: inventory_usage
+          transaction_code: "INV-USE-{{timestamp}}"
+          smart_code: HERA.SALON.INV.USE.SVC.v1
+          reference_entity_id: "{{appointment.id}}"
+          metadata:
+            used_by: "{{stylist_employee.id}}"
+            usage_date: "{{clock+14400}}"
+          line_items:
+            - line_number: 1
+              line_entity_id: "{{hair_color_product.id}}"
+              quantity: 2
+              unit_price: 12.00
+              line_amount: 24.00
+              smart_code: HERA.SALON.INV.LINE.USE.v1
+              metadata:
+                usage_reason: "Hair coloring service"
+                lot_number: "LOT2024-001"
+        store_as: product_usage
+
+  - id: service_completion
+    description: Service completed successfully
+    persona: stylist
+    actions:
+      - action_type: create_entity
+        data:
+          entity_type: workflow_status
+          entity_name: Completed
+          entity_code: STATUS-COMPLETED
+          smart_code: HERA.SALON.STATUS.COMPLETED.v1
+        store_as: completed_status
+        
+      - action_type: create_relationship
+        data:
+          from_entity_id: "{{appointment.id}}"
+          to_entity_id: "{{completed_status.id}}"
+          relationship_type: has_status
+          smart_code: HERA.WORKFLOW.STATUS.ASSIGN.v1
+          relationship_data:
+            status: "completed"
+            completion_time: "{{clock+25200}}" # 7 hours later (5pm)
+            completed_by: "{{stylist_employee.id}}"
+            
+      - action_type: set_dynamic_field
+        entity_id: "{{appointment.id}}"
+        field_name: service_notes_final
+        field_value: "Beautiful honey blonde achieved. Customer very happy with result. Recommended weekly deep conditioning treatments."
+        smart_code: HERA.SALON.APPT.NOTES.FINAL.v1
+
+  - id: payment_processing
+    description: Manager processes payment and calculates commission
+    persona: manager
+    actions:
+      - action_type: create_transaction
+        data:
+          transaction_type: payment
+          transaction_code: "PAY-{{timestamp}}"
+          smart_code: HERA.SALON.PAY.CASH.v1
+          total_amount: 150.00
+          reference_entity_id: "{{appointment.id}}"
+          metadata:
+            payment_method: "credit_card"
+            card_last_four: "4532"
+            processed_by: "{{manager.entity_id}}"
+            tip_amount: 30.00
+            total_with_tip: 180.00
+        store_as: payment
+        
+      - action_type: create_transaction
+        data:
+          transaction_type: commission
+          transaction_code: "COMM-{{timestamp}}"
+          smart_code: HERA.SALON.COMM.CALC.v1
+          total_amount: 60.00
+          reference_entity_id: "{{appointment.id}}"
+          metadata:
+            stylist_id: "{{stylist_employee.id}}"
+            commission_rate: 0.40
+            base_amount: 150.00
+            commission_amount: 60.00
+            calculation_date: "{{clock+25200}}"
+          line_items:
+            - line_number: 1
+              line_entity_id: "{{stylist_employee.id}}"
+              quantity: 1
+              unit_price: 60.00
+              line_amount: 60.00
+              smart_code: HERA.SALON.COMM.LINE.EARN.v1
+        store_as: commission_transaction
+
+  - id: appointment_closure
+    description: Final appointment status and customer feedback
+    persona: manager
+    actions:
+      - action_type: create_entity
+        data:
+          entity_type: workflow_status
+          entity_name: Closed
+          entity_code: STATUS-CLOSED
+          smart_code: HERA.SALON.STATUS.CLOSED.v1
+        store_as: closed_status
+        
+      - action_type: create_relationship
+        data:
+          from_entity_id: "{{appointment.id}}"
+          to_entity_id: "{{closed_status.id}}"
+          relationship_type: has_status
+          smart_code: HERA.WORKFLOW.STATUS.ASSIGN.v1
+          relationship_data:
+            status: "closed"
+            closed_at: "{{clock+25200}}"
+            total_revenue: 150.00
+            total_commission: 60.00
+            customer_satisfaction: "Excellent"
+
+assertions:
+  - type: database
+    assertions:
+      - table: universal_transactions
+        condition: exists
+        filters:
+          transaction_type: appointment
+          smart_code: HERA.SALON.APPT.TXN.BOOK.v1
+        expected: true
+      
+      - table: universal_transactions
+        condition: exists
+        filters:
+          transaction_type: payment
+          smart_code: HERA.SALON.PAY.CASH.v1
+        expected: true
+        
+      - table: universal_transactions
+        condition: exists
+        filters:
+          transaction_type: commission
+          smart_code: HERA.SALON.COMM.CALC.v1
+        expected: true
+        
+      - table: core_relationships
+        condition: count
+        filters:
+          relationship_type: has_status
+        expected: 5 # confirmed, arrived, in_progress, completed, closed
+
+  - type: business
+    assertions:
+      - oracle: workflow_status
+        expected: "closed"
+        
+      - oracle: smart_code_validation
+        expected: true
+
+  - type: ui
+    assertions:
+      - selector: "[data-testid='appointment-status']"
+        condition: contains
+        value: "Closed"
+        timeout: 5000
+        
+      - selector: "[data-testid='commission-amount']"
+        condition: contains
+        value: "$60.00"
+        timeout: 5000
+
+cleanup:
+  - action_type: api_call
+    endpoint: "/api/v1/test/cleanup"
+    method: POST
+    data:
+      entities: ["{{customer.id}}", "{{stylist_employee.id}}", "{{service_combo.id}}", "{{hair_color_product.id}}"]
+      transactions: ["{{appointment.id}}", "{{payment.id}}", "{{commission_transaction.id}}", "{{product_usage.id}}"]
+
+metadata:
+  tags: ["salon", "appointment", "service-delivery", "commission", "payment"]
+  priority: critical
+  estimated_duration: 90 # seconds
+  requires_auth: true
+  requires_data: true
+  browser_support: ["chromium", "firefox", "webkit"]
+  mobile_support: true
