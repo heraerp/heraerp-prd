@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, UserPlus, AlertCircle, ArrowRight, Sparkles } from 'lucide-react'
+import { Loader2, UserPlus, AlertCircle, ArrowRight, Sparkles, Mail, CheckCircle } from 'lucide-react'
 import { useAuth } from '@/components/auth/DualAuthProvider'
 import Link from 'next/link'
 
@@ -25,11 +25,12 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState(1) // 1: Account details, 2: Business details
+  const [registrationComplete, setRegistrationComplete] = useState(false)
 
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      router.push('/salon')
+      router.push('/select-app')
     }
   }, [isAuthenticated, router])
 
@@ -60,14 +61,8 @@ export default function RegisterPage() {
         business_type: 'salon'
       })
 
-      // Note: In production, you would also:
-      // 1. Create organization in core_organizations
-      // 2. Create user entity in core_entities
-      // 3. Set up initial salon data (services, staff, etc.)
-      // 4. Send welcome email
-
-      // Redirect to salon dashboard
-      router.push('/salon')
+      // Show success message for email confirmation
+      setRegistrationComplete(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create account')
     } finally {
@@ -86,6 +81,59 @@ export default function RegisterPage() {
     }
     setError(null)
     setStep(2)
+  }
+
+  // If registration is complete, show success message
+  if (registrationComplete) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+              <CheckCircle className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl">Check Your Email!</CardTitle>
+            <CardDescription className="mt-2">
+              We've sent a confirmation email to <strong>{formData.email}</strong>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Mail className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="space-y-2 text-sm">
+                    <p className="font-medium text-blue-900">Next Steps:</p>
+                    <ol className="space-y-1 text-blue-700 list-decimal list-inside">
+                      <li>Check your email inbox (and spam folder)</li>
+                      <li>Click the confirmation link in the email</li>
+                      <li>You'll be able to log in after confirming</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-3 text-center">
+                <p className="text-sm text-gray-600 mb-2">Already confirmed your email?</p>
+                <Link href="/auth/login" className="text-pink-600 hover:text-pink-700 font-medium">
+                  Go to Login
+                </Link>
+              </div>
+              
+              <div className="text-center text-xs text-gray-500">
+                <p>Didn't receive the email? Check your spam folder or</p>
+                <button 
+                  onClick={() => setRegistrationComplete(false)}
+                  className="text-pink-600 hover:text-pink-700 underline"
+                >
+                  try registering again
+                </button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

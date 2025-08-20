@@ -161,18 +161,22 @@ export async function POST(request: NextRequest) {
       console.error('Failed to create dynamic data:', dynamicError)
     }
 
-    // Create user-organization relationship
+    // Create user-organization relationship (FIXED: Use from/to instead of source/target)
     const { error: relError } = await supabaseAdmin
       .from('core_relationships')
       .insert({
         organization_id: newOrg.id,
-        source_entity_id: newEntity.id,
-        target_entity_id: newOrg.id,
+        from_entity_id: newEntity.id,  // User entity
+        to_entity_id: newOrg.id,       // Organization entity (as entity reference)
         relationship_type: 'member_of',
         relationship_strength: 1.0,
+        is_active: true,
         metadata: {
           role: 'owner',
-          is_primary: true
+          is_primary: true,
+          joined_at: new Date().toISOString(),
+          permissions: ['full_access'],
+          created_via: 'business_creation'
         }
       })
 

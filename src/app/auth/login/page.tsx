@@ -21,7 +21,8 @@ export default function LoginPage() {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      router.push('/salon')
+      // Check if user has organization context, if not redirect to app selector
+      router.push('/select-app')
     }
   }, [isAuthenticated, router])
 
@@ -32,8 +33,8 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
-      // Redirect to salon dashboard after successful login
-      router.push('/salon')
+      // Redirect to app selector to choose appropriate app
+      router.push('/select-app')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
     } finally {
@@ -106,6 +107,17 @@ export default function LoginPage() {
           <div className="mt-6 text-center text-sm text-gray-600">
             <p>Demo Credentials:</p>
             <p className="font-mono">demo@hera.com / demo123</p>
+          </div>
+          
+          <div className="mt-4 text-center text-sm">
+            <span className="text-gray-600">Don't have an account?</span>
+            {' '}
+            <a 
+              href="/auth/register" 
+              className="text-pink-600 hover:text-pink-700 font-medium"
+            >
+              Sign up
+            </a>
           </div>
         </CardContent>
       </Card>

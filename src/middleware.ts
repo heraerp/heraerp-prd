@@ -80,7 +80,9 @@ function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean
     '/dashboard-simple',    // For testing
     '/dashboard-progressive', // Public progressive apps showcase
     '/get-started',          // Get started page
-    '/test-page'             // Test page
+    '/test-page',            // Test page
+    '/select-app',           // App selector for multi-app users
+    '/onboarding'            // Onboarding for new organizations
   ]
   
   // Static files and Next.js internals

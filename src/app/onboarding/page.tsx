@@ -31,6 +31,15 @@ export default function OnboardingPage() {
     ownerName: '',
   })
 
+  // Check for pre-selected business type from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const preselectedType = urlParams.get('type')
+    if (preselectedType && businessTypes.some(bt => bt.value === preselectedType)) {
+      setFormData(prev => ({ ...prev, businessType: preselectedType }))
+    }
+  }, [])
+
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
