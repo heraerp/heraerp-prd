@@ -1,0 +1,260 @@
+/* Restaurant Progressive Custom Styles - Appetizing Modern Theme */
+
+/* ============================================
+   RESTAURANT COLOR PALETTE
+   ============================================ */
+:root {
+  /* Primary Colors - Warm & Appetizing */
+  --restaurant-orange: rgb(251, 146, 60);
+  --restaurant-amber: rgb(245, 158, 11);
+  --restaurant-yellow: rgb(250, 204, 21);
+  --restaurant-red: rgb(239, 68, 68);
+  
+  /* Secondary Colors */
+  --restaurant-brown: rgb(120, 53, 15);
+  --restaurant-cream: rgb(254, 252, 232);
+  --restaurant-green: rgb(34, 197, 94);
+  
+  /* Gradient Colors */
+  --restaurant-gradient-start: rgb(251, 146, 60);
+  --restaurant-gradient-mid: rgb(245, 158, 11);
+  --restaurant-gradient-end: rgb(250, 204, 21);
+}
+
+/* ============================================
+   GLASSMORPHISM EFFECTS
+   ============================================ */
+.restaurant-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(251, 146, 60, 0.1);
+}
+
+.restaurant-glass-dark {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* ============================================
+   CARDS & PANELS
+   ============================================ */
+.restaurant-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 252, 232, 0.9) 100%);
+  border: 1px solid rgba(251, 146, 60, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(251, 146, 60, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+  transition: all 0.3s ease;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(251, 146, 60, 0.15), 0 4px 6px -2px rgba(245, 158, 11, 0.08);
+}
+
+/* ============================================
+   BUTTONS - APPETIZING STYLES
+   ============================================ */
+.restaurant-btn-primary {
+  background: linear-gradient(135deg, var(--restaurant-orange) 0%, var(--restaurant-amber) 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(251, 146, 60, 0.3);
+  transition: all 0.3s ease;
+}
+
+.restaurant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--restaurant-amber) 0%, var(--restaurant-orange) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(251, 146, 60, 0.4);
+}
+
+.restaurant-btn-secondary {
+  background: white;
+  color: var(--restaurant-orange);
+  border: 2px solid var(--restaurant-orange);
+  transition: all 0.3s ease;
+}
+
+.restaurant-btn-secondary:hover {
+  background: var(--restaurant-orange);
+  color: white;
+}
+
+/* ============================================
+   MENU ITEM CARDS
+   ============================================ */
+.menu-item-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.menu-item-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.3);
+}
+
+.menu-item-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.menu-item-badge {
+  background: linear-gradient(135deg, var(--restaurant-red) 0%, var(--restaurant-orange) 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ============================================
+   STATISTICS & METRICS
+   ============================================ */
+.stat-card-restaurant {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 252, 232, 0.9) 100%);
+  border-left: 4px solid var(--restaurant-orange);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.stat-value-restaurant {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--restaurant-orange) 0%, var(--restaurant-amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   TABLE MANAGEMENT SPECIFIC
+   ============================================ */
+.table-occupied {
+  background: linear-gradient(135deg, var(--restaurant-red) 0%, var(--restaurant-orange) 100%);
+  color: white;
+}
+
+.table-available {
+  background: linear-gradient(135deg, var(--restaurant-green) 0%, rgb(34, 197, 94) 100%);
+  color: white;
+}
+
+.table-reserved {
+  background: linear-gradient(135deg, var(--restaurant-amber) 0%, var(--restaurant-yellow) 100%);
+  color: var(--restaurant-brown);
+}
+
+/* ============================================
+   DROPDOWN FIX (Same as Salon)
+   ============================================ */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
+}
+
+[role="listbox"],
+[data-radix-select-content] {
+  background-color: white !important;
+  border: 1px solid rgba(251, 146, 60, 0.2) !important;
+  box-shadow: 0 10px 15px -3px rgba(251, 146, 60, 0.1), 0 4px 6px -2px rgba(245, 158, 11, 0.05) !important;
+}
+
+[role="option"] {
+  background-color: white !important;
+}
+
+[role="option"]:hover,
+[role="option"]:focus {
+  background-color: var(--restaurant-cream) !important;
+}
+
+[role="option"][data-highlighted] {
+  background-color: rgba(251, 146, 60, 0.1) !important;
+}
+
+/* ============================================
+   FOOD CATEGORY COLORS
+   ============================================ */
+.category-appetizer {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.category-main {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.category-dessert {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+.category-beverage {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes pulse-orange {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(251, 146, 60, 0);
+  }
+}
+
+.pulse-animation {
+  animation: pulse-orange 2s infinite;
+}
+
+/* ============================================
+   SIDEBAR & NAVIGATION
+   ============================================ */
+.restaurant-sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 252, 232, 0.95) 100%);
+  border-right: 1px solid rgba(251, 146, 60, 0.1);
+}
+
+.restaurant-nav-item {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.restaurant-nav-item:hover {
+  background: rgba(251, 146, 60, 0.1);
+  color: var(--restaurant-orange);
+}
+
+.restaurant-nav-item.active {
+  background: linear-gradient(135deg, var(--restaurant-orange) 0%, var(--restaurant-amber) 100%);
+  color: white;
+  font-weight: 600;
+}
+
+/* ============================================
+   FINANCIAL DASHBOARD SPECIFIC
+   ============================================ */
+.profit-positive {
+  color: var(--restaurant-green);
+  font-weight: 700;
+}
+
+.profit-negative {
+  color: var(--restaurant-red);
+  font-weight: 700;
+}
+
+.cost-indicator {
+  background: linear-gradient(135deg, var(--restaurant-brown) 0%, var(--restaurant-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
