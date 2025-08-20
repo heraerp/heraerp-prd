@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useUserContext } from '@/hooks/useUserContext'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 // Temporarily disabled problematic CRUD components
@@ -1295,7 +1296,9 @@ function DashboardContent() {
 // Main dashboard page component  
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth()
+  const { organizationId, userContext, loading: contextLoading, error: contextError } = useUserContext()
 
+  // Show loading while auth is initializing
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -1319,6 +1322,62 @@ export default function Dashboard() {
             <span className="text-2xl font-bold text-white">H</span>
           </div>
           <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show loading while fetching user context
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="text-center bg-white/40 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-xl">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-500/90 to-purple-600/90 rounded-2xl flex items-center justify-center animate-pulse shadow-xl shadow-indigo-500/20">
+            <span className="text-2xl font-bold text-white">H</span>
+          </div>
+          <p className="text-slate-700 font-medium">Loading organization context...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Handle context error
+  if (contextError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="text-center bg-white/40 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-xl">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500/90 to-red-600/90 rounded-2xl flex items-center justify-center shadow-xl shadow-red-500/20">
+            <span className="text-2xl font-bold text-white">!</span>
+          </div>
+          <p className="text-red-700 font-medium mb-4">Error loading user context</p>
+          <p className="text-slate-600 text-sm mb-6">{contextError}</p>
+          <button
+            onClick={() => window.location.href = '/get-started'}
+            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+          >
+            Setup Organization
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Check if user has organization
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="text-center bg-white/40 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-xl">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-amber-500/90 to-orange-600/90 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-500/20">
+            <Building className="w-8 h-8 text-white" />
+          </div>
+          <p className="text-slate-700 font-medium mb-4">No organization found</p>
+          <p className="text-slate-600 text-sm mb-6">Please complete your organization setup first.</p>
+          <button
+            onClick={() => window.location.href = '/get-started'}
+            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+          >
+            Setup Organization
+          </button>
         </div>
       </div>
     )

@@ -66,7 +66,7 @@ export default function AuthCallback() {
             
             // Small delay to show success message
             setTimeout(() => {
-              router.push('/dashboard')
+              router.push('/select-app')
             }, 1000)
             return
           }
