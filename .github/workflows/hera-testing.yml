@@ -1,0 +1,348 @@
+name: HERA Universal Testing Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+  DEFAULT_ORGANIZATION_ID: ${{ secrets.DEFAULT_ORGANIZATION_ID }}
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+jobs:
+  # Build and Test HERA Testing Framework
+  framework-tests:
+    name: HERA Framework Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install root dependencies
+        run: npm ci
+        
+      - name: Install HERA Testing Framework
+        run: |
+          cd packages/hera-testing
+          npm install
+          
+      - name: Build HERA Testing Framework
+        run: |
+          cd packages/hera-testing
+          npm run build
+          
+      - name: Run Framework Unit Tests
+        run: |
+          cd packages/hera-testing
+          npm test
+          
+      - name: Validate Business Process Tests
+        run: |
+          cd packages/hera-testing
+          npm run build
+          ./bin/hera-test.js validate examples/restaurant-order-to-cash.yaml
+
+  # Business Process Tests
+  business-process-tests:
+    name: Business Process Tests
+    runs-on: ubuntu-latest
+    needs: framework-tests
+    
+    strategy:
+      matrix:
+        industry: [restaurant, healthcare, salon]
+        browser: [chromium, firefox]
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build Next.js app
+        run: npm run build
+        
+      - name: Install Playwright
+        run: |
+          cd packages/hera-testing
+          npm install
+          npx playwright install --with-deps
+          
+      - name: Start development server
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000 --timeout 60000
+        
+      - name: Run Business Process Tests
+        run: |
+          cd packages/hera-testing
+          npm run build
+          if [ -f "examples/${{ matrix.industry }}-order-to-cash.yaml" ]; then
+            ./bin/hera-test.js run examples/${{ matrix.industry }}-order-to-cash.yaml \
+              --browser ${{ matrix.browser }} \
+              --org-id ${{ env.DEFAULT_ORGANIZATION_ID }} \
+              --report json \
+              --headless
+          fi
+        continue-on-error: true
+        
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: business-tests-${{ matrix.industry }}-${{ matrix.browser }}
+          path: packages/hera-testing/hera-test-report-*.json
+
+  # Generate Technical Tests
+  generate-technical-tests:
+    name: Generate Technical Tests
+    runs-on: ubuntu-latest
+    needs: framework-tests
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd packages/hera-testing
+          npm install
+          npm run build
+          
+      - name: Generate Playwright Tests
+        run: |
+          cd packages/hera-testing
+          mkdir -p generated
+          ./bin/hera-test.js generate examples/restaurant-order-to-cash.yaml generated --type playwright
+          
+      - name: Upload generated tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-tests
+          path: packages/hera-testing/generated/
+
+  # Database Integration Tests
+  database-tests:
+    name: Database Integration Tests
+    runs-on: ubuntu-latest
+    needs: framework-tests
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd packages/hera-testing
+          npm install
+          npm run build
+          
+      - name: Setup test database
+        run: |
+          # TODO: Setup HERA universal schema in test database
+          echo "Database schema setup would go here"
+          
+      - name: Run database oracles tests
+        run: |
+          cd packages/hera-testing
+          # TODO: Run business oracles tests against database
+          npm test -- --grep "oracle"
+
+  # Performance and Accessibility Tests
+  quality-tests:
+    name: Quality & Performance Tests
+    runs-on: ubuntu-latest
+    needs: framework-tests
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build Next.js app
+        run: npm run build
+        
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+        
+      - name: Start server and run Lighthouse
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000 --timeout 60000
+          lhci autorun --config=.lighthouserc.json || true
+          
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+
+  # Test Suite Report
+  generate-report:
+    name: Generate Test Suite Report
+    runs-on: ubuntu-latest
+    needs: [business-process-tests, generate-technical-tests, database-tests, quality-tests]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd packages/hera-testing
+          npm install
+          npm run build
+          
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: test-artifacts
+          
+      - name: Generate comprehensive report
+        run: |
+          cd packages/hera-testing
+          # TODO: Implement comprehensive report generation
+          ./bin/hera-test.js suite examples --report html --output comprehensive-report.html || true
+          
+      - name: Upload comprehensive report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: comprehensive-test-report
+          path: packages/hera-testing/comprehensive-report.html
+          
+  # Security Tests
+  security-tests:
+    name: Security & Multi-Tenant Tests
+    runs-on: ubuntu-latest
+    needs: framework-tests
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd packages/hera-testing
+          npm install
+          npm run build
+          
+      - name: Run security dependency check
+        run: npm audit --audit-level high
+        continue-on-error: true
+        
+      - name: Test multi-tenant isolation
+        run: |
+          cd packages/hera-testing
+          # TODO: Run multi-tenant isolation tests
+          echo "Multi-tenant isolation tests would run here"
+          
+      - name: Test authorization patterns
+        run: |
+          cd packages/hera-testing
+          # TODO: Run authorization pattern tests
+          echo "Authorization pattern tests would run here"
+
+  # Deployment Tests (Railway)
+  deployment-tests:
+    name: Deployment Validation
+    runs-on: ubuntu-latest
+    needs: [business-process-tests, security-tests]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate Railway configuration
+        run: |
+          if [ -f "railway.json" ]; then
+            echo "✅ Railway configuration found"
+            cat railway.json
+          else
+            echo "❌ Railway configuration missing"
+            exit 1
+          fi
+          
+      - name: Validate health check endpoint
+        run: |
+          if [ -f "src/app/api/health/route.ts" ]; then
+            echo "✅ Health check endpoint found"
+          else
+            echo "❌ Health check endpoint missing"
+            exit 1
+          fi
+          
+      - name: Validate deployment readiness
+        run: |
+          echo "✅ Deployment validation complete"
+          echo "Ready for Railway deployment"

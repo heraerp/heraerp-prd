@@ -1,0 +1,293 @@
+version: "1.0"
+
+metadata:
+  name: "Restaurant Complete Order-to-Cash Process"
+  description: "Test complete restaurant workflow from customer order to payment and kitchen fulfillment"
+  industry: "restaurant"
+  process_type: "order-to-cash"
+  tags: ["pos", "kitchen", "payment", "inventory"]
+
+setup:
+  organization:
+    name: "Mario's Authentic Italian Restaurant"
+    business_type: "restaurant"
+  
+  entities:
+    # Menu Items
+    - entity_type: "product"
+      entity_name: "Margherita Pizza"
+      entity_code: "PIZZA-MARG"
+      smart_code: "HERA.REST.MENU.ENT.ITEM.v1"
+      dynamic_fields:
+        price: 28.50
+        cost: 8.50
+        category: "pizza"
+        preparation_time: 15
+        ingredients: ["tomato sauce", "mozzarella", "basil"]
+    
+    - entity_type: "product"
+      entity_name: "Caesar Salad"
+      entity_code: "SALAD-CAES"
+      smart_code: "HERA.REST.MENU.ENT.ITEM.v1"
+      dynamic_fields:
+        price: 16.50
+        cost: 4.50
+        category: "salad"
+        preparation_time: 8
+        ingredients: ["romaine lettuce", "parmesan", "croutons"]
+    
+    # Table
+    - entity_type: "location"
+      entity_name: "Table 12"
+      entity_code: "TABLE-12"
+      smart_code: "HERA.REST.LOC.ENT.TABLE.v1"
+      dynamic_fields:
+        seats: 4
+        section: "main_dining"
+        status: "available"
+    
+    # Staff
+    - entity_type: "employee"
+      entity_name: "Maria Santos"
+      entity_code: "SERV-001"
+      smart_code: "HERA.REST.EMP.ENT.SERVER.v1"
+      dynamic_fields:
+        role: "server"
+        commission_rate: 0.05
+        shift: "evening"
+
+steps:
+  # Step 1: Customer arrives and is seated
+  - id: "customer"
+    name: "Create walk-in customer party"
+    type: "create_entity"
+    data:
+      entity_type: "customer"
+      entity_name: "Thompson Family"
+      entity_code: "WALKIN-12-001"
+      smart_code: "HERA.REST.CUST.ENT.DINER.v1"
+      dynamic_fields:
+        party_size: 4
+        seating_preference: "main_dining"
+        special_requests: "child-friendly"
+    validations:
+      - type: "exists"
+        field: "id"
+      - type: "equals"
+        field: "entity_code"
+        expected: "WALKIN-12-001"
+
+  # Step 2: Assign table to customer
+  - id: "table_assignment"
+    name: "Assign table to customer"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{customer.id}}"
+      to_entity_id: "{{setup.table.id}}"
+      relationship_type: "seated_at"
+      smart_code: "HERA.REST.REL.SEATING.v1"
+      metadata:
+        assigned_at: "{{now}}"
+        server_id: "{{setup.server.id}}"
+        party_size: 4
+
+  # Step 3: Take order
+  - id: "order"
+    name: "Create customer order"
+    type: "create_transaction"
+    data:
+      transaction_type: "sale"
+      transaction_code: "ORDER-12-001"
+      smart_code: "HERA.REST.SALE.TXN.ORDER.v1"
+      total_amount: 90.00  # 2 pizzas + 2 salads
+      from_entity_id: "{{customer.id}}"
+      to_entity_id: "{{setup.server.id}}"
+      line_items:
+        - line_entity_id: "{{setup.pizza.id}}"
+          quantity: 2
+          unit_price: 28.50
+          line_amount: 57.00
+          smart_code: "HERA.REST.SALE.LINE.ITEM.v1"
+          metadata:
+            notes: "extra basil on one"
+        - line_entity_id: "{{setup.salad.id}}"
+          quantity: 2
+          unit_price: 16.50
+          line_amount: 33.00
+          smart_code: "HERA.REST.SALE.LINE.ITEM.v1"
+          metadata:
+            notes: "dressing on the side"
+    validations:
+      - type: "exists"
+        field: "id"
+      - type: "equals"
+        field: "total_amount"
+        expected: 90.00
+      - type: "business_rule"
+        field: "total_amount"
+        oracle: "calculateProfitability"
+        params: [90.00, 26.00]  # revenue, total_cost
+
+  # Step 4: Send order to kitchen
+  - id: "kitchen_order"
+    name: "Send order to kitchen"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{order.id}}"
+      to_entity_id: "kitchen"  # Kitchen entity would be pre-created
+      relationship_type: "sent_to_kitchen"
+      smart_code: "HERA.REST.KITCHEN.ORDER.QUEUE.v1"
+      metadata:
+        sent_at: "{{now}}"
+        priority: "normal"
+        estimated_completion: "{{now + 25}}"
+
+  # Step 5: Update order status to in preparation
+  - id: "order_status_prep"
+    name: "Update order status to preparing"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{order.id}}"
+      to_entity_id: "status_preparing"  # Status entity
+      relationship_type: "has_status"
+      smart_code: "HERA.WORKFLOW.STATUS.ASSIGN.v1"
+      metadata:
+        previous_status: "pending"
+        updated_at: "{{now}}"
+        updated_by: "kitchen_system"
+
+  # Step 6: Mark order as ready
+  - id: "order_ready"
+    name: "Mark order as ready for serving"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{order.id}}"
+      to_entity_id: "status_ready"  # Status entity
+      relationship_type: "has_status"
+      smart_code: "HERA.WORKFLOW.STATUS.ASSIGN.v1"
+      metadata:
+        previous_status: "preparing"
+        completion_time: "{{now}}"
+        quality_check: "passed"
+
+  # Step 7: Serve order to table
+  - id: "order_served"
+    name: "Serve order to customer table"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{order.id}}"
+      to_entity_id: "status_served"  # Status entity
+      relationship_type: "has_status"
+      smart_code: "HERA.WORKFLOW.STATUS.ASSIGN.v1"
+      metadata:
+        served_at: "{{now}}"
+        served_by: "{{setup.server.id}}"
+
+  # Step 8: Generate invoice
+  - id: "invoice"
+    name: "Generate customer invoice"
+    type: "create_transaction"
+    data:
+      transaction_type: "invoice"
+      transaction_code: "INV-12-001"
+      smart_code: "HERA.REST.INV.TXN.BILL.v1"
+      total_amount: 108.00  # With tax and service
+      from_entity_id: "{{customer.id}}"
+      to_entity_id: "{{setup.server.id}}"
+      line_items:
+        - line_entity_id: "{{order.id}}"
+          quantity: 1
+          unit_price: 90.00
+          line_amount: 90.00
+          smart_code: "HERA.REST.INV.LINE.ORDER.v1"
+        - line_entity_id: "tax_vat"
+          quantity: 1
+          unit_price: 4.50
+          line_amount: 4.50
+          smart_code: "HERA.REST.INV.LINE.TAX.v1"
+        - line_entity_id: "service_charge"
+          quantity: 1
+          unit_price: 13.50
+          line_amount: 13.50
+          smart_code: "HERA.REST.INV.LINE.SERVICE.v1"
+    validations:
+      - type: "equals"
+        field: "total_amount"
+        expected: 108.00
+      - type: "business_rule"
+        field: "{{invoice.total_amount}}"
+        oracle: "calculateTax"
+        params: [90.00, 0.05, false]  # amount, tax_rate, inclusive
+
+  # Step 9: Process payment
+  - id: "payment"
+    name: "Process customer payment"
+    type: "create_transaction"
+    data:
+      transaction_type: "payment"
+      transaction_code: "PAY-12-001"
+      smart_code: "HERA.REST.PAY.TXN.CARD.v1"
+      total_amount: 120.00  # Including tip
+      from_entity_id: "{{customer.id}}"
+      to_entity_id: "pos_terminal_1"
+      line_items:
+        - line_entity_id: "{{invoice.id}}"
+          quantity: 1
+          unit_price: 108.00
+          line_amount: 108.00
+          smart_code: "HERA.REST.PAY.LINE.INVOICE.v1"
+        - line_entity_id: "tip"
+          quantity: 1
+          unit_price: 12.00
+          line_amount: 12.00
+          smart_code: "HERA.REST.PAY.LINE.TIP.v1"
+          metadata:
+            tip_percentage: 13.33
+            server_id: "{{setup.server.id}}"
+    validations:
+      - type: "equals"
+        field: "total_amount"
+        expected: 120.00
+      - type: "greater_than"
+        field: "{{payment.total_amount}}"
+        expected: "{{invoice.total_amount}}"
+
+  # Step 10: Close order and free table
+  - id: "order_complete"
+    name: "Complete order and free table"
+    type: "create_relationship"
+    data:
+      from_entity_id: "{{order.id}}"
+      to_entity_id: "status_completed"
+      relationship_type: "has_status"
+      smart_code: "HERA.WORKFLOW.STATUS.ASSIGN.v1"
+      metadata:
+        completed_at: "{{now}}"
+        total_duration: "75"  # minutes
+        customer_satisfaction: "high"
+
+  # Step 11: Final validations
+  - id: "final_validation"
+    name: "Validate complete process"
+    type: "validate"
+    validations:
+      - type: "business_rule"
+        field: "{{payment.total_amount}}"
+        oracle: "validateRestaurantOrder"
+        params: 
+          - items: [
+              { quantity: 2, price: 28.50 },
+              { quantity: 2, price: 16.50 }
+            ]
+            tableNumber: 12
+      - type: "equals"
+        field: "{{order.line_items.length}}"
+        expected: 2
+      - type: "business_rule"
+        field: "profitability"
+        oracle: "calculateProfitability"
+        params: [120.00, 26.00, 15.00]  # revenue, cost, expenses
+
+teardown:
+  clean_data: true
+  preserve_logs: true

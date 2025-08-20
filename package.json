@@ -28,7 +28,12 @@
     "smart-convert": "node scripts/smart-page-converter.js",
     "start:prod": "NODE_ENV=production next start",
     "db:migrate": "node scripts/run-supabase-migration.js",
-    "postinstall": "npm run db:migrate || echo \"Migration skipped\""
+    "postinstall": "npm run db:migrate || echo \"Migration skipped\"",
+    "test:salon": "cd packages/hera-testing && node bin/simple-test.js salon examples/salon-appointment-booking.yaml",
+    "test:salon-validate": "cd packages/hera-testing && node bin/simple-test.js validate examples/salon-appointment-booking.yaml",
+    "test:restaurant": "cd packages/hera-testing && node bin/simple-test.js validate examples/restaurant-order-to-cash.yaml",
+    "test:business-process": "cd packages/hera-testing && node bin/simple-test.js salon",
+    "test:all-industries": "npm run test:salon && npm run test:restaurant"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
