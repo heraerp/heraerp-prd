@@ -1,10 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useUserContext } from '@/hooks/useUserContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2 } from 'lucide-react'
 import { 
   Scissors, DollarSign, Users, Calendar, TrendingUp, TrendingDown,
   Target, BarChart3, PieChart, Clock, CheckCircle, AlertTriangle,
@@ -28,6 +32,8 @@ interface SalonBudgetData {
 
 export default function SalonBudgetingPage() {
   const router = useRouter()
+  const { isAuthenticated } = useAuth()
+  const { organizationId, loading: contextLoading } = useUserContext()
   const [budgetData, setBudgetData] = useState<SalonBudgetData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedPeriod, setSelectedPeriod] = useState<'MTD' | 'QTD' | 'YTD'>('YTD')
@@ -182,6 +188,46 @@ export default function SalonBudgetingPage() {
     { month: 'Nov', factor: 1.3, events: ['Holiday Season'] },
     { month: 'Dec', factor: 1.4, events: ['Holiday Parties', 'New Year Prep'] }
   ]
+
+  // Layer 1: Authentication Check
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access the budgeting page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  // Layer 2: Context Loading Check
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading organization context...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Layer 3: Organization Check
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No organization found. Please complete setup.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
 
   useEffect(() => {
     // Simulate loading salon budget data

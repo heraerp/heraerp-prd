@@ -46,7 +46,8 @@ import {
   Gift,
   Smartphone,
   Share2,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 

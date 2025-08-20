@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Crown, 
@@ -40,7 +41,9 @@ import {
   DollarSign,
   Trophy,
   Target,
-  Zap
+  Zap,
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -284,6 +287,46 @@ export default function LoyaltyProgressive() {
   }
 
   const loyaltyStats = getLoyaltyStats()
+
+  // Layer 1: Authentication Check
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access the loyalty program.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  // Layer 2: Context Loading Check
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading organization context...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Layer 3: Organization Check
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No organization found. Please complete setup.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex">

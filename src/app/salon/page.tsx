@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { useAuth } from '@/components/auth/DualAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'
+import { OrganizationSwitcher } from '@/components/OrganizationSwitcher'
 import { 
   Scissors, 
   User, 
@@ -31,9 +32,11 @@ import {
   Save,
   TestTube,
   AlertCircle,
-  Loader2
+  Loader2,
+  Building2
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 // Database API Integration
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hsumtzuqzoqccpjiaikh.supabase.co'
@@ -86,6 +89,7 @@ interface SalonProgressiveProps {
 }
 
 export default function SalonProduction({ initialTestMode = false }: SalonProgressiveProps) {
+  const router = useRouter()
   const { isAuthenticated } = useAuth()
   const { organizationId, userContext, loading: contextLoading } = useUserContext()
   
@@ -219,6 +223,19 @@ export default function SalonProduction({ initialTestMode = false }: SalonProgre
             </div>
             
             <div className="flex items-center gap-3">
+              {/* Organization Management */}
+              <div className="flex items-center gap-2">
+                <OrganizationSwitcher />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push('/organization/dashboard')}
+                  title="Organization Settings"
+                >
+                  <Building2 className="h-4 w-4" />
+                </Button>
+              </div>
+              
               {/* Progressive Controls */}
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-2">
                 <Button

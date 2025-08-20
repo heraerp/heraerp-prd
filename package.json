@@ -25,7 +25,10 @@
     "convert-industry": "node scripts/convert-industry.js",
     "conversion-progress": "node scripts/conversion-progress.js",
     "convert-page": "node scripts/convert-page-to-production.js",
-    "smart-convert": "node scripts/smart-page-converter.js"
+    "smart-convert": "node scripts/smart-page-converter.js",
+    "start:prod": "NODE_ENV=production next start",
+    "db:migrate": "node scripts/run-supabase-migration.js",
+    "postinstall": "npm run db:migrate || echo \"Migration skipped\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -90,5 +93,9 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

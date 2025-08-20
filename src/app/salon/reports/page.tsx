@@ -146,112 +146,6 @@ export default function ReportsProgressive() {
         setHasChanges(true)
       }, 8000)
 
-
-      if (!isAuthenticated) {
-
-
-        return (
-
-
-          <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
-
-
-            <Alert>
-
-
-              <AlertCircle className="h-4 w-4" />
-
-
-              <AlertDescription>
-
-
-                Please log in to access reports management.
-
-
-              </AlertDescription>
-
-
-            </Alert>
-
-
-          </div>
-
-
-        )
-
-
-      }
-
-
-
-      if (contextLoading) {
-
-
-        return (
-
-
-          <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
-
-
-            <div className="text-center">
-
-
-              <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
-
-
-              <p className="text-gray-600">Loading your profile...</p>
-
-
-            </div>
-
-
-          </div>
-
-
-        )
-
-
-      }
-
-
-
-      if (!organizationId) {
-
-
-        return (
-
-
-          <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
-
-
-            <Alert variant="destructive">
-
-
-              <AlertCircle className="h-4 w-4" />
-
-
-              <AlertDescription>
-
-
-                Organization not found. Please contact support.
-
-
-              </AlertDescription>
-
-
-            </Alert>
-
-
-          </div>
-
-
-        )
-
-
-      }
-
-
-
       return () => clearInterval(interval)
     }
   }, [testMode])
@@ -273,6 +167,46 @@ export default function ReportsProgressive() {
 
   const getGrowthIcon = (growth: number) => {
     return growth >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />
+  }
+
+  // Layer 1: Authentication Check
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access reports management.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  // Layer 2: Context Loading Check
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Layer 3: Organization Check
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Organization not found. Please contact support.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
   }
 
   return (
