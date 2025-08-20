@@ -234,4 +234,8 @@ await refreshContext()
    - Industry-standard JWT tokens
    - Row-level security in database
 
+## 📚 Related Documentation
+
+- **[Authorization Pattern Guide](./AUTHORIZATION-PATTERN.md)** - Detailed implementation guide for the Three-Layer Authorization Pattern that MUST be used for all production pages.
+
 This dual authentication system ensures secure, scalable, and user-friendly access to all HERA applications!

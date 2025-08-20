@@ -410,6 +410,9 @@ const business = await universalApi.setupBusiness({
 - **`database/`** - Universal schema, migrations, functions, and seeds
 - **`config/`** - Business configuration files and industry templates
 - **`docs/`** - Comprehensive documentation
+  - **`AUTH-FLOW-EXPLAINED.md`** - Complete authentication flow documentation
+  - **`AUTHORIZATION-PATTERN.md`** - THREE-LAYER AUTH PATTERN (MUST READ!)
+  - **`AUTH-QUICK-REFERENCE.md`** - Copy-paste auth templates
 - **`auth-service/`** - Authentication microservice with universal authorization
 - **`ai-service/`** - Multi-provider AI integration with intelligent routing
 - **`monitoring/`** - Complete monitoring system with Prometheus, Grafana, and Node Exporter
@@ -583,6 +586,28 @@ Custom utility classes are available in `src/app/globals.css`:
 - **Row Level Security (RLS)**: Database-level enforcement of multi-tenant isolation
 - **Perfect Data Isolation**: Mario's restaurant can NEVER see Dr. Smith's patients
 - **Security Headers**: Comprehensive security configuration in `vercel.json`
+
+### **🔐 THREE-LAYER AUTHORIZATION PATTERN (MANDATORY)**
+ALL production pages MUST implement this pattern:
+
+```typescript
+// Layer 1: Authentication Check
+if (!isAuthenticated) {
+  return <Alert>Please log in to access this page.</Alert>
+}
+
+// Layer 2: Context Loading Check (NEVER SKIP THIS!)
+if (contextLoading) {
+  return <LoadingSpinner />
+}
+
+// Layer 3: Organization Check
+if (!organizationId) {
+  return <Alert>No organization context found.</Alert>
+}
+```
+
+**CRITICAL**: See `/docs/AUTHORIZATION-PATTERN.md` for complete implementation guide. Skipping any layer will cause infinite loading or security vulnerabilities!
 
 ### **Three-Layer Security Model**:
 1. **Layer 1: Organization Isolation** - Sacred organization_id boundary (zero data leakage)
