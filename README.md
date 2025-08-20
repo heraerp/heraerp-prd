@@ -44,6 +44,9 @@ HERA.PROF.TIME.BILLING.v1      // Professional services billing
 
 ## 🚀 **Quick Start Guide**
 
+### **Deploy to Railway (Recommended)**
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/hera-erp)
+
 ### **30-Second Implementation**
 Deploy any business type instantly:
 
