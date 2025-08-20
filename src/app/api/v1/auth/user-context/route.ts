@@ -52,21 +52,34 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('entity_id', userEntities.id)
 
+    // Get organization details if we have an ID
+    let organizationData = null
+    if (organizationId) {
+      const { data: org } = await supabase
+        .from('core_organizations')
+        .select('*')
+        .eq('id', organizationId)
+        .single()
+      
+      organizationData = org
+    }
+
     // Build user context
     const userContext = {
-      user: {
+      user_entity: {
         id: userEntities.id,
-        email: user.email,
-        name: userEntities.entity_name,
-        supabase_id: user.id,
+        email: user.email || '',
+        entity_name: userEntities.entity_name,
+        entity_type: userEntities.entity_type,
         role: dynamicFields?.find(f => f.field_name === 'role')?.field_value_text || 'user',
-        department: dynamicFields?.find(f => f.field_name === 'department')?.field_value_text,
-        phone: dynamicFields?.find(f => f.field_name === 'phone')?.field_value_text
+        metadata: userEntities.metadata || {}
       },
-      organization: {
-        id: organizationId,
-        name: organizationName
-      },
+      organization: organizationData ? {
+        id: organizationData.id,
+        organization_name: organizationData.organization_name,
+        organization_type: organizationData.organization_type,
+        subscription_plan: organizationData.subscription_plan
+      } : null,
       permissions: ['entities:read', 'entities:write', 'transactions:read', 'transactions:write']
     }
 

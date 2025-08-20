@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'
 import { useLoyalty_program } from '@/hooks/useLoyalty_program'
 

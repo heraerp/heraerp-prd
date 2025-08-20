@@ -487,7 +487,7 @@ export default function ProgressiveDashboard() {
           <div className="space-y-3">
             {/* Add Button - Premium Styling */}
             <button 
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => window.location.href = '/get-started'}
               className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700 flex items-center justify-center transition-all duration-300 group relative shadow-lg hover:shadow-xl hover:scale-105 border border-white/20"
               title="Sign Up for Full Access"
             >
@@ -515,7 +515,7 @@ export default function ProgressiveDashboard() {
 
             {/* Demo User */}
             <button 
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => window.location.href = '/get-started'}
               className="w-14 h-14 rounded-xl bg-white/30 backdrop-blur-sm text-slate-600 hover:bg-white/50 hover:text-slate-800 flex items-center justify-center transition-all duration-300 group relative shadow-sm hover:shadow-lg border border-white/20 hover:border-white/30"
               title="Demo User - Click to sign up"
             >
@@ -543,7 +543,7 @@ export default function ProgressiveDashboard() {
           {/* Header Actions */}
           <div className="flex items-center gap-4">
             <Button 
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => window.location.href = '/get-started'}
               className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
               size="sm"
             >
@@ -903,7 +903,7 @@ export default function ProgressiveDashboard() {
                 <Button 
                   size="lg" 
                   className="bg-white text-blue-600 hover:bg-gray-50 hover:scale-105 text-lg px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20"
-                  onClick={() => window.location.href = '/dashboard'}
+                  onClick={() => window.location.href = '/get-started'}
                 >
                   <User className="w-5 h-5 mr-2" />
                   Sign Up - Full Access

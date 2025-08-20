@@ -6,12 +6,17 @@ import { geoAnalytics } from '@/lib/monitoring/geo-analytics'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const startTime = Date.now()
+  
+  // Get the host to check for subdomains
+  const host = request.headers.get('host') || ''
+  const subdomain = host.split('.')[0]
+  const isSubdomain = subdomain && subdomain !== 'heraerp' && subdomain !== 'www' && subdomain !== 'localhost'
 
   // Track visitor analytics for all requests (before auth checks)
   trackVisitorAnalytics(request, pathname)
 
   // Skip auth for public routes
-  if (shouldSkipAuth(pathname)) {
+  if (shouldSkipAuth(pathname, isSubdomain)) {
     const response = NextResponse.next()
     trackResponseMetrics(request, pathname, 200, startTime)
     return response
@@ -60,7 +65,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-function shouldSkipAuth(pathname: string): boolean {
+function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean {
   // Public routes that don't require authentication
   const publicRoutes = [
     '/',
@@ -73,7 +78,9 @@ function shouldSkipAuth(pathname: string): boolean {
     '/salon-auth',           // Combined login/register page
     '/test-auth-tokens',
     '/dashboard-simple',    // For testing
-    '/dashboard-progressive' // Public progressive apps showcase
+    '/dashboard-progressive', // Public progressive apps showcase
+    '/get-started',          // Get started page
+    '/test-page'             // Test page
   ]
   
   // Static files and Next.js internals
@@ -89,6 +96,19 @@ function shouldSkipAuth(pathname: string): boolean {
   // Progressive apps (public demos)
   if (pathname.endsWith('-progressive')) {
     return true
+  }
+  
+  // For subdomains, be more permissive with public routes
+  // This allows new pages to work on subdomains without explicit listing
+  if (isSubdomain) {
+    // Protected subdomain routes that still require auth
+    const protectedSubdomainRoutes = ['/dashboard', '/admin', '/settings']
+    const isProtected = protectedSubdomainRoutes.some(route => pathname.startsWith(route))
+    
+    // If it's not explicitly protected, allow it
+    if (!isProtected) {
+      return true
+    }
   }
   
   return publicRoutes.some(route => pathname === route || pathname.startsWith(route))

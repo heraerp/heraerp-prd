@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 // import { DatePickerWithRange } from '@/components/ui/date-range-picker' // Not available
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { 
   FileText, 
   Download, 

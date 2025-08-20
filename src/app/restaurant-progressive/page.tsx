@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { RestaurantManagementSidebar } from '@/components/restaurant-progressive/RestaurantManagementSidebar'
 import { 
   Package, Calendar, ShoppingBag, CreditCard, BarChart3, TrendingUp,

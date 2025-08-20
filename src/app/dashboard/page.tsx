@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 // Temporarily disabled problematic CRUD components

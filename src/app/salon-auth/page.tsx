@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Loader2, LogIn, UserPlus, AlertCircle, Sparkles } from 'lucide-react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 
 export default function SalonAuthPage() {
   const router = useRouter()

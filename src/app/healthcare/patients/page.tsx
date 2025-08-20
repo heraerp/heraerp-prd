@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'
 import { usePatient } from '@/hooks/usePatient'
 import { transformToUIPatient } from '@/lib/transformers/patient-transformer'

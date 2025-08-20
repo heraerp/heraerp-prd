@@ -5,7 +5,7 @@ import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { UpdateNotification } from "@/components/pwa/UpdateNotification";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
-import { AuthProvider } from "@/contexts/auth-context";
+import { DualAuthProvider } from "@/components/auth/DualAuthProvider";
 import ProgressiveLayout from "@/components/layout/ProgressiveLayout";
 import "./globals.css";
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
@@ -72,7 +72,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
@@ -87,12 +87,12 @@ export default function RootLayout({
         <HeraThemeProvider defaultTheme="light">
           <ServiceWorkerProvider>
             <QueryProvider>
-              <AuthProvider>
+              <DualAuthProvider>
                 <ProgressiveLayout>
                   {children}
                 </ProgressiveLayout>
                 <UpdateNotification />
-              </AuthProvider>
+              </DualAuthProvider>
             </QueryProvider>
           </ServiceWorkerProvider>
         </HeraThemeProvider>

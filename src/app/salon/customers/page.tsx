@@ -29,7 +29,7 @@ import {
   Loader2
 } from 'lucide-react'
 import Link from 'next/link'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { useCustomers } from '@/hooks/useCustomers'
 import { useUserContext } from '@/hooks/useUserContext'
 import { 

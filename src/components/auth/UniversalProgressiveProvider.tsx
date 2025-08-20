@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, ReactNode } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { 
   DollarSign, Users, Package, Gem, ChefHat, 
   Heart, Building, Scale, FileText, Briefcase,

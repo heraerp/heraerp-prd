@@ -21,6 +21,12 @@ interface Organization {
   subscription_plan?: string
 }
 
+interface HeraUserContext {
+  user: DualUser | null
+  organization: Organization | null
+  role: string
+}
+
 interface DualAuthContext {
   // Auth state
   user: DualUser | null
@@ -29,6 +35,7 @@ interface DualAuthContext {
   isAuthenticated: boolean
   isLoading: boolean
   isHeraLoading: boolean
+  heraContext: HeraUserContext | null
 
   // Auth actions
   login: (email: string, password: string) => Promise<void>
@@ -67,8 +74,8 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
         return
       }
 
-      // Call HERA context API
-      const response = await fetch('/api/v1/auth/hera-context', {
+      // Call HERA context API (using the correct endpoint)
+      const response = await fetch('/api/v1/auth/user-context', {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
@@ -225,6 +232,12 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
     }
   }
 
+  const heraContext: HeraUserContext | null = user && organization ? {
+    user,
+    organization,
+    role: user.role || 'user'
+  } : null
+
   const value: DualAuthContext = {
     user,
     organization,
@@ -232,6 +245,7 @@ export function DualAuthProvider({ children }: DualAuthProviderProps) {
     isAuthenticated: !!user,
     isLoading,
     isHeraLoading,
+    heraContext,
     login,
     logout,
     register,

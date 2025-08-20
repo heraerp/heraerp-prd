@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { heraApi } from '@/lib/hera-api'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { CRMErrorProvider } from '@/components/crm/error-provider'
 import { ErrorDisplay } from '@/components/crm/error-display'
 import { useCRMError, useCRMFormValidation } from '@/hooks/use-crm-error'

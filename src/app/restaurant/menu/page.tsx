@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from "@/contexts/auth-context"
+import { useAuth } from '@/components/auth/DualAuthProvider'
 // import { MenuManager } from '@/components/restaurant/MenuManager'
 import { RestaurantLogin } from '@/components/restaurant/RestaurantLogin'
 import { Button } from '@/components/ui/button'

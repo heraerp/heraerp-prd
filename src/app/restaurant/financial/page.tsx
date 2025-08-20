@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from "@/contexts/auth-context"
+import { useAuth } from '@/components/auth/DualAuthProvider'
 // FinancialDashboard component removed - using simple card layout instead
 import { Card } from '@/components/ui/card'
 import { 

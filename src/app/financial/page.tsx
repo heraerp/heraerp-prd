@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/components/auth/DualAuthProvider'
 import { 
   DollarSign, TrendingUp, Calculator, FileText, CreditCard, 
   BarChart3, PieChart, Building, Users, Target, ChevronRight,
