@@ -5,7 +5,7 @@ import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { UpdateNotification } from "@/components/pwa/UpdateNotification";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
-import { DualAuthProvider } from "@/components/auth/DualAuthProvider";
+import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
 import ProgressiveLayout from "@/components/layout/ProgressiveLayout";
 import "./globals.css";
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
@@ -87,12 +87,12 @@ export default function RootLayout({
         <HeraThemeProvider defaultTheme="light">
           <ServiceWorkerProvider>
             <QueryProvider>
-              <DualAuthProvider>
+              <MultiOrgAuthProvider>
                 <ProgressiveLayout>
                   {children}
                 </ProgressiveLayout>
                 <UpdateNotification />
-              </DualAuthProvider>
+              </MultiOrgAuthProvider>
             </QueryProvider>
           </ServiceWorkerProvider>
         </HeraThemeProvider>

@@ -12,11 +12,11 @@ import {
   Loader2, LogIn, UserPlus, AlertCircle, Rocket, Zap, 
   ArrowRight, CheckCircle, Building2, Mail, Lock 
 } from 'lucide-react'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export default function GetStartedPage() {
   const router = useRouter()
-  const { login, register, isAuthenticated } = useAuth()
+  const { login, register, isAuthenticated } = useMultiOrgAuth()
   const [activeTab, setActiveTab] = useState<'trial' | 'production'>('trial')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +38,7 @@ export default function GetStartedPage() {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard')
+      router.push('/auth')
     }
   }, [isAuthenticated, router])
 
@@ -49,7 +49,7 @@ export default function GetStartedPage() {
 
     try {
       await login(loginEmail, loginPassword)
-      router.push('/dashboard')
+      router.push('/auth')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
     } finally {
@@ -84,7 +84,7 @@ export default function GetStartedPage() {
       })
 
       // The register function in auth context handles organization creation
-      router.push('/dashboard')
+      router.push('/auth/organizations/new')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create account')
     } finally {
