@@ -8,17 +8,22 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Loader2, Building2, AlertCircle, CheckCircle, X } from 'lucide-react'
+import { 
+  Loader2, Building2, AlertCircle, CheckCircle, X, 
+  ArrowLeft, ArrowRight, Sparkles, Store, Heart, 
+  Briefcase, Factory, Users, Globe, Shield, Zap
+} from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import Link from 'next/link'
 
 const BUSINESS_TYPES = [
-  { value: 'restaurant', label: 'Restaurant & Food Service' },
-  { value: 'salon', label: 'Salon & Beauty' },
-  { value: 'retail', label: 'Retail & E-commerce' },
-  { value: 'healthcare', label: 'Healthcare & Medical' },
-  { value: 'professional', label: 'Professional Services' },
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'general', label: 'Other / General Business' }
+  { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
+  { value: 'salon', label: 'Salon & Beauty', icon: Heart },
+  { value: 'retail', label: 'Retail & E-commerce', icon: Store },
+  { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
+  { value: 'professional', label: 'Professional Services', icon: Briefcase },
+  { value: 'manufacturing', label: 'Manufacturing', icon: Factory },
+  { value: 'general', label: 'Other / General Business', icon: Building2 }
 ]
 
 export default function CreateOrganizationPage() {
@@ -105,13 +110,39 @@ export default function CreateOrganizationPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Link href="/auth/organizations">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-slate-900">Create Organization</h1>
+                  <p className="text-xs text-slate-600">Set up your new business</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-12 max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>Create Your Organization</CardTitle>
+            <CardTitle>Organization Details</CardTitle>
             <CardDescription>
-              Set up your business on HERA with a custom subdomain
+              Create a new organization to manage your business. Each organization gets its own subdomain and isolated data.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -150,11 +181,17 @@ export default function CreateOrganizationPage() {
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {BUSINESS_TYPES.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
+                    {BUSINESS_TYPES.map((type) => {
+                      const Icon = type.icon
+                      return (
+                        <SelectItem key={type.value} value={type.value}>
+                          <div className="flex items-center gap-2">
+                            <Icon className="h-4 w-4" />
+                            {type.label}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-gray-500">
@@ -217,7 +254,38 @@ export default function CreateOrganizationPage() {
             </form>
           </CardContent>
         </Card>
-      </div>
+
+        {/* Info Section */}
+        <div className="mt-8 grid md:grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Globe className="h-5 w-5 text-blue-600" />
+            </div>
+            <h3 className="font-medium text-sm mb-1">Custom Domain</h3>
+            <p className="text-xs text-slate-600">
+              Access via subdomain.heraerp.com
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Users className="h-5 w-5 text-purple-600" />
+            </div>
+            <h3 className="font-medium text-sm mb-1">Team Ready</h3>
+            <p className="text-xs text-slate-600">
+              Invite team members later
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+            </div>
+            <h3 className="font-medium text-sm mb-1">Instant Setup</h3>
+            <p className="text-xs text-slate-600">
+              Start using immediately
+            </p>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
