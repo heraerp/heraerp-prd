@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { HealthcarePracticeSidebar } from '@/components/healthcare-progressive/HealthcarePracticeSidebar'
 
 export default function HealthcarePracticeHomePage() {

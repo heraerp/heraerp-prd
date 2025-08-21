@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { ArrowRight, Building2, Users, Sparkles, Shield, Globe, Zap } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { ArrowRight, Building2, Sparkles, Shield, Globe, Zap } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AuthLandingPage() {
@@ -70,34 +70,40 @@ export default function AuthLandingPage() {
       {/* Features Grid */}
       <section className="container mx-auto px-6 py-16">
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-              <Globe className="h-6 w-6 text-blue-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Multi-Organization</h3>
-            <p className="text-slate-600">
-              Manage multiple businesses from one account. Each with its own subdomain and complete isolation.
-            </p>
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <Globe className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Multi-Organization</h3>
+              <p className="text-slate-600">
+                Manage multiple businesses from one account. Each with its own subdomain and complete isolation.
+              </p>
+            </CardContent>
           </Card>
           
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-              <Zap className="h-6 w-6 text-purple-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Instant Apps</h3>
-            <p className="text-slate-600">
-              Install pre-built apps for your industry in seconds. CRM, inventory, accounting - all integrated.
-            </p>
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Instant Apps</h3>
+              <p className="text-slate-600">
+                Install pre-built apps for your industry in seconds. CRM, inventory, accounting - all integrated.
+              </p>
+            </CardContent>
           </Card>
           
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-              <Shield className="h-6 w-6 text-green-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Enterprise Security</h3>
-            <p className="text-slate-600">
-              Bank-grade security with complete data isolation between organizations. Your data is always safe.
-            </p>
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Enterprise Security</h3>
+              <p className="text-slate-600">
+                Bank-grade security with complete data isolation between organizations. Your data is always safe.
+              </p>
+            </CardContent>
           </Card>
         </div>
       </section>

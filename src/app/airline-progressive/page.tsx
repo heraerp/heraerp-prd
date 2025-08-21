@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 // Progressive Authentication - Don Norman Pattern
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'

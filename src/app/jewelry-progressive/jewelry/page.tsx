@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { 

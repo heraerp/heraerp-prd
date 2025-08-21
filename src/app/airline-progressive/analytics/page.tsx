@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { 
   BarChart3, TrendingUp, Users, Plane, DollarSign,

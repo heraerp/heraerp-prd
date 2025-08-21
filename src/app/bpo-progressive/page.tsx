@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { BPOManagementSidebar } from '@/components/bpo-progressive/BPOManagementSidebar'
 import { BPORoleSwitcher } from '@/components/bpo-progressive/BPORoleSwitcher'
 import { BPOQuickRoleSwitcher } from '@/components/bpo-progressive/BPOQuickRoleSwitcher'

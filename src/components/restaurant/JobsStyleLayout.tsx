@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { ContextualSidebar } from './ContextualSidebar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
