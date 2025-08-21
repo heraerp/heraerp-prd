@@ -21,8 +21,8 @@ export default function LoginPage() {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      // Check if user has organization context, if not redirect to app selector
-      router.push('/select-app')
+      // Check if user has organization context, if not redirect to setup
+      router.push('/setup')
     }
   }, [isAuthenticated, router])
 
@@ -33,8 +33,8 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
-      // Redirect to app selector to choose appropriate app
-      router.push('/select-app')
+      // Redirect to setup to choose or install apps
+      router.push('/setup')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
     } finally {
