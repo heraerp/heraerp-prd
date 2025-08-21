@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Store, Scissors, Package, Heart, Calculator, Briefcase, Loader2 } from 'lucide-react'
@@ -69,7 +69,7 @@ const availableApps: AppOption[] = [
 
 export default function SetupPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, organization } = useAuth()
+  const { isAuthenticated, isLoading: authLoading, currentOrganization } = useMultiOrgAuth()
   const [selectedApp, setSelectedApp] = useState<string | null>(null)
 
   useEffect(() => {
@@ -106,8 +106,8 @@ export default function SetupPage() {
               Choose Your HERA Application
             </h1>
             <p className="text-xl text-gray-600">
-              {organization ? 
-                `Welcome to ${organization.organization_name}. Select an app to get started.` :
+              {currentOrganization ? 
+                `Welcome to ${currentOrganization.name}. Select an app to get started.` :
                 'Select an application to begin your business management journey'
               }
             </p>

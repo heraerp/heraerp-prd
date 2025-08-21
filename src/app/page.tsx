@@ -37,7 +37,7 @@ export default function HomePage() {
                 Prototype
               </Link>
               <Button asChild className="bg-black hover:bg-gray-800 text-white hover:text-white rounded-full px-6">
-                <Link href="/dashboard">
+                <Link href="/get-started">
                   Get Started
                 </Link>
               </Button>
@@ -78,7 +78,7 @@ export default function HomePage() {
                   className="w-full sm:w-auto bg-gradient-to-r from-black to-gray-900 hover:from-gray-900 hover:to-black text-white hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
                   asChild
                 >
-                  <Link href="/dashboard">
+                  <Link href="/get-started">
                     Start Your 2-Week Challenge
                   </Link>
                 </Button>
@@ -336,7 +336,7 @@ export default function HomePage() {
                 className="bg-gradient-to-r from-white to-gray-50 text-black hover:from-gray-50 hover:to-white text-lg px-16 py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
-                <Link href="/dashboard">
+                <Link href="/get-started">
                   Accept the Challenge
                 </Link>
               </Button>

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { useAuth } from '@/components/auth/DualAuthProvider'
+import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { CRMLayout } from '@/components/layout/crm-layout'
 
 // Types

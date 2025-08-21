@@ -1,12 +1,7 @@
-// HERA Auth Components - Supabase Only
-// Simplified auth exports for production
+// HERA Auth Components - Multi-Organization SaaS
+// Centralized auth exports for the new architecture
 
-export { SupabaseAuthProvider, useSupabaseAuth } from '@/contexts/supabase-auth-context'
+export { MultiOrgAuthProvider, useMultiOrgAuth } from './MultiOrgAuthProvider'
 
-// Re-export for compatibility
-export { useSupabaseAuth as useAuth } from '@/contexts/supabase-auth-context'
-
-// Keep some working components
-export { JobsLoginForm } from './JobsLoginForm'
-export { JobsDashboard } from './JobsDashboard'
-export { JobsRegistrationWizard } from './JobsRegistrationWizard'
+// Re-export for compatibility during migration
+export { useMultiOrgAuth as useAuth } from './MultiOrgAuthProvider'
