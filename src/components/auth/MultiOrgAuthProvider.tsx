@@ -297,11 +297,16 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
 
   const checkSubdomainAvailability = async (subdomain: string): Promise<boolean> => {
     try {
-      const response = await fetch(`/api/v1/organizations?subdomain=${subdomain}`, {
-        method: 'HEAD'
+      const response = await fetch(`/api/v1/organizations/check-subdomain?subdomain=${encodeURIComponent(subdomain)}`, {
+        method: 'GET'
       })
       
-      return response.status === 200
+      if (response.ok) {
+        const data = await response.json()
+        return data.available
+      }
+      
+      return false
     } catch (error) {
       console.error('Error checking subdomain:', error)
       return false
