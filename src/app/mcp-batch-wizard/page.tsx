@@ -105,7 +105,7 @@ export default function MCPBatchWizard() {
   const addUniversalImports = (code: string): string => {
     const imports = `import { universalApi } from '@/lib/universal-api'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 `

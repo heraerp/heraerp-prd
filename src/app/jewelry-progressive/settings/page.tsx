@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { JewelryTeamsSidebar } from '@/components/jewelry-progressive/JewelryTeamsSidebar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,7 +12,7 @@ import { ArrowLeft, Settings, Crown, Save, Database, Copy } from 'lucide-react'
 // Smart Code: HERA.JWLY.SETTINGS.PROGRESSIVE.v1
 
 export default function JewelryProgressiveSettingsPage() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
   

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -23,7 +23,7 @@ import {
 
 // Restaurant Dashboard - Universal HERA Architecture Demo
 export function RestaurantDashboard() {
-  const { user, organization, logout } = useAuth()
+  const { user, organization, logout } = useMultiOrgAuth()
   const [currentTime, setCurrentTime] = useState(new Date())
   const [todaysStats, setTodaysStats] = useState({
     revenue: 0,

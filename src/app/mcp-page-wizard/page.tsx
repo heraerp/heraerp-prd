@@ -191,7 +191,7 @@ export default function MCPPageWizard() {
   const addUniversalImports = (code: string): string => {
     const imports = `import { universalApi } from '@/lib/universal-api'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 `
@@ -244,7 +244,7 @@ import { Loader2 } from 'lucide-react'
         setIsLoading(true)
         
         // Set organization context
-        const { heraContext } = useAuth()
+        const { heraContext } = useMultiOrgAuth()
         if (heraContext?.organizationId) {
           universalApi.setOrganizationId(heraContext.organizationId)
           

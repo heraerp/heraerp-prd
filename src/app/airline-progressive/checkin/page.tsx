@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { 
   CreditCard, Search, User, Plane, Calendar, Clock, MapPin,
@@ -21,7 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function AirlineCheckInPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [searchMethod, setSearchMethod] = useState<'booking' | 'ticket' | 'frequent'>('booking')
   const [isSearching, setIsSearching] = useState(false)
   const [bookingFound, setBookingFound] = useState(false)

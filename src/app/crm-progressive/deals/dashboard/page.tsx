@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { CRMLayout } from '@/components/layout/crm-layout'
 
 // Types
@@ -82,7 +82,7 @@ const PIPELINE_TEMPLATES = {
 }
 
 export default function DealDashboardPage() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
   const [mounted, setMounted] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<keyof typeof PIPELINE_TEMPLATES>('simple')
   const [customStages, setCustomStages] = useState<Stage[]>([])

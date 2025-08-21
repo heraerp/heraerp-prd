@@ -14,7 +14,7 @@ import {
   Users,
   Building2
 } from 'lucide-react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { HeraTypographicLogo } from '@/components/ui/HeraTypographicLogo'
 
 interface DemoOption {
@@ -103,7 +103,7 @@ export default function JobsDemoSelector() {
   const [mounted, setMounted] = useState(false)
   const [selectedDemo, setSelectedDemo] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
+  const { login } = useMultiOrgAuth()
   const router = useRouter()
 
   useEffect(() => {

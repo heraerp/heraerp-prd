@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 // Progressive Authentication - Don Norman Pattern
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { JewelryTeamsSidebar } from '@/components/jewelry-progressive/JewelryTeamsSidebar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -30,7 +30,7 @@ import {
 } from 'lucide-react'
 
 export default function JewelryProgressivePage() {
-  const { workspace, isAnonymous, startAnonymous, isLoading } = useAuth()
+  const { workspace, isAnonymous, startAnonymous, isLoading } = useMultiOrgAuth()
   const router = useRouter()
   
   // Automatically create workspace on first visit

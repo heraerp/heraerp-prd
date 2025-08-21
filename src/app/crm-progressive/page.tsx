@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { heraApi } from '@/lib/hera-api'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { CRMErrorProvider } from '@/components/crm/error-provider'
 import { ErrorDisplay } from '@/components/crm/error-display'
 import { useCRMError, useCRMFormValidation } from '@/hooks/use-crm-error'
@@ -137,7 +137,7 @@ const stages = [
 
 // CRM Login Component
 function CRMLogin() {
-  const { isLoading } = useAuth()
+  const { isLoading } = useMultiOrgAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -279,7 +279,7 @@ function CRMLogin() {
 }
 
 function CRMPageContent() {
-  const { user, isLoading, logout } = useAuth()
+  const { user, isLoading, logout } = useMultiOrgAuth()
   const isAuthenticated = !!user
   const organization = { name: user?.organizationName || 'Sample Business' }
   const [mounted, setMounted] = useState(false)

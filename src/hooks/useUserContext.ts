@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 interface UserContext {
   user: {
@@ -19,7 +19,7 @@ interface UserContext {
 }
 
 export function useUserContext() {
-  const { session, isAuthenticated } = useAuth()
+  const { session, isAuthenticated } = useMultiOrgAuth()
   const [userContext, setUserContext] = useState<UserContext | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

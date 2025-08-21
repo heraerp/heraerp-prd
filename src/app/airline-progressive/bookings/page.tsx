@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { 
   Plane, Calendar, Clock, MapPin, Users, CreditCard, 
@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function AirlineBookingsPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
   const [sortBy, setSortBy] = useState('date_desc')

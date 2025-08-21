@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 
 export default function ProfitabilityProgressivePage() {
-  const { workspace, isAnonymous, startAnonymous, isLoading } = useAuth()
+  const { workspace, isAnonymous, startAnonymous, isLoading } = useMultiOrgAuth()
   const router = useRouter()
   const [selectedTab, setSelectedTab] = useState('overview')
   const [profitCenters, setProfitCenters] = useState<any[]>([])

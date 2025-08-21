@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { EnterpriseRetailSolutionSidebar } from '@/components/enterprise-retail-progressive/EnterpriseRetailSolutionSidebar'
 import { UniversalTourProvider, TourElement } from '@/components/tours/SimpleTourProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Plus, Search, Filter } from 'lucide-react'
 
 export default function PromotionsPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
 

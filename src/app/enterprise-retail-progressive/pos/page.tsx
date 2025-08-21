@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { EnterpriseRetailSolutionSidebar } from '@/components/enterprise-retail-progressive/EnterpriseRetailSolutionSidebar'
 import { UniversalTourProvider, TourElement } from '@/components/tours/SimpleTourProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -378,7 +378,7 @@ const samplePOSData = {
 }
 
 export default function EnterprisePOSPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   
   // Cart and Transaction State
   const [cart, setCart] = useState([])

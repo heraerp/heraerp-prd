@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { getHeraApi } from '@/lib/hera-api'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -223,7 +223,7 @@ const categoryStats = {
 }
 
 function JewelryInventory() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
   const [inventory, setInventory] = useState<JewelryItem[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -1785,7 +1785,7 @@ function JewelryInventory() {
 }
 
 function JewelryInventoryPage() {
-  const { workspace, isAnonymous, isLoading } = useAuth()
+  const { workspace, isAnonymous, isLoading } = useMultiOrgAuth()
 
   if (isLoading) {
     return (

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { 
   Search, Calendar, Users, MapPin, Plane, ArrowRight, 
@@ -19,7 +19,7 @@ import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function FlightSearchPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [searchType, setSearchType] = useState<'roundtrip' | 'oneway' | 'multicity'>('roundtrip')
   const [showFilters, setShowFilters] = useState(false)
 

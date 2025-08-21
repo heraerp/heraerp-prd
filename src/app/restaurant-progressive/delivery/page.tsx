@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { RestaurantManagementSidebar } from '@/components/restaurant-progressive/RestaurantManagementSidebar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Plus, Search, Filter } from 'lucide-react'
 
 export default function DeliveryOrdersPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { JewelryTeamsSidebar } from '@/components/jewelry-progressive/JewelryTeamsSidebar'
 import { 
   UniversalAppointmentCalendar,
@@ -29,7 +29,7 @@ import {
 // Smart Code: HERA.JWLR.CRM.APT.PAGE.v1
 
 export default function JewelryAppointmentsPage() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)

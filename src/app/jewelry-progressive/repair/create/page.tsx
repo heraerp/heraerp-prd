@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { JewelryTeamsSidebar } from '@/components/jewelry-progressive/JewelryTeamsSidebar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -71,7 +71,7 @@ interface Customer {
 }
 
 export default function JewelryRepairCreateJob() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
   const router = useRouter()
   
   const [form, setForm] = useState<RepairJobForm>({

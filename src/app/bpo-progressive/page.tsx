@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { BPOManagementSidebar } from '@/components/bpo-progressive/BPOManagementSidebar'
 import { BPORoleSwitcher } from '@/components/bpo-progressive/BPORoleSwitcher'
 import { BPOQuickRoleSwitcher } from '@/components/bpo-progressive/BPOQuickRoleSwitcher'
@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export default function BPOManagementHomePage() {
-  const { user } = useAuth()
+  const { user } = useMultiOrgAuth()
   const workspace = { name: 'BPO Services' } // Default workspace for BPO
   const [hoveredModule, setHoveredModule] = useState<string | null>(null)
   const [currentBPOUser, setCurrentBPOUser] = useState<any>(null)

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { EnterpriseRetailSolutionSidebar } from '@/components/enterprise-retail-progressive/EnterpriseRetailSolutionSidebar'
 import { UniversalTourProvider, TourElement } from '@/components/tours/SimpleTourProvider'
 import { 
@@ -28,7 +28,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export default function EnterpriseRetailSolutionHomePage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [hoveredModule, setHoveredModule] = useState<string | null>(null)
 
   // Modern module configuration with icons and gradients

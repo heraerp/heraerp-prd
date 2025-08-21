@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { 
@@ -88,7 +88,7 @@ const jewelryModules = [
 ]
 
 function JewelryDashboard() {
-  const { workspace, isAnonymous } = useAuth()
+  const { workspace, isAnonymous } = useMultiOrgAuth()
 
   const handleLogout = async () => {
     await logout()
@@ -289,7 +289,7 @@ function JewelryDashboard() {
 }
 
 export default function Jewelry() {
-  const { workspace, isAnonymous, isLoading } = useAuth()
+  const { workspace, isAnonymous, isLoading } = useMultiOrgAuth()
 
   if (isLoading) {
     return (

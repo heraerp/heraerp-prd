@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { getHeraApi } from '@/lib/hera-api'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -267,7 +267,7 @@ const vipLevels = {
 }
 
 function JewelryCustomers() {
-  const { user } = useAuth()
+  const { user } = useMultiOrgAuth()
   const [customers, setCustomers] = useState<JewelryCustomer[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedVipLevel, setSelectedVipLevel] = useState('all')
@@ -1163,7 +1163,7 @@ function JewelryCustomers() {
 }
 
 function JewelryCustomersPage() {
-  const { isRegistered, isLoading } = useAuth()
+  const { isRegistered, isLoading } = useMultiOrgAuth()
 
   if (isLoading) {
     return (

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { AirlineTeamsSidebar } from '@/components/airline-progressive/AirlineTeamsSidebar'
 import { 
   Star, Trophy, TrendingUp, Gift, Plane, Users, 
@@ -57,7 +57,7 @@ interface Transaction {
 }
 
 export default function AirlineLoyaltyPage() {
-  const { workspace, isAnonymous, updateData } = useAuth()
+  const { workspace, isAnonymous, updateData } = useMultiOrgAuth()
   const [currentMiles, setCurrentMiles] = useState(12450)
   const [lifetimeMiles, setLifetimeMiles] = useState(87650)
   const [currentTier, setCurrentTier] = useState('gold')

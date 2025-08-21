@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { EnterpriseRetailSolutionSidebar } from '@/components/enterprise-retail-progressive/EnterpriseRetailSolutionSidebar'
 import { UniversalTourProvider, TourElement } from '@/components/tours/SimpleTourProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -163,7 +163,7 @@ const samplePlanningData = {
 }
 
 export default function PlanningPage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [assortmentPlans, setAssortmentPlans] = useState(samplePlanningData.assortmentPlans)
   const [demandForecasts] = useState(samplePlanningData.demandForecasts)
   const [buyingWorkflows] = useState(samplePlanningData.buyingWorkflows)

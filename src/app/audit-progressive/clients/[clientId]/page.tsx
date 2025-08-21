@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -65,7 +65,7 @@ interface ClientDetails {
   }
 }
 
-export default function IndividualClientPage() {
+function ClientPageContent() {
   const params = useParams()
   const searchParams = useSearchParams()
   const clientId = params.clientId as string
@@ -406,5 +406,17 @@ export default function IndividualClientPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function IndividualClientPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+      </div>
+    }>
+      <ClientPageContent />
+    </Suspense>
   )
 }

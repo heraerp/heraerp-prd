@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { RestaurantManagementSidebar } from '@/components/restaurant-progressive/RestaurantManagementSidebar'
 import { 
   Package, Calendar, ShoppingBag, CreditCard, BarChart3, TrendingUp,
@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export default function RestaurantManagementHomePage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [hoveredModule, setHoveredModule] = useState<string | null>(null)
 
   // Modern module configuration with icons and gradients

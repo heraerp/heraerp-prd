@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -32,7 +32,7 @@ interface SidebarProps {
 
 export function BPOManagementSidebar({ className = '' }: SidebarProps) {
   const router = useRouter()
-  const { user, logout } = useAuth()
+  const { user, logout } = useMultiOrgAuth()
   const [collapsed, setCollapsed] = useState(false)
   const [activeItem, setActiveItem] = useState('dashboard')
   const [currentBPOUser, setCurrentBPOUser] = useState<any>(null)

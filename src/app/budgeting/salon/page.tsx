@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import {
   Scissors, DollarSign, Users, Calendar, TrendingUp, TrendingDown,
   Target, BarChart3, PieChart, Clock, CheckCircle, AlertTriangle,
   Plus, Download, RefreshCw, ArrowLeft, Palette, Sparkles,
-  Star, Heart, Zap, Award, Crown, ShoppingBag
+  Star, Heart, Zap, Award, Crown, ShoppingBag, AlertCircle
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { universalApi } from '@/lib/universal-api'
@@ -32,7 +32,7 @@ interface SalonBudgetData {
 
 export default function SalonBudgetingPage() {
   const router = useRouter()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useMultiOrgAuth()
   const { organizationId, loading: contextLoading } = useUserContext()
   const [budgetData, setBudgetData] = useState<SalonBudgetData | null>(null)
   const [isLoading, setIsLoading] = useState(true)

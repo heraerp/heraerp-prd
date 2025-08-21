@@ -19,14 +19,14 @@ import { Textarea } from '@/components/ui/textarea'
 import { AlertCircle, Check, Database, Settings, Code, FileText, Zap, Shield, TrendingUp, Award } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSchemaAdministration } from '@/lib/schema/schema-hooks'
-import { useAuth } from '@/components/auth/AuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 interface SchemaAdministrationProps {
   organizationId?: string
 }
 
 export default function SchemaAdministration({ organizationId }: SchemaAdministrationProps) {
-  const { user } = useAuth()
+  const { user } = useMultiOrgAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [searchTerm, setSearchTerm] = useState('')
 

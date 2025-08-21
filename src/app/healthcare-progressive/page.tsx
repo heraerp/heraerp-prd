@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { HealthcarePracticeSidebar } from '@/components/healthcare-progressive/HealthcarePracticeSidebar'
 
 export default function HealthcarePracticeHomePage() {
-  const { user, workspace } = useAuth()
+  const { user, workspace } = useMultiOrgAuth()
   const [selectedModule, setSelectedModule] = useState('dashboard')
 
   return (
