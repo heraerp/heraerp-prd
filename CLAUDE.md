@@ -58,10 +58,45 @@ Our complete implementation proves HERA's universal architecture works for sophi
 - **Styling**: Tailwind CSS 4.1.11 with custom HERA design system + Apple-inspired UI
 - **Database**: Supabase with PostgreSQL and Row Level Security (RLS)
 - **State Management**: Zustand 5.0.6, TanStack Query 5.83.0
-- **Authentication**: Dual Provider Architecture (Supabase + HERA API) with Universal Authorization
+- **Authentication**: Multi-Tenant SaaS Architecture (Supabase + Organization Management) with Universal Authorization
 - **Forms**: React Hook Form 7.61.1 with Zod 4.0.10 validation
 - **UI Components**: Shadcn/ui (New York style) with Lucide React icons + Jobs-inspired components
 - **AI Integration**: Multi-provider AI orchestration (OpenAI, Claude, Gemini) with intelligent routing
+
+## 🏢 MULTI-TENANT SAAS AUTHENTICATION (PRODUCTION READY)
+
+**HERA now includes a complete multi-tenant SaaS authentication system with organization-based isolation and subdomain routing.**
+
+### **🚀 SaaS Authentication Flow (USE ALWAYS)**
+```bash
+# Access Points:
+app.heraerp.com                    # Central auth hub
+organization.heraerp.com           # Organization-specific access
+localhost:3000/~organization       # Local development
+
+# User Journey:
+1. Sign up/Login → app.heraerp.com/auth/signup
+2. Create Organization → /auth/organizations/new  
+3. Select Apps → /auth/organizations/{id}/apps
+4. Access Organization → {subdomain}.heraerp.com
+```
+
+### **🔧 Key Components (ALWAYS USE THESE)**
+- **MultiOrgAuthProvider** - Use instead of any old auth components
+- **Organization Management** - Full CRUD via `/api/v1/organizations`
+- **Subdomain Routing** - Automatic organization detection via middleware
+- **App Installation** - Per-organization app management system
+
+### **🎨 UI Pages Available**
+- `/auth/landing` - Marketing landing page
+- `/auth/organizations` - Organization selector  
+- `/auth/organizations/new` - Create new organization
+- `/auth/organizations/[id]/apps` - App selection for new orgs
+- `/org` - Organization dashboard (after subdomain routing)
+
+**CRITICAL**: All new development MUST use the multi-tenant auth system. No exceptions.
+
+**📖 COMPLETE GUIDE**: See `MULTI-TENANT-AUTH-GUIDE.md` for detailed implementation instructions.
 
 ## 🔌 MCP-FIRST DEVELOPMENT (REVOLUTIONARY)
 
@@ -85,13 +120,36 @@ node hera-cli.js set-field <entity-id> email "test@example.com"  # Dynamic field
 node status-workflow-example.js         # See how to implement status via relationships
 ```
 
-### **⚠️ CRITICAL: Organization ID Setup**
+### **⚠️ CRITICAL: Multi-Tenant Development Setup**
 ```bash
 # Check your organization ID first
 node hera-cli.js query core_organizations
 
 # Update .env with your organization UUID
 DEFAULT_ORGANIZATION_ID=your-org-uuid-here
+
+# For subdomain development (use these patterns)
+localhost:3000/~acme              # Organization 'acme' in development
+localhost:3000/auth/organizations  # Organization selector
+app.heraerp.com                    # Production auth hub
+acme.heraerp.com                   # Production organization access
+```
+
+### **🎯 Always Use Multi-Tenant Patterns**
+```typescript
+// ALWAYS use MultiOrgAuthProvider (never old auth)
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+
+// ALWAYS check organization context
+const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
+if (!currentOrganization) return <div>Please select an organization</div>
+
+// ALWAYS include organization_id in API calls
+const data = await universalApi.createEntity({
+  entity_type: 'customer',
+  entity_name: 'Test Customer',
+  organization_id: currentOrganization.id  // CRITICAL
+})
 ```
 
 ### **⚠️ Important Schema Details**
@@ -156,6 +214,21 @@ npm run dev         # Start development server on localhost:3000
 npm run build       # Production build (includes automatic version injection)
 npm run start       # Start production server
 npm run lint        # Run ESLint checks
+
+# Multi-Tenant Development (ALWAYS USE)
+# Central auth hub (development)
+localhost:3000/auth/landing           # Marketing landing page
+localhost:3000/auth/signup            # User registration
+localhost:3000/auth/login             # User login
+localhost:3000/auth/organizations     # Organization selector
+
+# Organization access (development)
+localhost:3000/~acme                  # Access 'acme' organization
+localhost:3000/~mario                 # Access 'mario' organization
+
+# Production URLs
+app.heraerp.com                       # Central auth hub
+acme.heraerp.com                      # Organization-specific access
 
 # MCP Server (NEW - Primary Development Method)
 cd mcp-server && npm start              # Start HERA MCP server
@@ -416,17 +489,20 @@ const business = await universalApi.setupBusiness({
 
 ## Directory Structure
 
-- **`src/app/`** - Next.js App Router with PWA setup and universal routing patterns
-- **`src/components/`** - Reusable React components with universal design patterns
+- **`src/app/`** - Next.js App Router with multi-tenant routing
+  - **`auth/`** - Complete SaaS authentication pages (USE ALWAYS)
+    - `landing/` - Marketing landing page
+    - `organizations/` - Organization selector and creator
+    - `organizations/[id]/apps/` - App selection for new organizations
+  - **`org/`** - Organization dashboard (accessed via subdomain)
+- **`src/components/`** - Reusable React components with multi-tenant design
+  - **`auth/MultiOrgAuthProvider.tsx`** - Main auth provider (USE ALWAYS)
 - **`src/lib/`** - Utility functions, universal API client, and business logic
-- **`database/`** - Universal schema, migrations, functions, and seeds
+- **`database/`** - Universal schema with organization management functions
+  - **`functions/organizations/`** - Organization CRUD and management
+- **`middleware.ts`** - Subdomain routing and organization detection
 - **`config/`** - Business configuration files and industry templates
 - **`docs/`** - Comprehensive documentation
-  - **`AUTH-FLOW-EXPLAINED.md`** - Complete authentication flow documentation
-  - **`AUTHORIZATION-PATTERN.md`** - THREE-LAYER AUTH PATTERN (MUST READ!)
-  - **`AUTH-QUICK-REFERENCE.md`** - Copy-paste auth templates
-- **`auth-service/`** - Authentication microservice with universal authorization
-- **`ai-service/`** - Multi-provider AI integration with intelligent routing
 - **`monitoring/`** - Complete monitoring system with Prometheus, Grafana, and Node Exporter
 
 ## 🔌 HERA MCP Server - Revolutionary Natural Language Database Control
@@ -803,25 +879,28 @@ WHERE e.organization_id = ?
 
 ### Universal Development Guidelines
 
-#### ✅ DO (Universal-First):
+#### ✅ DO (Multi-Tenant Universal-First):
+- **ALWAYS use MultiOrgAuthProvider** - Never use old auth components
+- **ALWAYS include organization_id** - Every API call, every database query (SACRED)
 - **ALWAYS create a HERA task before coding** (entity_type='development_task')
 - Store new business objects in `core_entities` with appropriate `entity_type` and `smart_code`
 - Use `core_dynamic_data` for custom fields instead of new columns
 - Leverage existing universal APIs before building new ones
 - Use `universal_transactions` for all business activities with proper Smart Codes
-- Follow the Chart of Accounts pattern as reference implementation
-- Track development time as transactions (transaction_type='development_work')
-- Apply universal authorization patterns for security
-- Use generators before manual development (200x acceleration)
+- Apply multi-tenant authorization patterns for security
+- Test with multiple organizations to ensure proper isolation
+- Use subdomain routing for organization access
 
 #### ❌ DON'T (Anti-Patterns):
+- **NEVER use old auth components** (DualAuthProvider, etc.) - Use MultiOrgAuthProvider
+- **NEVER bypass organization_id filtering** - This violates multi-tenancy (SACRED)
 - **NEVER code without a HERA task** - This violates the Meta principle
 - Create new tables for business objects that can fit in `core_entities`
 - Add columns to existing tables when `core_dynamic_data` suffices
 - Build separate API endpoints when universal APIs can handle the logic
 - Create business-specific database schemas
-- Bypass organization_id filtering (SACRED security boundary)
 - Build without Smart Codes (loses universal intelligence)
+- Mix data between organizations (data leakage violation)
 
 ## Universal Implementation Examples 📚
 
@@ -1287,45 +1366,47 @@ Complete, production-ready document management system with Supabase integration:
 - **API**: `/src/app/api/v1/audit/documents/route.ts`
 - **UI**: `/src/components/audit/DocumentManagement/`
 
-## Authentication System 🔐
+## 🏢 Multi-Tenant SaaS Authentication System 🔐
 
-### Dual Provider Architecture with Universal Authorization
-HERA implements a sophisticated authentication system that seamlessly integrates:
+### Production-Ready Multi-Organization Architecture
+HERA implements a complete SaaS authentication system with:
 
 1. **Supabase Authentication** - Industry-standard user authentication and session management
-2. **HERA Universal Authorization** - Business-specific user profiles and organizational data through universal entities
+2. **Organization Management** - Multi-tenant isolation with organization-based data separation
+3. **Subdomain Routing** - Each organization gets its own subdomain (org.heraerp.com)
+4. **App Management** - Per-organization app installation and management
 
-### Steve Jobs-Inspired Interface
-The authentication system features an Apple-inspired minimalist design with:
-- **Clean, Minimal Forms** - Focused user experience with elegant spacing
-- **Smooth Animations** - Subtle transitions and micro-interactions
-- **Premium Feel** - Glass morphism effects and sophisticated gradients
-- **Contextual Feedback** - Intelligent loading states and error handling
+### Modern SaaS Design Language
+The authentication system features a modern SaaS design with:
+- **Gradient Backgrounds** - Professional blue/purple/slate theme
+- **Card-Based Layouts** - Clean separation of content areas
+- **Interactive Elements** - Hover effects and smooth transitions
+- **Status Indicators** - Visual feedback for loading, success, and errors
+- **Responsive Design** - Works seamlessly across all devices
 
-### Key Components
+### Key Components (ALWAYS USE THESE)
 
-#### `DualAuthProvider` (`src/components/auth/DualAuthProvider.tsx`)
-Core authentication state management with universal context:
+#### `MultiOrgAuthProvider` (`src/components/auth/MultiOrgAuthProvider.tsx`)
+Core multi-tenant authentication state management:
 ```typescript
-interface AuthContextType {
-  supabaseUser: User | null
-  heraContext: HeraUserContext | null
+interface MultiOrgAuthContext {
+  user: DualUser | null
+  organizations: Organization[]
+  currentOrganization: Organization | null
   isAuthenticated: boolean
   isLoading: boolean
-  isHeraLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (data: RegisterData) => Promise<void>
-  logout: () => Promise<void>
-  refreshHeraContext: () => Promise<void>
+  switchOrganization: (orgId: string) => Promise<void>
+  createOrganization: (data: CreateOrgData) => Promise<Organization>
+  signOut: () => Promise<void>
 }
 ```
 
-#### Universal Authorization Flow
-1. **Login/Registration** → Supabase handles user authentication
-2. **Business Context** → HERA API enriches with organization and entity data
-3. **JWT Enhancement** → Tokens include organization_id and permissions
-4. **Universal Entity Creation** → User stored as entity in core_entities
-5. **Dynamic Permissions** → Role-based access through core_relationships
+#### Multi-Tenant Authorization Flow
+1. **Login/Registration** → Central auth at app.heraerp.com
+2. **Organization Selection** → Choose existing or create new organization
+3. **App Installation** → Select business apps for the organization
+4. **Subdomain Access** → Redirect to organization.heraerp.com
+5. **Perfect Isolation** → Each organization has completely separate data
 
 
 ## 🐛 Troubleshooting Common Issues
