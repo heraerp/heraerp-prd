@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { withErrorHandler } from '@/lib/api-error-handler'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 interface SalonSettings {
   business_info: {
@@ -166,7 +170,6 @@ const DEFAULT_SETTINGS: SalonSettings = {
 
 // GET: Fetch salon settings
 export const GET = withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient()
   const { searchParams } = new URL(request.url)
   const organizationId = searchParams.get('organization_id')
 
@@ -232,7 +235,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
 // PUT: Update salon settings
 export const PUT = withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient()
   const body = await request.json()
   const { organizationId, settings } = body
 
@@ -301,7 +303,6 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
 
 // PATCH: Update specific section of settings
 export const PATCH = withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient()
   const body = await request.json()
   const { organizationId, section, data } = body
 
