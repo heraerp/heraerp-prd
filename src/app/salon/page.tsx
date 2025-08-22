@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Users, 
   Calendar, 
@@ -132,10 +131,8 @@ export default function SalonDashboard() {
   const salonName = currentOrganization?.name || 'Dubai Luxury Salon & Spa'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white flex">
-      <SalonProductionSidebar />
-      <div className="flex-1 ml-16">
-        <div className="p-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white">
+      <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -311,7 +308,6 @@ export default function SalonDashboard() {
             Book New Appointment
           </Button>
         </div>
-      </div>
       </div>
     </div>
   )
