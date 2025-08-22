@@ -328,7 +328,8 @@ export default function SalonPOSPage() {
           subtotal,
           vatAmount,
           totalAmount,
-          discountAmount
+          discountAmount,
+          currencyCode: currencyCode || 'AED' // Support for multi-currency
         })
       })
 
