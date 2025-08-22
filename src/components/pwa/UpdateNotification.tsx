@@ -113,8 +113,6 @@ export function UpdateNotification() {
   // Show notification if either condition is true
   const shouldShowNotification = isUpdateAvailable || showNotification
 
-  if (!shouldShowNotification) return null
-
   // Auto-dismiss after 30 seconds if not interacted
   useEffect(() => {
     if (shouldShowNotification) {
@@ -124,6 +122,8 @@ export function UpdateNotification() {
       return () => clearTimeout(timer)
     }
   }, [shouldShowNotification])
+
+  if (!shouldShowNotification) return null
 
   return (
     <div className="fixed bottom-4 right-4 max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-2xl p-4 z-50 animate-pulse">
