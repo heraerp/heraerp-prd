@@ -5,6 +5,22 @@ import { RefreshCw, X } from 'lucide-react'
 import { APP_VERSION } from '@/lib/constants/version'
 import { useServiceWorker } from './ServiceWorkerProvider'
 
+// Helper function to compare version strings
+function compareVersions(v1: string, v2: string): number {
+  const parts1 = v1.split('.').map(Number)
+  const parts2 = v2.split('.').map(Number)
+  
+  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+    const part1 = parts1[i] || 0
+    const part2 = parts2[i] || 0
+    
+    if (part1 > part2) return 1
+    if (part1 < part2) return -1
+  }
+  
+  return 0
+}
+
 export function UpdateNotification() {
   const { isUpdateAvailable, updateServiceWorker } = useServiceWorker()
   const [showNotification, setShowNotification] = useState(false)
@@ -37,11 +53,14 @@ export function UpdateNotification() {
         // Get dismissed version from localStorage
         const dismissedVersion = localStorage.getItem('hera-dismissed-version')
         
+        // Compare versions properly
+        const isNewerVersion = compareVersions(newServerVersion, currentVersion) > 0
+        
         // Only show notification if:
-        // 1. Server version is different from current version
+        // 1. Server version is newer than current version
         // 2. Server version hasn't been dismissed already
         // 3. We haven't already shown notification for this version
-        if (newServerVersion !== currentVersion && 
+        if (isNewerVersion && 
             newServerVersion !== dismissedVersion &&
             newServerVersion !== serverVersion) {
           setServerVersion(newServerVersion)
@@ -52,7 +71,7 @@ export function UpdateNotification() {
             navigator.serviceWorker.controller.postMessage({ type: 'CHECK_UPDATE' })
           }
         } else {
-          // If versions match, hide notification
+          // If versions match or current is newer, hide notification
           setShowNotification(false)
         }
       }

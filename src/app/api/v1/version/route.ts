@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
+import { APP_VERSION } from '@/lib/constants/version'
 
 export async function GET() {
-  // Get version from environment or package.json
-  const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'
-  const buildDate = process.env.NEXT_PUBLIC_BUILD_DATE || new Date().toISOString()
+  // Get version from constants file (source of truth)
+  const version = APP_VERSION.current
+  const buildDate = APP_VERSION.releaseDate
   
   return NextResponse.json({
     version,
