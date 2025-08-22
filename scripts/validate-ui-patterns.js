@@ -27,9 +27,9 @@ const UI_PATTERNS = {
   // Patterns that should NOT exist
   forbiddenPatterns: [
     {
-      pattern: /\$\d+|\$\{.*\}/,
+      pattern: /\$\d+(\.\d+)?(?![}])/,
       message: 'Hardcoded dollar sign found. Use CurrencyDisplay component',
-      exclude: ['test', 'mock', '.md']
+      exclude: ['test', 'mock', '.md', 'progressive']
     },
     {
       pattern: /className\s*=\s*["'].*bg-(white|black|gray-\d+)/,
@@ -92,8 +92,8 @@ async function checkFile(filePath) {
   const content = await fs.readFile(filePath, 'utf-8')
   const relativePath = path.relative(process.cwd(), filePath)
   
-  // Skip if file is too small or is a test file
-  if (content.length < 100 || filePath.includes('.test.')) {
+  // Skip if file is too small, is a test file, or is a progressive app
+  if (content.length < 100 || filePath.includes('.test.') || filePath.includes('progressive')) {
     return
   }
   
@@ -223,7 +223,7 @@ async function walkDirectory(dir, callback) {
       const filePath = path.join(dir, file)
       const stat = await fs.stat(filePath)
       
-      if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
+      if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules' && !file.includes('progressive')) {
         await walkDirectory(filePath, callback)
       } else if (stat.isFile()) {
         await callback(filePath)

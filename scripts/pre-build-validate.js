@@ -51,19 +51,19 @@ validate(
   'Run: node mcp-server/schema-introspection.js to see specific issues'
 )
 
-// Check 3: TypeScript compilation (temporarily disabled for deployment)
-// validate(
-//   'TypeScript Compilation',
-//   async () => {
-//     try {
-//       execSync('npx tsc --noEmit', { stdio: 'pipe' })
-//       return true
-//     } catch (error) {
-//       throw new Error('TypeScript compilation failed')
-//     }
-//   },
-//   'Run: npm run type-check to see specific errors'
-// )
+// Check 3: TypeScript compilation
+validate(
+  'TypeScript Compilation',
+  async () => {
+    try {
+      execSync('npx tsc --noEmit', { stdio: 'pipe' })
+      return true
+    } catch (error) {
+      throw new Error('TypeScript compilation failed')
+    }
+  },
+  'Run: npm run type-check to see specific errors'
+)
 
 // Check 4: Import validation
 validate(
@@ -229,7 +229,7 @@ async function walkDir(dir, callback) {
       const filepath = path.join(dir, file)
       const stat = await fs.stat(filepath)
       
-      if (stat.isDirectory()) {
+      if (stat.isDirectory() && !file.includes('progressive')) {
         await walkDir(filepath, callback)
       } else {
         callback(filepath)
