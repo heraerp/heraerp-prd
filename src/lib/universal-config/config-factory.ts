@@ -162,7 +162,7 @@ export class ConfigurationFactory {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('CRITICAL: Supabase configuration missing')
+      throw new Error('Supabase configuration is required. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
     }
     
     this.supabase = createClient(supabaseUrl, supabaseKey)
@@ -192,6 +192,7 @@ export class ConfigurationFactory {
         if (!organizationId) {
           return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
         }
+
 
         // Fetch main entities
         const { data: items, error: itemsError } = await this.supabase
@@ -263,6 +264,7 @@ export class ConfigurationFactory {
           )
         }
 
+
         // Create main entity
         const entityCode = code || this.generateCode(name)
         const smartCode = `${config.smartCodePrefix}.${entityCode}.v1`
@@ -330,6 +332,7 @@ export class ConfigurationFactory {
         if (!id) {
           return NextResponse.json({ error: 'id parameter required' }, { status: 400 })
         }
+
 
         const { name, ...dynamicFields } = body
 
@@ -414,6 +417,7 @@ export class ConfigurationFactory {
         if (!id) {
           return NextResponse.json({ error: 'id parameter required' }, { status: 400 })
         }
+
 
         // Check if item has related entities
         if (config.relatedEntityType) {
@@ -554,4 +558,5 @@ export class ConfigurationFactory {
       return { field_value_json: value }
     }
   }
+
 }
