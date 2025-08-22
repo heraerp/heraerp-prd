@@ -76,6 +76,13 @@ export default function SalonLayout({
       color: 'hover:bg-purple-100'
     },
     {
+      id: 'marketing',
+      label: 'Marketing',
+      icon: <Heart className="w-5 h-5" />,
+      href: '/salon/marketing',
+      color: 'hover:bg-pink-100'
+    },
+    {
       id: 'settings',
       label: 'Settings',
       icon: <Settings className="w-5 h-5" />,
