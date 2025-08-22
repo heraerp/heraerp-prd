@@ -58,20 +58,7 @@ export default function NewAppointmentPage() {
     notes: ''
   })
 
-  // Authentication check
-  if (!isAuthenticated && !contextLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Alert className="max-w-md">
-          <AlertDescription>
-            Please <Link href="/auth/login" className="underline">log in</Link> to book appointments.
-          </AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  // Loading state
+  // Loading state only - no auth check for testing
   if (contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

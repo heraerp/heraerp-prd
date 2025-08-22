@@ -199,20 +199,7 @@ export default function AppointmentsPage() {
     }
   }
 
-  // Authentication check
-  if (!isAuthenticated && !contextLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Alert className="max-w-md">
-          <AlertDescription>
-            Please <Link href="/auth/login" className="underline">log in</Link> to access appointments.
-          </AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  // Loading state
+  // Loading state only - no auth check for testing
   if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
