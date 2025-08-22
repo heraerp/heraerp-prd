@@ -67,32 +67,74 @@ export default function SalonPOSPage() {
   const [showSplitPayment, setShowSplitPayment] = useState(false)
   const [paymentSplits, setPaymentSplits] = useState<PaymentSplit[]>([])
   const [processingPayment, setProcessingPayment] = useState(false)
+  const [loading, setLoading] = useState(true)
   
-  // Sample data
-  const [services, setServices] = useState([
-    { id: '1', name: 'Hair Cut & Style', price: 150, duration: 45, category: 'Hair', staff: ['Emma', 'Lisa'] },
-    { id: '2', name: 'Hair Color', price: 350, duration: 120, category: 'Hair', staff: ['Emma'] },
-    { id: '3', name: 'Manicure', price: 80, duration: 30, category: 'Nails', staff: ['Lisa', 'Nina'] },
-    { id: '4', name: 'Pedicure', price: 100, duration: 45, category: 'Nails', staff: ['Lisa', 'Nina'] },
-    { id: '5', name: 'Facial Treatment', price: 250, duration: 60, category: 'Skin', staff: ['Nina'] },
-    { id: '6', name: 'Full Body Massage', price: 400, duration: 90, category: 'Spa', staff: ['Sarah'] },
-  ])
+  // Data from API
+  const [services, setServices] = useState<any[]>([])
+  const [products, setProducts] = useState<any[]>([])
+  const [customers, setCustomers] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
+  const [staff, setStaff] = useState<any[]>([])
 
-  const [products, setProducts] = useState([
-    { id: 'p1', name: 'Shampoo Professional', price: 120, brand: 'L\'Oreal', stock: 15 },
-    { id: 'p2', name: 'Hair Serum', price: 180, brand: 'Kerastase', stock: 8 },
-    { id: 'p3', name: 'Nail Polish', price: 45, brand: 'OPI', stock: 25 },
-    { id: 'p4', name: 'Face Cream', price: 220, brand: 'Clinique', stock: 10 },
-    { id: 'p5', name: 'Hair Mask', price: 150, brand: 'Olaplex', stock: 12 },
-    { id: 'p6', name: 'Perfume', price: 450, brand: 'Chanel', stock: 5 },
-  ])
+  // Load data on mount
+  useEffect(() => {
+    if (organizationId) {
+      loadPOSData()
+    }
+  }, [organizationId])
 
-  const [customers, setCustomers] = useState([
-    { id: 'c1', name: 'Sarah Johnson', phone: '+971 50 123 4567', visits: 12, tier: 'Gold' },
-    { id: 'c2', name: 'Fatima Al Rashid', phone: '+971 55 234 5678', visits: 8, tier: 'Silver' },
-    { id: 'c3', name: 'Maya Patel', phone: '+971 56 345 6789', visits: 15, tier: 'Platinum' },
-    { id: 'c4', name: 'Aisha Khan', phone: '+971 52 456 7890', visits: 5, tier: 'Bronze' },
-  ])
+  const loadPOSData = async () => {
+    if (!organizationId) return
+
+    try {
+      setLoading(true)
+
+      // Load services
+      const servicesResponse = await fetch(`/api/v1/salon/services?organization_id=${organizationId}`)
+      if (servicesResponse.ok) {
+        const data = await servicesResponse.json()
+        setServices(data.services || [])
+      }
+
+      // Load products
+      const productsResponse = await fetch(`/api/v1/salon/products?organization_id=${organizationId}`)
+      if (productsResponse.ok) {
+        const data = await productsResponse.json()
+        setProducts(data.products || [])
+      }
+
+      // Load customers
+      const customersResponse = await fetch(`/api/v1/salon/clients?organization_id=${organizationId}`)
+      if (customersResponse.ok) {
+        const data = await customersResponse.json()
+        setCustomers(data.clients || [])
+      }
+
+      // Load categories
+      const categoriesResponse = await fetch(`/api/v1/salon/categories?organization_id=${organizationId}`)
+      if (categoriesResponse.ok) {
+        const data = await categoriesResponse.json()
+        setCategories(data.categories || [])
+      }
+
+      // Load staff
+      const staffResponse = await fetch(`/api/v1/salon/staff?organization_id=${organizationId}`)
+      if (staffResponse.ok) {
+        const data = await staffResponse.json()
+        setStaff(data.staff || [])
+      }
+
+    } catch (error) {
+      console.error('Error loading POS data:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to load data',
+        variant: 'destructive'
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Add to cart
   const addToCart = (item: any, type: 'service' | 'product') => {
@@ -105,23 +147,29 @@ export default function SalonPOSPage() {
           : cartItem
       ))
     } else {
+      // Get price based on type
+      const price = type === 'service' ? (item.base_price || 0) : (item.retail_price || 0)
+      
       const newItem: CartItem = {
         id: item.id,
-        name: item.name,
+        name: item.entity_name,
         type,
-        price: item.price,
+        price: price,
         quantity: 1,
-        vat: item.price * VAT_RATE,
+        vat: price * VAT_RATE,
         discount: 0,
         discountType: 'percentage',
-        ...(type === 'service' && { duration: item.duration, staff: item.staff[0] })
+        ...(type === 'service' && { 
+          duration: item.duration || 30,
+          staff: staff.length > 0 ? staff[0].entity_name : 'Any Staff'
+        })
       }
       setCart([...cart, newItem])
     }
     
     toast({
       title: 'Added to cart',
-      description: `${item.name} added to cart`
+      description: `${item.entity_name} added to cart`
     })
   }
 
@@ -167,7 +215,9 @@ export default function SalonPOSPage() {
       'Bronze': 0
     }
 
-    const discount = tierDiscounts[selectedCustomer.tier] || 0
+    const customerTier = selectedCustomer.loyalty_tier || 'Bronze'
+    const discount = tierDiscounts[customerTier] || 0
+    
     if (discount > 0) {
       setCart(cart.map(item => ({
         ...item,
@@ -177,7 +227,7 @@ export default function SalonPOSPage() {
       
       toast({
         title: 'Discount Applied',
-        description: `${discount}% ${selectedCustomer.tier} member discount applied`
+        description: `${discount}% ${customerTier} member discount applied`
       })
     }
   }
@@ -257,13 +307,13 @@ export default function SalonPOSPage() {
 
   // Filter items based on search
   const filteredServices = services.filter(service =>
-    service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    service.category.toLowerCase().includes(searchQuery.toLowerCase())
+    service.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (service.category && service.category.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+    product.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (product.brand && product.brand.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   return (
@@ -298,59 +348,86 @@ export default function SalonPOSPage() {
 
           {/* Services Grid */}
           <TabsContent value="services">
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredServices.map((service) => (
-                <Card 
-                  key={service.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => addToCart(service, 'service')}
-                >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium">{service.name}</CardTitle>
-                    <Badge variant="secondary" className="w-fit">
-                      {service.category}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-pink-600">
-                      {formatCurrency(service.price)}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      <Clock className="inline h-3 w-3 mr-1" />
-                      {service.duration} min
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {loading ? (
+              <div className="text-center py-8">Loading services...</div>
+            ) : filteredServices.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                {searchQuery ? 'No services found' : 'No services available'}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredServices.map((service) => {
+                  const categoryName = service.category || 'General'
+                  const categoryColor = categories.find(c => c.entity_code === service.category)?.color || '#EC4899'
+                  
+                  return (
+                    <Card 
+                      key={service.id}
+                      className="cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => addToCart(service, 'service')}
+                    >
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm font-medium">{service.entity_name}</CardTitle>
+                        <Badge 
+                          variant="secondary" 
+                          className="w-fit"
+                          style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
+                        >
+                          {categoryName}
+                        </Badge>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold text-pink-600">
+                          {formatCurrency(service.base_price || 0)}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          <Clock className="inline h-3 w-3 mr-1" />
+                          {service.duration || 30} min
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
           </TabsContent>
 
           {/* Products Grid */}
           <TabsContent value="products">
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredProducts.map((product) => (
-                <Card 
-                  key={product.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => addToCart(product, 'product')}
-                >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium">{product.name}</CardTitle>
-                    <Badge variant="outline" className="w-fit">
-                      {product.brand}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-purple-600">
-                      {formatCurrency(product.price)}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Stock: {product.stock}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {loading ? (
+              <div className="text-center py-8">Loading products...</div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                {searchQuery ? 'No products found' : 'No products available'}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredProducts.map((product) => (
+                  <Card 
+                    key={product.id}
+                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => addToCart(product, 'product')}
+                  >
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium">{product.entity_name}</CardTitle>
+                      {product.brand && (
+                        <Badge variant="outline" className="w-fit">
+                          {product.brand}
+                        </Badge>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold text-purple-600">
+                        {formatCurrency(product.retail_price || 0)}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Stock: {product.current_stock || 0}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
@@ -382,18 +459,20 @@ export default function SalonPOSPage() {
               {customers.map(customer => (
                 <SelectItem key={customer.id} value={customer.id}>
                   <div className="flex items-center justify-between w-full">
-                    <span>{customer.name}</span>
-                    <Badge 
-                      variant="secondary" 
-                      className={`ml-2 ${
-                        customer.tier === 'Platinum' ? 'bg-purple-100' :
-                        customer.tier === 'Gold' ? 'bg-yellow-100' :
-                        customer.tier === 'Silver' ? 'bg-gray-100' :
-                        'bg-orange-100'
-                      }`}
-                    >
-                      {customer.tier}
-                    </Badge>
+                    <span>{customer.entity_name}</span>
+                    {customer.loyalty_tier && (
+                      <Badge 
+                        variant="secondary" 
+                        className={`ml-2 ${
+                          customer.loyalty_tier === 'Platinum' ? 'bg-purple-100' :
+                          customer.loyalty_tier === 'Gold' ? 'bg-yellow-100' :
+                          customer.loyalty_tier === 'Silver' ? 'bg-gray-100' :
+                          'bg-orange-100'
+                        }`}
+                      >
+                        {customer.loyalty_tier}
+                      </Badge>
+                    )}
                   </div>
                 </SelectItem>
               ))}
@@ -401,10 +480,10 @@ export default function SalonPOSPage() {
           </Select>
           {selectedCustomer && (
             <div className="mt-2 text-sm text-gray-600">
-              <p>{selectedCustomer.phone}</p>
+              <p>{selectedCustomer.phone || selectedCustomer.mobile_number || 'No phone'}</p>
               <p className="flex items-center gap-1">
                 <Star className="h-3 w-3" />
-                {selectedCustomer.visits} visits
+                {selectedCustomer.visit_count || 0} visits
               </p>
             </div>
           )}
@@ -491,18 +570,18 @@ export default function SalonPOSPage() {
                     )}
 
                     {/* Staff Selection for Services */}
-                    {item.type === 'service' && item.staff && (
+                    {item.type === 'service' && staff.length > 0 && (
                       <Select
-                        value={item.staff}
+                        value={item.staff || staff[0].entity_name}
                         onValueChange={(value) => updateCartItem(item.id, { staff: value })}
                       >
                         <SelectTrigger className="h-8 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {services.find(s => s.id === item.id)?.staff.map(staff => (
-                            <SelectItem key={staff} value={staff}>
-                              {staff}
+                          {staff.map(s => (
+                            <SelectItem key={s.id} value={s.entity_name}>
+                              {s.entity_name}
                             </SelectItem>
                           ))}
                         </SelectContent>
