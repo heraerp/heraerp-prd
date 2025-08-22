@@ -109,25 +109,16 @@ export default function StockLocationsPage() {
             header: 'Capacity',
             render: (item) => {
               const capacity = item.capacity || 100
-              // Mock current usage
-              const currentUsage = Math.floor(Math.random() * capacity)
-              const percentage = (currentUsage / capacity) * 100
+              // Usage will be calculated from actual product counts when stock movements are implemented
               
               return (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <Package className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-sm">{currentUsage}/{capacity}</span>
+                    <span className="text-sm">Capacity: {capacity}</span>
                   </div>
-                  <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all ${
-                        percentage > 90 ? 'bg-destructive' : 
-                        percentage > 70 ? 'bg-amber-500' : 
-                        'bg-primary'
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    />
+                  <div className="text-xs text-muted-foreground">
+                    Usage tracking coming soon
                   </div>
                 </div>
               )

@@ -5,7 +5,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -26,41 +26,129 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function InventoryDashboard() {
-  // Mock data - in production, this would come from API
-  const stats = {
-    totalProducts: 156,
-    totalValue: 45280.50,
-    lowStockItems: 12,
-    outOfStockItems: 3,
-    pendingOrders: 5,
-    monthlyUsage: 8920.00,
-    reorderValue: 12500.00,
-    expiringItems: 4
+  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const organizationId = currentOrganization?.id
+  const { toast } = useToast()
+  
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalValue: 0,
+    lowStockItems: 0,
+    outOfStockItems: 0,
+    pendingOrders: 0,
+    monthlyUsage: 0,
+    reorderValue: 0,
+    expiringItems: 0
+  })
+  const [lowStockProducts, setLowStockProducts] = useState<any[]>([])
+  const [recentMovements, setRecentMovements] = useState<any[]>([])
+  const [topProducts, setTopProducts] = useState<any[]>([])
+
+  useEffect(() => {
+    if (organizationId && !contextLoading) {
+      fetchInventoryData()
+    }
+  }, [organizationId, contextLoading])
+
+  const fetchInventoryData = async () => {
+    try {
+      setLoading(true)
+      
+      // Fetch all products
+      const productsResponse = await fetch(`/api/v1/salon/products?organization_id=${organizationId}`)
+      const productsData = await productsResponse.json()
+      const products = productsData.products || []
+      
+      // Calculate statistics
+      let totalValue = 0
+      let lowStock = 0
+      let outOfStock = 0
+      const lowStockItems: any[] = []
+      
+      products.forEach((product: any) => {
+        // For now, we'll simulate stock levels since we haven't implemented stock movements yet
+        const currentStock = Math.floor(Math.random() * 50) // This will be replaced with actual stock calculation
+        const minStock = product.min_stock || 10
+        const costPrice = product.cost_price || 0
+        
+        totalValue += currentStock * costPrice
+        
+        if (currentStock === 0) {
+          outOfStock++
+          lowStock++
+        } else if (currentStock < minStock) {
+          lowStock++
+        }
+        
+        // Add to low stock items if below minimum
+        if (currentStock < minStock && lowStockItems.length < 4) {
+          lowStockItems.push({
+            id: product.id,
+            name: product.entity_name,
+            sku: product.sku || product.entity_code,
+            current: currentStock,
+            min: minStock,
+            retail_price: product.retail_price || 0
+          })
+        }
+      })
+      
+      setStats({
+        totalProducts: products.length,
+        totalValue,
+        lowStockItems: lowStock,
+        outOfStockItems: outOfStock,
+        pendingOrders: 0, // Will be implemented with purchase orders
+        monthlyUsage: totalValue * 0.2, // Estimate 20% monthly usage
+        reorderValue: lowStock * 500, // Estimate reorder value
+        expiringItems: 0 // Will be implemented with expiry tracking
+      })
+      
+      setLowStockProducts(lowStockItems)
+      
+      // For recent movements, we'll need to implement stock_movement transactions
+      // For now, show empty state
+      setRecentMovements([])
+      
+      // Calculate top products (by value for now)
+      const sortedProducts = [...products]
+        .sort((a, b) => (b.retail_price || 0) - (a.retail_price || 0))
+        .slice(0, 5)
+        .map((product, index) => ({
+          name: product.entity_name,
+          usage: 100 - (index * 15), // Simulated usage percentage
+          value: product.retail_price || 0
+        }))
+      
+      setTopProducts(sortedProducts)
+      
+    } catch (error) {
+      console.error('Error fetching inventory data:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to load inventory data',
+        variant: 'destructive'
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const lowStockProducts = [
-    { id: 1, name: 'Professional Hair Color #6N', sku: 'HC-6N', current: 2, min: 10, retail_price: 45.00 },
-    { id: 2, name: 'Argan Oil Treatment 100ml', sku: 'ARG-100', current: 5, min: 15, retail_price: 28.00 },
-    { id: 3, name: 'Nail Polish - Ruby Red', sku: 'NP-RR', current: 1, min: 5, retail_price: 12.00 },
-    { id: 4, name: 'Disposable Gloves (Box)', sku: 'DG-100', current: 3, min: 10, retail_price: 15.00 }
-  ]
-
-  const recentMovements = [
-    { id: 1, type: 'in', product: 'Shampoo Professional 1L', quantity: 24, date: '2024-01-15', reason: 'Purchase Order #PO-2024-015' },
-    { id: 2, type: 'out', product: 'Hair Spray Strong Hold', quantity: 3, date: '2024-01-15', reason: 'Used in services' },
-    { id: 3, type: 'out', product: 'Nail Polish - Pink Pearl', quantity: 1, date: '2024-01-14', reason: 'Retail sale' },
-    { id: 4, type: 'adjust', product: 'Cotton Pads (Pack)', quantity: -2, date: '2024-01-14', reason: 'Inventory count adjustment' }
-  ]
-
-  const topProducts = [
-    { name: 'Keratin Treatment Kit', usage: 85, value: 2400 },
-    { name: 'Professional Hair Color', usage: 78, value: 1890 },
-    { name: 'Nail Polish Collection', usage: 65, value: 980 },
-    { name: 'Hair Styling Cream', usage: 60, value: 720 },
-    { name: 'Face Cleansing Oil', usage: 45, value: 540 }
-  ]
+  if (contextLoading || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center space-y-4">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
+          <p className="text-muted-foreground">Loading inventory data...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -172,28 +260,36 @@ export default function InventoryDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {lowStockProducts.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
-                      </div>
-                      <Badge variant="destructive" className="ml-2">
-                        {product.current}/{product.min}
-                      </Badge>
-                    </div>
-                    <Progress 
-                      value={(product.current / product.min) * 100} 
-                      className="h-1.5 mt-2"
-                    />
-                  </div>
-                  <Button size="sm" variant="outline" className="ml-4">
-                    Reorder
-                  </Button>
+              {lowStockProducts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Package className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>No low stock items</p>
+                  <p className="text-sm mt-1">All products are well stocked</p>
                 </div>
-              ))}
+              ) : (
+                lowStockProducts.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="font-medium">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
+                        </div>
+                        <Badge variant="destructive" className="ml-2">
+                          {product.current}/{product.min}
+                        </Badge>
+                      </div>
+                      <Progress 
+                        value={(product.current / product.min) * 100} 
+                        className="h-1.5 mt-2"
+                      />
+                    </div>
+                    <Button size="sm" variant="outline" className="ml-4">
+                      Reorder
+                    </Button>
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -245,35 +341,43 @@ export default function InventoryDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {recentMovements.map((movement) => (
-              <div key={movement.id} className="flex items-center justify-between py-2 border-b last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-full ${
-                    movement.type === 'in' ? 'bg-green-100 text-green-600' :
-                    movement.type === 'out' ? 'bg-red-100 text-red-600' :
-                    'bg-blue-100 text-blue-600'
-                  }`}>
-                    {movement.type === 'in' ? <TrendingUp className="w-4 h-4" /> :
-                     movement.type === 'out' ? <TrendingDown className="w-4 h-4" /> :
-                     <BarChart3 className="w-4 h-4" />}
-                  </div>
-                  <div>
-                    <p className="font-medium">{movement.product}</p>
-                    <p className="text-sm text-muted-foreground">{movement.reason}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className={`font-medium ${
-                    movement.type === 'in' ? 'text-green-600' :
-                    movement.type === 'out' ? 'text-red-600' :
-                    'text-blue-600'
-                  }`}>
-                    {movement.type === 'in' ? '+' : ''}{movement.quantity}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{movement.date}</p>
-                </div>
+            {recentMovements.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>No recent movements</p>
+                <p className="text-sm mt-1">Stock movements will appear here</p>
               </div>
-            ))}
+            ) : (
+              recentMovements.map((movement) => (
+                <div key={movement.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-full ${
+                      movement.type === 'in' ? 'bg-green-100 text-green-600' :
+                      movement.type === 'out' ? 'bg-red-100 text-red-600' :
+                      'bg-blue-100 text-blue-600'
+                    }`}>
+                      {movement.type === 'in' ? <TrendingUp className="w-4 h-4" /> :
+                       movement.type === 'out' ? <TrendingDown className="w-4 h-4" /> :
+                       <BarChart3 className="w-4 h-4" />}
+                    </div>
+                    <div>
+                      <p className="font-medium">{movement.product}</p>
+                      <p className="text-sm text-muted-foreground">{movement.reason}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className={`font-medium ${
+                      movement.type === 'in' ? 'text-green-600' :
+                      movement.type === 'out' ? 'text-red-600' :
+                      'text-blue-600'
+                    }`}>
+                      {movement.type === 'in' ? '+' : ''}{movement.quantity}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{movement.date}</p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

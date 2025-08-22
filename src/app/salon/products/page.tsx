@@ -176,25 +176,13 @@ export default function ProductsPage() {
             key: 'stock_status',
             header: 'Stock Status',
             render: (item) => {
-              // This would normally come from actual stock data
-              const currentStock = Math.floor(Math.random() * 30)
-              const minStock = item.min_stock || 5
-              const reorderPoint = item.reorder_point || 10
-              
-              if (currentStock === 0) {
-                return <Badge variant="destructive">Out of Stock</Badge>
-              } else if (currentStock < minStock) {
-                return (
-                  <div className="flex items-center gap-1">
-                    <AlertTriangle className="w-3 h-3 text-destructive" />
-                    <Badge variant="destructive">{currentStock} Low</Badge>
-                  </div>
-                )
-              } else if (currentStock <= reorderPoint) {
-                return <Badge variant="secondary">{currentStock} Reorder</Badge>
-              } else {
-                return <Badge variant="default">{currentStock} In Stock</Badge>
-              }
+              // Stock levels will be calculated from stock movements when implemented
+              // For now, show as "Stock tracking coming soon"
+              return (
+                <div className="text-sm text-muted-foreground">
+                  <span>Stock tracking coming soon</span>
+                </div>
+              )
             }
           },
           {
@@ -261,19 +249,15 @@ export default function ProductsPage() {
             {
               label: 'Total Value',
               value: (items) => {
-                const totalValue = items.reduce((sum, item) => {
-                  // This would use actual stock quantities
-                  const stock = Math.floor(Math.random() * 30)
-                  return sum + (stock * (item.cost_price || 0))
-                }, 0)
-                return <CurrencyDisplay value={totalValue} />
+                // Will calculate based on actual stock when stock movements are implemented
+                return <span className="text-muted-foreground">-</span>
               }
             },
             {
               label: 'Low Stock Items',
               value: (items) => {
-                // This would check actual stock levels
-                return Math.floor(items.length * 0.2) // Mock: 20% low stock
+                // Will check actual stock levels when implemented
+                return <span className="text-muted-foreground">-</span>
               }
             }
           ]
