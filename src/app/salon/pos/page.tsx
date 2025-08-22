@@ -361,12 +361,16 @@ export default function SalonPOSPage() {
         <div className="p-4 border-b">
           <Label>Customer</Label>
           <Select 
-            value={selectedCustomer?.id || ''} 
+            value={selectedCustomer?.id || 'walk-in'} 
             onValueChange={(value) => {
-              const customer = customers.find(c => c.id === value)
-              setSelectedCustomer(customer)
-              if (customer) {
-                applyCustomerDiscount()
+              if (value === 'walk-in') {
+                setSelectedCustomer(null)
+              } else {
+                const customer = customers.find(c => c.id === value)
+                setSelectedCustomer(customer)
+                if (customer) {
+                  applyCustomerDiscount()
+                }
               }
             }}
           >
@@ -374,7 +378,7 @@ export default function SalonPOSPage() {
               <SelectValue placeholder="Walk-in Customer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Walk-in Customer</SelectItem>
+              <SelectItem value="walk-in">Walk-in Customer</SelectItem>
               {customers.map(customer => (
                 <SelectItem key={customer.id} value={customer.id}>
                   <div className="flex items-center justify-between w-full">
