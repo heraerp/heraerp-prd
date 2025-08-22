@@ -44,7 +44,7 @@ export function UniversalLayout({
       
       {/* Main Content Area */}
       <div className="ml-16 min-h-screen">
-        <main className="p-6">
+        <main>
           {children}
         </main>
       </div>

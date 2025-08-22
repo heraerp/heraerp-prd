@@ -131,8 +131,7 @@ export default function SalonDashboard() {
   const salonName = currentOrganization?.name || 'Dubai Luxury Salon & Spa'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white">
-      <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -308,7 +307,6 @@ export default function SalonDashboard() {
             Book New Appointment
           </Button>
         </div>
-      </div>
     </div>
   )
 }

@@ -180,7 +180,7 @@ export default function StaffManagementPage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
