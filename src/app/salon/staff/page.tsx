@@ -53,10 +53,10 @@ export default function StaffManagementPage() {
   })
 
   useEffect(() => {
-    if (organizationId) {
+    if (organizationId && !contextLoading) {
       loadData()
     }
-  }, [organizationId])
+  }, [organizationId, contextLoading])
 
   const loadData = async () => {
     if (!organizationId) return
@@ -178,82 +178,9 @@ export default function StaffManagementPage() {
     return roles.find(r => r.entity_code === roleCode)
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-        <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-              <Shield className="h-6 w-6 text-blue-600" />
-            </div>
-            <CardTitle className="text-2xl font-bold">Staff Management</CardTitle>
-            <p className="text-muted-foreground">
-              Please log in to manage your salon team members
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg bg-blue-50 p-4">
-              <div className="flex items-start space-x-3">
-                <UserPlus className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-blue-900">Comprehensive Staff Management</h4>
-                  <p className="text-sm text-blue-700 mt-1">
-                    Manage roles, permissions, schedules, and payroll for your entire team
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="text-center">
-              <Link href="/auth/login">
-                <Button className="w-full">
-                  Sign In to Continue
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  if (contextLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center space-y-4">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
-          <p className="text-muted-foreground">Loading staff management...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!organizationId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-red-50">
-        <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-              <AlertCircle className="h-6 w-6 text-orange-600" />
-            </div>
-            <CardTitle className="text-2xl font-bold">Organization Required</CardTitle>
-            <p className="text-muted-foreground">
-              Please select an organization to manage staff
-            </p>
-          </CardHeader>
-          <CardContent className="text-center">
-            <Link href="/auth/organizations">
-              <Button className="w-full">
-                Select Organization
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
