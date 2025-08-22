@@ -3,7 +3,7 @@
 import { UniversalLayout } from '@/components/layout/UniversalLayout'
 import { 
   Scissors, Calendar, Users, Package, CreditCard, 
-  BarChart, Settings, Heart, Star, Sparkles
+  BarChart, Settings, Heart, Star, Sparkles, Wallet
 } from 'lucide-react'
 import { getModuleTheme } from '@/lib/theme/module-themes'
 import { SalonSettingsProvider } from '@/contexts/salon-settings-context'
@@ -67,6 +67,13 @@ export default function SalonLayout({
       icon: <CreditCard className="w-5 h-5" />,
       href: '/salon/pos',
       color: 'hover:bg-pink-100'
+    },
+    {
+      id: 'payments',
+      label: 'Payments',
+      icon: <Wallet className="w-5 h-5" />,
+      href: '/salon/payments',
+      color: 'hover:bg-purple-100'
     },
     {
       id: 'reports',
