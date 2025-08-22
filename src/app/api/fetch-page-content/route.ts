@@ -39,11 +39,12 @@ export async function GET(request: NextRequest) {
         filePath: pagePath 
       })
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('Error reading file:', error)
       return NextResponse.json({ 
         success: false, 
         error: 'Failed to read page content',
-        details: error.message 
+        details: errorMessage 
       }, { status: 500 })
     }
   } catch (error) {

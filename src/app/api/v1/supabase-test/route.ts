@@ -59,11 +59,12 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Test 3: Get user membership
+    // Test 3: Get user membership using relationships
     const { data: membership, error: memberError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .select('*')
-      .eq('user_id', userId)
+      .eq('from_entity_id', userId)
+      .eq('relationship_type', 'member_of')
       .single()
 
     // Test 4: Get user dynamic data
@@ -178,7 +179,7 @@ export async function POST(request: NextRequest) {
           .insert({
             organization_id: data.organization_id,
             transaction_type: data.transaction_type || 'test_transaction',
-            transaction_number: `TXN-${Date.now()}`,
+            transaction_code: `TXN-${Date.now()}`,
             reference_entity_id: data.reference_entity_id,
             total_amount: data.total_amount || 0,
             smart_code: data.smart_code || 'HERA.TEST.TXN.v1',

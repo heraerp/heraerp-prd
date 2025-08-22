@@ -30,24 +30,14 @@ export async function GET(request: NextRequest) {
     const heraApi = getHeraAPI()
     
     // Get budget data using universal patterns
-    let budgets = await heraApi.getEntities('budget_account', {
-      organization_id: organizationId,
-      ...(fiscalYear && { fiscal_year: fiscalYear }),
-      ...(budgetType && { budget_type: budgetType }),
-      ...(accountId && { gl_account_id: accountId }),
-      include_dynamic_data: true,
-      order_by: 'account_number'
-    })
+    let budgets = await heraApi.getEntities('budget_account')
 
     // If no budgets found, create from COA template
     if (budgets.length === 0 && fiscalYear) {
       console.log('No budgets found, creating from COA template...')
       
       // Get all GL accounts to create budget structure
-      const glAccounts = await heraApi.getEntities('gl_account', {
-        organization_id: organizationId,
-        status: 'active'
-      })
+      const glAccounts = await heraApi.getEntities('gl_account')
 
       // Create budget records for each GL account
       const createdBudgets = []
@@ -134,9 +124,10 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Budget API error:', error)
     return NextResponse.json(
-      { error: 'Failed to retrieve budgets', details: error.message },
+      { error: 'Failed to retrieve budgets', details: errorMessage },
       { status: 500 }
     )
   }
@@ -185,10 +176,7 @@ export async function POST(request: NextRequest) {
       // Copy budget from previous fiscal year
       const { source_year, target_year, adjustment_percent = 0 } = budget_data
       
-      const sourceBudgets = await heraApi.getEntities('budget_account', {
-        organization_id,
-        fiscal_year: source_year
-      })
+      const sourceBudgets = await heraApi.getEntities('budget_account')
 
       const newBudgets = []
       for (const sourceBudget of sourceBudgets) {
@@ -257,9 +245,10 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Budget creation error:', error)
     return NextResponse.json(
-      { error: 'Failed to create/update budgets', details: error.message },
+      { error: 'Failed to create/update budgets', details: errorMessage },
       { status: 500 }
     )
   }
@@ -320,9 +309,10 @@ export async function PUT(request: NextRequest) {
       message: 'Budget updated successfully'
     })
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Budget update error:', error)
     return NextResponse.json(
-      { error: 'Failed to update budget', details: error.message },
+      { error: 'Failed to update budget', details: errorMessage },
       { status: 500 }
     )
   }

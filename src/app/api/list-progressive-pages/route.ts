@@ -63,11 +63,12 @@ export async function GET(request: NextRequest) {
         basePath: progressivePath
       })
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('Error reading directory:', error)
       return NextResponse.json({ 
         success: false, 
         error: 'Failed to read directory',
-        details: error.message 
+        details: errorMessage 
       }, { status: 500 })
     }
   } catch (error) {

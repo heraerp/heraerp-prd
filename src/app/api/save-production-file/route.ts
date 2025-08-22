@@ -35,11 +35,12 @@ export async function POST(request: NextRequest) {
         message: `File saved successfully to ${filePath.replace(baseDir, '')}`
       })
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('Error writing file:', error)
       return NextResponse.json({ 
         success: false, 
         error: 'Failed to write file',
-        details: error.message 
+        details: errorMessage 
       }, { status: 500 })
     }
   } catch (error) {

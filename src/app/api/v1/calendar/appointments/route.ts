@@ -207,7 +207,7 @@ class MockCalendarAppointmentDB {
       start_time: new Date('2025-08-08T08:00:00Z'),
       end_time: new Date('2025-08-08T12:00:00Z'),
       duration_minutes: 240,
-      customer_entity_id: null,
+      customer_entity_id: undefined,
       appointment_type: 'maintenance',
       priority: 'high',
       notes: 'Replace cutting tools, check alignment, update firmware.',

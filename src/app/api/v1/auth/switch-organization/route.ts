@@ -70,7 +70,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify target organization is active
-    if (membership.core_organizations.status !== 'active') {
+    const org = membership.core_organizations as any
+    if (org?.status !== 'active') {
       return NextResponse.json({ 
         error: 'Target organization is not active'
       }, { status: 403 })
@@ -118,10 +119,10 @@ export async function POST(request: NextRequest) {
         permissions: userPermissions
       },
       organization: {
-        id: membership.core_organizations.id,
-        organization_name: membership.core_organizations.organization_name,
-        organization_type: membership.core_organizations.organization_type,
-        status: membership.core_organizations.status
+        id: org.id,
+        organization_name: org.organization_name,
+        organization_type: org.organization_type,
+        status: org.status
       },
       membership: {
         membership_id: membership.id,
