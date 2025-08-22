@@ -6,6 +6,7 @@ import {
   BarChart, Settings, Heart, Star, Sparkles
 } from 'lucide-react'
 import { getModuleTheme } from '@/lib/theme/module-themes'
+import { SalonSettingsProvider } from '@/contexts/salon-settings-context'
 
 export default function SalonLayout({
   children,
@@ -118,16 +119,18 @@ export default function SalonLayout({
     }
   ]
   return (
-    <UniversalLayout
-      title="Luxury Salon"
-      subtitle="Beauty & Wellness"
-      icon={Heart}
-      sidebarItems={sidebarItems}
-      quickActions={quickActions}
-      {...theme}
-      baseUrl="/salon"
-    >
-      {children}
-    </UniversalLayout>
+    <SalonSettingsProvider>
+      <UniversalLayout
+        title="Luxury Salon"
+        subtitle="Beauty & Wellness"
+        icon={Heart}
+        sidebarItems={sidebarItems}
+        quickActions={quickActions}
+        {...theme}
+        baseUrl="/salon"
+      >
+        {children}
+      </UniversalLayout>
+    </SalonSettingsProvider>
   )
 }
