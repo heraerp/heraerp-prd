@@ -7,7 +7,9 @@ import {
   BarChart3, Settings, Bell, Search, Plus,
   Sparkles, Star, Heart, Palette, Clock,
   User, Gift, Zap, Crown, Award, X,
-  DollarSign, TrendingUp, Calculator, ShoppingCart
+  DollarSign, TrendingUp, Calculator, ShoppingCart,
+  ChevronDown, ChevronRight, Package, FileText,
+  PieChart, Receipt, Wallet, Building2, Activity
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +30,7 @@ export function SalonProductionSidebar() {
   const pathname = usePathname()
   const [isExpanded, setIsExpanded] = useState(false)
   const [showQuickActionsModal, setShowQuickActionsModal] = useState(false)
+  const [showMoreApps, setShowMoreApps] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   // Ensure client-side only rendering for Tooltips
@@ -163,38 +166,6 @@ export function SalonProductionSidebar() {
       href: '/salon/services?action=new',
       color: 'hover:bg-pink-100',
       description: 'Create a new service offering'
-    },
-    {
-      id: 'finance',
-      label: 'Finance',
-      icon: <DollarSign className="w-5 h-5" />,
-      href: '/financial',
-      color: 'hover:bg-green-100',
-      description: 'Financial management and accounting'
-    },
-    {
-      id: 'profitability',
-      label: 'Profitability',
-      icon: <TrendingUp className="w-5 h-5" />,
-      href: '/profitability-progressive',
-      color: 'hover:bg-emerald-100',
-      description: 'Profit analysis and margin tracking'
-    },
-    {
-      id: 'costing',
-      label: 'Financial Reports',
-      icon: <Calculator className="w-5 h-5" />,
-      href: '/financial/reports',
-      color: 'hover:bg-blue-100',
-      description: 'Financial reports and analysis'
-    },
-    {
-      id: 'coa',
-      label: 'Chart of Accounts',
-      icon: <Calculator className="w-5 h-5" />,
-      href: '/salon/finance/coa',
-      color: 'hover:bg-indigo-100',
-      description: 'Dubai Salon COA with 4-digit structure'
     },
     {
       id: 'pos',
@@ -400,6 +371,314 @@ export function SalonProductionSidebar() {
                 </Tooltip>
               )
             })}
+          </div>
+
+          {/* More Apps Section */}
+          <div className="mt-6 pt-6 border-t border-pink-200/50">
+            {isExpanded ? (
+              <Button
+                onClick={() => setShowMoreApps(!showMoreApps)}
+                className={`
+                  w-full 
+                  justify-start
+                  bg-gradient-to-r from-purple-100/50 to-pink-100/50 
+                  hover:from-purple-200/50 hover:to-pink-200/50 
+                  text-gray-700
+                  transition-all 
+                  duration-200
+                  relative
+                  group
+                  backdrop-blur-sm
+                `}
+                variant="ghost"
+                size="sm"
+              >
+                <div className="mr-3 text-purple-600">
+                  <Plus className="w-5 h-5" />
+                </div>
+                <span className="font-medium">More Apps</span>
+                <ChevronRight className={`ml-auto w-4 h-4 transition-transform ${showMoreApps ? 'rotate-90' : ''}`} />
+              </Button>
+            ) : (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setShowMoreApps(!showMoreApps)}
+                    className={`
+                      w-10 h-10 p-0
+                      bg-gradient-to-r from-purple-100/50 to-pink-100/50 
+                      hover:from-purple-200/50 hover:to-pink-200/50 
+                      text-gray-700
+                      transition-all 
+                      duration-200
+                      relative
+                      group
+                      backdrop-blur-sm
+                    `}
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <Plus className="w-5 h-5 text-purple-600" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>More Apps</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Expandable Apps List */}
+            {showMoreApps && (
+              <div className="mt-2 space-y-1">
+                {/* Finance App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/finance')}
+                    className="w-full justify-start bg-white/50 hover:bg-green-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-green-600">
+                      <DollarSign className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Finance</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/finance')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-green-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <DollarSign className="w-5 h-5 text-green-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Finance</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Costing App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/costing')}
+                    className="w-full justify-start bg-white/50 hover:bg-blue-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-blue-600">
+                      <Calculator className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Costing</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/costing')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-blue-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <Calculator className="w-5 h-5 text-blue-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Costing</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Profitability App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/profitability')}
+                    className="w-full justify-start bg-white/50 hover:bg-emerald-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-emerald-600">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Profitability</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/profitability')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-emerald-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <TrendingUp className="w-5 h-5 text-emerald-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Profitability</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Accounting App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/accounting')}
+                    className="w-full justify-start bg-white/50 hover:bg-indigo-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-indigo-600">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Accounting</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/accounting')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-indigo-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <FileText className="w-5 h-5 text-indigo-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Accounting</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Analytics App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/analytics')}
+                    className="w-full justify-start bg-white/50 hover:bg-orange-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-orange-600">
+                      <PieChart className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Analytics</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/analytics')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-orange-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <PieChart className="w-5 h-5 text-orange-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Analytics</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Operations App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/operations')}
+                    className="w-full justify-start bg-white/50 hover:bg-teal-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-teal-600">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Operations</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/operations')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-teal-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <Activity className="w-5 h-5 text-teal-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Operations</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* HR Management App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/hr')}
+                    className="w-full justify-start bg-white/50 hover:bg-rose-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-rose-600">
+                      <Building2 className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">HR Management</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/hr')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-rose-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <Building2 className="w-5 h-5 text-rose-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>HR Management</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Cash Management App */}
+                {isExpanded ? (
+                  <Button
+                    onClick={() => handleNavigation('/salon/cash')}
+                    className="w-full justify-start bg-white/50 hover:bg-amber-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <div className="mr-3 text-amber-600">
+                      <Wallet className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Cash Management</span>
+                  </Button>
+                ) : (
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleNavigation('/salon/cash')}
+                        className="w-10 h-10 p-0 bg-white/50 hover:bg-amber-100 text-gray-700 transition-all duration-200 relative group backdrop-blur-sm"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <Wallet className="w-5 h-5 text-amber-600" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Cash Management</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            )}
           </div>
         </nav>
 
