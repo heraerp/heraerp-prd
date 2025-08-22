@@ -17,13 +17,14 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
 
 const BUSINESS_TYPES = [
-  { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
-  { value: 'salon', label: 'Salon & Beauty', icon: Heart },
-  { value: 'retail', label: 'Retail & E-commerce', icon: Store },
-  { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
-  { value: 'professional', label: 'Professional Services', icon: Briefcase },
-  { value: 'manufacturing', label: 'Manufacturing', icon: Factory },
-  { value: 'general', label: 'Other / General Business', icon: Building2 }
+  { value: 'salon', label: 'Salon & Beauty', icon: Heart }
+  // Other business types coming soon!
+  // { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
+  // { value: 'retail', label: 'Retail & E-commerce', icon: Store },
+  // { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
+  // { value: 'professional', label: 'Professional Services', icon: Briefcase },
+  // { value: 'manufacturing', label: 'Manufacturing', icon: Factory },
+  // { value: 'general', label: 'Other / General Business', icon: Building2 }
 ]
 
 export default function CreateOrganizationPage() {
@@ -37,7 +38,7 @@ export default function CreateOrganizationPage() {
   
   const [formData, setFormData] = useState({
     organization_name: '',
-    organization_type: 'general',
+    organization_type: 'salon', // Default to salon since it's the only option
     subdomain: ''
   })
 
@@ -100,8 +101,37 @@ export default function CreateOrganizationPage() {
     try {
       const org = await createOrganization(formData)
       
-      // Redirect to app selection for the new organization
-      router.push(`/auth/organizations/${org.id}/apps`)
+      // Store organization data temporarily for the apps page
+      localStorage.setItem(`new-org-${org.id}`, JSON.stringify({
+        id: org.id,
+        name: formData.organization_name,
+        subdomain: formData.subdomain,
+        type: formData.organization_type
+      }))
+      
+      // If it's a salon, trigger automatic setup
+      if (formData.organization_type === 'salon') {
+        // Trigger salon setup in the background
+        fetch('/api/v1/salon/setup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('auth-token') || ''}`
+          },
+          body: JSON.stringify({
+            organizationId: org.id,
+            organizationName: formData.organization_name,
+            subdomain: formData.subdomain,
+            ownerEmail: org.user?.email || ''
+          })
+        }).catch(console.error) // Don't block on setup
+        
+        // For salon, skip app selection and go directly to salon dashboard with subdomain
+        router.push(`/~${formData.subdomain}/salon`)
+      } else {
+        // For other types, go to app selection
+        router.push(`/auth/organizations/${org.id}/apps`)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create organization')
     } finally {
@@ -175,7 +205,7 @@ export default function CreateOrganizationPage() {
                 <Select
                   value={formData.organization_type}
                   onValueChange={(value) => setFormData({...formData, organization_type: value})}
-                  disabled={isLoading}
+                  disabled={true} // Disabled since only salon is available
                 >
                   <SelectTrigger id="organization_type">
                     <SelectValue placeholder="Select your business type" />
@@ -195,7 +225,7 @@ export default function CreateOrganizationPage() {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-gray-500">
-                  This helps us suggest the right apps for your business
+                  Currently, only Salon & Beauty businesses are supported. More industries coming soon!
                 </p>
               </div>
               

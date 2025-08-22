@@ -20,12 +20,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate subdomain format
-    const subdomainRegex = /^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/
+    const subdomainRegex = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/
     if (!subdomainRegex.test(subdomain)) {
       return NextResponse.json(
         { 
           available: false,
-          error: 'Invalid subdomain format. Use lowercase letters, numbers, and hyphens only.' 
+          error: 'Invalid subdomain format. Use lowercase letters, numbers, and hyphens only. Minimum 1 character.' 
         },
         { status: 200 }
       )

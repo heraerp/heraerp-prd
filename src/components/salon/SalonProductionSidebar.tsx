@@ -67,6 +67,13 @@ export function SalonProductionSidebar() {
       color: 'hover:bg-pink-100'
     },
     {
+      id: 'categories',
+      label: 'Categories',
+      icon: <Palette className="w-5 h-5" />,
+      href: '/salon/categories',
+      color: 'hover:bg-purple-100'
+    },
+    {
       id: 'staff',
       label: 'Staff',
       icon: <User className="w-5 h-5" />,
@@ -113,10 +120,23 @@ export function SalonProductionSidebar() {
   ]
 
   const isActive = (href: string) => {
-    if (href === '/salon') {
-      return pathname === '/salon'
+    // Extract subdomain from current path
+    const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
+    
+    if (subdomain) {
+      // Convert href to subdomain path for comparison
+      const adjustedHref = href.replace('/salon', `/~${subdomain}/salon`)
+      if (href === '/salon') {
+        return pathname === `/~${subdomain}/salon` || pathname === `/~${subdomain}/salon/`
+      }
+      return pathname.startsWith(adjustedHref)
+    } else {
+      // Standard path checking
+      if (href === '/salon') {
+        return pathname === '/salon' || pathname === '/org/salon'
+      }
+      return pathname.startsWith(href) || pathname.startsWith(href.replace('/salon', '/org/salon'))
     }
-    return pathname.startsWith(href)
   }
 
   const quickActionItems = [
@@ -220,7 +240,21 @@ export function SalonProductionSidebar() {
 
   const handleNavigation = (href: string) => {
     setShowQuickActionsModal(false)
-    router.push(href)
+    
+    // Extract subdomain from current path
+    const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
+    
+    // Convert relative salon paths to proper subdomain paths
+    if (subdomain && href.startsWith('/salon')) {
+      const adjustedHref = href.replace('/salon', `/~${subdomain}/salon`)
+      router.push(adjustedHref)
+    } else if (subdomain && href.startsWith('/')) {
+      // For other absolute paths, prepend subdomain
+      router.push(`/~${subdomain}${href}`)
+    } else {
+      // Default navigation
+      router.push(href)
+    }
   }
 
   if (!mounted) {

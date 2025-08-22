@@ -75,6 +75,28 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
   
   const router = useRouter()
   const pathname = usePathname()
+  
+  // Get subdomain from URL (works for both dev and production)
+  const getSubdomain = () => {
+    if (typeof window === 'undefined') return null
+    
+    const hostname = window.location.hostname
+    const pathname = window.location.pathname
+    
+    // Development: check for /~subdomain pattern
+    if (hostname === 'localhost' && pathname.startsWith('/~')) {
+      const match = pathname.match(/^\/~([^\/]+)/)
+      return match ? match[1] : null
+    }
+    
+    // Production: check actual subdomain
+    const parts = hostname.split('.')
+    if (parts.length >= 3 || (parts.length === 2 && !parts[0].includes('localhost'))) {
+      return parts[0]
+    }
+    
+    return null
+  }
 
   // Load user organizations
   const loadUserOrganizations = useCallback(async (authUser: User) => {
@@ -107,15 +129,43 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
           setOrganizations(data.organizations)
           
           // Set current organization based on subdomain or first org
-          const subdomain = getSubdomainFromRequest()
+          const subdomain = getSubdomain()
           if (subdomain) {
             const org = data.organizations.find((o: Organization) => o.subdomain === subdomain)
             if (org) {
               setCurrentOrganization(org)
+              // Store in localStorage for persistence
+              localStorage.setItem('current-organization-id', org.id)
             }
           } else if (data.organizations.length === 1) {
             // If user has only one org, set it as current
             setCurrentOrganization(data.organizations[0])
+            localStorage.setItem('current-organization-id', data.organizations[0].id)
+          } else if (data.organizations.length > 1) {
+            // Try to restore from localStorage
+            const storedOrgId = localStorage.getItem('current-organization-id')
+            if (storedOrgId) {
+              const storedOrg = data.organizations.find((o: Organization) => o.id === storedOrgId)
+              if (storedOrg) {
+                setCurrentOrganization(storedOrg)
+              }
+            }
+          } else if (data.organizations.length === 0 && process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
+            // No organizations found, use default organization for development
+            console.log('No organizations found, using default organization for development')
+            const defaultOrg: Organization = {
+              id: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+              name: 'Dubai Luxury Salon & Spa',
+              subdomain: 'salon',
+              type: 'salon',
+              subscription_plan: 'professional',
+              role: 'admin',
+              permissions: ['*'],
+              is_active: true
+            }
+            setOrganizations([defaultOrg])
+            setCurrentOrganization(defaultOrg)
+            localStorage.setItem('current-organization-id', defaultOrg.id)
           }
         }
       }

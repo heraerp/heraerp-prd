@@ -66,12 +66,13 @@ const AVAILABLE_APPS = [
 
 export default function OrganizationAppsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const { organizations, isAuthenticated } = useMultiOrgAuth()
+  const { organizations, isAuthenticated, refreshOrganizations, session } = useMultiOrgAuth()
   const [selectedApps, setSelectedApps] = useState<string[]>([])
   const [isInstalling, setIsInstalling] = useState(false)
   const [error, setError] = useState('')
   const [organizationId, setOrganizationId] = useState<string | null>(null)
   const [organization, setOrganization] = useState<any>(null)
+  const [isLoadingOrg, setIsLoadingOrg] = useState(true)
 
   useEffect(() => {
     async function getOrgId() {
@@ -82,10 +83,108 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
   }, [params])
 
   useEffect(() => {
-    if (organizationId && organizations.length > 0) {
-      const org = organizations.find(o => o.id === organizationId)
+    async function loadOrganization() {
+      if (!organizationId) return
+
+      // Check if organization data was passed via localStorage (for new orgs)
+      const storedOrgData = localStorage.getItem(`new-org-${organizationId}`)
+      if (storedOrgData) {
+        try {
+          const orgData = JSON.parse(storedOrgData)
+          const org = {
+            id: orgData.id,
+            name: orgData.name,
+            subdomain: orgData.subdomain,
+            type: orgData.type || 'general',
+            subscription_plan: 'trial',
+            role: 'owner',
+            permissions: ['*'],
+            is_active: true
+          }
+          setOrganization(org)
+          
+          // For salon organizations, skip app selection and go directly to salon dashboard
+          if (orgData.type === 'salon') {
+            // Trigger salon setup if not already done
+            if (session?.access_token) {
+              fetch('/api/v1/salon/setup', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                  organizationId: orgData.id,
+                  organizationName: orgData.name,
+                  subdomain: orgData.subdomain,
+                  ownerEmail: ''
+                })
+              }).catch(console.error)
+            }
+            
+            // Clean up localStorage
+            localStorage.removeItem(`new-org-${organizationId}`)
+            
+            // Redirect to salon dashboard with subdomain
+            router.push(`/~${orgData.subdomain}/salon`)
+            return
+          }
+          
+          // Pre-select recommended apps
+          const recommended = AVAILABLE_APPS
+            .filter(app => 
+              app.recommended.includes('all') || 
+              app.recommended.includes(orgData.type || 'general')
+            )
+            .map(app => app.id)
+          setSelectedApps(['accounting', ...recommended.filter(id => id !== 'accounting')])
+          
+          // Clean up localStorage
+          localStorage.removeItem(`new-org-${organizationId}`)
+          setIsLoadingOrg(false)
+          return
+        } catch (e) {
+          console.error('Error parsing org data:', e)
+        }
+      }
+
+      // Otherwise, try to find in existing organizations
+      let org = organizations.find(o => o.id === organizationId)
+      
+      if (!org && isAuthenticated) {
+        // If not found, refresh organizations list
+        await refreshOrganizations()
+        // Try again after refresh
+        org = organizations.find(o => o.id === organizationId)
+      }
+
       if (org) {
         setOrganization(org)
+        
+        // For salon organizations, skip app selection and go directly to salon dashboard
+        if (org.type === 'salon') {
+          // Trigger salon setup if not already done
+          if (session?.access_token) {
+            fetch('/api/v1/salon/setup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+              },
+              body: JSON.stringify({
+                organizationId: org.id,
+                organizationName: org.name,
+                subdomain: org.subdomain,
+                ownerEmail: org.email || ''
+              })
+            }).catch(console.error)
+          }
+          
+          // Redirect to salon dashboard with subdomain
+          router.push(`/~${org.subdomain}/salon`)
+          return
+        }
+        
         // Pre-select recommended apps based on organization type
         const recommended = AVAILABLE_APPS
           .filter(app => 
@@ -94,9 +193,19 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
           )
           .map(app => app.id)
         setSelectedApps(['accounting', ...recommended.filter(id => id !== 'accounting')])
+      } else if (!isAuthenticated) {
+        // If not authenticated, redirect to login
+        router.push('/auth/login')
+      } else {
+        // If authenticated but org not found, it's an error
+        setError('Organization not found')
       }
+      
+      setIsLoadingOrg(false)
     }
-  }, [organizationId, organizations])
+
+    loadOrganization()
+  }, [organizationId, organizations, isAuthenticated, refreshOrganizations, router])
 
   const toggleApp = (appId: string) => {
     setSelectedApps(prev => 
@@ -116,10 +225,19 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
     setError('')
 
     try {
+      // Get auth token
+      const authToken = session?.access_token
+      if (!authToken) {
+        throw new Error('No authentication token available')
+      }
+
       // Install selected apps
       const response = await fetch(`/api/v1/organizations/${organizationId}/apps`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
         body: JSON.stringify({ apps: selectedApps })
       })
 
@@ -139,7 +257,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
     }
   }
 
-  if (!organization) {
+  if (isLoadingOrg || !organization) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <div className="text-center">
@@ -250,7 +368,14 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
           <Button
             size="lg"
             variant="outline"
-            onClick={() => router.push('/auth/organizations')}
+            onClick={() => {
+              // Skip and go to organization dashboard
+              if (organization) {
+                router.push(`/org?org=${organization.id}`)
+              } else {
+                router.push('/auth/organizations')
+              }
+            }}
           >
             Skip for Now
           </Button>

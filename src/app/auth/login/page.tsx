@@ -20,6 +20,11 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log('Login form state:', { email, password, isLoading })
+  }, [email, password, isLoading])
 
   const returnTo = searchParams.get('return_to')
 
@@ -88,7 +93,11 @@ function LoginForm() {
                   type="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    const newValue = e.target.value
+                    console.log('Email changed to:', newValue)
+                    setEmail(newValue)
+                  }}
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -121,6 +130,7 @@ function LoginForm() {
                 type="submit"
                 className="w-full"
                 disabled={isLoading || !email || !password}
+                onClick={() => console.log('Button clicked, disabled state:', isLoading || !email || !password)}
               >
                 {isLoading ? (
                   <>

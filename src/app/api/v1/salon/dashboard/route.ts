@@ -6,8 +6,8 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PU
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-// Use the test organization ID we created
-const SALON_ORG_ID = '44d2d8f8-167d-46a7-a704-c0e5435863d6' // HERA Software Inc
+// Use the default organization ID from environment or fallback
+const SALON_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
 
 export async function GET(request: NextRequest) {
   try {
@@ -32,10 +32,7 @@ export async function GET(request: NextRequest) {
     // Fetch today's appointments from universal_transactions
     const { data: appointments, error: appointmentsError } = await supabase
       .from('universal_transactions')
-      .select(`
-        *,
-        reference_entity:core_entities!universal_transactions_reference_entity_id_fkey(entity_name)
-      `)
+      .select('*')
       .eq('organization_id', SALON_ORG_ID)
       .eq('transaction_type', 'appointment')
       .gte('transaction_date', today)
@@ -73,7 +70,7 @@ export async function GET(request: NextRequest) {
     const dashboardData = {
       todayAppointments: appointments?.map(apt => ({
         id: apt.id,
-        client: apt.reference_entity?.entity_name || 'Unknown Client',
+        client: apt.metadata?.customer_name || 'Unknown Client',
         service: apt.metadata?.service_name || 'Service',
         time: apt.metadata?.appointment_time || '10:00 AM',
         stylist: apt.metadata?.stylist_name || 'Staff Member',

@@ -33,8 +33,9 @@ export default function OrganizationLayout({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { currentOrganization, organizations, user, logout, switchOrganization } = useMultiOrgAuth()
+  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading } = useMultiOrgAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   // Get subdomain from header
   const [subdomain, setSubdomain] = useState<string | null>(null)
@@ -49,6 +50,38 @@ export default function OrganizationLayout({
       setSubdomain(subdomainFromPath)
     }
   }, [pathname])
+
+  // Redirect to appropriate app based on organization type
+  useEffect(() => {
+    if (!isLoading && currentOrganization && !isRedirecting) {
+      // Check if we're at the root org path
+      const isOrgRoot = pathname === '/org' || 
+                       pathname === `/~${currentOrganization.subdomain}` ||
+                       pathname === `/~${currentOrganization.subdomain}/`
+      
+      if (isOrgRoot) {
+        setIsRedirecting(true)
+        
+        // For salons, go directly to salon app
+        if (currentOrganization.type === 'salon') {
+          if (subdomain) {
+            router.push(`/~${subdomain}/salon`)
+          } else {
+            router.push('/org/salon')
+          }
+        } else if (currentOrganization.type === 'restaurant') {
+          if (subdomain) {
+            router.push(`/~${subdomain}/restaurant`)
+          } else {
+            router.push('/org/restaurant')
+          }
+        } else {
+          // For other types, show the generic org dashboard
+          setIsRedirecting(false)
+        }
+      }
+    }
+  }, [currentOrganization, isLoading, pathname, router, isRedirecting, subdomain])
 
   if (!currentOrganization) {
     return (

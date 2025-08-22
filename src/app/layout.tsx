@@ -6,7 +6,7 @@ import { UpdateNotification } from "@/components/pwa/UpdateNotification";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
-import ProgressiveLayout from "@/components/layout/ProgressiveLayout";
+import { ToastProvider } from "@/components/ui/use-toast";
 import "./globals.css";
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
 
@@ -88,10 +88,10 @@ export default function RootLayout({
           <ServiceWorkerProvider>
             <QueryProvider>
               <MultiOrgAuthProvider>
-                <ProgressiveLayout>
+                <ToastProvider>
                   {children}
-                </ProgressiveLayout>
-                <UpdateNotification />
+                  <UpdateNotification />
+                </ToastProvider>
               </MultiOrgAuthProvider>
             </QueryProvider>
           </ServiceWorkerProvider>

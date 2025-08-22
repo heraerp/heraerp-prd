@@ -205,6 +205,39 @@ node hera-cli.js count <table>          # Count records in table
 3. **ALWAYS USE ORGANIZATION_ID** - Multi-tenant isolation is sacred
 4. **USE CLI TOOLS FIRST** - Prevents memory issues and ensures consistency
 5. **SMART CODES REQUIRED** - Every operation needs intelligent context
+6. **SCHEMA-FIRST DEVELOPMENT** - Always validate actual database schema before coding
+
+## 🏗️ Schema-First Development (HERA DNA PRINCIPLE)
+
+**CRITICAL**: Schema mismatches are the #1 cause of production failures. HERA enforces Schema-First Development.
+
+### Before Writing ANY Code:
+```bash
+# 1. Check actual schema
+cd mcp-server && node check-schema.js core_entities
+
+# 2. Generate fresh types
+npm run schema:types
+
+# 3. Validate assumptions
+npm run schema:validate
+```
+
+### Common Schema Mistakes to AVOID:
+| ❌ WRONG | ✅ CORRECT | Why |
+|----------|-----------|-----|
+| `is_deleted` | `status = 'deleted'` | Column doesn't exist |
+| `parent_entity_id` | `from_entity_id` | Incorrect column name |
+| `child_entity_id` | `to_entity_id` | Incorrect column name |
+| `transaction_number` | `transaction_code` | Wrong column name |
+| `.eq('is_deleted', false)` | `.neq('status', 'deleted')` | Wrong query pattern |
+
+### Schema Validation in Build Pipeline:
+- **Automatic**: `npm run build` validates schema before building
+- **Development**: `npm run dev` generates fresh types on start
+- **Manual**: `npm run schema:check` for quick inspection
+
+### See Full Guide: `/docs/SCHEMA-FIRST-DEVELOPMENT.md`
 
 ## Common Commands
 
@@ -265,6 +298,12 @@ npm run docs:validate        # Validate all documentation links
 npm run docs:cleanup         # Clean up old documentation files
 npm run docs:full-maintenance # Run complete maintenance suite
 npm run docs:ai-generate     # AI-powered documentation generation
+
+# 🏗️ Schema-First Development (MANDATORY - HERA DNA)
+npm run schema:check         # Quick view of actual database schema
+npm run schema:types         # Generate TypeScript types from database
+npm run schema:validate      # Validate schema assumptions before build
+# ALWAYS run these before writing ANY code!
 
 
 # 🧬 Use Claude Desktop MCP for instant development:

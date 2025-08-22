@@ -32,7 +32,7 @@ export default function GetStartedPage() {
     confirmPassword: '',
     businessName: '',
     ownerName: '',
-    businessType: 'general'
+    businessType: 'salon' // Default to salon since it's the only option available
   })
 
   // Redirect if already authenticated
@@ -168,9 +168,9 @@ export default function GetStartedPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
                   <Rocket className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-2xl">Production Setup</CardTitle>
+                <CardTitle className="text-2xl">Production Salon Setup</CardTitle>
                 <CardDescription>
-                  Full HERA instance with authentication
+                  Full salon & beauty business with authentication
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -284,16 +284,19 @@ export default function GetStartedPage() {
                       )}
                       
                       <div className="space-y-2">
-                        <Label htmlFor="business-name">Business Name</Label>
+                        <Label htmlFor="business-name">Salon Business Name</Label>
                         <Input
                           id="business-name"
                           type="text"
-                          placeholder="Your Company Name"
+                          placeholder="Your Salon Name"
                           value={registerData.businessName}
                           onChange={(e) => setRegisterData({...registerData, businessName: e.target.value})}
                           required
                           disabled={isLoading}
                         />
+                        <p className="text-xs text-gray-500">
+                          This will create a salon & beauty business
+                        </p>
                       </div>
                       
                       <div className="space-y-2">
@@ -367,7 +370,7 @@ export default function GetStartedPage() {
                       </Button>
                       
                       <p className="text-xs text-gray-600 text-center">
-                        By creating an account, you'll get a Supabase user ID and HERA will automatically create your organization
+                        By creating an account, you'll get a complete salon & beauty business setup with all features pre-configured
                       </p>
                     </form>
                   </TabsContent>
