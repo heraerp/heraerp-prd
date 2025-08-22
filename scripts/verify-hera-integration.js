@@ -79,9 +79,10 @@ async function verifyIntegration() {
     // 4. Check membership exists
     console.log('\\n4. ✅ Checking membership...')
     const { data: membership, error: memberError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .select('*')
-      .eq('user_id', existingUserId)
+      .eq('from_entity_id', existingUserId)
+      .eq('relationship_type', 'member_of')
       .single()
 
     if (memberError) {
@@ -89,9 +90,9 @@ async function verifyIntegration() {
       allPassed = false
     } else {
       console.log(`   ✅ Membership found:`)
-      console.log(`      - Role: ${membership.role}`)
+      console.log(`      - Role: ${membership.metadata?.role}`)
       console.log(`      - Status: ${membership.status}`)
-      console.log(`      - Permissions: ${JSON.stringify(membership.permissions)}`)
+      console.log(`      - Permissions: ${JSON.stringify(membership.metadata?.permissions)}`)
     }
 
     // 5. Check dynamic data
@@ -124,7 +125,7 @@ async function verifyIntegration() {
 
     // 7. Check table counts
     console.log('\\n7. ✅ Checking table structure...')
-    const tables = ['core_organizations', 'core_entities', 'core_dynamic_data', 'core_memberships']
+    const tables = ['core_organizations', 'core_entities', 'core_dynamic_data', 'core_relationships', 'universal_transactions', 'universal_transaction_lines']
     
     for (const table of tables) {
       const { count, error } = await supabase
@@ -219,15 +220,19 @@ async function quickFix() {
       return false
     }
 
-    // Create membership
+    // Create membership relationship
     console.log('Creating membership...')
     const { error: membershipError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .insert({
         organization_id: org.id,
-        user_id: existingUserId,
-        role: 'admin',
-        permissions: ['user_management', 'entity_management', 'transaction_management'],
+        from_entity_id: existingUserId,
+        to_entity_id: org.id,
+        relationship_type: 'member_of',
+        metadata: {
+          role: 'admin',
+          permissions: ['user_management', 'entity_management', 'transaction_management']
+        },
         status: 'active',
         created_by: existingUserId
       })

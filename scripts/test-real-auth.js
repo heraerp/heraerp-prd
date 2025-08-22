@@ -89,14 +89,15 @@ async function testRealAuth() {
 
           // Check membership
           const { data: membership } = await supabaseAdmin
-            .from('core_memberships')
+            .from('core_relationships')
             .select('*')
-            .eq('user_id', userExists.id)
+            .eq('from_entity_id', userExists.id)
+            .eq('relationship_type', 'member_of')
             .single()
 
           if (membership) {
-            log.success(`Membership role: ${membership.role}`)
-            log.info(`Permissions: ${JSON.stringify(membership.permissions)}`)
+            log.success(`Membership role: ${membership.metadata?.role}`)
+            log.info(`Permissions: ${JSON.stringify(membership.metadata?.permissions)}`)
           }
 
           // Check dynamic data
@@ -206,14 +207,15 @@ async function testRealAuth() {
 
           // Check membership
           const { data: membership } = await supabaseAdmin
-            .from('core_memberships')
-            .select('role, permissions')
-            .eq('user_id', userId)
+            .from('core_relationships')
+            .select('metadata')
+            .eq('from_entity_id', userId)
+            .eq('relationship_type', 'member_of')
             .single()
 
           if (membership) {
-            log.success(`Membership: ${membership.role}`)
-            log.info(`Permissions: ${JSON.stringify(membership.permissions)}`)
+            log.success(`Membership: ${membership.metadata?.role}`)
+            log.info(`Permissions: ${JSON.stringify(membership.metadata?.permissions)}`)
           }
 
         } else {

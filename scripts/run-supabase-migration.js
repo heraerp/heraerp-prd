@@ -137,7 +137,7 @@ async function runMigration() {
     log.info('\nVerifying migration...')
     
     // Check if tables exist
-    const tables = ['core_organizations', 'core_entities', 'core_dynamic_data', 'core_memberships']
+    const tables = ['core_organizations', 'core_entities', 'core_dynamic_data', 'core_relationships', 'universal_transactions', 'universal_transaction_lines']
     for (const table of tables) {
       const { error } = await supabase.from(table).select('id').limit(1)
       if (!error) {

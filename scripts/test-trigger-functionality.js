@@ -112,15 +112,16 @@ async function testTriggerFunctionality() {
       
       // Check membership
       const { data: membership, error: memberError } = await supabase
-        .from('core_memberships')
+        .from('core_relationships')
         .select('*')
-        .eq('user_id', testUserId)
+        .eq('from_entity_id', testUserId)
+        .eq('relationship_type', 'member_of')
         .single()
         
       if (!memberError) {
         console.log('✅ Membership found:', {
-          role: membership.role,
-          permissions: membership.permissions,
+          role: membership.metadata?.role,
+          permissions: membership.metadata?.permissions,
           status: membership.status
         })
       }
@@ -259,14 +260,18 @@ async function createManualEntities(userId, authUser) {
 
     console.log('✅ User entity created:', entity.entity_name)
 
-    // Create membership
+    // Create membership relationship
     const { error: membershipError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .insert({
         organization_id: org.id,
-        user_id: userId,
-        role: authUser.user_metadata?.role || 'admin',
-        permissions: ['entities:*', 'transactions:*', 'reports:*', 'settings:*'],
+        from_entity_id: userId,
+        to_entity_id: org.id,
+        relationship_type: 'member_of',
+        metadata: {
+          role: authUser.user_metadata?.role || 'admin',
+          permissions: ['entities:*', 'transactions:*', 'reports:*', 'settings:*']
+        },
         status: 'active',
         created_by: userId
       })

@@ -472,11 +472,11 @@ SELECT
     e.entity_name,
     e.entity_type,
     o.organization_name,
-    m.role
+    (r.metadata->>'role')::TEXT as role
 FROM auth.users u
 LEFT JOIN core_entities e ON e.id = u.id
 LEFT JOIN core_organizations o ON e.organization_id = o.id
-LEFT JOIN core_memberships m ON m.user_id = u.id AND m.organization_id = o.id
+LEFT JOIN core_relationships r ON r.from_entity_id = u.id AND r.to_entity_id = o.id AND r.relationship_type = 'member_of'
 ORDER BY u.created_at DESC;
 */
 

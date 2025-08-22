@@ -94,7 +94,7 @@ async function verifySetup() {
       'core_organizations',
       'core_entities', 
       'core_dynamic_data',
-      'core_memberships'
+      'core_relationships'
     ]
 
     let tablesExist = 0

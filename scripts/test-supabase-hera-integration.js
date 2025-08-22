@@ -47,7 +47,7 @@ async function testSupabaseHERAIntegration() {
       'core_relationships',
       'universal_transactions',
       'universal_transaction_lines',
-      'core_memberships'
+      'core_relationships'
     ]
 
     for (const table of tables) {
@@ -145,9 +145,10 @@ async function testSupabaseHERAIntegration() {
     console.log('\\n6. Verifying membership creation...')
     
     const { data: membership, error: memberError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .select('*')
-      .eq('user_id', userId)
+      .eq('from_entity_id', userId)
+      .eq('relationship_type', 'member_of')
       .single()
 
     if (memberError) {
@@ -156,10 +157,11 @@ async function testSupabaseHERAIntegration() {
     }
 
     console.log('✅ Membership created:', {
-      user_id: membership.user_id,
-      organization_id: membership.organization_id,
-      role: membership.role,
-      permissions: membership.permissions
+      from_entity_id: membership.from_entity_id,
+      to_entity_id: membership.to_entity_id,
+      relationship_type: membership.relationship_type,
+      role: membership.metadata?.role,
+      permissions: membership.metadata?.permissions
     })
 
     // 7. Verify dynamic data was created
@@ -324,14 +326,18 @@ async function checkExistingUser() {
         return false
       }
       
-      // Create membership
+      // Create membership relationship
       const { error: membershipError } = await supabase
-        .from('core_memberships')
+        .from('core_relationships')
         .insert({
           organization_id: org.id,
-          user_id: existingUserId,
-          role: 'admin',
-          permissions: ['user_management', 'entity_management', 'transaction_management'],
+          from_entity_id: existingUserId,
+          to_entity_id: org.id,
+          relationship_type: 'member_of',
+          metadata: {
+            role: 'admin',
+            permissions: ['user_management', 'entity_management', 'transaction_management']
+          },
           status: 'active',
           created_by: existingUserId
         })
@@ -358,15 +364,16 @@ async function checkExistingUser() {
     
     // Check membership
     const { data: membership, error: memberError } = await supabase
-      .from('core_memberships')
+      .from('core_relationships')
       .select('*')
-      .eq('user_id', existingUserId)
+      .eq('from_entity_id', existingUserId)
+      .eq('relationship_type', 'member_of')
       .single()
     
     if (memberError) {
       console.log('⚠️  Membership not found - user may need to be re-created')
     } else {
-      console.log('✅ Membership found:', membership.role)
+      console.log('✅ Membership found:', membership.metadata?.role)
     }
     
     return true

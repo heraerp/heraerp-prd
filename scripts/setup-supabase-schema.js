@@ -141,21 +141,20 @@ async function createEssentialTables() {
       `
     },
     {
-      name: 'core_memberships',
+      name: 'core_relationships',
       sql: `
-        CREATE TABLE IF NOT EXISTS core_memberships (
+        CREATE TABLE IF NOT EXISTS core_relationships (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           organization_id UUID NOT NULL REFERENCES core_organizations(id) ON DELETE CASCADE,
-          user_id UUID NOT NULL,
-          role VARCHAR(100) NOT NULL DEFAULT 'user',
-          permissions JSONB DEFAULT '[]'::jsonb,
+          from_entity_id UUID NOT NULL,
+          to_entity_id UUID NOT NULL,
+          relationship_type VARCHAR(100) NOT NULL,
+          metadata JSONB DEFAULT '{}'::jsonb,
           status VARCHAR(20) DEFAULT 'active',
-          joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           created_by UUID,
-          updated_by UUID,
-          UNIQUE(organization_id, user_id)
+          updated_by UUID
         );
       `
     }

@@ -346,7 +346,7 @@ function getAuthorizationHandlers(supabase, supabaseAdmin) {
         // The handle_new_user() trigger in Supabase will automatically:
         // 1. Create organization (if needed)
         // 2. Create user entity in core_entities  
-        // 3. Create membership in core_memberships
+        // 3. Create membership relationship in core_relationships
         // 4. Store user properties in core_dynamic_data
 
         return {
@@ -432,19 +432,18 @@ function getAuthorizationHandlers(supabase, supabaseAdmin) {
       // Get default permissions for role
       const finalPermissions = args.permissions || validateHeraAuthRules.getRolePermissions(role);
 
-      // Check if membership table exists (it might be core_memberships or part of core_relationships)
-      // First try core_memberships
+      // Create membership as a relationship (HERA universal pattern)
       let membershipResult;
       
       try {
-        // Create membership as a relationship (HERA universal pattern)
+        // Create membership as a relationship using universal architecture
         const { data: membership, error } = await supabase
           .from('core_relationships')
           .insert({
             organization_id: orgId, // SACRED
-            parent_entity_id: orgId, // Organization is parent
-            child_entity_id: args.user_id, // User is child
-            relationship_type: 'membership',
+            from_entity_id: args.user_id, // User entity
+            to_entity_id: orgId, // Organization entity
+            relationship_type: 'member_of',
             smart_code: validateHeraAuthRules.enforceSmartCodeAuth('MEMBERSHIP'),
             metadata: {
               role: role,
@@ -500,9 +499,10 @@ function getAuthorizationHandlers(supabase, supabaseAdmin) {
       const { data: membership, error } = await supabase
         .from('core_relationships')
         .select('metadata, status')
-        .eq('child_entity_id', args.user_id)
+        .eq('from_entity_id', args.user_id)
+        .eq('to_entity_id', orgId)
         .eq('organization_id', orgId) // SACRED BOUNDARY
-        .eq('relationship_type', 'membership')
+        .eq('relationship_type', 'member_of')
         .eq('status', 'active')
         .single();
 
@@ -613,9 +613,10 @@ function getAuthorizationHandlers(supabase, supabaseAdmin) {
       const { data: membership, error } = await supabase
         .from('core_relationships')
         .select('metadata')
-        .eq('child_entity_id', args.user_id)
+        .eq('from_entity_id', args.user_id)
+        .eq('to_entity_id', orgId)
         .eq('organization_id', orgId) // SACRED
-        .eq('relationship_type', 'membership')
+        .eq('relationship_type', 'member_of')
         .eq('status', 'active')
         .single();
 
@@ -731,9 +732,10 @@ function getAuthorizationHandlers(supabase, supabaseAdmin) {
       const { data: membership, error: membershipError } = await supabase
         .from('core_relationships')
         .select('metadata, status')
-        .eq('child_entity_id', args.user_id)
+        .eq('from_entity_id', args.user_id)
+        .eq('to_entity_id', orgId)
         .eq('organization_id', orgId) // SACRED TEST
-        .eq('relationship_type', 'membership')
+        .eq('relationship_type', 'member_of')
         .single();
 
       if (membership && membership.status === 'active') {

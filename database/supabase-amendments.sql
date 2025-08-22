@@ -68,26 +68,9 @@ CREATE INDEX IF NOT EXISTS idx_universal_transactions_date ON universal_transact
 CREATE INDEX IF NOT EXISTS idx_universal_transaction_lines_txn ON universal_transaction_lines(transaction_id);
 CREATE INDEX IF NOT EXISTS idx_universal_transaction_lines_entity ON universal_transaction_lines(line_entity_id);
 
--- Create core_memberships table if it doesn't exist
--- =====================================================================
-CREATE TABLE IF NOT EXISTS core_memberships (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    organization_id UUID NOT NULL REFERENCES core_organizations(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL, -- References auth.users(id)
-    role VARCHAR(100) NOT NULL DEFAULT 'user',
-    permissions JSONB DEFAULT '[]'::jsonb,
-    status VARCHAR(20) DEFAULT 'active',
-    joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_by UUID,
-    updated_by UUID,
-    UNIQUE(organization_id, user_id)
-);
-
-CREATE INDEX IF NOT EXISTS idx_core_memberships_org ON core_memberships(organization_id);
-CREATE INDEX IF NOT EXISTS idx_core_memberships_user ON core_memberships(user_id);
-CREATE INDEX IF NOT EXISTS idx_core_memberships_role ON core_memberships(role);
+-- NOTE: Using core_relationships table for memberships instead of separate core_memberships table
+-- Memberships are stored as relationships with relationship_type = 'member_of'
+-- This follows the universal 6-table architecture
 
 -- Enable RLS on all tables (safe operation)
 -- =====================================================================
@@ -97,7 +80,7 @@ ALTER TABLE core_dynamic_data ENABLE ROW LEVEL SECURITY;
 ALTER TABLE core_relationships ENABLE ROW LEVEL SECURITY;
 ALTER TABLE universal_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE universal_transaction_lines ENABLE ROW LEVEL SECURITY;
-ALTER TABLE core_memberships ENABLE ROW LEVEL SECURITY;
+-- RLS already enabled for core_relationships table
 
 -- Helper function to get current user's organization
 -- =====================================================================
@@ -105,9 +88,10 @@ CREATE OR REPLACE FUNCTION get_user_organization_id()
 RETURNS UUID AS $$
 BEGIN
     RETURN (
-        SELECT organization_id 
-        FROM core_memberships 
-        WHERE user_id = auth.uid() 
+        SELECT to_entity_id 
+        FROM core_relationships 
+        WHERE from_entity_id = auth.uid() 
+        AND relationship_type = 'member_of'
         AND status = 'active'
         LIMIT 1
     );
@@ -127,15 +111,16 @@ RETURNS TABLE(
 BEGIN
     RETURN QUERY
     SELECT 
-        m.user_id,
-        m.organization_id,
+        r.from_entity_id as user_id,
+        r.to_entity_id as organization_id,
         o.organization_name,
-        m.role as user_role,
-        m.permissions
-    FROM core_memberships m
-    JOIN core_organizations o ON m.organization_id = o.id
-    WHERE m.user_id = auth.uid()
-    AND m.status = 'active'
+        (r.metadata->>'role')::TEXT as user_role,
+        (r.metadata->'permissions')::JSONB as permissions
+    FROM core_relationships r
+    JOIN core_organizations o ON r.to_entity_id = o.id
+    WHERE r.from_entity_id = auth.uid()
+    AND r.relationship_type = 'member_of'
+    AND r.status = 'active'
     LIMIT 1;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -220,22 +205,27 @@ BEGIN
     (NEW.id, 'signup_date', NOW()::text, NEW.id)
     ON CONFLICT DO NOTHING;
     
-    -- Create membership
-    INSERT INTO core_memberships(
+    -- Create membership relationship
+    INSERT INTO core_relationships(
         organization_id,
-        user_id,
-        role,
-        permissions,
+        from_entity_id,
+        to_entity_id,
+        relationship_type,
+        metadata,
         status,
         created_by
     ) VALUES (
         org_uuid,
         NEW.id,
-        COALESCE(NEW.raw_user_meta_data->>'role', 'admin'),
-        '["user_management", "entity_management", "transaction_management"]'::jsonb,
+        org_uuid,
+        'member_of',
+        jsonb_build_object(
+            'role', COALESCE(NEW.raw_user_meta_data->>'role', 'admin'),
+            'permissions', '["user_management", "entity_management", "transaction_management"]'::jsonb
+        ),
         'active',
         NEW.id
-    ) ON CONFLICT (organization_id, user_id) DO NOTHING;
+    ) ON CONFLICT DO NOTHING;
     
     RETURN NEW;
 END $$;
@@ -292,8 +282,7 @@ CREATE POLICY "Users can access their organization transaction lines" ON univers
         )
     );
 
-CREATE POLICY "Users can view their own memberships" ON core_memberships
-    FOR SELECT USING (user_id = auth.uid());
+-- Membership policy handled by core_relationships policies
 
 -- Manual setup for existing user (your user)
 -- =====================================================================
@@ -349,22 +338,27 @@ BEGIN
             existing_user_id
         ) ON CONFLICT (id) DO NOTHING;
         
-        -- Create membership
-        INSERT INTO core_memberships (
+        -- Create membership relationship
+        INSERT INTO core_relationships (
             organization_id,
-            user_id,
-            role,
-            permissions,
+            from_entity_id,
+            to_entity_id,
+            relationship_type,
+            metadata,
             status,
             created_by
         ) VALUES (
             org_id,
             existing_user_id,
-            'admin',
-            '["user_management", "entity_management", "transaction_management"]'::jsonb,
+            org_id,
+            'member_of',
+            jsonb_build_object(
+                'role', 'admin',
+                'permissions', '["user_management", "entity_management", "transaction_management"]'::jsonb
+            ),
             'active',
             existing_user_id
-        ) ON CONFLICT (organization_id, user_id) DO NOTHING;
+        ) ON CONFLICT DO NOTHING;
         
         -- Add dynamic data
         INSERT INTO core_dynamic_data (entity_id, field_name, field_value_text, created_by) VALUES

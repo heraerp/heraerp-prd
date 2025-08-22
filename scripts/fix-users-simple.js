@@ -135,19 +135,21 @@ async function fixUsers() {
           }
         }
 
-        // Create membership
+        // Create membership relationship
         log.info('  Creating membership...')
         const { error: memberError } = await supabase
-          .from('core_memberships')
+          .from('core_relationships')
           .insert({
             organization_id: org.id,
-            user_id: user.id,
-            role: user.user_metadata?.role || 'admin',
-            permissions: JSON.stringify(
-              user.user_metadata?.role === 'admin' 
+            from_entity_id: user.id,
+            to_entity_id: org.id,
+            relationship_type: 'member_of',
+            metadata: {
+              role: user.user_metadata?.role || 'admin',
+              permissions: user.user_metadata?.role === 'admin' 
                 ? ["entities:*", "transactions:*", "reports:*", "settings:*"]
                 : ["entities:read", "transactions:read", "reports:read"]
-            ),
+            },
             status: 'active',
             created_by: user.id
           })

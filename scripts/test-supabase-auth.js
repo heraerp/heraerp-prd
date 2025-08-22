@@ -151,15 +151,16 @@ async function testSupabaseAuth() {
 
       // Check membership
       const { data: memberships, error: membershipError } = await supabaseAdmin
-        .from('core_memberships')
-        .select('role, permissions')
-        .eq('user_id', userId)
+        .from('core_relationships')
+        .select('metadata')
+        .eq('from_entity_id', userId)
+        .eq('relationship_type', 'member_of')
 
       if (membershipError) {
         log.error(`Failed to fetch membership: ${membershipError.message}`)
       } else if (memberships && memberships.length > 0) {
-        log.success(`Membership created with role: ${memberships[0].role}`)
-        log.info(`Permissions: ${JSON.stringify(memberships[0].permissions)}`)
+        log.success(`Membership created with role: ${memberships[0].metadata?.role}`)
+        log.info(`Permissions: ${JSON.stringify(memberships[0].metadata?.permissions)}`)
       }
     } else {
       log.warn('Service role key not configured - skipping entity verification')
