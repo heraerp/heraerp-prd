@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
     console.log('🏪 Setting up new salon:', organizationName)
 
     // For server-side execution, we need to configure the universal API with absolute URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL || process.env.NEXT_PUBLIC_APP_URL}/api/v1/universal`
-      : 'http://localhost:3000/api/v1/universal'
+    const host = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_APP_URL || 'localhost:3001'
+    const protocol = host.includes('localhost') ? 'http' : 'https'
+    const baseUrl = `${protocol}://${host}/api/v1/universal`
     
     // Use the unified salon setup function with proper configuration
     const result = await setupSalonBusiness({
