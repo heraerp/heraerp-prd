@@ -14,16 +14,22 @@ const OpenAI = require('openai');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Check required environment variables
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('❌ Missing required environment variables: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+  console.log('Please set these in Railway environment variables');
+}
+
 // Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-// OpenAI client
-const openai = new OpenAI({
+// OpenAI client - optional
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
-});
+}) : null;
 
 // Middleware
 app.use(cors());
@@ -191,6 +197,11 @@ app.post('/api/execute', async (req, res) => {
  * Interpret natural language command using OpenAI
  */
 async function interpretCommand(message, context) {
+  // If no OpenAI, use simple pattern matching
+  if (!openai) {
+    return simpleInterpretation(message);
+  }
+  
   const systemPrompt = `You are an AI assistant for HERA ERP system. 
   HERA uses a universal 6-table architecture where everything is stored as:
   - Entities (customers, products, services, staff, etc.)
@@ -218,6 +229,87 @@ async function interpretCommand(message, context) {
   });
 
   return JSON.parse(completion.choices[0].message.content);
+}
+
+/**
+ * Simple pattern-based interpretation when OpenAI is not available
+ */
+function simpleInterpretation(message) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Create patterns
+  if (lowerMessage.includes('create') || lowerMessage.includes('add') || lowerMessage.includes('new')) {
+    if (lowerMessage.includes('customer') || lowerMessage.includes('client')) {
+      return {
+        action: 'create',
+        type: 'customer',
+        parameters: { name: extractName(message) },
+        confidence: 0.8
+      };
+    }
+    if (lowerMessage.includes('appointment') || lowerMessage.includes('booking')) {
+      return {
+        action: 'create',
+        type: 'appointment',
+        parameters: extractAppointmentDetails(message),
+        confidence: 0.7
+      };
+    }
+  }
+  
+  // Query patterns
+  if (lowerMessage.includes('show') || lowerMessage.includes('list') || lowerMessage.includes('get')) {
+    const type = extractEntityType(message);
+    return {
+      action: 'query',
+      type: type,
+      parameters: {},
+      confidence: 0.7
+    };
+  }
+  
+  // Default
+  return {
+    action: 'unknown',
+    type: 'unknown',
+    parameters: { originalMessage: message },
+    confidence: 0.3
+  };
+}
+
+function extractName(message) {
+  const patterns = [
+    /named?\s+([A-Za-z\s]+)/i,
+    /customer\s+([A-Za-z\s]+)/i,
+    /client\s+([A-Za-z\s]+)/i
+  ];
+  
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match) return match[1].trim();
+  }
+  
+  return 'New Customer';
+}
+
+function extractEntityType(message) {
+  const types = ['customer', 'appointment', 'service', 'product', 'staff'];
+  const lowerMessage = message.toLowerCase();
+  
+  for (const type of types) {
+    if (lowerMessage.includes(type)) return type;
+  }
+  
+  return 'entity';
+}
+
+function extractAppointmentDetails(message) {
+  // Simple extraction - can be enhanced
+  return {
+    date: 'today',
+    time: '14:00',
+    service: 'consultation'
+  };
 }
 
 /**
@@ -349,6 +441,11 @@ function detectIndustry(type) {
  * Generate natural language response
  */
 async function generateResponse(interpretation, result) {
+  // If no OpenAI, use template responses
+  if (!openai) {
+    return generateTemplateResponse(interpretation, result);
+  }
+  
   const prompt = `Given this action and result, generate a friendly response:
   Action: ${JSON.stringify(interpretation)}
   Result: ${JSON.stringify(result)}
@@ -364,6 +461,30 @@ async function generateResponse(interpretation, result) {
   });
   
   return completion.choices[0].message.content;
+}
+
+/**
+ * Generate template-based responses when OpenAI is not available
+ */
+function generateTemplateResponse(interpretation, result) {
+  const { action, type } = interpretation;
+  
+  if (action === 'create' && result && result.id) {
+    return `✅ Successfully created ${type}: ${result.entity_name || result.name || 'New ' + type}\n\nID: ${result.id}\nCode: ${result.entity_code || result.transaction_code || 'N/A'}`;
+  }
+  
+  if (action === 'query' && Array.isArray(result)) {
+    if (result.length === 0) {
+      return `No ${type}s found. Would you like to create one?`;
+    }
+    return `Found ${result.length} ${type}${result.length === 1 ? '' : 's'}:\n\n${result.slice(0, 5).map(r => `• ${r.entity_name || r.name || r.id}`).join('\n')}${result.length > 5 ? `\n... and ${result.length - 5} more` : ''}`;
+  }
+  
+  if (action === 'unknown') {
+    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"`;
+  }
+  
+  return `Operation completed successfully.`;
 }
 
 /**
