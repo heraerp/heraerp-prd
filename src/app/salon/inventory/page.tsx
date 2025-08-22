@@ -29,9 +29,12 @@ import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useToast } from '@/components/ui/use-toast'
 
+// Default organization ID for development
+const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+
 export default function InventoryDashboard() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
-  const organizationId = currentOrganization?.id
+  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
   const { toast } = useToast()
   
   const [loading, setLoading] = useState(true)

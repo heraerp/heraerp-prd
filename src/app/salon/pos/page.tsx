@@ -52,11 +52,14 @@ interface PaymentSplit {
   reference?: string
 }
 
+// Default organization ID for development
+const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+
 export default function SalonPOSPage() {
   const { currentOrganization } = useMultiOrgAuth()
   const { currencyCode, format: formatCurrency } = useOrganizationCurrency()
   const { toast } = useToast()
-  const organizationId = currentOrganization?.id
+  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
 
   // State
   const [activeTab, setActiveTab] = useState('services')
