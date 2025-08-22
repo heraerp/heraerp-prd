@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run schema:validate && next build",
+    "build": "npm run quality:pre-build && npm run schema:validate && next build",
     "start": "next start",
     "lint": "next lint",
     "schema:validate": "node mcp-server/schema-introspection.js validate",
@@ -38,7 +38,16 @@
     "test:salon-validate": "cd packages/hera-testing && node bin/simple-test.js validate examples/salon-appointment-booking.yaml",
     "test:restaurant": "cd packages/hera-testing && node bin/simple-test.js validate examples/restaurant-order-to-cash.yaml",
     "test:business-process": "cd packages/hera-testing && node bin/simple-test.js salon",
-    "test:all-industries": "npm run test:salon && npm run test:restaurant"
+    "test:all-industries": "npm run test:salon && npm run test:restaurant",
+    "quality:check": "node scripts/quality-check.js",
+    "quality:pre-build": "node scripts/pre-build-validate.js",
+    "quality:audit": "npm run quality:check && npm run quality:pre-build",
+    "quality:fix": "npm run lint -- --fix && npm run format",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "ui:validate": "node scripts/validate-ui-patterns.js",
+    "ui:generate": "node scripts/generate-ui-component.js",
+    "ui:check": "npm run ui:validate && npm run format:check"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

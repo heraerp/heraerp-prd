@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# UI Pattern Validation
+echo "🔍 Checking UI patterns..."
+npm run ui:validate
+
+if [ $? -ne 0 ]; then
+  echo "❌ UI pattern validation failed. Please fix the issues before committing."
+  echo "💡 Run 'npm run ui:validate' to see details"
+  exit 1
+fi
+
+# Format check
+echo "📝 Checking code formatting..."
+npm run format:check
+
+if [ $? -ne 0 ]; then
+  echo "❌ Code formatting issues found."
+  echo "💡 Run 'npm run format' to fix automatically"
+  exit 1
+fi
+
+echo "✅ All checks passed!"
