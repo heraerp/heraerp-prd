@@ -74,21 +74,39 @@ export function UpdateNotification() {
     }
   }, [])
 
-  const handleUpdate = () => {
-    if (isUpdateAvailable) {
-      // Use service worker update if available
-      updateServiceWorker()
-    } else {
-      // Force reload with cache bypass
+  const handleUpdate = async () => {
+    try {
+      // Show updating status
+      setShowNotification(false)
+      
+      // Clear all caches first
       if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => caches.delete(name))
-        }).then(() => {
-          window.location.reload()
-        })
-      } else {
-        window.location.reload()
+        const cacheNames = await caches.keys()
+        await Promise.all(cacheNames.map(name => caches.delete(name)))
+        console.log('[Update] Cleared all caches')
       }
+      
+      // Unregister all service workers
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        await Promise.all(registrations.map(reg => reg.unregister()))
+        console.log('[Update] Unregistered all service workers')
+      }
+      
+      // Clear session storage
+      sessionStorage.clear()
+      
+      // Clear local storage version info
+      localStorage.removeItem('hera-version')
+      localStorage.removeItem('last-update-check')
+      
+      // Force hard reload with timestamp to bypass any remaining cache
+      const timestamp = new Date().getTime()
+      window.location.href = `${window.location.origin}${window.location.pathname}?v=${timestamp}`
+    } catch (error) {
+      console.error('[Update] Error during update:', error)
+      // Fallback to simple reload
+      window.location.reload()
     }
   }
 
@@ -96,6 +114,16 @@ export function UpdateNotification() {
   const shouldShowNotification = isUpdateAvailable || showNotification
 
   if (!shouldShowNotification) return null
+
+  // Auto-dismiss after 30 seconds if not interacted
+  useEffect(() => {
+    if (shouldShowNotification) {
+      const timer = setTimeout(() => {
+        setShowNotification(false)
+      }, 30000)
+      return () => clearTimeout(timer)
+    }
+  }, [shouldShowNotification])
 
   return (
     <div className="fixed bottom-4 right-4 max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-2xl p-4 z-50 animate-pulse">
@@ -117,8 +145,9 @@ export function UpdateNotification() {
             <button
               onClick={handleUpdate}
               className="px-4 py-2 bg-white text-blue-600 rounded-md font-medium hover:bg-blue-50 transition-colors shadow-md"
+              disabled={isChecking}
             >
-              Update Now
+              {isChecking ? 'Checking...' : 'Update Now'}
             </button>
             <button
               onClick={() => {

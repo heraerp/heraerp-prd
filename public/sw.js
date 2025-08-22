@@ -1,7 +1,15 @@
 // HERA Service Worker v2.0.0 - Enhanced Update System
-const CACHE_NAME = 'hera-cache-v20250812054016';
-const APP_VERSION = '20250812054016';
+const CACHE_NAME = 'hera-cache-v20250822102725';
+const APP_VERSION = '20250822102725';
 const UPDATE_CHECK_INTERVAL = 30 * 1000; // Check every 30 seconds in production
+const SKIP_CACHE_PATTERNS = [
+  /\/api\//,
+  /\.json$/,
+  /manifest\.json$/,
+  /sw\.js$/,
+  /\/version/,
+  /\?v=/
+];
 
 // Resources to cache - only critical offline resources
 const urlsToCache = [
@@ -63,6 +71,10 @@ self.addEventListener('fetch', (event) => {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) return;
 
+  // Skip patterns that should never be cached
+  const shouldSkipCache = SKIP_CACHE_PATTERNS.some(pattern => pattern.test(event.request.url));
+  if (shouldSkipCache) return;
+
   // Skip API calls and Supabase requests
   if (event.request.url.includes('/api/') || 
       event.request.url.includes('supabase')) return;
@@ -75,12 +87,20 @@ self.addEventListener('fetch', (event) => {
   // For navigation requests (page loads), always try network first
   if (isNavigationRequest || isHTMLRequest) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, {
+        cache: 'no-store',
+        credentials: 'same-origin'
+      })
         .then(response => {
+          // Don't cache error responses
+          if (!response || response.status !== 200) {
+            return response;
+          }
+          
           // Clone the response
           const responseToCache = response.clone();
           
-          // Update cache in background
+          // Update cache in background only for successful responses
           caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseToCache);
           });
@@ -190,6 +210,18 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CHECK_UPDATE') {
     // Force check for updates
     self.registration.update();
+  }
+  
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    // Clear all caches
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          console.log('[SW] Clearing cache:', cacheName);
+          return caches.delete(cacheName);
+        })
+      );
+    });
   }
 });
 

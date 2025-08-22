@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run quality:pre-build && next build",
+    "build": "npm run quality:pre-build && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
     "start": "next start",
     "lint": "next lint",
     "schema:validate": "node mcp-server/schema-introspection.js validate",
