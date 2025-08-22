@@ -4,13 +4,11 @@
  * Enterprise-grade configuration for inventory management
  */
 
-import { ConfigurationFactory, CONFIG_TYPES } from '@/lib/universal-config/config-factory'
+import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
+import { createSafeRouteHandlers } from '@/lib/universal-config/safe-config-factory'
 
-// Initialize factory
-const factory = new ConfigurationFactory()
-
-// Create handlers using the factory
-const handlers = factory.createRouteHandlers(CONFIG_TYPES.PRODUCT_CATEGORY)
+// Create handlers using the safe wrapper
+const handlers = createSafeRouteHandlers(CONFIG_TYPES.PRODUCT_CATEGORY)
 
 // Export HTTP methods
 export const GET = handlers.GET

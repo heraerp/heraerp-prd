@@ -3,10 +3,10 @@
  * Auto-generated using Universal Configuration Factory
  */
 
-import { ConfigurationFactory, CONFIG_TYPES } from '@/lib/universal-config/config-factory'
+import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
+import { createSafeRouteHandlers } from '@/lib/universal-config/safe-config-factory'
 
-const factory = new ConfigurationFactory()
-const handlers = factory.createRouteHandlers(CONFIG_TYPES.EXPENSE_CATEGORY)
+const handlers = createSafeRouteHandlers(CONFIG_TYPES.EXPENSE_CATEGORY)
 
 export const GET = handlers.GET
 export const POST = handlers.POST
