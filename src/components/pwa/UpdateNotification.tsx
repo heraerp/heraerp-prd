@@ -10,9 +10,13 @@ export function UpdateNotification() {
   const [showNotification, setShowNotification] = useState(false)
   const [isChecking, setIsChecking] = useState(false)
   const [lastCheckTime, setLastCheckTime] = useState<Date>(new Date())
+  const [serverVersion, setServerVersion] = useState<string | null>(null)
 
   // Check for version updates via API
   const checkForUpdates = async () => {
+    // Don't check if we're already checking
+    if (isChecking) return
+    
     setIsChecking(true)
     try {
       const response = await fetch('/api/v1/version', {
@@ -25,18 +29,31 @@ export function UpdateNotification() {
       
       if (response.ok) {
         const data = await response.json()
-        const serverVersion = data.version
+        const newServerVersion = data.version
         const currentVersion = APP_VERSION.current
         
-        console.log(`[Update Check] Current: ${currentVersion}, Server: ${serverVersion}`)
+        console.log(`[Update Check] Current: ${currentVersion}, Server: ${newServerVersion}`)
         
-        if (serverVersion !== currentVersion) {
+        // Get dismissed version from localStorage
+        const dismissedVersion = localStorage.getItem('hera-dismissed-version')
+        
+        // Only show notification if:
+        // 1. Server version is different from current version
+        // 2. Server version hasn't been dismissed already
+        // 3. We haven't already shown notification for this version
+        if (newServerVersion !== currentVersion && 
+            newServerVersion !== dismissedVersion &&
+            newServerVersion !== serverVersion) {
+          setServerVersion(newServerVersion)
           setShowNotification(true)
           
           // Also trigger service worker update
           if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({ type: 'CHECK_UPDATE' })
           }
+        } else {
+          // If versions match, hide notification
+          setShowNotification(false)
         }
       }
     } catch (error) {
@@ -51,8 +68,8 @@ export function UpdateNotification() {
     // Check immediately on mount
     checkForUpdates()
 
-    // Check every 30 seconds
-    const interval = setInterval(checkForUpdates, 30 * 1000)
+    // Check every 2 minutes (was 30 seconds)
+    const interval = setInterval(checkForUpdates, 2 * 60 * 1000)
 
     // Check when window regains focus
     const handleFocus = () => checkForUpdates()
@@ -99,6 +116,7 @@ export function UpdateNotification() {
       // Clear local storage version info
       localStorage.removeItem('hera-version')
       localStorage.removeItem('last-update-check')
+      localStorage.removeItem('hera-dismissed-version')
       
       // Force hard reload with timestamp to bypass any remaining cache
       const timestamp = new Date().getTime()
@@ -113,20 +131,12 @@ export function UpdateNotification() {
   // Show notification if either condition is true
   const shouldShowNotification = isUpdateAvailable || showNotification
 
-  // Auto-dismiss after 30 seconds if not interacted
-  useEffect(() => {
-    if (shouldShowNotification) {
-      const timer = setTimeout(() => {
-        setShowNotification(false)
-      }, 30000)
-      return () => clearTimeout(timer)
-    }
-  }, [shouldShowNotification])
-
+  // No auto-dismiss - let user decide when to update or dismiss
+  
   if (!shouldShowNotification) return null
 
   return (
-    <div className="fixed bottom-4 right-4 max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-2xl p-4 z-50 animate-pulse">
+    <div className="fixed bottom-4 right-4 max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-2xl p-4 z-50">
       <div className="flex items-start">
         <div className="flex-shrink-0">
           <RefreshCw className={`h-6 w-6 text-white ${isChecking ? 'animate-spin' : ''}`} />
@@ -139,7 +149,7 @@ export function UpdateNotification() {
             A new version of HERA has been released with exciting features and improvements.
           </p>
           <p className="mt-1 text-xs text-blue-200">
-            Current: v{APP_VERSION.current} • Last check: {lastCheckTime.toLocaleTimeString()}
+            Current: v{APP_VERSION.current} {serverVersion && `• New: v${serverVersion}`}
           </p>
           <div className="mt-3 flex items-center space-x-3">
             <button
@@ -152,8 +162,10 @@ export function UpdateNotification() {
             <button
               onClick={() => {
                 setShowNotification(false)
-                // Re-check in 5 minutes
-                setTimeout(checkForUpdates, 5 * 60 * 1000)
+                // Store dismissed version
+                if (serverVersion) {
+                  localStorage.setItem('hera-dismissed-version', serverVersion)
+                }
               }}
               className="text-sm font-medium text-white hover:text-blue-100 transition-colors"
             >
@@ -162,7 +174,13 @@ export function UpdateNotification() {
           </div>
         </div>
         <button
-          onClick={() => setShowNotification(false)}
+          onClick={() => {
+            setShowNotification(false)
+            // Store dismissed version
+            if (serverVersion) {
+              localStorage.setItem('hera-dismissed-version', serverVersion)
+            }
+          }}
           className="ml-2 text-white hover:text-blue-100"
         >
           <X className="h-5 w-5" />
