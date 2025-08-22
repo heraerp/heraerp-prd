@@ -76,6 +76,15 @@ export default function SalonLayout({
       color: 'hover:bg-purple-100'
     },
     {
+      id: 'loyalty',
+      label: 'Loyalty',
+      icon: <Star className="w-5 h-5" />,
+      href: '/salon/loyalty',
+      badge: 'New',
+      badgeVariant: 'success' as const,
+      color: 'hover:bg-purple-100'
+    },
+    {
       id: 'reports',
       label: 'Reports',
       icon: <BarChart className="w-5 h-5" />,
