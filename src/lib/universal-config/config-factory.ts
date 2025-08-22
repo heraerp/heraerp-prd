@@ -153,19 +153,78 @@ export const CONFIG_TYPES = {
   }
 } as const
 
+// Cached Supabase client instance
+let supabaseInstance: ReturnType<typeof createClient> | null = null
+
+/**
+ * Get Supabase client with proper error handling
+ * Follows the same pattern as supabase-admin.ts
+ */
+function getSupabaseClient() {
+  // Return cached instance if available
+  if (supabaseInstance) {
+    return supabaseInstance
+  }
+  
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
+                      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ||
+                      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  
+  if (!supabaseUrl || !supabaseKey) {
+    // During build time, return a mock client
+    if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
+      console.warn('⚠️ Supabase environment variables not found - using mock client for build')
+      return {
+        from: () => ({
+          select: () => Promise.resolve({ data: [], error: null }),
+          insert: () => Promise.resolve({ data: [], error: null }),
+          update: () => Promise.resolve({ data: [], error: null }),
+          delete: () => Promise.resolve({ data: [], error: null }),
+          single: () => Promise.resolve({ data: null, error: null }),
+          eq: () => ({ 
+            select: () => Promise.resolve({ data: [], error: null }),
+            update: () => Promise.resolve({ data: [], error: null }),
+            delete: () => Promise.resolve({ data: [], error: null }),
+            single: () => Promise.resolve({ data: null, error: null })
+          }),
+          neq: () => ({
+            order: () => ({
+              select: () => Promise.resolve({ data: [], error: null })
+            })
+          }),
+          order: () => ({ 
+            select: () => Promise.resolve({ data: [], error: null })
+          }),
+          in: () => ({
+            select: () => Promise.resolve({ data: [], error: null })
+          }),
+          or: () => ({
+            limit: () => Promise.resolve({ data: [], error: null })
+          }),
+          limit: () => Promise.resolve({ data: [], error: null })
+        })
+      } as any
+    }
+    throw new Error('Missing Supabase environment variables')
+  }
+  
+  // Create and cache the client
+  supabaseInstance = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false
+    }
+  })
+  
+  return supabaseInstance
+}
+
 // Configuration Factory Class
 export class ConfigurationFactory {
   private supabase: any
   
   constructor() {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase configuration is required. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
-    }
-    
-    this.supabase = createClient(supabaseUrl, supabaseKey)
+    this.supabase = getSupabaseClient()
   }
 
   /**

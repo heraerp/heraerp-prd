@@ -3,10 +3,11 @@
  * Auto-generated using Universal Configuration Factory
  */
 
+import { ConfigurationFactory } from '@/lib/universal-config/config-factory'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
-import { createSafeRouteHandlers } from '@/lib/universal-config/safe-config-factory'
 
-const handlers = createSafeRouteHandlers(CONFIG_TYPES.PAYMENT_METHOD)
+const factory = new ConfigurationFactory()
+const handlers = factory.createRouteHandlers(CONFIG_TYPES.PAYMENT_METHOD)
 
 export const GET = handlers.GET
 export const POST = handlers.POST
