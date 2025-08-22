@@ -277,14 +277,76 @@ export default function SalonPOSPage() {
       return
     }
 
+    if (!organizationId) {
+      toast({
+        title: 'Error',
+        description: 'Organization not found',
+        variant: 'destructive'
+      })
+      return
+    }
+
     setProcessingPayment(true)
     
-    // Simulate payment processing
-    setTimeout(() => {
+    try {
+      // Calculate totals
+      const subtotal = calculateSubtotal()
+      const vatAmount = calculateVAT()
+      const totalAmount = calculateTotal()
+      
+      // Calculate discount amount
+      const discountAmount = cart.reduce((sum, item) => {
+        const itemTotal = item.price * item.quantity
+        const itemDiscount = item.discountType === 'percentage' 
+          ? itemTotal * (item.discount / 100)
+          : item.discount
+        return sum + itemDiscount
+      }, 0)
+
+      // Prepare cart items with calculated amounts
+      const itemsWithAmounts = cart.map(item => ({
+        ...item,
+        discountAmount: item.discountType === 'percentage' 
+          ? (item.price * item.quantity) * (item.discount / 100)
+          : item.discount,
+        vatAmount: (item.price * item.quantity - (item.discountType === 'percentage' 
+          ? (item.price * item.quantity) * (item.discount / 100)
+          : item.discount)) * VAT_RATE
+      }))
+
+      // Call POS API to create transaction
+      const response = await fetch('/api/v1/salon/pos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          organizationId,
+          customerId: selectedCustomer?.id || null,
+          items: itemsWithAmounts,
+          paymentSplits,
+          subtotal,
+          vatAmount,
+          totalAmount,
+          discountAmount
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to process payment')
+      }
+
+      const result = await response.json()
+      
       toast({
         title: 'Payment Successful',
-        description: 'Transaction completed successfully'
+        description: `Transaction #${result.transaction.transaction_code} completed`
       })
+      
+      // Print receipt with actual transaction data
+      if (result.receipt) {
+        printReceipt(result.receipt)
+      }
       
       // Reset
       setCart([])
@@ -292,17 +354,26 @@ export default function SalonPOSPage() {
       setPaymentSplits([])
       setShowPaymentDialog(false)
       setShowSplitPayment(false)
-      setProcessingPayment(false)
       
-      // Print receipt
-      printReceipt()
-    }, 2000)
+    } catch (error) {
+      console.error('Payment error:', error)
+      toast({
+        title: 'Payment Failed',
+        description: 'Failed to process payment. Please try again.',
+        variant: 'destructive'
+      })
+    } finally {
+      setProcessingPayment(false)
+    }
   }
 
   // Print receipt
-  const printReceipt = () => {
+  const printReceipt = (receiptData?: any) => {
     // In real implementation, this would send to printer
-    console.log('Printing receipt...')
+    console.log('Printing receipt...', receiptData)
+    
+    // Could also open a print dialog with the receipt component
+    // window.print() or use a receipt printer API
   }
 
   // Filter items based on search
