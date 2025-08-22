@@ -13,6 +13,9 @@ RUN npm ci --only=production
 # Copy server files
 COPY . .
 
+# Make start script executable
+RUN chmod +x start.sh
+
 # Create health check endpoint
 RUN echo '{"status":"healthy","service":"hera-mcp-server"}' > health.json
 
@@ -20,4 +23,4 @@ RUN echo '{"status":"healthy","service":"hera-mcp-server"}' > health.json
 EXPOSE 3000
 
 # Start the MCP server
-CMD ["node", "hera-mcp-server-api.js"]
+CMD ["./start.sh"]
