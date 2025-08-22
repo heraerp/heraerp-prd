@@ -1,16 +1,17 @@
 {
   "name": "@hera/mcp-server",
-  "version": "1.0.0",
-  "description": "HERA Universal MCP Server - Direct access to 6-table architecture",
+  "version": "2.0.0",
+  "description": "HERA Universal MCP Server with REST API - Direct access to 6-table architecture",
   "main": "hera-mcp-server.js",
   "bin": {
     "hera-mcp": "./hera-mcp-server.js"
   },
   "scripts": {
     "start": "node hera-mcp-server-v2.js",
+    "start:api": "node hera-mcp-server-api.js",
     "start:sacred": "node hera-mcp-server-sacred.js",
     "start:basic": "node hera-mcp-server.js",
-    "dev": "nodemon hera-mcp-server-v2.js",
+    "dev": "nodemon hera-mcp-server-api.js",
     "test": "node test-sacred-rules.js",
     "test:auth": "node test-authorization-tools.js",
     "test:police": "node test-build-police.js",
@@ -20,8 +21,11 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.3",
     "@supabase/supabase-js": "^2.39.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "openai": "^4.20.0",
     "zod": "^3.22.0"
   },
   "devDependencies": {
@@ -32,8 +36,13 @@
     "hera",
     "universal-architecture",
     "6-tables",
-    "erp"
+    "erp",
+    "openai",
+    "chatbot"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "author": "HERA Software Inc.",
   "license": "MIT"
 }
