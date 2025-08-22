@@ -66,7 +66,7 @@ export default function ClientDetailsPage() {
   const router = useRouter()
   const params = useParams()
   const clientId = params.id as string
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   
   const [client, setClient] = useState<ClientDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -145,7 +145,7 @@ export default function ClientDetailsPage() {
     }
   }
 
-  if (!isAuthenticated && !authLoading) {
+  if (!isAuthenticated && !contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert className="max-w-md">
@@ -159,7 +159,7 @@ export default function ClientDetailsPage() {
     )
   }
 
-  if (isLoading || authLoading) {
+  if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

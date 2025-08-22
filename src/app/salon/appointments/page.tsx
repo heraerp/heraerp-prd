@@ -100,7 +100,7 @@ const mockAppointments: Appointment[] = [
 
 export default function AppointmentsPage() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -200,7 +200,7 @@ export default function AppointmentsPage() {
   }
 
   // Authentication check
-  if (!isAuthenticated && !authLoading) {
+  if (!isAuthenticated && !contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert className="max-w-md">
@@ -213,7 +213,7 @@ export default function AppointmentsPage() {
   }
 
   // Loading state
-  if (isLoading || authLoading) {
+  if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

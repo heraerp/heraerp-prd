@@ -111,13 +111,13 @@ const upcomingAppointments = [
 
 export default function SalonDashboard() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
 
   // Use organization from context or default
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
   
   // Simple loading check
-  if (authLoading) {
+  if (contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

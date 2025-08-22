@@ -3,13 +3,24 @@ import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+// Only create client if we have the required environment variables
+const supabase = supabaseUrl && supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Supabase client is initialized
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not configured' },
+        { status: 500 }
+      )
+    }
+
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
@@ -58,6 +69,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Supabase client is initialized
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not configured' },
+        { status: 500 }
+      )
+    }
+
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
@@ -195,6 +214,11 @@ export async function POST(request: NextRequest) {
 // Check subdomain availability endpoint
 export async function HEAD(request: NextRequest) {
   try {
+    // Check if Supabase client is initialized
+    if (!supabase) {
+      return new NextResponse(null, { status: 500 })
+    }
+
     const { searchParams } = new URL(request.url)
     const subdomain = searchParams.get('subdomain')
 

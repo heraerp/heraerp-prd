@@ -43,7 +43,7 @@ const stylists = [
 
 export default function NewAppointmentPage() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   
@@ -59,7 +59,7 @@ export default function NewAppointmentPage() {
   })
 
   // Authentication check
-  if (!isAuthenticated && !authLoading) {
+  if (!isAuthenticated && !contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert className="max-w-md">
@@ -72,7 +72,7 @@ export default function NewAppointmentPage() {
   }
 
   // Loading state
-  if (authLoading) {
+  if (contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

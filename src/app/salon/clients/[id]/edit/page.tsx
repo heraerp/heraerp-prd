@@ -28,7 +28,7 @@ export default function EditClientPage() {
   const router = useRouter()
   const params = useParams()
   const clientId = params.id as string
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -158,7 +158,7 @@ export default function EditClientPage() {
     }
   }
 
-  if (!isAuthenticated && !authLoading) {
+  if (!isAuthenticated && !contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert className="max-w-md">
@@ -171,7 +171,7 @@ export default function EditClientPage() {
     )
   }
 
-  if (isLoading || authLoading) {
+  if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

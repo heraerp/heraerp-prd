@@ -183,7 +183,7 @@ ClientCard.displayName = 'ClientCard'
 
 export default function ClientsPage() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   
   // Enterprise state management
   const [clients, setClients] = useState<Client[]>([])
@@ -405,7 +405,7 @@ export default function ClientsPage() {
   }
 
   // Authentication check
-  if (!isAuthenticated && !authLoading) {
+  if (!isAuthenticated && !contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Alert className="max-w-md">
@@ -420,7 +420,7 @@ export default function ClientsPage() {
   }
 
   // Loading state
-  if (isLoading || authLoading) {
+  if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
