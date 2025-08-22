@@ -185,6 +185,10 @@ export default function ClientsPage() {
   const router = useRouter()
   const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   
+  // Default organization ID for development
+  const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
+  
   // Enterprise state management
   const [clients, setClients] = useState<Client[]>([])
   const [filteredClients, setFilteredClients] = useState<Client[]>([])
@@ -224,9 +228,8 @@ export default function ClientsPage() {
   const fetchClients = useCallback(async () => {
     try {
       setError(null)
-      const orgId = currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
       
-      const response = await fetch(`/api/v1/salon/clients?organization_id=${orgId}&status=${statusFilter}`)
+      const response = await fetch(`/api/v1/salon/clients?organization_id=${organizationId}&status=${statusFilter}`)
       const data = await response.json()
       
       if (!response.ok) {
@@ -244,13 +247,12 @@ export default function ClientsPage() {
       setIsLoading(false)
       setRefreshing(false)
     }
-  }, [currentOrganization, statusFilter])
+  }, [organizationId, statusFilter])
 
   // Fetch stylists
   const fetchStylists = useCallback(async () => {
     try {
-      const orgId = currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
-      const response = await fetch(`/api/v1/salon/staff?organization_id=${orgId}&role=stylist`)
+      const response = await fetch(`/api/v1/salon/staff?organization_id=${organizationId}&role=stylist`)
       const data = await response.json()
       
       if (data.success && data.staff) {
@@ -260,7 +262,7 @@ export default function ClientsPage() {
       console.error('Error fetching stylists:', error)
       // Don't show error to user, just use empty list
     }
-  }, [currentOrganization])
+  }, [organizationId])
 
   // Calculate statistics
   const calculateStats = useCallback((clientList: Client[]) => {
@@ -300,11 +302,11 @@ export default function ClientsPage() {
 
   // Initial data load
   useEffect(() => {
-    if (currentOrganization || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
+    if (organizationId && !contextLoading) {
       fetchClients()
       fetchStylists()
     }
-  }, [fetchClients, fetchStylists])
+  }, [organizationId, contextLoading, fetchClients, fetchStylists])
 
   // Form validation
   const validateForm = (): boolean => {
@@ -336,14 +338,12 @@ export default function ClientsPage() {
     
     setIsSubmitting(true)
     try {
-      const orgId = currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
-      
       const response = await fetch('/api/v1/salon/clients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          organizationId: orgId
+          organizationId
         })
       })
       
@@ -405,7 +405,7 @@ export default function ClientsPage() {
   }
 
   // Loading state only - no auth check for testing
-  if (isLoading || contextLoading) {
+  if (contextLoading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
