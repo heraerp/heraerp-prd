@@ -5,4 +5,4 @@ nixPkgs = ["nodejs-20_x"]
 cmds = ["npm ci --only=production || npm install --only=production"]
 
 [start]
-cmd = "npm start"
+cmd = "node hera-mcp-server-api.js"
