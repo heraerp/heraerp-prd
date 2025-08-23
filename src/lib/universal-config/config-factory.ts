@@ -325,6 +325,13 @@ export class ConfigurationFactory {
 
 
         // Create main entity
+        // Log the request for debugging
+        console.log(`Creating ${config.entityType} entity:`, {
+          organization_id,
+          entity_type: config.entityType,
+          name
+        })
+
         const entityCode = code || this.generateCode(name)
         const smartCode = `${config.smartCodePrefix}.${entityCode}.v1`
 
@@ -345,7 +352,10 @@ export class ConfigurationFactory {
           .select()
           .single()
 
-        if (entityError) throw entityError
+        if (entityError) {
+          console.error(`Entity creation error:`, entityError)
+          throw entityError
+        }
 
         // Create dynamic fields
         const dynamicInserts = Object.entries(dynamicFields).map(([key, value]) => ({

@@ -79,7 +79,8 @@ export function UniversalConfigManager({
   analyticsConfig
 }: UniversalConfigManagerProps) {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
-  const organizationId = currentOrganization?.id
+  const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
   
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -156,16 +157,24 @@ export function UniversalConfigManager({
       
       const method = selectedItem ? 'PUT' : 'POST'
       
+      const payload = {
+        organization_id: organizationId,
+        ...formData
+      }
+      
+      console.log(`Creating ${config.displayName} with payload:`, payload)
+      
       const response = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          organization_id: organizationId,
-          ...formData
-        })
+        body: JSON.stringify(payload)
       })
 
-      if (!response.ok) throw new Error(`Failed to ${selectedItem ? 'update' : 'create'} ${config.displayName}`)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error(`API Error:`, errorData)
+        throw new Error(errorData.error || `Failed to ${selectedItem ? 'update' : 'create'} ${config.displayName}`)
+      }
 
       toast({
         title: 'Success',
