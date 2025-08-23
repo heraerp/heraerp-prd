@@ -7,7 +7,7 @@
     "hera-mcp": "./hera-mcp-server.js"
   },
   "scripts": {
-    "build": "echo 'No build required for Node.js server' && npm ci --only=production",
+    "build": "echo 'No build required for Node.js server'",
     "start": "node hera-mcp-server-api.js",
     "start:mcp": "node hera-mcp-server-v2.js",
     "start:sacred": "node hera-mcp-server-sacred.js",
