@@ -13,7 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
 import { 
   Users,
   Search,
@@ -425,12 +424,9 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white flex">
-      <SalonProductionSidebar />
-      <div className="flex-1 ml-16">
-        <div className="p-6 max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
+    <div className="p-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
             <Button 
               variant="ghost" 
               size="sm" 
@@ -788,7 +784,6 @@ export default function ClientsPage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   )
 }
