@@ -363,6 +363,7 @@ export class ConfigurationFactory {
           entity_id: entity.id,
           field_name: key,
           ...this.getFieldValueColumn(value),
+          smart_code: `${config.smartCodePrefix}.FIELD.${key.toUpperCase()}.v1`,
           created_at: new Date().toISOString()
         }))
 
@@ -454,6 +455,7 @@ export class ConfigurationFactory {
                 entity_id: id,
                 field_name: key,
                 ...this.getFieldValueColumn(value),
+                smart_code: `${config.smartCodePrefix}.FIELD.${key.toUpperCase()}.v1`,
                 created_at: new Date().toISOString()
               })
 
