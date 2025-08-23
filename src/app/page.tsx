@@ -33,9 +33,6 @@ export default function HomePage() {
               <Link href="/dashboard-progressive" className="text-gray-600 hover:text-black transition-colors">
                 Explore Apps
               </Link>
-              <Link href="/custom-request" className="text-gray-600 hover:text-black transition-colors">
-                Prototype
-              </Link>
               <Button asChild className="bg-black hover:bg-gray-800 text-white hover:text-white rounded-full px-6">
                 <Link href="/get-started">
                   Get Started

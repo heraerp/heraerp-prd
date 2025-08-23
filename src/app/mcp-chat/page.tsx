@@ -198,7 +198,7 @@ export default function MCPChatPage() {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-sm">Response Time</span>
-                <Badge variant="outline">< 200ms</Badge>
+                <Badge variant="outline">&lt; 200ms</Badge>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-primary w-[85%]" />
