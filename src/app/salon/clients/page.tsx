@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -71,8 +71,8 @@ interface ClientStats {
   averageLifetimeValue: number
 }
 
-// Enterprise performance optimization with memoization
-const ClientCard = React.memo(({ 
+// Client card component
+const ClientCard = ({ 
   client, 
   onEdit, 
   onViewDetails 
@@ -177,9 +177,7 @@ const ClientCard = React.memo(({
       </CardContent>
     </Card>
   )
-})
-
-ClientCard.displayName = 'ClientCard'
+}
 
 export default function ClientsPage() {
   const router = useRouter()
@@ -319,7 +317,7 @@ export default function ClientsPage() {
       fetchClients()
       fetchStylists()
     }
-  }, [organizationId, contextLoading, fetchClients, fetchStylists])
+  }, [organizationId, contextLoading])
 
   // Form validation
   const validateForm = (): boolean => {
