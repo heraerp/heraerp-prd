@@ -254,24 +254,20 @@ export default function ClientsPage() {
       
       if (response.ok) {
         const data = await response.json()
-        if (data.success && data.staff) {
+        if (data.success && data.staff && data.staff.length > 0) {
           setStylists(data.staff.map((s: any) => ({ id: s.id, name: s.name })))
         } else {
-          // Use default stylists if no data
-          throw new Error('No staff data')
+          // No stylists found - this is okay, salon might not have added staff yet
+          setStylists([])
         }
       } else {
-        throw new Error('Staff API not available')
+        // Staff API might not be implemented yet, that's okay
+        setStylists([])
       }
     } catch (error) {
-      console.error('Error fetching stylists:', error)
-      // Set default stylists for now
-      setStylists([
-        { id: '1', name: 'Emma Johnson' },
-        { id: '2', name: 'Lisa Chen' },
-        { id: '3', name: 'Nina Patel' },
-        { id: '4', name: 'Sarah Williams' }
-      ])
+      // Staff API not available - salon needs to add staff
+      console.log('Staff API not available - stylists will need to be added')
+      setStylists([])
     }
   }, [organizationId])
 
@@ -317,7 +313,7 @@ export default function ClientsPage() {
       fetchClients()
       fetchStylists()
     }
-  }, [organizationId, contextLoading])
+  }, [organizationId, contextLoading, fetchClients, fetchStylists])
 
   // Form validation
   const validateForm = (): boolean => {
@@ -354,6 +350,7 @@ export default function ClientsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          preferredStylist: formData.preferredStylist === 'none' ? '' : formData.preferredStylist,
           organizationId
         })
       })
@@ -550,7 +547,7 @@ export default function ClientsPage() {
                               <SelectValue placeholder="Select stylist" />
                             </SelectTrigger>
                             <SelectContent className="hera-select-content">
-                              <SelectItem value="">No preference</SelectItem>
+                              <SelectItem value="none">No preference</SelectItem>
                               {stylists.length > 0 ? (
                                 stylists.map((stylist) => (
                                   <SelectItem key={stylist.id} value={stylist.name}>
@@ -558,7 +555,7 @@ export default function ClientsPage() {
                                   </SelectItem>
                                 ))
                               ) : (
-                                <SelectItem value="" disabled>No stylists available</SelectItem>
+                                <SelectItem value="no-stylists" disabled>No stylists added yet</SelectItem>
                               )}
                             </SelectContent>
                           </Select>
