@@ -237,6 +237,17 @@ async function interpretCommand(message, context) {
 function simpleInterpretation(message) {
   const lowerMessage = message.toLowerCase();
   
+  // Summary patterns - check FIRST before other patterns
+  if ((lowerMessage.includes('summary') || lowerMessage.includes('report')) && 
+      (lowerMessage.includes('today') || lowerMessage.includes('daily') || lowerMessage.includes('sales'))) {
+    return {
+      action: 'execute',
+      type: 'daily_summary',
+      parameters: {},
+      confidence: 0.9
+    };
+  }
+  
   // Create patterns
   if (lowerMessage.includes('create') || lowerMessage.includes('add') || lowerMessage.includes('new')) {
     if (lowerMessage.includes('customer') || lowerMessage.includes('client')) {
@@ -252,6 +263,22 @@ function simpleInterpretation(message) {
         action: 'create',
         type: 'appointment',
         parameters: extractAppointmentDetails(message),
+        confidence: 0.7
+      };
+    }
+    if (lowerMessage.includes('sale') || lowerMessage.includes('transaction') || lowerMessage.includes('order')) {
+      return {
+        action: 'create',
+        type: 'sale',
+        parameters: { amount: extractAmount(message) },
+        confidence: 0.8
+      };
+    }
+    if (lowerMessage.includes('product') || lowerMessage.includes('item')) {
+      return {
+        action: 'create',
+        type: 'product',
+        parameters: { name: extractName(message) },
         confidence: 0.7
       };
     }
@@ -312,6 +339,22 @@ function extractAppointmentDetails(message) {
   };
 }
 
+function extractAmount(message) {
+  // Extract numeric amount from message
+  const patterns = [
+    /\$(\d+(?:\.\d+)?)/,           // $150 or $150.50
+    /(\d+(?:\.\d+)?)\s*dollars?/i, // 150 dollars
+    /for\s+(\d+(?:\.\d+)?)/i,      // for 150
+  ];
+  
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match) return parseFloat(match[1]);
+  }
+  
+  return 100; // Default amount
+}
+
 /**
  * Execute interpreted command
  */
@@ -330,6 +373,12 @@ async function executeCommand(interpretation, organizationId) {
     
     case 'analyze':
       return await handleAnalyze(type, organizationId, parameters);
+    
+    case 'execute':
+      if (type === 'daily_summary') {
+        return await getDailySummary(organizationId);
+      }
+      return await executeOperation(type, organizationId, parameters);
     
     default:
       throw new Error(`Unknown action: ${action}`);
@@ -480,8 +529,25 @@ function generateTemplateResponse(interpretation, result) {
     return `Found ${result.length} ${type}${result.length === 1 ? '' : 's'}:\n\n${result.slice(0, 5).map(r => `• ${r.entity_name || r.name || r.id}`).join('\n')}${result.length > 5 ? `\n... and ${result.length - 5} more` : ''}`;
   }
   
+  if (action === 'execute' && type === 'daily_summary') {
+    if (!result || result.totalTransactions === 0) {
+      return `📊 Today's Sales Summary\n\nNo sales recorded today.\n\nWould you like to create a test sale?`;
+    }
+    let response = `📊 Today's Sales Summary\n\n`;
+    response += `Total Transactions: ${result.totalTransactions}\n`;
+    response += `Total Revenue: $${result.totalRevenue.toFixed(2)}\n\n`;
+    
+    if (result.byType && Object.keys(result.byType).length > 0) {
+      response += `By Transaction Type:\n`;
+      Object.entries(result.byType).forEach(([type, data]) => {
+        response += `• ${type}: ${data.count} transactions, $${data.amount.toFixed(2)}\n`;
+      });
+    }
+    return response;
+  }
+  
   if (action === 'unknown') {
-    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"`;
+    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"\n• "Show today's sales summary"`;
   }
   
   return `Operation completed successfully.`;
