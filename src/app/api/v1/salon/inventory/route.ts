@@ -116,16 +116,16 @@ export async function POST(request: NextRequest) {
         
         // Add dynamic fields
         const dynamicFields = [
-          { field_name: 'category', field_value_text: item.category },
-          { field_name: 'brand', field_value_text: item.brand },
-          { field_name: 'sku', field_value_text: item.sku },
-          { field_name: 'current_stock', field_value_number: item.currentStock },
-          { field_name: 'min_stock', field_value_number: item.minStock },
-          { field_name: 'max_stock', field_value_number: item.maxStock },
-          { field_name: 'unit_cost', field_value_number: item.unitCost },
-          { field_name: 'selling_price', field_value_number: item.sellingPrice },
-          { field_name: 'supplier', field_value_text: item.supplier },
-          { field_name: 'location', field_value_text: item.location }
+          { field_name: 'category', field_value_text: item.category, smart_code: 'HERA.SALON.INV.FIELD.CATEGORY.v1' },
+          { field_name: 'brand', field_value_text: item.brand, smart_code: 'HERA.SALON.INV.FIELD.BRAND.v1' },
+          { field_name: 'sku', field_value_text: item.sku, smart_code: 'HERA.SALON.INV.FIELD.SKU.v1' },
+          { field_name: 'current_stock', field_value_number: item.currentStock, smart_code: 'HERA.SALON.INV.FIELD.CURRENT_STOCK.v1' },
+          { field_name: 'min_stock', field_value_number: item.minStock, smart_code: 'HERA.SALON.INV.FIELD.MIN_STOCK.v1' },
+          { field_name: 'max_stock', field_value_number: item.maxStock, smart_code: 'HERA.SALON.INV.FIELD.MAX_STOCK.v1' },
+          { field_name: 'unit_cost', field_value_number: item.unitCost, smart_code: 'HERA.SALON.INV.FIELD.UNIT_COST.v1' },
+          { field_name: 'selling_price', field_value_number: item.sellingPrice, smart_code: 'HERA.SALON.INV.FIELD.SELLING_PRICE.v1' },
+          { field_name: 'supplier', field_value_text: item.supplier, smart_code: 'HERA.SALON.INV.FIELD.SUPPLIER.v1' },
+          { field_name: 'location', field_value_text: item.location, smart_code: 'HERA.SALON.INV.FIELD.LOCATION.v1' }
         ]
         
         for (const field of dynamicFields) {
@@ -170,7 +170,8 @@ export async function POST(request: NextRequest) {
               organization_id: SALON_ORG_ID,
               entity_id: itemId,
               field_name: fieldName,
-              ...(typeof value === 'number' ? { field_value_number: value } : { field_value_text: value })
+              ...(typeof value === 'number' ? { field_value_number: value } : { field_value_text: value }),
+              smart_code: `HERA.SALON.INV.FIELD.${fieldName.toUpperCase()}.v1`
             })
         }
         

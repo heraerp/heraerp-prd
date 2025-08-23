@@ -157,6 +157,7 @@ export async function POST(request: NextRequest) {
             typeof value === 'number' ? { field_value_number: value } :
             typeof value === 'boolean' ? { field_value_boolean: value } :
             { field_value_json: value }),
+        smart_code: `HERA.SALON.STAFF.FIELD.${key.toUpperCase()}.v1`,
         created_at: new Date().toISOString()
       }))
 
@@ -243,6 +244,7 @@ export async function PUT(request: NextRequest) {
             organization_id: entity.organization_id,
             entity_id: id,
             field_name: key,
+            smart_code: `HERA.SALON.STAFF.FIELD.${key.toUpperCase()}.v1`,
             created_at: new Date().toISOString()
           }
           
