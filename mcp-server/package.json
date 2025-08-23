@@ -20,6 +20,7 @@
     "test:all": "npm run test && npm run test:auth && npm run test:police && npm run test:verification"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
     "@modelcontextprotocol/sdk": "^1.17.3",
     "@supabase/supabase-js": "^2.39.0",
     "cors": "^2.8.5",

@@ -9,6 +9,7 @@ const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const OpenAI = require('openai');
+const Anthropic = require('@anthropic-ai/sdk');
 
 // Initialize services
 const app = express();
@@ -26,7 +27,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-// OpenAI client - optional
+// Claude client - primary AI option
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
+}) : null;
+
+// OpenAI client - fallback option
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 }) : null;
@@ -197,10 +203,7 @@ app.post('/api/execute', async (req, res) => {
  * Interpret natural language command using OpenAI
  */
 async function interpretCommand(message, context) {
-  // If no OpenAI, use simple pattern matching
-  if (!openai) {
-    return simpleInterpretation(message);
-  }
+  // Try Claude first, then OpenAI, then pattern matching
   
   const systemPrompt = `You are an AI assistant for HERA ERP system. 
   HERA uses a universal 6-table architecture where everything is stored as:
@@ -213,22 +216,50 @@ async function interpretCommand(message, context) {
   
   Return JSON with:
   {
-    "action": "create" | "query" | "update" | "analyze",
+    "action": "create" | "query" | "update" | "analyze" | "execute",
     "type": "entity type or transaction type",
     "parameters": { relevant parameters },
     "confidence": 0-1
   }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: message }
-    ],
-    response_format: { type: "json_object" }
-  });
+  // Try Claude first
+  if (anthropic) {
+    try {
+      const completion = await anthropic.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 200,
+        system: systemPrompt,
+        messages: [
+          { role: "user", content: message }
+        ]
+      });
 
-  return JSON.parse(completion.choices[0].message.content);
+      const response = completion.content[0].text;
+      return JSON.parse(response);
+    } catch (error) {
+      console.log('Claude interpretation failed, trying OpenAI:', error.message);
+    }
+  }
+
+  // Try OpenAI as fallback
+  if (openai) {
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: systemPrompt + "\n\nIMPORTANT: Always respond with valid JSON only, no other text." },
+          { role: "user", content: message }
+        ]
+      });
+
+      return JSON.parse(completion.choices[0].message.content);
+    } catch (error) {
+      console.log('OpenAI interpretation failed, falling back to pattern matching:', error.message);
+    }
+  }
+
+  // Fall back to pattern matching
+  return simpleInterpretation(message);
 }
 
 /**
@@ -490,26 +521,49 @@ function detectIndustry(type) {
  * Generate natural language response
  */
 async function generateResponse(interpretation, result) {
-  // If no OpenAI, use template responses
-  if (!openai) {
-    return generateTemplateResponse(interpretation, result);
-  }
-  
   const prompt = `Given this action and result, generate a friendly response:
   Action: ${JSON.stringify(interpretation)}
   Result: ${JSON.stringify(result)}
   
   Generate a natural, helpful response for the user.`;
+
+  // Try Claude first
+  if (anthropic) {
+    try {
+      const completion = await anthropic.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 300,
+        system: "You are a helpful HERA ERP assistant. Provide clear, friendly responses.",
+        messages: [
+          { role: "user", content: prompt }
+        ]
+      });
+
+      return completion.content[0].text;
+    } catch (error) {
+      console.log('Claude response generation failed, trying OpenAI:', error.message);
+    }
+  }
+
+  // Try OpenAI as fallback
+  if (openai) {
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "You are a helpful HERA ERP assistant." },
+          { role: "user", content: prompt }
+        ]
+      });
+      
+      return completion.choices[0].message.content;
+    } catch (error) {
+      console.log('OpenAI response generation failed, using templates:', error.message);
+    }
+  }
   
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [
-      { role: "system", content: "You are a helpful HERA ERP assistant." },
-      { role: "user", content: prompt }
-    ]
-  });
-  
-  return completion.choices[0].message.content;
+  // Fall back to template responses
+  return generateTemplateResponse(interpretation, result);
 }
 
 /**
@@ -546,11 +600,56 @@ function generateTemplateResponse(interpretation, result) {
     return response;
   }
   
+  if (action === 'analyze' && result) {
+    // Handle analysis results similar to daily summary
+    if (result.totalTransactions !== undefined) {
+      if (result.totalTransactions === 0) {
+        return `📊 Analysis Results\n\nNo transactions found for the requested period.\n\nWould you like to create some test data?`;
+      }
+      let response = `📊 Analysis Results\n\n`;
+      response += `Total Transactions: ${result.totalTransactions}\n`;
+      response += `Total Revenue: $${result.totalRevenue.toFixed(2)}\n`;
+      
+      if (result.totalTransactions > 0) {
+        response += `Average Order Value: $${(result.totalRevenue / result.totalTransactions).toFixed(2)}\n\n`;
+      }
+      
+      if (result.byType && Object.keys(result.byType).length > 0) {
+        response += `By Transaction Type:\n`;
+        Object.entries(result.byType).forEach(([type, data]) => {
+          response += `• ${type}: ${data.count} transactions, $${data.amount.toFixed(2)}\n`;
+        });
+      }
+      return response;
+    }
+  }
+  
   if (action === 'unknown') {
-    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"\n• "Show today's sales summary"`;
+    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"\n• "Show today's sales summary"\n• "Analyze restaurant performance"`;
   }
   
   return `Operation completed successfully.`;
+}
+
+/**
+ * Handle analysis requests
+ */
+async function handleAnalyze(type, organizationId, params) {
+  // For now, redirect to daily summary for restaurant performance
+  if (type === 'restaurant_performance' || type === 'orders' || type === 'sales') {
+    return await getDailySummary(organizationId);
+  }
+  
+  // Default to query
+  return await handleQuery(type, organizationId, params);
+}
+
+/**
+ * Handle update requests
+ */
+async function handleUpdate(type, organizationId, params) {
+  // TODO: Implement update logic
+  return { message: 'Update functionality coming soon' };
 }
 
 /**
