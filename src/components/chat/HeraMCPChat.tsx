@@ -69,7 +69,7 @@ export function HeraMCPChat({
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedOrgId, setSelectedOrgId] = useState(currentOrganization?.id || '')
+  const [selectedOrgId, setSelectedOrgId] = useState(currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '')
   const [showRawResponse, setShowRawResponse] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -105,12 +105,15 @@ export function HeraMCPChat({
     e?.preventDefault()
     if (!input.trim() || isLoading) return
 
+    // Use a fallback organization ID if none is selected
+    const orgId = selectedOrgId || '3df8cc52-3d81-42d5-b088-7736ae26cc7c' // Mario's Restaurant
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input.trim(),
       timestamp: new Date(),
-      metadata: { organizationId: selectedOrgId }
+      metadata: { organizationId: orgId }
     }
 
     setMessages(prev => [...prev, userMessage])
@@ -125,7 +128,7 @@ export function HeraMCPChat({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage.content,
-          organizationId: selectedOrgId,
+          organizationId: orgId,
           context: { mode }
         })
       })
@@ -293,17 +296,23 @@ export function HeraMCPChat({
           </div>
 
           <div className="flex items-center gap-2">
-            {organizations.length > 1 && (
+            {(organizations.length > 0 || mode === 'internal') && (
               <Select value={selectedOrgId} onValueChange={setSelectedOrgId}>
                 <SelectTrigger className="w-[200px] h-8">
                   <SelectValue placeholder="Select organization" />
                 </SelectTrigger>
                 <SelectContent>
-                  {organizations.map(org => (
-                    <SelectItem key={org.id} value={org.id}>
-                      {org.organization_name}
+                  {organizations.length > 0 ? (
+                    organizations.map(org => (
+                      <SelectItem key={org.id} value={org.id}>
+                        {org.organization_name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="3df8cc52-3d81-42d5-b088-7736ae26cc7c">
+                      Mario's Restaurant (Default)
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
             )}
