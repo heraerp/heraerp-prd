@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERA MCP Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .response {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 HERA MCP Integration Test</h1>
+        <p>Testing connection to MCP server deployed on Railway</p>
+        
+        <div id="connectionStatus" class="status pending">
+            Checking connection...
+        </div>
+
+        <div class="test-section">
+            <h2>1. Health Check</h2>
+            <button onclick="testHealth()">Test Health Endpoint</button>
+            <div id="healthResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Chat API Test</h2>
+            <p>Organization ID: <input type="text" id="orgId" value="3df8cc52-3d81-42d5-b088-7736ae26cc7c" /></p>
+            <p>Message: <textarea id="message" rows="3" placeholder="Enter a command like 'Show me all customers' or 'Create a test product'">Show me system statistics</textarea></p>
+            <button onclick="testChat()">Send Message</button>
+            <div id="chatResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. UAT Scenarios</h2>
+            <button onclick="testPOS()">Test POS Sale</button>
+            <button onclick="testInventory()">Test Inventory Query</button>
+            <button onclick="testAppointment()">Test Appointment Booking</button>
+            <div id="uatResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Results Summary</h2>
+            <div id="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_URL = 'https://alluring-expression-production.up.railway.app';
+        const LOCAL_API = 'http://localhost:3001';
+        
+        // Use production API
+        const activeApi = API_URL;
+        
+        // Test connection on load
+        window.onload = async () => {
+            const status = document.getElementById('connectionStatus');
+            try {
+                const response = await fetch(`${activeApi}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Connected to ${data.service} v${data.version} at ${activeApi}`;
+                } else {
+                    throw new Error('Unhealthy status');
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Failed to connect to ${activeApi}: ${error.message}`;
+            }
+        };
+
+        async function testHealth() {
+            const responseDiv = document.getElementById('healthResponse');
+            responseDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${activeApi}/health`);
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function testChat() {
+            const responseDiv = document.getElementById('chatResponse');
+            const orgId = document.getElementById('orgId').value;
+            const message = document.getElementById('message').value;
+            
+            responseDiv.innerHTML = 'Sending message...';
+            
+            try {
+                const response = await fetch(`${activeApi}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        organizationId: orgId,
+                        context: { mode: 'customer' }
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                
+                updateSummary('Chat API', response.ok);
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                updateSummary('Chat API', false);
+            }
+        }
+
+        async function testPOS() {
+            const responseDiv = document.getElementById('uatResponse');
+            const orgId = document.getElementById('orgId').value;
+            
+            responseDiv.innerHTML = 'Testing POS sale...';
+            
+            try {
+                const response = await fetch(`${activeApi}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Process a POS sale for $50.00 cash payment",
+                        organizationId: orgId,
+                        context: { mode: 'uat', scenario: 'pos' }
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                
+                updateSummary('POS Test', response.ok);
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                updateSummary('POS Test', false);
+            }
+        }
+
+        async function testInventory() {
+            const responseDiv = document.getElementById('uatResponse');
+            const orgId = document.getElementById('orgId').value;
+            
+            responseDiv.innerHTML = 'Testing inventory query...';
+            
+            try {
+                const response = await fetch(`${activeApi}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Show current inventory levels",
+                        organizationId: orgId,
+                        context: { mode: 'uat', scenario: 'inventory' }
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                
+                updateSummary('Inventory Test', response.ok);
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                updateSummary('Inventory Test', false);
+            }
+        }
+
+        async function testAppointment() {
+            const responseDiv = document.getElementById('uatResponse');
+            const orgId = document.getElementById('orgId').value;
+            
+            responseDiv.innerHTML = 'Testing appointment booking...';
+            
+            try {
+                const response = await fetch(`${activeApi}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Book an appointment for tomorrow at 2 PM",
+                        organizationId: orgId,
+                        context: { mode: 'uat', scenario: 'appointment' }
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                
+                updateSummary('Appointment Test', response.ok);
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                updateSummary('Appointment Test', false);
+            }
+        }
+
+        const testResults = {};
+        
+        function updateSummary(testName, success) {
+            testResults[testName] = success;
+            
+            const summaryDiv = document.getElementById('summary');
+            let html = '<h3>Test Results:</h3><ul>';
+            
+            for (const [test, result] of Object.entries(testResults)) {
+                html += `<li>${result ? '✅' : '❌'} ${test}</li>`;
+            }
+            
+            html += '</ul>';
+            summaryDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
