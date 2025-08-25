@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Plus, Package, TrendingUp, TrendingDown, RefreshCw, Search, Edit } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/components/ui/use-toast'
+import { useToast, ToastProvider } from '@/components/ui/use-toast'
 import { universalApi } from '@/lib/universal-api'
 import { StockMovementModal } from '@/components/salon/inventory/StockMovementModal'
 import { Badge } from '@/components/ui/badge'
@@ -28,7 +28,7 @@ import {
 // Default organization ID for development
 const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
 
-export default function StockMovementsPage() {
+function StockMovementsPageContent() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
   const { toast } = useToast()
@@ -318,5 +318,13 @@ export default function StockMovementsPage() {
         movement={selectedMovement}
       />
     </div>
+  )
+}
+
+export default function StockMovementsPage() {
+  return (
+    <ToastProvider>
+      <StockMovementsPageContent />
+    </ToastProvider>
   )
 }
