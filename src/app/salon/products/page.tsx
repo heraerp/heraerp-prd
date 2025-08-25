@@ -7,12 +7,13 @@
 
 import React from 'react'
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { Badge } from '@/components/ui/badge'
 import { Package, AlertTriangle, TrendingUp } from 'lucide-react'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const unitOptions = [
     { value: 'PCS', label: 'Pieces' },
     { value: 'ML', label: 'Milliliters' },
@@ -351,5 +352,13 @@ export default function ProductsPage() {
         }}
       />
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <ToastProvider>
+      <ProductsPageContent />
+    </ToastProvider>
   )
 }

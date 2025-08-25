@@ -6,11 +6,12 @@
 'use client'
 
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Package, Thermometer, Lock } from 'lucide-react'
 
-export default function StockLocationsPage() {
+function StockLocationsPageContent() {
   const locationTypes = [
     { value: 'STORAGE', label: 'Storage Room' },
     { value: 'DISPLAY', label: 'Display Area' },
@@ -174,5 +175,12 @@ export default function StockLocationsPage() {
         }}
       />
     </div>
+  )
+}
+export default function StockLocationsPage() {
+  return (
+    <ToastProvider>
+      <StockLocationsPageContent />
+    </ToastProvider>
   )
 }

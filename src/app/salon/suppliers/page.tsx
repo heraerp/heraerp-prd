@@ -6,12 +6,13 @@
 'use client'
 
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { Badge } from '@/components/ui/badge'
 import { Phone, Mail, Calendar, Package } from 'lucide-react'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
 
-export default function SuppliersPage() {
+function SuppliersPageContent() {
   const paymentTerms = [
     { value: 'COD', label: 'Cash on Delivery' },
     { value: 'NET7', label: 'Net 7 Days' },
@@ -238,5 +239,12 @@ export default function SuppliersPage() {
         }}
       />
     </div>
+  )
+}
+export default function SuppliersPage() {
+  return (
+    <ToastProvider>
+      <SuppliersPageContent />
+    </ToastProvider>
   )
 }

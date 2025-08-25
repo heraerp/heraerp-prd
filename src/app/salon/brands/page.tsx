@@ -6,11 +6,12 @@
 'use client'
 
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { Badge } from '@/components/ui/badge'
 import { Globe, Star, Package } from 'lucide-react'
 
-export default function BrandsPage() {
+function BrandsPageContent() {
   return (
     <div className="container mx-auto p-6">
       <UniversalConfigManager
@@ -178,5 +179,12 @@ export default function BrandsPage() {
         }}
       />
     </div>
+  )
+}
+export default function BrandsPage() {
+  return (
+    <ToastProvider>
+      <BrandsPageContent />
+    </ToastProvider>
   )
 }

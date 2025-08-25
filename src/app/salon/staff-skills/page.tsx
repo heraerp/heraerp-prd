@@ -6,9 +6,10 @@
 'use client'
 
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 
-export default function StaffSkillsPage() {
+function StaffSkillsPageContent() {
   const proficiencyLevels = [
     { value: 'beginner', label: 'Beginner - Learning basics' },
     { value: 'intermediate', label: 'Intermediate - Can perform with supervision' },
@@ -151,5 +152,12 @@ export default function StaffSkillsPage() {
         }}
       />
     </div>
+  )
+}
+export default function StaffSkillsPage() {
+  return (
+    <ToastProvider>
+      <StaffSkillsPageContent />
+    </ToastProvider>
   )
 }

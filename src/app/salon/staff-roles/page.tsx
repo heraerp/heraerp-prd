@@ -7,12 +7,13 @@
 'use client'
 
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Shield, Users, DollarSign } from 'lucide-react'
 
-export default function StaffRolesPage() {
+function StaffRolesPageContent() {
   const router = useRouter()
 
   // Define salon-specific permissions organized by category
@@ -227,5 +228,12 @@ export default function StaffRolesPage() {
         }}
       />
     </div>
+  )
+}
+export default function StaffRolesPage() {
+  return (
+    <ToastProvider>
+      <StaffRolesPageContent />
+    </ToastProvider>
   )
 }
