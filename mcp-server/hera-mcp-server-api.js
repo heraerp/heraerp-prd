@@ -51,6 +51,31 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Debug endpoint to check environment
+app.get('/debug', (req, res) => {
+  const debug = {
+    environment: {
+      NODE_ENV: process.env.NODE_ENV || 'not set',
+      RAILWAY_ENVIRONMENT: process.env.RAILWAY_ENVIRONMENT || 'not set',
+      PORT: process.env.PORT || 'not set'
+    },
+    apiKeys: {
+      OPENAI_KEY: process.env.OPENAI_API_KEY ? 'SET (' + process.env.OPENAI_API_KEY.substring(0, 10) + '...)' : 'NOT SET',
+      ANTHROPIC_KEY: process.env.ANTHROPIC_API_KEY ? 'SET (' + process.env.ANTHROPIC_API_KEY.substring(0, 10) + '...)' : 'NOT SET',
+      SUPABASE_URL: process.env.SUPABASE_URL || 'NOT SET',
+      SUPABASE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET'
+    },
+    clients: {
+      openai: openai ? 'initialized' : 'not initialized',
+      anthropic: anthropic ? 'initialized' : 'not initialized',
+      supabase: supabase ? 'initialized' : 'not initialized'
+    },
+    organizationId: process.env.DEFAULT_ORGANIZATION_ID || 'NOT SET'
+  };
+  
+  res.json(debug);
+});
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
