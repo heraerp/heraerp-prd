@@ -11,11 +11,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
-import { UniversalApiClient } from '@/lib/api/client'
+import { UniversalApiClient } from '@/lib/universal-api'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 const universalApi = new UniversalApiClient()
 
 export default function SalonInventoryPage() {
+  const { currentOrganization } = useMultiOrgAuth()
   const searchParams = useSearchParams()
   const action = searchParams.get('action')
   const [showAddModal, setShowAddModal] = useState(false)
@@ -51,14 +53,17 @@ export default function SalonInventoryPage() {
   // Load products on mount and refresh
   useEffect(() => {
     loadProducts()
-  }, [refreshTrigger])
+  }, [refreshTrigger, currentOrganization])
 
   const loadProducts = async () => {
+    if (!currentOrganization) return
+    
     try {
-      const response = await fetch('/api/v1/salon/products')
+      const response = await fetch(`/api/v1/salon/products?organization_id=${currentOrganization.id}`)
       if (response.ok) {
         const data = await response.json()
-        setProducts(data.data || [])
+        // Config factory returns data as { products: [...], analytics: {...} }
+        setProducts(data.products || [])
       }
     } catch (error) {
       console.error('Error loading products:', error)
@@ -70,10 +75,11 @@ export default function SalonInventoryPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/v1/salon/products', {
+      const response = await fetch(`/api/v1/salon/products?organization_id=${currentOrganization?.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          organization_id: currentOrganization?.id,
           entity_name: formData.name,
           entity_type: 'product',
           smart_code: 'HERA.SALON.PRODUCT.INVENTORY.v1',
@@ -126,8 +132,9 @@ export default function SalonInventoryPage() {
 
   // Transform products data for display
   const inventory = products.map((product: any) => {
-    const stock = product.dynamic_fields?.stock_quantity || 0
-    const reorderPoint = product.dynamic_fields?.reorder_point || 10
+    // Config factory merges dynamic fields directly into the object
+    const stock = product.stock_quantity || 0
+    const reorderPoint = product.reorder_point || 10
     
     let status = 'good'
     if (stock === 0) status = 'critical'
@@ -140,8 +147,8 @@ export default function SalonInventoryPage() {
       reorderPoint: reorderPoint,
       status: status,
       category: product.metadata?.category || 'Uncategorized',
-      price: product.dynamic_fields?.price || 0,
-      sku: product.metadata?.sku || 'N/A'
+      price: product.price || 0,
+      sku: product.metadata?.sku || product.entity_code || 'N/A'
     }
   })
 
