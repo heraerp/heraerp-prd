@@ -94,8 +94,60 @@ app.get('/', (req, res) => {
       chat: '/api/chat',
       query: '/api/query',
       create: '/api/create',
-      execute: '/api/execute'
+      execute: '/api/execute',
+      test: '/api/test'
     }
+  });
+});
+
+// Test endpoint to verify API keys
+app.get('/api/test', async (req, res) => {
+  const tests = {
+    openai: { status: 'not tested', message: '' },
+    anthropic: { status: 'not tested', message: '' },
+    supabase: { status: 'not tested', message: '' }
+  };
+  
+  // Test OpenAI
+  if (openai) {
+    try {
+      await openai.models.list();
+      tests.openai = { status: '✅ working', message: 'API key is valid' };
+    } catch (error) {
+      tests.openai = { status: '❌ failed', message: error.message };
+    }
+  }
+  
+  // Test Anthropic
+  if (anthropic) {
+    try {
+      await anthropic.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 1,
+        messages: [{ role: "user", content: "Hi" }]
+      });
+      tests.anthropic = { status: '✅ working', message: 'API key is valid' };
+    } catch (error) {
+      tests.anthropic = { status: '❌ failed', message: error.message };
+    }
+  }
+  
+  // Test Supabase
+  if (supabase) {
+    try {
+      const { count, error } = await supabase
+        .from('core_organizations')
+        .select('*', { count: 'exact', head: true });
+      if (error) throw error;
+      tests.supabase = { status: '✅ working', message: `Connected, ${count} organizations found` };
+    } catch (error) {
+      tests.supabase = { status: '❌ failed', message: error.message };
+    }
+  }
+  
+  res.json({
+    timestamp: new Date().toISOString(),
+    tests
   });
 });
 
