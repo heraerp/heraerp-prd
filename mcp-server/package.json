@@ -17,7 +17,8 @@
     "test:auth": "node test-authorization-tools.js",
     "test:police": "node test-build-police.js",
     "test:verification": "node test-master-verification.js",
-    "test:all": "npm run test && npm run test:auth && npm run test:police && npm run test:verification"
+    "test:all": "npm run test && npm run test:auth && npm run test:police && npm run test:verification",
+    "debug": "node debug-railway.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
