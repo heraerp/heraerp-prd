@@ -802,11 +802,11 @@
             - generic [ref=e1112]:
               - generic [ref=e1114]: No visits yet
               - button "View Details" [ref=e1115] [cursor=pointer]
-  - generic [ref=e1117]:
-    - img [ref=e1119]
-    - button "Open Tanstack query devtools" [ref=e1167] [cursor=pointer]:
-      - img [ref=e1168] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e1221] [cursor=pointer]:
-    - img [ref=e1222] [cursor=pointer]
-  - alert [ref=e1225]
+  - generic [ref=e1116]:
+    - img [ref=e1118]
+    - button "Open Tanstack query devtools" [ref=e1166] [cursor=pointer]:
+      - img [ref=e1167] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e1220] [cursor=pointer]:
+    - img [ref=e1221] [cursor=pointer]
+  - alert [ref=e1224]
 ```

@@ -208,7 +208,7 @@
         - button "Book New Appointment" [ref=e307] [cursor=pointer]:
           - img [ref=e308] [cursor=pointer]
           - text: Book New Appointment
-  - button "Open Next.js Dev Tools" [ref=e317] [cursor=pointer]:
-    - img [ref=e318] [cursor=pointer]
-  - alert [ref=e322]
+  - button "Open Next.js Dev Tools" [ref=e316] [cursor=pointer]:
+    - img [ref=e317] [cursor=pointer]
+  - alert [ref=e321]
 ```

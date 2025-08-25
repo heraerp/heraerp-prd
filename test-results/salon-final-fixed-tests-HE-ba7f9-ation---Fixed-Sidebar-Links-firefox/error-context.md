@@ -208,11 +208,20 @@
         - button "Book New Appointment" [ref=e307] [cursor=pointer]:
           - img [ref=e308] [cursor=pointer]
           - text: Book New Appointment
-  - generic [ref=e312]:
-    - img [ref=e314]
-    - button "Open Tanstack query devtools" [ref=e363] [cursor=pointer]:
-      - img [ref=e364] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e418] [cursor=pointer]:
-    - img [ref=e419] [cursor=pointer]
-  - alert [ref=e423]
+  - generic [ref=e311]:
+    - img [ref=e313]
+    - button "Open Tanstack query devtools" [ref=e362] [cursor=pointer]:
+      - img [ref=e363] [cursor=pointer]
+  - generic [ref=e416] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e417] [cursor=pointer]:
+      - img [ref=e418] [cursor=pointer]
+    - generic [ref=e422] [cursor=pointer]:
+      - button "Open issues overlay" [ref=e423] [cursor=pointer]:
+        - generic [ref=e424] [cursor=pointer]:
+          - generic [ref=e425] [cursor=pointer]: "0"
+          - generic [ref=e426] [cursor=pointer]: "1"
+        - generic [ref=e427] [cursor=pointer]: Issue
+      - button "Collapse issues badge" [ref=e428] [cursor=pointer]:
+        - img [ref=e429] [cursor=pointer]
+  - alert [ref=e431]
 ```

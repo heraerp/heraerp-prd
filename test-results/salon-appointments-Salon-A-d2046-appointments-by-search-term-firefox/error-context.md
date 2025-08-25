@@ -167,7 +167,7 @@
               - text: Previous
             - generic [ref=e228]:
               - img [ref=e229]
-              - heading "Sunday, August 24, 2025" [level=2] [ref=e240]
+              - heading "Monday, August 25, 2025" [level=2] [ref=e240]
             - button "Next" [ref=e241] [cursor=pointer]:
               - text: Next
               - img [ref=e242] [cursor=pointer]
@@ -192,11 +192,11 @@
                 - button "Book New Appointment" [ref=e269] [cursor=pointer]:
                   - img [ref=e270] [cursor=pointer]
                   - text: Book New Appointment
-  - generic [ref=e274]:
-    - img [ref=e276]
-    - button "Open Tanstack query devtools" [ref=e325] [cursor=pointer]:
-      - img [ref=e326] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e380] [cursor=pointer]:
-    - img [ref=e381] [cursor=pointer]
-  - alert [ref=e385]
+  - generic [ref=e273]:
+    - img [ref=e275]
+    - button "Open Tanstack query devtools" [ref=e324] [cursor=pointer]:
+      - img [ref=e325] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e379] [cursor=pointer]:
+    - img [ref=e380] [cursor=pointer]
+  - alert [ref=e384]
 ```

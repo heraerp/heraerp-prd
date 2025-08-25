@@ -176,31 +176,65 @@ async function setField(entityId, fieldName, fieldValue) {
     return;
   }
 
+  // Check if field already exists
+  const { data: existing, error: checkError } = await supabase
+    .from('core_dynamic_data')
+    .select('id')
+    .eq('entity_id', entityId)
+    .eq('field_name', fieldName)
+    .eq('organization_id', organizationId)
+    .single();
+
+  // Determine field type and prepare data
+  const isNumber = !isNaN(fieldValue) && !isNaN(parseFloat(fieldValue));
   const fieldData = {
     entity_id: entityId,
     field_name: fieldName,
-    field_value_text: fieldValue,
     organization_id: organizationId,
-    smart_code: 'HERA.UNIV.FIELD.DYN.v1'
+    smart_code: `HERA.UNIV.FIELD.${fieldName.toUpperCase()}.v1`,
+    created_at: new Date().toISOString()
   };
 
-  const { data, error } = await supabase
-    .from('core_dynamic_data')
-    .upsert(fieldData, {
-      onConflict: 'entity_id,field_name,organization_id'
-    })
-    .select()
-    .single();
+  if (isNumber) {
+    fieldData.field_value_number = parseFloat(fieldValue);
+  } else {
+    fieldData.field_value_text = fieldValue;
+  }
 
-  if (error) {
-    console.error('Field error:', error.message);
+  let result;
+  if (existing && !checkError) {
+    // Update existing field
+    const updateData = {
+      ...fieldData,
+      updated_at: new Date().toISOString()
+    };
+    delete updateData.created_at;
+    
+    result = await supabase
+      .from('core_dynamic_data')
+      .update(updateData)
+      .eq('id', existing.id)
+      .select()
+      .single();
+  } else {
+    // Insert new field
+    result = await supabase
+      .from('core_dynamic_data')
+      .insert(fieldData)
+      .select()
+      .single();
+  }
+
+  if (result.error) {
+    console.error('Field error:', result.error.message);
     return;
   }
 
   console.log('\n✅ Dynamic field set:');
-  console.log(`  Entity: ${data.entity_id}`);
-  console.log(`  Field: ${data.field_name}`);
-  console.log(`  Value: ${data.field_value_text}`);
+  console.log(`  Entity: ${result.data.entity_id}`);
+  console.log(`  Field: ${result.data.field_name}`);
+  console.log(`  Value: ${fieldValue}`);
+  console.log(`  Type: ${isNumber ? 'number' : 'text'}`);
 }
 
 async function createTransaction(type, amount) {

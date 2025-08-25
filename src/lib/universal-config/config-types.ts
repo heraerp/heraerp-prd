@@ -149,13 +149,13 @@ export const CONFIG_TYPES = {
   },
   // Inventory Management Configurations
   PRODUCT_ITEM: {
-    entityType: 'salon_product_item',
+    entityType: 'product',
     smartCodePrefix: 'HERA.SALON.INV.PRODUCT',
     displayName: 'Product',
     pluralName: 'Products',
     relatedEntityType: 'stock_movement',
     relatedFieldName: 'product_id',
-    defaultFields: ['sku', 'barcode', 'category', 'brand', 'cost_price', 'retail_price', 'professional_price', 'min_stock', 'max_stock', 'reorder_point', 'unit_of_measure', 'is_consumable', 'is_retail', 'expiry_tracking']
+    defaultFields: ['sku', 'barcode', 'category', 'brand', 'cost_price', 'retail_price', 'professional_price', 'min_stock', 'max_stock', 'reorder_point', 'unit_of_measure', 'is_consumable', 'is_retail', 'expiry_tracking', 'preferred_supplier']
   },
   PRODUCT_BRAND: {
     entityType: 'product_brand',

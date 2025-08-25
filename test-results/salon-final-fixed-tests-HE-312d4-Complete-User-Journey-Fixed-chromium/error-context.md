@@ -203,7 +203,7 @@
                 - generic [ref=e232]:
                   - generic [ref=e233]:
                     - generic [ref=e234]: Date *
-                    - textbox "Date *" [ref=e235]: 2025-08-24
+                    - textbox "Date *" [ref=e235]: 2025-08-25
                   - generic [ref=e236]:
                     - generic [ref=e237]: Time *
                     - textbox "Time *" [ref=e238]
@@ -217,11 +217,11 @@
               - button "Book Appointment" [disabled]:
                 - img
                 - text: Book Appointment
-  - generic [ref=e248]:
-    - img [ref=e250]
-    - button "Open Tanstack query devtools" [ref=e298] [cursor=pointer]:
-      - img [ref=e299] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e352] [cursor=pointer]:
-    - img [ref=e353] [cursor=pointer]
-  - alert [ref=e356]
+  - generic [ref=e247]:
+    - img [ref=e249]
+    - button "Open Tanstack query devtools" [ref=e297] [cursor=pointer]:
+      - img [ref=e298] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e351] [cursor=pointer]:
+    - img [ref=e352] [cursor=pointer]
+  - alert [ref=e355]
 ```

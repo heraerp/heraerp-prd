@@ -208,7 +208,11 @@
         - button "Book New Appointment" [ref=e274] [cursor=pointer]:
           - img [ref=e275] [cursor=pointer]
           - text: Book New Appointment
-  - button "Open Next.js Dev Tools" [ref=e282] [cursor=pointer]:
-    - img [ref=e283] [cursor=pointer]
-  - alert [ref=e286]
+  - generic [ref=e276]:
+    - img [ref=e278]
+    - button "Open Tanstack query devtools" [ref=e326] [cursor=pointer]:
+      - img [ref=e327] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e380] [cursor=pointer]:
+    - img [ref=e381] [cursor=pointer]
+  - alert [ref=e384]
 ```

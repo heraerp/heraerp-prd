@@ -16,8 +16,8 @@
             - img [ref=e19] [cursor=pointer]
           - generic:
             - paragraph: Dashboard
-          - button [ref=e25] [cursor=pointer]:
-            - img [ref=e27] [cursor=pointer]
+          - button [ref=e26] [cursor=pointer]:
+            - img [ref=e28] [cursor=pointer]
           - generic:
             - paragraph: Appointments
             - generic: (12)
@@ -76,152 +76,152 @@
             - paragraph: Settings
     - main [ref=e102]:
       - generic [ref=e103]:
-        - generic [ref=e104]:
-          - img [ref=e109]
+        - generic [ref=e105]:
+          - generic [ref=e106]:
+            - heading "Welcome to Dubai Luxury Salon & Spa" [level=1] [ref=e107]
+            - paragraph [ref=e108]:
+              - img [ref=e109]
+              - text: Your beauty business management hub
           - generic [ref=e115]:
-            - button [ref=e116] [cursor=pointer]:
-              - img [ref=e117] [cursor=pointer]
-            - generic:
-              - paragraph: Quick Actions
-          - navigation [ref=e120]:
-            - generic [ref=e121]:
-              - button [ref=e122] [cursor=pointer]:
-                - img [ref=e124] [cursor=pointer]
-              - generic:
-                - paragraph: Dashboard
-              - button [ref=e127] [cursor=pointer]:
-                - img [ref=e129] [cursor=pointer]
-              - generic:
-                - paragraph: Appointments
-                - generic: (12)
-              - button [ref=e135] [cursor=pointer]:
-                - img [ref=e137] [cursor=pointer]
-              - generic:
-                - paragraph: Clients
-                - generic: (New)
-              - button [ref=e142] [cursor=pointer]:
-                - img [ref=e144] [cursor=pointer]
-              - generic:
-                - paragraph: Services
-              - button [ref=e150] [cursor=pointer]:
-                - img [ref=e152] [cursor=pointer]
-              - generic:
-                - paragraph: Categories
-              - button [ref=e158] [cursor=pointer]:
-                - img [ref=e160] [cursor=pointer]
-              - generic:
-                - paragraph: Staff
-              - button [ref=e163] [cursor=pointer]:
-                - img [ref=e165] [cursor=pointer]
-              - generic:
-                - paragraph: Inventory
-                - generic: (5)
-              - button [ref=e171] [cursor=pointer]:
-                - img [ref=e173] [cursor=pointer]
-              - generic:
-                - paragraph: Payments
-              - button [ref=e176] [cursor=pointer]:
-                - img [ref=e178] [cursor=pointer]
-              - generic:
-                - paragraph: Loyalty Program
-                - generic: (VIP)
-              - button [ref=e180] [cursor=pointer]:
-                - img [ref=e182] [cursor=pointer]
-              - generic:
-                - paragraph: Marketing
-              - button [ref=e184] [cursor=pointer]:
-                - img [ref=e186] [cursor=pointer]
-              - generic:
-                - paragraph: Reports
-            - generic [ref=e191]:
-              - button [ref=e192] [cursor=pointer]:
-                - img [ref=e193] [cursor=pointer]
-              - generic:
-                - paragraph: More Apps
-          - generic [ref=e196]:
-            - generic [ref=e197]:
-              - button [ref=e198] [cursor=pointer]:
-                - img [ref=e199] [cursor=pointer]
-              - generic:
-                - paragraph: Notifications
-            - generic [ref=e203]:
-              - button [ref=e204] [cursor=pointer]:
-                - img [ref=e205] [cursor=pointer]
-              - generic:
-                - paragraph: Settings
-        - generic [ref=e209]:
-          - generic [ref=e210]:
-            - button "Back to Appointments" [ref=e211] [cursor=pointer]:
-              - img [ref=e212] [cursor=pointer]
-              - text: Back to Appointments
-            - generic [ref=e214]:
-              - heading "New Appointment" [level=1] [ref=e215]
-              - paragraph [ref=e216]: Book a new appointment for your client
-          - generic [ref=e217]:
-            - generic [ref=e218]:
-              - generic [ref=e219]:
-                - generic [ref=e220]:
-                  - heading "Client Information" [level=3] [ref=e221]:
-                    - img [ref=e222]
-                    - text: Client Information
-                  - paragraph [ref=e225]: Enter client details or select existing client
-                - generic [ref=e226]:
-                  - generic [ref=e227]:
-                    - generic [ref=e228]: Client Name *
-                    - textbox "Client Name *" [ref=e229]
-                  - generic [ref=e230]:
-                    - generic [ref=e231]: Phone Number *
-                    - textbox "Phone Number *" [ref=e232]
-                  - generic [ref=e233]:
-                    - generic [ref=e234]: Email (Optional)
-                    - textbox "Email (Optional)" [ref=e235]
-              - generic [ref=e236]:
-                - generic [ref=e237]:
-                  - heading "Service & Stylist" [level=3] [ref=e238]:
-                    - img [ref=e239]
-                    - text: Service & Stylist
-                  - paragraph [ref=e245]: Choose service and preferred stylist
-                - generic [ref=e246]:
-                  - generic [ref=e247]:
-                    - generic [ref=e248]: Service *
-                    - combobox "Service *" [ref=e249] [cursor=pointer]:
-                      - generic: Select a service
-                      - img [ref=e250] [cursor=pointer]
-                    - combobox [ref=e252]
-                  - generic [ref=e253]:
-                    - generic [ref=e254]: Stylist *
-                    - combobox "Stylist *" [ref=e255] [cursor=pointer]:
-                      - generic: Select a stylist
-                      - img [ref=e256] [cursor=pointer]
-                    - combobox [ref=e258]
-              - generic [ref=e259]:
-                - generic [ref=e260]:
-                  - heading "Date & Time" [level=3] [ref=e261]:
-                    - img [ref=e262]
-                    - text: Date & Time
-                  - paragraph [ref=e267]: Select appointment date and time
-                - generic [ref=e268]:
-                  - generic [ref=e269]:
-                    - generic [ref=e270]: Date *
-                    - textbox "Date *" [ref=e271]: 2025-08-24
-                  - generic [ref=e272]:
-                    - generic [ref=e273]: Time *
-                    - textbox "Time *" [ref=e274]
-              - generic [ref=e275]:
-                - generic [ref=e276]:
-                  - heading "Additional Notes" [level=3] [ref=e277]
-                  - paragraph [ref=e278]: Any special requests or notes
-                - textbox "Enter any special requests or notes..." [ref=e280]
-            - generic [ref=e281]:
-              - button "Cancel" [ref=e282] [cursor=pointer]
-              - button "Book Appointment" [disabled]:
-                - img
-                - text: Book Appointment
-  - generic [ref=e284]:
-    - img [ref=e286]
-    - button "Open Tanstack query devtools" [ref=e335] [cursor=pointer]:
-      - img [ref=e336] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e390] [cursor=pointer]:
-    - img [ref=e391] [cursor=pointer]
-  - alert [ref=e395]
+            - generic [ref=e116]:
+              - img [ref=e117]
+              - text: Professional Plan
+            - button "Settings" [ref=e119] [cursor=pointer]:
+              - img [ref=e120] [cursor=pointer]
+              - text: Settings
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e126]:
+              - heading "Today's Appointments" [level=3] [ref=e127]
+              - img [ref=e129]
+            - generic [ref=e135]:
+              - paragraph [ref=e136]: "12"
+              - paragraph [ref=e137]: +3 from yesterday
+          - generic [ref=e138]:
+            - generic [ref=e140]:
+              - heading "Active Customers" [level=3] [ref=e141]
+              - img [ref=e143]
+            - generic [ref=e147]:
+              - paragraph [ref=e148]: "248"
+              - paragraph [ref=e149]: +12 this week
+          - generic [ref=e150]:
+            - generic [ref=e152]:
+              - heading "Today's Revenue" [level=3] [ref=e153]
+              - img [ref=e155]
+            - generic [ref=e158]:
+              - paragraph [ref=e159]: AED 3,450
+              - paragraph [ref=e160]: +15% from average
+          - generic [ref=e161]:
+            - generic [ref=e163]:
+              - heading "Products in Stock" [level=3] [ref=e164]
+              - img [ref=e166]
+            - generic [ref=e172]:
+              - paragraph [ref=e173]: "156"
+              - paragraph [ref=e174]: 8 low stock items
+        - generic [ref=e175]:
+          - heading "Quick Actions" [level=2] [ref=e176]
+          - generic [ref=e177]:
+            - generic [ref=e180] [cursor=pointer]:
+              - img [ref=e182] [cursor=pointer]
+              - generic [ref=e188] [cursor=pointer]:
+                - heading "New Appointment" [level=3] [ref=e189] [cursor=pointer]
+                - paragraph [ref=e190] [cursor=pointer]: Book a service for a customer
+            - generic [ref=e193] [cursor=pointer]:
+              - img [ref=e195] [cursor=pointer]
+              - generic [ref=e199] [cursor=pointer]:
+                - heading "New Customer" [level=3] [ref=e200] [cursor=pointer]
+                - paragraph [ref=e201] [cursor=pointer]: Add a new customer profile
+            - generic [ref=e204] [cursor=pointer]:
+              - img [ref=e206] [cursor=pointer]
+              - generic [ref=e209] [cursor=pointer]:
+                - heading "New Sale" [level=3] [ref=e210] [cursor=pointer]
+                - paragraph [ref=e211] [cursor=pointer]: Process product or service sale
+            - generic [ref=e214] [cursor=pointer]:
+              - img [ref=e216] [cursor=pointer]
+              - generic [ref=e220] [cursor=pointer]:
+                - heading "View Reports" [level=3] [ref=e221] [cursor=pointer]
+                - paragraph [ref=e222] [cursor=pointer]: Check business analytics
+        - generic [ref=e223]:
+          - generic [ref=e224]:
+            - generic [ref=e226]:
+              - heading "Today's Appointments" [level=3] [ref=e227]:
+                - img [ref=e228]
+                - text: Today's Appointments
+              - button "View All" [ref=e231] [cursor=pointer]
+            - generic [ref=e233]:
+              - generic [ref=e234]:
+                - generic [ref=e235]:
+                  - generic [ref=e236]: 10:00 AM
+                  - generic [ref=e237]:
+                    - paragraph [ref=e238]: Sarah Johnson
+                    - paragraph [ref=e239]: Hair Color & Cut with Emma
+                - generic [ref=e240]: confirmed
+              - generic [ref=e241]:
+                - generic [ref=e242]:
+                  - generic [ref=e243]: 11:30 AM
+                  - generic [ref=e244]:
+                    - paragraph [ref=e245]: Maya Patel
+                    - paragraph [ref=e246]: Manicure & Pedicure with Lisa
+                - generic [ref=e247]: confirmed
+              - generic [ref=e248]:
+                - generic [ref=e249]:
+                  - generic [ref=e250]: 2:00 PM
+                  - generic [ref=e251]:
+                    - paragraph [ref=e252]: Fatima Al Rashid
+                    - paragraph [ref=e253]: Facial Treatment with Nina
+                - generic [ref=e254]: pending
+              - generic [ref=e255]:
+                - generic [ref=e256]:
+                  - generic [ref=e257]: 3:30 PM
+                  - generic [ref=e258]:
+                    - paragraph [ref=e259]: Aisha Khan
+                    - paragraph [ref=e260]: Hair Styling with Emma
+                - generic [ref=e261]: confirmed
+          - generic [ref=e262]:
+            - generic [ref=e264]:
+              - heading "Popular Services This Week" [level=3] [ref=e265]:
+                - img [ref=e266]
+                - text: Popular Services This Week
+              - button "Manage Services" [ref=e268] [cursor=pointer]
+            - generic [ref=e270]:
+              - generic [ref=e271]:
+                - generic [ref=e272]:
+                  - img [ref=e274]
+                  - generic [ref=e280]:
+                    - paragraph [ref=e281]: Hair Color & Highlights
+                    - paragraph [ref=e282]: 32 bookings
+                - generic [ref=e283]: AED 450
+              - generic [ref=e284]:
+                - generic [ref=e285]:
+                  - img [ref=e287]
+                  - generic [ref=e293]:
+                    - paragraph [ref=e294]: Premium Facial
+                    - paragraph [ref=e295]: 28 bookings
+                - generic [ref=e296]: AED 350
+              - generic [ref=e297]:
+                - generic [ref=e298]:
+                  - img [ref=e300]
+                  - generic [ref=e302]:
+                    - paragraph [ref=e303]: Spa Package
+                    - paragraph [ref=e304]: 24 bookings
+                - generic [ref=e305]: AED 650
+        - button "Book New Appointment" [ref=e307] [cursor=pointer]:
+          - img [ref=e308] [cursor=pointer]
+          - text: Book New Appointment
+  - generic [ref=e311]:
+    - img [ref=e313]
+    - button "Open Tanstack query devtools" [ref=e362] [cursor=pointer]:
+      - img [ref=e363] [cursor=pointer]
+  - generic [ref=e416] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e417] [cursor=pointer]:
+      - img [ref=e418] [cursor=pointer]
+    - generic [ref=e422] [cursor=pointer]:
+      - button "Open issues overlay" [ref=e423] [cursor=pointer]:
+        - generic [ref=e424] [cursor=pointer]:
+          - generic [ref=e425] [cursor=pointer]: "0"
+          - generic [ref=e426] [cursor=pointer]: "1"
+        - generic [ref=e427] [cursor=pointer]: Issue
+      - button "Collapse issues badge" [ref=e428] [cursor=pointer]:
+        - img [ref=e429] [cursor=pointer]
+  - alert [ref=e431]
 ```

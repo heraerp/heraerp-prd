@@ -167,7 +167,7 @@
               - text: Previous
             - generic [ref=e228]:
               - img [ref=e229]
-              - heading "Sunday, August 24, 2025" [level=2] [ref=e240]
+              - heading "Monday, August 25, 2025" [level=2] [ref=e240]
             - button "Next" [ref=e241] [cursor=pointer]:
               - text: Next
               - img [ref=e242] [cursor=pointer]
@@ -180,145 +180,66 @@
               - text: Filters
           - generic [ref=e253]:
             - tablist [ref=e254]:
-              - tab "Today (5)" [selected] [ref=e255] [cursor=pointer]
+              - tab "Today (2)" [selected] [ref=e255] [cursor=pointer]
               - tab "Upcoming" [ref=e256] [cursor=pointer]
               - tab "Completed" [ref=e257] [cursor=pointer]
               - tab "Cancelled" [ref=e258] [cursor=pointer]
-            - tabpanel "Today (5)" [ref=e259]:
+            - tabpanel "Today (2)" [ref=e259]:
               - generic [ref=e262]:
                 - generic [ref=e263]:
-                  - generic [ref=e264]:
-                    - generic [ref=e265]: 10:00
-                    - generic [ref=e266]: AM
-                  - generic [ref=e267]:
-                    - generic [ref=e268]:
-                      - heading "Unknown Client" [level=3] [ref=e269]
-                      - generic [ref=e271]:
-                        - img [ref=e272]
+                  - generic [ref=e265]: 00:00
+                  - generic [ref=e266]:
+                    - generic [ref=e267]:
+                      - heading "Malar" [level=3] [ref=e268]
+                      - generic [ref=e270]:
+                        - img [ref=e271]
                         - text: confirmed
-                    - generic [ref=e275]:
-                      - generic [ref=e276]:
-                        - generic [ref=e277]: "Service:"
-                        - paragraph [ref=e278]: Service
-                      - generic [ref=e279]:
-                        - generic [ref=e280]: "Stylist:"
-                        - paragraph [ref=e281]: Staff
-                      - generic [ref=e282]:
-                        - generic [ref=e283]: "Duration:"
-                        - paragraph [ref=e284]: 60 min
-                - generic [ref=e285]:
-                  - generic [ref=e286]: AED 0
-                  - generic [ref=e287]:
-                    - button "Edit" [ref=e288] [cursor=pointer]
-                    - button "Check In" [ref=e289] [cursor=pointer]
-                    - button "Cancel" [ref=e290] [cursor=pointer]
-              - generic [ref=e293]:
-                - generic [ref=e294]:
-                  - generic [ref=e295]:
-                    - generic [ref=e296]: 10:00
-                    - generic [ref=e297]: AM
-                  - generic [ref=e298]:
-                    - generic [ref=e299]:
-                      - heading "Unknown Client" [level=3] [ref=e300]
-                      - generic [ref=e302]:
-                        - img [ref=e303]
+                    - generic [ref=e274]:
+                      - generic [ref=e275]:
+                        - generic [ref=e276]: "Service:"
+                        - paragraph [ref=e277]: Manicure
+                      - generic [ref=e278]:
+                        - generic [ref=e279]: "Stylist:"
+                        - paragraph [ref=e280]: Lisa Chen
+                      - generic [ref=e281]:
+                        - generic [ref=e282]: "Duration:"
+                        - paragraph [ref=e283]: 45 min
+                - generic [ref=e284]:
+                  - generic [ref=e285]: AED 100
+                  - generic [ref=e286]:
+                    - button "Edit" [ref=e287] [cursor=pointer]
+                    - button "Check In" [ref=e288] [cursor=pointer]
+                    - button "Cancel" [ref=e289] [cursor=pointer]
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - generic [ref=e295]: 10:00
+                  - generic [ref=e296]:
+                    - generic [ref=e297]:
+                      - heading "Soniya" [level=3] [ref=e298]
+                      - generic [ref=e300]:
+                        - img [ref=e301]
                         - text: confirmed
-                    - generic [ref=e306]:
-                      - generic [ref=e307]:
-                        - generic [ref=e308]: "Service:"
-                        - paragraph [ref=e309]: Service
-                      - generic [ref=e310]:
-                        - generic [ref=e311]: "Stylist:"
-                        - paragraph [ref=e312]: Staff
-                      - generic [ref=e313]:
-                        - generic [ref=e314]: "Duration:"
-                        - paragraph [ref=e315]: 60 min
-                - generic [ref=e316]:
-                  - generic [ref=e317]: AED 0
-                  - generic [ref=e318]:
-                    - button "Edit" [ref=e319] [cursor=pointer]
-                    - button "Check In" [ref=e320] [cursor=pointer]
-                    - button "Cancel" [ref=e321] [cursor=pointer]
-              - generic [ref=e324]:
-                - generic [ref=e325]:
-                  - generic [ref=e327]: 20:48
-                  - generic [ref=e328]:
-                    - generic [ref=e329]:
-                      - heading "XYZ" [level=3] [ref=e330]
-                      - generic [ref=e332]:
-                        - img [ref=e333]
-                        - text: confirmed
-                    - generic [ref=e336]:
-                      - generic [ref=e337]:
-                        - generic [ref=e338]: "Service:"
-                        - paragraph [ref=e339]: Hair Color
-                      - generic [ref=e340]:
-                        - generic [ref=e341]: "Stylist:"
-                        - paragraph [ref=e342]: Lisa Chen
-                      - generic [ref=e343]:
-                        - generic [ref=e344]: "Duration:"
-                        - paragraph [ref=e345]: 90 min
-                - generic [ref=e346]:
-                  - generic [ref=e347]: AED 350
-                  - generic [ref=e348]:
-                    - button "Edit" [ref=e349] [cursor=pointer]
-                    - button "Check In" [ref=e350] [cursor=pointer]
-                    - button "Cancel" [ref=e351] [cursor=pointer]
-              - generic [ref=e354]:
-                - generic [ref=e355]:
-                  - generic [ref=e357]: 09:06
-                  - generic [ref=e358]:
-                    - generic [ref=e359]:
-                      - heading "XYZ" [level=3] [ref=e360]
-                      - generic [ref=e362]:
-                        - img [ref=e363]
-                        - text: confirmed
-                    - generic [ref=e366]:
-                      - generic [ref=e367]:
-                        - generic [ref=e368]: "Service:"
-                        - paragraph [ref=e369]: Hair Cut
-                      - generic [ref=e370]:
-                        - generic [ref=e371]: "Stylist:"
-                        - paragraph [ref=e372]: Lisa Chen
-                      - generic [ref=e373]:
-                        - generic [ref=e374]: "Duration:"
-                        - paragraph [ref=e375]: 30 min
-                - generic [ref=e376]:
-                  - generic [ref=e377]: AED 150
-                  - generic [ref=e378]:
-                    - button "Edit" [ref=e379] [cursor=pointer]
-                    - button "Check In" [ref=e380] [cursor=pointer]
-                    - button "Cancel" [ref=e381] [cursor=pointer]
-              - generic [ref=e384]:
-                - generic [ref=e385]:
-                  - generic [ref=e387]: 10:09
-                  - generic [ref=e388]:
-                    - generic [ref=e389]:
-                      - heading "XYZ" [level=3] [ref=e390]
-                      - generic [ref=e392]:
-                        - img [ref=e393]
-                        - text: confirmed
-                    - generic [ref=e396]:
-                      - generic [ref=e397]:
-                        - generic [ref=e398]: "Service:"
-                        - paragraph [ref=e399]: Manicure
-                      - generic [ref=e400]:
-                        - generic [ref=e401]: "Stylist:"
-                        - paragraph [ref=e402]: Nina Patel
-                      - generic [ref=e403]:
-                        - generic [ref=e404]: "Duration:"
-                        - paragraph [ref=e405]: 45 min
-                - generic [ref=e406]:
-                  - generic [ref=e407]: AED 100
-                  - generic [ref=e408]:
-                    - button "Edit" [ref=e409] [cursor=pointer]
-                    - button "Check In" [ref=e410] [cursor=pointer]
-                    - button "Cancel" [ref=e411] [cursor=pointer]
-  - generic [ref=e413]:
-    - img [ref=e415]
-    - button "Open Tanstack query devtools" [ref=e464] [cursor=pointer]:
-      - img [ref=e465] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e519] [cursor=pointer]:
-    - img [ref=e520] [cursor=pointer]
-  - alert [ref=e524]
+                    - generic [ref=e304]:
+                      - generic [ref=e305]:
+                        - generic [ref=e306]: "Service:"
+                        - paragraph [ref=e307]: Full Spa Package
+                      - generic [ref=e308]:
+                        - generic [ref=e309]: "Stylist:"
+                        - paragraph [ref=e310]: Sarah Williams
+                      - generic [ref=e311]:
+                        - generic [ref=e312]: "Duration:"
+                        - paragraph [ref=e313]: 180 min
+                - generic [ref=e314]:
+                  - generic [ref=e315]: AED 850
+                  - generic [ref=e316]:
+                    - button "Edit" [ref=e317] [cursor=pointer]
+                    - button "Check In" [ref=e318] [cursor=pointer]
+                    - button "Cancel" [ref=e319] [cursor=pointer]
+  - generic [ref=e320]:
+    - img [ref=e322]
+    - button "Open Tanstack query devtools" [ref=e371] [cursor=pointer]:
+      - img [ref=e372] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e426] [cursor=pointer]:
+    - img [ref=e427] [cursor=pointer]
+  - alert [ref=e431]
 ```
