@@ -1,0 +1,812 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e15]:
+        - generic [ref=e16]:
+          - button [ref=e17] [cursor=pointer]:
+            - img [ref=e19] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e25] [cursor=pointer]:
+            - img [ref=e27] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e32] [cursor=pointer]:
+            - img [ref=e34] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e40] [cursor=pointer]:
+            - img [ref=e42] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e64] [cursor=pointer]:
+            - img [ref=e66] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e74] [cursor=pointer]:
+            - img [ref=e76] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e80] [cursor=pointer]:
+            - img [ref=e82] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e84] [cursor=pointer]:
+            - img [ref=e86] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - button [ref=e91] [cursor=pointer]:
+            - img [ref=e92] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e96]:
+          - button [ref=e97] [cursor=pointer]:
+            - img [ref=e98] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e102]:
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - button "Back to Dashboard" [ref=e105] [cursor=pointer]:
+            - img [ref=e106] [cursor=pointer]
+            - text: Back to Dashboard
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - heading "Client Management" [level=1] [ref=e110]
+              - paragraph [ref=e111]: Manage your salon clients and loyalty program
+            - generic [ref=e112]:
+              - button "Refresh" [ref=e113] [cursor=pointer]:
+                - img [ref=e114] [cursor=pointer]
+                - text: Refresh
+              - button "Export" [ref=e119] [cursor=pointer]:
+                - img [ref=e120] [cursor=pointer]
+                - text: Export
+              - button "Add Client" [ref=e124] [cursor=pointer]:
+                - img [ref=e125] [cursor=pointer]
+                - text: Add Client
+        - generic [ref=e130]:
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - paragraph [ref=e135]: Total Clients
+              - paragraph [ref=e136]: "18"
+            - img [ref=e137]
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - paragraph [ref=e146]: Active
+              - paragraph [ref=e147]: "18"
+            - img [ref=e148]
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - paragraph [ref=e155]: VIP Clients
+              - paragraph [ref=e156]: "0"
+            - img [ref=e157]
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - paragraph [ref=e163]: New This Month
+              - paragraph [ref=e164]: "18"
+            - img [ref=e165]
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - paragraph [ref=e174]: Total Revenue
+              - paragraph [ref=e175]: AED 0
+            - img [ref=e176]
+          - generic [ref=e181]:
+            - generic [ref=e182]:
+              - paragraph [ref=e183]: Avg Lifetime Value
+              - paragraph [ref=e184]: AED 0
+            - img [ref=e185]
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - img [ref=e192]
+            - textbox "Search by name, phone, email, or ID..." [ref=e195]
+          - combobox [ref=e196] [cursor=pointer]:
+            - generic: All Clients
+            - img [ref=e197] [cursor=pointer]
+          - button "More Filters" [ref=e199] [cursor=pointer]:
+            - img [ref=e200] [cursor=pointer]
+            - text: More Filters
+        - generic [ref=e202]:
+          - generic [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e207]:
+                  - heading "Geet" [level=3] [ref=e208]
+                  - generic [ref=e209]:
+                    - img [ref=e210]
+                    - text: Bronze
+                - paragraph [ref=e216]: "ID: CLIENT-1755933067898"
+              - button [ref=e217] [cursor=pointer]:
+                - img [ref=e218] [cursor=pointer]
+            - generic [ref=e222]:
+              - generic [ref=e223]:
+                - img [ref=e224]
+                - generic [ref=e226]: No phone
+              - generic [ref=e227]:
+                - img [ref=e228]
+                - generic [ref=e231]: No email
+            - generic [ref=e232]:
+              - generic [ref=e233]:
+                - generic [ref=e234]:
+                  - img [ref=e235]
+                  - generic [ref=e240]: "0"
+                - paragraph [ref=e241]: Points
+              - generic [ref=e242]:
+                - generic [ref=e243]:
+                  - img [ref=e244]
+                  - generic [ref=e247]: "0"
+                - paragraph [ref=e248]: Total Spent
+              - generic [ref=e249]:
+                - generic [ref=e250]:
+                  - img [ref=e251]
+                  - generic [ref=e254]: "0"
+                - paragraph [ref=e255]: Visits
+            - generic [ref=e257]:
+              - generic [ref=e259]: No visits yet
+              - button "View Details" [ref=e260] [cursor=pointer]
+          - generic [ref=e262]:
+            - generic [ref=e263]:
+              - generic [ref=e264]:
+                - generic [ref=e265]:
+                  - heading "Ge" [level=3] [ref=e266]
+                  - generic [ref=e267]:
+                    - img [ref=e268]
+                    - text: Bronze
+                - paragraph [ref=e274]: "ID: CLIENT-1755933046183"
+              - button [ref=e275] [cursor=pointer]:
+                - img [ref=e276] [cursor=pointer]
+            - generic [ref=e280]:
+              - generic [ref=e281]:
+                - img [ref=e282]
+                - generic [ref=e284]: No phone
+              - generic [ref=e285]:
+                - img [ref=e286]
+                - generic [ref=e289]: No email
+            - generic [ref=e290]:
+              - generic [ref=e291]:
+                - generic [ref=e292]:
+                  - img [ref=e293]
+                  - generic [ref=e298]: "0"
+                - paragraph [ref=e299]: Points
+              - generic [ref=e300]:
+                - generic [ref=e301]:
+                  - img [ref=e302]
+                  - generic [ref=e305]: "0"
+                - paragraph [ref=e306]: Total Spent
+              - generic [ref=e307]:
+                - generic [ref=e308]:
+                  - img [ref=e309]
+                  - generic [ref=e312]: "0"
+                - paragraph [ref=e313]: Visits
+            - generic [ref=e315]:
+              - generic [ref=e317]: No visits yet
+              - button "View Details" [ref=e318] [cursor=pointer]
+          - generic [ref=e320]:
+            - generic [ref=e321]:
+              - generic [ref=e322]:
+                - generic [ref=e323]:
+                  - heading "Layla Mahmoud" [level=3] [ref=e324]
+                  - generic [ref=e325]:
+                    - img [ref=e326]
+                    - text: Bronze
+                - paragraph [ref=e332]: "ID: CUST-1755805120619-yao1i"
+              - button [ref=e333] [cursor=pointer]:
+                - img [ref=e334] [cursor=pointer]
+            - generic [ref=e338]:
+              - generic [ref=e339]:
+                - img [ref=e340]
+                - generic [ref=e342]: No phone
+              - generic [ref=e343]:
+                - img [ref=e344]
+                - generic [ref=e347]: No email
+            - generic [ref=e348]:
+              - generic [ref=e349]:
+                - generic [ref=e350]:
+                  - img [ref=e351]
+                  - generic [ref=e356]: "0"
+                - paragraph [ref=e357]: Points
+              - generic [ref=e358]:
+                - generic [ref=e359]:
+                  - img [ref=e360]
+                  - generic [ref=e363]: "0"
+                - paragraph [ref=e364]: Total Spent
+              - generic [ref=e365]:
+                - generic [ref=e366]:
+                  - img [ref=e367]
+                  - generic [ref=e370]: "0"
+                - paragraph [ref=e371]: Visits
+            - generic [ref=e373]:
+              - generic [ref=e375]: No visits yet
+              - button "View Details" [ref=e376] [cursor=pointer]
+          - generic [ref=e378]:
+            - generic [ref=e379]:
+              - generic [ref=e380]:
+                - generic [ref=e381]:
+                  - heading "Noor Hassan" [level=3] [ref=e382]
+                  - generic [ref=e383]:
+                    - img [ref=e384]
+                    - text: Bronze
+                - paragraph [ref=e390]: "ID: CUST-1755805120533-vy17g"
+              - button [ref=e391] [cursor=pointer]:
+                - img [ref=e392] [cursor=pointer]
+            - generic [ref=e396]:
+              - generic [ref=e397]:
+                - img [ref=e398]
+                - generic [ref=e400]: No phone
+              - generic [ref=e401]:
+                - img [ref=e402]
+                - generic [ref=e405]: No email
+            - generic [ref=e406]:
+              - generic [ref=e407]:
+                - generic [ref=e408]:
+                  - img [ref=e409]
+                  - generic [ref=e414]: "0"
+                - paragraph [ref=e415]: Points
+              - generic [ref=e416]:
+                - generic [ref=e417]:
+                  - img [ref=e418]
+                  - generic [ref=e421]: "0"
+                - paragraph [ref=e422]: Total Spent
+              - generic [ref=e423]:
+                - generic [ref=e424]:
+                  - img [ref=e425]
+                  - generic [ref=e428]: "0"
+                - paragraph [ref=e429]: Visits
+            - generic [ref=e431]:
+              - generic [ref=e433]: No visits yet
+              - button "View Details" [ref=e434] [cursor=pointer]
+          - generic [ref=e436]:
+            - generic [ref=e437]:
+              - generic [ref=e438]:
+                - generic [ref=e439]:
+                  - heading "Zara Abdullah" [level=3] [ref=e440]
+                  - generic [ref=e441]:
+                    - img [ref=e442]
+                    - text: Bronze
+                - paragraph [ref=e448]: "ID: CUST-1755805120455-8uuzh"
+              - button [ref=e449] [cursor=pointer]:
+                - img [ref=e450] [cursor=pointer]
+            - generic [ref=e454]:
+              - generic [ref=e455]:
+                - img [ref=e456]
+                - generic [ref=e458]: No phone
+              - generic [ref=e459]:
+                - img [ref=e460]
+                - generic [ref=e463]: No email
+            - generic [ref=e464]:
+              - generic [ref=e465]:
+                - generic [ref=e466]:
+                  - img [ref=e467]
+                  - generic [ref=e472]: "0"
+                - paragraph [ref=e473]: Points
+              - generic [ref=e474]:
+                - generic [ref=e475]:
+                  - img [ref=e476]
+                  - generic [ref=e479]: "0"
+                - paragraph [ref=e480]: Total Spent
+              - generic [ref=e481]:
+                - generic [ref=e482]:
+                  - img [ref=e483]
+                  - generic [ref=e486]: "0"
+                - paragraph [ref=e487]: Visits
+            - generic [ref=e489]:
+              - generic [ref=e491]: No visits yet
+              - button "View Details" [ref=e492] [cursor=pointer]
+          - generic [ref=e494]:
+            - generic [ref=e495]:
+              - generic [ref=e496]:
+                - generic [ref=e497]:
+                  - heading "Leila Ahmed" [level=3] [ref=e498]
+                  - generic [ref=e499]:
+                    - img [ref=e500]
+                    - text: Bronze
+                - paragraph [ref=e506]: "ID: CUST-1755805120365-egz6t"
+              - button [ref=e507] [cursor=pointer]:
+                - img [ref=e508] [cursor=pointer]
+            - generic [ref=e512]:
+              - generic [ref=e513]:
+                - img [ref=e514]
+                - generic [ref=e516]: No phone
+              - generic [ref=e517]:
+                - img [ref=e518]
+                - generic [ref=e521]: No email
+            - generic [ref=e522]:
+              - generic [ref=e523]:
+                - generic [ref=e524]:
+                  - img [ref=e525]
+                  - generic [ref=e530]: "0"
+                - paragraph [ref=e531]: Points
+              - generic [ref=e532]:
+                - generic [ref=e533]:
+                  - img [ref=e534]
+                  - generic [ref=e537]: "0"
+                - paragraph [ref=e538]: Total Spent
+              - generic [ref=e539]:
+                - generic [ref=e540]:
+                  - img [ref=e541]
+                  - generic [ref=e544]: "0"
+                - paragraph [ref=e545]: Visits
+            - generic [ref=e547]:
+              - generic [ref=e549]: No visits yet
+              - button "View Details" [ref=e550] [cursor=pointer]
+          - generic [ref=e552]:
+            - generic [ref=e553]:
+              - generic [ref=e554]:
+                - generic [ref=e555]:
+                  - heading "Maya Patel" [level=3] [ref=e556]
+                  - generic [ref=e557]:
+                    - img [ref=e558]
+                    - text: Bronze
+                - paragraph [ref=e564]: "ID: CUST-1755805120295-xvi3r"
+              - button [ref=e565] [cursor=pointer]:
+                - img [ref=e566] [cursor=pointer]
+            - generic [ref=e570]:
+              - generic [ref=e571]:
+                - img [ref=e572]
+                - generic [ref=e574]: No phone
+              - generic [ref=e575]:
+                - img [ref=e576]
+                - generic [ref=e579]: No email
+            - generic [ref=e580]:
+              - generic [ref=e581]:
+                - generic [ref=e582]:
+                  - img [ref=e583]
+                  - generic [ref=e588]: "0"
+                - paragraph [ref=e589]: Points
+              - generic [ref=e590]:
+                - generic [ref=e591]:
+                  - img [ref=e592]
+                  - generic [ref=e595]: "0"
+                - paragraph [ref=e596]: Total Spent
+              - generic [ref=e597]:
+                - generic [ref=e598]:
+                  - img [ref=e599]
+                  - generic [ref=e602]: "0"
+                - paragraph [ref=e603]: Visits
+            - generic [ref=e605]:
+              - generic [ref=e607]: No visits yet
+              - button "View Details" [ref=e608] [cursor=pointer]
+          - generic [ref=e610]:
+            - generic [ref=e611]:
+              - generic [ref=e612]:
+                - generic [ref=e613]:
+                  - heading "Sarah Johnson" [level=3] [ref=e614]
+                  - generic [ref=e615]:
+                    - img [ref=e616]
+                    - text: Bronze
+                - paragraph [ref=e622]: "ID: CUST-1755805120224-zxc4m"
+              - button [ref=e623] [cursor=pointer]:
+                - img [ref=e624] [cursor=pointer]
+            - generic [ref=e628]:
+              - generic [ref=e629]:
+                - img [ref=e630]
+                - generic [ref=e632]: No phone
+              - generic [ref=e633]:
+                - img [ref=e634]
+                - generic [ref=e637]: No email
+            - generic [ref=e638]:
+              - generic [ref=e639]:
+                - generic [ref=e640]:
+                  - img [ref=e641]
+                  - generic [ref=e646]: "0"
+                - paragraph [ref=e647]: Points
+              - generic [ref=e648]:
+                - generic [ref=e649]:
+                  - img [ref=e650]
+                  - generic [ref=e653]: "0"
+                - paragraph [ref=e654]: Total Spent
+              - generic [ref=e655]:
+                - generic [ref=e656]:
+                  - img [ref=e657]
+                  - generic [ref=e660]: "0"
+                - paragraph [ref=e661]: Visits
+            - generic [ref=e663]:
+              - generic [ref=e665]: No visits yet
+              - button "View Details" [ref=e666] [cursor=pointer]
+          - generic [ref=e668]:
+            - generic [ref=e669]:
+              - generic [ref=e670]:
+                - generic [ref=e671]:
+                  - heading "Aisha Khan" [level=3] [ref=e672]
+                  - generic [ref=e673]:
+                    - img [ref=e674]
+                    - text: Bronze
+                - paragraph [ref=e680]: "ID: CUST-1755805120140-sphk6"
+              - button [ref=e681] [cursor=pointer]:
+                - img [ref=e682] [cursor=pointer]
+            - generic [ref=e686]:
+              - generic [ref=e687]:
+                - img [ref=e688]
+                - generic [ref=e690]: No phone
+              - generic [ref=e691]:
+                - img [ref=e692]
+                - generic [ref=e695]: No email
+            - generic [ref=e696]:
+              - generic [ref=e697]:
+                - generic [ref=e698]:
+                  - img [ref=e699]
+                  - generic [ref=e704]: "0"
+                - paragraph [ref=e705]: Points
+              - generic [ref=e706]:
+                - generic [ref=e707]:
+                  - img [ref=e708]
+                  - generic [ref=e711]: "0"
+                - paragraph [ref=e712]: Total Spent
+              - generic [ref=e713]:
+                - generic [ref=e714]:
+                  - img [ref=e715]
+                  - generic [ref=e718]: "0"
+                - paragraph [ref=e719]: Visits
+            - generic [ref=e721]:
+              - generic [ref=e723]: No visits yet
+              - button "View Details" [ref=e724] [cursor=pointer]
+          - generic [ref=e726]:
+            - generic [ref=e727]:
+              - generic [ref=e728]:
+                - generic [ref=e729]:
+                  - heading "Fatima Al Rashid" [level=3] [ref=e730]
+                  - generic [ref=e731]:
+                    - img [ref=e732]
+                    - text: Bronze
+                - paragraph [ref=e738]: "ID: CUST-1755805119942-0aqt0"
+              - button [ref=e739] [cursor=pointer]:
+                - img [ref=e740] [cursor=pointer]
+            - generic [ref=e744]:
+              - generic [ref=e745]:
+                - img [ref=e746]
+                - generic [ref=e748]: No phone
+              - generic [ref=e749]:
+                - img [ref=e750]
+                - generic [ref=e753]: No email
+            - generic [ref=e754]:
+              - generic [ref=e755]:
+                - generic [ref=e756]:
+                  - img [ref=e757]
+                  - generic [ref=e762]: "0"
+                - paragraph [ref=e763]: Points
+              - generic [ref=e764]:
+                - generic [ref=e765]:
+                  - img [ref=e766]
+                  - generic [ref=e769]: "0"
+                - paragraph [ref=e770]: Total Spent
+              - generic [ref=e771]:
+                - generic [ref=e772]:
+                  - img [ref=e773]
+                  - generic [ref=e776]: "0"
+                - paragraph [ref=e777]: Visits
+            - generic [ref=e779]:
+              - generic [ref=e781]: No visits yet
+              - button "View Details" [ref=e782] [cursor=pointer]
+          - generic [ref=e784]:
+            - generic [ref=e785]:
+              - generic [ref=e786]:
+                - generic [ref=e787]:
+                  - heading "Layla Mahmoud" [level=3] [ref=e788]
+                  - generic [ref=e789]:
+                    - img [ref=e790]
+                    - text: Bronze
+                - paragraph [ref=e796]: "ID: CUST-1755804958688-mi5cu"
+              - button [ref=e797] [cursor=pointer]:
+                - img [ref=e798] [cursor=pointer]
+            - generic [ref=e802]:
+              - generic [ref=e803]:
+                - img [ref=e804]
+                - generic [ref=e806]: No phone
+              - generic [ref=e807]:
+                - img [ref=e808]
+                - generic [ref=e811]: No email
+            - generic [ref=e812]:
+              - generic [ref=e813]:
+                - generic [ref=e814]:
+                  - img [ref=e815]
+                  - generic [ref=e820]: "0"
+                - paragraph [ref=e821]: Points
+              - generic [ref=e822]:
+                - generic [ref=e823]:
+                  - img [ref=e824]
+                  - generic [ref=e827]: "0"
+                - paragraph [ref=e828]: Total Spent
+              - generic [ref=e829]:
+                - generic [ref=e830]:
+                  - img [ref=e831]
+                  - generic [ref=e834]: "0"
+                - paragraph [ref=e835]: Visits
+            - generic [ref=e837]:
+              - generic [ref=e839]: No visits yet
+              - button "View Details" [ref=e840] [cursor=pointer]
+          - generic [ref=e842]:
+            - generic [ref=e843]:
+              - generic [ref=e844]:
+                - generic [ref=e845]:
+                  - heading "Noor Hassan" [level=3] [ref=e846]
+                  - generic [ref=e847]:
+                    - img [ref=e848]
+                    - text: Bronze
+                - paragraph [ref=e854]: "ID: CUST-1755804958414-35oov"
+              - button [ref=e855] [cursor=pointer]:
+                - img [ref=e856] [cursor=pointer]
+            - generic [ref=e860]:
+              - generic [ref=e861]:
+                - img [ref=e862]
+                - generic [ref=e864]: No phone
+              - generic [ref=e865]:
+                - img [ref=e866]
+                - generic [ref=e869]: No email
+            - generic [ref=e870]:
+              - generic [ref=e871]:
+                - generic [ref=e872]:
+                  - img [ref=e873]
+                  - generic [ref=e878]: "0"
+                - paragraph [ref=e879]: Points
+              - generic [ref=e880]:
+                - generic [ref=e881]:
+                  - img [ref=e882]
+                  - generic [ref=e885]: "0"
+                - paragraph [ref=e886]: Total Spent
+              - generic [ref=e887]:
+                - generic [ref=e888]:
+                  - img [ref=e889]
+                  - generic [ref=e892]: "0"
+                - paragraph [ref=e893]: Visits
+            - generic [ref=e895]:
+              - generic [ref=e897]: No visits yet
+              - button "View Details" [ref=e898] [cursor=pointer]
+          - generic [ref=e900]:
+            - generic [ref=e901]:
+              - generic [ref=e902]:
+                - generic [ref=e903]:
+                  - heading "Zara Abdullah" [level=3] [ref=e904]
+                  - generic [ref=e905]:
+                    - img [ref=e906]
+                    - text: Bronze
+                - paragraph [ref=e912]: "ID: CUST-1755804958240-41meo"
+              - button [ref=e913] [cursor=pointer]:
+                - img [ref=e914] [cursor=pointer]
+            - generic [ref=e918]:
+              - generic [ref=e919]:
+                - img [ref=e920]
+                - generic [ref=e922]: No phone
+              - generic [ref=e923]:
+                - img [ref=e924]
+                - generic [ref=e927]: No email
+            - generic [ref=e928]:
+              - generic [ref=e929]:
+                - generic [ref=e930]:
+                  - img [ref=e931]
+                  - generic [ref=e936]: "0"
+                - paragraph [ref=e937]: Points
+              - generic [ref=e938]:
+                - generic [ref=e939]:
+                  - img [ref=e940]
+                  - generic [ref=e943]: "0"
+                - paragraph [ref=e944]: Total Spent
+              - generic [ref=e945]:
+                - generic [ref=e946]:
+                  - img [ref=e947]
+                  - generic [ref=e950]: "0"
+                - paragraph [ref=e951]: Visits
+            - generic [ref=e953]:
+              - generic [ref=e955]: No visits yet
+              - button "View Details" [ref=e956] [cursor=pointer]
+          - generic [ref=e958]:
+            - generic [ref=e959]:
+              - generic [ref=e960]:
+                - generic [ref=e961]:
+                  - heading "Leila Ahmed" [level=3] [ref=e962]
+                  - generic [ref=e963]:
+                    - img [ref=e964]
+                    - text: Bronze
+                - paragraph [ref=e970]: "ID: CUST-1755804958115-nfj9f"
+              - button [ref=e971] [cursor=pointer]:
+                - img [ref=e972] [cursor=pointer]
+            - generic [ref=e976]:
+              - generic [ref=e977]:
+                - img [ref=e978]
+                - generic [ref=e980]: No phone
+              - generic [ref=e981]:
+                - img [ref=e982]
+                - generic [ref=e985]: No email
+            - generic [ref=e986]:
+              - generic [ref=e987]:
+                - generic [ref=e988]:
+                  - img [ref=e989]
+                  - generic [ref=e994]: "0"
+                - paragraph [ref=e995]: Points
+              - generic [ref=e996]:
+                - generic [ref=e997]:
+                  - img [ref=e998]
+                  - generic [ref=e1001]: "0"
+                - paragraph [ref=e1002]: Total Spent
+              - generic [ref=e1003]:
+                - generic [ref=e1004]:
+                  - img [ref=e1005]
+                  - generic [ref=e1008]: "0"
+                - paragraph [ref=e1009]: Visits
+            - generic [ref=e1011]:
+              - generic [ref=e1013]: No visits yet
+              - button "View Details" [ref=e1014] [cursor=pointer]
+          - generic [ref=e1016]:
+            - generic [ref=e1017]:
+              - generic [ref=e1018]:
+                - generic [ref=e1019]:
+                  - heading "Maya Patel" [level=3] [ref=e1020]
+                  - generic [ref=e1021]:
+                    - img [ref=e1022]
+                    - text: Bronze
+                - paragraph [ref=e1028]: "ID: CUST-1755804957991-0c3et"
+              - button [ref=e1029] [cursor=pointer]:
+                - img [ref=e1030] [cursor=pointer]
+            - generic [ref=e1034]:
+              - generic [ref=e1035]:
+                - img [ref=e1036]
+                - generic [ref=e1038]: No phone
+              - generic [ref=e1039]:
+                - img [ref=e1040]
+                - generic [ref=e1043]: No email
+            - generic [ref=e1044]:
+              - generic [ref=e1045]:
+                - generic [ref=e1046]:
+                  - img [ref=e1047]
+                  - generic [ref=e1052]: "0"
+                - paragraph [ref=e1053]: Points
+              - generic [ref=e1054]:
+                - generic [ref=e1055]:
+                  - img [ref=e1056]
+                  - generic [ref=e1059]: "0"
+                - paragraph [ref=e1060]: Total Spent
+              - generic [ref=e1061]:
+                - generic [ref=e1062]:
+                  - img [ref=e1063]
+                  - generic [ref=e1066]: "0"
+                - paragraph [ref=e1067]: Visits
+            - generic [ref=e1069]:
+              - generic [ref=e1071]: No visits yet
+              - button "View Details" [ref=e1072] [cursor=pointer]
+          - generic [ref=e1074]:
+            - generic [ref=e1075]:
+              - generic [ref=e1076]:
+                - generic [ref=e1077]:
+                  - heading "Sarah Johnson" [level=3] [ref=e1078]
+                  - generic [ref=e1079]:
+                    - img [ref=e1080]
+                    - text: Bronze
+                - paragraph [ref=e1086]: "ID: CUST-1755804957535-8ul1b"
+              - button [ref=e1087] [cursor=pointer]:
+                - img [ref=e1088] [cursor=pointer]
+            - generic [ref=e1092]:
+              - generic [ref=e1093]:
+                - img [ref=e1094]
+                - generic [ref=e1096]: No phone
+              - generic [ref=e1097]:
+                - img [ref=e1098]
+                - generic [ref=e1101]: No email
+            - generic [ref=e1102]:
+              - generic [ref=e1103]:
+                - generic [ref=e1104]:
+                  - img [ref=e1105]
+                  - generic [ref=e1110]: "0"
+                - paragraph [ref=e1111]: Points
+              - generic [ref=e1112]:
+                - generic [ref=e1113]:
+                  - img [ref=e1114]
+                  - generic [ref=e1117]: "0"
+                - paragraph [ref=e1118]: Total Spent
+              - generic [ref=e1119]:
+                - generic [ref=e1120]:
+                  - img [ref=e1121]
+                  - generic [ref=e1124]: "0"
+                - paragraph [ref=e1125]: Visits
+            - generic [ref=e1127]:
+              - generic [ref=e1129]: No visits yet
+              - button "View Details" [ref=e1130] [cursor=pointer]
+          - generic [ref=e1132]:
+            - generic [ref=e1133]:
+              - generic [ref=e1134]:
+                - generic [ref=e1135]:
+                  - heading "Aisha Khan" [level=3] [ref=e1136]
+                  - generic [ref=e1137]:
+                    - img [ref=e1138]
+                    - text: Bronze
+                - paragraph [ref=e1144]: "ID: CUST-1755804957427-olymx"
+              - button [ref=e1145] [cursor=pointer]:
+                - img [ref=e1146] [cursor=pointer]
+            - generic [ref=e1150]:
+              - generic [ref=e1151]:
+                - img [ref=e1152]
+                - generic [ref=e1154]: No phone
+              - generic [ref=e1155]:
+                - img [ref=e1156]
+                - generic [ref=e1159]: No email
+            - generic [ref=e1160]:
+              - generic [ref=e1161]:
+                - generic [ref=e1162]:
+                  - img [ref=e1163]
+                  - generic [ref=e1168]: "0"
+                - paragraph [ref=e1169]: Points
+              - generic [ref=e1170]:
+                - generic [ref=e1171]:
+                  - img [ref=e1172]
+                  - generic [ref=e1175]: "0"
+                - paragraph [ref=e1176]: Total Spent
+              - generic [ref=e1177]:
+                - generic [ref=e1178]:
+                  - img [ref=e1179]
+                  - generic [ref=e1182]: "0"
+                - paragraph [ref=e1183]: Visits
+            - generic [ref=e1185]:
+              - generic [ref=e1187]: No visits yet
+              - button "View Details" [ref=e1188] [cursor=pointer]
+          - generic [ref=e1190]:
+            - generic [ref=e1191]:
+              - generic [ref=e1192]:
+                - generic [ref=e1193]:
+                  - heading "Fatima Al Rashid" [level=3] [ref=e1194]
+                  - generic [ref=e1195]:
+                    - img [ref=e1196]
+                    - text: Bronze
+                - paragraph [ref=e1202]: "ID: CUST-1755804957143-wvk09"
+              - button [ref=e1203] [cursor=pointer]:
+                - img [ref=e1204] [cursor=pointer]
+            - generic [ref=e1208]:
+              - generic [ref=e1209]:
+                - img [ref=e1210]
+                - generic [ref=e1212]: No phone
+              - generic [ref=e1213]:
+                - img [ref=e1214]
+                - generic [ref=e1217]: No email
+            - generic [ref=e1218]:
+              - generic [ref=e1219]:
+                - generic [ref=e1220]:
+                  - img [ref=e1221]
+                  - generic [ref=e1226]: "0"
+                - paragraph [ref=e1227]: Points
+              - generic [ref=e1228]:
+                - generic [ref=e1229]:
+                  - img [ref=e1230]
+                  - generic [ref=e1233]: "0"
+                - paragraph [ref=e1234]: Total Spent
+              - generic [ref=e1235]:
+                - generic [ref=e1236]:
+                  - img [ref=e1237]
+                  - generic [ref=e1240]: "0"
+                - paragraph [ref=e1241]: Visits
+            - generic [ref=e1243]:
+              - generic [ref=e1245]: No visits yet
+              - button "View Details" [ref=e1246] [cursor=pointer]
+  - generic [ref=e1248]:
+    - img [ref=e1250]
+    - button "Open Tanstack query devtools" [ref=e1299] [cursor=pointer]:
+      - img [ref=e1300] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e1354] [cursor=pointer]:
+    - img [ref=e1355] [cursor=pointer]
+  - alert [ref=e1359]
+```

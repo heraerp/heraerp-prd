@@ -463,7 +463,8 @@ class AutoJournalGenerator {
       .from('core_entities')
       .select('*')
       .eq('organization_id', organizationId)
-      .eq('entity_type', 'gl_account')
+      .eq('entity_type', 'account')
+      .eq('business_rules->ledger_type', 'GL')
       .order('entity_code');
     
     return data || [];

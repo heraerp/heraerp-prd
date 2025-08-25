@@ -54,7 +54,7 @@ async function main() {
     .insert({
       organization_id: orgId,
       transaction_type: 'purchase_order',
-      transaction_number: `PO-${Date.now()}`,
+      transaction_code: `PO-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       total_amount: 25000,
       smart_code: 'HERA.SCM.PO.CREATE.v1'
@@ -63,7 +63,7 @@ async function main() {
     .single();
 
   if (transaction) {
-    console.log(`  ✅ Created transaction: ${transaction.transaction_number}`);
+    console.log(`  ✅ Created transaction: ${transaction.transaction_code}`);
     
     // Now create status relationship
     console.log('\n3️⃣ Setting Transaction Status via Relationship...\n');
@@ -76,8 +76,8 @@ async function main() {
         .from('core_relationships')
         .insert({
           organization_id: orgId,
-          parent_entity_id: transaction.id,
-          child_entity_id: pendingStatus.id,
+          from_entity_id: transaction.id,
+          to_entity_id: pendingStatus.id,
           relationship_type: 'has_status',
           smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1',
           metadata: {
@@ -89,7 +89,7 @@ async function main() {
         .single();
       
       if (relationship) {
-        console.log(`  ✅ Transaction ${transaction.transaction_number} now has status: PENDING`);
+        console.log(`  ✅ Transaction ${transaction.transaction_code} now has status: PENDING`);
       }
     }
   }
@@ -99,16 +99,16 @@ async function main() {
   
   const query = `
     SELECT 
-      t.transaction_number,
+      t.transaction_code,
       t.transaction_type,
       t.total_amount,
       s.entity_name as current_status,
       r.created_at as status_assigned_at
     FROM universal_transactions t
-    LEFT JOIN core_relationships r ON t.id = r.parent_entity_id 
+    LEFT JOIN core_relationships r ON t.id = r.from_entity_id 
       AND r.relationship_type = 'has_status'
       AND r.organization_id = '${orgId}'
-    LEFT JOIN core_entities s ON r.child_entity_id = s.id 
+    LEFT JOIN core_entities s ON r.to_entity_id = s.id 
       AND s.entity_type = 'workflow_status'
     WHERE t.organization_id = '${orgId}'
     ORDER BY t.created_at DESC
@@ -134,8 +134,8 @@ async function main() {
       r.metadata->>'end_date' as to_date,
       r.metadata->>'changed_by' as changed_by
     FROM core_relationships r
-    JOIN core_entities s ON r.child_entity_id = s.id
-    WHERE r.parent_entity_id = 'transaction_id_here'
+    JOIN core_entities s ON r.to_entity_id = s.id
+    WHERE r.from_entity_id = 'transaction_id_here'
       AND r.relationship_type = 'has_status'
     ORDER BY r.created_at ASC
   `;

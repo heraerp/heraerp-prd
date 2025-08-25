@@ -184,7 +184,7 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
     }
 
     // Industry standard compliance
-    if (target.type === 'entity' && data.entity_type === 'gl_account') {
+    if (target.type === 'entity' && data.entity_type === 'account' && data.business_rules?.ledger_type === 'GL') {
       if (data.dynamic_fields) {
         const accountType = data.dynamic_fields.find((f: any) => f.field_name === 'account_type')
         if (accountType) {

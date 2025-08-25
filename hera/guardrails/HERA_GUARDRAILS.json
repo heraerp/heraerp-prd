@@ -1,0 +1,237 @@
+{
+  "hera_guardrails": {
+    "version": "2.0.0",
+    "updated_at": "2025-08-24",
+
+    "scope": {
+      "sacred_tables": [
+        "core_organizations",
+        "core_entities",
+        "core_dynamic_data",
+        "core_relationships",
+        "universal_transactions",
+        "universal_transaction_lines"
+      ],
+      "severity_levels": ["error", "warn", "info"]
+    },
+
+    "hard_blocks": [
+      {
+        "id": "TABLE-ONLY-6",
+        "description": "Only the six sacred tables may be created/altered; no new business tables.",
+        "applies_to": ["sql.ddl"],
+        "match_forbid_regex": "CREATE\\s+TABLE\\s+(?!core_|universal_)",
+        "severity": "error",
+        "autofix": { "action": "reject" }
+      },
+      {
+        "id": "DDL-FORBID-BUSINESS-ADD-COLUMN",
+        "description": "No business-specific columns on sacred tables; use core_dynamic_data.",
+        "applies_to": ["sql.ddl.alter"],
+        "match_regex": "ALTER\\s+TABLE\\s+(core_|universal_)[a-z_]+\\s+ADD\\s+COLUMN\\s+(?<col>[a-z_]+)\\s+(?<type>[^,;\\s]+)",
+        "severity": "error",
+        "autofix": { "action": "suggest_route", "params": { "route": "core_dynamic_data" } }
+      }
+    ],
+
+    "multi_tenancy": {
+      "rules": [
+        {
+          "id": "ORG-FILTER-REQUIRED",
+          "description": "All reads/writes must include organization_id.",
+          "applies_to": ["sql.dml.select","sql.dml.insert","sql.dml.update","sql.dml.delete","api.payload"],
+          "validators": [
+            { "type": "sql_where_contains", "value": "organization_id" },
+            { "type": "json_path_required", "value": "$.organization_id" }
+          ],
+          "severity": "error",
+          "autofix": { "action": "inject_filter", "params": { "clause": "organization_id = :current_org_id" } }
+        }
+      ]
+    },
+
+    "smart_code": {
+      "pattern": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$",
+      "required_on_tables": [
+        "core_entities",
+        "core_dynamic_data",
+        "core_relationships",
+        "universal_transactions",
+        "universal_transaction_lines"
+      ],
+      "rules": [
+        {
+          "id": "SMARTCODE-PRESENT",
+          "description": "smart_code must exist and match the global pattern.",
+          "applies_to": ["db.row","api.payload"],
+          "validators": [
+            { "type": "column_required", "value": "smart_code" },
+            { "type": "regex", "column": "smart_code", "value": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$" }
+          ],
+          "severity": "error"
+        }
+      ]
+    },
+
+    "entities": {
+      "normalization": [
+        {
+          "id": "ENTITY-TYPE-ALIAS-GL-ACCOUNT",
+          "description": "Disallow entity_type='gl_account'. Normalize to 'account' and set GL semantics in business_rules.",
+          "applies_to": ["db.row","api.payload"],
+          "when": { "column_equals": { "entity_type": "gl_account" } },
+          "severity": "error",
+          "autofix": {
+            "action": "rewrite",
+            "params": {
+              "entity_type": "account",
+              "business_rules.ledger_type": "GL"
+            }
+          }
+        }
+      ],
+      "enforcement": [
+        {
+          "id": "ACCOUNT-LEDGER-SEMANTICS",
+          "description": "If entity_type='account', must carry ledger semantics via smart_code or business_rules.ledger_type.",
+          "applies_to": ["core_entities"],
+          "when": { "column_equals": { "entity_type": "account" } },
+          "validators": [
+            { "type": "or", "validators": [
+              { "type": "regex", "column": "smart_code", "value": "\\.ACCOUNT\\." },
+              { "type": "json_path_equals", "column": "business_rules", "path": "$.ledger_type", "value": "GL" },
+              { "type": "json_path_equals", "column": "business_rules", "path": "$.ledger_type", "value": "STAT" }
+            ]}
+          ],
+          "severity": "error",
+          "hint": "Use smart codes like HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1 or set business_rules.ledger_type."
+        },
+        {
+          "id": "ACCOUNT-HIERARCHY",
+          "description": "Account hierarchy must use parent_entity_id; posting allowed only on leaves.",
+          "applies_to": ["core_entities"],
+          "when": { "column_equals": { "entity_type": "account" } },
+          "validators": [
+            { "type": "json_path_boolean_required", "column": "business_rules", "path": "$.allow_posting" }
+          ],
+          "invariants": [
+            { "rule": "if parent_entity_id is null then allow_posting=false" },
+            { "rule": "if has_children(entity) then allow_posting=false" }
+          ],
+          "severity": "error"
+        }
+      ]
+    },
+
+    "transactions": {
+      "header_rules": [
+        {
+          "id": "TXN-HEADER-REQUIRED-FIELDS",
+          "description": "universal_transactions must have org, type, smart_code (schema requires these).",
+          "applies_to": ["universal_transactions","api.payload"],
+          "validators": [
+            { "type": "column_required", "value": "organization_id" },
+            { "type": "column_required", "value": "transaction_type" },
+            { "type": "column_required", "value": "smart_code" }
+          ],
+          "severity": "error"
+        }
+      ],
+      "line_rules": [
+        {
+          "id": "TXN-LINE-REQUIRED",
+          "description": "Each line must have org, transaction_id, line_number, line_type, smart_code.",
+          "applies_to": ["universal_transaction_lines","api.payload"],
+          "validators": [
+            { "type": "column_required", "value": "organization_id" },
+            { "type": "column_required", "value": "transaction_id" },
+            { "type": "column_required", "value": "line_number" },
+            { "type": "column_required", "value": "line_type" },
+            { "type": "column_required", "value": "smart_code" }
+          ],
+            "severity": "error"
+        },
+        {
+          "id": "GL-BALANCED",
+          "description": "GL transactions must balance per currency (sum debits == sum credits).",
+          "applies_to": ["universal_transaction_lines"],
+          "when": { "smart_code_contains_any": [".GL.", ".GL.LINE."] },
+          "validators": [{ "type": "balanced_debits_credits" }],
+          "severity": "error"
+        }
+      ]
+    },
+
+    "relationships": {
+      "rules": [
+        {
+          "id": "REL-NAMES-CANONICAL",
+          "description": "Use from_entity_id/to_entity_id for relationships (as per schema).",
+          "applies_to": ["core_relationships","api.payload"],
+          "validators": [
+            { "type": "column_required", "value": "from_entity_id" },
+            { "type": "column_required", "value": "to_entity_id" }
+          ],
+          "severity": "error"
+        }
+      ]
+    },
+
+    "amendment_policy": {
+      "decision_principle": "No business columns on sacred tables. Route business attributes to core_dynamic_data; behavior to JSON rules.",
+      "allowed_column_categories": [
+        { "category": "system_audit", "examples": ["archived_at","soft_deleted","deleted_by"] },
+        { "category": "system_ai", "examples": ["ai_flags","ai_feedback_score"] },
+        { "category": "system_observability", "examples": ["ingest_source","ingest_run_id"] }
+      ],
+      "routing_rules": [
+        { "id": "ROUTE-BUSINESS-FIELD-TO-DYNAMIC", "match_category": "business_specific", "action": "reject_and_route", "route_to": "core_dynamic_data" }
+      ]
+    },
+
+    "ai_native": {
+      "rules": [
+        {
+          "id": "AI-FIELDS-DEFAULTS",
+          "description": "Ensure AI fields exist or are defaultable on core tables.",
+          "applies_to": ["db.row"],
+          "validators": [
+            { "type": "columns_present_or_default", "columns": ["ai_confidence","ai_insights"] }
+          ],
+          "severity": "warn"
+        }
+      ]
+    },
+
+    "migration_helpers": {
+      "rewriters": [
+        {
+          "id": "REWRITE-GL-ACCOUNT-PAYLOADS",
+          "description": "Auto-normalize any incoming payload using entity_type='gl_account'.",
+          "applies_to": ["api.payload"],
+          "match": { "json_path_equals": ["$.entity_type","gl_account"] },
+          "rewrite": {
+            "entity_type": "account",
+            "business_rules": { "ledger_type": "GL" }
+          }
+        }
+      ],
+      "views": [
+        {
+          "id": "VIEW-ACCOUNTS-ALIAS",
+          "description": "Optional temporary view to allow legacy callers to query both types while you refactor.",
+          "sql": "CREATE OR REPLACE VIEW v_core_entities_accounts AS SELECT * FROM core_entities WHERE entity_type IN ('account');"
+        }
+      ]
+    },
+
+    "ci_pipeline": {
+      "steps": [
+        { "name": "Load Charter", "action": "load_context", "params": { "path": "HERA_CODING_CHARTER.md" } },
+        { "name": "Lint", "action": "lint_sql_and_payloads", "params": { "guardrails_ref": "hera_guardrails" } },
+        { "name": "Runtime Gate", "action": "edge_function_check", "params": { "function": "hera.guardrail" } }
+      ],
+      "failure_policy": "block_on_error"
+    }
+  }
+}

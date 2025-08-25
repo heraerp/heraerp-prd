@@ -80,7 +80,7 @@ const generateSmartCode = (type, context = {}) => {
     'vendor': 'VEND',
     'product': 'PROD',
     'employee': 'EMPL',
-    'gl_account': 'GL',
+    'account': 'ACCT',
     'menu_item': 'MENU',
     'patient': 'PAT',
     'location': 'LOC',
@@ -115,7 +115,7 @@ const detectIndustry = (type) => {
     'menu_item': 'REST',
     'patient': 'HLTH',
     'bom_component': 'MFG',
-    'gl_account': 'FIN',
+    'account': 'FIN',
     'development_task': 'TECH'
   };
   return industryMap[type] || 'UNIV';
@@ -162,7 +162,7 @@ const validateEntityType = (entityType) => {
   // These are universal patterns that work for any business
   const UNIVERSAL_TYPES = [
     'customer', 'vendor', 'product', 'employee', 'user',
-    'location', 'project', 'gl_account', 'document',
+    'location', 'project', 'account', 'document',
     'task', 'asset', 'service', 'contract', 'policy',
     'menu_item', 'patient', 'student', 'member', 'partner'
   ];

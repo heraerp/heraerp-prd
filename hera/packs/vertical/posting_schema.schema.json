@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heraerp.com/schemas/posting-schema-dsl/v1",
+  "title": "HERA Posting Schema DSL",
+  "description": "Industry-agnostic posting schema for automatic journal generation",
+  "type": "object",
+  "required": ["ledgers", "accounts", "tax", "splits", "dimension_requirements"],
+  "properties": {
+    "ledgers": {
+      "type": "array",
+      "description": "List of ledger types this schema applies to",
+      "items": {
+        "type": "string",
+        "enum": ["GL", "STAT", "MGMT", "IFRS", "LOCAL_GAAP"]
+      },
+      "minItems": 1
+    },
+    "accounts": {
+      "type": "object",
+      "description": "Account mappings by posting key",
+      "required": ["revenue", "tax_output", "clearing"],
+      "properties": {
+        "revenue": {
+          "type": "string",
+          "description": "Entity ID of revenue account"
+        },
+        "tax_output": {
+          "type": "string",
+          "description": "Entity ID of tax payable account"
+        },
+        "tips_payable": {
+          "type": "string",
+          "description": "Entity ID of tips payable account (optional)"
+        },
+        "clearing": {
+          "type": "string",
+          "description": "Entity ID of clearing/cash account"
+        },
+        "fees": {
+          "type": "string",
+          "description": "Entity ID of payment fees account"
+        },
+        "discount": {
+          "type": "string",
+          "description": "Entity ID of discount account"
+        },
+        "rounding": {
+          "type": "string",
+          "description": "Entity ID of rounding difference account"
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "Additional account mappings"
+      }
+    },
+    "tax": {
+      "type": "object",
+      "description": "Tax configuration",
+      "required": ["profile_ref", "inclusive_prices", "rounding"],
+      "properties": {
+        "profile_ref": {
+          "type": "string",
+          "description": "Entity ID of tax_profile entity"
+        },
+        "inclusive_prices": {
+          "type": "boolean",
+          "description": "Whether prices include tax"
+        },
+        "rounding": {
+          "type": "string",
+          "enum": ["none", "line", "total", "swedish"],
+          "description": "Tax rounding method"
+        }
+      }
+    },
+    "splits": {
+      "type": "object",
+      "description": "Automatic split configuration",
+      "required": ["dimensions", "rules"],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "description": "Available dimensions for splitting",
+          "items": {
+            "type": "string",
+            "enum": ["cost_center", "profit_center", "project", "location", "department", "product_line", "channel", "customer_segment"]
+          }
+        },
+        "rules": {
+          "type": "array",
+          "description": "Split rules by event type",
+          "items": {
+            "type": "object",
+            "required": ["event_pattern", "split_by", "allocation_method"],
+            "properties": {
+              "event_pattern": {
+                "type": "string",
+                "description": "Regex pattern for event smart codes"
+              },
+              "split_by": {
+                "type": "string",
+                "description": "Dimension to split by"
+              },
+              "allocation_method": {
+                "type": "string",
+                "enum": ["proportional", "fixed", "custom"],
+                "description": "How to allocate amounts"
+              },
+              "allocation_data": {
+                "type": "object",
+                "description": "Additional allocation configuration"
+              }
+            }
+          }
+        }
+      }
+    },
+    "dimension_requirements": {
+      "type": "array",
+      "description": "Required dimensions by account pattern",
+      "items": {
+        "type": "object",
+        "required": ["account_pattern", "required_dimensions", "enforcement"],
+        "properties": {
+          "account_pattern": {
+            "type": "string",
+            "description": "Regex pattern for account codes"
+          },
+          "required_dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "enforcement": {
+            "type": "string",
+            "enum": ["error", "warning", "auto_default"],
+            "description": "How to handle missing dimensions"
+          },
+          "default_values": {
+            "type": "object",
+            "description": "Default dimension values if auto_default"
+          }
+        }
+      }
+    },
+    "payments": {
+      "type": "object",
+      "description": "Payment processing configuration",
+      "properties": {
+        "capture_type": {
+          "type": "string",
+          "enum": ["immediate", "deferred", "manual"],
+          "default": "immediate"
+        },
+        "open_item": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to track open items for AR/AP"
+        },
+        "settlement_days": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    },
+    "validations": {
+      "type": "object",
+      "description": "Additional validation rules",
+      "properties": {
+        "max_line_count": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1000
+        },
+        "require_external_ref": {
+          "type": "boolean",
+          "default": false
+        },
+        "allowed_currencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          }
+        }
+      }
+    }
+  }
+}

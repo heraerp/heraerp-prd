@@ -1,0 +1,78 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]:
+          - heading "Luxury Salon" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Beauty & Wellness
+      - button "Quick Actions" [ref=e14] [cursor=pointer]:
+        - img [ref=e15] [cursor=pointer]
+        - text: Quick Actions
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - button "Dashboard" [ref=e18] [cursor=pointer]:
+            - img [ref=e20] [cursor=pointer]
+            - generic [ref=e22] [cursor=pointer]: Dashboard
+          - button "Appointments 12" [ref=e23] [cursor=pointer]:
+            - img [ref=e25] [cursor=pointer]
+            - generic [ref=e27] [cursor=pointer]: Appointments
+            - generic [ref=e28] [cursor=pointer]: "12"
+          - button "Clients" [active] [ref=e29] [cursor=pointer]:
+            - img [ref=e31] [cursor=pointer]
+            - generic [ref=e36] [cursor=pointer]: Clients
+          - button "Services" [ref=e38] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+            - generic [ref=e46] [cursor=pointer]: Services
+          - button "Staff" [ref=e47] [cursor=pointer]:
+            - img [ref=e49] [cursor=pointer]
+            - generic [ref=e51] [cursor=pointer]: Staff
+          - button "Inventory 8" [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+            - generic [ref=e58] [cursor=pointer]: Inventory
+            - generic [ref=e59] [cursor=pointer]: "8"
+          - button "Point of Sale" [ref=e60] [cursor=pointer]:
+            - img [ref=e62] [cursor=pointer]
+            - generic [ref=e64] [cursor=pointer]: Point of Sale
+          - button "Payments" [ref=e65] [cursor=pointer]:
+            - img [ref=e67] [cursor=pointer]
+            - generic [ref=e71] [cursor=pointer]: Payments
+          - button "Loyalty New" [ref=e72] [cursor=pointer]:
+            - img [ref=e74] [cursor=pointer]
+            - generic [ref=e76] [cursor=pointer]: Loyalty
+            - generic [ref=e77] [cursor=pointer]: New
+          - button "Reports" [ref=e78] [cursor=pointer]:
+            - img [ref=e80] [cursor=pointer]
+            - generic [ref=e81] [cursor=pointer]: Reports
+          - button "Marketing" [ref=e82] [cursor=pointer]:
+            - img [ref=e84] [cursor=pointer]
+            - generic [ref=e86] [cursor=pointer]: Marketing
+          - button "Settings" [ref=e87] [cursor=pointer]:
+            - img [ref=e89] [cursor=pointer]
+            - generic [ref=e92] [cursor=pointer]: Settings
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - button [ref=e95] [cursor=pointer]:
+            - img [ref=e96] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e100]:
+          - button [ref=e101] [cursor=pointer]:
+            - img [ref=e102] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e106]:
+      - generic [ref=e108]:
+        - img [ref=e109]
+        - paragraph [ref=e111]: Loading client data...
+  - generic [ref=e113]:
+    - img [ref=e115]
+    - button "Open Tanstack query devtools" [ref=e163] [cursor=pointer]:
+      - img [ref=e164] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e217] [cursor=pointer]:
+    - img [ref=e218] [cursor=pointer]
+  - alert [ref=e221]
+```

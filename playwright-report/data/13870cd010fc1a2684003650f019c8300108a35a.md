@@ -1,0 +1,208 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]:
+          - heading "Luxury Salon" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Beauty & Wellness
+      - button "Quick Actions" [ref=e14] [cursor=pointer]:
+        - img [ref=e15] [cursor=pointer]
+        - text: Quick Actions
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - button "Dashboard" [ref=e18] [cursor=pointer]:
+            - img [ref=e20] [cursor=pointer]
+            - generic [ref=e22] [cursor=pointer]: Dashboard
+          - button "Appointments 12" [ref=e24] [cursor=pointer]:
+            - img [ref=e26] [cursor=pointer]
+            - generic [ref=e28] [cursor=pointer]: Appointments
+            - generic [ref=e29] [cursor=pointer]: "12"
+          - button "Clients" [ref=e30] [cursor=pointer]:
+            - img [ref=e32] [cursor=pointer]
+            - generic [ref=e37] [cursor=pointer]: Clients
+          - button "Services" [ref=e38] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+            - generic [ref=e46] [cursor=pointer]: Services
+          - button "Staff" [ref=e47] [cursor=pointer]:
+            - img [ref=e49] [cursor=pointer]
+            - generic [ref=e51] [cursor=pointer]: Staff
+          - button "Inventory 8" [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+            - generic [ref=e58] [cursor=pointer]: Inventory
+            - generic [ref=e59] [cursor=pointer]: "8"
+          - button "Point of Sale" [active] [ref=e60] [cursor=pointer]:
+            - img [ref=e62] [cursor=pointer]
+            - generic [ref=e64] [cursor=pointer]: Point of Sale
+          - button "Payments" [ref=e65] [cursor=pointer]:
+            - img [ref=e67] [cursor=pointer]
+            - generic [ref=e71] [cursor=pointer]: Payments
+          - button "Loyalty New" [ref=e72] [cursor=pointer]:
+            - img [ref=e74] [cursor=pointer]
+            - generic [ref=e76] [cursor=pointer]: Loyalty
+            - generic [ref=e77] [cursor=pointer]: New
+          - button "Reports" [ref=e78] [cursor=pointer]:
+            - img [ref=e80] [cursor=pointer]
+            - generic [ref=e81] [cursor=pointer]: Reports
+          - button "Marketing" [ref=e82] [cursor=pointer]:
+            - img [ref=e84] [cursor=pointer]
+            - generic [ref=e86] [cursor=pointer]: Marketing
+          - button "Settings" [ref=e87] [cursor=pointer]:
+            - img [ref=e89] [cursor=pointer]
+            - generic [ref=e92] [cursor=pointer]: Settings
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - button [ref=e95] [cursor=pointer]:
+            - img [ref=e96] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e100]:
+          - button [ref=e101] [cursor=pointer]:
+            - img [ref=e102] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - heading "Welcome to Dubai Luxury Salon & Spa" [level=1] [ref=e111]
+            - paragraph [ref=e112]:
+              - img [ref=e113]
+              - text: Your beauty business management hub
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - img [ref=e117]
+              - text: Professional Plan
+            - button "Settings" [ref=e119] [cursor=pointer]:
+              - img [ref=e120] [cursor=pointer]
+              - text: Settings
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e126]:
+              - heading "Today's Appointments" [level=3] [ref=e127]
+              - img [ref=e129]
+            - generic [ref=e132]:
+              - paragraph [ref=e133]: "12"
+              - paragraph [ref=e134]: +3 from yesterday
+          - generic [ref=e135]:
+            - generic [ref=e137]:
+              - heading "Active Customers" [level=3] [ref=e138]
+              - img [ref=e140]
+            - generic [ref=e144]:
+              - paragraph [ref=e145]: "248"
+              - paragraph [ref=e146]: +12 this week
+          - generic [ref=e147]:
+            - generic [ref=e149]:
+              - heading "Today's Revenue" [level=3] [ref=e150]
+              - img [ref=e152]
+            - generic [ref=e155]:
+              - paragraph [ref=e156]: AED 3,450
+              - paragraph [ref=e157]: +15% from average
+          - generic [ref=e158]:
+            - generic [ref=e160]:
+              - heading "Products in Stock" [level=3] [ref=e161]
+              - img [ref=e163]
+            - generic [ref=e168]:
+              - paragraph [ref=e169]: "156"
+              - paragraph [ref=e170]: 8 low stock items
+        - generic [ref=e171]:
+          - heading "Quick Actions" [level=2] [ref=e172]
+          - generic [ref=e173]:
+            - generic [ref=e176] [cursor=pointer]:
+              - img [ref=e178] [cursor=pointer]
+              - generic [ref=e181] [cursor=pointer]:
+                - heading "New Appointment" [level=3] [ref=e182] [cursor=pointer]
+                - paragraph [ref=e183] [cursor=pointer]: Book a service for a customer
+            - generic [ref=e186] [cursor=pointer]:
+              - img [ref=e188] [cursor=pointer]
+              - generic [ref=e192] [cursor=pointer]:
+                - heading "New Customer" [level=3] [ref=e193] [cursor=pointer]
+                - paragraph [ref=e194] [cursor=pointer]: Add a new customer profile
+            - generic [ref=e197] [cursor=pointer]:
+              - img [ref=e199] [cursor=pointer]
+              - generic [ref=e201] [cursor=pointer]:
+                - heading "New Sale" [level=3] [ref=e202] [cursor=pointer]
+                - paragraph [ref=e203] [cursor=pointer]: Process product or service sale
+            - generic [ref=e206] [cursor=pointer]:
+              - img [ref=e208] [cursor=pointer]
+              - generic [ref=e209] [cursor=pointer]:
+                - heading "View Reports" [level=3] [ref=e210] [cursor=pointer]
+                - paragraph [ref=e211] [cursor=pointer]: Check business analytics
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - generic [ref=e215]:
+              - heading "Today's Appointments" [level=3] [ref=e216]:
+                - img [ref=e217]
+                - text: Today's Appointments
+              - button "View All" [ref=e220] [cursor=pointer]
+            - generic [ref=e222]:
+              - generic [ref=e223]:
+                - generic [ref=e224]:
+                  - generic [ref=e225]: 10:00 AM
+                  - generic [ref=e226]:
+                    - paragraph [ref=e227]: Sarah Johnson
+                    - paragraph [ref=e228]: Hair Color & Cut with Emma
+                - generic [ref=e229]: confirmed
+              - generic [ref=e230]:
+                - generic [ref=e231]:
+                  - generic [ref=e232]: 11:30 AM
+                  - generic [ref=e233]:
+                    - paragraph [ref=e234]: Maya Patel
+                    - paragraph [ref=e235]: Manicure & Pedicure with Lisa
+                - generic [ref=e236]: confirmed
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - generic [ref=e239]: 2:00 PM
+                  - generic [ref=e240]:
+                    - paragraph [ref=e241]: Fatima Al Rashid
+                    - paragraph [ref=e242]: Facial Treatment with Nina
+                - generic [ref=e243]: pending
+              - generic [ref=e244]:
+                - generic [ref=e245]:
+                  - generic [ref=e246]: 3:30 PM
+                  - generic [ref=e247]:
+                    - paragraph [ref=e248]: Aisha Khan
+                    - paragraph [ref=e249]: Hair Styling with Emma
+                - generic [ref=e250]: confirmed
+          - generic [ref=e251]:
+            - generic [ref=e253]:
+              - heading "Popular Services This Week" [level=3] [ref=e254]:
+                - img [ref=e255]
+                - text: Popular Services This Week
+              - button "Manage Services" [ref=e257] [cursor=pointer]
+            - generic [ref=e259]:
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - img [ref=e263]
+                  - generic [ref=e269]:
+                    - paragraph [ref=e270]: Hair Color & Highlights
+                    - paragraph [ref=e271]: 32 bookings
+                - generic [ref=e272]: AED 450
+              - generic [ref=e273]:
+                - generic [ref=e274]:
+                  - img [ref=e276]
+                  - generic [ref=e278]:
+                    - paragraph [ref=e279]: Premium Facial
+                    - paragraph [ref=e280]: 28 bookings
+                - generic [ref=e281]: AED 350
+              - generic [ref=e282]:
+                - generic [ref=e283]:
+                  - img [ref=e285]
+                  - generic [ref=e287]:
+                    - paragraph [ref=e288]: Spa Package
+                    - paragraph [ref=e289]: 24 bookings
+                - generic [ref=e290]: AED 650
+        - button "Book New Appointment" [ref=e292] [cursor=pointer]:
+          - img [ref=e293] [cursor=pointer]
+          - text: Book New Appointment
+  - generic [ref=e295]:
+    - img [ref=e297]
+    - button "Open Tanstack query devtools" [ref=e345] [cursor=pointer]:
+      - img [ref=e346] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e399] [cursor=pointer]:
+    - img [ref=e400] [cursor=pointer]
+  - alert [ref=e403]
+```

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "description": "MCP playbook for posting schema resolution",
+  "events": [
+    {
+      "event_smart_code": "HERA.POS.SALE.V1",
+      "lookup": "relationship:applies_to",
+      "description": "Point of Sale transaction"
+    },
+    {
+      "event_smart_code": "HERA.POS.REFUND.V1",
+      "lookup": "relationship:applies_to",
+      "description": "Point of Sale refund"
+    },
+    {
+      "event_smart_code": "HERA.PAYMENT.SETTLEMENT.V1",
+      "lookup": "relationship:applies_to",
+      "description": "Payment settlement and fees"
+    }
+  ],
+  "lookup_strategy": {
+    "relationship_type": "applies_to",
+    "metadata_key": "event_smart_code",
+    "priority_order": "desc",
+    "cache_ttl_seconds": 300
+  },
+  "tax_profile_lookup": {
+    "relationship_type": "uses_tax_profile",
+    "from_entity_type": "posting_schema",
+    "to_entity_type": "tax_profile"
+  },
+  "fallback": {
+    "enabled": false,
+    "default_schema_code": null
+  }
+}

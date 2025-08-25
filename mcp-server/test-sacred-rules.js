@@ -182,7 +182,7 @@ async function testSacredRules() {
   console.log('\n🌍 TEST 5: Universal Pattern Enforcement');
   console.log('-'.repeat(40));
   
-  const universalEntityTypes = ['customer', 'vendor', 'product', 'employee', 'gl_account'];
+  const universalEntityTypes = ['customer', 'vendor', 'product', 'employee', 'account'];
   const universalTxTypes = ['sale', 'purchase', 'payment', 'journal_entry'];
   
   console.log('Universal Entity Types (work for any business):');

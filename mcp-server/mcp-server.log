@@ -1,0 +1,47 @@
+[dotenv@17.2.1] injecting env (6) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:51135) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3001
+📍 Health check: http://localhost:3001/health
+🤖 UAT Chat endpoint: http://localhost:3001/api/chat
+🛍️ POS endpoint: http://localhost:3001/api/uat/pos
+📦 Inventory endpoint: http://localhost:3001/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3001/api/uat/appointments
+📊 Reports endpoint: http://localhost:3001/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3001/api/uat/scenarios
+UAT Chat error: Error: Unknown report type: undefined
+    at generateReport (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:475:13)
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:348:20)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown inventory action: update
+    at manageInventory (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:432:13)
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:334:20)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown action: customer
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:354:13)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown action: customer
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:354:13)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown action: payment
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:354:13)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown action: return
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:354:13)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown appointment action: query
+    at manageAppointments (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:452:13)
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:341:20)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+UAT Chat error: Error: Unknown inventory action: update
+    at manageInventory (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:432:13)
+    at executeUATCommand (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:334:20)
+    at /Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:98:26
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

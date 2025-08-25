@@ -482,7 +482,7 @@ async function handleMockQuery(query: string) {
         {
           entity_id: '550e8400-e29b-41d4-a716-446655440002', 
           organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
-          entity_type: 'gl_account',
+          entity_type: 'account',
           entity_name: 'Cash in Bank',
           entity_code: '1100000',
           status: 'active'

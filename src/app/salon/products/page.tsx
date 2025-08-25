@@ -5,6 +5,7 @@
 
 'use client'
 
+import React from 'react'
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { Badge } from '@/components/ui/badge'
@@ -176,11 +177,57 @@ export default function ProductsPage() {
             key: 'stock_status',
             header: 'Stock Status',
             render: (item) => {
-              // Stock levels will be calculated from stock movements when implemented
-              // For now, show as "Stock tracking coming soon"
+              const [stockLevel, setStockLevel] = React.useState<number | null>(null)
+              const [loading, setLoading] = React.useState(true)
+
+              React.useEffect(() => {
+                fetch(`/api/v1/salon/stock-levels?organization_id=${item.organization_id}&product_id=${item.id}`)
+                  .then(res => res.json())
+                  .then(data => {
+                    setStockLevel(data.currentStock || 0)
+                    setLoading(false)
+                  })
+                  .catch(() => {
+                    setLoading(false)
+                  })
+              }, [item.id, item.organization_id])
+
+              if (loading) {
+                return (
+                  <div className="text-sm text-muted-foreground">
+                    <span>Loading...</span>
+                  </div>
+                )
+              }
+
+              const minStock = item.min_stock || 10
+              const isLowStock = stockLevel !== null && stockLevel < minStock
+              const isOutOfStock = stockLevel === 0
+
               return (
-                <div className="text-sm text-muted-foreground">
-                  <span>Stock tracking coming soon</span>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-medium ${
+                      isOutOfStock ? 'text-red-600' : 
+                      isLowStock ? 'text-amber-600' : 
+                      'text-green-600'
+                    }`}>
+                      {stockLevel} units
+                    </span>
+                    {isOutOfStock && (
+                      <Badge variant="destructive" className="text-xs">
+                        Out of Stock
+                      </Badge>
+                    )}
+                    {!isOutOfStock && isLowStock && (
+                      <Badge variant="outline" className="text-xs text-amber-600 border-amber-600">
+                        Low Stock
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Min: {minStock} | Max: {item.max_stock || 50}
+                  </div>
                 </div>
               )
             }
@@ -249,15 +296,55 @@ export default function ProductsPage() {
             {
               label: 'Total Value',
               value: (items) => {
-                // Will calculate based on actual stock when stock movements are implemented
-                return <span className="text-muted-foreground">-</span>
+                const [totalValue, setTotalValue] = React.useState<number | null>(null)
+                
+                React.useEffect(() => {
+                  if (items.length > 0) {
+                    fetch(`/api/v1/salon/stock-levels?organization_id=${items[0].organization_id}`)
+                      .then(res => res.json())
+                      .then(data => {
+                        const value = data.stockLevels?.reduce((sum: number, item: any) => {
+                          const product = items.find(p => p.id === item.id)
+                          return sum + (item.currentStock * (product?.cost_price || 0))
+                        }, 0) || 0
+                        setTotalValue(value)
+                      })
+                      .catch(() => setTotalValue(0))
+                  }
+                }, [items])
+
+                if (totalValue === null) {
+                  return <span className="text-muted-foreground">Loading...</span>
+                }
+                
+                return <CurrencyDisplay value={totalValue} />
               }
             },
             {
               label: 'Low Stock Items',
               value: (items) => {
-                // Will check actual stock levels when implemented
-                return <span className="text-muted-foreground">-</span>
+                const [lowStockCount, setLowStockCount] = React.useState<number | null>(null)
+                
+                React.useEffect(() => {
+                  if (items.length > 0) {
+                    fetch(`/api/v1/salon/stock-levels?organization_id=${items[0].organization_id}`)
+                      .then(res => res.json())
+                      .then(data => {
+                        setLowStockCount(data.summary?.lowStockCount || 0)
+                      })
+                      .catch(() => setLowStockCount(0))
+                  }
+                }, [items])
+
+                if (lowStockCount === null) {
+                  return <span className="text-muted-foreground">Loading...</span>
+                }
+                
+                return (
+                  <span className={lowStockCount > 0 ? 'text-amber-600 font-medium' : ''}>
+                    {lowStockCount}
+                  </span>
+                )
               }
             }
           ]

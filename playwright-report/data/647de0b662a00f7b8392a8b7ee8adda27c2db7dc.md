@@ -1,0 +1,908 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - img
+      - generic:
+        - button:
+          - img
+        - generic:
+          - paragraph: Quick Actions
+      - navigation:
+        - generic:
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Dashboard
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Clients
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Services
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Staff
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Point of Sale
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Payments
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Reports
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Marketing
+          - button:
+            - generic:
+              - img
+          - generic:
+            - paragraph: Settings
+      - generic:
+        - generic:
+          - button:
+            - img
+          - generic:
+            - paragraph: Notifications
+        - generic:
+          - button:
+            - img
+          - generic:
+            - paragraph: Settings
+    - generic:
+      - main:
+        - generic:
+          - generic:
+            - button:
+              - img
+              - text: Back to Dashboard
+            - generic:
+              - generic:
+                - heading [level=1]: Client Management
+                - paragraph: Manage your salon clients and loyalty program
+              - generic:
+                - button:
+                  - img
+                  - text: Refresh
+                - button:
+                  - img
+                  - text: Export
+                - button:
+                  - img
+                  - text: Add Client
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: Total Clients
+                    - paragraph: "18"
+                  - img
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: Active
+                    - paragraph: "18"
+                  - img
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: VIP Clients
+                    - paragraph: "0"
+                  - img
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: New This Month
+                    - paragraph: "18"
+                  - img
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: Total Revenue
+                    - paragraph: AED 0
+                  - img
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - paragraph: Avg Lifetime Value
+                    - paragraph: AED 0
+                  - img
+          - generic:
+            - generic:
+              - img
+              - textbox
+            - combobox [expanded]:
+              - generic: All Clients
+              - img
+            - button:
+              - img
+              - text: More Filters
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Geet
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CLIENT-1755933067898"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Ge
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CLIENT-1755933046183"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Layla Mahmoud
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120619-yao1i"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Noor Hassan
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120533-vy17g"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Zara Abdullah
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120455-8uuzh"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Leila Ahmed
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120365-egz6t"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Maya Patel
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120295-xvi3r"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Sarah Johnson
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120224-zxc4m"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Aisha Khan
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805120140-sphk6"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Fatima Al Rashid
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755805119942-0aqt0"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Layla Mahmoud
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804958688-mi5cu"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Noor Hassan
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804958414-35oov"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Zara Abdullah
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804958240-41meo"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Leila Ahmed
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804958115-nfj9f"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Maya Patel
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804957991-0c3et"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Sarah Johnson
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804957535-8ul1b"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Aisha Khan
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804957427-olymx"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=3]: Fatima Al Rashid
+                      - generic:
+                        - img
+                        - text: Bronze
+                    - paragraph: "ID: CUST-1755804957143-wvk09"
+                  - button:
+                    - img
+                - generic:
+                  - generic:
+                    - img
+                    - generic: No phone
+                  - generic:
+                    - img
+                    - generic: No email
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Points
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Total Spent
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: "0"
+                    - paragraph: Visits
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: No visits yet
+                    - button: View Details
+  - generic:
+    - generic:
+      - img
+    - button:
+      - img
+  - button "Open Next.js Dev Tools" [ref=e6] [cursor=pointer]:
+    - img [ref=e7] [cursor=pointer]
+  - alert
+  - listbox [ref=e10]:
+    - option "All Clients" [active] [selected] [ref=e11] [cursor=pointer]:
+      - img [ref=e14] [cursor=pointer]
+      - generic [ref=e16] [cursor=pointer]: All Clients
+    - option "Active" [ref=e17] [cursor=pointer]:
+      - generic [ref=e19] [cursor=pointer]: Active
+    - option "Inactive" [ref=e20] [cursor=pointer]:
+      - generic [ref=e22] [cursor=pointer]: Inactive
+    - option "VIP" [ref=e23] [cursor=pointer]:
+      - generic [ref=e25] [cursor=pointer]: VIP
+    - option "Blacklisted" [ref=e26] [cursor=pointer]:
+      - generic [ref=e28] [cursor=pointer]: Blacklisted
+```

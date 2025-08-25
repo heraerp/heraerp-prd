@@ -62,38 +62,31 @@ export default function InventoryDashboard() {
     try {
       setLoading(true)
       
-      // Fetch all products
-      const productsResponse = await fetch(`/api/v1/salon/products?organization_id=${organizationId}`)
-      const productsData = await productsResponse.json()
-      const products = productsData.products || []
+      // Fetch stock levels
+      const stockResponse = await fetch(`/api/v1/salon/stock-levels?organization_id=${organizationId}`)
+      const stockData = await stockResponse.json()
+      const stockLevels = stockData.stockLevels || []
       
       // Calculate statistics
       let totalValue = 0
-      let lowStock = 0
-      let outOfStock = 0
+      let lowStock = stockData.summary?.lowStockCount || 0
+      let outOfStock = stockData.summary?.outOfStockCount || 0
       const lowStockItems: any[] = []
       
-      products.forEach((product: any) => {
-        // For now, we'll simulate stock levels since we haven't implemented stock movements yet
-        const currentStock = Math.floor(Math.random() * 50) // This will be replaced with actual stock calculation
-        const minStock = product.min_stock || 10
+      stockLevels.forEach((item: any) => {
+        const product = item
+        const currentStock = item.currentStock
+        const minStock = item.minStock || 10
         const costPrice = product.cost_price || 0
         
         totalValue += currentStock * costPrice
         
-        if (currentStock === 0) {
-          outOfStock++
-          lowStock++
-        } else if (currentStock < minStock) {
-          lowStock++
-        }
-        
         // Add to low stock items if below minimum
-        if (currentStock < minStock && lowStockItems.length < 4) {
+        if (item.isLowStock && lowStockItems.length < 4) {
           lowStockItems.push({
             id: product.id,
-            name: product.entity_name,
-            sku: product.sku || product.entity_code,
+            name: product.name,
+            sku: product.sku,
             current: currentStock,
             min: minStock,
             retail_price: product.retail_price || 0
@@ -102,7 +95,7 @@ export default function InventoryDashboard() {
       })
       
       setStats({
-        totalProducts: products.length,
+        totalProducts: stockData.summary?.totalProducts || 0,
         totalValue,
         lowStockItems: lowStock,
         outOfStockItems: outOfStock,
@@ -119,11 +112,12 @@ export default function InventoryDashboard() {
       setRecentMovements([])
       
       // Calculate top products (by value for now)
-      const sortedProducts = [...products]
-        .sort((a, b) => (b.retail_price || 0) - (a.retail_price || 0))
+      const sortedProducts = [...stockLevels]
+        .filter(item => item.currentStock > 0)
+        .sort((a, b) => (b.currentStock * (b.retail_price || 0)) - (a.currentStock * (a.retail_price || 0)))
         .slice(0, 5)
         .map((product, index) => ({
-          name: product.entity_name,
+          name: product.name,
           usage: 100 - (index * 15), // Simulated usage percentage
           value: product.retail_price || 0
         }))
@@ -164,6 +158,12 @@ export default function InventoryDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Link href="/salon/stock-movements">
+            <Button variant="outline" size="sm">
+              <Package className="w-4 h-4 mr-2" />
+              Add Stock
+            </Button>
+          </Link>
           <Button variant="outline" size="sm">
             <ScanLine className="w-4 h-4 mr-2" />
             Scan Product

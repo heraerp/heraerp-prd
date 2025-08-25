@@ -1,0 +1,124 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e13]:
+        - generic [ref=e14]:
+          - button [ref=e15] [cursor=pointer]:
+            - img [ref=e17] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e23] [cursor=pointer]:
+            - img [ref=e25] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e30] [cursor=pointer]:
+            - img [ref=e32] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e38] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e42] [cursor=pointer]:
+            - img [ref=e44] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e53] [cursor=pointer]:
+            - img [ref=e55] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e63] [cursor=pointer]:
+            - img [ref=e65] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e66] [cursor=pointer]:
+            - img [ref=e68] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - button [ref=e77] [cursor=pointer]:
+            - img [ref=e78] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e82]:
+          - button [ref=e83] [cursor=pointer]:
+            - img [ref=e84] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic:
+            - generic:
+              - img [ref=e91]
+              - textbox "Search services or products..." [ref=e94]
+          - generic:
+            - tablist [ref=e95]:
+              - tab "Services" [selected] [ref=e96] [cursor=pointer]:
+                - img
+                - text: Services
+              - tab "Products" [ref=e102] [cursor=pointer]:
+                - img
+                - text: Products
+            - tabpanel "Services":
+              - generic: Loading services...
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - generic [ref=e108]: Customer
+            - combobox [ref=e109] [cursor=pointer]:
+              - generic: Walk-in Customer
+              - img [ref=e110] [cursor=pointer]
+          - generic [ref=e113]:
+            - img [ref=e114]
+            - paragraph [ref=e118]: Cart is empty
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]: Subtotal
+                - generic [ref=e123]: $0.00
+              - generic [ref=e124]:
+                - generic [ref=e125]: VAT (5%)
+                - generic [ref=e126]: $0.00
+              - generic [ref=e127]:
+                - generic [ref=e128]: Total
+                - generic [ref=e129]: $0.00
+            - button "Proceed to Payment" [disabled]:
+              - img
+              - text: Proceed to Payment
+  - generic [ref=e131]:
+    - img [ref=e133]
+    - button "Open Tanstack query devtools" [ref=e181] [cursor=pointer]:
+      - img [ref=e182] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e235] [cursor=pointer]:
+    - img [ref=e236] [cursor=pointer]
+  - alert [ref=e239]
+```

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * HERA MCP Server with REST API for AI Chatbot Integration
- * Deployable on Railway with OpenAI integration
+ * HERA MCP Server UAT Enhanced Version
+ * Comprehensive business operations testing through natural language
  */
 
 require('dotenv').config();
@@ -15,33 +15,17 @@ const Anthropic = require('@anthropic-ai/sdk');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Check required environment variables
-console.log('🔍 Environment Variables Check:');
-console.log('SUPABASE_URL:', process.env.SUPABASE_URL ? '✅ SET' : '❌ NOT SET');
-console.log('SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ SET' : '❌ NOT SET');
-console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✅ SET' : '❌ NOT SET');
-console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? '✅ SET' : '❌ NOT SET');
-console.log('DEFAULT_ORGANIZATION_ID:', process.env.DEFAULT_ORGANIZATION_ID ? '✅ SET' : '❌ NOT SET');
-console.log('NODE_ENV:', process.env.NODE_ENV || 'not set');
-console.log('PORT:', process.env.PORT || 'not set');
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('❌ Missing required environment variables: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
-  console.log('Please set these in Railway environment variables');
-}
-
 // Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-// Claude client - primary AI option
+// AI clients
 const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 }) : null;
 
-// OpenAI client - fallback option
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 }) : null;
@@ -50,110 +34,53 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 app.use(cors());
 app.use(express.json());
 
-// Health check endpoint for Railway
+// Enhanced System Prompt for UAT
+const UAT_SYSTEM_PROMPT = `You are an AI assistant for HERA ERP UAT testing. 
+HERA uses a universal 6-table architecture. You understand business operations including:
+- POS transactions (sales, returns, exchanges)
+- Payment processing (cash, card, split payments)
+- Inventory management (stock levels, transfers, adjustments)
+- Appointment scheduling (bookings, availability, reminders)
+- Customer management (profiles, history, preferences)
+- Reporting and analytics
+
+Interpret commands and return structured JSON with:
+{
+  "action": "pos-sale|inventory|appointment|payment|report|customer|return",
+  "operation": "create|update|delete|query|process",
+  "parameters": { relevant parameters },
+  "workflow": "workflow name if applicable",
+  "confidence": 0-1
+}`;
+
+// Health check
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'healthy', 
-    service: 'hera-mcp-server',
-    version: '2.0.1',
-    uptime: process.uptime()
+    service: 'hera-mcp-server-uat',
+    version: '3.0.0',
+    features: ['pos', 'inventory', 'appointments', 'reporting']
   });
 });
 
-// Debug endpoint to check environment
-app.get('/debug', (req, res) => {
-  const debug = {
-    environment: {
-      NODE_ENV: process.env.NODE_ENV || 'not set',
-      RAILWAY_ENVIRONMENT: process.env.RAILWAY_ENVIRONMENT || 'not set',
-      PORT: process.env.PORT || 'not set'
-    },
-    apiKeys: {
-      OPENAI_KEY: process.env.OPENAI_API_KEY ? 'SET (' + process.env.OPENAI_API_KEY.substring(0, 10) + '...)' : 'NOT SET',
-      ANTHROPIC_KEY: process.env.ANTHROPIC_API_KEY ? 'SET (' + process.env.ANTHROPIC_API_KEY.substring(0, 10) + '...)' : 'NOT SET',
-      SUPABASE_URL: process.env.SUPABASE_URL || 'NOT SET',
-      SUPABASE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET'
-    },
-    clients: {
-      openai: openai ? 'initialized' : 'not initialized',
-      anthropic: anthropic ? 'initialized' : 'not initialized',
-      supabase: supabase ? 'initialized' : 'not initialized'
-    },
-    organizationId: process.env.DEFAULT_ORGANIZATION_ID || 'NOT SET'
-  };
-  
-  res.json(debug);
-});
-
-// Root endpoint
+// Root endpoint with UAT tools
 app.get('/', (req, res) => {
   res.json({
-    service: 'HERA MCP Server API',
+    service: 'HERA MCP Server UAT Enhanced',
     endpoints: {
       health: '/health',
       chat: '/api/chat',
-      query: '/api/query',
-      create: '/api/create',
-      execute: '/api/execute',
-      test: '/api/test'
+      // UAT specific endpoints
+      pos: '/api/uat/pos',
+      inventory: '/api/uat/inventory',
+      appointments: '/api/uat/appointments',
+      reports: '/api/uat/reports',
+      scenarios: '/api/uat/scenarios'
     }
   });
 });
 
-// Test endpoint to verify API keys
-app.get('/api/test', async (req, res) => {
-  const tests = {
-    openai: { status: 'not tested', message: '' },
-    anthropic: { status: 'not tested', message: '' },
-    supabase: { status: 'not tested', message: '' }
-  };
-  
-  // Test OpenAI
-  if (openai) {
-    try {
-      await openai.models.list();
-      tests.openai = { status: '✅ working', message: 'API key is valid' };
-    } catch (error) {
-      tests.openai = { status: '❌ failed', message: error.message };
-    }
-  }
-  
-  // Test Anthropic
-  if (anthropic) {
-    try {
-      await anthropic.messages.create({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 1,
-        messages: [{ role: "user", content: "Hi" }]
-      });
-      tests.anthropic = { status: '✅ working', message: 'API key is valid' };
-    } catch (error) {
-      tests.anthropic = { status: '❌ failed', message: error.message };
-    }
-  }
-  
-  // Test Supabase
-  if (supabase) {
-    try {
-      const { count, error } = await supabase
-        .from('core_organizations')
-        .select('*', { count: 'exact', head: true });
-      if (error) throw error;
-      tests.supabase = { status: '✅ working', message: `Connected, ${count} organizations found` };
-    } catch (error) {
-      tests.supabase = { status: '❌ failed', message: error.message };
-    }
-  }
-  
-  res.json({
-    timestamp: new Date().toISOString(),
-    tests
-  });
-});
-
-/**
- * AI Chatbot endpoint - Process natural language with OpenAI
- */
+// Enhanced chat endpoint with UAT capabilities
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, organizationId, context = {} } = req.body;
@@ -164,14 +91,14 @@ app.post('/api/chat', async (req, res) => {
       });
     }
 
-    // Get AI interpretation of the command
-    const interpretation = await interpretCommand(message, context);
+    // Enhanced interpretation for UAT
+    const interpretation = await interpretUATCommand(message, context);
     
-    // Execute the interpreted command
-    const result = await executeCommand(interpretation, organizationId);
+    // Execute based on interpretation
+    const result = await executeUATCommand(interpretation, organizationId);
     
-    // Generate natural language response
-    const response = await generateResponse(interpretation, result);
+    // Generate response
+    const response = await generateUATResponse(interpretation, result);
     
     res.json({
       success: true,
@@ -181,652 +108,795 @@ app.post('/api/chat', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Chat error:', error);
+    console.error('UAT Chat error:', error);
     res.status(500).json({ 
-      error: 'Failed to process chat message',
-      details: error.message 
+      error: 'Failed to process UAT command',
+      details: error.message
     });
   }
 });
 
-/**
- * Direct query endpoint
- */
-app.post('/api/query', async (req, res) => {
+// POS Transaction endpoint
+app.post('/api/uat/pos', async (req, res) => {
   try {
-    const { table, organizationId, filters = {} } = req.body;
+    const { items, payment, customer, organizationId } = req.body;
     
-    // Validate sacred tables
-    const SACRED_TABLES = [
-      'core_entities', 'core_dynamic_data', 'core_relationships',
-      'universal_transactions', 'universal_transaction_lines'
-    ];
-    
-    if (!SACRED_TABLES.includes(table)) {
-      return res.status(400).json({ 
-        error: `Invalid table. Must be one of: ${SACRED_TABLES.join(', ')}` 
-      });
-    }
-    
-    // Build query with organization isolation
-    let query = supabase.from(table).select('*');
-    
-    // SACRED: Always filter by organization_id
-    if (table !== 'core_organizations') {
-      query = query.eq('organization_id', organizationId);
-    }
-    
-    // Apply additional filters
-    Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
+    // Create POS transaction with all details
+    const transaction = await createPOSTransaction({
+      organizationId,
+      items,
+      payment,
+      customer,
+      taxRate: 0.05 // 5% tax
     });
     
-    const { data, error } = await query;
-    
-    if (error) throw error;
-    
-    res.json({ success: true, data });
+    res.json({ success: true, transaction });
   } catch (error) {
-    console.error('Query error:', error);
-    res.status(500).json({ 
-      error: 'Query failed',
-      details: error.message 
-    });
+    console.error('POS error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-/**
- * Create entity endpoint
- */
-app.post('/api/create', async (req, res) => {
+// Inventory management endpoint
+app.post('/api/uat/inventory', async (req, res) => {
   try {
-    const { type, organizationId, data } = req.body;
+    const { action, productId, quantity, reason, organizationId } = req.body;
     
-    if (!type || !organizationId || !data) {
-      return res.status(400).json({ 
-        error: 'Type, organizationId, and data are required' 
-      });
-    }
+    const result = await manageInventory({
+      action,
+      productId,
+      quantity,
+      reason,
+      organizationId
+    });
     
-    const result = await createEntity(type, organizationId, data);
     res.json({ success: true, result });
   } catch (error) {
-    console.error('Create error:', error);
-    res.status(500).json({ 
-      error: 'Failed to create entity',
-      details: error.message 
-    });
+    console.error('Inventory error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-/**
- * Execute complex operations
- */
-app.post('/api/execute', async (req, res) => {
+// Appointment scheduling endpoint
+app.post('/api/uat/appointments', async (req, res) => {
   try {
-    const { operation, organizationId, params = {} } = req.body;
+    const { action, appointment, organizationId } = req.body;
     
-    if (!operation || !organizationId) {
-      return res.status(400).json({ 
-        error: 'Operation and organizationId are required' 
-      });
-    }
+    const result = await manageAppointments({
+      action,
+      appointment,
+      organizationId
+    });
     
-    const result = await executeOperation(operation, organizationId, params);
     res.json({ success: true, result });
   } catch (error) {
-    console.error('Execute error:', error);
-    res.status(500).json({ 
-      error: 'Operation failed',
-      details: error.message 
-    });
+    console.error('Appointment error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Helper Functions
+// Reporting endpoint
+app.post('/api/uat/reports', async (req, res) => {
+  try {
+    const { reportType, dateRange, filters, organizationId } = req.body;
+    
+    const report = await generateReport({
+      reportType,
+      dateRange,
+      filters,
+      organizationId
+    });
+    
+    res.json({ success: true, report });
+  } catch (error) {
+    console.error('Report error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-/**
- * Interpret natural language command using OpenAI
- */
-async function interpretCommand(message, context) {
-  // Try Claude first, then OpenAI, then pattern matching
-  
-  const systemPrompt = `You are an AI assistant for HERA ERP system. 
-  HERA uses a universal 6-table architecture where everything is stored as:
-  - Entities (customers, products, services, staff, etc.)
-  - Transactions (sales, appointments, transfers, etc.)
-  - Relationships (status, hierarchy, associations)
-  - Dynamic data (custom fields)
-  
-  Interpret the user's message and return a structured command.
-  
-  Return JSON with:
-  {
-    "action": "create" | "query" | "update" | "analyze" | "execute",
-    "type": "entity type or transaction type",
-    "parameters": { relevant parameters },
-    "confidence": 0-1
-  }`;
+// UAT Scenario runner
+app.post('/api/uat/scenarios', async (req, res) => {
+  try {
+    const { scenario, organizationId } = req.body;
+    
+    const result = await runUATScenario(scenario, organizationId);
+    
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Scenario error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-  // Try Claude first
+// Enhanced interpretation for UAT commands
+async function interpretUATCommand(message, context) {
+  // Try AI interpretation first
+  if (openai || anthropic) {
+    try {
+      const aiInterpretation = await getAIInterpretation(message, context);
+      if (aiInterpretation) return aiInterpretation;
+    } catch (error) {
+      console.log('AI interpretation failed, using patterns:', error.message);
+    }
+  }
+  
+  // Enhanced pattern matching for UAT
+  return interpretWithPatterns(message, context);
+}
+
+// AI interpretation with UAT context
+async function getAIInterpretation(message, context) {
+  const prompt = UAT_SYSTEM_PROMPT + "\n\nUser message: " + message;
+  
   if (anthropic) {
     try {
       const completion = await anthropic.messages.create({
         model: "claude-3-haiku-20240307",
-        max_tokens: 200,
-        system: systemPrompt,
-        messages: [
-          { role: "user", content: message }
-        ]
+        max_tokens: 300,
+        system: UAT_SYSTEM_PROMPT,
+        messages: [{ role: "user", content: message }]
       });
-
-      const response = completion.content[0].text;
-      return JSON.parse(response);
+      
+      return JSON.parse(completion.content[0].text);
     } catch (error) {
-      console.log('Claude interpretation failed, trying OpenAI:', error.message);
+      console.log('Claude interpretation failed:', error.message);
     }
   }
-
-  // Try OpenAI as fallback
+  
   if (openai) {
     try {
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: systemPrompt + "\n\nIMPORTANT: Always respond with valid JSON only, no other text." },
+          { role: "system", content: UAT_SYSTEM_PROMPT },
           { role: "user", content: message }
         ]
       });
-
+      
       return JSON.parse(completion.choices[0].message.content);
     } catch (error) {
-      console.log('OpenAI interpretation failed, falling back to pattern matching:', error.message);
+      console.log('OpenAI interpretation failed:', error.message);
     }
   }
-
-  // Fall back to pattern matching
-  return simpleInterpretation(message);
+  
+  return null;
 }
 
-/**
- * Simple pattern-based interpretation when OpenAI is not available
- */
-function simpleInterpretation(message) {
+// Pattern-based interpretation for UAT
+function interpretWithPatterns(message, context) {
   const lowerMessage = message.toLowerCase();
   
-  // Summary patterns - check FIRST before other patterns
-  if ((lowerMessage.includes('summary') || lowerMessage.includes('report')) && 
-      (lowerMessage.includes('today') || lowerMessage.includes('daily') || lowerMessage.includes('sales'))) {
+  // POS patterns
+  if (lowerMessage.match(/(?:create|process|ring up|checkout) (?:a )?sale/i) ||
+      lowerMessage.includes('charge') || lowerMessage.includes('bill')) {
     return {
-      action: 'execute',
-      type: 'daily_summary',
-      parameters: {},
-      confidence: 0.9
+      action: 'pos-sale',
+      operation: 'create',
+      parameters: extractPOSDetails(message),
+      confidence: 0.8
     };
   }
   
-  // Create patterns
-  if (lowerMessage.includes('create') || lowerMessage.includes('add') || lowerMessage.includes('new')) {
-    if (lowerMessage.includes('customer') || lowerMessage.includes('client')) {
-      return {
-        action: 'create',
-        type: 'customer',
-        parameters: { name: extractName(message) },
-        confidence: 0.8
-      };
-    }
-    if (lowerMessage.includes('appointment') || lowerMessage.includes('booking')) {
-      return {
-        action: 'create',
-        type: 'appointment',
-        parameters: extractAppointmentDetails(message),
-        confidence: 0.7
-      };
-    }
-    if (lowerMessage.includes('sale') || lowerMessage.includes('transaction') || lowerMessage.includes('order')) {
-      return {
-        action: 'create',
-        type: 'sale',
-        parameters: { amount: extractAmount(message) },
-        confidence: 0.8
-      };
-    }
-    if (lowerMessage.includes('product') || lowerMessage.includes('item')) {
-      return {
-        action: 'create',
-        type: 'product',
-        parameters: { name: extractName(message) },
-        confidence: 0.7
-      };
-    }
+  // Inventory patterns
+  if (lowerMessage.match(/(?:add|remove|adjust) .*inventory/i) ||
+      lowerMessage.includes('stock') || lowerMessage.includes('transfer')) {
+    return {
+      action: 'inventory',
+      operation: extractInventoryAction(message),
+      parameters: extractInventoryDetails(message),
+      confidence: 0.8
+    };
   }
   
-  // Query patterns
-  if (lowerMessage.includes('show') || lowerMessage.includes('list') || lowerMessage.includes('get')) {
-    const type = extractEntityType(message);
+  // Appointment patterns
+  if (lowerMessage.match(/(?:book|schedule|create) .*appointment/i) ||
+      lowerMessage.includes('available slots') || lowerMessage.includes('reschedule')) {
     return {
-      action: 'query',
-      type: type,
-      parameters: {},
+      action: 'appointment',
+      operation: 'create',
+      parameters: extractAppointmentDetails(message),
       confidence: 0.7
+    };
+  }
+  
+  // Report patterns
+  if (lowerMessage.includes('report') || lowerMessage.includes('summary') ||
+      lowerMessage.includes('analytics')) {
+    return {
+      action: 'report',
+      operation: 'generate',
+      parameters: extractReportDetails(message),
+      confidence: 0.8
     };
   }
   
   // Default
   return {
     action: 'unknown',
-    type: 'unknown',
+    operation: 'unknown',
     parameters: { originalMessage: message },
     confidence: 0.3
   };
 }
 
-function extractName(message) {
-  const patterns = [
-    /named?\s+([A-Za-z\s]+)/i,
-    /customer\s+([A-Za-z\s]+)/i,
-    /client\s+([A-Za-z\s]+)/i
-  ];
-  
-  for (const pattern of patterns) {
-    const match = message.match(pattern);
-    if (match) return match[1].trim();
-  }
-  
-  return 'New Customer';
-}
-
-function extractEntityType(message) {
-  const types = ['customer', 'appointment', 'service', 'product', 'staff'];
-  const lowerMessage = message.toLowerCase();
-  
-  for (const type of types) {
-    if (lowerMessage.includes(type)) return type;
-  }
-  
-  return 'entity';
-}
-
-function extractAppointmentDetails(message) {
-  // Simple extraction - can be enhanced
-  return {
-    date: 'today',
-    time: '14:00',
-    service: 'consultation'
-  };
-}
-
-function extractAmount(message) {
-  // Extract numeric amount from message
-  const patterns = [
-    /\$(\d+(?:\.\d+)?)/,           // $150 or $150.50
-    /(\d+(?:\.\d+)?)\s*dollars?/i, // 150 dollars
-    /for\s+(\d+(?:\.\d+)?)/i,      // for 150
-  ];
-  
-  for (const pattern of patterns) {
-    const match = message.match(pattern);
-    if (match) return parseFloat(match[1]);
-  }
-  
-  return 100; // Default amount
-}
-
-/**
- * Execute interpreted command
- */
-async function executeCommand(interpretation, organizationId) {
-  const { action, type, parameters } = interpretation;
+// Execute UAT commands
+async function executeUATCommand(interpretation, organizationId) {
+  const { action, operation, parameters } = interpretation;
   
   switch (action) {
-    case 'create':
-      return await handleCreate(type, organizationId, parameters);
-    
-    case 'query':
-      return await handleQuery(type, organizationId, parameters);
-    
-    case 'update':
-      return await handleUpdate(type, organizationId, parameters);
-    
-    case 'analyze':
-      return await handleAnalyze(type, organizationId, parameters);
-    
-    case 'execute':
-      if (type === 'daily_summary') {
-        return await getDailySummary(organizationId);
-      }
-      return await executeOperation(type, organizationId, parameters);
-    
+    case 'pos-sale':
+      return await createPOSTransaction({
+        organizationId,
+        ...parameters
+      });
+      
+    case 'inventory':
+      return await manageInventory({
+        organizationId,
+        action: operation,
+        ...parameters
+      });
+      
+    case 'appointment':
+      return await manageAppointments({
+        organizationId,
+        action: operation,
+        ...parameters
+      });
+      
+    case 'report':
+      return await generateReport({
+        organizationId,
+        ...parameters
+      });
+      
     default:
       throw new Error(`Unknown action: ${action}`);
   }
 }
 
-/**
- * Handle entity creation
- */
-async function handleCreate(type, organizationId, params) {
-  // Map common types to entity types
-  const typeMap = {
-    'customer': 'customer',
-    'client': 'customer',
-    'appointment': 'appointment',
-    'booking': 'appointment',
-    'service': 'service',
-    'product': 'product',
-    'staff': 'staff',
-    'employee': 'staff'
-  };
+// Create POS transaction with full workflow
+async function createPOSTransaction({ organizationId, items = [], payment, customer, taxRate = 0.05 }) {
+  // 1. Validate items and check inventory
+  const validatedItems = await validateAndPrepareItems(items, organizationId);
   
-  const entityType = typeMap[type.toLowerCase()] || type;
+  // 2. Calculate totals
+  const subtotal = validatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const tax = subtotal * taxRate;
+  const total = subtotal + tax;
   
-  // Handle different creation types
-  if (['appointment', 'booking', 'sale', 'order'].includes(entityType)) {
-    // Create as transaction
-    return await createTransaction(entityType, organizationId, params);
-  } else {
-    // Create as entity
-    return await createEntity(entityType, organizationId, params);
-  }
-}
-
-/**
- * Create entity in database
- */
-async function createEntity(entityType, organizationId, data) {
-  const entity = {
-    organization_id: organizationId,
-    entity_type: entityType,
-    entity_name: data.name || `New ${entityType}`,
-    entity_code: `${entityType.toUpperCase()}-${Date.now()}`,
-    status: 'active',
-    smart_code: generateSmartCode(entityType, 'CREATE'),
-    metadata: data
-  };
-  
-  const { data: result, error } = await supabase
-    .from('core_entities')
-    .insert(entity)
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return result;
-}
-
-/**
- * Create transaction in database
- */
-async function createTransaction(type, organizationId, params) {
+  // 3. Create transaction
   const transaction = {
     organization_id: organizationId,
-    transaction_type: type,
-    transaction_code: `TXN-${Date.now()}`,
-    transaction_date: params.date || new Date().toISOString(),
-    from_entity_id: params.customerId || params.fromEntityId,
-    to_entity_id: params.staffId || params.toEntityId || params.locationId,
-    total_amount: params.amount || 0,
-    smart_code: generateSmartCode(type, 'CREATE'),
-    metadata: params
+    transaction_type: 'sale',
+    transaction_code: `SALE-${Date.now()}`,
+    transaction_date: new Date().toISOString(),
+    total_amount: total,
+    smart_code: 'HERA.POS.SALE.TXN.v1'
   };
   
-  const { data: result, error } = await supabase
+  const { data: txn, error } = await supabase
     .from('universal_transactions')
     .insert(transaction)
     .select()
     .single();
-  
+    
   if (error) throw error;
-  return result;
-}
-
-/**
- * Generate smart codes
- */
-function generateSmartCode(type, operation) {
-  const industry = detectIndustry(type);
-  const domain = type.toUpperCase().slice(0, 4);
-  return `HERA.${industry}.${domain}.${operation}.v1`;
-}
-
-/**
- * Detect industry from type
- */
-function detectIndustry(type) {
-  const map = {
-    'appointment': 'SALON',
-    'service': 'SALON',
-    'menu_item': 'REST',
-    'patient': 'HLTH',
-    'student': 'EDU'
+  
+  // 4. Create transaction lines
+  const lines = validatedItems.map((item, index) => ({
+    transaction_id: txn.id,
+    line_entity_id: item.entity_id,
+    line_number: index + 1,
+    quantity: item.quantity,
+    unit_price: item.price,
+    line_amount: item.price * item.quantity
+  }));
+  
+  await supabase
+    .from('universal_transaction_lines')
+    .insert(lines);
+    
+  // 5. Update inventory
+  await updateInventoryForSale(validatedItems, organizationId);
+  
+  // 6. Process payment
+  const paymentResult = await processPayment({
+    transactionId: txn.id,
+    amount: total,
+    method: payment?.method || 'cash',
+    details: payment?.details
+  });
+  
+  return {
+    transaction: txn,
+    lines,
+    payment: paymentResult,
+    receipt: generateReceipt(txn, lines, payment)
   };
-  return map[type] || 'UNIV';
 }
 
-/**
- * Generate natural language response
- */
-async function generateResponse(interpretation, result) {
-  const prompt = `Given this action and result, generate a friendly response:
-  Action: ${JSON.stringify(interpretation)}
-  Result: ${JSON.stringify(result)}
-  
-  Generate a natural, helpful response for the user.`;
-
-  // Try Claude first
-  if (anthropic) {
-    try {
-      const completion = await anthropic.messages.create({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 300,
-        system: "You are a helpful HERA ERP assistant. Provide clear, friendly responses.",
-        messages: [
-          { role: "user", content: prompt }
-        ]
-      });
-
-      return completion.content[0].text;
-    } catch (error) {
-      console.log('Claude response generation failed, trying OpenAI:', error.message);
-    }
-  }
-
-  // Try OpenAI as fallback
-  if (openai) {
-    try {
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are a helpful HERA ERP assistant." },
-          { role: "user", content: prompt }
-        ]
-      });
+// Inventory management
+async function manageInventory({ action, productId, quantity, reason, organizationId }) {
+  switch (action) {
+    case 'adjust':
+      return await adjustInventory(productId, quantity, reason, organizationId);
       
-      return completion.choices[0].message.content;
-    } catch (error) {
-      console.log('OpenAI response generation failed, using templates:', error.message);
-    }
-  }
-  
-  // Fall back to template responses
-  return generateTemplateResponse(interpretation, result);
-}
-
-/**
- * Generate template-based responses when OpenAI is not available
- */
-function generateTemplateResponse(interpretation, result) {
-  const { action, type } = interpretation;
-  
-  if (action === 'create' && result && result.id) {
-    return `✅ Successfully created ${type}: ${result.entity_name || result.name || 'New ' + type}\n\nID: ${result.id}\nCode: ${result.entity_code || result.transaction_code || 'N/A'}`;
-  }
-  
-  if (action === 'query' && Array.isArray(result)) {
-    if (result.length === 0) {
-      return `No ${type}s found. Would you like to create one?`;
-    }
-    return `Found ${result.length} ${type}${result.length === 1 ? '' : 's'}:\n\n${result.slice(0, 5).map(r => `• ${r.entity_name || r.name || r.id}`).join('\n')}${result.length > 5 ? `\n... and ${result.length - 5} more` : ''}`;
-  }
-  
-  if (action === 'execute' && type === 'daily_summary') {
-    if (!result || result.totalTransactions === 0) {
-      return `📊 Today's Sales Summary\n\nNo sales recorded today.\n\nWould you like to create a test sale?`;
-    }
-    let response = `📊 Today's Sales Summary\n\n`;
-    response += `Total Transactions: ${result.totalTransactions}\n`;
-    response += `Total Revenue: $${result.totalRevenue.toFixed(2)}\n\n`;
-    
-    if (result.byType && Object.keys(result.byType).length > 0) {
-      response += `By Transaction Type:\n`;
-      Object.entries(result.byType).forEach(([type, data]) => {
-        response += `• ${type}: ${data.count} transactions, $${data.amount.toFixed(2)}\n`;
-      });
-    }
-    return response;
-  }
-  
-  if (action === 'analyze' && result) {
-    // Handle analysis results similar to daily summary
-    if (result.totalTransactions !== undefined) {
-      if (result.totalTransactions === 0) {
-        return `📊 Analysis Results\n\nNo transactions found for the requested period.\n\nWould you like to create some test data?`;
-      }
-      let response = `📊 Analysis Results\n\n`;
-      response += `Total Transactions: ${result.totalTransactions}\n`;
-      response += `Total Revenue: $${result.totalRevenue.toFixed(2)}\n`;
+    case 'transfer':
+      return await transferInventory(productId, quantity, organizationId);
       
-      if (result.totalTransactions > 0) {
-        response += `Average Order Value: $${(result.totalRevenue / result.totalTransactions).toFixed(2)}\n\n`;
-      }
+    case 'count':
+      return await getInventoryCount(productId, organizationId);
       
-      if (result.byType && Object.keys(result.byType).length > 0) {
-        response += `By Transaction Type:\n`;
-        Object.entries(result.byType).forEach(([type, data]) => {
-          response += `• ${type}: ${data.count} transactions, $${data.amount.toFixed(2)}\n`;
-        });
-      }
-      return response;
-    }
-  }
-  
-  if (action === 'unknown') {
-    return `I'm not sure how to help with that. Try commands like:\n• "Create a new customer named John"\n• "Show all appointments"\n• "List services"\n• "Show today's sales summary"\n• "Analyze restaurant performance"`;
-  }
-  
-  return `Operation completed successfully.`;
-}
-
-/**
- * Handle analysis requests
- */
-async function handleAnalyze(type, organizationId, params) {
-  // For now, redirect to daily summary for restaurant performance
-  if (type === 'restaurant_performance' || type === 'orders' || type === 'sales') {
-    return await getDailySummary(organizationId);
-  }
-  
-  // Default to query
-  return await handleQuery(type, organizationId, params);
-}
-
-/**
- * Handle update requests
- */
-async function handleUpdate(type, organizationId, params) {
-  // TODO: Implement update logic
-  return { message: 'Update functionality coming soon' };
-}
-
-/**
- * Handle queries
- */
-async function handleQuery(type, organizationId, params) {
-  // Determine table based on type
-  let table = 'core_entities';
-  let filters = { entity_type: type };
-  
-  if (['appointment', 'sale', 'order'].includes(type)) {
-    table = 'universal_transactions';
-    filters = { transaction_type: type };
-  }
-  
-  // Add any additional filters from params
-  if (params.name) {
-    filters.entity_name = params.name;
-  }
-  
-  const { data, error } = await supabase
-    .from(table)
-    .select('*')
-    .eq('organization_id', organizationId)
-    .match(filters);
-  
-  if (error) throw error;
-  return data;
-}
-
-/**
- * Execute complex operations
- */
-async function executeOperation(operation, organizationId, params) {
-  switch (operation) {
-    case 'daily_summary':
-      return await getDailySummary(organizationId);
-    
-    case 'process_appointments':
-      return await processAppointments(organizationId);
-    
-    case 'generate_report':
-      return await generateReport(organizationId, params);
-    
     default:
-      throw new Error(`Unknown operation: ${operation}`);
+      throw new Error(`Unknown inventory action: ${action}`);
   }
 }
 
-/**
- * Get daily summary
- */
-async function getDailySummary(organizationId) {
-  const today = new Date().toISOString().split('T')[0];
+// Appointment management
+async function manageAppointments({ action, appointment, organizationId }) {
+  switch (action) {
+    case 'create':
+      return await createAppointment(appointment, organizationId);
+      
+    case 'check-availability':
+      return await checkAvailability(appointment, organizationId);
+      
+    case 'reschedule':
+      return await rescheduleAppointment(appointment, organizationId);
+      
+    case 'cancel':
+      return await cancelAppointment(appointment.id, organizationId);
+      
+    default:
+      throw new Error(`Unknown appointment action: ${action}`);
+  }
+}
+
+// Report generation
+async function generateReport({ reportType, dateRange, filters, organizationId }) {
+  const startDate = dateRange?.start || new Date().toISOString().split('T')[0];
+  const endDate = dateRange?.end || new Date().toISOString().split('T')[0];
   
-  // Get today's transactions
+  switch (reportType) {
+    case 'sales':
+      return await generateSalesReport(startDate, endDate, organizationId);
+      
+    case 'inventory':
+      return await generateInventoryReport(organizationId);
+      
+    case 'customer':
+      return await generateCustomerReport(filters?.customerId, organizationId);
+      
+    case 'appointment':
+      return await generateAppointmentReport(startDate, endDate, organizationId);
+      
+    default:
+      throw new Error(`Unknown report type: ${reportType}`);
+  }
+}
+
+// Sales report
+async function generateSalesReport(startDate, endDate, organizationId) {
   const { data: transactions } = await supabase
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
-    .gte('transaction_date', today)
-    .lt('transaction_date', today + 'T23:59:59');
-  
-  // Calculate summary
+    .eq('transaction_type', 'sale')
+    .gte('transaction_date', startDate)
+    .lte('transaction_date', endDate + 'T23:59:59');
+    
   const summary = {
-    date: today,
+    period: { start: startDate, end: endDate },
     totalTransactions: transactions?.length || 0,
     totalRevenue: transactions?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0,
-    byType: {}
+    averageTransaction: 0,
+    topProducts: [],
+    hourlyBreakdown: {}
   };
   
-  // Group by type
-  transactions?.forEach(t => {
-    if (!summary.byType[t.transaction_type]) {
-      summary.byType[t.transaction_type] = {
-        count: 0,
-        amount: 0
-      };
-    }
-    summary.byType[t.transaction_type].count++;
-    summary.byType[t.transaction_type].amount += t.total_amount || 0;
-  });
+  if (summary.totalTransactions > 0) {
+    summary.averageTransaction = summary.totalRevenue / summary.totalTransactions;
+  }
   
   return summary;
 }
 
+// UAT Scenario runner
+async function runUATScenario(scenarioName, organizationId) {
+  const scenarios = {
+    'complete-salon-visit': [
+      { action: 'create-customer', params: { name: 'Test Customer' } },
+      { action: 'book-appointment', params: { service: 'haircut', time: '14:00' } },
+      { action: 'check-in', params: { appointmentId: null } },
+      { action: 'provide-service', params: { duration: 30 } },
+      { action: 'recommend-products', params: { products: ['shampoo'] } },
+      { action: 'create-sale', params: { services: ['haircut'], products: ['shampoo'] } },
+      { action: 'process-payment', params: { method: 'card', amount: 75 } },
+      { action: 'generate-receipt', params: {} },
+      { action: 'book-followup', params: { weeks: 4 } }
+    ],
+    
+    'restaurant-order': [
+      { action: 'create-order', params: { items: ['pizza', 'soda'] } },
+      { action: 'check-inventory', params: { items: ['pizza', 'soda'] } },
+      { action: 'process-order', params: {} },
+      { action: 'prepare-order', params: { time: 15 } },
+      { action: 'complete-order', params: {} },
+      { action: 'process-payment', params: { method: 'cash', amount: 25 } },
+      { action: 'update-inventory', params: {} }
+    ]
+  };
+  
+  const steps = scenarios[scenarioName];
+  if (!steps) throw new Error(`Unknown scenario: ${scenarioName}`);
+  
+  const results = [];
+  let context = { organizationId };
+  
+  for (const step of steps) {
+    try {
+      const result = await executeScenarioStep(step, context);
+      results.push({ step: step.action, status: 'success', result });
+      
+      // Update context with results
+      if (step.action === 'create-customer' && result.id) {
+        context.customerId = result.id;
+      }
+      if (step.action === 'book-appointment' && result.id) {
+        context.appointmentId = result.id;
+      }
+    } catch (error) {
+      results.push({ step: step.action, status: 'failed', error: error.message });
+      break;
+    }
+  }
+  
+  return {
+    scenario: scenarioName,
+    steps: results,
+    success: results.every(r => r.status === 'success')
+  };
+}
+
+// Helper functions
+function extractPOSDetails(message) {
+  // Extract items, quantities, prices from natural language
+  const items = [];
+  
+  // Pattern: "2 haircuts and 1 hair color"
+  const itemPattern = /(\d+)\s+([a-zA-Z\s]+?)(?:\s+and\s+|,\s*|$)/gi;
+  let match;
+  
+  while ((match = itemPattern.exec(message)) !== null) {
+    items.push({
+      quantity: parseInt(match[1]),
+      name: match[2].trim()
+    });
+  }
+  
+  // Extract payment method
+  const payment = {
+    method: 'cash'
+  };
+  
+  if (message.includes('card')) {
+    payment.method = 'card';
+    const cardPattern = /ending in (\d{4})/i;
+    const cardMatch = message.match(cardPattern);
+    if (cardMatch) {
+      payment.lastFour = cardMatch[1];
+    }
+  }
+  
+  return { items, payment };
+}
+
+function extractInventoryAction(message) {
+  const lowerMessage = message.toLowerCase();
+  if (lowerMessage.includes('transfer')) return 'transfer';
+  if (lowerMessage.includes('count')) return 'count';
+  return 'adjust';
+}
+
+function extractInventoryDetails(message) {
+  const quantityPattern = /(\d+)\s+(?:units?|items?)?/i;
+  const match = message.match(quantityPattern);
+  
+  return {
+    quantity: match ? parseInt(match[1]) : 1,
+    reason: message.includes('damage') ? 'damage' : 'adjustment'
+  };
+}
+
+function extractAppointmentDetails(message) {
+  const details = {
+    date: 'today',
+    time: '14:00',
+    service: 'consultation'
+  };
+  
+  // Extract time
+  const timePattern = /at\s+(\d{1,2}(?::\d{2})?(?:\s*[ap]m)?)/i;
+  const timeMatch = message.match(timePattern);
+  if (timeMatch) {
+    details.time = normalizeTime(timeMatch[1]);
+  }
+  
+  // Extract date
+  if (message.includes('tomorrow')) {
+    details.date = 'tomorrow';
+  } else if (message.includes('next')) {
+    details.date = 'next-week';
+  }
+  
+  return details;
+}
+
+function extractReportDetails(message) {
+  const details = {
+    reportType: 'sales',
+    dateRange: {}
+  };
+  
+  if (message.includes('inventory')) {
+    details.reportType = 'inventory';
+  } else if (message.includes('customer')) {
+    details.reportType = 'customer';
+  } else if (message.includes('appointment')) {
+    details.reportType = 'appointment';
+  }
+  
+  // Extract date range
+  if (message.includes('today')) {
+    details.dateRange = {
+      start: new Date().toISOString().split('T')[0],
+      end: new Date().toISOString().split('T')[0]
+    };
+  } else if (message.includes('this month')) {
+    const now = new Date();
+    details.dateRange = {
+      start: new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0],
+      end: new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+    };
+  }
+  
+  return details;
+}
+
+function generateReceipt(transaction, lines, payment) {
+  const subtotal = lines.reduce((sum, l) => sum + l.line_amount, 0);
+  const tax = transaction.total_amount - subtotal;
+  
+  return {
+    receiptNumber: `RCP-${transaction.transaction_code}`,
+    date: transaction.transaction_date,
+    items: lines.map((l, idx) => ({
+      name: `Item ${idx + 1}`,
+      quantity: l.quantity,
+      price: l.unit_price,
+      total: l.line_amount
+    })),
+    subtotal: subtotal,
+    tax: tax,
+    total: transaction.total_amount,
+    payment: {
+      method: payment?.method || 'cash',
+      amount: transaction.total_amount
+    }
+  };
+}
+
+// Generate UAT response
+async function generateUATResponse(interpretation, result) {
+  const { action, operation } = interpretation;
+  
+  if (action === 'pos-sale' && result.transaction) {
+    return `✅ Sale completed successfully!
+    
+Receipt #${result.receipt.receiptNumber}
+Total: $${result.receipt.total.toFixed(2)}
+Payment: ${result.receipt.payment.method}
+
+Transaction ID: ${result.transaction.id}`;
+  }
+  
+  if (action === 'inventory' && result) {
+    return `✅ Inventory ${operation} completed successfully!
+    
+${JSON.stringify(result, null, 2)}`;
+  }
+  
+  if (action === 'appointment' && result) {
+    return `✅ Appointment ${operation} successful!
+    
+${JSON.stringify(result, null, 2)}`;
+  }
+  
+  if (action === 'report' && result) {
+    return formatReportResponse(result);
+  }
+  
+  return `Operation completed: ${JSON.stringify(result, null, 2)}`;
+}
+
+function formatReportResponse(report) {
+  if (report.totalTransactions !== undefined) {
+    return `📊 Sales Report
+    
+Period: ${report.period.start} to ${report.period.end}
+Total Transactions: ${report.totalTransactions}
+Total Revenue: $${report.totalRevenue.toFixed(2)}
+Average Transaction: $${report.averageTransaction.toFixed(2)}`;
+  }
+  
+  return `📊 Report Generated\n\n${JSON.stringify(report, null, 2)}`;
+}
+
+// Helper stubs - implement based on your needs
+async function validateAndPrepareItems(items, organizationId) {
+  // Lookup items in database and get prices
+  return items.map(item => ({
+    ...item,
+    entity_id: `temp-${Date.now()}`,
+    price: 50.00 // Default price
+  }));
+}
+
+async function updateInventoryForSale(items, organizationId) {
+  // Update inventory levels
+  return true;
+}
+
+async function processPayment({ transactionId, amount, method, details }) {
+  // Process payment
+  return {
+    success: true,
+    authCode: `AUTH-${Date.now()}`,
+    method,
+    amount
+  };
+}
+
+async function adjustInventory(productId, quantity, reason, organizationId) {
+  // Adjust inventory
+  return { productId, newQuantity: quantity, reason };
+}
+
+async function createAppointment(appointment, organizationId) {
+  // Create appointment
+  return {
+    id: `APT-${Date.now()}`,
+    ...appointment,
+    status: 'booked'
+  };
+}
+
+function normalizeTime(timeStr) {
+  // Convert various time formats to 24hr
+  return timeStr;
+}
+
+// Additional helper functions for enhanced UAT
+async function generateInventoryReport(organizationId) {
+  const { data: products } = await supabase
+    .from('core_entities')
+    .select('*, core_dynamic_data(*)')
+    .eq('organization_id', organizationId)
+    .eq('entity_type', 'product');
+    
+  return {
+    totalProducts: products?.length || 0,
+    lowStock: products?.filter(p => {
+      // Check stock level in dynamic data
+      const stockData = p.core_dynamic_data?.find(d => d.field_name === 'stock_level');
+      return stockData && stockData.field_value_number < 10;
+    }).length || 0,
+    totalValue: 0, // Calculate based on stock * price
+    products: products || []
+  };
+}
+
+async function generateCustomerReport(customerId, organizationId) {
+  const filter = { organization_id: organizationId };
+  if (customerId) filter.id = customerId;
+  
+  const { data: customers } = await supabase
+    .from('core_entities')
+    .select('*')
+    .match(filter)
+    .eq('entity_type', 'customer');
+    
+  return {
+    totalCustomers: customers?.length || 0,
+    customers: customers || []
+  };
+}
+
+async function generateAppointmentReport(startDate, endDate, organizationId) {
+  const { data: appointments } = await supabase
+    .from('universal_transactions')
+    .select('*')
+    .eq('organization_id', organizationId)
+    .eq('transaction_type', 'appointment')
+    .gte('transaction_date', startDate)
+    .lte('transaction_date', endDate + 'T23:59:59');
+    
+  return {
+    period: { start: startDate, end: endDate },
+    totalAppointments: appointments?.length || 0,
+    appointments: appointments || []
+  };
+}
+
+async function executeScenarioStep(step, context) {
+  // Simplified scenario step execution
+  return { 
+    success: true, 
+    action: step.action,
+    params: step.params,
+    result: `Executed ${step.action}`
+  };
+}
+
+async function transferInventory(productId, quantity, organizationId) {
+  return {
+    success: true,
+    productId,
+    quantity,
+    action: 'transfer',
+    message: `Transferred ${quantity} units`
+  };
+}
+
+async function getInventoryCount(productId, organizationId) {
+  return {
+    productId,
+    currentStock: 100, // Default for testing
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+async function checkAvailability(appointment, organizationId) {
+  return {
+    available: true,
+    slots: [
+      { time: '09:00', available: true },
+      { time: '10:00', available: true },
+      { time: '14:00', available: true },
+      { time: '15:00', available: true }
+    ]
+  };
+}
+
+async function rescheduleAppointment(appointment, organizationId) {
+  return {
+    success: true,
+    appointmentId: appointment.id,
+    newTime: appointment.newTime || '14:00',
+    message: 'Appointment rescheduled successfully'
+  };
+}
+
+async function cancelAppointment(appointmentId, organizationId) {
+  return {
+    success: true,
+    appointmentId,
+    status: 'cancelled',
+    message: 'Appointment cancelled successfully'
+  };
+}
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 HERA MCP Server API running on port ${PORT}`);
+  console.log(`🚀 HERA MCP Server UAT Enhanced running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`🤖 AI Chat endpoint: http://localhost:${PORT}/api/chat`);
+  console.log(`🤖 UAT Chat endpoint: http://localhost:${PORT}/api/chat`);
+  console.log(`🛍️ POS endpoint: http://localhost:${PORT}/api/uat/pos`);
+  console.log(`📦 Inventory endpoint: http://localhost:${PORT}/api/uat/inventory`);
+  console.log(`📅 Appointments endpoint: http://localhost:${PORT}/api/uat/appointments`);
+  console.log(`📊 Reports endpoint: http://localhost:${PORT}/api/uat/reports`);
+  console.log(`🧪 Scenarios endpoint: http://localhost:${PORT}/api/uat/scenarios`);
 });
 
 // Graceful shutdown

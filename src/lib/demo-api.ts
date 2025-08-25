@@ -23,7 +23,8 @@ export class DemoApiService {
       data: this.data.chartOfAccounts.map((account: any) => ({
         id: `demo-coa-${account.code}`,
         organization_id: DEMO_ORG_ID,
-        entity_type: 'gl_account',
+        entity_type: 'account',
+        business_rules: { ledger_type: 'GL' },
         entity_code: account.code,
         entity_name: account.name,
         status: 'active',
