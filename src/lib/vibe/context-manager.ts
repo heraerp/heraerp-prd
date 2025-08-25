@@ -33,8 +33,9 @@ export class ContextManager {
       console.log(`   Loaded contexts: ${this.contexts.size}`)
 
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       throw new ContextPreservationError(
-        `Failed to initialize Context Manager: ${error.message}`,
+        `Failed to initialize Context Manager: ${errorMessage}`,
         { organization_id: organizationId, session_id: sessionId }
       )
     }
@@ -271,7 +272,8 @@ export class ContextManager {
       // Placeholder - would implement actual database loading
       
     } catch (error) {
-      console.warn('⚠️ Could not load session contexts:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Could not load session contexts:', errorMessage)
     }
   }
 
@@ -297,7 +299,8 @@ export class ContextManager {
 
         await this.preserveContext(sessionContext)
       } catch (error) {
-        console.warn('⚠️ Auto-preservation failed:', error.message)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        console.warn('⚠️ Auto-preservation failed:', errorMessage)
       }
     }, 30000) // 30 seconds
   }
@@ -337,7 +340,8 @@ export class ContextManager {
         console.warn('⚠️ Failed to persist context to database')
       }
     } catch (error) {
-      console.warn('⚠️ Context persistence failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Context persistence failed:', errorMessage)
     }
   }
 
@@ -347,7 +351,8 @@ export class ContextManager {
       // Implementation depends on actual API structure
       return null
     } catch (error) {
-      console.warn('⚠️ Failed to load context from database:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Failed to load context from database:', errorMessage)
       return null
     }
   }
@@ -381,7 +386,8 @@ export class ContextManager {
         console.warn('⚠️ Failed to log context event')
       }
     } catch (error) {
-      console.warn('⚠️ Context event logging failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Context event logging failed:', errorMessage)
     }
   }
 

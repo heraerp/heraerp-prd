@@ -514,11 +514,20 @@ export class CalendarAPI {
     callback: (event: any) => void
   ): () => void {
     // Implementation would use WebSocket or Server-Sent Events
+    // Convert filters to URLSearchParams-compatible format
+    const params = new URLSearchParams({ organization_id: this.organizationId })
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach(v => params.append(key, v))
+        } else if (value !== undefined) {
+          params.append(key, String(value))
+        }
+      })
+    }
+    
     const eventSource = new EventSource(
-      `${this.baseUrl}/subscribe?${new URLSearchParams({
-        organization_id: this.organizationId,
-        ...filters
-      })}`
+      `${this.baseUrl}/subscribe?${params}`
     )
 
     eventSource.onmessage = (event) => {

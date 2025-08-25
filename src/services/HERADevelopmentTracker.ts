@@ -428,7 +428,7 @@ export class HERADevelopmentTracker {
       const accelerationOpportunities = new Set<string>()
       
       // Process tasks for patterns
-      tasks?.forEach(task => {
+      tasks?.forEach((task: any) => {
         task.dynamic_data?.forEach((field: any) => {
           if (field.field_name === 'patterns_identified' && field.field_value_json) {
             field.field_value_json.forEach((pattern: string) => patterns.add(pattern))
@@ -443,7 +443,7 @@ export class HERADevelopmentTracker {
       })
       
       // Process sessions for patterns
-      sessions.forEach(session => {
+      sessions.forEach((session: any) => {
         session.dynamic_data?.forEach((field: any) => {
           if (field.field_name === 'patterns' && field.field_value_json) {
             field.field_value_json.forEach((pattern: string) => patterns.add(pattern))

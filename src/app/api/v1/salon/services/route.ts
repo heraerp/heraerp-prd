@@ -234,11 +234,11 @@ export async function POST(request: NextRequest) {
 // PUT: Update service
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json()
-    const serviceId = params.id
+    const { id: serviceId } = await params
 
     const {
       service_name,
@@ -312,10 +312,10 @@ export async function PUT(
 // DELETE: Soft delete service
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const serviceId = params.id
+    const { id: serviceId } = await params
 
     // Soft delete the service
     const { error } = await supabase

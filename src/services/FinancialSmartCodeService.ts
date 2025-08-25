@@ -189,7 +189,7 @@ export class FinancialSmartCodeService {
         isValid: false,
         validationLevel: level,
         validationTime: Date.now() - startTime,
-        errors: [`Validation failed: ${error.message}`],
+        errors: [`Validation failed: ${error instanceof Error ? error.message : String(error)}`],
         warnings,
         suggestions,
         businessRules
@@ -237,9 +237,9 @@ export class FinancialSmartCodeService {
       
       // Process and filter results
       const codes: FinancialSmartCode[] = (data || [])
-        .filter(row => row.smart_code?.startsWith('HERA.FIN.'))
-        .map(row => this.parseSmartCode(row.smart_code, row.metadata))
-        .filter(code => {
+        .filter((row: any) => row.smart_code?.startsWith('HERA.FIN.'))
+        .map((row: any) => this.parseSmartCode(row.smart_code, row.metadata))
+        .filter((code: any) => {
           if (filters.subModule && code.subModule !== filters.subModule) return false
           if (filters.functionType && code.functionType !== filters.functionType) return false
           if (filters.entityType && code.entityType !== filters.entityType) return false
@@ -340,7 +340,7 @@ export class FinancialSmartCodeService {
     
     // Function-specific entity types
     if (businessContext.functionType === 'ENT') {
-      const entityMapping = {
+      const entityMapping: Record<string, Record<string, string>> = {
         'GL': {
           'gl_account': 'ACC',
           'journal_entry': 'JE',
@@ -371,7 +371,7 @@ export class FinancialSmartCodeService {
     }
     
     if (businessContext.functionType === 'TXN') {
-      const transactionMapping = {
+      const transactionMapping: Record<string, string> = {
         'sale': 'SAL',
         'purchase': 'PUR',
         'payment': 'PAY',
@@ -399,7 +399,7 @@ export class FinancialSmartCodeService {
     const parts = smartCode.split('.')
     const [, , subModule, functionType, entityType] = parts
     
-    const descriptions = {
+    const descriptions: Record<string, string> = {
       'GL': 'General Ledger',
       'AR': 'Accounts Receivable',
       'AP': 'Accounts Payable',

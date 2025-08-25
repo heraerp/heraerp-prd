@@ -16,10 +16,10 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 // GET single client with complete history
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clientId = params.id
+    const { id: clientId } = await params
     
     // Fetch client entity with all related data
     const { data: client, error: clientError } = await supabase
@@ -104,10 +104,10 @@ export async function GET(
 // UPDATE client
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clientId = params.id
+    const { id: clientId } = await params
     const body = await request.json()
     
     const {
@@ -197,10 +197,10 @@ export async function PUT(
 // DELETE client (soft delete)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clientId = params.id
+    const { id: clientId } = await params
     const { searchParams } = new URL(request.url)
     const reason = searchParams.get('reason') || 'No reason provided'
 
@@ -248,10 +248,10 @@ export async function DELETE(
 // PATCH for partial updates (e.g., loyalty points)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clientId = params.id
+    const { id: clientId } = await params
     const body = await request.json()
     const { action, data } = body
 

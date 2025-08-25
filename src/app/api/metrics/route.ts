@@ -67,17 +67,4 @@ hera_build_info{version="${process.env.BUILD_VERSION || 'dev'}", environment="${
 }
 
 // Middleware to track metrics for incoming requests
-export async function middleware(request: NextRequest) {
-  const start = Date.now();
-  
-  // Process request
-  const response = NextResponse.next();
-  
-  // Track metrics after response
-  const duration = Date.now() - start;
-  const page = request.nextUrl.pathname;
-  
-  heraMetrics.trackPageView(request, page);
-  
-  return response;
-}
+// Note: Middleware functionality has been moved to src/middleware.ts

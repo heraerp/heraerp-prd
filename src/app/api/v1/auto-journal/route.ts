@@ -368,7 +368,8 @@ async function getTransactionJournalStatus(transactionId: string) {
 // WEBHOOK HANDLER FOR SUPABASE TRIGGERS
 // ================================================================================
 
-export async function handleTransactionWebhook(payload: any) {
+// Helper function for webhook processing
+async function handleTransactionWebhook(payload: any) {
   try {
     const { type, table, record, old_record } = payload;
     

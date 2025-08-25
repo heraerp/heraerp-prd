@@ -222,11 +222,11 @@ export async function POST(request: NextRequest) {
 // PUT: Update category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json()
-    const categoryId = params.id
+    const { id: categoryId } = await params
 
     const {
       category_name,
@@ -334,10 +334,10 @@ export async function PUT(
 // DELETE: Soft delete category
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const categoryId = params.id
+    const { id: categoryId } = await params
 
     // Check if category has services
     const { data: services, error: servicesError } = await supabase

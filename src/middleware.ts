@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   // Get the host to check for subdomains
   const host = request.headers.get('host') || ''
   const subdomain = host.split('.')[0]
-  const isSubdomain = subdomain && subdomain !== 'heraerp' && subdomain !== 'www' && subdomain !== 'localhost'
+  const isSubdomain = !!(subdomain && subdomain !== 'heraerp' && subdomain !== 'www' && subdomain !== 'localhost')
 
   // Track visitor analytics for all requests (before auth checks)
   trackVisitorAnalytics(request, pathname)

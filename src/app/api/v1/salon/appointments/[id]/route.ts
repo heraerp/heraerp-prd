@@ -8,10 +8,10 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 // GET single appointment
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const appointmentId = params.id
+    const { id: appointmentId } = await params
     
     const { data: appointment, error } = await supabase
       .from('universal_transactions')
@@ -44,10 +44,10 @@ export async function GET(
 // UPDATE appointment
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const appointmentId = params.id
+    const { id: appointmentId } = await params
     const body = await request.json()
     
     console.log('Updating appointment:', appointmentId, body)
@@ -134,10 +134,10 @@ export async function PUT(
 // CANCEL appointment (soft delete)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const appointmentId = params.id
+    const { id: appointmentId } = await params
     const { searchParams } = new URL(request.url)
     const reason = searchParams.get('reason') || 'Customer request'
     
@@ -185,10 +185,10 @@ export async function DELETE(
 // RESCHEDULE appointment
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const appointmentId = params.id
+    const { id: appointmentId } = await params
     const body = await request.json()
     const { date, time } = body
     

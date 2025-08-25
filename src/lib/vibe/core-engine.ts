@@ -54,7 +54,8 @@ export class VibeEngine {
 
     } catch (error) {
       console.error('❌ Failed to initialize HERA Vibe Engine:', error)
-      throw new Error(`Vibe Engine initialization failed: ${error.message}`)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      throw new Error(`Vibe Engine initialization failed: ${errorMessage}`)
     }
   }
 
@@ -240,7 +241,8 @@ export class VibeEngine {
         console.warn('⚠️ Failed to log vibe event to universal transactions')
       }
     } catch (error) {
-      console.warn('⚠️ Vibe event logging failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Vibe event logging failed:', errorMessage)
     }
   }
 
@@ -357,7 +359,7 @@ interface QualityReport {
   quality_score: number
   checks: QualityCheck[]
   recommendations: string[]
-  status: 'excellent' | 'good' | 'acceptable' | 'needs_improvement'
+  status: 'pending' | 'excellent' | 'good' | 'acceptable' | 'needs_improvement'
 }
 
 interface QualityCheck {

@@ -33,9 +33,10 @@ export class IntegrationWeaver {
       console.log(`   Compatibility patterns: ${this.compatibilityMatrix.size}`)
       
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       throw new IntegrationError(
-        `Failed to initialize Integration Weaver: ${error.message}`,
-        { organization_id: organizationId, error: error.message }
+        `Failed to initialize Integration Weaver: ${errorMessage}`,
+        { organization_id: organizationId, error: errorMessage }
       )
     }
   }
@@ -299,7 +300,8 @@ export class IntegrationWeaver {
       console.log('📂 Loading existing integrations...')
       // Implementation would query universal tables for existing integrations
     } catch (error) {
-      console.warn('⚠️ Could not load existing integrations:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Could not load existing integrations:', errorMessage)
     }
   }
 
@@ -324,7 +326,8 @@ export class IntegrationWeaver {
           }
         }
       } catch (error) {
-        console.warn('⚠️ Health monitoring failed:', error.message)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        console.warn('⚠️ Health monitoring failed:', errorMessage)
       }
     }, 60000) // 60 seconds
   }
@@ -452,7 +455,8 @@ export class IntegrationWeaver {
         console.warn('⚠️ Failed to persist integration to database')
       }
     } catch (error) {
-      console.warn('⚠️ Integration persistence failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Integration persistence failed:', errorMessage)
     }
   }
 
@@ -484,7 +488,8 @@ export class IntegrationWeaver {
         console.warn('⚠️ Failed to log integration event')
       }
     } catch (error) {
-      console.warn('⚠️ Integration event logging failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Integration event logging failed:', errorMessage)
     }
   }
 

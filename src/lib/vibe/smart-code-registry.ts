@@ -27,10 +27,11 @@ export class SmartCodeRegistry {
       console.log(`   Registered codes: ${this.registry.size}`)
       
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       throw new VibeError(
-        `Failed to initialize Smart Code Registry: ${error.message}`,
+        `Failed to initialize Smart Code Registry: ${errorMessage}`,
         'HERA.VIBE.REGISTRY.INIT.FAILURE.v1',
-        { organization_id: organizationId, error: error.message }
+        { organization_id: organizationId, error: errorMessage }
       )
     }
   }
@@ -204,7 +205,8 @@ export class SmartCodeRegistry {
         console.log('📂 Loaded existing registry from database')
       }
     } catch (error) {
-      console.warn('⚠️ Could not load existing registry:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Could not load existing registry:', errorMessage)
     }
   }
 
@@ -285,7 +287,8 @@ export class SmartCodeRegistry {
         console.warn('⚠️ Failed to persist component to database')
       }
     } catch (error) {
-      console.warn('⚠️ Component persistence failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Component persistence failed:', errorMessage)
     }
   }
 
@@ -315,7 +318,8 @@ export class SmartCodeRegistry {
         console.warn('⚠️ Failed to persist registry entry to database')
       }
     } catch (error) {
-      console.warn('⚠️ Registry entry persistence failed:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Registry entry persistence failed:', errorMessage)
     }
   }
 
@@ -326,7 +330,8 @@ export class SmartCodeRegistry {
       // Implementation depends on actual API structure
       return null
     } catch (error) {
-      console.warn('⚠️ Failed to load component from database:', error.message)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn('⚠️ Failed to load component from database:', errorMessage)
       return null
     }
   }
