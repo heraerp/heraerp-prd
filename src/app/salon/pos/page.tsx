@@ -684,13 +684,13 @@ export default function SalonPOSPage() {
         {/* Totals */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <div className="space-y-2">
-            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
-              <span>Subtotal</span>
-              <span>{formatCurrency(calculateSubtotal())}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+              <span className="text-gray-700 dark:text-gray-300">{formatCurrency(calculateSubtotal())}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
-              <span>VAT (5%)</span>
-              <span>{formatCurrency(calculateVAT())}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">VAT (5%)</span>
+              <span className="text-gray-700 dark:text-gray-300">{formatCurrency(calculateVAT())}</span>
             </div>
             <Separator />
             <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-gray-100">
