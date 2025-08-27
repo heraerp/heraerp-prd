@@ -30,7 +30,7 @@ export function UniversalLayout({
   baseUrl
 }: UniversalLayoutProps) {
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${backgroundGradient}`}>
+    <div className={`min-h-screen bg-gradient-to-br ${backgroundGradient} relative`}>
       <UniversalSidebar
         title={title}
         subtitle={subtitle}
@@ -43,8 +43,8 @@ export function UniversalLayout({
       />
       
       {/* Main Content Area */}
-      <div className="ml-16 min-h-screen">
-        <main>
+      <div className="ml-16 min-h-screen relative">
+        <main className="relative">
           {children}
         </main>
       </div>

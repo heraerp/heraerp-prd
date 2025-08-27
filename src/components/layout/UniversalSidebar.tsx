@@ -127,6 +127,7 @@ export function UniversalSidebar({
           border-r
           border-pink-200/50
           shadow-lg
+          sidebar-wrapper
         `}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}

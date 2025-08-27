@@ -3,7 +3,7 @@
 import { UniversalLayout } from '@/components/layout/UniversalLayout'
 import { 
   Scissors, Calendar, Users, Package, CreditCard, 
-  BarChart, Settings, Heart, Star, Sparkles, Wallet
+  BarChart, Settings, Heart, Star, Sparkles, Wallet, GitBranch
 } from 'lucide-react'
 import { getModuleTheme } from '@/lib/theme/module-themes'
 import { SalonSettingsProvider } from '@/contexts/salon-settings-context'
@@ -37,6 +37,13 @@ export default function SalonLayout({
       icon: <Users className="w-5 h-5" />,
       href: '/salon/clients',
       color: 'hover:bg-purple-100'
+    },
+    {
+      id: 'workflow',
+      label: 'Workflow',
+      icon: <GitBranch className="w-5 h-5" />,
+      href: '/salon/workflow',
+      color: 'hover:bg-indigo-100'
     },
     {
       id: 'services',

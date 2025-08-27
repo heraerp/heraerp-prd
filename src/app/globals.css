@@ -1407,3 +1407,241 @@ html {
 .dark [role="dialog"] label {
   color: rgb(209 213 219) !important;
 }
+
+/* HERA Universal Text Contrast Fix - TEXT AND ICONS ONLY */
+/* This fix only changes text and icon colors, never backgrounds */
+@layer utilities {
+  /* ========================================
+     TEXT COLOR FIXES FOR SPECIFIC BACKGROUNDS
+     Only changes text color based on existing backgrounds
+     ======================================== */
+  
+  /* On dark backgrounds - make text lighter */
+  .bg-gray-900 h1, .bg-gray-900 h2, .bg-gray-900 h3, .bg-gray-900 h4, .bg-gray-900 h5, .bg-gray-900 h6,
+  .bg-gray-800 h1, .bg-gray-800 h2, .bg-gray-800 h3, .bg-gray-800 h4, .bg-gray-800 h5, .bg-gray-800 h6,
+  .bg-gray-700 h1, .bg-gray-700 h2, .bg-gray-700 h3, .bg-gray-700 h4, .bg-gray-700 h5, .bg-gray-700 h6,
+  .bg-slate-900 h1, .bg-slate-900 h2, .bg-slate-900 h3, .bg-slate-900 h4, .bg-slate-900 h5, .bg-slate-900 h6,
+  .bg-slate-800 h1, .bg-slate-800 h2, .bg-slate-800 h3, .bg-slate-800 h4, .bg-slate-800 h5, .bg-slate-800 h6 {
+    color: rgb(243 244 246) !important; /* gray-100 */
+  }
+  
+  .bg-gray-900 p, .bg-gray-900 span, .bg-gray-900 div,
+  .bg-gray-800 p, .bg-gray-800 span, .bg-gray-800 div,
+  .bg-gray-700 p, .bg-gray-700 span, .bg-gray-700 div {
+    color: rgb(209 213 219); /* gray-300 */
+  }
+  
+  /* Fix gray text on dark backgrounds */
+  .bg-gray-900 .text-gray-500, .bg-gray-900 .text-gray-600,
+  .bg-gray-800 .text-gray-500, .bg-gray-800 .text-gray-600,
+  .bg-gray-700 .text-gray-500, .bg-gray-700 .text-gray-600 {
+    color: rgb(209 213 219) !important; /* gray-300 */
+  }
+  
+  .bg-gray-900 .text-gray-400,
+  .bg-gray-800 .text-gray-400,
+  .bg-gray-700 .text-gray-400 {
+    color: rgb(156 163 175) !important; /* gray-400 */
+  }
+  
+  /* On light backgrounds - make text darker */
+  .bg-white .text-gray-500, .bg-gray-50 .text-gray-500, .bg-gray-100 .text-gray-500 {
+    color: rgb(75 85 99) !important; /* gray-600 */
+  }
+  
+  .bg-white .text-gray-400, .bg-gray-50 .text-gray-400, .bg-gray-100 .text-gray-400 {
+    color: rgb(107 114 128) !important; /* gray-500 */
+  }
+  
+  /* ========================================
+     ICON COLOR FIXES
+     ======================================== */
+  
+  /* Icons on dark backgrounds */
+  .bg-gray-900 svg, .bg-gray-800 svg, .bg-gray-700 svg {
+    color: rgb(209 213 219); /* gray-300 */
+  }
+  
+  /* Keep colored icons their original color */
+  .bg-gray-900 svg[class*="text-"], .bg-gray-800 svg[class*="text-"], .bg-gray-700 svg[class*="text-"] {
+    color: inherit;
+  }
+  
+  /* ========================================
+     TAB FIXES - TEXT ONLY
+     ======================================== */
+  
+  /* Tab text colors based on background */
+  .bg-muted [role="tab"], 
+  [role="tablist"] [role="tab"] {
+    color: rgb(55 65 81) !important; /* gray-700 */
+  }
+  
+  .bg-muted [role="tab"][data-state="active"],
+  [role="tablist"] [role="tab"][data-state="active"] {
+    color: rgb(17 24 39) !important; /* gray-900 */
+  }
+  
+  /* Dark mode tabs */
+  .dark .bg-muted [role="tab"],
+  .dark [role="tablist"] [role="tab"] {
+    color: rgb(209 213 219) !important; /* gray-300 */
+  }
+  
+  .dark .bg-muted [role="tab"][data-state="active"],
+  .dark [role="tablist"] [role="tab"][data-state="active"] {
+    color: rgb(243 244 246) !important; /* gray-100 */
+  }
+  
+  /* ========================================
+     SPECIFIC FIXES
+     ======================================== */
+  
+  /* Salon POS cart text */
+  .bg-gray-900 .font-semibold {
+    color: rgb(243 244 246) !important; /* gray-100 */
+  }
+  
+  /* Labels on any background */
+  label {
+    font-weight: 500;
+  }
+  
+  /* Ensure sidebar is not affected */
+  aside, nav, .sidebar, [class*="sidebar"] {
+    color: inherit;
+  }
+  
+  /* Fix muted foreground text */
+  .text-muted-foreground {
+    color: rgb(75 85 99); /* gray-600 */
+  }
+  
+  .dark .text-muted-foreground {
+    color: rgb(209 213 219); /* gray-300 */
+  }
+  
+  /* Price and number displays */
+  .text-xl.font-bold, .text-2xl.font-bold, .text-3xl.font-bold {
+    color: rgb(17 24 39); /* gray-900 */
+  }
+  
+  .dark .text-xl.font-bold, .dark .text-2xl.font-bold, .dark .text-3xl.font-bold {
+    color: rgb(243 244 246); /* gray-100 */
+  }
+  
+  /* ========================================
+     SUBTLE DEPTH ENHANCEMENTS
+     Slight background shades for better visual hierarchy
+     ======================================== */
+  
+  /* Cards - subtle shadow and background enhancement */
+  .card, [class*="Card"]:not([class*="CardTitle"]):not([class*="CardHeader"]):not([class*="CardContent"]):not([class*="CardFooter"]) {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .card, .dark [class*="Card"]:not([class*="CardTitle"]):not([class*="CardHeader"]):not([class*="CardContent"]):not([class*="CardFooter"]) {
+    background-color: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Card headers - slightly different shade */
+  [class*="CardHeader"] {
+    background-color: rgba(249, 250, 251, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark [class*="CardHeader"] {
+    background-color: rgba(17, 24, 39, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Tabs - subtle background for depth */
+  [role="tablist"] {
+    background-color: rgba(243, 244, 246, 0.8);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark [role="tablist"] {
+    background-color: rgba(31, 41, 55, 0.8);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  [role="tab"][data-state="active"] {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark [role="tab"][data-state="active"] {
+    background-color: rgb(17, 24, 39);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Tables - alternating row colors for better readability */
+  tbody tr:nth-child(even) {
+    background-color: rgba(249, 250, 251, 0.5);
+  }
+  
+  .dark tbody tr:nth-child(even) {
+    background-color: rgba(31, 41, 55, 0.5);
+  }
+  
+  tbody tr:hover {
+    background-color: rgba(243, 244, 246, 0.8);
+  }
+  
+  .dark tbody tr:hover {
+    background-color: rgba(55, 65, 81, 0.5);
+  }
+  
+  /* Table headers - bold text */
+  th, thead td, [role="columnheader"] {
+    font-weight: 700 !important;
+    color: rgb(17, 24, 39) !important;
+  }
+  
+  .dark th, .dark thead td, .dark [role="columnheader"] {
+    color: rgb(243, 244, 246) !important;
+  }
+  
+  /* Buttons - subtle depth */
+  button:not([class*="ghost"]):not([class*="link"]) {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  button:not([class*="ghost"]):not([class*="link"]):hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Input fields - subtle inset */
+  input, textarea, select {
+    background-color: rgba(249, 250, 251, 0.5);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark input, .dark textarea, .dark select {
+    background-color: rgba(17, 24, 39, 0.5);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Dialogs/Modals - elevated appearance */
+  [role="dialog"] {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .dark [role="dialog"] {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Dropdown menus - floating appearance */
+  [role="menu"], [data-radix-popper-content] {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark [role="menu"], .dark [data-radix-popper-content] {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  }
+}

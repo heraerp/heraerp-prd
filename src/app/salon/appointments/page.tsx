@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { SalonProductionSidebar } from '@/components/salon/SalonProductionSidebar'
+import { CheckInButton } from '@/components/salon/appointments/CheckInButton'
 import { 
   Calendar,
   Clock,
@@ -32,6 +33,7 @@ const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8
 
 interface Appointment {
   id: string
+  clientId?: string
   clientName?: string
   client?: string  // For backwards compatibility
   clientPhone?: string
@@ -39,10 +41,13 @@ interface Appointment {
   service: string
   time: string
   stylist: string
+  stylistId?: string
   duration: string
   price: number
-  status: 'confirmed' | 'pending' | 'completed' | 'cancelled'
+  status: string
+  statusCode?: string
   notes?: string
+  checkedInAt?: string
 }
 
 const mockAppointments: Appointment[] = [
@@ -134,27 +139,9 @@ export default function AppointmentsPage() {
     }
   }
 
-  const handleCheckIn = async (appointmentId: string) => {
-    if (!confirm('Check in this client?')) return
-    
-    try {
-      const response = await fetch(`/api/v1/salon/appointments/${appointmentId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: 'in_progress',
-          checkedInAt: new Date().toISOString()
-        })
-      })
-      
-      if (response.ok) {
-        alert('Client checked in successfully!')
-        fetchAppointments()
-      }
-    } catch (error) {
-      console.error('Error checking in:', error)
-      alert('Failed to check in client')
-    }
+  const handleCheckInComplete = () => {
+    // Refresh appointments list after check-in
+    fetchAppointments()
   }
 
   const handleCancel = async (appointmentId: string) => {
@@ -398,24 +385,22 @@ export default function AppointmentsPage() {
                         >
                           Edit
                         </Button>
-                        {appointment.status === 'confirmed' && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => handleCheckIn(appointment.id)}
-                            >
-                              Check In
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className="text-orange-600 hover:text-orange-700"
-                              onClick={() => handleCancel(appointment.id)}
-                            >
-                              Cancel
-                            </Button>
-                          </>
+                        <CheckInButton
+                          appointmentId={appointment.id}
+                          currentStatus={appointment.status}
+                          currentStatusCode={appointment.statusCode}
+                          onCheckInComplete={handleCheckInComplete}
+                        />
+                        {(appointment.statusCode === 'STATUS-APPOINTMENT-SCHEDULED' || 
+                          appointment.statusCode === 'STATUS-APPOINTMENT-CHECKED_IN') && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="text-orange-600 hover:text-orange-700"
+                            onClick={() => handleCancel(appointment.id)}
+                          >
+                            Cancel
+                          </Button>
                         )}
                         {appointment.status === 'cancelled' && (
                           <Button 

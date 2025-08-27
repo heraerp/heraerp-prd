@@ -1,0 +1,31 @@
+# Railway Environment Variables
+# Copy and paste into Railway dashboard → Variables → RAW Editor
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# WhatsApp Business API Configuration
+WHATSAPP_PHONE_NUMBER_ID=712631301940690
+WHATSAPP_BUSINESS_ACCOUNT_ID=1112225330318984
+WHATSAPP_ACCESS_TOKEN=your_whatsapp_access_token_here
+WHATSAPP_BUSINESS_NUMBER=+919945896033
+WHATSAPP_WEBHOOK_TOKEN=hera-whatsapp-webhook-2024-secure-token
+
+# AI Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Application Settings
+DEFAULT_ORGANIZATION_ID=44d2d8f8-167d-46a7-a704-c0e5435863d6
+SESSION_SECRET=another_secure_secret_for_session_management
+PWM_MASTER_KEY=prod-pwm-master-key-2024-hera-wealth-management-encryption-secure
+ENCRYPTION_MASTER_KEY=prod-encryption-master-key-2024-universal-hera-data-protection
+
+# Next.js Settings
+NEXT_PUBLIC_APP_URL=https://heraerp.com
+NEXT_PUBLIC_API_URL=https://api.heraerp.com/api/v1
+
+# Environment
+NODE_ENV=production

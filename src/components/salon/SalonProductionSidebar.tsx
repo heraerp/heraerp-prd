@@ -9,7 +9,8 @@ import {
   User, Gift, Zap, Crown, Award, X,
   DollarSign, TrendingUp, Calculator, ShoppingCart,
   ChevronDown, ChevronRight, Package, FileText,
-  PieChart, Receipt, Wallet, Building2, Activity
+  PieChart, Receipt, Wallet, Building2, Activity,
+  MessageCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -52,6 +53,22 @@ export function SalonProductionSidebar() {
       icon: <Calendar className="w-5 h-5" />,
       href: '/salon/appointments',
       badge: '12',
+      color: 'hover:bg-green-100'
+    },
+    {
+      id: 'reception',
+      label: 'Reception',
+      icon: <Clock className="w-5 h-5" />,
+      href: '/salon/reception',
+      badge: 'Live',
+      color: 'hover:bg-orange-100'
+    },
+    {
+      id: 'whatsapp',
+      label: 'WhatsApp',
+      icon: <MessageCircle className="w-5 h-5" />,
+      href: '/salon/whatsapp',
+      badge: '3',
       color: 'hover:bg-green-100'
     },
     {
