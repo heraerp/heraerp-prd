@@ -151,7 +151,7 @@ export default function SalonPOSPage() {
       ))
     } else {
       // Get price based on type
-      const price = type === 'service' ? (item.base_price || 0) : (item.retail_price || 0)
+      const price = type === 'service' ? (item.price || 0) : (item.price || 0)
       
       const newItem: CartItem = {
         id: item.id,
@@ -398,12 +398,12 @@ export default function SalonPOSPage() {
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 h-5 w-5" />
             <Input
               placeholder="Search services or products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 text-lg"
+              className="pl-10 h-12 text-lg text-gray-900 dark:text-gray-100 placeholder:text-gray-600 dark:placeholder:text-gray-400"
             />
           </div>
         </div>
@@ -424,9 +424,9 @@ export default function SalonPOSPage() {
           {/* Services Grid */}
           <TabsContent value="services">
             {loading ? (
-              <div className="text-center py-8">Loading services...</div>
+              <div className="text-center py-8 text-gray-700 dark:text-gray-400">Loading services...</div>
             ) : filteredServices.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-700 dark:text-gray-400">
                 {searchQuery ? 'No services found' : 'No services available'}
               </div>
             ) : (
@@ -453,9 +453,9 @@ export default function SalonPOSPage() {
                       </CardHeader>
                       <CardContent>
                         <p className="text-2xl font-bold text-pink-600">
-                          {formatCurrency(service.base_price || 0)}
+                          {formatCurrency(service.price || 0)}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-700 dark:text-gray-400 mt-1">
                           <Clock className="inline h-3 w-3 mr-1" />
                           {service.duration || 30} min
                         </p>
@@ -470,9 +470,9 @@ export default function SalonPOSPage() {
           {/* Products Grid */}
           <TabsContent value="products">
             {loading ? (
-              <div className="text-center py-8">Loading products...</div>
+              <div className="text-center py-8 text-gray-700 dark:text-gray-400">Loading products...</div>
             ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-700 dark:text-gray-400">
                 {searchQuery ? 'No products found' : 'No products available'}
               </div>
             ) : (
@@ -493,9 +493,9 @@ export default function SalonPOSPage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-2xl font-bold text-purple-600">
-                        {formatCurrency(product.retail_price || 0)}
+                        {formatCurrency(product.price || 0)}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-gray-700 dark:text-gray-400 mt-1">
                         Stock: {product.current_stock || 0}
                       </p>
                     </CardContent>
@@ -508,9 +508,9 @@ export default function SalonPOSPage() {
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="w-[450px] bg-white border-l flex flex-col">
+      <div className="w-[450px] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
         {/* Customer Selection */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <Label>Customer</Label>
           <Select 
             value={selectedCustomer?.id || 'walk-in'} 
@@ -539,10 +539,10 @@ export default function SalonPOSPage() {
                       <Badge 
                         variant="secondary" 
                         className={`ml-2 ${
-                          customer.loyalty_tier === 'Platinum' ? 'bg-purple-100' :
-                          customer.loyalty_tier === 'Gold' ? 'bg-yellow-100' :
-                          customer.loyalty_tier === 'Silver' ? 'bg-gray-100' :
-                          'bg-orange-100'
+                          customer.loyalty_tier === 'Platinum' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200' :
+                          customer.loyalty_tier === 'Gold' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200' :
+                          customer.loyalty_tier === 'Silver' ? 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200' :
+                          'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200'
                         }`}
                       >
                         {customer.loyalty_tier}
@@ -554,7 +554,7 @@ export default function SalonPOSPage() {
             </SelectContent>
           </Select>
           {selectedCustomer && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-700 dark:text-gray-400">
               <p>{selectedCustomer.phone || selectedCustomer.mobile_number || 'No phone'}</p>
               <p className="flex items-center gap-1">
                 <Star className="h-3 w-3" />
@@ -567,8 +567,8 @@ export default function SalonPOSPage() {
         {/* Cart Items */}
         <div className="flex-1 overflow-auto p-4">
           {cart.length === 0 ? (
-            <div className="text-center text-gray-500 mt-8">
-              <ShoppingCart className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+            <div className="text-center text-gray-700 dark:text-gray-400 mt-8">
+              <ShoppingCart className="h-12 w-12 mx-auto mb-2 text-gray-400 dark:text-gray-600" />
               <p>Cart is empty</p>
             </div>
           ) : (
@@ -578,7 +578,7 @@ export default function SalonPOSPage() {
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
                       <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-700 dark:text-gray-400">
                         {item.type === 'service' ? (
                           <>
                             <User className="inline h-3 w-3 mr-1" />
@@ -632,11 +632,11 @@ export default function SalonPOSPage() {
                     {/* Discount */}
                     {item.discount > 0 && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-green-600">
+                        <span className="text-green-700 dark:text-green-400">
                           <Percent className="inline h-3 w-3 mr-1" />
                           Discount
                         </span>
-                        <span className="text-green-600">
+                        <span className="text-green-700 dark:text-green-400">
                           -{item.discountType === 'percentage' 
                             ? `${item.discount}%` 
                             : formatCurrency(item.discount)}
@@ -670,20 +670,20 @@ export default function SalonPOSPage() {
         </div>
 
         {/* Totals */}
-        <div className="p-4 border-t bg-gray-50">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
               <span>Subtotal</span>
               <span>{formatCurrency(calculateSubtotal())}</span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
               <span>VAT (5%)</span>
               <span>{formatCurrency(calculateVAT())}</span>
             </div>
             <Separator />
-            <div className="flex justify-between text-lg font-bold">
+            <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-gray-100">
               <span>Total</span>
-              <span className="text-pink-600">{formatCurrency(calculateTotal())}</span>
+              <span className="text-pink-600 dark:text-pink-500">{formatCurrency(calculateTotal())}</span>
             </div>
           </div>
 
@@ -707,10 +707,10 @@ export default function SalonPOSPage() {
 
           <div className="space-y-4">
             {/* Total Due */}
-            <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">Total Due</span>
-                <span className="text-2xl font-bold text-pink-600">
+                <span className="text-lg font-medium text-gray-900 dark:text-gray-100">Total Due</span>
+                <span className="text-2xl font-bold text-pink-600 dark:text-pink-500">
                   {formatCurrency(calculateTotal())}
                 </span>
               </div>
@@ -830,8 +830,8 @@ export default function SalonPOSPage() {
 
                 {/* Remaining Amount */}
                 {calculateRemaining() > 0 && (
-                  <div className="bg-red-50 p-3 rounded-lg">
-                    <div className="flex justify-between items-center text-red-600">
+                  <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                    <div className="flex justify-between items-center text-red-600 dark:text-red-400">
                       <span>Remaining</span>
                       <span className="font-bold">
                         {formatCurrency(calculateRemaining())}
