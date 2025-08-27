@@ -67,9 +67,12 @@ export async function POST(request: NextRequest) {
     const organizationId = await getOrganizationFromPhone(value.metadata.display_phone_number)
     
     if (!organizationId) {
-      console.error('No organization found for phone number')
+      console.error('No organization found for phone number:', value.metadata.display_phone_number)
+      console.error('Using DEFAULT_ORGANIZATION_ID:', process.env.DEFAULT_ORGANIZATION_ID)
       return NextResponse.json({ status: 'error', message: 'Organization not found' })
     }
+    
+    console.log('Processing message for organization:', organizationId)
     
     // Initialize processor
     const processor = new WhatsAppProcessor({
@@ -101,26 +104,23 @@ export async function POST(request: NextRequest) {
 
 // Helper to get organization from WhatsApp phone number
 async function getOrganizationFromPhone(phoneNumber: string): Promise<string | null> {
-  // Look up organization by WhatsApp phone number
-  const { data } = await supabase
-    .from('core_dynamic_data')
-    .select('entity_id')
-    .eq('field_name', 'whatsapp_phone')
-    .eq('field_value_text', phoneNumber)
+  // For now, always use the default organization
+  // In production, you would look up based on the phone number
+  const defaultOrgId = process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+  
+  console.log('Using organization ID:', defaultOrgId)
+  
+  // Verify the organization exists
+  const { data: org } = await supabase
+    .from('core_organizations')
+    .select('id')
+    .eq('id', defaultOrgId)
     .single()
   
-  if (data) {
-    // Get organization entity
-    const { data: org } = await supabase
-      .from('core_entities')
-      .select('id')
-      .eq('id', data.entity_id)
-      .eq('entity_type', 'organization_settings')
-      .single()
-    
-    return org?.id || null
+  if (!org) {
+    console.error('Organization not found:', defaultOrgId)
+    return null
   }
   
-  // Fallback to default organization for demo
-  return process.env.DEFAULT_ORGANIZATION_ID || null
+  return defaultOrgId
 }
