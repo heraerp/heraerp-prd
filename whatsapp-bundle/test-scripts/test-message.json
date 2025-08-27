@@ -1,0 +1,31 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1112225330318984",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "919945896033",
+              "phone_number_id": "YOUR_PHONE_NUMBER_ID"
+            },
+            "messages": [
+              {
+                "from": "919945896033",
+                "id": "wamid.TEST_MESSAGE_ID",
+                "timestamp": "1693345678",
+                "text": {
+                  "body": "Hello, I would like to book an appointment"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}

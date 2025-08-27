@@ -1,168 +1,160 @@
-# 📚 WhatsApp Integration API Reference
+# WhatsApp Integration API Reference
+
+## Base URL
+```
+https://heraerp.com/api/v1/whatsapp
+```
 
 ## Endpoints
 
-### 1. Webhook Endpoint
-**URL**: `POST /api/v1/whatsapp/webhook`
+### 1. Webhook Handler
 
-Receives incoming WhatsApp messages and status updates.
+#### GET /webhook
+Handles WhatsApp webhook verification
 
-**Webhook Verification (GET)**:
-```http
-GET /api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=TOKEN&hub.challenge=CHALLENGE
+**Query Parameters:**
+- `hub.mode` (string): Should be "subscribe"
+- `hub.verify_token` (string): Your verification token
+- `hub.challenge` (string): Challenge to echo back
+
+**Response:**
+- Success: Returns the challenge string
+- Error: 403 Forbidden
+
+**Example:**
+```bash
+curl -X GET "https://heraerp.com/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=hera-whatsapp-webhook-2024-secure-token&hub.challenge=test123"
 ```
 
-**Message Receipt (POST)**:
+#### POST /webhook
+Receives WhatsApp messages
+
+**Request Body:**
 ```json
 {
+  "object": "whatsapp_business_account",
   "entry": [{
     "id": "WABA_ID",
     "changes": [{
       "value": {
         "messaging_product": "whatsapp",
-        "metadata": {
-          "display_phone_number": "PHONE",
-          "phone_number_id": "PHONE_ID"
-        },
         "messages": [{
-          "from": "SENDER_NUMBER",
+          "from": "919945896033",
           "id": "MESSAGE_ID",
-          "timestamp": "TIMESTAMP",
-          "text": { "body": "MESSAGE_TEXT" },
+          "timestamp": "1693345678",
+          "text": {
+            "body": "Hello"
+          },
           "type": "text"
         }]
-      },
-      "field": "messages"
+      }
     }]
   }]
 }
 ```
 
-### 2. Test Endpoint
-**URL**: `GET /api/v1/whatsapp/test`
-
-Returns current WhatsApp integration status.
-
-**Response**:
+**Response:**
 ```json
 {
-  "status": "WhatsApp Integration Test Endpoint",
-  "config": {
-    "webhook_token_set": true,
-    "access_token_set": true,
-    "phone_number_id_set": true,
-    "business_account_id_set": true,
-    "organization_id_set": true
-  },
-  "recent_messages": [...],
-  "recent_conversations": [...],
-  "webhook_url": "https://heraerp.com/api/v1/whatsapp/webhook",
-  "verify_token": "hera-whatsapp-webhook-2024-secure-token"
+  "status": "received"
 }
 ```
 
-### 3. Dashboard UI
-**URL**: `GET /salon/whatsapp`
+### 2. Test Endpoints
 
-React-based dashboard for viewing and managing WhatsApp conversations.
+#### GET /test-store
+Tests message storage functionality
 
-## Message Processor Methods
-
-### processMessage(message)
-Main method that orchestrates message processing.
-
-**Parameters**:
-```typescript
-interface WhatsAppMessage {
-  from: string
-  text: string
-  message_id: string
-  type: 'text' | 'interactive' | 'image' | 'document'
-  interactive?: any
-  timestamp: string
-}
-```
-
-### Intent Recognition
-Automatically detects customer intent:
-
-**Customer Intents**:
-- `book_appointment` - Booking request
-- `cancel_appointment` - Cancellation
-- `reschedule_appointment` - Change timing
-- `view_services` - Service inquiry
-- `check_loyalty` - Points balance
-
-**Staff Intents**:
-- `staff_schedule` - View appointments
-- `staff_checkin` - Check in client
-- `complete_service` - Mark done
-- `staff_break` - Take break
-
-## Database Schema
-
-### Conversations (core_entities)
-```sql
-entity_type: 'whatsapp_conversation'
-entity_code: 'WA-{PHONE_NUMBER}'
-metadata: {
-  phone: string
-  sender_type: 'customer' | 'staff' | 'new_customer'
-  last_message_at: timestamp
-  unread_count: number
-}
-```
-
-### Messages (universal_transactions)
-```sql
-transaction_type: 'whatsapp_message'
-transaction_code: 'MSG-{TIMESTAMP}'
-source_entity_id: conversation_id (for inbound)
-target_entity_id: conversation_id (for outbound)
-metadata: {
-  message_id: string
-  text: string
-  direction: 'inbound' | 'outbound'
-  timestamp: string
-}
-```
-
-## WhatsApp Cloud API Methods
-
-### Send Text Message
-```javascript
-POST https://graph.facebook.com/v23.0/{PHONE_NUMBER_ID}/messages
+**Response:**
+```json
 {
-  "messaging_product": "whatsapp",
-  "recipient_type": "individual",
-  "to": "RECIPIENT_NUMBER",
-  "type": "text",
-  "text": {
-    "preview_url": false,
-    "body": "MESSAGE_TEXT"
+  "status": "success",
+  "test_result": {
+    "message_stored": true,
+    "stored_id": "uuid",
+    "conversation_used": "uuid",
+    "total_messages": 5,
+    "recent_messages": [...]
   }
 }
 ```
 
-### Send Interactive Message
-```javascript
+#### GET /debug-dashboard
+Provides detailed debugging information
+
+**Response:**
+```json
 {
-  "messaging_product": "whatsapp",
-  "recipient_type": "individual",
-  "to": "RECIPIENT_NUMBER",
+  "status": "success",
+  "data": {
+    "totalConversations": 2,
+    "totalMessages": 10,
+    "conversationsWithMessages": [...],
+    "rawData": {
+      "conversations": [...],
+      "messages": [...]
+    }
+  }
+}
+```
+
+## Message Processing Flow
+
+### 1. Incoming Message Structure
+```typescript
+interface WhatsAppMessage {
+  from: string           // Phone number
+  text: string          // Message content
+  message_id: string    // Unique message ID
+  type: 'text' | 'interactive' | 'image' | 'document'
+  timestamp: string     // Unix timestamp
+}
+```
+
+### 2. Intent Recognition
+The system recognizes these intents:
+
+**Customer Intents:**
+- `book_appointment` - Book salon appointment
+- `cancel_appointment` - Cancel existing booking
+- `reschedule_appointment` - Change appointment time
+- `view_services` - See service menu
+- `check_loyalty` - View loyalty points
+
+**Staff Intents:**
+- `staff_schedule` - View daily schedule
+- `staff_checkin` - Check in client
+- `complete_service` - Mark service complete
+- `staff_break` - Take a break
+
+### 3. Response Types
+
+#### Text Response
+```json
+{
+  "type": "text",
+  "text": {
+    "body": "Your message here"
+  }
+}
+```
+
+#### Interactive Button Response
+```json
+{
   "type": "interactive",
   "interactive": {
     "type": "button",
     "body": {
-      "text": "MESSAGE_TEXT"
+      "text": "What would you like to do?"
     },
     "action": {
       "buttons": [
         {
           "type": "reply",
           "reply": {
-            "id": "BUTTON_ID",
-            "title": "BUTTON_TEXT"
+            "id": "book_now",
+            "title": "📅 Book Appointment"
           }
         }
       ]
@@ -171,67 +163,140 @@ POST https://graph.facebook.com/v23.0/{PHONE_NUMBER_ID}/messages
 }
 ```
 
+#### List Response
+```json
+{
+  "type": "list",
+  "interactive": {
+    "type": "list",
+    "header": {
+      "type": "text",
+      "text": "Available Times"
+    },
+    "body": {
+      "text": "Select your preferred slot:"
+    },
+    "action": {
+      "button": "View Times",
+      "sections": [
+        {
+          "title": "Morning Slots",
+          "rows": [
+            {
+              "id": "slot_1",
+              "title": "9:00 AM",
+              "description": "Available"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+## Database Schema
+
+### Conversations (core_entities)
+```typescript
+{
+  entity_type: 'whatsapp_conversation',
+  entity_code: 'WA-919945896033',
+  entity_name: 'WhatsApp: Customer Name',
+  smart_code: 'HERA.WHATSAPP.CONV.CUSTOMER.v1',
+  metadata: {
+    phone: '+919945896033',
+    sender_type: 'customer',
+    sender_id: 'entity-uuid',
+    created_at: '2024-08-27T10:00:00Z'
+  }
+}
+```
+
+### Messages (universal_transactions)
+```typescript
+{
+  transaction_type: 'whatsapp_message',
+  transaction_code: 'MSG-1693345678000',
+  transaction_date: '2024-08-27T10:00:00Z',
+  total_amount: 0,
+  source_entity_id: 'conversation-uuid',  // For inbound
+  target_entity_id: 'conversation-uuid',  // For outbound
+  smart_code: 'HERA.WHATSAPP.MSG.INBOUND.v1',
+  metadata: {
+    message_id: 'wamid.xxx',
+    text: 'Hello',
+    direction: 'inbound',
+    timestamp: '2024-08-27T10:00:00Z',
+    intent: 'greeting'
+  }
+}
+```
+
 ## Error Handling
 
-### Common Errors
-| Error Code | Description | Solution |
-|------------|-------------|----------|
-| 401 | Invalid access token | Generate new token |
-| 403 | Invalid verify token | Check webhook config |
-| 400 | Invalid message format | Check payload structure |
-| 130 | Re-engagement required | Customer must message first |
+All endpoints return consistent error responses:
 
-### Retry Logic
-- Automatic retry for network errors
-- Exponential backoff for rate limits
-- Dead letter queue for failed messages
+```json
+{
+  "status": "error",
+  "error": "Error message",
+  "details": {
+    "code": "ERROR_CODE",
+    "context": {}
+  }
+}
+```
+
+Common error codes:
+- `MISSING_ENV_VARS` - Required environment variables not set
+- `INVALID_TOKEN` - Webhook verification failed
+- `DB_ERROR` - Database operation failed
+- `PROCESSING_ERROR` - Message processing failed
 
 ## Rate Limits
 
-### WhatsApp Cloud API
-- **Messaging**: 80 messages/second
-- **Webhooks**: No limit
-- **API Calls**: 200K/hour
-
-### Best Practices
-1. Batch message sending
-2. Implement queue for high volume
-3. Monitor rate limit headers
-4. Use webhooks for real-time updates
+- Webhook: 100 requests per minute
+- Test endpoints: 10 requests per minute
+- Message sending: Follow WhatsApp limits (1000 messages/second)
 
 ## Security
 
-### Webhook Verification
-All webhooks verified using:
-- Verify token matching
-- HTTPS only
-- Request signature validation
-
-### Data Protection
-- Messages encrypted at rest
-- Organization isolation enforced
-- PII handled per GDPR
-- Audit trail maintained
+1. **Webhook Verification**: All webhook calls verified with token
+2. **Organization Isolation**: Multi-tenant security via organization_id
+3. **Service Role**: Uses Supabase service role for database operations
+4. **HTTPS Only**: All endpoints require HTTPS
 
 ## Testing
 
-### Unit Tests
+### Send Test Message
 ```bash
-npm test src/lib/whatsapp/processor.test.ts
+curl -X POST https://heraerp.com/api/v1/whatsapp/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "object": "whatsapp_business_account",
+    "entry": [{
+      "changes": [{
+        "value": {
+          "messages": [{
+            "from": "919945896033",
+            "text": {"body": "Test message"},
+            "type": "text",
+            "id": "test_123",
+            "timestamp": "1693345678"
+          }]
+        }
+      }]
+    }]
+  }'
 ```
 
-### Integration Tests
+### Check Storage
 ```bash
-./scripts/test-integration.sh
+curl https://heraerp.com/api/v1/whatsapp/test-store | jq
 ```
 
-### Load Testing
+### Debug Dashboard
 ```bash
-npm run test:whatsapp:load
+curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq
 ```
-
----
-
-**API Version**: v23.0
-**Last Updated**: January 2025
-**Documentation**: https://developers.facebook.com/docs/whatsapp

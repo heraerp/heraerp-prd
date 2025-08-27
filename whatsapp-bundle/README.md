@@ -1,156 +1,145 @@
-# 🎯 HERA WhatsApp Integration Bundle
+# WhatsApp Business Integration for HERA Salon
 
-## 📦 Complete WhatsApp Business API Integration for HERA ERP
+## Overview
 
-This bundle contains everything needed to deploy and manage WhatsApp Business API integration with HERA's universal architecture.
+This bundle contains the complete WhatsApp Business API integration for the HERA Salon application, enabling automated customer conversations, appointment booking, and business messaging.
 
-## 🚀 Quick Start
+## Features
 
-### Prerequisites
-- WhatsApp Business Account (WABA)
-- Meta Business Account
-- Railway deployment
-- Supabase database
+- ✅ **Automated Conversations**: AI-powered chatbot for customer inquiries
+- ✅ **Appointment Booking**: Book salon appointments via WhatsApp
+- ✅ **Service Menu**: Interactive service catalog with prices
+- ✅ **Staff Portal**: Staff can check schedules and manage appointments
+- ✅ **Customer Management**: Track conversations and customer history
+- ✅ **Multi-language Support**: Handles multiple languages intelligently
+- ✅ **Dashboard**: Real-time conversation management interface
 
-### Configuration
-```bash
-# Required Environment Variables
-WHATSAPP_PHONE_NUMBER_ID=712631301940690
-WHATSAPP_BUSINESS_ACCOUNT_ID=1112225330318984
-WHATSAPP_ACCESS_TOKEN=your_access_token_here
-WHATSAPP_BUSINESS_NUMBER=+919945896033
-WHATSAPP_WEBHOOK_TOKEN=hera-whatsapp-webhook-2024-secure-token
-DEFAULT_ORGANIZATION_ID=44d2d8f8-167d-46a7-a704-c0e5435863d6
+## Quick Start
+
+1. **Environment Setup**:
+   ```bash
+   # Add to your .env file
+   WHATSAPP_ACCESS_TOKEN=your-access-token
+   WHATSAPP_PHONE_NUMBER_ID=your-phone-id
+   WHATSAPP_WEBHOOK_VERIFY_TOKEN=hera-whatsapp-webhook-2024-secure-token
+   WHATSAPP_BUSINESS_ACCOUNT_ID=your-waba-id
+   DEFAULT_ORGANIZATION_ID=44d2d8f8-167d-46a7-a704-c0e5435863d6
+   ```
+
+2. **Deploy to Railway**:
+   ```bash
+   railway up
+   ```
+
+3. **Configure Webhook in Facebook**:
+   - URL: `https://your-app.railway.app/api/v1/whatsapp/webhook`
+   - Verify Token: `hera-whatsapp-webhook-2024-secure-token`
+   - Subscribe to: `messages`
+
+4. **Access Dashboard**:
+   - Navigate to: `/salon/whatsapp`
+
+## Architecture
+
+### Universal 6-Table Implementation
+
+The WhatsApp integration uses HERA's universal architecture:
+
+- **Conversations**: Stored as entities with `entity_type = 'whatsapp_conversation'`
+- **Messages**: Stored as transactions with `transaction_type = 'whatsapp_message'`
+- **Customer Data**: Dynamic fields in `core_dynamic_data`
+- **Relationships**: Links between customers, conversations, and appointments
+
+### Key Components
+
+1. **Webhook Handler** (`/api/v1/whatsapp/webhook`)
+   - Receives WhatsApp messages
+   - Verifies webhook challenges
+   - Routes to message processor
+
+2. **Message Processor** (`/lib/whatsapp/processor.ts`)
+   - Intent recognition
+   - Business logic execution
+   - Response generation
+
+3. **Dashboard UI** (`/app/salon/whatsapp`)
+   - Real-time conversation view
+   - Message history
+   - Quick actions
+
+## API Endpoints
+
+### Webhook
+```
+GET/POST /api/v1/whatsapp/webhook
 ```
 
-### Webhook Configuration
-- **URL**: `https://heraerp.com/api/v1/whatsapp/webhook`
-- **Verify Token**: `hera-whatsapp-webhook-2024-secure-token`
-- **Subscribe to**: messages field
-
-## 📁 Bundle Contents
-
-### Core Files
-1. **Webhook Handler**: `/api/v1/whatsapp/webhook/route.ts`
-2. **Message Processor**: `/lib/whatsapp/processor.ts`
-3. **Dashboard UI**: `/app/salon/whatsapp/page.tsx`
-4. **Test Endpoint**: `/api/v1/whatsapp/test/route.ts`
-
-### Scripts & Tools
-1. **Test Scripts**: Various testing utilities
-2. **Deployment Guide**: Step-by-step setup
-3. **Troubleshooting**: Common issues and fixes
-
-### Documentation
-1. **Architecture**: How it works with HERA
-2. **API Reference**: Available endpoints
-3. **Business Logic**: Message processing flow
-
-## 🎯 Features Implemented
-
-### Customer Features
-- ✅ Natural language appointment booking
-- ✅ Service inquiries and pricing
-- ✅ Appointment reminders (24h, 2h)
-- ✅ Loyalty points checking
-- ✅ Rescheduling and cancellations
-
-### Staff Features
-- ✅ Daily schedule viewing
-- ✅ Client check-in via WhatsApp
-- ✅ Service completion marking
-- ✅ Break management
-- ✅ Quick status updates
-
-### Technical Features
-- ✅ Two-way messaging
-- ✅ Multi-language support
-- ✅ Message history tracking
-- ✅ Real-time dashboard
-- ✅ Universal architecture integration
-
-## 📊 Business Impact
-
-- **98% Open Rate** (vs 20% email)
-- **45% Booking Conversion**
-- **< 1 min Response Time**
-- **75% Fewer Phone Calls**
-- **24/7 Availability**
-
-## 🔧 Testing
-
-### Send Test Message
-```bash
-./scripts/test-whatsapp-send.sh "Hello from HERA"
+### Testing
+```
+GET /api/v1/whatsapp/test-store
+GET /api/v1/whatsapp/debug-dashboard
 ```
 
-### Check Integration Status
+## Testing Tools
+
+### 1. Send Test Message
 ```bash
-./scripts/check-integration.sh
+curl -X POST https://your-app.railway.app/api/v1/whatsapp/webhook \
+  -H "Content-Type: application/json" \
+  -d @test-scripts/test-message.json
 ```
 
-### Monitor Logs
+### 2. Check Storage
 ```bash
-railway logs | grep -i whatsapp
+curl https://your-app.railway.app/api/v1/whatsapp/test-store
 ```
 
-## 📱 Usage
+### 3. Debug Dashboard
+```bash
+curl https://your-app.railway.app/api/v1/whatsapp/debug-dashboard
+```
 
-### Customer Commands
-- "Hi" - Welcome message
-- "Book appointment" - Start booking
-- "Services" - View services
-- "Cancel booking" - Cancel appointment
+## Deployment
 
-### Staff Commands
-- "Schedule" - View appointments
-- "Check in [name]" - Check in client
-- "Complete [id]" - Mark service done
-- "Break 30" - Take 30 min break
+### Railway Deployment
 
-## 🌐 Dashboard Access
+1. **Set Environment Variables**:
+   ```bash
+   railway variables set WHATSAPP_ACCESS_TOKEN=your-token
+   railway variables set WHATSAPP_PHONE_NUMBER_ID=your-phone-id
+   railway variables set WHATSAPP_WEBHOOK_VERIFY_TOKEN=hera-whatsapp-webhook-2024-secure-token
+   railway variables set WHATSAPP_BUSINESS_ACCOUNT_ID=your-waba-id
+   railway variables set DEFAULT_ORGANIZATION_ID=44d2d8f8-167d-46a7-a704-c0e5435863d6
+   ```
 
-Visit: https://heraerp.com/salon/whatsapp
+2. **Deploy**:
+   ```bash
+   railway up
+   ```
 
-Features:
-- Real-time conversation view
-- Message history
-- Quick reply templates
-- Customer information
-- Booking management
+3. **Get URL**:
+   ```bash
+   railway open
+   ```
 
-## 🛠️ Troubleshooting
+## Bundle Contents
 
-### Messages Not Received?
-1. Check webhook subscription in Meta
-2. Verify environment variables in Railway
-3. Ensure customer messaged first (24hr rule)
+- `README.md` - This file
+- `SETUP-GUIDE.md` - Detailed setup instructions
+- `API-REFERENCE.md` - Complete API documentation
+- `TROUBLESHOOTING.md` - Common issues and solutions
+- `test-scripts/` - Testing utilities
+- `code-snippets/` - Reusable code examples
+- `deployment/` - Deployment configurations
 
-### Can't Send Messages?
-1. Check access token validity
-2. Verify phone number format
-3. Ensure recipient initiated contact
+## Version
 
-## 📈 Architecture
+- Bundle Version: 2.0.0
+- Last Updated: August 27, 2024
+- Compatible with: HERA v1.2.1+
 
-Built on HERA's Universal 6-Table System:
-- `core_organizations` - Multi-tenant isolation
-- `core_entities` - Conversations & contacts
-- `core_dynamic_data` - Custom fields
-- `universal_transactions` - Messages
-- `core_relationships` - Status workflows
+## Support
 
-## 🎉 Success Metrics
-
-- Setup Time: 30 minutes
-- Cost: $0 (vs $500-2000/month)
-- Reliability: 99.9% uptime
-- Scalability: Unlimited messages
-- Security: End-to-end encryption
-
----
-
-**Bundle Version**: 1.0.0
-**Last Updated**: January 2025
-**Business**: Hanaset Business India
-**Support**: https://heraerp.com/support
+- Documentation: https://docs.anthropic.com/en/docs/claude-code
+- Issues: https://github.com/anthropics/claude-code/issues
+- HERA Docs: See `/docs` directory in main repository
