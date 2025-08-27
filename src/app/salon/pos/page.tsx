@@ -508,7 +508,7 @@ export default function SalonPOSPage() {
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="w-[450px] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
+      <div className="w-[450px] bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
         {/* Customer Selection */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <Label>Customer</Label>
@@ -575,26 +575,26 @@ export default function SalonPOSPage() {
           ) : (
             <div className="space-y-3">
               {cart.map((item) => (
-                <Card key={`${item.type}-${item.id}`} className="p-4 border shadow-sm hover:shadow-md transition-shadow">
+                <Card key={`${item.type}-${item.id}`} className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-base">{item.name}</h4>
                       {item.type === 'service' ? (
                         <div className="mt-2 space-y-1">
-                          <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center">
-                            <User className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
-                            <span className="font-medium">Staff:</span>
-                            <span className="ml-1">{item.staff || 'Any Staff'}</span>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center">
+                            <User className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            <span className="font-medium text-gray-800 dark:text-gray-200">Staff:</span>
+                            <span className="ml-1 text-gray-900 dark:text-gray-100">{item.staff || 'Any Staff'}</span>
                           </p>
-                          <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center">
-                            <Clock className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
-                            <span className="font-medium">Duration:</span>
-                            <span className="ml-1">{item.duration || 30} minutes</span>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            <span className="font-medium text-gray-800 dark:text-gray-200">Duration:</span>
+                            <span className="ml-1 text-gray-900 dark:text-gray-100">{item.duration || 30} minutes</span>
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center mt-1">
-                          <Package className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
+                        <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center mt-1">
+                          <Package className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
                           <span>Product</span>
                         </p>
                       )}
