@@ -1,5 +1,5 @@
 // HERA Database Types - Auto-generated from actual schema
-// Generated: 2025-08-27T13:34:52.783Z
+// Generated: 2025-08-27T21:07:58.416Z
 // Run 'node mcp-server/schema-introspection.js' to update
 
 export interface CoreOrganizations {

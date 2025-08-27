@@ -182,26 +182,39 @@ export class WhatsAppProcessor {
     direction: 'inbound' | 'outbound', 
     messageId: string
   ) {
-    const { data } = await this.supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: this.organizationId,
-        transaction_type: 'whatsapp_message',
-        transaction_code: `MSG-${Date.now()}`,
-        source_entity_id: direction === 'inbound' ? conversationId : null,
-        target_entity_id: direction === 'outbound' ? conversationId : null,
-        smart_code: `HERA.WHATSAPP.MSG.${direction.toUpperCase()}.v1`,
-        metadata: {
-          message_id: messageId,
-          text: text,
-          direction: direction,
-          timestamp: new Date().toISOString()
-        }
-      })
-      .select()
-      .single()
-    
-    return data
+    try {
+      const { data, error } = await this.supabase
+        .from('universal_transactions')
+        .insert({
+          organization_id: this.organizationId,
+          transaction_type: 'whatsapp_message',
+          transaction_code: `MSG-${Date.now()}`,
+          transaction_date: new Date().toISOString(), // Required field
+          total_amount: 0, // Required field, 0 for messages
+          source_entity_id: direction === 'inbound' ? conversationId : null,
+          target_entity_id: direction === 'outbound' ? conversationId : null,
+          smart_code: `HERA.WHATSAPP.MSG.${direction.toUpperCase()}.v1`,
+          metadata: {
+            message_id: messageId,
+            text: text,
+            direction: direction,
+            timestamp: new Date().toISOString()
+          }
+        })
+        .select()
+        .single()
+      
+      if (error) {
+        console.error('Error storing message:', error)
+        throw error
+      }
+      
+      console.log('Message stored successfully:', data?.id)
+      return data
+    } catch (error) {
+      console.error('Failed to store WhatsApp message:', error)
+      throw error
+    }
   }
   
   private async parseIntent(text: string, sender: Sender, conversation: any): Promise<Intent> {

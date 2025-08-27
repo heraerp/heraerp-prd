@@ -90,7 +90,12 @@ export async function POST(request: NextRequest) {
       timestamp
     })
     
-    console.log('Message processed:', result)
+    console.log('Message processed:', JSON.stringify(result, null, 2))
+    
+    // If processing failed, log the error
+    if (!result.success) {
+      console.error('WhatsApp processing failed:', result.error)
+    }
     
     // Always return 200 OK to WhatsApp
     return NextResponse.json({ status: 'ok' })
