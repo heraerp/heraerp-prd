@@ -582,12 +582,12 @@ export default function SalonPOSPage() {
                       {item.type === 'service' ? (
                         <div className="mt-2 space-y-1">
                           <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center">
-                            <User className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            <User className="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" />
                             <span className="font-medium text-gray-800 dark:text-gray-200">Staff:</span>
                             <span className="ml-1 text-gray-900 dark:text-gray-100">{item.staff || 'Any Staff'}</span>
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center">
-                            <Clock className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            <Clock className="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" />
                             <span className="font-medium text-gray-800 dark:text-gray-200">Duration:</span>
                             <span className="ml-1 text-gray-900 dark:text-gray-100">{item.duration || 30} minutes</span>
                           </p>
@@ -605,7 +605,7 @@ export default function SalonPOSPage() {
                       onClick={() => removeFromCart(item.id)}
                       className="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                     </Button>
                   </div>
 
