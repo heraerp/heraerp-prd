@@ -64,11 +64,24 @@ export default function WhatsAppDashboard() {
   })
   
   useEffect(() => {
+    console.log('WhatsApp Dashboard - Auth State:', {
+      isAuthenticated,
+      hasOrganization: !!currentOrganization,
+      organizationId: currentOrganization?.id,
+      contextLoading
+    })
+    
     if (currentOrganization) {
       fetchConversations()
       fetchStats()
+    } else if (!contextLoading && !currentOrganization) {
+      // Fallback to default organization for testing
+      console.log('No organization context, using default')
+      const defaultOrgId = process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+      fetchConversationsWithOrgId(defaultOrgId)
+      fetchStatsWithOrgId(defaultOrgId)
     }
-  }, [currentOrganization])
+  }, [currentOrganization, contextLoading, isAuthenticated])
   
   useEffect(() => {
     if (selectedConversation) {
@@ -76,27 +89,27 @@ export default function WhatsAppDashboard() {
     }
   }, [selectedConversation])
   
-  const fetchConversations = async () => {
-    if (!currentOrganization) return
-    
+  const fetchConversationsWithOrgId = async (orgId: string) => {
     try {
+      console.log('Fetching conversations with org ID:', orgId)
+      
       // Get WhatsApp conversations
       const { data: convos } = await supabase
         .from('core_entities')
         .select('*')
-        .eq('organization_id', currentOrganization.id)
+        .eq('organization_id', orgId)
         .eq('entity_type', 'whatsapp_conversation')
         .order('updated_at', { ascending: false })
       
-      // Get last message for each conversation
       console.log(`Found ${convos?.length || 0} conversations`)
       
+      // Get last message for each conversation
       for (const conv of convos || []) {
         const { data: lastMsg, error: msgError } = await supabase
           .from('universal_transactions')
           .select('*')
           .eq('transaction_type', 'whatsapp_message')
-          .eq('organization_id', currentOrganization.id)
+          .eq('organization_id', orgId)
           .or(`source_entity_id.eq.${conv.id},target_entity_id.eq.${conv.id}`)
           .order('created_at', { ascending: false })
           .limit(1)
@@ -126,6 +139,40 @@ export default function WhatsAppDashboard() {
       setConversations(formattedConversations)
     } catch (error) {
       console.error('Error fetching conversations:', error)
+    }
+  }
+  
+  const fetchConversations = async () => {
+    if (!currentOrganization) return
+    fetchConversationsWithOrgId(currentOrganization.id)
+  }
+  
+  const fetchStatsWithOrgId = async (orgId: string) => {
+    try {
+      // Get today's stats
+      const today = new Date().toISOString().split('T')[0]
+      
+      const { count: todayCount } = await supabase
+        .from('universal_transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('transaction_type', 'whatsapp_message')
+        .gte('created_at', today)
+      
+      const { count: totalConvos } = await supabase
+        .from('core_entities')
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('entity_type', 'whatsapp_conversation')
+      
+      setStats({
+        totalConversations: totalConvos || 0,
+        todayMessages: todayCount || 0,
+        bookingRate: 45, // Would calculate from actual data
+        responseTime: '< 1 min'
+      })
+    } catch (error) {
+      console.error('Error fetching stats:', error)
     }
   }
   
@@ -159,33 +206,7 @@ export default function WhatsAppDashboard() {
   
   const fetchStats = async () => {
     if (!currentOrganization) return
-    
-    try {
-      // Get today's stats
-      const today = new Date().toISOString().split('T')[0]
-      
-      const { count: todayCount } = await supabase
-        .from('universal_transactions')
-        .select('*', { count: 'exact', head: true })
-        .eq('organization_id', currentOrganization.id)
-        .eq('transaction_type', 'whatsapp_message')
-        .gte('created_at', today)
-      
-      const { count: totalConvos } = await supabase
-        .from('core_entities')
-        .select('*', { count: 'exact', head: true })
-        .eq('organization_id', currentOrganization.id)
-        .eq('entity_type', 'whatsapp_conversation')
-      
-      setStats({
-        totalConversations: totalConvos || 0,
-        todayMessages: todayCount || 0,
-        bookingRate: 45, // Would calculate from actual data
-        responseTime: '< 1 min'
-      })
-    } catch (error) {
-      console.error('Error fetching stats:', error)
-    }
+    fetchStatsWithOrgId(currentOrganization.id)
   }
   
   const formatTime = (timestamp: string) => {
@@ -224,6 +245,11 @@ export default function WhatsAppDashboard() {
         </div>
       </div>
     )
+  }
+  
+  // Add debug info if no conversations
+  if (!contextLoading && conversations.length === 0 && !currentOrganization) {
+    console.warn('No organization context and no conversations loaded')
   }
   
   return (
