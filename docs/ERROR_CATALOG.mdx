@@ -1,0 +1,155 @@
+---
+title: HERA Error Catalog
+description: Complete reference for all HERA Ledger Engine error codes
+---
+
+# HERA Error Catalog
+
+This catalog provides a comprehensive reference for all error codes in the HERA Ledger Engine. Each error includes its HTTP status, retry behavior, typical causes, and recommended client handling.
+
+## Error Code Reference
+
+| Code | HTTP | Retryable | Typical Cause | Client Behavior | Example Payload |
+|------|------|-----------|---------------|-----------------|-----------------|
+| **E_ORG_REQUIRED** | 400 | ❌ | Missing or invalid organization_id | Display validation error, prompt for organization selection | `{ "code": "E_ORG_REQUIRED", "message": "Organization ID is required" }` |
+| **E_SMART_CODE_REQUIRED** | 400 | ❌ | Smart code missing or invalid format | Check smart code format: HERA.INDUSTRY.MODULE.TYPE.SUBTYPE.v1 | `{ "code": "E_SMART_CODE_REQUIRED", "message": "Invalid smart code format", "hint": "Use format: HERA.INDUSTRY.MODULE.TYPE.SUBTYPE.v1" }` |
+| **E_SCHEMA** | 404 | ❌ | No posting schema configured for event/org | Contact admin to configure posting schema | `{ "code": "E_SCHEMA", "message": "No posting schema found for event HERA.POS.SALE.v1" }` |
+| **E_DIM_MISSING** | 422 | ❌ | Required dimensions missing from lines | Add missing dimensions (cost_center, location, etc.) | `{ "code": "E_DIM_MISSING", "message": "Required dimensions are missing", "details": { "missingByLine": [{ "lineIndex": 0, "missing": ["cost_center"] }] } }` |
+| **E_TAX_PROFILE** | 424 | ❌ | Tax profile not bound to organization | Bind tax profile using bind_tax_profile() | `{ "code": "E_TAX_PROFILE", "message": "No tax profile bound to organization" }` |
+| **E_RATE_RESOLUTION** | 422 | ❌ | Tax rate could not be determined | Check tax category mappings in profile | `{ "code": "E_RATE_RESOLUTION", "message": "Could not resolve tax rate for category 'unknown'" }` |
+| **E_UNBALANCED** | 422 | ❌ | Debits don't equal credits | Ensure journal is balanced before posting | `{ "code": "E_UNBALANCED", "message": "Journal entry is not balanced", "details": { "imbalances": [{ "currency": "USD", "debits": 100, "credits": 90 }] } }` |
+| **E_PERIOD_CLOSED** | 409 | ✅ | Posting to closed accounting period | Retry later or post to open period | `{ "code": "E_PERIOD_CLOSED", "message": "Posting period 2024-12 is closed", "hint": "Wait for period to open" }` |
+| **E_NOT_FOUND** | 404 | ❌ | Referenced entity/account not found | Verify entity IDs exist | `{ "code": "E_NOT_FOUND", "message": "Account not found" }` |
+| **E_IDEMPOTENT** | 200 | ❌ | Duplicate external_reference detected | **Treat as success!** Show receipt with existing transaction_id | `{ "success": true, "data": { "transaction_id": "existing-123" }, "meta": { "idempotent": true } }` |
+| **E_GUARDRAIL** | 400 | ❌ | Request violates business rules | Fix validation issues and retry | `{ "code": "E_GUARDRAIL", "message": "Invalid request", "details": { "issues": [...] } }` |
+| **E_UPSTREAM** | 502 | ✅ | External dependency failed | Retry with exponential backoff | `{ "code": "E_UPSTREAM", "message": "Database connection failed", "retryable": true }` |
+| **E_INTERNAL** | 500 | ✅ | Unexpected server error | Retry with backoff, contact support if persists | `{ "code": "E_INTERNAL", "message": "An unexpected error occurred", "retryable": true }` |
+
+## Special Error Handling
+
+### E_IDEMPOTENT - Success in Disguise
+
+The `E_IDEMPOTENT` error is unique - it returns HTTP 200 and should be treated as a **successful** operation:
+
+```typescript
+// SDK automatically handles this
+const result = await client.postWithIdempotency({
+  organization_id: 'org-123',
+  event_smart_code: 'HERA.POS.SALE.v1',
+  total_amount: 100,
+  currency: 'USD',
+  external_reference: 'order-456'
+});
+
+if (result.ok && result.meta?.idempotent) {
+  // Transaction already existed - show success
+  showSuccess(`Transaction already processed: ${result.data.transaction_id}`);
+}
+```
+
+## SDK Error Handling Examples
+
+### Handling Non-Retryable Errors
+
+```typescript
+const result = await client.post(request);
+
+if (!result.ok) {
+  switch (result.error.code) {
+    case 'E_UNBALANCED':
+      showError('Journal is not balanced. Please check your entries.');
+      break;
+    
+    case 'E_DIM_MISSING':
+      const missing = result.error.details?.missingByLine;
+      showError(`Missing dimensions: ${missing[0].missing.join(', ')}`);
+      break;
+    
+    case 'E_NOT_FOUND':
+      showError('Account not found. Please verify account IDs.');
+      break;
+    
+    default:
+      showError(result.error.message);
+  }
+}
+```
+
+### Automatic Retry Behavior
+
+The SDK automatically retries these errors with exponential backoff:
+
+```typescript
+// E_UPSTREAM example - retried automatically
+client.post(request)
+  .then(result => {
+    if (result.ok) {
+      showSuccess('Posted successfully');
+    }
+  })
+  .catch(error => {
+    // Only reaches here after all retries exhausted
+    showError('Failed after 3 attempts');
+  });
+```
+
+### Monitoring Retry Progress
+
+```typescript
+const client = createLedgerClient({
+  baseUrl: 'https://api.example.com',
+  organizationId: 'org-123',
+  onRetry: ({ attempt, delay, error }) => {
+    console.log(`Retry attempt ${attempt} after ${delay}ms due to ${error.code}`);
+    showInfo(`Retrying... (attempt ${attempt}/3)`);
+  }
+});
+```
+
+## Error Context Information
+
+Errors may include additional context to help with debugging:
+
+```typescript
+interface ErrorContext {
+  organization_id?: string;      // Organization that triggered error
+  event_smart_code?: string;     // Event being processed
+  transaction_id?: string;       // Related transaction ID
+  external_reference?: string;   // Idempotency key used
+}
+```
+
+## Best Practices
+
+1. **Always check `result.ok`** before accessing `result.data`
+2. **Handle E_IDEMPOTENT as success** - it means the operation completed previously
+3. **Don't retry non-retryable errors** - the SDK handles this automatically
+4. **Log error context** for debugging and support tickets
+5. **Use `postWithIdempotency()`** for critical operations to prevent duplicates
+6. **Show user-friendly messages** - translate error codes to actionable instructions
+
+## UI Toast Examples
+
+```typescript
+// Success with idempotency
+if (result.ok && result.meta?.idempotent) {
+  toast.info('✓ Transaction already processed', {
+    description: `Reference: ${result.data.transaction_id}`
+  });
+}
+
+// Retryable error (automatic)
+if (!result.ok && isRetryableError(result.error.code)) {
+  toast.warning('Temporary issue - retrying...', {
+    description: 'Please wait while we retry the operation'
+  });
+}
+
+// Non-retryable error
+if (!result.ok && !isRetryableError(result.error.code)) {
+  toast.error('Operation failed', {
+    description: result.error.hint || result.error.message,
+    action: getErrorAction(result.error.code)
+  });
+}
+```

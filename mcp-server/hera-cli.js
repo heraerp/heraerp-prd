@@ -242,8 +242,8 @@ async function showSchema(tableName) {
     core_organizations: ['id', 'organization_name', 'organization_code', 'organization_type', 'status'],
     core_entities: ['id', 'organization_id', 'entity_type', 'entity_name', 'entity_code', 'smart_code', 'status'],
     core_dynamic_data: ['entity_id', 'field_name', 'field_value_text', 'field_value_number', 'field_value_boolean', 'field_value_date', 'field_value_json'],
-    core_relationships: ['id', 'organization_id', 'parent_entity_id', 'child_entity_id', 'relationship_type', 'smart_code'],
-    universal_transactions: ['id', 'organization_id', 'transaction_type', 'transaction_number', 'transaction_date', 'total_amount', 'smart_code'],
+    core_relationships: ['id', 'organization_id', 'from_entity_id', 'to_entity_id', 'relationship_type', 'smart_code'],
+    universal_transactions: ['id', 'organization_id', 'transaction_type', 'transaction_code', 'transaction_date', 'total_amount', 'smart_code'],
     universal_transaction_lines: ['id', 'transaction_id', 'line_number', 'line_entity_id', 'quantity', 'unit_price', 'line_amount']
   };
 

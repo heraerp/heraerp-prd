@@ -1,0 +1,404 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e15]:
+        - generic [ref=e16]:
+          - button [ref=e17] [cursor=pointer]:
+            - img [ref=e19] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e25] [cursor=pointer]:
+            - img [ref=e27] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e32] [cursor=pointer]:
+            - img [ref=e34] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e39] [cursor=pointer]:
+            - img [ref=e41] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e64] [cursor=pointer]:
+            - img [ref=e66] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e74] [cursor=pointer]:
+            - img [ref=e76] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e80] [cursor=pointer]:
+            - img [ref=e82] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e84] [cursor=pointer]:
+            - img [ref=e86] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - button [ref=e91] [cursor=pointer]:
+            - img [ref=e92] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e96]:
+          - button [ref=e97] [cursor=pointer]:
+            - img [ref=e98] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e102]:
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - heading "Services Management" [level=1] [ref=e106]
+            - paragraph [ref=e107]: Manage your salon services, pricing, and availability
+          - generic [ref=e108]:
+            - button "Manage Categories" [ref=e109] [cursor=pointer]:
+              - img [ref=e110] [cursor=pointer]
+              - text: Manage Categories
+            - button "Add Service" [ref=e113] [cursor=pointer]:
+              - img [ref=e114] [cursor=pointer]
+              - text: Add Service
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e119]:
+              - heading "Total Services" [level=3] [ref=e120]
+              - img [ref=e121]
+            - generic [ref=e126]:
+              - generic [ref=e127]: "14"
+              - paragraph [ref=e128]: 14 active
+          - generic [ref=e129]:
+            - generic [ref=e130]:
+              - heading "Average Price" [level=3] [ref=e131]
+              - img [ref=e132]
+            - generic [ref=e135]:
+              - generic [ref=e137]: $113.57
+              - paragraph [ref=e138]: Per service
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - heading "Revenue Share" [level=3] [ref=e141]
+              - img [ref=e142]
+            - generic [ref=e145]:
+              - generic [ref=e146]: 0%
+              - progressbar [ref=e147]
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - heading "Categories" [level=3] [ref=e151]
+              - img [ref=e152]
+            - generic [ref=e154]:
+              - generic [ref=e155]: "4"
+              - paragraph [ref=e156]: Service types
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - img [ref=e161]
+            - textbox "Search services..." [ref=e164]
+          - combobox [ref=e165] [cursor=pointer]:
+            - generic: All Categories
+            - img [ref=e166] [cursor=pointer]
+        - table [ref=e171]:
+          - rowgroup [ref=e172]:
+            - row "Service Name Category Price Duration Status Actions" [ref=e173]:
+              - cell "Service Name" [ref=e174]
+              - cell "Category" [ref=e175]
+              - cell "Price" [ref=e176]
+              - cell "Duration" [ref=e177]
+              - cell "Status" [ref=e178]
+              - cell "Actions" [ref=e179]
+          - rowgroup [ref=e180]:
+            - row "Blowdry Other $84.00 30 min Active" [ref=e181]:
+              - cell "Blowdry" [ref=e182]
+              - cell "Other" [ref=e183]:
+                - generic [ref=e184]: Other
+              - cell "$84.00" [ref=e185]:
+                - generic [ref=e186]: $84.00
+              - cell "30 min" [ref=e187]:
+                - generic [ref=e188]:
+                  - img [ref=e189]
+                  - text: 30 min
+              - cell "Active" [ref=e192]:
+                - generic [ref=e193]: Active
+              - cell [ref=e194]:
+                - generic [ref=e195]:
+                  - button [ref=e196] [cursor=pointer]:
+                    - img [ref=e197] [cursor=pointer]
+                  - button [ref=e200] [cursor=pointer]:
+                    - img [ref=e201] [cursor=pointer]
+            - row "Deep Conditioning Hair Treatments $120.00 60 min Active" [ref=e207]:
+              - cell "Deep Conditioning" [ref=e208]
+              - cell "Hair Treatments" [ref=e209]:
+                - generic [ref=e210]: Hair Treatments
+              - cell "$120.00" [ref=e211]:
+                - generic [ref=e212]: $120.00
+              - cell "60 min" [ref=e213]:
+                - generic [ref=e214]:
+                  - img [ref=e215]
+                  - text: 60 min
+              - cell "Active" [ref=e218]:
+                - generic [ref=e219]: Active
+              - cell [ref=e220]:
+                - generic [ref=e221]:
+                  - button [ref=e222] [cursor=pointer]:
+                    - img [ref=e223] [cursor=pointer]
+                  - button [ref=e226] [cursor=pointer]:
+                    - img [ref=e227] [cursor=pointer]
+            - row "Gelish Manicure Nails $120.00 120 min Active" [ref=e233]:
+              - cell "Gelish Manicure" [ref=e234]
+              - cell "Nails" [ref=e235]:
+                - generic [ref=e236]: Nails
+              - cell "$120.00" [ref=e237]:
+                - generic [ref=e238]: $120.00
+              - cell "120 min" [ref=e239]:
+                - generic [ref=e240]:
+                  - img [ref=e241]
+                  - text: 120 min
+              - cell "Active" [ref=e244]:
+                - generic [ref=e245]: Active
+              - cell [ref=e246]:
+                - generic [ref=e247]:
+                  - button [ref=e248] [cursor=pointer]:
+                    - img [ref=e249] [cursor=pointer]
+                  - button [ref=e252] [cursor=pointer]:
+                    - img [ref=e253] [cursor=pointer]
+            - row "Gelish Pedicure Nails $120.00 120 min Active" [ref=e259]:
+              - cell "Gelish Pedicure" [ref=e260]
+              - cell "Nails" [ref=e261]:
+                - generic [ref=e262]: Nails
+              - cell "$120.00" [ref=e263]:
+                - generic [ref=e264]: $120.00
+              - cell "120 min" [ref=e265]:
+                - generic [ref=e266]:
+                  - img [ref=e267]
+                  - text: 120 min
+              - cell "Active" [ref=e270]:
+                - generic [ref=e271]: Active
+              - cell [ref=e272]:
+                - generic [ref=e273]:
+                  - button [ref=e274] [cursor=pointer]:
+                    - img [ref=e275] [cursor=pointer]
+                  - button [ref=e278] [cursor=pointer]:
+                    - img [ref=e279] [cursor=pointer]
+            - row "Hair Spa Hair Treatments $157.50 60 min Active" [ref=e285]:
+              - cell "Hair Spa" [ref=e286]
+              - cell "Hair Treatments" [ref=e287]:
+                - generic [ref=e288]: Hair Treatments
+              - cell "$157.50" [ref=e289]:
+                - generic [ref=e290]: $157.50
+              - cell "60 min" [ref=e291]:
+                - generic [ref=e292]:
+                  - img [ref=e293]
+                  - text: 60 min
+              - cell "Active" [ref=e296]:
+                - generic [ref=e297]: Active
+              - cell [ref=e298]:
+                - generic [ref=e299]:
+                  - button [ref=e300] [cursor=pointer]:
+                    - img [ref=e301] [cursor=pointer]
+                  - button [ref=e304] [cursor=pointer]:
+                    - img [ref=e305] [cursor=pointer]
+            - row "Hair Spa Hair Treatments $157.50 60 min Active" [ref=e311]:
+              - cell "Hair Spa" [ref=e312]
+              - cell "Hair Treatments" [ref=e313]:
+                - generic [ref=e314]: Hair Treatments
+              - cell "$157.50" [ref=e315]:
+                - generic [ref=e316]: $157.50
+              - cell "60 min" [ref=e317]:
+                - generic [ref=e318]:
+                  - img [ref=e319]
+                  - text: 60 min
+              - cell "Active" [ref=e322]:
+                - generic [ref=e323]: Active
+              - cell [ref=e324]:
+                - generic [ref=e325]:
+                  - button [ref=e326] [cursor=pointer]:
+                    - img [ref=e327] [cursor=pointer]
+                  - button [ref=e330] [cursor=pointer]:
+                    - img [ref=e331] [cursor=pointer]
+            - row "Hair Wash, Blowdry, Tong Curls Hair Treatments $157.50 60 min Active" [ref=e337]:
+              - cell "Hair Wash, Blowdry, Tong Curls" [ref=e338]
+              - cell "Hair Treatments" [ref=e339]:
+                - generic [ref=e340]: Hair Treatments
+              - cell "$157.50" [ref=e341]:
+                - generic [ref=e342]: $157.50
+              - cell "60 min" [ref=e343]:
+                - generic [ref=e344]:
+                  - img [ref=e345]
+                  - text: 60 min
+              - cell "Active" [ref=e348]:
+                - generic [ref=e349]: Active
+              - cell [ref=e350]:
+                - generic [ref=e351]:
+                  - button [ref=e352] [cursor=pointer]:
+                    - img [ref=e353] [cursor=pointer]
+                  - button [ref=e356] [cursor=pointer]:
+                    - img [ref=e357] [cursor=pointer]
+            - row "Haircut Hair Treatments $210.00 30 min Active" [ref=e363]:
+              - cell "Haircut" [ref=e364]
+              - cell "Hair Treatments" [ref=e365]:
+                - generic [ref=e366]: Hair Treatments
+              - cell "$210.00" [ref=e367]:
+                - generic [ref=e368]: $210.00
+              - cell "30 min" [ref=e369]:
+                - generic [ref=e370]:
+                  - img [ref=e371]
+                  - text: 30 min
+              - cell "Active" [ref=e374]:
+                - generic [ref=e375]: Active
+              - cell [ref=e376]:
+                - generic [ref=e377]:
+                  - button [ref=e378] [cursor=pointer]:
+                    - img [ref=e379] [cursor=pointer]
+                  - button [ref=e382] [cursor=pointer]:
+                    - img [ref=e383] [cursor=pointer]
+            - row "Hairwash Hair Services $52.50 30 min Active" [ref=e389]:
+              - cell "Hairwash" [ref=e390]
+              - cell "Hair Services" [ref=e391]:
+                - generic [ref=e392]: Hair Services
+              - cell "$52.50" [ref=e393]:
+                - generic [ref=e394]: $52.50
+              - cell "30 min" [ref=e395]:
+                - generic [ref=e396]:
+                  - img [ref=e397]
+                  - text: 30 min
+              - cell "Active" [ref=e400]:
+                - generic [ref=e401]: Active
+              - cell [ref=e402]:
+                - generic [ref=e403]:
+                  - button [ref=e404] [cursor=pointer]:
+                    - img [ref=e405] [cursor=pointer]
+                  - button [ref=e408] [cursor=pointer]:
+                    - img [ref=e409] [cursor=pointer]
+            - row "Hairwash and Blowdry Hair Services $105.00 60 min Active" [ref=e415]:
+              - cell "Hairwash and Blowdry" [ref=e416]
+              - cell "Hair Services" [ref=e417]:
+                - generic [ref=e418]: Hair Services
+              - cell "$105.00" [ref=e419]:
+                - generic [ref=e420]: $105.00
+              - cell "60 min" [ref=e421]:
+                - generic [ref=e422]:
+                  - img [ref=e423]
+                  - text: 60 min
+              - cell "Active" [ref=e426]:
+                - generic [ref=e427]: Active
+              - cell [ref=e428]:
+                - generic [ref=e429]:
+                  - button [ref=e430] [cursor=pointer]:
+                    - img [ref=e431] [cursor=pointer]
+                  - button [ref=e434] [cursor=pointer]:
+                    - img [ref=e435] [cursor=pointer]
+            - row "Manicure Nails $69.00 60 min Active" [ref=e441]:
+              - cell "Manicure" [ref=e442]
+              - cell "Nails" [ref=e443]:
+                - generic [ref=e444]: Nails
+              - cell "$69.00" [ref=e445]:
+                - generic [ref=e446]: $69.00
+              - cell "60 min" [ref=e447]:
+                - generic [ref=e448]:
+                  - img [ref=e449]
+                  - text: 60 min
+              - cell "Active" [ref=e452]:
+                - generic [ref=e453]: Active
+              - cell [ref=e454]:
+                - generic [ref=e455]:
+                  - button [ref=e456] [cursor=pointer]:
+                    - img [ref=e457] [cursor=pointer]
+                  - button [ref=e460] [cursor=pointer]:
+                    - img [ref=e461] [cursor=pointer]
+            - row "Manicure & Pedicure Nails $138.00 60 min Active" [ref=e467]:
+              - cell "Manicure & Pedicure" [ref=e468]
+              - cell "Nails" [ref=e469]:
+                - generic [ref=e470]: Nails
+              - cell "$138.00" [ref=e471]:
+                - generic [ref=e472]: $138.00
+              - cell "60 min" [ref=e473]:
+                - generic [ref=e474]:
+                  - img [ref=e475]
+                  - text: 60 min
+              - cell "Active" [ref=e478]:
+                - generic [ref=e479]: Active
+              - cell [ref=e480]:
+                - generic [ref=e481]:
+                  - button [ref=e482] [cursor=pointer]:
+                    - img [ref=e483] [cursor=pointer]
+                  - button [ref=e486] [cursor=pointer]:
+                    - img [ref=e487] [cursor=pointer]
+            - row "New service Hair Services $30.00 60 min Active" [ref=e493]:
+              - cell "New service" [ref=e494]
+              - cell "Hair Services" [ref=e495]:
+                - generic [ref=e496]: Hair Services
+              - cell "$30.00" [ref=e497]:
+                - generic [ref=e498]: $30.00
+              - cell "60 min" [ref=e499]:
+                - generic [ref=e500]:
+                  - img [ref=e501]
+                  - text: 60 min
+              - cell "Active" [ref=e504]:
+                - generic [ref=e505]: Active
+              - cell [ref=e506]:
+                - generic [ref=e507]:
+                  - button [ref=e508] [cursor=pointer]:
+                    - img [ref=e509] [cursor=pointer]
+                  - button [ref=e512] [cursor=pointer]:
+                    - img [ref=e513] [cursor=pointer]
+            - row "Pedicure Nails $69.00 60 min Active" [ref=e519]:
+              - cell "Pedicure" [ref=e520]
+              - cell "Nails" [ref=e521]:
+                - generic [ref=e522]: Nails
+              - cell "$69.00" [ref=e523]:
+                - generic [ref=e524]: $69.00
+              - cell "60 min" [ref=e525]:
+                - generic [ref=e526]:
+                  - img [ref=e527]
+                  - text: 60 min
+              - cell "Active" [ref=e530]:
+                - generic [ref=e531]: Active
+              - cell [ref=e532]:
+                - generic [ref=e533]:
+                  - button [ref=e534] [cursor=pointer]:
+                    - img [ref=e535] [cursor=pointer]
+                  - button [ref=e538] [cursor=pointer]:
+                    - img [ref=e539] [cursor=pointer]
+  - generic [ref=e546]:
+    - img [ref=e548]
+    - button "Open Tanstack query devtools" [ref=e597] [cursor=pointer]:
+      - img [ref=e598] [cursor=pointer]
+  - generic [ref=e651] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e652] [cursor=pointer]:
+      - img [ref=e653] [cursor=pointer]
+    - generic [ref=e657] [cursor=pointer]:
+      - button "Open issues overlay" [ref=e658] [cursor=pointer]:
+        - generic [ref=e659] [cursor=pointer]:
+          - generic [ref=e660] [cursor=pointer]: "0"
+          - generic [ref=e661] [cursor=pointer]: "1"
+        - generic [ref=e662] [cursor=pointer]: Issue
+      - button "Collapse issues badge" [ref=e663] [cursor=pointer]:
+        - img [ref=e664] [cursor=pointer]
+  - alert [ref=e666]
+```

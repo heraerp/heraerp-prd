@@ -1,0 +1,324 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e15]:
+        - generic [ref=e16]:
+          - button [ref=e17] [cursor=pointer]:
+            - img [ref=e19] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e25] [cursor=pointer]:
+            - img [ref=e27] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e33] [cursor=pointer]:
+            - img [ref=e35] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e40] [cursor=pointer]:
+            - img [ref=e42] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e64] [cursor=pointer]:
+            - img [ref=e66] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e74] [cursor=pointer]:
+            - img [ref=e76] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e80] [cursor=pointer]:
+            - img [ref=e82] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e84] [cursor=pointer]:
+            - img [ref=e86] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - button [ref=e91] [cursor=pointer]:
+            - img [ref=e92] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e96]:
+          - button [ref=e97] [cursor=pointer]:
+            - img [ref=e98] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e102]:
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - img [ref=e109]
+          - generic [ref=e115]:
+            - button [ref=e116] [cursor=pointer]:
+              - img [ref=e117] [cursor=pointer]
+            - generic:
+              - paragraph: Quick Actions
+          - navigation [ref=e120]:
+            - generic [ref=e121]:
+              - button [ref=e122] [cursor=pointer]:
+                - img [ref=e124] [cursor=pointer]
+              - generic:
+                - paragraph: Dashboard
+              - button [ref=e127] [cursor=pointer]:
+                - img [ref=e129] [cursor=pointer]
+              - generic:
+                - paragraph: Appointments
+                - generic: (12)
+              - button [ref=e135] [cursor=pointer]:
+                - img [ref=e137] [cursor=pointer]
+              - generic:
+                - paragraph: Clients
+                - generic: (New)
+              - button [ref=e142] [cursor=pointer]:
+                - img [ref=e144] [cursor=pointer]
+              - generic:
+                - paragraph: Services
+              - button [ref=e150] [cursor=pointer]:
+                - img [ref=e152] [cursor=pointer]
+              - generic:
+                - paragraph: Categories
+              - button [ref=e158] [cursor=pointer]:
+                - img [ref=e160] [cursor=pointer]
+              - generic:
+                - paragraph: Staff
+              - button [ref=e163] [cursor=pointer]:
+                - img [ref=e165] [cursor=pointer]
+              - generic:
+                - paragraph: Inventory
+                - generic: (5)
+              - button [ref=e171] [cursor=pointer]:
+                - img [ref=e173] [cursor=pointer]
+              - generic:
+                - paragraph: Payments
+              - button [ref=e176] [cursor=pointer]:
+                - img [ref=e178] [cursor=pointer]
+              - generic:
+                - paragraph: Loyalty Program
+                - generic: (VIP)
+              - button [ref=e180] [cursor=pointer]:
+                - img [ref=e182] [cursor=pointer]
+              - generic:
+                - paragraph: Marketing
+              - button [ref=e184] [cursor=pointer]:
+                - img [ref=e186] [cursor=pointer]
+              - generic:
+                - paragraph: Reports
+            - generic [ref=e191]:
+              - button [ref=e192] [cursor=pointer]:
+                - img [ref=e193] [cursor=pointer]
+              - generic:
+                - paragraph: More Apps
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - button [ref=e198] [cursor=pointer]:
+                - img [ref=e199] [cursor=pointer]
+              - generic:
+                - paragraph: Notifications
+            - generic [ref=e203]:
+              - button [ref=e204] [cursor=pointer]:
+                - img [ref=e205] [cursor=pointer]
+              - generic:
+                - paragraph: Settings
+        - generic [ref=e209]:
+          - generic [ref=e210]:
+            - button "Back to Dashboard" [ref=e211] [cursor=pointer]:
+              - img [ref=e212] [cursor=pointer]
+              - text: Back to Dashboard
+            - generic [ref=e214]:
+              - generic [ref=e215]:
+                - heading "Appointments" [level=1] [ref=e216]
+                - paragraph [ref=e217]: Manage your salon appointments and bookings
+              - button "New Appointment" [ref=e218] [cursor=pointer]:
+                - img [ref=e219] [cursor=pointer]
+                - text: New Appointment
+          - generic [ref=e224]:
+            - button "Previous" [ref=e225] [cursor=pointer]:
+              - img [ref=e226] [cursor=pointer]
+              - text: Previous
+            - generic [ref=e228]:
+              - img [ref=e229]
+              - heading "Sunday, August 24, 2025" [level=2] [ref=e240]
+            - button "Next" [ref=e241] [cursor=pointer]:
+              - text: Next
+              - img [ref=e242] [cursor=pointer]
+          - generic [ref=e244]:
+            - generic [ref=e245]:
+              - img [ref=e246]
+              - textbox "Search by client, service, or stylist..." [ref=e249]
+            - button "Filters" [ref=e250] [cursor=pointer]:
+              - img [ref=e251] [cursor=pointer]
+              - text: Filters
+          - generic [ref=e253]:
+            - tablist [ref=e254]:
+              - tab "Today (5)" [selected] [ref=e255] [cursor=pointer]
+              - tab "Upcoming" [ref=e256] [cursor=pointer]
+              - tab "Completed" [ref=e257] [cursor=pointer]
+              - tab "Cancelled" [ref=e258] [cursor=pointer]
+            - tabpanel "Today (5)" [ref=e259]:
+              - generic [ref=e262]:
+                - generic [ref=e263]:
+                  - generic [ref=e264]:
+                    - generic [ref=e265]: 10:00
+                    - generic [ref=e266]: AM
+                  - generic [ref=e267]:
+                    - generic [ref=e268]:
+                      - heading "Unknown Client" [level=3] [ref=e269]
+                      - generic [ref=e271]:
+                        - img [ref=e272]
+                        - text: confirmed
+                    - generic [ref=e275]:
+                      - generic [ref=e276]:
+                        - generic [ref=e277]: "Service:"
+                        - paragraph [ref=e278]: Service
+                      - generic [ref=e279]:
+                        - generic [ref=e280]: "Stylist:"
+                        - paragraph [ref=e281]: Staff
+                      - generic [ref=e282]:
+                        - generic [ref=e283]: "Duration:"
+                        - paragraph [ref=e284]: 60 min
+                - generic [ref=e285]:
+                  - generic [ref=e286]: AED 0
+                  - generic [ref=e287]:
+                    - button "Edit" [ref=e288] [cursor=pointer]
+                    - button "Check In" [ref=e289] [cursor=pointer]
+                    - button "Cancel" [ref=e290] [cursor=pointer]
+              - generic [ref=e293]:
+                - generic [ref=e294]:
+                  - generic [ref=e295]:
+                    - generic [ref=e296]: 10:00
+                    - generic [ref=e297]: AM
+                  - generic [ref=e298]:
+                    - generic [ref=e299]:
+                      - heading "Unknown Client" [level=3] [ref=e300]
+                      - generic [ref=e302]:
+                        - img [ref=e303]
+                        - text: confirmed
+                    - generic [ref=e306]:
+                      - generic [ref=e307]:
+                        - generic [ref=e308]: "Service:"
+                        - paragraph [ref=e309]: Service
+                      - generic [ref=e310]:
+                        - generic [ref=e311]: "Stylist:"
+                        - paragraph [ref=e312]: Staff
+                      - generic [ref=e313]:
+                        - generic [ref=e314]: "Duration:"
+                        - paragraph [ref=e315]: 60 min
+                - generic [ref=e316]:
+                  - generic [ref=e317]: AED 0
+                  - generic [ref=e318]:
+                    - button "Edit" [ref=e319] [cursor=pointer]
+                    - button "Check In" [ref=e320] [cursor=pointer]
+                    - button "Cancel" [ref=e321] [cursor=pointer]
+              - generic [ref=e324]:
+                - generic [ref=e325]:
+                  - generic [ref=e327]: 20:48
+                  - generic [ref=e328]:
+                    - generic [ref=e329]:
+                      - heading "XYZ" [level=3] [ref=e330]
+                      - generic [ref=e332]:
+                        - img [ref=e333]
+                        - text: confirmed
+                    - generic [ref=e336]:
+                      - generic [ref=e337]:
+                        - generic [ref=e338]: "Service:"
+                        - paragraph [ref=e339]: Hair Color
+                      - generic [ref=e340]:
+                        - generic [ref=e341]: "Stylist:"
+                        - paragraph [ref=e342]: Lisa Chen
+                      - generic [ref=e343]:
+                        - generic [ref=e344]: "Duration:"
+                        - paragraph [ref=e345]: 90 min
+                - generic [ref=e346]:
+                  - generic [ref=e347]: AED 350
+                  - generic [ref=e348]:
+                    - button "Edit" [ref=e349] [cursor=pointer]
+                    - button "Check In" [ref=e350] [cursor=pointer]
+                    - button "Cancel" [ref=e351] [cursor=pointer]
+              - generic [ref=e354]:
+                - generic [ref=e355]:
+                  - generic [ref=e357]: 09:06
+                  - generic [ref=e358]:
+                    - generic [ref=e359]:
+                      - heading "XYZ" [level=3] [ref=e360]
+                      - generic [ref=e362]:
+                        - img [ref=e363]
+                        - text: confirmed
+                    - generic [ref=e366]:
+                      - generic [ref=e367]:
+                        - generic [ref=e368]: "Service:"
+                        - paragraph [ref=e369]: Hair Cut
+                      - generic [ref=e370]:
+                        - generic [ref=e371]: "Stylist:"
+                        - paragraph [ref=e372]: Lisa Chen
+                      - generic [ref=e373]:
+                        - generic [ref=e374]: "Duration:"
+                        - paragraph [ref=e375]: 30 min
+                - generic [ref=e376]:
+                  - generic [ref=e377]: AED 150
+                  - generic [ref=e378]:
+                    - button "Edit" [ref=e379] [cursor=pointer]
+                    - button "Check In" [ref=e380] [cursor=pointer]
+                    - button "Cancel" [ref=e381] [cursor=pointer]
+              - generic [ref=e384]:
+                - generic [ref=e385]:
+                  - generic [ref=e387]: 10:09
+                  - generic [ref=e388]:
+                    - generic [ref=e389]:
+                      - heading "XYZ" [level=3] [ref=e390]
+                      - generic [ref=e392]:
+                        - img [ref=e393]
+                        - text: confirmed
+                    - generic [ref=e396]:
+                      - generic [ref=e397]:
+                        - generic [ref=e398]: "Service:"
+                        - paragraph [ref=e399]: Manicure
+                      - generic [ref=e400]:
+                        - generic [ref=e401]: "Stylist:"
+                        - paragraph [ref=e402]: Nina Patel
+                      - generic [ref=e403]:
+                        - generic [ref=e404]: "Duration:"
+                        - paragraph [ref=e405]: 45 min
+                - generic [ref=e406]:
+                  - generic [ref=e407]: AED 100
+                  - generic [ref=e408]:
+                    - button "Edit" [ref=e409] [cursor=pointer]
+                    - button "Check In" [ref=e410] [cursor=pointer]
+                    - button "Cancel" [ref=e411] [cursor=pointer]
+  - generic [ref=e413]:
+    - img [ref=e415]
+    - button "Open Tanstack query devtools" [ref=e464] [cursor=pointer]:
+      - img [ref=e465] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e519] [cursor=pointer]:
+    - img [ref=e520] [cursor=pointer]
+  - alert [ref=e524]
+```

@@ -107,7 +107,7 @@ const architecturePolice = {
     
     // Check if using universal entity types
     const universalTypes = [
-      'customer', 'vendor', 'product', 'employee', 'gl_account',
+      'customer', 'vendor', 'product', 'employee', 'account',
       'location', 'project', 'user', 'document', 'asset'
     ];
     

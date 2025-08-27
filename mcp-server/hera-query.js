@@ -98,7 +98,7 @@ async function showEntities() {
 async function showTransactions() {
   const { data, error } = await supabase
     .from('universal_transactions')
-    .select('id, transaction_type, transaction_number, transaction_date, total_amount')
+    .select('id, transaction_type, transaction_code, transaction_date, total_amount')
     .eq('organization_id', orgId)
     .order('transaction_date', { ascending: false })
     .limit(20);
@@ -114,7 +114,7 @@ async function showTransactions() {
   } else {
     data.forEach(tx => {
       const date = new Date(tx.transaction_date).toLocaleDateString();
-      console.log(`  ${tx.transaction_type.padEnd(15)} : ${tx.transaction_number} - $${tx.total_amount}`);
+      console.log(`  ${tx.transaction_type.padEnd(15)} : ${tx.transaction_code} - $${tx.total_amount}`);
       console.log(`  ${' '.padEnd(15)}   Date: ${date}`);
       console.log(`  ${' '.padEnd(15)}   ID: ${tx.id}\n`);
     });
@@ -127,8 +127,8 @@ async function showRelationships() {
     .select(`
       id,
       relationship_type,
-      parent_entity:core_entities!core_relationships_parent_entity_id_fkey(entity_name),
-      child_entity:core_entities!core_relationships_child_entity_id_fkey(entity_name)
+      from_entity:core_entities!core_relationships_from_entity_id_fkey(entity_name),
+      to_entity:core_entities!core_relationships_to_entity_id_fkey(entity_name)
     `)
     .eq('organization_id', orgId)
     .limit(20);

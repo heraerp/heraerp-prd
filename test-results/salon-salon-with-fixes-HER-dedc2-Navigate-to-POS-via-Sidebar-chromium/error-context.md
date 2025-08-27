@@ -1,0 +1,227 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e13]:
+        - generic [ref=e14]:
+          - button [ref=e15] [cursor=pointer]:
+            - img [ref=e17] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e23] [cursor=pointer]:
+            - img [ref=e25] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e30] [cursor=pointer]:
+            - img [ref=e32] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e38] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e42] [cursor=pointer]:
+            - img [ref=e44] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e58] [cursor=pointer]:
+            - img [ref=e60] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e62] [cursor=pointer]:
+            - img [ref=e64] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e65] [cursor=pointer]:
+            - img [ref=e67] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e69] [cursor=pointer]:
+            - img [ref=e71] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic:
+        - generic:
+          - button [ref=e74] [cursor=pointer]:
+            - img [ref=e75] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic:
+          - button [ref=e78] [cursor=pointer]:
+            - img [ref=e79] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e83]:
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - img [ref=e90]
+          - generic [ref=e92]:
+            - button [ref=e93] [cursor=pointer]:
+              - img [ref=e94] [cursor=pointer]
+            - generic:
+              - paragraph: Quick Actions
+          - navigation [ref=e95]:
+            - generic [ref=e96]:
+              - button [ref=e97] [cursor=pointer]:
+                - img [ref=e99] [cursor=pointer]
+              - generic:
+                - paragraph: Dashboard
+              - button [ref=e102] [cursor=pointer]:
+                - img [ref=e104] [cursor=pointer]
+              - generic:
+                - paragraph: Appointments
+                - generic: (12)
+              - button [ref=e106] [cursor=pointer]:
+                - img [ref=e108] [cursor=pointer]
+              - generic:
+                - paragraph: Clients
+                - generic: (New)
+              - button [ref=e113] [cursor=pointer]:
+                - img [ref=e115] [cursor=pointer]
+              - generic:
+                - paragraph: Services
+              - button [ref=e121] [cursor=pointer]:
+                - img [ref=e123] [cursor=pointer]
+              - generic:
+                - paragraph: Categories
+              - button [ref=e129] [cursor=pointer]:
+                - img [ref=e131] [cursor=pointer]
+              - generic:
+                - paragraph: Staff
+              - button [ref=e134] [cursor=pointer]:
+                - img [ref=e136] [cursor=pointer]
+              - generic:
+                - paragraph: Inventory
+                - generic: (5)
+              - button [ref=e138] [cursor=pointer]:
+                - img [ref=e140] [cursor=pointer]
+              - generic:
+                - paragraph: Payments
+              - button [ref=e142] [cursor=pointer]:
+                - img [ref=e144] [cursor=pointer]
+              - generic:
+                - paragraph: Loyalty Program
+                - generic: (VIP)
+              - button [ref=e146] [cursor=pointer]:
+                - img [ref=e148] [cursor=pointer]
+              - generic:
+                - paragraph: Marketing
+              - button [ref=e150] [cursor=pointer]:
+                - img [ref=e152] [cursor=pointer]
+              - generic:
+                - paragraph: Reports
+            - generic [ref=e154]:
+              - button [ref=e155] [cursor=pointer]:
+                - img [ref=e156] [cursor=pointer]
+              - generic:
+                - paragraph: More Apps
+          - generic:
+            - generic:
+              - button [ref=e157] [cursor=pointer]:
+                - img [ref=e158] [cursor=pointer]
+              - generic:
+                - paragraph: Notifications
+            - generic:
+              - button [ref=e161] [cursor=pointer]:
+                - img [ref=e162] [cursor=pointer]
+              - generic:
+                - paragraph: Settings
+        - generic [ref=e166]:
+          - generic [ref=e167]:
+            - button "Back to Appointments" [ref=e168] [cursor=pointer]:
+              - img [ref=e169] [cursor=pointer]
+              - text: Back to Appointments
+            - generic [ref=e171]:
+              - heading "New Appointment" [level=1] [ref=e172]
+              - paragraph [ref=e173]: Book a new appointment for your client
+          - generic [ref=e174]:
+            - generic [ref=e175]:
+              - generic [ref=e176]:
+                - generic [ref=e177]:
+                  - heading "Client Information" [level=3] [ref=e178]:
+                    - img [ref=e179]
+                    - text: Client Information
+                  - paragraph [ref=e182]: Enter client details or select existing client
+                - generic [ref=e183]:
+                  - generic [ref=e184]:
+                    - generic [ref=e185]: Client Name *
+                    - textbox "Client Name *" [ref=e186]
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: Phone Number *
+                    - textbox "Phone Number *" [ref=e189]
+                  - generic [ref=e190]:
+                    - generic [ref=e191]: Email (Optional)
+                    - textbox "Email (Optional)" [ref=e192]
+              - generic [ref=e193]:
+                - generic [ref=e194]:
+                  - heading "Service & Stylist" [level=3] [ref=e195]:
+                    - img [ref=e196]
+                    - text: Service & Stylist
+                  - paragraph [ref=e202]: Choose service and preferred stylist
+                - generic [ref=e203]:
+                  - generic [ref=e204]:
+                    - generic [ref=e205]: Service *
+                    - combobox "Service *" [ref=e206] [cursor=pointer]:
+                      - generic: Select a service
+                      - img [ref=e207] [cursor=pointer]
+                    - combobox [ref=e209]
+                  - generic [ref=e210]:
+                    - generic [ref=e211]: Stylist *
+                    - combobox "Stylist *" [ref=e212] [cursor=pointer]:
+                      - generic: Select a stylist
+                      - img [ref=e213] [cursor=pointer]
+                    - combobox [ref=e215]
+              - generic [ref=e216]:
+                - generic [ref=e217]:
+                  - heading "Date & Time" [level=3] [ref=e218]:
+                    - img [ref=e219]
+                    - text: Date & Time
+                  - paragraph [ref=e221]: Select appointment date and time
+                - generic [ref=e222]:
+                  - generic [ref=e223]:
+                    - generic [ref=e224]: Date *
+                    - textbox "Date *" [ref=e225]: 2025-08-24
+                  - generic [ref=e226]:
+                    - generic [ref=e227]: Time *
+                    - textbox "Time *" [ref=e228]
+              - generic [ref=e229]:
+                - generic [ref=e230]:
+                  - heading "Additional Notes" [level=3] [ref=e231]
+                  - paragraph [ref=e232]: Any special requests or notes
+                - textbox "Enter any special requests or notes..." [ref=e234]
+            - generic [ref=e235]:
+              - button "Cancel" [ref=e236] [cursor=pointer]
+              - button "Book Appointment" [disabled]:
+                - img
+                - text: Book Appointment
+  - generic [ref=e238]:
+    - img [ref=e240]
+    - button "Open Tanstack query devtools" [ref=e288] [cursor=pointer]:
+      - img [ref=e289] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e342] [cursor=pointer]:
+    - img [ref=e343] [cursor=pointer]
+  - alert [ref=e346]
+```

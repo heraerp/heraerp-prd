@@ -1,0 +1,84 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e13]:
+        - generic [ref=e14]:
+          - button [ref=e15] [cursor=pointer]:
+            - img [ref=e17] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e24] [cursor=pointer]:
+            - img [ref=e26] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e31] [cursor=pointer]:
+            - img [ref=e33] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e39] [cursor=pointer]:
+            - img [ref=e41] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e43] [cursor=pointer]:
+            - img [ref=e45] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e49] [cursor=pointer]:
+            - img [ref=e51] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e53] [cursor=pointer]:
+            - img [ref=e55] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e63] [cursor=pointer]:
+            - img [ref=e65] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e66] [cursor=pointer]:
+            - img [ref=e68] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - button [ref=e77] [cursor=pointer]:
+            - img [ref=e78] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e82]:
+          - button [ref=e83] [cursor=pointer]:
+            - img [ref=e84] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e88]:
+      - generic [ref=e90]:
+        - img [ref=e91]
+        - paragraph [ref=e93]: Loading appointments...
+  - button "Open Next.js Dev Tools" [ref=e100] [cursor=pointer]:
+    - img [ref=e101] [cursor=pointer]
+  - alert [ref=e104]
+```

@@ -1,8 +1,7 @@
 /**
  * 🌐 HERA Universal Table API
  * 
- * Complete CRUD operations for all universal 7-table schema:
- * - core_clients
+ * Complete CRUD operations for all universal 6-table schema:
  * - core_organizations
  * - core_entities  
  * - core_dynamic_data
@@ -26,27 +25,11 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hsumtzuqzoq
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabase = supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null
 
-// Universal Table Schema Definition - 7 Tables including Client Consolidation
+// Universal Table Schema Definition - 6 Sacred Tables
 const UNIVERSAL_SCHEMA = {
-  core_clients: {
-    primary_key: 'id',
-    required_fields: ['client_name', 'client_code', 'client_type'],
-    optional_fields: [
-      'parent_client_id', 'headquarters_country', 'incorporation_country',
-      'stock_exchange', 'ticker_symbol', 'legal_entity_identifier',
-      'tax_identification_number', 'regulatory_status', 'compliance_requirements',
-      'primary_contact_email', 'primary_contact_phone', 'website', 'primary_address',
-      'fiscal_year_end', 'reporting_currency', 'base_timezone', 'status',
-      'subscription_tier', 'client_settings', 'ai_insights', 'ai_classification',
-      'ai_confidence', 'ai_risk_profile', 'created_by', 'updated_by', 'version'
-    ],
-    auto_fields: ['created_at', 'updated_at'],
-    has_org_filter: false, // This is the TOP-LEVEL consolidation group
-    description: 'Top-level client groups for consolidation reporting (1:many with organizations)'
-  },
   core_organizations: {
     primary_key: 'id',
-    required_fields: ['organization_name', 'organization_code', 'organization_type', 'client_id'],
+    required_fields: ['organization_name', 'organization_code', 'organization_type'],
     optional_fields: [
       'industry', 'business_size', 'tax_id', 'registration_number', 
       'email', 'phone', 'website', 'address', 'status', 'subscription_tier',
@@ -61,7 +44,7 @@ const UNIVERSAL_SCHEMA = {
   },
   core_entities: {
     primary_key: 'id',
-    required_fields: ['organization_id', 'entity_type', 'entity_name'],
+    required_fields: ['organization_id', 'entity_type', 'entity_name', 'smart_code'],
     optional_fields: [
       'entity_code', 'entity_category', 'entity_subcategory', 'description', 'tags',
       'status', 'effective_date', 'expiry_date', 'metadata', 'ai_confidence',
@@ -88,12 +71,12 @@ const UNIVERSAL_SCHEMA = {
   },
   core_relationships: {
     primary_key: 'id',
-    required_fields: ['organization_id', 'source_entity_id', 'target_entity_id', 'relationship_type'],
+    required_fields: ['organization_id', 'from_entity_id', 'to_entity_id', 'relationship_type', 'smart_code'],
     optional_fields: [
       'relationship_label', 'relationship_strength', 'is_bidirectional', 'is_active',
       'hierarchy_level', 'workflow_state', 'workflow_step', 'relationship_data',
       'business_rules', 'effective_date', 'expiry_date', 'ai_discovered',
-      'ai_confidence', 'created_by', 'updated_by'
+      'ai_confidence', 'created_by', 'updated_by', 'metadata'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -101,7 +84,7 @@ const UNIVERSAL_SCHEMA = {
   },
   universal_transactions: {
     primary_key: 'id',
-    required_fields: ['organization_id', 'transaction_type', 'transaction_number'],
+    required_fields: ['organization_id', 'transaction_type', 'transaction_code', 'smart_code'],
     optional_fields: [
       'transaction_date', 'reference_number', 'external_reference', 'source_entity_id',
       'target_entity_id', 'total_amount', 'tax_amount', 'discount_amount', 'net_amount',
@@ -117,7 +100,7 @@ const UNIVERSAL_SCHEMA = {
   },
   universal_transaction_lines: {
     primary_key: 'id',
-    required_fields: ['transaction_id', 'organization_id', 'line_description'],
+    required_fields: ['transaction_id', 'organization_id', 'line_description', 'smart_code'],
     optional_fields: [
       'entity_id', 'line_order', 'quantity', 'unit_of_measure', 'unit_price',
       'line_amount', 'discount_percentage', 'discount_amount', 'tax_code',
@@ -657,7 +640,7 @@ function getApiHealth() {
     hera_dna: {
       method: 'Universal DNA Method™',
       patent_status: 'Patent Pending',
-      architecture: 'Universal 7-Table Schema',
+      architecture: 'Universal 6-Table Schema',
       motto: 'What takes traditional development 6-18 months, HERA DNA does in 30 seconds'
     }
   })
@@ -666,43 +649,12 @@ function getApiHealth() {
 // Mock Data for Development
 function getMockData(table: string, id?: string | null) {
   const mockData = {
-    core_clients: [
-      {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        client_name: 'HERA Enterprise Group',
-        client_code: 'HERA-GROUP',
-        client_type: 'enterprise_group',
-        headquarters_country: 'United States',
-        incorporation_country: 'Delaware',
-        stock_exchange: 'NASDAQ',
-        ticker_symbol: 'HERA',
-        legal_entity_identifier: 'LEI-123456789012345',
-        tax_identification_number: '12-3456789',
-        regulatory_status: 'public_company',
-        compliance_requirements: {
-          sox: true,
-          gdpr: true,
-          iso27001: true
-        },
-        primary_contact_email: 'corporate@hera.com',
-        website: 'https://hera.com',
-        fiscal_year_end: '2024-12-31',
-        reporting_currency: 'USD',
-        base_timezone: 'America/New_York',
-        status: 'active',
-        subscription_tier: 'enterprise',
-        ai_classification: 'fortune_500',
-        ai_confidence: 0.98,
-        created_at: '2024-01-01T00:00:00Z'
-      }
-    ],
     core_organizations: [
       {
         id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         organization_name: 'HERA Demo Organization',
         organization_code: 'HERA001',
         organization_type: 'enterprise',
-        client_id: '123e4567-e89b-12d3-a456-426614174000',
         industry: 'technology',
         business_size: 'medium',
         status: 'active',
@@ -719,15 +671,17 @@ function getMockData(table: string, id?: string | null) {
         entity_type: 'customer',
         entity_name: 'Mario Restaurant Corp',
         entity_code: 'CUST001',
+        smart_code: 'HERA.REST.CRM.ENT.CUSTOMER.v1',
         status: 'active',
         created_at: '2024-01-01T00:00:00Z'
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440002',
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
-        entity_type: 'gl_account',
+        entity_type: 'account',
         entity_name: 'Cash in Bank',
         entity_code: '1100000',
+        smart_code: 'HERA.FIN.GL.ENT.ASSET.v1',
         status: 'active',
         created_at: '2024-01-01T00:00:00Z'
       }
@@ -748,10 +702,11 @@ function getMockData(table: string, id?: string | null) {
       {
         id: 'rel550e8400-e29b-41d4-a716-446655440001',
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
-        source_entity_id: '550e8400-e29b-41d4-a716-446655440001',
-        target_entity_id: '550e8400-e29b-41d4-a716-446655440002',
+        from_entity_id: '550e8400-e29b-41d4-a716-446655440001',
+        to_entity_id: '550e8400-e29b-41d4-a716-446655440002',
         relationship_type: 'customer_account',
         relationship_label: 'Uses Account',
+        smart_code: 'HERA.REL.CUSTOMER_ACCOUNT.GEN.v1',
         is_active: true,
         created_at: '2024-01-01T00:00:00Z'
       }
@@ -761,7 +716,8 @@ function getMockData(table: string, id?: string | null) {
         id: 'txn550e8400-e29b-41d4-a716-446655440001',
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         transaction_type: 'sale',
-        transaction_number: 'SALE-2024-001',
+        transaction_code: 'SALE-2024-001',
+        smart_code: 'HERA.REST.SALE.TXN.ORDER.v1',
         transaction_date: '2024-08-08',
         reference_number: 'INV-001',
         total_amount: 1250.00,
@@ -777,6 +733,7 @@ function getMockData(table: string, id?: string | null) {
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         entity_id: '550e8400-e29b-41d4-a716-446655440002',
         line_description: 'Premium Pizza - Large',
+        smart_code: 'HERA.REST.SALE.LINE.FOOD.v1',
         line_order: 1,
         quantity: 2,
         unit_price: 25.00,

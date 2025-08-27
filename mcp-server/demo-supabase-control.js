@@ -103,7 +103,7 @@ async function demonstrateSupabaseControl() {
       organization_id: 'hera_software_inc',
       transaction_type: 'sale',
       transaction_date: new Date().toISOString(),
-      transaction_number: 'DEMO-SALE-' + Date.now(),
+      transaction_code: 'DEMO-SALE-' + Date.now(),
       smart_code: 'HERA.DEMO.SALE.TXN.v1',
       total_amount: 1500.00,
       reference_entity_id: customer?.id,
@@ -122,7 +122,7 @@ async function demonstrateSupabaseControl() {
     console.log('❌ Error:', txError.message);
   } else {
     console.log('✅ Sale transaction created!');
-    console.log(`   Transaction #: ${transaction.transaction_number}`);
+    console.log(`   Transaction #: ${transaction.transaction_code}`);
     console.log(`   Amount: $${transaction.total_amount.toLocaleString()}`);
     console.log(`   Type: ${transaction.transaction_type}`);
     console.log(`   Smart Code: ${transaction.smart_code}`);

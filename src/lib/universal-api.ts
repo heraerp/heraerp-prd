@@ -13,6 +13,7 @@
 
 import { UniversalCOATemplateGenerator } from './coa/universal-coa-template'
 import { processTransactionForJournal, runBatchProcessing, checkJournalRelevance } from './auto-journal-engine'
+import { HeraSacredValidator } from './hera-sacred-validator'
 
 interface UniversalApiConfig {
   baseUrl?: string
@@ -47,7 +48,6 @@ interface UniversalSchemaResponse {
 }
 
 type UniversalTable = 
-  | 'core_clients'
   | 'core_organizations'
   | 'core_entities'
   | 'core_dynamic_data'
@@ -107,13 +107,36 @@ export class UniversalApiClient {
     data: Partial<T>, 
     organizationId?: string
   ): Promise<ApiResponse<T>> {
+    // Validate against sacred 6-table architecture
+    const validation = HeraSacredValidator.validate({
+      table,
+      operation: 'create',
+      data: data as any,
+      organizationId: organizationId || this.config.organizationId
+    })
+    
+    if (!validation.isValid) {
+      return {
+        success: false,
+        error: validation.errors.join('; '),
+        message: validation.warnings.join('; ')
+      }
+    }
+    
+    // Apply auto-fixes if available
+    let finalData = data
+    if (validation.autoFixes) {
+      finalData = HeraSacredValidator.applyAutoFixes(data as any, validation.autoFixes) as any
+      console.warn('HERA Sacred Validator applied auto-fixes:', validation.autoFixes)
+    }
+    
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({
         action: 'create',
         table,
-        data,
+        data: finalData,
         organization_id: organizationId || this.config.organizationId
       })
     })
@@ -239,7 +262,7 @@ export class UniversalApiClient {
   // Convenience Methods for Common Operations
 
   /**
-   * Client Operations (Top-level consolidation groups)
+   * Client Operations (Using core_entities with entity_type='client')
    */
   async createClient(data: {
     client_name: string
@@ -269,20 +292,90 @@ export class UniversalApiClient {
     ai_confidence?: number
     ai_risk_profile?: any
   }) {
-    return this.create('core_clients', data)
+    // Transform to entity structure
+    const entityData = {
+      entity_type: 'client',
+      entity_name: data.client_name,
+      entity_code: data.client_code,
+      smart_code: `HERA.CRM.CLIENT.ENT.${data.client_type?.toUpperCase() || 'GENERAL'}.v1`,
+      status: data.status || 'active',
+      ai_classification: data.ai_classification,
+      ai_confidence: data.ai_confidence,
+      metadata: {
+        client_type: data.client_type,
+        headquarters_country: data.headquarters_country,
+        incorporation_country: data.incorporation_country,
+        stock_exchange: data.stock_exchange,
+        ticker_symbol: data.ticker_symbol,
+        legal_entity_identifier: data.legal_entity_identifier,
+        tax_identification_number: data.tax_identification_number,
+        regulatory_status: data.regulatory_status,
+        compliance_requirements: data.compliance_requirements,
+        primary_contact_email: data.primary_contact_email,
+        primary_contact_phone: data.primary_contact_phone,
+        website: data.website,
+        primary_address: data.primary_address,
+        fiscal_year_end: data.fiscal_year_end,
+        reporting_currency: data.reporting_currency,
+        base_timezone: data.base_timezone,
+        subscription_tier: data.subscription_tier,
+        client_settings: data.client_settings,
+        ai_insights: data.ai_insights,
+        ai_risk_profile: data.ai_risk_profile
+      }
+    }
+
+    // Create the entity
+    const result = await this.createEntity(entityData)
+    
+    // If there's a parent client, create the relationship
+    if (data.parent_client_id && result.success && result.data?.id) {
+      await this.createRelationship({
+        from_entity_id: data.parent_client_id,
+        to_entity_id: result.data.id,
+        relationship_type: 'parent_of',
+        smart_code: 'HERA.CRM.REL.CLIENT.PARENT.v1'
+      })
+    }
+
+    return result
   }
 
   async getClients() {
-    return this.read('core_clients')
+    // Read entities of type 'client'
+    const response = await this.read('core_entities')
+    if (response.success && response.data) {
+      response.data = response.data.filter((entity: any) => entity.entity_type === 'client')
+    }
+    return response
   }
 
   async updateClient(id: string, data: Partial<any>) {
-    return this.update('core_clients', id, data)
+    // Transform data to entity structure if needed
+    const entityData: any = {}
+    
+    if (data.client_name) entityData.entity_name = data.client_name
+    if (data.client_code) entityData.entity_code = data.client_code
+    if (data.status) entityData.status = data.status
+    
+    // Put all other fields in metadata
+    const metadataFields = Object.keys(data).filter(key => 
+      !['client_name', 'client_code', 'status', 'id'].includes(key)
+    )
+    
+    if (metadataFields.length > 0) {
+      entityData.metadata = {}
+      metadataFields.forEach(field => {
+        entityData.metadata[field] = data[field]
+      })
+    }
+
+    return this.update('core_entities', id, entityData)
   }
 
   async getClientWithOrganizations(clientId: string) {
-    // Get client details
-    const clientResponse = await this.read('core_clients', clientId)
+    // Get client details from core_entities
+    const clientResponse = await this.read('core_entities', clientId)
     if (!clientResponse.success) return clientResponse
 
     // Get all organizations for this client
@@ -341,8 +434,33 @@ export class UniversalApiClient {
     const response = await this.read('core_entities', undefined, organizationId)
     
     if (entityType && response.success) {
+      // Special handling for GL accounts (legacy compatibility)
+      if (entityType === 'gl_account') {
+        response.data = response.data?.filter((entity: any) => 
+          entity.entity_type === 'account' && 
+          entity.business_rules?.ledger_type === 'GL'
+        )
+      } else {
+        response.data = response.data?.filter((entity: any) => 
+          entity.entity_type === entityType
+        )
+      }
+      response.count = response.data?.length || 0
+    }
+    
+    return response
+  }
+  
+  /**
+   * Get GL accounts specifically (convenience method)
+   */
+  async getGLAccounts(organizationId?: string) {
+    const response = await this.read('core_entities', undefined, organizationId)
+    
+    if (response.success) {
       response.data = response.data?.filter((entity: any) => 
-        entity.entity_type === entityType
+        entity.entity_type === 'account' && 
+        entity.business_rules?.ledger_type === 'GL'
       )
       response.count = response.data?.length || 0
     }
@@ -416,12 +534,17 @@ export class UniversalApiClient {
    * Relationship Operations
    */
   async createRelationship(data: {
-    parent_entity_id: string
-    child_entity_id: string
+    from_entity_id: string
+    to_entity_id: string
     relationship_type: string
     relationship_metadata?: any
     status?: string
+    smart_code?: string
   }, organizationId?: string) {
+    // Ensure smart_code is present
+    if (!data.smart_code) {
+      data.smart_code = `HERA.REL.${data.relationship_type.toUpperCase()}.GEN.v1`
+    }
     return this.create('core_relationships', data, organizationId)
   }
 
@@ -430,7 +553,7 @@ export class UniversalApiClient {
     
     if (entityId && response.success) {
       response.data = response.data?.filter((rel: any) => 
-        rel.parent_entity_id === entityId || rel.child_entity_id === entityId
+        rel.from_entity_id === entityId || rel.to_entity_id === entityId
       )
       response.count = response.data?.length || 0
     }
@@ -615,19 +738,24 @@ export class UniversalApiClient {
       console.log(`🏛️ Setting up IFRS-compliant COA for ${industry} industry in ${country}`)
 
       // 1. Check if COA already exists
-      const existingCOA = await this.getEntities('gl_account', organizationId)
-      if (existingCOA.success && existingCOA.data?.length > 0 && !replaceExisting) {
+      const existingCOA = await this.read('core_entities', undefined, organizationId)
+      const existingAccounts = existingCOA.data?.filter((e: any) => 
+        e.entity_type === 'account' && 
+        e.business_rules?.ledger_type === 'GL'
+      ) || []
+      
+      if (existingAccounts.length > 0 && !replaceExisting) {
         return {
           success: false,
           error: 'Chart of Accounts already exists. Set replaceExisting=true to overwrite.',
-          existing_accounts: existingCOA.data.length
+          existing_accounts: existingAccounts.length
         }
       }
 
       // 2. Remove existing accounts if replacing
-      if (replaceExisting && existingCOA.success && existingCOA.data?.length > 0) {
-        console.log(`   🗑️ Removing ${existingCOA.data.length} existing accounts`)
-        for (const account of existingCOA.data) {
+      if (replaceExisting && existingAccounts.length > 0) {
+        console.log(`   🗑️ Removing ${existingAccounts.length} existing accounts`)
+        for (const account of existingAccounts) {
           await this.deleteEntity(account.id, organizationId)
         }
       }
@@ -645,13 +773,22 @@ export class UniversalApiClient {
 
       for (const account of coaTemplate.accounts) {
         try {
-          // Create the GL account entity
+          // Create the account entity with GL ledger type
           const accountResult = await this.createEntity({
-            entity_type: 'gl_account',
+            entity_type: 'account',
             entity_name: account.entity_name,
             entity_code: account.entity_code,
             smart_code: account.smart_code,
             status: account.status,
+            business_rules: {
+              ledger_type: 'GL',
+              account_classification: account.account_type,
+              accounting_rules: {
+                normal_balance: account.normal_balance,
+                vat_applicable: account.vat_applicable,
+                currency: account.currency
+              }
+            },
             metadata: {
               account_type: account.account_type,
               normal_balance: account.normal_balance,
@@ -765,20 +902,26 @@ export class UniversalApiClient {
    */
   async getIFRSChartOfAccounts(organizationId: string) {
     try {
-      // Get all GL accounts
-      const accountsResponse = await this.getEntities('gl_account', organizationId)
-      if (!accountsResponse.success || !accountsResponse.data) {
+      // Get all GL accounts (entity_type='account' with ledger_type='GL')
+      const entitiesResponse = await this.read('core_entities', undefined, organizationId)
+      if (!entitiesResponse.success || !entitiesResponse.data) {
         return {
           success: false,
-          error: 'Failed to fetch GL accounts',
+          error: 'Failed to fetch accounts',
           accounts: []
         }
       }
+      
+      // Filter for GL accounts
+      const glAccounts = entitiesResponse.data.filter((e: any) => 
+        e.entity_type === 'account' && 
+        e.business_rules?.ledger_type === 'GL'
+      )
 
       const accounts = []
 
       // Enrich each account with IFRS lineage data
-      for (const account of accountsResponse.data) {
+      for (const account of glAccounts) {
         const dynamicDataResponse = await this.getDynamicData(account.id, organizationId)
         const dynamicData = dynamicDataResponse.success ? dynamicDataResponse.data || [] : []
 

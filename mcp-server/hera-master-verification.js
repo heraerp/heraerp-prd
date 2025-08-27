@@ -379,7 +379,7 @@ const violationDetector = {
         .eq('organization_id', organizationId);
 
       const standardEntityTypes = [
-        'customer', 'vendor', 'product', 'employee', 'user', 'gl_account',
+        'customer', 'vendor', 'product', 'employee', 'user', 'account',
         'location', 'project', 'document', 'asset', 'service', 'contract'
       ];
 

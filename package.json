@@ -7,6 +7,12 @@
     "build": "npm run quality:pre-build && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
     "start": "next start",
     "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:salon": "playwright test tests/e2e/salon/",
+    "test:e2e:salon:headed": "playwright test tests/e2e/salon/ --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
     "schema:validate": "node mcp-server/schema-introspection.js validate",
     "schema:types": "node mcp-server/schema-introspection.js types",
     "schema:check": "node mcp-server/check-schema.js",
@@ -47,7 +53,17 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "ui:validate": "node scripts/validate-ui-patterns.js",
     "ui:generate": "node scripts/generate-ui-component.js",
-    "ui:check": "npm run ui:validate && npm run format:check"
+    "ui:check": "npm run ui:validate && npm run format:check",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "test:e2e:codegen": "playwright codegen http://localhost:3000",
+    "test:e2e:install": "playwright install",
+    "test:uat": "npm run test:e2e -- --grep @uat",
+    "test:smoke": "npm run test:e2e -- --grep @smoke"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -103,6 +119,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",

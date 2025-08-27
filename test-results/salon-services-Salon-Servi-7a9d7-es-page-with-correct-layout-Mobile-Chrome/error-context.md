@@ -1,0 +1,116 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e8]
+      - generic [ref=e10]:
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+        - generic:
+          - paragraph: Quick Actions
+      - navigation [ref=e13]:
+        - generic [ref=e14]:
+          - button [ref=e15] [cursor=pointer]:
+            - img [ref=e17] [cursor=pointer]
+          - generic:
+            - paragraph: Dashboard
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - generic:
+            - paragraph: Appointments
+            - generic: (12)
+          - button [ref=e23] [cursor=pointer]:
+            - img [ref=e25] [cursor=pointer]
+          - generic:
+            - paragraph: Clients
+          - button [ref=e30] [cursor=pointer]:
+            - img [ref=e32] [cursor=pointer]
+          - generic:
+            - paragraph: Services
+          - button [ref=e39] [cursor=pointer]:
+            - img [ref=e41] [cursor=pointer]
+          - generic:
+            - paragraph: Staff
+          - button [ref=e43] [cursor=pointer]:
+            - img [ref=e45] [cursor=pointer]
+          - generic:
+            - paragraph: Inventory
+            - generic: (8)
+          - button [ref=e49] [cursor=pointer]:
+            - img [ref=e51] [cursor=pointer]
+          - generic:
+            - paragraph: Point of Sale
+          - button [ref=e53] [cursor=pointer]:
+            - img [ref=e55] [cursor=pointer]
+          - generic:
+            - paragraph: Payments
+          - button [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+          - generic:
+            - paragraph: Loyalty
+            - generic: (New)
+          - button [ref=e63] [cursor=pointer]:
+            - img [ref=e65] [cursor=pointer]
+          - generic:
+            - paragraph: Reports
+          - button [ref=e66] [cursor=pointer]:
+            - img [ref=e68] [cursor=pointer]
+          - generic:
+            - paragraph: Marketing
+          - button [ref=e70] [cursor=pointer]:
+            - img [ref=e72] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - button [ref=e77] [cursor=pointer]:
+            - img [ref=e78] [cursor=pointer]
+          - generic:
+            - paragraph: Notifications
+        - generic [ref=e82]:
+          - button [ref=e83] [cursor=pointer]:
+            - img [ref=e84] [cursor=pointer]
+          - generic:
+            - paragraph: Settings
+    - main [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - heading "Services Management" [level=1] [ref=e92]
+            - paragraph [ref=e93]: Manage your salon services, pricing, and availability
+          - generic [ref=e94]:
+            - button "Manage Categories" [ref=e95] [cursor=pointer]:
+              - img [ref=e96] [cursor=pointer]
+              - text: Manage Categories
+            - button "Add Service" [ref=e99] [cursor=pointer]:
+              - img [ref=e100] [cursor=pointer]
+              - text: Add Service
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - img [ref=e105]
+            - textbox "Search services..." [ref=e108]
+          - combobox [ref=e109] [cursor=pointer]:
+            - generic: All Categories
+            - img [ref=e110] [cursor=pointer]
+        - table [ref=e115]:
+          - rowgroup [ref=e116]:
+            - row "Service Name Category Price Duration Status Actions" [ref=e117]:
+              - cell "Service Name" [ref=e118]
+              - cell "Category" [ref=e119]
+              - cell "Price" [ref=e120]
+              - cell "Duration" [ref=e121]
+              - cell "Status" [ref=e122]
+              - cell "Actions" [ref=e123]
+          - rowgroup [ref=e124]:
+            - row [ref=e125]:
+              - cell [ref=e126]
+  - generic [ref=e129]:
+    - img [ref=e131]
+    - button "Open Tanstack query devtools" [ref=e179] [cursor=pointer]:
+      - img [ref=e180] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e233] [cursor=pointer]:
+    - img [ref=e234] [cursor=pointer]
+  - alert [ref=e237]
+```

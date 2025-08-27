@@ -10,7 +10,7 @@ const factory = new ConfigurationFactory()
 
 // Custom product configuration for salon inventory
 const SALON_PRODUCT_CONFIG = {
-  entityType: 'product',
+  entityType: 'salon_product_item',
   smartCodePrefix: 'HERA.SALON.PRODUCT',
   displayName: 'Product',
   pluralName: 'Products',
