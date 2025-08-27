@@ -7,18 +7,20 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function GET(request: NextRequest) {
   try {
-    // Check recent webhook logs stored in the database
+    // Check recent WhatsApp messages stored in universal tables
     const { data: recentMessages, error } = await supabase
-      .from('whatsapp_messages')
+      .from('core_dynamic_data')
       .select('*')
+      .eq('field_name', 'whatsapp_message')
       .order('created_at', { ascending: false })
       .limit(10)
     
-    // Check for recent conversations
+    // Check for WhatsApp conversations (stored as entities)
     const { data: conversations } = await supabase
-      .from('whatsapp_conversations')
+      .from('core_entities')
       .select('*')
-      .order('last_message_at', { ascending: false })
+      .eq('entity_type', 'whatsapp_conversation')
+      .order('updated_at', { ascending: false })
       .limit(5)
     
     // Check environment variables
