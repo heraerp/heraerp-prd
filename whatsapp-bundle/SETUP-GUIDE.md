@@ -97,12 +97,13 @@
    - Check Railway logs: `railway logs | grep -i whatsapp`
 
 2. **Check Dashboard**:
+   - Login first at: `https://heraerp.com/auth/login`
    - Navigate to: `https://heraerp.com/salon/whatsapp`
    - Should see conversation with test message
 
 3. **Debug if Needed**:
    ```bash
-   # Check all data
+   # Check all data (no auth required)
    curl https://heraerp.com/api/v1/whatsapp/debug-dashboard
    ```
 

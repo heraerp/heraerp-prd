@@ -60,7 +60,43 @@ Receives WhatsApp messages
 }
 ```
 
-### 2. Test Endpoints
+### 2. Debug & Testing Endpoints
+
+#### GET /debug-dashboard
+Provides complete system overview without authentication
+
+**Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "totalConversations": 2,
+    "totalMessages": 14,
+    "conversationsWithMessages": [
+      {
+        "conversation": {
+          "id": "uuid",
+          "entity_code": "WA-919945896033",
+          "entity_name": "WhatsApp: CustomerName",
+          "metadata": {
+            "phone": "919945896033",
+            "sender_type": "customer"
+          }
+        },
+        "messages": [
+          {
+            "id": "uuid",
+            "text": "Hello",
+            "direction": "inbound",
+            "created_at": "2024-08-27T10:00:00Z"
+          }
+        ],
+        "lastMessage": {...}
+      }
+    ]
+  }
+}
+```
 
 #### GET /test-store
 Tests message storage functionality
@@ -73,61 +109,56 @@ Tests message storage functionality
     "message_stored": true,
     "stored_id": "uuid",
     "conversation_used": "uuid",
-    "total_messages": 5,
+    "total_messages": 14,
     "recent_messages": [...]
   }
 }
 ```
 
-#### GET /debug-dashboard
-Provides detailed debugging information
+#### GET /dashboard-test
+Tests dashboard query logic
 
 **Response:**
 ```json
 {
   "status": "success",
-  "data": {
-    "totalConversations": 2,
-    "totalMessages": 10,
-    "conversationsWithMessages": [...],
-    "rawData": {
-      "conversations": [...],
-      "messages": [...]
+  "organizationId": "44d2d8f8-167d-46a7-a704-c0e5435863d6",
+  "totalConversations": 2,
+  "conversations": [
+    {
+      "id": "uuid",
+      "phone": "919945896033",
+      "name": "Customer Name",
+      "lastMessage": "Hello",
+      "lastMessageTime": "2024-08-27T10:00:00Z",
+      "hasLastMessage": true
     }
-  }
+  ],
+  "dashboardUrl": "https://heraerp.com/salon/whatsapp",
+  "note": "If this shows data but dashboard doesn't, check authentication"
 }
 ```
 
-## Message Processing Flow
+## Message Processing
 
-### 1. Incoming Message Structure
-```typescript
-interface WhatsAppMessage {
-  from: string           // Phone number
-  text: string          // Message content
-  message_id: string    // Unique message ID
-  type: 'text' | 'interactive' | 'image' | 'document'
-  timestamp: string     // Unix timestamp
-}
-```
-
-### 2. Intent Recognition
-The system recognizes these intents:
+### Intent Recognition
+The system automatically recognizes these intents:
 
 **Customer Intents:**
-- `book_appointment` - Book salon appointment
-- `cancel_appointment` - Cancel existing booking
-- `reschedule_appointment` - Change appointment time
-- `view_services` - See service menu
-- `check_loyalty` - View loyalty points
+- `book_appointment` - "I want to book an appointment"
+- `cancel_appointment` - "Cancel my appointment"
+- `reschedule_appointment` - "Change my appointment time"
+- `view_services` - "What services do you offer?"
+- `check_loyalty` - "Check my points"
+- `greeting` - General greetings
 
 **Staff Intents:**
-- `staff_schedule` - View daily schedule
-- `staff_checkin` - Check in client
-- `complete_service` - Mark service complete
-- `staff_break` - Take a break
+- `staff_schedule` - "Show my schedule"
+- `staff_checkin` - "Check in Sarah Johnson"
+- `complete_service` - "Complete service"
+- `staff_break` - "Taking a break"
 
-### 3. Response Types
+### Response Types
 
 #### Text Response
 ```json
@@ -233,40 +264,6 @@ The system recognizes these intents:
 }
 ```
 
-## Error Handling
-
-All endpoints return consistent error responses:
-
-```json
-{
-  "status": "error",
-  "error": "Error message",
-  "details": {
-    "code": "ERROR_CODE",
-    "context": {}
-  }
-}
-```
-
-Common error codes:
-- `MISSING_ENV_VARS` - Required environment variables not set
-- `INVALID_TOKEN` - Webhook verification failed
-- `DB_ERROR` - Database operation failed
-- `PROCESSING_ERROR` - Message processing failed
-
-## Rate Limits
-
-- Webhook: 100 requests per minute
-- Test endpoints: 10 requests per minute
-- Message sending: Follow WhatsApp limits (1000 messages/second)
-
-## Security
-
-1. **Webhook Verification**: All webhook calls verified with token
-2. **Organization Isolation**: Multi-tenant security via organization_id
-3. **Service Role**: Uses Supabase service role for database operations
-4. **HTTPS Only**: All endpoints require HTTPS
-
 ## Testing
 
 ### Send Test Message
@@ -300,3 +297,27 @@ curl https://heraerp.com/api/v1/whatsapp/test-store | jq
 ```bash
 curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq
 ```
+
+## Error Codes
+
+| Code | Description | Solution |
+|------|-------------|----------|
+| 403 | Invalid webhook token | Check WHATSAPP_WEBHOOK_VERIFY_TOKEN |
+| 404 | Endpoint not found | Wait for deployment or check URL |
+| 500 | Server error | Check Railway logs |
+| NO_ORG | Organization not found | Set DEFAULT_ORGANIZATION_ID |
+| STORE_ERROR | Message storage failed | Check required fields |
+
+## Rate Limits
+
+- Webhook: 100 requests per minute
+- Debug endpoints: 10 requests per minute
+- Message sending: Follow WhatsApp limits (1000/sec)
+
+## Security
+
+1. **Webhook Verification**: All webhook calls verified with token
+2. **Organization Isolation**: Multi-tenant security via organization_id
+3. **Service Role**: Uses Supabase service role for database operations
+4. **HTTPS Only**: All endpoints require HTTPS
+5. **Authentication**: Dashboard requires login for data access

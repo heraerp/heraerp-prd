@@ -1,232 +1,243 @@
 # WhatsApp Integration Troubleshooting Guide
 
+## Quick Status Check
+
+```bash
+# 1. Check if messages are stored (should show 14+)
+curl -s https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq '.data.totalMessages'
+
+# 2. Check conversations (should show 2)
+curl -s https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq '.data.totalConversations'
+
+# 3. View latest messages
+curl -s https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq '.data.conversationsWithMessages[0].messages[0]'
+```
+
 ## Common Issues and Solutions
 
-### 1. Messages Not Appearing in Dashboard
+### 1. Dashboard Not Showing Messages
 
-**Problem**: WhatsApp messages are being stored in the database but not showing in the dashboard.
+**Symptoms**: 
+- Blank dashboard at `/salon/whatsapp`
+- Loading spinner or empty conversation list
+- BUT messages ARE in database (confirmed via debug endpoint)
 
-**Solution**:
-1. Check the debug endpoint to verify data structure:
-   ```bash
-   curl https://heraerp.com/api/v1/whatsapp/debug-dashboard
-   ```
+**Root Cause**: Dashboard requires authentication
 
-2. Ensure organization_id is properly set in all queries:
-   - Check that `currentOrganization.id` matches `DEFAULT_ORGANIZATION_ID`
-   - Verify all queries include `.eq('organization_id', currentOrganization.id)`
+**Solutions**:
 
-3. Check console logs in the browser:
-   - Look for "Found X conversations" messages
-   - Check for "No messages found for conversation" errors
+#### Solution A: Login First (Recommended)
+```
+1. Navigate to: https://heraerp.com/auth/login
+2. Sign in with credentials
+3. Select organization
+4. Navigate to: https://heraerp.com/salon/whatsapp
+```
 
-4. Common query issues:
-   ```typescript
-   // ❌ Wrong - missing organization filter
-   .or(`source_entity_id.eq.${conv.id},target_entity_id.eq.${conv.id}`)
-   
-   // ✅ Correct - includes organization filter
-   .eq('organization_id', currentOrganization.id)
-   .or(`source_entity_id.eq.${conv.id},target_entity_id.eq.${conv.id}`)
-   ```
+#### Solution B: Check Browser Console
+```javascript
+// Open DevTools (F12) and look for:
+WhatsApp Dashboard - Auth State: {
+  isAuthenticated: false,    // Should be true
+  hasOrganization: false,    // Should be true
+  organizationId: undefined  // Should have UUID
+}
+```
+
+#### Solution C: Use Debug Endpoint (No Auth)
+```bash
+curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq
+```
 
 ### 2. Webhook Not Receiving Messages
 
-**Problem**: WhatsApp messages not reaching the webhook.
+**Symptoms**:
+- Messages sent to WhatsApp number don't appear
+- No new entries in database
 
-**Solution**:
-1. Verify webhook URL in Facebook App Dashboard
-2. Check webhook verification token matches
-3. Test webhook directly:
+**Solutions**:
+
+1. **Verify Webhook Configuration**:
    ```bash
-   curl -X GET "https://heraerp.com/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=hera-whatsapp-webhook-2024-secure-token&hub.challenge=test"
+   # Test webhook verification
+   curl "https://heraerp.com/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=hera-whatsapp-webhook-2024-secure-token&hub.challenge=test"
    ```
 
-4. Check Railway logs:
+2. **Check Facebook Dashboard**:
+   - Go to Facebook App → WhatsApp → Configuration
+   - Verify webhook URL: `https://heraerp.com/api/v1/whatsapp/webhook`
+   - Ensure "messages" field is subscribed
+
+3. **Check Railway Logs**:
    ```bash
-   railway logs | grep -i webhook
+   railway logs | grep -i "webhook" | tail -20
    ```
 
 ### 3. Messages Not Being Stored
 
-**Problem**: Webhook receives messages but they're not stored in database.
+**Symptoms**:
+- Webhook receives messages (in logs)
+- But messages don't appear in database
 
-**Solution**:
-1. Check required fields are included:
-   ```typescript
+**Solutions**:
+
+1. **Check Required Fields**:
+   ```javascript
+   // These fields are REQUIRED:
    {
-     transaction_date: new Date().toISOString(), // Required
-     total_amount: 0, // Required for universal_transactions
-     organization_id: 'your-org-id' // Required for multi-tenancy
+     transaction_date: new Date().toISOString(),
+     total_amount: 0,  // Required even for messages
+     organization_id: '44d2d8f8-167d-46a7-a704-c0e5435863d6'
    }
    ```
 
-2. Test storage directly:
+2. **Test Storage Directly**:
    ```bash
    curl https://heraerp.com/api/v1/whatsapp/test-store
    ```
 
-3. Check Railway logs for errors:
+3. **Check for Errors**:
    ```bash
-   railway logs | grep -A 5 -B 5 "Error storing"
+   railway logs | grep -A 5 "Error storing message"
    ```
 
 ### 4. Organization Not Found Error
 
-**Problem**: Webhook returns "Organization not found".
+**Symptoms**:
+- "Organization not found" in webhook response
+- 404 errors when accessing API
 
-**Solution**:
-1. Ensure DEFAULT_ORGANIZATION_ID is set in environment variables:
+**Solutions**:
+
+1. **Set Environment Variable**:
    ```bash
    railway variables set DEFAULT_ORGANIZATION_ID=44d2d8f8-167d-46a7-a704-c0e5435863d6
+   railway up
    ```
 
-2. Check the organization exists:
+2. **Verify in Database**:
    ```sql
-   SELECT * FROM core_organizations WHERE id = '44d2d8f8-167d-46a7-a704-c0e5435863d6';
+   SELECT * FROM core_organizations 
+   WHERE id = '44d2d8f8-167d-46a7-a704-c0e5435863d6';
    ```
 
-### 5. Build Errors
+### 5. Access Token Invalid
 
-**Problem**: Missing dependencies or type errors.
+**Symptoms**:
+- "Invalid access token" errors
+- 401 Unauthorized responses
 
-**Solution**:
-1. Install missing packages:
+**Solutions**:
+
+1. **Generate New Token**:
+   - Go to Facebook App Dashboard
+   - WhatsApp → API Setup → Access Tokens
+   - Generate new permanent token
+
+2. **Update Railway**:
    ```bash
-   npm install axios
-   npm install @supabase/supabase-js
+   railway variables set WHATSAPP_ACCESS_TOKEN=new-token
+   railway up
    ```
 
-2. Generate fresh types:
+### 6. Build/Deployment Errors
+
+**Symptoms**:
+- Build fails with missing dependencies
+- TypeScript errors
+
+**Solutions**:
+
+1. **Install Dependencies**:
+   ```bash
+   npm install axios @supabase/supabase-js
+   ```
+
+2. **Generate Types**:
    ```bash
    npm run schema:types
    ```
 
-3. Clear cache and rebuild:
+3. **Clear and Rebuild**:
    ```bash
    rm -rf .next node_modules
    npm install
    npm run build
    ```
 
-### 6. Access Token Invalid
+## Debugging Checklist
 
-**Problem**: "Invalid access token" errors.
+- [ ] Messages in database? Check: `curl https://heraerp.com/api/v1/whatsapp/debug-dashboard`
+- [ ] Logged in? Navigate to `/auth/login` first
+- [ ] Organization selected? Check after login
+- [ ] Webhook verified? Test with curl command
+- [ ] Access token valid? Check Facebook dashboard
+- [ ] Environment variables set? Run `railway variables`
+- [ ] Deployment successful? Check `railway logs`
 
-**Solution**:
-1. Generate new permanent token in Facebook App Dashboard
-2. Update Railway variable:
-   ```bash
-   railway variables set WHATSAPP_ACCESS_TOKEN=new-token
-   ```
-3. Redeploy: `railway up`
+## Advanced Debugging
 
-### 7. Phone Number Not Registered
-
-**Problem**: "Phone number not registered" error.
-
-**Solution**:
-1. Verify phone number in WhatsApp Business API Setup
-2. Check Phone Number ID matches environment variable
-3. Ensure phone number is active and not suspended
-
-## Debugging Tools
-
-### 1. Test Message Storage
-```bash
-curl https://heraerp.com/api/v1/whatsapp/test-store | jq
-```
-
-Expected response:
-```json
-{
-  "status": "success",
-  "test_result": {
-    "message_stored": true,
-    "stored_id": "uuid",
-    "total_messages": 5
-  }
-}
-```
-
-### 2. Debug Dashboard Data
-```bash
-curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq
-```
-
-Expected response shows conversations and messages.
-
-### 3. Check Railway Logs
-```bash
-# All WhatsApp activity
-railway logs | grep -i whatsapp | tail -50
-
-# Errors only
-railway logs | grep -A 5 -B 5 -i 'whatsapp.*error'
-
-# Webhook activity
-railway logs | grep -i "webhook.*whatsapp"
-```
-
-### 4. Direct Database Test
+### 1. Database Queries
 ```sql
--- Check conversations
-SELECT * FROM core_entities 
-WHERE entity_type = 'whatsapp_conversation' 
-AND organization_id = '44d2d8f8-167d-46a7-a704-c0e5435863d6'
-ORDER BY created_at DESC;
+-- Count messages by phone
+SELECT 
+  metadata->>'phone' as phone,
+  COUNT(*) as message_count
+FROM universal_transactions
+WHERE transaction_type = 'whatsapp_message'
+GROUP BY metadata->>'phone';
 
--- Check messages
-SELECT * FROM universal_transactions 
-WHERE transaction_type = 'whatsapp_message' 
-AND organization_id = '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+-- Recent messages
+SELECT 
+  metadata->>'text' as message,
+  metadata->>'direction' as direction,
+  created_at
+FROM universal_transactions
+WHERE transaction_type = 'whatsapp_message'
 ORDER BY created_at DESC
 LIMIT 10;
-
--- Check message count
-SELECT COUNT(*) FROM universal_transactions 
-WHERE transaction_type = 'whatsapp_message' 
-AND organization_id = '44d2d8f8-167d-46a7-a704-c0e5435863d6';
 ```
 
-## Environment Variables Checklist
-
+### 2. Railway Monitoring
 ```bash
-# Check all variables are set
-railway variables
+# All WhatsApp activity
+railway logs | grep -i whatsapp | tail -100
 
-# Required variables:
-WHATSAPP_ACCESS_TOKEN         # From Facebook App Dashboard
-WHATSAPP_PHONE_NUMBER_ID      # From WhatsApp API Setup
-WHATSAPP_WEBHOOK_VERIFY_TOKEN # hera-whatsapp-webhook-2024-secure-token
-WHATSAPP_BUSINESS_ACCOUNT_ID  # Your WABA ID
-DEFAULT_ORGANIZATION_ID       # 44d2d8f8-167d-46a7-a704-c0e5435863d6
+# Just errors
+railway logs | grep -i "error" | grep -i "whatsapp"
+
+# Webhook hits
+railway logs | grep "POST /api/v1/whatsapp/webhook"
 ```
 
-## Performance Optimization
+### 3. Browser Debugging
+```javascript
+// In browser console at dashboard
+console.log('Organization:', currentOrganization)
+console.log('Conversations:', conversations)
+console.log('Auth state:', isAuthenticated)
+```
+
+## Performance Tips
 
 1. **Message Processing**: Currently synchronous, consider queue for high volume
-2. **Database Queries**: Add indexes for conversation lookups
-3. **Caching**: Consider Redis for frequent customer lookups
-4. **Rate Limiting**: Implement to prevent abuse
+2. **Dashboard Loading**: Add pagination for conversations > 100
+3. **Caching**: Use Redis for frequent lookups
+4. **Rate Limiting**: Implement to prevent webhook abuse
 
-## Security Checklist
+## Still Having Issues?
 
-- [ ] Never log access tokens
-- [ ] Validate all webhook payloads
-- [ ] Use HTTPS only
-- [ ] Implement rate limiting
-- [ ] Regular token rotation
-- [ ] Monitor for suspicious activity
+1. **Collect Debug Info**:
+   ```bash
+   curl https://heraerp.com/api/v1/whatsapp/debug-dashboard > debug-output.json
+   railway logs | tail -500 > railway-logs.txt
+   ```
 
-## Contact Support
+2. **Check Documentation**:
+   - WhatsApp API: https://developers.facebook.com/docs/whatsapp
+   - Railway: https://docs.railway.app
 
-If issues persist after trying these solutions:
-
-1. **Check Documentation**: https://developers.facebook.com/docs/whatsapp
-2. **HERA Support**: https://github.com/anthropics/claude-code/issues
-3. **Include in Bug Report**:
-   - Debug endpoint output
-   - Railway logs
-   - Environment configuration (without secrets)
-   - Steps to reproduce
+3. **Get Support**:
+   - Include debug output
+   - Describe expected vs actual behavior
+   - List troubleshooting steps tried

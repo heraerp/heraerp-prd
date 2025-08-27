@@ -33,6 +33,6 @@ curl -X POST "$WEBHOOK_URL" \
 
 echo ""
 echo "3. Check results:"
-echo "   - Dashboard: https://heraerp.com/salon/whatsapp"
+echo "   - Debug API: curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq"
+echo "   - Dashboard: https://heraerp.com/salon/whatsapp (requires login)"
 echo "   - Storage test: curl https://heraerp.com/api/v1/whatsapp/test-store"
-echo "   - Debug data: curl https://heraerp.com/api/v1/whatsapp/debug-dashboard"
