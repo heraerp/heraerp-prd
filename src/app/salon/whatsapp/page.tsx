@@ -83,20 +83,35 @@ export default function WhatsAppDashboard() {
       // Get WhatsApp conversations
       const { data: convos } = await supabase
         .from('core_entities')
-        .select(`
-          *,
-          messages:universal_transactions!source_entity_id(
-            id,
-            metadata,
-            created_at
-          )
-        `)
+        .select('*')
         .eq('organization_id', currentOrganization.id)
         .eq('entity_type', 'whatsapp_conversation')
         .order('updated_at', { ascending: false })
       
+      // Get last message for each conversation
+      console.log(`Found ${convos?.length || 0} conversations`)
+      
+      for (const conv of convos || []) {
+        const { data: lastMsg, error: msgError } = await supabase
+          .from('universal_transactions')
+          .select('*')
+          .eq('transaction_type', 'whatsapp_message')
+          .eq('organization_id', currentOrganization.id)
+          .or(`source_entity_id.eq.${conv.id},target_entity_id.eq.${conv.id}`)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+        
+        if (msgError) {
+          console.log(`No messages found for conversation ${conv.id}`)
+        } else if (lastMsg) {
+          console.log(`Found message for conversation ${conv.id}:`, lastMsg.metadata?.text)
+          conv.lastMessage = lastMsg
+        }
+      }
+      
       const formattedConversations: Conversation[] = (convos || []).map(conv => {
-        const lastMsg = conv.messages?.[0]
+        const lastMsg = conv.lastMessage
         return {
           id: conv.id,
           phone: conv.metadata?.phone || conv.entity_code.replace('WA-', ''),
@@ -115,11 +130,14 @@ export default function WhatsAppDashboard() {
   }
   
   const fetchMessages = async (conversationId: string) => {
+    if (!currentOrganization) return
+    
     try {
       // Get messages for conversation
       const { data: msgs } = await supabase
         .from('universal_transactions')
         .select('*')
+        .eq('organization_id', currentOrganization.id)
         .or(`source_entity_id.eq.${conversationId},target_entity_id.eq.${conversationId}`)
         .eq('transaction_type', 'whatsapp_message')
         .order('created_at', { ascending: true })
