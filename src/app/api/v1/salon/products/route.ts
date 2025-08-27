@@ -7,7 +7,17 @@ import { ConfigurationFactory } from '@/lib/universal-config/config-factory'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 
 const factory = new ConfigurationFactory()
-const handlers = factory.createRouteHandlers(CONFIG_TYPES.PRODUCT_ITEM)
+
+// Custom product configuration for salon inventory
+const SALON_PRODUCT_CONFIG = {
+  entityType: 'product',
+  smartCodePrefix: 'HERA.SALON.PRODUCT',
+  displayName: 'Product',
+  pluralName: 'Products',
+  defaultFields: ['price', 'cost', 'stock_quantity', 'reorder_point', 'supplier']
+}
+
+const handlers = factory.createRouteHandlers(SALON_PRODUCT_CONFIG)
 
 export const GET = handlers.GET
 export const POST = handlers.POST
