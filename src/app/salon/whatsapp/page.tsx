@@ -30,6 +30,9 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+// Default organization ID for salon pages (same as appointments)
+const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+
 interface Conversation {
   id: string
   phone: string
@@ -64,24 +67,9 @@ export default function WhatsAppDashboard() {
   })
   
   useEffect(() => {
-    console.log('WhatsApp Dashboard - Auth State:', {
-      isAuthenticated,
-      hasOrganization: !!currentOrganization,
-      organizationId: currentOrganization?.id,
-      contextLoading
-    })
-    
-    if (currentOrganization) {
-      fetchConversations()
-      fetchStats()
-    } else if (!contextLoading && !currentOrganization) {
-      // Fallback to default organization for testing
-      console.log('No organization context, using default')
-      const defaultOrgId = process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
-      fetchConversationsWithOrgId(defaultOrgId)
-      fetchStatsWithOrgId(defaultOrgId)
-    }
-  }, [currentOrganization, contextLoading, isAuthenticated])
+    fetchConversations()
+    fetchStats()
+  }, [])
   
   useEffect(() => {
     if (selectedConversation) {
@@ -143,8 +131,8 @@ export default function WhatsAppDashboard() {
   }
   
   const fetchConversations = async () => {
-    if (!currentOrganization) return
-    fetchConversationsWithOrgId(currentOrganization.id)
+    const orgId = currentOrganization?.id || DEFAULT_ORG_ID
+    fetchConversationsWithOrgId(orgId)
   }
   
   const fetchStatsWithOrgId = async (orgId: string) => {
@@ -177,14 +165,14 @@ export default function WhatsAppDashboard() {
   }
   
   const fetchMessages = async (conversationId: string) => {
-    if (!currentOrganization) return
+    const orgId = currentOrganization?.id || DEFAULT_ORG_ID
     
     try {
       // Get messages for conversation
       const { data: msgs } = await supabase
         .from('universal_transactions')
         .select('*')
-        .eq('organization_id', currentOrganization.id)
+        .eq('organization_id', orgId)
         .or(`source_entity_id.eq.${conversationId},target_entity_id.eq.${conversationId}`)
         .eq('transaction_type', 'whatsapp_message')
         .order('created_at', { ascending: true })
@@ -205,8 +193,8 @@ export default function WhatsAppDashboard() {
   }
   
   const fetchStats = async () => {
-    if (!currentOrganization) return
-    fetchStatsWithOrgId(currentOrganization.id)
+    const orgId = currentOrganization?.id || DEFAULT_ORG_ID
+    fetchStatsWithOrgId(orgId)
   }
   
   const formatTime = (timestamp: string) => {
@@ -236,21 +224,6 @@ export default function WhatsAppDashboard() {
     }
   }
   
-  if (contextLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 animate-spin mx-auto mb-4 border-4 border-purple-600 border-t-transparent rounded-full" />
-          <p className="text-gray-600">Loading WhatsApp dashboard...</p>
-        </div>
-      </div>
-    )
-  }
-  
-  // Add debug info if no conversations
-  if (!contextLoading && conversations.length === 0 && !currentOrganization) {
-    console.warn('No organization context and no conversations loaded')
-  }
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white flex">
