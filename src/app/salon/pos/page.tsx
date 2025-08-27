@@ -445,7 +445,7 @@ export default function SalonPOSPage() {
                         <CardTitle className="text-sm font-medium">{service.entity_name}</CardTitle>
                         <Badge 
                           variant="secondary" 
-                          className="w-fit"
+                          className="w-fit font-medium"
                           style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
                         >
                           {categoryName}
@@ -484,9 +484,9 @@ export default function SalonPOSPage() {
                     onClick={() => addToCart(product, 'product')}
                   >
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-sm font-medium">{product.entity_name}</CardTitle>
+                      <CardTitle className="text-sm font-medium text-gray-800">{product.entity_name}</CardTitle>
                       {product.brand && (
-                        <Badge variant="outline" className="w-fit">
+                        <Badge variant="outline" className="w-fit text-gray-700 border-gray-300">
                           {product.brand}
                         </Badge>
                       )}
@@ -692,7 +692,7 @@ export default function SalonPOSPage() {
               <span className="text-gray-400">VAT (5%)</span>
               <span className="text-gray-200 font-medium">{formatCurrency(calculateVAT())}</span>
             </div>
-            <Separator />
+            <Separator className="bg-gray-600" />
             <div className="flex justify-between text-lg font-bold text-gray-100">
               <span>Total</span>
               <span className="text-pink-500">{formatCurrency(calculateTotal())}</span>
@@ -700,11 +700,11 @@ export default function SalonPOSPage() {
           </div>
 
           <Button
-            className="w-full mt-4 h-12 text-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+            className="w-full mt-4 h-12 text-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={cart.length === 0}
             onClick={initializePayment}
           >
-            <CreditCard className="mr-2 h-5 w-5" />
+            <CreditCard className="mr-2 h-5 w-5 text-white" />
             Proceed to Payment
           </Button>
         </div>
