@@ -412,11 +412,11 @@ export default function SalonPOSPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="services" className="flex items-center gap-2">
-              <Scissors className="h-4 w-4" />
+              <Scissors className="h-4 w-4 text-gray-600" />
               Services
             </TabsTrigger>
             <TabsTrigger value="products" className="flex items-center gap-2">
-              <Package className="h-4 w-4" />
+              <Package className="h-4 w-4 text-gray-600" />
               Products
             </TabsTrigger>
           </TabsList>
