@@ -392,7 +392,7 @@ export default function SalonPOSPage() {
   )
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
       {/* Left Panel - Products/Services */}
       <div className="flex-1 p-6 overflow-auto">
         {/* Search Bar */}
@@ -510,8 +510,8 @@ export default function SalonPOSPage() {
       {/* Right Panel - Cart */}
       <div className="w-[450px] bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
         {/* Customer Selection */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <Label>Customer</Label>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
+          <Label className="text-gray-700 dark:text-gray-200 font-medium">Customer</Label>
           <Select 
             value={selectedCustomer?.id || 'walk-in'} 
             onValueChange={(value) => {
@@ -554,10 +554,10 @@ export default function SalonPOSPage() {
             </SelectContent>
           </Select>
           {selectedCustomer && (
-            <div className="mt-2 text-sm text-gray-700 dark:text-gray-400">
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
               <p>{selectedCustomer.phone || selectedCustomer.mobile_number || 'No phone'}</p>
               <p className="flex items-center gap-1">
-                <Star className="h-3 w-3" />
+                <Star className="h-3 w-3 text-gray-500 dark:text-gray-400" />
                 {selectedCustomer.visit_count || 0} visits
               </p>
             </div>
@@ -568,9 +568,9 @@ export default function SalonPOSPage() {
         <div className="flex-1 overflow-auto p-4">
           {cart.length === 0 ? (
             <div className="text-center mt-16">
-              <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Your cart is empty</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Add services or products to get started</p>
+              <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
+              <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Your cart is empty</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Add services or products to get started</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -682,15 +682,15 @@ export default function SalonPOSPage() {
         </div>
 
         {/* Totals */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-              <span className="text-gray-700 dark:text-gray-300">{formatCurrency(calculateSubtotal())}</span>
+              <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
+              <span className="text-gray-800 dark:text-gray-200 font-medium">{formatCurrency(calculateSubtotal())}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">VAT (5%)</span>
-              <span className="text-gray-700 dark:text-gray-300">{formatCurrency(calculateVAT())}</span>
+              <span className="text-gray-500 dark:text-gray-400">VAT (5%)</span>
+              <span className="text-gray-800 dark:text-gray-200 font-medium">{formatCurrency(calculateVAT())}</span>
             </div>
             <Separator />
             <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-gray-100">
