@@ -392,7 +392,7 @@ export default function SalonPOSPage() {
   )
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
+    <div className="flex h-screen bg-gray-50">
       {/* Left Panel - Products/Services */}
       <div className="flex-1 p-6 overflow-auto">
         {/* Search Bar */}
@@ -508,10 +508,10 @@ export default function SalonPOSPage() {
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="w-[450px] bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
+      <div className="w-[450px] bg-gray-900 border-l border-gray-700 flex flex-col">
         {/* Customer Selection */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <Label className="text-gray-700 dark:text-gray-200 font-medium">Customer</Label>
+        <div className="p-4 border-b border-gray-700 bg-gray-800">
+          <Label className="text-gray-200 font-medium">Customer</Label>
           <Select 
             value={selectedCustomer?.id || 'walk-in'} 
             onValueChange={(value) => {
@@ -554,10 +554,10 @@ export default function SalonPOSPage() {
             </SelectContent>
           </Select>
           {selectedCustomer && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className="mt-2 text-sm text-gray-300">
               <p>{selectedCustomer.phone || selectedCustomer.mobile_number || 'No phone'}</p>
               <p className="flex items-center gap-1">
-                <Star className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+                <Star className="h-3 w-3 text-gray-400" />
                 {selectedCustomer.visit_count || 0} visits
               </p>
             </div>
@@ -575,7 +575,7 @@ export default function SalonPOSPage() {
           ) : (
             <div className="space-y-3">
               {cart.map((item) => (
-                <Card key={`${item.type}-${item.id}`} className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <Card key={`${item.type}-${item.id}`} className="p-4 bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-base">{item.name}</h4>
@@ -656,7 +656,7 @@ export default function SalonPOSPage() {
                     {/* Staff Selection for Services */}
                     {item.type === 'service' && staff.length > 0 && (
                       <div className="mt-2">
-                        <Label className="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Assign Staff</Label>
+                        <Label className="text-xs text-gray-400 mb-1 block">Assign Staff</Label>
                         <Select
                           value={item.staff || staff[0].entity_name}
                           onValueChange={(value) => updateCartItem(item.id, { staff: value })}
@@ -682,7 +682,7 @@ export default function SalonPOSPage() {
         </div>
 
         {/* Totals */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
+        <div className="p-4 border-t border-gray-700 bg-gray-800">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
