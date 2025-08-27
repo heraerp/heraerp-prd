@@ -26,13 +26,33 @@ echo ""
 
 # Test 2: Send Test Message
 echo "2. Sending test message..."
+TIMESTAMP=$(date +%s)
 curl -X POST "$WEBHOOK_URL" \
   -H "Content-Type: application/json" \
-  -d @test-message.json \
+  -d '{
+    "object": "whatsapp_business_account",
+    "entry": [{
+      "id": "1112225330318984",
+      "changes": [{
+        "value": {
+          "messaging_product": "whatsapp",
+          "messages": [{
+            "from": "919945896033",
+            "id": "wamid.TEST_'$TIMESTAMP'",
+            "timestamp": "'$TIMESTAMP'",
+            "text": {
+              "body": "Test message from bundle v4"
+            },
+            "type": "text"
+          }]
+        },
+        "field": "messages"
+      }]
+    }]
+  }' \
   -w "\nHTTP Status: %{http_code}\n"
 
 echo ""
 echo "3. Check results:"
-echo "   - Debug API: curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq"
-echo "   - Dashboard: https://heraerp.com/salon/whatsapp (requires login)"
-echo "   - Storage test: curl https://heraerp.com/api/v1/whatsapp/test-store"
+echo "   - Dashboard (NO LOGIN NEEDED): https://heraerp.com/salon/whatsapp"
+echo "   - API Check: curl https://heraerp.com/api/v1/whatsapp/debug-dashboard | jq"
