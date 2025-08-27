@@ -593,9 +593,9 @@ export default function SalonPOSPage() {
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-300 flex items-center mt-1">
-                          <Package className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>Product</span>
+                        <p className="text-sm flex items-center mt-1">
+                          <Package className="h-4 w-4 mr-2 text-gray-400" />
+                          <span className="text-gray-200">Product</span>
                         </p>
                       )}
                     </div>
