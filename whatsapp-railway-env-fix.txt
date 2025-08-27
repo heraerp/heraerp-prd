@@ -1,0 +1,13 @@
+# CRITICAL: Add this to Railway Environment Variables
+# Go to Railway Dashboard → Your Project → Variables → RAW Editor
+
+# Add this line (it's missing from your Railway environment):
+WHATSAPP_WEBHOOK_TOKEN=hera-whatsapp-webhook-2024-secure-token
+
+# Make sure you also have these WhatsApp variables:
+WHATSAPP_PHONE_NUMBER_ID=712631301940690
+WHATSAPP_BUSINESS_ACCOUNT_ID=1112225330318984
+WHATSAPP_ACCESS_TOKEN=[Your actual access token that starts with EAAkj2JA...]
+WHATSAPP_BUSINESS_NUMBER=+919945896033
+
+# After adding, Railway will automatically redeploy
