@@ -567,34 +567,43 @@ export default function SalonPOSPage() {
         {/* Cart Items */}
         <div className="flex-1 overflow-auto p-4">
           {cart.length === 0 ? (
-            <div className="text-center text-gray-700 dark:text-gray-400 mt-8">
-              <ShoppingCart className="h-12 w-12 mx-auto mb-2 text-gray-400 dark:text-gray-600" />
-              <p>Cart is empty</p>
+            <div className="text-center mt-16">
+              <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Your cart is empty</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Add services or products to get started</p>
             </div>
           ) : (
             <div className="space-y-3">
               {cart.map((item) => (
-                <Card key={`${item.type}-${item.id}`} className="p-3">
-                  <div className="flex justify-between items-start mb-2">
+                <Card key={`${item.type}-${item.id}`} className="p-4 border shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
-                      <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-gray-700 dark:text-gray-400">
-                        {item.type === 'service' ? (
-                          <>
-                            <User className="inline h-3 w-3 mr-1" />
-                            {item.staff}
-                            <Clock className="inline h-3 w-3 ml-2 mr-1" />
-                            {item.duration} min
-                          </>
-                        ) : (
-                          <Package className="inline h-3 w-3 mr-1" />
-                        )}
-                      </p>
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-base">{item.name}</h4>
+                      {item.type === 'service' ? (
+                        <div className="mt-2 space-y-1">
+                          <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center">
+                            <User className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
+                            <span className="font-medium">Staff:</span>
+                            <span className="ml-1">{item.staff || 'Any Staff'}</span>
+                          </p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
+                            <span className="font-medium">Duration:</span>
+                            <span className="ml-1">{item.duration || 30} minutes</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center mt-1">
+                          <Package className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
+                          <span>Product</span>
+                        </p>
+                      )}
                     </div>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => removeFromCart(item.id)}
+                      className="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -613,7 +622,7 @@ export default function SalonPOSPage() {
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="w-8 text-center">{item.quantity}</span>
+                        <span className="w-12 text-center font-medium text-gray-900 dark:text-gray-100">{item.quantity}</span>
                         <Button
                           size="sm"
                           variant="outline"
@@ -624,7 +633,7 @@ export default function SalonPOSPage() {
                           <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-                      <span className="font-medium">
+                      <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">
                         {formatCurrency(item.price * item.quantity)}
                       </span>
                     </div>
@@ -646,21 +655,24 @@ export default function SalonPOSPage() {
 
                     {/* Staff Selection for Services */}
                     {item.type === 'service' && staff.length > 0 && (
-                      <Select
-                        value={item.staff || staff[0].entity_name}
-                        onValueChange={(value) => updateCartItem(item.id, { staff: value })}
-                      >
-                        <SelectTrigger className="h-8 text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {staff.map(s => (
-                            <SelectItem key={s.id} value={s.entity_name}>
-                              {s.entity_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="mt-2">
+                        <Label className="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Assign Staff</Label>
+                        <Select
+                          value={item.staff || staff[0].entity_name}
+                          onValueChange={(value) => updateCartItem(item.id, { staff: value })}
+                        >
+                          <SelectTrigger className="h-9 text-sm font-medium">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {staff.map(s => (
+                              <SelectItem key={s.id} value={s.entity_name}>
+                                {s.entity_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     )}
                   </div>
                 </Card>
