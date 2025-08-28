@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get('hub.verify_token')
   const challenge = searchParams.get('hub.challenge')
   
-  if (mode === 'subscribe' && token === process.env.WHATSAPP_WEBHOOK_TOKEN) {
+  if (mode === 'subscribe' && token === process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN) {
     console.log('WhatsApp webhook verified successfully')
     return new Response(challenge, { status: 200 })
   }
@@ -21,18 +21,25 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ error: 'Invalid verification token' }, { status: 403 })
 }
 
-// Handle incoming WhatsApp messages
+// Handle incoming WhatsApp messages and status updates
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('WhatsApp webhook received:', JSON.stringify(body, null, 2))
     
-    // Extract message data from webhook
+    // Extract data from webhook
     const entry = body.entry?.[0]
     const changes = entry?.changes?.[0]
     const value = changes?.value
-    const messages = value?.messages
     
+    // Check if this is a status update
+    const statuses = value?.statuses
+    if (statuses && statuses.length > 0) {
+      return handleStatusUpdates(statuses, value.metadata?.display_phone_number)
+    }
+    
+    // Otherwise, handle as a message
+    const messages = value?.messages
     if (!messages || messages.length === 0) {
       return NextResponse.json({ status: 'ok' })
     }
@@ -128,4 +135,147 @@ async function getOrganizationFromPhone(phoneNumber: string): Promise<string | n
   }
   
   return defaultOrgId
+}
+
+// Handle WhatsApp status updates (sent, delivered, read, failed)
+async function handleStatusUpdates(statuses: any[], phoneNumber: string) {
+  try {
+    const organizationId = await getOrganizationFromPhone(phoneNumber)
+    
+    if (!organizationId) {
+      console.error('No organization found for status updates')
+      return NextResponse.json({ status: 'ok' })
+    }
+    
+    // Process each status update
+    for (const status of statuses) {
+      try {
+        await processStatusUpdate(status, organizationId)
+      } catch (error) {
+        console.error('Failed to process status update:', error)
+        // Continue processing other statuses
+      }
+    }
+    
+    return NextResponse.json({ status: 'ok' })
+  } catch (error) {
+    console.error('Status update handling error:', error)
+    return NextResponse.json({ status: 'ok' })
+  }
+}
+
+async function processStatusUpdate(status: any, organizationId: string) {
+  const { id: waba_message_id, status: statusType, timestamp, recipient_id, errors, pricing } = status
+  
+  console.log(`Processing status update: ${statusType} for message ${waba_message_id}`)
+  
+  // Find the original message transaction using waba_message_id
+  const { data: originalTransaction, error: findError } = await supabase
+    .from('universal_transactions')
+    .select('*')
+    .eq('transaction_type', 'whatsapp_message')
+    .eq('organization_id', organizationId)
+    .contains('metadata', { waba_message_id })
+    .single()
+  
+  if (findError || !originalTransaction) {
+    console.error('Original message not found for WABA ID:', waba_message_id, findError)
+    return
+  }
+  
+  // Create a new transaction for the status update
+  const statusTransaction = {
+    transaction_type: 'whatsapp_status',
+    transaction_code: `WA-STATUS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    transaction_date: new Date(parseInt(timestamp) * 1000).toISOString(),
+    total_amount: 0,
+    organization_id: organizationId,
+    smart_code: `HERA.COMM.WHATSAPP.STATUS.${statusType.toUpperCase()}.v1`,
+    from_entity_id: originalTransaction.from_entity_id,
+    to_entity_id: originalTransaction.to_entity_id,
+    reference_entity_id: originalTransaction.id,
+    metadata: {
+      waba_message_id,
+      status_type: statusType,
+      recipient_phone: recipient_id,
+      original_transaction_id: originalTransaction.id,
+      timestamp: new Date(parseInt(timestamp) * 1000).toISOString(),
+      errors: errors || null,
+      pricing: pricing || null
+    }
+  }
+  
+  // Insert the status transaction
+  const { data: newStatus, error: insertError } = await supabase
+    .from('universal_transactions')
+    .insert(statusTransaction)
+    .select()
+    .single()
+  
+  if (insertError) {
+    throw new Error(`Failed to insert status transaction: ${insertError.message}`)
+  }
+  
+  console.log('Created status transaction:', newStatus.id)
+  
+  // Update the original message transaction's metadata with the latest status
+  const updatedMetadata = {
+    ...originalTransaction.metadata,
+    latest_status: statusType,
+    latest_status_timestamp: new Date(parseInt(timestamp) * 1000).toISOString(),
+    status_history: [
+      ...(originalTransaction.metadata?.status_history || []),
+      {
+        status: statusType,
+        timestamp: new Date(parseInt(timestamp) * 1000).toISOString(),
+        transaction_id: newStatus.id
+      }
+    ]
+  }
+  
+  // Add error information if present
+  if (errors && errors.length > 0) {
+    updatedMetadata.delivery_errors = errors
+    updatedMetadata.delivery_failed = true
+  }
+  
+  // Mark as successfully delivered if applicable
+  if (statusType === 'delivered' || statusType === 'read') {
+    updatedMetadata.delivery_successful = true
+  }
+  
+  // Update the original transaction
+  const { error: updateError } = await supabase
+    .from('universal_transactions')
+    .update({ metadata: updatedMetadata })
+    .eq('id', originalTransaction.id)
+  
+  if (updateError) {
+    console.error(`Failed to update original transaction: ${updateError.message}`)
+    // Continue processing, don't throw
+  }
+  
+  // Create a relationship between the status transaction and the original message
+  const relationship = {
+    from_entity_id: newStatus.id,
+    to_entity_id: originalTransaction.id,
+    relationship_type: 'status_update_for',
+    organization_id: organizationId,
+    smart_code: 'HERA.COMM.WHATSAPP.REL.STATUS.v1',
+    metadata: {
+      status_type: statusType,
+      timestamp: new Date(parseInt(timestamp) * 1000).toISOString()
+    }
+  }
+  
+  const { error: relError } = await supabase
+    .from('core_relationships')
+    .insert(relationship)
+  
+  if (relError) {
+    console.error('Failed to create relationship:', relError)
+    // Non-critical error, don't throw
+  }
+  
+  console.log(`WhatsApp status update processed: ${statusType} for message ${waba_message_id}`)
 }
