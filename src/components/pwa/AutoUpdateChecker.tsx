@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { APP_VERSION } from '@/lib/constants/version'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -10,11 +10,15 @@ export function AutoUpdateChecker() {
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [isChecking, setIsChecking] = useState(false)
   const currentVersion = APP_VERSION.build
+  const checkingRef = useRef(false)
 
   const checkForUpdates = useCallback(async () => {
-    if (isChecking) return
+    // Use ref to prevent multiple simultaneous checks
+    if (checkingRef.current) return
     
+    checkingRef.current = true
     setIsChecking(true)
+    
     try {
       // Add timestamp to prevent caching
       const response = await fetch(`/api/version?t=${Date.now()}`, {
@@ -41,8 +45,9 @@ export function AutoUpdateChecker() {
       console.error('Version check failed:', error)
     } finally {
       setIsChecking(false)
+      checkingRef.current = false
     }
-  }, [currentVersion, isChecking])
+  }, [currentVersion])
 
   const handleUpdate = useCallback(() => {
     // Clear all caches
@@ -64,52 +69,77 @@ export function AutoUpdateChecker() {
   }, [])
 
   useEffect(() => {
-    // Initial check
-    checkForUpdates()
+    let interval: NodeJS.Timeout
+    let mounted = true
 
-    // Check every 30 seconds
-    const interval = setInterval(checkForUpdates, 30000)
+    const setupUpdateChecker = async () => {
+      if (!mounted) return
+      
+      // Initial check
+      await checkForUpdates()
 
-    // Listen for service worker updates
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'SW_UPDATE_AVAILABLE') {
-          setUpdateAvailable(true)
+      // Check every 30 seconds
+      interval = setInterval(() => {
+        if (mounted) {
+          checkForUpdates()
         }
-      })
+      }, 30000)
 
-      // Check for waiting service worker
-      navigator.serviceWorker.ready.then(registration => {
-        if (registration.waiting) {
-          setUpdateAvailable(true)
-        }
-
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                setUpdateAvailable(true)
-              }
-            })
+      // Listen for service worker updates
+      if ('serviceWorker' in navigator) {
+        const handleMessage = (event: MessageEvent) => {
+          if (event.data && event.data.type === 'SW_UPDATE_AVAILABLE' && mounted) {
+            setUpdateAvailable(true)
           }
-        })
-      })
+        }
+        
+        navigator.serviceWorker.addEventListener('message', handleMessage)
+
+        // Check for waiting service worker
+        try {
+          const registration = await navigator.serviceWorker.ready
+          if (registration.waiting && mounted) {
+            setUpdateAvailable(true)
+          }
+
+          const handleUpdateFound = () => {
+            const newWorker = registration.installing
+            if (newWorker) {
+              const handleStateChange = () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller && mounted) {
+                  setUpdateAvailable(true)
+                }
+              }
+              newWorker.addEventListener('statechange', handleStateChange)
+            }
+          }
+          
+          registration.addEventListener('updatefound', handleUpdateFound)
+        } catch (error) {
+          console.error('Service worker registration error:', error)
+        }
+      }
     }
 
     // Listen for visibility changes
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
+      if (!document.hidden && mounted && !checkingRef.current) {
         checkForUpdates()
       }
     }
+    
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    setupUpdateChecker()
 
     return () => {
-      clearInterval(interval)
+      mounted = false
+      if (interval) {
+        clearInterval(interval)
+      }
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [checkForUpdates])
+  }, []) // Empty dependency array - setup only once
 
   if (!updateAvailable) return null
 
