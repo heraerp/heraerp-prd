@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 interface CheckInButtonProps {
@@ -23,6 +23,7 @@ export function CheckInButton({
 }: CheckInButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { currentOrganization, user } = useMultiOrgAuth()
+  const { toast } = useToast()
   
   // Determine if check-in is allowed
   const canCheckIn = currentStatusCode === 'STATUS-APPOINTMENT-SCHEDULED'

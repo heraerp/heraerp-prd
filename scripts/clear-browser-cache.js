@@ -11,8 +11,10 @@ const path = require('path');
 // Update the service worker version
 const updateServiceWorker = () => {
   const swPath = path.join(__dirname, '..', 'public', 'sw.js');
+  const swV2Path = path.join(__dirname, '..', 'public', 'sw-v2.js');
   const timestamp = new Date().toISOString().replace(/[-:T.Z]/g, '').substring(0, 14);
   
+  // Update sw.js
   if (fs.existsSync(swPath)) {
     let content = fs.readFileSync(swPath, 'utf8');
     
@@ -30,6 +32,26 @@ const updateServiceWorker = () => {
     
     fs.writeFileSync(swPath, content);
     console.log(`✅ Updated service worker version to: ${timestamp}`);
+  }
+  
+  // Update sw-v2.js
+  if (fs.existsSync(swV2Path)) {
+    let content = fs.readFileSync(swV2Path, 'utf8');
+    
+    // Update CACHE_NAME
+    content = content.replace(
+      /const CACHE_NAME = 'hera-cache-v\d+'/,
+      `const CACHE_NAME = 'hera-cache-v${timestamp}'`
+    );
+    
+    // Update APP_VERSION
+    content = content.replace(
+      /const APP_VERSION = '\d+'/,
+      `const APP_VERSION = '${timestamp}'`
+    );
+    
+    fs.writeFileSync(swV2Path, content);
+    console.log(`✅ Updated service worker v2 version to: ${timestamp}`);
   }
 };
 
@@ -77,6 +99,19 @@ const updateVercelConfig = () => {
       },
       {
         source: "/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate"
+          },
+          {
+            key: "Service-Worker-Allowed",
+            value: "/"
+          }
+        ]
+      },
+      {
+        source: "/sw-v2.js",
         headers: [
           {
             key: "Cache-Control",

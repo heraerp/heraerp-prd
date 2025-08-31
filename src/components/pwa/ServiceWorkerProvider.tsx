@@ -29,7 +29,7 @@ export function ServiceWorkerProvider({ children }: { children: React.ReactNode 
 
   const registerServiceWorker = async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js', {
+      const reg = await navigator.serviceWorker.register('/sw-v2.js', {
         scope: '/',
       });
       

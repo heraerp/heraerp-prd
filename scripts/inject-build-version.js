@@ -21,6 +21,21 @@ swContent = swContent.replace(
 
 fs.writeFileSync(swPath, swContent);
 
+// Also update sw-v2.js
+const swV2Path = path.join(__dirname, '..', 'public', 'sw-v2.js');
+if (fs.existsSync(swV2Path)) {
+  let swV2Content = fs.readFileSync(swV2Path, 'utf8');
+  swV2Content = swV2Content.replace(
+    /const CACHE_NAME = 'hera-cache-v[\d.]+'/,
+    `const CACHE_NAME = 'hera-cache-v${buildVersion}'`
+  );
+  swV2Content = swV2Content.replace(
+    /const APP_VERSION = '[\d.]+'/,
+    `const APP_VERSION = '${buildVersion}'`
+  );
+  fs.writeFileSync(swV2Path, swV2Content);
+}
+
 // Update version constants
 const versionPath = path.join(__dirname, '..', 'src', 'lib', 'constants', 'version.ts');
 let versionContent = fs.readFileSync(versionPath, 'utf8');
