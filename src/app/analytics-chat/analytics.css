@@ -1,0 +1,163 @@
+/* Analytics Chat Styles */
+
+/* Dark theme support */
+:root {
+  --analytics-bg: #ffffff;
+  --analytics-card: #f9fafb;
+  --analytics-border: #e5e7eb;
+  --analytics-text: #111827;
+  --analytics-muted: #6b7280;
+  --analytics-accent: #3b82f6;
+  --analytics-hover: #f3f4f6;
+  --analytics-shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"],
+.dark {
+  --analytics-bg: #1a1a1a;
+  --analytics-card: #2d2d2d;
+  --analytics-border: #404040;
+  --analytics-text: #e5e5e5;
+  --analytics-muted: #9ca3af;
+  --analytics-accent: #60a5fa;
+  --analytics-hover: #353535;
+  --analytics-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Apply dark theme colors */
+.analytics-container {
+  background-color: var(--analytics-bg);
+  color: var(--analytics-text);
+}
+
+.analytics-card {
+  background-color: var(--analytics-card);
+  border-color: var(--analytics-border);
+}
+
+.analytics-muted {
+  color: var(--analytics-muted);
+}
+
+/* Dark mode specific enhancements */
+.dark .analytics-card,
+.dark .docs-card {
+  background: var(--analytics-card);
+  border: 1px solid var(--analytics-border);
+}
+
+.dark .analytics-card:hover,
+.dark .docs-card:hover {
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 4px 20px rgba(96, 165, 250, 0.1);
+}
+
+.dark .bg-muted {
+  background-color: var(--analytics-card) !important;
+  border-color: var(--analytics-border) !important;
+}
+
+.dark .bg-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.dark .text-primary {
+  color: #60a5fa;
+}
+
+.dark .border {
+  border-color: var(--analytics-border) !important;
+}
+
+.dark input,
+.dark textarea {
+  background-color: var(--analytics-hover) !important;
+  border-color: var(--analytics-border) !important;
+  color: var(--analytics-text) !important;
+}
+
+.dark input:focus,
+.dark textarea:focus {
+  border-color: var(--analytics-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+/* Ensure full page dark mode coverage */
+.dark body,
+.dark .min-h-screen,
+.dark .h-screen {
+  background-color: var(--analytics-bg) !important;
+}
+
+/* Fix white edges on cards and containers */
+.dark .card,
+.dark [class*="rounded"] {
+  background-color: var(--analytics-card);
+  border-color: var(--analytics-border);
+}
+
+/* Fix shadcn/ui specific components */
+.dark .bg-background {
+  background-color: var(--analytics-bg) !important;
+}
+
+.dark .bg-card {
+  background-color: var(--analytics-card) !important;
+}
+
+.dark .text-foreground {
+  color: var(--analytics-text) !important;
+}
+
+.dark .text-muted-foreground {
+  color: var(--analytics-muted) !important;
+}
+
+/* Fix select and dropdown backgrounds */
+.dark [role="combobox"],
+.dark [role="listbox"],
+.dark [data-radix-collection-item] {
+  background-color: var(--analytics-card) !important;
+  border-color: var(--analytics-border) !important;
+}
+
+/* Dark mode scrollbar */
+.dark .analytics-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .analytics-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Button styles in dark mode */
+.dark button {
+  transition: all 0.2s ease;
+}
+
+.dark button:hover {
+  transform: translateY(-1px);
+}
+
+/* Enhanced scrollbar */
+.analytics-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.analytics-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analytics-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.analytics-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+.analytics-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}

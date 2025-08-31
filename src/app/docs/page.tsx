@@ -1,82 +1,186 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { BookOpen, Code, Users } from 'lucide-react'
+import { 
+  Book, 
+  Code2, 
+  Rocket, 
+  Shield, 
+  Database, 
+  Globe,
+  Building2,
+  FileText,
+  Calculator,
+  MessageSquare,
+  TrendingUp,
+  Banknote
+} from 'lucide-react'
 
-export default function DocsHomePage() {
+export default function DocsHome() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-hera-primary">
-            HERA Documentation
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Comprehensive guides for developers and users of the HERA platform
-          </p>
+    <div className="docs-container">
+      <nav className="docs-sidebar">
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">Getting Started</h3>
+          <Link href="/docs/overview" className="docs-nav-link">Overview</Link>
+          <Link href="/docs/quickstart" className="docs-nav-link">Quick Start</Link>
+          <Link href="/docs/architecture" className="docs-nav-link">Architecture</Link>
         </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="hera-card p-8 text-center">
-            <div className="mb-6">
-              <Code className="w-16 h-16 mx-auto text-hera-primary" />
+        
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">Core Features</h3>
+          <Link href="/docs/features/universal-api" className="docs-nav-link">Universal API</Link>
+          <Link href="/docs/features/multi-tenant" className="docs-nav-link">Multi-Tenant SaaS</Link>
+          <Link href="/docs/features/smart-codes" className="docs-nav-link">Smart Code System</Link>
+          <Link href="/docs/features/ai-integration" className="docs-nav-link">AI Integration</Link>
+        </div>
+        
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">Financial Modules</h3>
+          <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">Chart of Accounts</Link>
+          <Link href="/docs/features/auto-journal" className="docs-nav-link">Auto-Journal Engine</Link>
+          <Link href="/docs/features/budgeting" className="docs-nav-link">Budgeting System</Link>
+          <Link href="/docs/features/ifrs-compliance" className="docs-nav-link">IFRS Compliance</Link>
+        </div>
+        
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">Industry Solutions</h3>
+          <Link href="/docs/industries/restaurant" className="docs-nav-link">Restaurant</Link>
+          <Link href="/docs/industries/healthcare" className="docs-nav-link">Healthcare</Link>
+          <Link href="/docs/industries/retail" className="docs-nav-link">Retail</Link>
+          <Link href="/docs/industries/manufacturing" className="docs-nav-link">Manufacturing</Link>
+        </div>
+        
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">Integrations</h3>
+          <Link href="/docs/integrations/whatsapp" className="docs-nav-link">WhatsApp Business</Link>
+          <Link href="/docs/integrations/progressive-pwa" className="docs-nav-link">Progressive PWA</Link>
+          <Link href="/docs/integrations/mcp-server" className="docs-nav-link">MCP Server</Link>
+        </div>
+        
+        <div className="docs-nav-section">
+          <h3 className="docs-nav-section-title">API Reference</h3>
+          <Link href="/docs/api/rest" className="docs-nav-link">REST API</Link>
+          <Link href="/docs/api/typescript-client" className="docs-nav-link">TypeScript Client</Link>
+          <Link href="/docs/api/webhooks" className="docs-nav-link">Webhooks</Link>
+        </div>
+      </nav>
+      
+      <main className="docs-main">
+        <h1>HERA Documentation</h1>
+        <p className="text-lg text-muted-foreground mb-8">
+          Enterprise Resource Planning with Universal 6-Table Architecture
+        </p>
+        
+        <div className="docs-feature-grid">
+          <div className="docs-feature-card">
+            <Database className="docs-feature-icon" />
+            <h3 className="docs-card-title">Universal Architecture</h3>
+            <p className="docs-card-description">
+              6 tables handle infinite business complexity without schema changes. Learn how HERA's revolutionary architecture works.
+            </p>
+            <Link href="/docs/architecture" className="text-accent-fg hover:underline">
+              Explore Architecture →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
+            <Globe className="docs-feature-icon" />
+            <h3 className="docs-card-title">Multi-Tenant SaaS</h3>
+            <p className="docs-card-description">
+              Production-ready multi-tenant system with subdomain routing and perfect data isolation.
+            </p>
+            <Link href="/docs/features/multi-tenant" className="text-accent-fg hover:underline">
+              Learn More →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
+            <Calculator className="docs-feature-icon" />
+            <h3 className="docs-card-title">Financial Accounting</h3>
+            <p className="docs-card-description">
+              Complete Chart of Accounts with IFRS compliance and AI-powered auto-journal engine.
+            </p>
+            <Link href="/docs/features/chart-of-accounts" className="text-accent-fg hover:underline">
+              Explore COA →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
+            <Building2 className="docs-feature-icon" />
+            <h3 className="docs-card-title">Industry Solutions</h3>
+            <p className="docs-card-description">
+              Pre-configured solutions for restaurant, healthcare, retail, and manufacturing industries.
+            </p>
+            <Link href="/docs/industries/restaurant" className="text-accent-fg hover:underline">
+              View Solutions →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
+            <MessageSquare className="docs-feature-icon" />
+            <h3 className="docs-card-title">WhatsApp Integration</h3>
+            <p className="docs-card-description">
+              Enterprise-ready WhatsApp Business integration with desktop-style interface.
+            </p>
+            <Link href="/docs/integrations/whatsapp" className="text-accent-fg hover:underline">
+              Setup WhatsApp →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
+            <Code2 className="docs-feature-icon" />
+            <h3 className="docs-card-title">API Reference</h3>
+            <p className="docs-card-description">
+              Complete API documentation with TypeScript client library and code examples.
+            </p>
+            <Link href="/docs/api/rest" className="text-accent-fg hover:underline">
+              View API Docs →
+            </Link>
+          </div>
+        </div>
+        
+        <div className="mt-12 p-6 border rounded-lg bg-canvas-subtle">
+          <h2 className="text-xl font-semibold mb-3">Quick Links</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <h4 className="font-medium mb-2">Popular Features</h4>
+              <ul className="space-y-1 text-sm">
+                <li><Link href="/docs/features/auto-journal" className="text-accent-fg hover:underline">Auto-Journal Engine</Link></li>
+                <li><Link href="/docs/features/smart-codes" className="text-accent-fg hover:underline">Smart Code System</Link></li>
+                <li><Link href="/docs/features/budgeting" className="text-accent-fg hover:underline">Universal Budgeting</Link></li>
+                <li><Link href="/docs/features/ifrs-compliance" className="text-accent-fg hover:underline">IFRS Compliance</Link></li>
+              </ul>
             </div>
-            <h2 className="text-2xl font-semibold mb-4">Developer Guide</h2>
-            <p className="text-muted-foreground mb-6">
-              Learn how to build, extend, and deploy applications using HERA&apos;s universal architecture.
-            </p>
-            <Button asChild size="lg" className="hera-button">
-              <Link href="/docs/dev">
-                Explore Developer Docs
-              </Link>
-            </Button>
-          </div>
-
-          <div className="hera-card p-8 text-center">
-            <div className="mb-6">
-              <Users className="w-16 h-16 mx-auto text-hera-primary" />
+            <div>
+              <h4 className="font-medium mb-2">Developer Resources</h4>
+              <ul className="space-y-1 text-sm">
+                <li><Link href="/docs/api/typescript-client" className="text-accent-fg hover:underline">TypeScript Client</Link></li>
+                <li><Link href="/docs/integrations/mcp-server" className="text-accent-fg hover:underline">MCP Server</Link></li>
+                <li><Link href="/docs/api/webhooks" className="text-accent-fg hover:underline">Webhooks</Link></li>
+                <li><Link href="/docs/architecture" className="text-accent-fg hover:underline">Schema Reference</Link></li>
+              </ul>
             </div>
-            <h2 className="text-2xl font-semibold mb-4">User Guide</h2>
-            <p className="text-muted-foreground mb-6">
-              Step-by-step instructions for using HERA applications effectively.
-            </p>
-            <Button asChild size="lg" className="hera-button" variant="outline">
-              <Link href="/docs/user">
-                Browse User Guides
-              </Link>
-            </Button>
+            <div>
+              <h4 className="font-medium mb-2">Getting Help</h4>
+              <ul className="space-y-1 text-sm">
+                <li><a href="https://github.com/anthropics/claude-code/issues" className="text-accent-fg hover:underline">Report Issues</a></li>
+                <li><Link href="/docs/quickstart" className="text-accent-fg hover:underline">Getting Started</Link></li>
+                <li><Link href="/docs/overview" className="text-accent-fg hover:underline">Overview</Link></li>
+                <li><a href="mailto:support@heraerp.com" className="text-accent-fg hover:underline">Contact Support</a></li>
+              </ul>
+            </div>
           </div>
         </div>
-
-        <div className="mt-12 grid md:grid-cols-2 gap-6">
-          <div className="hera-card p-6 text-center">
-            <BookOpen className="w-8 h-8 mx-auto mb-4 text-hera-accent" />
-            <h3 className="text-lg font-semibold mb-2">Quick Start</h3>
-            <p className="text-muted-foreground">
-              New to HERA? Start with our{' '}
-              <Link href="/docs/dev/getting-started" className="text-hera-primary hover:underline">
-                Getting Started Guide
-              </Link>{' '}
-              or jump into the{' '}
-              <Link href="/docs/user/overview" className="text-hera-primary hover:underline">
-                User Overview
-              </Link>
-            </p>
+        
+        <div className="mt-8 flex items-center justify-between text-sm text-muted-foreground">
+          <div>
+            <span className="docs-badge docs-badge-success">Production Ready</span>
+            <span className="docs-badge ml-2">Version 1.0</span>
           </div>
-
-          <div className="hera-card p-6 text-center">
-            <Code className="w-8 h-8 mx-auto mb-4 text-hera-secondary" />
-            <h3 className="text-lg font-semibold mb-2">Update Documentation</h3>
-            <p className="text-muted-foreground mb-4">
-              Create and manage documentation with automatic page generation
-            </p>
-            <Button asChild size="sm" className="hera-button">
-              <Link href="/docs/update">
-                Update Docs
-              </Link>
-            </Button>
+          <div>
+            Built with HERA Universal Architecture
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
