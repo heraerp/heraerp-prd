@@ -41,7 +41,16 @@ export async function getDemoOrganizationId(pathname: string): Promise<string | 
   }
 
   try {
-    // Query demo route mappings from HERA system organization
+    // For now, skip the database lookup and use fallback mappings
+    // The !inner join syntax is causing 400 errors in production
+    const fallbackOrgId = FALLBACK_MAPPINGS[basePath]
+    if (fallbackOrgId) {
+      demoOrgCache.set(basePath, fallbackOrgId)
+      return fallbackOrgId
+    }
+    
+    // Original query commented out due to !inner syntax issue
+    /*
     const { data: mappings, error } = await supabase
       .from('core_entities')
       .select(`
@@ -56,35 +65,8 @@ export async function getDemoOrganizationId(pathname: string): Promise<string | 
       .eq('entity_type', 'demo_route_mapping')
       .eq('core_dynamic_data.field_name', 'route_path')
       .eq('core_dynamic_data.field_value_text', basePath)
+    */
 
-    if (error) {
-      console.error('Error fetching demo org mapping:', error)
-      // Fall back to hardcoded mappings
-      return FALLBACK_MAPPINGS[basePath] || null
-    }
-
-    if (mappings && mappings.length > 0) {
-      // Get the target_org_id from dynamic data
-      const { data: orgIdData } = await supabase
-        .from('core_dynamic_data')
-        .select('field_value_text')
-        .eq('entity_id', mappings[0].id)
-        .eq('field_name', 'target_org_id')
-        .single()
-
-      if (orgIdData?.field_value_text) {
-        const orgId = orgIdData.field_value_text
-        demoOrgCache.set(basePath, orgId)
-        return orgId
-      }
-    }
-
-    // Fall back to hardcoded mappings if not found in database
-    const fallbackOrgId = FALLBACK_MAPPINGS[basePath]
-    if (fallbackOrgId) {
-      demoOrgCache.set(basePath, fallbackOrgId)
-      return fallbackOrgId
-    }
 
     return null
   } catch (error) {

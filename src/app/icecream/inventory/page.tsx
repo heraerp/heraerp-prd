@@ -337,18 +337,25 @@ export default function InventoryPage() {
         .eq('entity_type', 'location')
 
       // Fetch inventory transactions to calculate stock levels
-      const { data: transactions } = await supabase
+      // First get the transactions
+      const { data: txns } = await supabase
+        .from('universal_transactions')
+        .select('*')
+        .eq('organization_id', organizationId)
+        .in('transaction_type', ['inventory_transfer', 'production_batch', 'pos_sale'])
+      
+      // Then get the transaction lines for those transactions
+      const txnIds = txns?.map(t => t.id) || []
+      const { data: lines } = await supabase
         .from('universal_transaction_lines')
-        .select(`
-          *,
-          universal_transactions!inner (
-            transaction_type,
-            transaction_date,
-            metadata
-          )
-        `)
-        .eq('universal_transactions.organization_id', organizationId)
-        .in('universal_transactions.transaction_type', ['inventory_transfer', 'production_batch', 'pos_sale'])
+        .select('*')
+        .in('transaction_id', txnIds)
+      
+      // Combine the data
+      const transactions = lines?.map(line => ({
+        ...line,
+        universal_transactions: txns?.find(t => t.id === line.transaction_id)
+      }))
 
       // Calculate stock levels
       const stockMap = new Map<string, StockLevel>()
