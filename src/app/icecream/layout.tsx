@@ -1,7 +1,9 @@
 'use client'
 
-import { DemoOrgProvider } from '@/components/providers/DemoOrgProvider'
+import { useEffect, useState } from 'react'
+import { DemoOrgProvider, useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
+import { supabaseClient } from '@/lib/supabase-client'
 import { 
   LayoutDashboard, 
   Factory, 
@@ -108,11 +110,74 @@ const iceCreamTheme = {
   dark: 'from-slate-900 via-purple-900 to-blue-900'
 }
 
-export default function IceCreamLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
+  const { organizationId } = useDemoOrg()
+  const [productionData, setProductionData] = useState({
+    totalProduction: 0,
+    efficiency: 0,
+    temperature: -19.5
+  })
+
+  useEffect(() => {
+    async function fetchProductionData() {
+      if (!organizationId) return
+
+      try {
+        // Get today's production batches
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
+        const { data: transactions } = await supabaseClient
+          .from('universal_transactions')
+          .select('*')
+          .eq('organization_id', organizationId)
+          .eq('transaction_type', 'production_batch')
+          .gte('transaction_date', today.toISOString())
+        
+        // Calculate total production and efficiency
+        let totalLiters = 0
+        let totalEfficiency = 0
+        let batchCount = 0
+        
+        transactions?.forEach(txn => {
+          if (txn.metadata?.actual_output_liters) {
+            totalLiters += parseFloat(txn.metadata.actual_output_liters)
+          }
+          if (txn.metadata?.yield_variance_percent !== undefined) {
+            totalEfficiency += (100 + parseFloat(txn.metadata.yield_variance_percent))
+            batchCount++
+          }
+        })
+        
+        const avgEfficiency = batchCount > 0 ? totalEfficiency / batchCount : 0
+        
+        // Get latest temperature reading
+        const { data: tempData } = await supabaseClient
+          .from('core_dynamic_data')
+          .select('field_value_number')
+          .eq('organization_id', organizationId)
+          .eq('field_name', 'current_temperature')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+        
+        setProductionData({
+          totalProduction: totalLiters,
+          efficiency: avgEfficiency,
+          temperature: tempData?.field_value_number || -19.5
+        })
+      } catch (error) {
+        console.error('Error fetching production data:', error)
+      }
+    }
+
+    fetchProductionData()
+    // Refresh every minute
+    const interval = setInterval(fetchProductionData, 60000)
+    
+    return () => clearInterval(interval)
+  }, [organizationId])
+
   // Convert navigation to new format
   const navigationItems = navigation.map(item => ({
     ...item,
@@ -135,7 +200,9 @@ export default function IceCreamLayout({
         {/* Temperature Alert */}
         <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900 rounded-full">
           <Snowflake className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span className="text-sm font-medium text-blue-900 dark:text-blue-100">-19.5°C</span>
+          <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+            {productionData.temperature.toFixed(1)}°C
+          </span>
         </div>
         
         {/* User Menu */}
@@ -148,29 +215,43 @@ export default function IceCreamLayout({
   )
 
   return (
+    <HeraSidebar
+      title="Kochi Ice Cream"
+      subtitle="Manufacturing ERP"
+      logo={Snowflake}
+      navigation={navigationItems}
+      additionalApps={additionalApps}
+      theme={{
+        primary: 'from-pink-500 to-purple-600',
+        sidebar: 'from-gray-900 to-gray-950',
+        accent: 'from-pink-500 to-purple-600'
+      }}
+      bottomWidget={{
+        title: "Today's Production",
+        value: productionData.totalProduction > 0 
+          ? `${productionData.totalProduction.toLocaleString()} L` 
+          : "0 L",
+        subtitle: productionData.efficiency > 0 
+          ? `${productionData.efficiency.toFixed(2)}% efficiency` 
+          : "No production yet",
+        icon: Activity,
+        gradient: 'from-cyan-500 to-blue-600'
+      }}
+      headerContent={headerContent}
+    >
+      {children}
+    </HeraSidebar>
+  )
+}
+
+export default function IceCreamLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
     <DemoOrgProvider>
-      <HeraSidebar
-        title="Kochi Ice Cream"
-        subtitle="Manufacturing ERP"
-        logo={Snowflake}
-        navigation={navigationItems}
-        additionalApps={additionalApps}
-        theme={{
-          primary: 'from-pink-500 to-purple-600',
-          sidebar: 'from-gray-900 to-gray-950',
-          accent: 'from-pink-500 to-purple-600'
-        }}
-        bottomWidget={{
-          title: "Today's Production",
-          value: "1,420 L",
-          subtitle: "97.93% efficiency",
-          icon: Activity,
-          gradient: 'from-cyan-500 to-blue-600'
-        }}
-        headerContent={headerContent}
-      >
-        {children}
-      </HeraSidebar>
+      <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
     </DemoOrgProvider>
   )
 }

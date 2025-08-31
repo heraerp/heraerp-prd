@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,9 +26,6 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Kochi Ice Cream Org ID
-const ORG_ID = '1471e87b-b27e-42ef-8192-343cc5e0d656'
-
 interface ProductionBatch {
   id: string
   transaction_code: string
@@ -46,16 +44,23 @@ interface Recipe {
 }
 
 export default function ProductionPage() {
+  const { organizationId, loading: orgLoading } = useDemoOrg()
   const [loading, setLoading] = useState(true)
   const [batches, setBatches] = useState<ProductionBatch[]>([])
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [activeTab, setActiveTab] = useState<'active' | 'scheduled' | 'completed'>('active')
+  const [todaysProduction, setTodaysProduction] = useState(0)
+  const [efficiencyRate, setEfficiencyRate] = useState(0)
 
   useEffect(() => {
-    fetchProductionData()
-  }, [])
+    if (organizationId && !orgLoading) {
+      fetchProductionData()
+    }
+  }, [organizationId, orgLoading])
 
   async function fetchProductionData() {
+    if (!organizationId) return
+    
     try {
       // Fetch production batches
       const { data: productionData } = await supabase
@@ -64,7 +69,7 @@ export default function ProductionPage() {
           *,
           universal_transaction_lines (*)
         `)
-        .eq('organization_id', ORG_ID)
+        .eq('organization_id', organizationId)
         .eq('transaction_type', 'production_batch')
         .order('created_at', { ascending: false })
 
@@ -72,11 +77,40 @@ export default function ProductionPage() {
       const { data: recipeData } = await supabase
         .from('core_entities')
         .select('*')
-        .eq('organization_id', ORG_ID)
+        .eq('organization_id', organizationId)
         .eq('entity_type', 'recipe')
 
       setBatches(productionData || [])
       setRecipes(recipeData || [])
+      
+      // Calculate today's production and efficiency
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      let totalLitersToday = 0
+      let totalEfficiency = 0
+      let efficiencyCount = 0
+      
+      productionData?.forEach(batch => {
+        const batchDate = new Date(batch.transaction_date)
+        batchDate.setHours(0, 0, 0, 0)
+        
+        // Check if batch is from today
+        if (batchDate.getTime() === today.getTime()) {
+          if (batch.metadata?.actual_output_liters) {
+            totalLitersToday += parseFloat(batch.metadata.actual_output_liters)
+          }
+        }
+        
+        // Calculate efficiency for all recent batches
+        if (batch.metadata?.yield_variance_percent !== undefined) {
+          totalEfficiency += (100 + parseFloat(batch.metadata.yield_variance_percent))
+          efficiencyCount++
+        }
+      })
+      
+      setTodaysProduction(totalLitersToday)
+      setEfficiencyRate(efficiencyCount > 0 ? totalEfficiency / efficiencyCount : 0)
     } catch (error) {
       console.error('Error fetching production data:', error)
     } finally {
@@ -111,6 +145,14 @@ export default function ProductionPage() {
     return parseInt(batch.metadata.production_progress) || 0
   }
 
+  if (loading || orgLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -136,7 +178,9 @@ export default function ProductionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Today's Production</p>
-                <p className="text-2xl font-bold mt-1">1,420 L</p>
+                <p className="text-2xl font-bold mt-1">
+                  {todaysProduction > 0 ? `${todaysProduction.toLocaleString()} L` : '0 L'}
+                </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
                 <Factory className="w-6 h-6 text-white" />
@@ -164,7 +208,9 @@ export default function ProductionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Efficiency Rate</p>
-                <p className="text-2xl font-bold mt-1">97.93%</p>
+                <p className="text-2xl font-bold mt-1">
+                  {efficiencyRate > 0 ? `${efficiencyRate.toFixed(2)}%` : '0%'}
+                </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-white" />
@@ -280,9 +326,9 @@ export default function ProductionPage() {
                   <div>
                     <p className="text-xs text-gray-600 dark:text-gray-400">Efficiency</p>
                     <p className="text-sm font-medium mt-1">
-                      {batch.metadata?.yield_variance_percent ? 
+                      {batch.metadata?.yield_variance_percent !== undefined ? 
                         `${(100 + parseFloat(batch.metadata.yield_variance_percent)).toFixed(2)}%` : 
-                        '97.93%'}
+                        'N/A'}
                     </p>
                   </div>
                   <div>
