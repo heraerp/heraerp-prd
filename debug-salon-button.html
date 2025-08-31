@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salon Manager Button Debug</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; margin: 5px; }
+        input { padding: 10px; width: 300px; }
+        .disabled { opacity: 0.5; cursor: not-allowed; }
+        .log { margin-top: 20px; padding: 10px; background: #f0f0f0; }
+        pre { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Salon Manager Send Button Debug Test</h1>
+
+    <div class="test-section">
+        <h2>Test 1: Basic Form with Submit Button</h2>
+        <form id="form1" onsubmit="handleSubmit(event, 'form1')">
+            <input id="input1" type="text" placeholder="Type something..." />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Button with Disabled State</h2>
+        <form id="form2" onsubmit="handleSubmit(event, 'form2')">
+            <input id="input2" type="text" placeholder="Type to enable button..." oninput="updateButton2()" />
+            <button id="button2" type="submit" disabled>Send</button>
+        </form>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Button with onClick and onSubmit</h2>
+        <form id="form3" onsubmit="handleSubmit(event, 'form3')">
+            <input id="input3" type="text" placeholder="Test click vs submit..." />
+            <button type="submit" onclick="console.log('Button clicked!')">Send</button>
+        </form>
+    </div>
+
+    <div class="log">
+        <h3>Console Log:</h3>
+        <pre id="log"></pre>
+    </div>
+
+    <script>
+        const log = (msg) => {
+            const logEl = document.getElementById('log');
+            logEl.textContent += new Date().toLocaleTimeString() + ' - ' + msg + '\n';
+            console.log(msg);
+        };
+
+        const handleSubmit = (e, formId) => {
+            e.preventDefault();
+            const input = document.querySelector(`#${formId} input`);
+            log(`Form ${formId} submitted with value: "${input.value}"`);
+            input.value = '';
+        };
+
+        const updateButton2 = () => {
+            const input = document.getElementById('input2');
+            const button = document.getElementById('button2');
+            const hasValue = input.value.trim() !== '';
+            button.disabled = !hasValue;
+            log(`Button 2 disabled: ${!hasValue}`);
+        };
+
+        // Test your exact scenario
+        log('Page loaded - try each test form');
+    </script>
+
+    <div class="test-section" style="background: #ffffcc;">
+        <h2>Possible Issues:</h2>
+        <ol>
+            <li><strong>State Issue:</strong> Input state not updating properly</li>
+            <li><strong>Event Issue:</strong> Form submit not triggered by button click</li>
+            <li><strong>CSS Issue:</strong> Button has pointer-events: none</li>
+            <li><strong>React Issue:</strong> Re-renders causing event handler loss</li>
+        </ol>
+
+        <h3>Debug Steps:</h3>
+        <ol>
+            <li>Open Chrome DevTools (F12)</li>
+            <li>Go to Console tab</li>
+            <li>Type in the input field</li>
+            <li>Check if button becomes enabled</li>
+            <li>Try clicking the button</li>
+            <li>Check console for any errors</li>
+        </ol>
+    </div>
+</body>
+</html>

@@ -34,24 +34,72 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 app.use(cors());
 app.use(express.json());
 
-// Enhanced System Prompt for UAT
-const UAT_SYSTEM_PROMPT = `You are an AI assistant for HERA ERP UAT testing. 
-HERA uses a universal 6-table architecture. You understand business operations including:
-- POS transactions (sales, returns, exchanges)
-- Payment processing (cash, card, split payments)
-- Inventory management (stock levels, transfers, adjustments)
-- Appointment scheduling (bookings, availability, reminders)
-- Customer management (profiles, history, preferences)
-- Reporting and analytics
+// Enhanced System Prompt for UAT with Advanced AI Capabilities
+const UAT_SYSTEM_PROMPT = `You are HERA AI, an advanced ERP assistant with deep understanding of business operations and natural language.
 
-Interpret commands and return structured JSON with:
+CORE CAPABILITIES:
+1. NATURAL LANGUAGE UNDERSTANDING
+   - Interpret complex, ambiguous, or incomplete requests
+   - Extract implicit context from conversations
+   - Handle typos, slang, and colloquialisms
+   - Understand business intent behind queries
+
+2. HERA UNIVERSAL ARCHITECTURE (6 Sacred Tables)
+   - core_organizations: Multi-tenant business isolation
+   - core_entities: All business objects (customers, products, employees, GL accounts)
+   - core_dynamic_data: Unlimited custom fields without schema changes
+   - core_relationships: Entity connections, hierarchies, status workflows
+   - universal_transactions: All business transaction headers
+   - universal_transaction_lines: Transaction details and breakdowns
+
+3. BUSINESS OPERATIONS EXPERTISE
+   - POS & Sales: Create transactions, process payments, handle returns/exchanges
+   - Inventory: Track stock levels, manage transfers, adjust quantities, check availability
+   - Customer Management: Profiles, purchase history, preferences, loyalty programs
+   - Financial: Generate invoices, track payments, manage accounts receivable
+   - Reporting: Sales analysis, inventory reports, customer insights, financial statements
+   - Appointments: Scheduling, availability checking, reminders, rescheduling
+
+4. INTELLIGENT FEATURES
+   - CONTEXT AWARENESS: Remember conversation context and previous queries
+   - SMART DEFAULTS: Apply sensible defaults when information is missing
+   - ERROR RECOVERY: Suggest corrections for invalid requests
+   - PREDICTIVE ASSISTANCE: Anticipate follow-up needs
+   - MULTI-STEP WORKFLOWS: Handle complex operations requiring multiple actions
+
+5. QUERY UNDERSTANDING
+   - "Show me sales" → Generate today's sales report
+   - "Create invoice for John" → Search for customer John and create sales transaction
+   - "What's in stock?" → Generate current inventory report
+   - "Book Sarah tomorrow 2pm" → Create appointment for Sarah at 2pm tomorrow
+   - "How much did we sell yesterday?" → Generate yesterday's sales summary
+
+RESPONSE FORMAT:
 {
-  "action": "pos-sale|inventory|appointment|payment|report|customer|return",
-  "operation": "create|update|delete|query|process",
-  "parameters": { relevant parameters },
-  "workflow": "workflow name if applicable",
-  "confidence": 0-1
-}`;
+  "action": "pos-sale|inventory|appointment|payment|report|customer|query|analysis",
+  "operation": "create|update|delete|query|process|analyze|summarize",
+  "parameters": {
+    // Intelligently extracted and inferred parameters
+    // Include smart defaults where appropriate
+  },
+  "context": {
+    "original_intent": "What the user really wants",
+    "inferred_data": "Data we intelligently assumed",
+    "suggestions": ["Helpful follow-up actions"]
+  },
+  "workflow": "workflow name if multi-step",
+  "confidence": 0.0-1.0,
+  "explanation": "Brief explanation of interpretation"
+}
+
+IMPORTANT RULES:
+- Always try to fulfill the user's intent, even with incomplete information
+- Use the organization context provided in requests
+- Apply business logic and common sense
+- Suggest helpful follow-ups or clarifications when needed
+- For amounts without currency symbol, assume dollars
+- For dates like "tomorrow" or "next week", calculate actual dates
+- Handle product/customer names intelligently (fuzzy matching)`;
 
 // Health check
 app.get('/health', (req, res) => {
@@ -231,13 +279,27 @@ async function getAIInterpretation(message, context) {
   if (anthropic) {
     try {
       const completion = await anthropic.messages.create({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 300,
+        model: "claude-3-5-sonnet-20241022", // Using latest and most powerful model
+        max_tokens: 500,
+        temperature: 0.3, // More focused responses
         system: UAT_SYSTEM_PROMPT,
-        messages: [{ role: "user", content: message }]
+        messages: [
+          { 
+            role: "user", 
+            content: `Organization ID: ${context.organizationId || 'Not specified'}
+Previous context: ${JSON.stringify(context.previousCommands || [])}
+Current time: ${new Date().toISOString()}
+
+User request: ${message}
+
+Please interpret this request and provide a structured response for the HERA ERP system.`
+          }
+        ]
       });
       
-      return JSON.parse(completion.content[0].text);
+      const response = JSON.parse(completion.content[0].text);
+      console.log('Claude AI interpretation:', response);
+      return response;
     } catch (error) {
       console.log('Claude interpretation failed:', error.message);
     }
@@ -564,15 +626,26 @@ function extractPOSDetails(message) {
   // Extract items, quantities, prices from natural language
   const items = [];
   
-  // Pattern: "2 haircuts and 1 hair color"
-  const itemPattern = /(\d+)\s+([a-zA-Z\s]+?)(?:\s+and\s+|,\s*|$)/gi;
-  let match;
-  
-  while ((match = itemPattern.exec(message)) !== null) {
+  // Check for simple amount transaction first
+  const amountMatch = message.match(/\$(\d+(?:\.\d{2})?)/);
+  if (amountMatch && items.length === 0) {
+    // Create a generic sale item with the specified amount
     items.push({
-      quantity: parseInt(match[1]),
-      name: match[2].trim()
+      quantity: 1,
+      name: 'General Sale',
+      price: parseFloat(amountMatch[1])
     });
+  } else {
+    // Pattern: "2 haircuts and 1 hair color"
+    const itemPattern = /(\d+)\s+([a-zA-Z\s]+?)(?:\s+and\s+|,\s*|$)/gi;
+    let match;
+    
+    while ((match = itemPattern.exec(message)) !== null) {
+      items.push({
+        quantity: parseInt(match[1]),
+        name: match[2].trim()
+      });
+    }
   }
   
   // Extract payment method
@@ -736,10 +809,10 @@ Average Transaction: $${report.averageTransaction.toFixed(2)}`;
 // Helper stubs - implement based on your needs
 async function validateAndPrepareItems(items, organizationId) {
   // Lookup items in database and get prices
-  return items.map(item => ({
+  return items.map((item, index) => ({
     ...item,
-    entity_id: `temp-${Date.now()}`,
-    price: 50.00 // Default price
+    entity_id: `temp-${Date.now()}-${index}`,
+    price: item.price || 50.00 // Use provided price or default
   }));
 }
 
@@ -897,6 +970,20 @@ app.listen(PORT, () => {
   console.log(`📅 Appointments endpoint: http://localhost:${PORT}/api/uat/appointments`);
   console.log(`📊 Reports endpoint: http://localhost:${PORT}/api/uat/reports`);
   console.log(`🧪 Scenarios endpoint: http://localhost:${PORT}/api/uat/scenarios`);
+  
+  // AI Status
+  console.log('\n🤖 AI Integration Status:');
+  if (anthropic) {
+    console.log('✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet');
+  } else {
+    console.log('❌ Claude AI - Not configured (add ANTHROPIC_API_KEY)');
+  }
+  if (openai) {
+    console.log('✅ OpenAI GPT - ACTIVE');
+  } else {
+    console.log('❌ OpenAI - Not configured (add OPENAI_API_KEY)');
+  }
+  console.log(anthropic || openai ? '🧠 AI-powered natural language understanding enabled!' : '⚠️  Using pattern matching only (limited capabilities)');
 });
 
 // Graceful shutdown

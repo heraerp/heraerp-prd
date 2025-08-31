@@ -704,6 +704,24 @@ Custom utility classes are available in `src/app/globals.css`:
 - **Accessibility**: Enhanced contrast and focus states
 - **Usage**: Use `.hera-select-content` class or automatic global styling
 
+**Enterprise Table Styling** - Professional data display patterns:
+- **Visual Hierarchy**: Card opacity 95%, subtle shadows, proper spacing
+- **Zebra Striping**: Alternating rows with `bg-gray-50/30 dark:bg-gray-800/20` for subtle contrast
+- **Hover States**: Consistent `hover:bg-cyan-100/50 dark:hover:bg-cyan-950/30` across all rows
+- **Table Headers**: Uppercase with tracking, semibold text, gray background for separation
+- **Status Badges**: Subtle backgrounds with borders (e.g., `bg-red-100 dark:bg-red-900/30`)
+- **Typography**: Larger values (text-3xl) in summary cards, bold quantities in tables
+- **Professional Features**: Export buttons, enhanced padding (px-6), consistent icon sizing
+- **Dark Mode Support**: All colors properly defined for both themes
+- **Global CSS Conflicts**: Remove conflicting `tbody tr:nth-child` and `tbody tr:hover` rules
+
+**Text Visibility in Dark Mode** - Ensuring readable content:
+- **Process Steps**: Use `dark:text-white` or `dark:text-slate-50` for off-white text
+- **Section Headers**: Explicit colors with `text-gray-900 dark:text-gray-100`
+- **Avoid Global Overrides**: Remove `!important` rules like `.text-gray-700 { color: ... !important }`
+- **Background Contrast**: Use `dark:bg-gray-800/70` for better text visibility
+- **Testing Pattern**: Always verify text is readable in both light and dark modes
+
 ## Security & Multi-Tenancy
 
 ### **Universal Authorization Architecture** 🛡️

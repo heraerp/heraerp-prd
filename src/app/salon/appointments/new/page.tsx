@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -22,30 +22,29 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const services = [
-  { id: '1', name: 'Hair Cut', duration: '30 min', price: 150 },
-  { id: '2', name: 'Hair Color', duration: '90 min', price: 350 },
-  { id: '3', name: 'Hair Color & Cut', duration: '120 min', price: 450 },
-  { id: '4', name: 'Manicure', duration: '45 min', price: 100 },
-  { id: '5', name: 'Pedicure', duration: '45 min', price: 120 },
-  { id: '6', name: 'Manicure & Pedicure', duration: '90 min', price: 200 },
-  { id: '7', name: 'Facial Treatment', duration: '75 min', price: 350 },
-  { id: '8', name: 'Hair Styling', duration: '45 min', price: 150 },
-  { id: '9', name: 'Full Spa Package', duration: '180 min', price: 850 }
-]
+interface Service {
+  id: string
+  entity_name: string
+  duration: number
+  price: number
+}
 
-const stylists = [
-  { id: '1', name: 'Emma Johnson', specialties: ['Hair Color', 'Hair Cut'] },
-  { id: '2', name: 'Lisa Chen', specialties: ['Nails', 'Manicure', 'Pedicure'] },
-  { id: '3', name: 'Nina Patel', specialties: ['Facial', 'Spa Treatments'] },
-  { id: '4', name: 'Sarah Williams', specialties: ['Hair Styling', 'Hair Cut'] }
-]
+interface Staff {
+  id: string
+  entity_name: string
+  role?: string
+  metadata?: any
+}
 
 export default function NewAppointmentPage() {
   const router = useRouter()
   const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [services, setServices] = useState<Service[]>([])
+  const [staff, setStaff] = useState<Staff[]>([])
+  const [servicesLoading, setServicesLoading] = useState(true)
+  const [staffLoading, setStaffLoading] = useState(true)
   
   const [formData, setFormData] = useState({
     clientName: '',
@@ -58,8 +57,51 @@ export default function NewAppointmentPage() {
     notes: ''
   })
 
+  // Fetch services and staff when organization is loaded
+  useEffect(() => {
+    if (currentOrganization?.id || !contextLoading) {
+      const orgId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000'
+      fetchServices(orgId)
+      fetchStaff(orgId)
+    }
+  }, [currentOrganization, contextLoading])
+
+  const fetchServices = async (organizationId: string) => {
+    try {
+      setServicesLoading(true)
+      const response = await fetch(`/api/v1/salon/services?organization_id=${organizationId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setServices(data.services || [])
+      } else {
+        console.error('Failed to fetch services')
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error)
+    } finally {
+      setServicesLoading(false)
+    }
+  }
+
+  const fetchStaff = async (organizationId: string) => {
+    try {
+      setStaffLoading(true)
+      const response = await fetch(`/api/v1/salon/staff?organization_id=${organizationId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setStaff(data.staff || [])
+      } else {
+        console.error('Failed to fetch staff')
+      }
+    } catch (error) {
+      console.error('Error fetching staff:', error)
+    } finally {
+      setStaffLoading(false)
+    }
+  }
+
   // Loading state only - no auth check for testing
-  if (contextLoading) {
+  if (contextLoading || servicesLoading || staffLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -74,10 +116,18 @@ export default function NewAppointmentPage() {
     e.preventDefault()
     console.log('Form submitted!') // Debug log
     setIsSubmitting(true)
+    setMessage(null) // Clear any previous messages
+    
+    // Validate required fields
+    if (!formData.clientName || !formData.clientPhone || !formData.serviceId || !formData.stylistId || !formData.time) {
+      setMessage({ type: 'error', text: 'Please fill in all required fields' })
+      setIsSubmitting(false)
+      return
+    }
     
     try {
       const selectedServiceData = services.find(s => s.id === formData.serviceId)
-      const selectedStylistData = stylists.find(s => s.id === formData.stylistId)
+      const selectedStylistData = staff.find(s => s.id === formData.stylistId)
       
       // Use hardcoded organization ID for now
       const organizationId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000'
@@ -88,10 +138,10 @@ export default function NewAppointmentPage() {
         clientPhone: formData.clientPhone,
         clientEmail: formData.clientEmail,
         serviceId: formData.serviceId,
-        serviceName: selectedServiceData?.name,
+        serviceName: selectedServiceData?.entity_name,
         servicePrice: selectedServiceData?.price,
         stylistId: formData.stylistId,
-        stylistName: selectedStylistData?.name,
+        stylistName: selectedStylistData?.entity_name,
         date: formData.date,
         time: formData.time,
         duration: selectedServiceData?.duration,
@@ -253,7 +303,7 @@ export default function NewAppointmentPage() {
                     <SelectContent>
                       {services.map((service) => (
                         <SelectItem key={service.id} value={service.id}>
-                          {service.name} - {service.duration} (AED {service.price})
+                          {service.entity_name} - {service.duration || 60} min (AED {service.price || 0})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -270,9 +320,9 @@ export default function NewAppointmentPage() {
                       <SelectValue placeholder="Select a stylist" />
                     </SelectTrigger>
                     <SelectContent>
-                      {stylists.map((stylist) => (
+                      {staff.map((stylist) => (
                         <SelectItem key={stylist.id} value={stylist.id}>
-                          {stylist.name}
+                          {stylist.entity_name} {stylist.role ? `- ${stylist.role}` : ''}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -282,8 +332,8 @@ export default function NewAppointmentPage() {
                 {selectedService && (
                   <Alert>
                     <AlertDescription>
-                      <strong>Duration:</strong> {selectedService.duration}<br />
-                      <strong>Price:</strong> AED {selectedService.price}
+                      <strong>Duration:</strong> {selectedService.duration || 60} minutes<br />
+                      <strong>Price:</strong> AED {selectedService.price || 0}
                     </AlertDescription>
                   </Alert>
                 )}

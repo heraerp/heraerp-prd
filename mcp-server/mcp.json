@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "hera-salon": {
+      "command": "node",
+      "args": [
+        "/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-salon-mcp-server.js"
+      ],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}",
+        "DEFAULT_ORGANIZATION_ID": "${DEFAULT_ORGANIZATION_ID}"
+      }
+    },
+    "hera-universal": {
+      "command": "node",
+      "args": [
+        "/Users/san/Documents/PRD/heraerp-prd/mcp-server/index.js"
+      ],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+}

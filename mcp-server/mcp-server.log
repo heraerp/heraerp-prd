@@ -1,0 +1,3282 @@
+
+> @hera/mcp-server@2.0.0 dev
+> nodemon hera-mcp-server-api.js
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:59454) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:63958) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:63966) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:63974) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:64550) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:64555) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:64563) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:64567) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:64585) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+(node:59452) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [Bus]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:64593) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:64609) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:64616) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:64630) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:65243) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:65252) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:65452) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:65463) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:66132) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:66138) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:66142) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:66156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:66167) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:66176) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:66199) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:66202) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:66742) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:66746) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:66779) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:66783) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:66788) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:66803) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:67211) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:67468) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:67495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:67511) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:67519) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:67556) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:67582) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:67734) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:69493) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:69506) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:69511) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:69523) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (/Users/san/Documents/PRD/heraerp-prd/mcp-server/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/san/Documents/PRD/heraerp-prd/mcp-server/hera-mcp-server-api.js:964:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v22.11.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:71540) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:71831) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:71897) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:71990) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:72091) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:72128) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:72352) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:74648) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:75585) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:75663) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:75724) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:75794) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:75840) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:76594) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:76641) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:76977) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:77024) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4559) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4621) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:5510) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:5876) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:16481) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:19381) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:20611) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:76022) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:87572) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:90642) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:91338) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:14763) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:42207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:42302) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:42377) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:42546) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:42640) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:42803) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:42864) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:42922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:42987) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:43275) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:44290) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:44464) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:44662) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:46233) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:48328) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:84622) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:86679) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:90994) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:91357) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:91725) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:91793) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:92071) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:92235) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:92339) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:92494) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:95777) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:96074) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:96165) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:5140) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:14952) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:15456) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:15542) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:15641) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:16733) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:16841) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:16898) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:17036) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:17097) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:17323) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:17788) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:18895) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:92129) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:94062) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:94558) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:95112) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:95487) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:96221) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:97058) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:97548) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:97949) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:98966) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:99705) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:237) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:602) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:1077) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:1959) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:7375) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:23436) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:28929) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:29004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:29296) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:29353) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:29409) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:29460) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:29523) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:29585) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:29988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:30049) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:30174) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:30242) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:30299) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:30360) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:30422) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:30484) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:30535) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+(node:30585) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:30986) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node hera-mcp-server-api.js`[39m
+[dotenv@17.2.1] injecting env (7) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+(node:31059) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 HERA MCP Server UAT Enhanced running on port 3005
+📍 Health check: http://localhost:3005/health
+🤖 UAT Chat endpoint: http://localhost:3005/api/chat
+🛍️ POS endpoint: http://localhost:3005/api/uat/pos
+📦 Inventory endpoint: http://localhost:3005/api/uat/inventory
+📅 Appointments endpoint: http://localhost:3005/api/uat/appointments
+📊 Reports endpoint: http://localhost:3005/api/uat/reports
+🧪 Scenarios endpoint: http://localhost:3005/api/uat/scenarios
+
+🤖 AI Integration Status:
+✅ Claude AI (Anthropic) - ACTIVE with Claude 3.5 Sonnet
+❌ OpenAI - Not configured (add OPENAI_API_KEY)
+🧠 AI-powered natural language understanding enabled!

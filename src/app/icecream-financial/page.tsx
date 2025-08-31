@@ -26,14 +26,14 @@ import { cn } from '@/lib/utils'
 
 export default function IceCreamFinancialPage() {
   const { currentOrganization } = useMultiOrgAuth()
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false) // Default to light mode for better contrast
   const [activeModule, setActiveModule] = useState<'overview' | 'gl' | 'ap' | 'ar' | 'fa'>('overview')
   
   // Ice cream organization ID
   const organizationId = currentOrganization?.id || '1471e87b-b27e-42ef-8192-343cc5e0d656'
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")} style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#f3f4f6' }}>
+    <div className={cn("min-h-screen", isDarkMode && "dark")} style={{ backgroundColor: isDarkMode ? '#0f0f0f' : '#ffffff' }}>
       <div className="p-6">
         {/* Header */}
         <div className="mb-6">
@@ -75,7 +75,7 @@ export default function IceCreamFinancialPage() {
         <Tabs value={activeModule} onValueChange={(v) => setActiveModule(v as any)}>
           <TabsList className={cn(
             "grid w-full max-w-4xl grid-cols-5 mb-6",
-            isDarkMode ? "bg-[#292929]" : "bg-gray-100"
+            isDarkMode ? "bg-gray-800" : "bg-gray-100"
           )}>
             <TabsTrigger value="overview" className="gap-1">
               <TrendingUp className="h-4 w-4" />
@@ -104,49 +104,49 @@ export default function IceCreamFinancialPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Financial KPIs */}
               <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               )}>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-gray-500">Revenue MTD</CardTitle>
+                  <CardTitle className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Revenue MTD</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">₹2,45,000</div>
+                  <div className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>₹2,45,000</div>
                   <p className="text-xs text-green-600">+15% vs last month</p>
                 </CardContent>
               </Card>
 
               <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               )}>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-gray-500">Cold Chain Cost</CardTitle>
+                  <CardTitle className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Cold Chain Cost</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">₹45,000</div>
+                  <div className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>₹45,000</div>
                   <p className="text-xs text-red-600">18.4% of revenue</p>
                 </CardContent>
               </Card>
 
               <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               )}>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-gray-500">AP Outstanding</CardTitle>
+                  <CardTitle className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>AP Outstanding</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">₹1,23,000</div>
+                  <div className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>₹1,23,000</div>
                   <p className="text-xs text-gray-600">5 overdue invoices</p>
                 </CardContent>
               </Card>
 
               <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               )}>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-gray-500">AR Outstanding</CardTitle>
+                  <CardTitle className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>AR Outstanding</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">₹3,45,000</div>
+                  <div className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>₹3,45,000</div>
                   <p className="text-xs text-gray-600">DSO: 28 days</p>
                 </CardContent>
               </Card>
@@ -154,12 +154,12 @@ export default function IceCreamFinancialPage() {
 
             {/* Ice Cream Specific Metrics */}
             <div className="mt-6">
-              <h2 className={cn("text-lg font-semibold mb-4", isDarkMode ? "text-white" : "text-gray-900")}>
+              <h2 className={cn("text-lg font-semibold mb-4", isDarkMode ? "text-gray-100" : "text-gray-900")}>
                 Ice Cream Specific Metrics
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                  isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
                 )}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
@@ -167,16 +167,16 @@ export default function IceCreamFinancialPage() {
                         <Thermometer className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">Temperature Variance Cost</h3>
-                        <p className="text-2xl font-bold">₹12,000</p>
-                        <p className="text-sm text-gray-500">3 incidents this month</p>
+                        <h3 className={cn("font-semibold", isDarkMode ? "text-gray-100" : "text-gray-900")}>Temperature Variance Cost</h3>
+                        <p className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>₹12,000</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>3 incidents this month</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                  isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
                 )}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
@@ -184,16 +184,16 @@ export default function IceCreamFinancialPage() {
                         <Package className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">Batch Profitability</h3>
-                        <p className="text-2xl font-bold">23.5%</p>
-                        <p className="text-sm text-gray-500">Average margin</p>
+                        <h3 className={cn("font-semibold", isDarkMode ? "text-gray-100" : "text-gray-900")}>Batch Profitability</h3>
+                        <p className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>23.5%</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Average margin</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                  isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
                 )}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
@@ -201,9 +201,9 @@ export default function IceCreamFinancialPage() {
                         <DollarSign className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">Seasonal Revenue</h3>
-                        <p className="text-2xl font-bold">+45%</p>
-                        <p className="text-sm text-gray-500">Summer peak active</p>
+                        <h3 className={cn("font-semibold", isDarkMode ? "text-gray-100" : "text-gray-900")}>Seasonal Revenue</h3>
+                        <p className={cn("text-2xl font-bold", isDarkMode ? "text-white" : "text-gray-900")}>+45%</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Summer peak active</p>
                       </div>
                     </div>
                   </CardContent>
@@ -213,32 +213,32 @@ export default function IceCreamFinancialPage() {
 
             {/* Recent Transactions */}
             <div className="mt-6">
-              <h2 className={cn("text-lg font-semibold mb-4", isDarkMode ? "text-white" : "text-gray-900")}>
+              <h2 className={cn("text-lg font-semibold mb-4", isDarkMode ? "text-gray-100" : "text-gray-900")}>
                 Recent Financial Activities
               </h2>
               <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
+                isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               )}>
                 <CardContent className="p-0">
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     <div className="p-4 flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Cold Chain Wastage Entry</p>
-                        <p className="text-sm text-gray-500">Temperature excursion - Batch ICE-2024-089</p>
+                        <p className={cn("font-medium", isDarkMode ? "text-gray-100" : "text-gray-900")}>Cold Chain Wastage Entry</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Temperature excursion - Batch ICE-2024-089</p>
                       </div>
                       <Badge variant="destructive">₹8,500</Badge>
                     </div>
                     <div className="p-4 flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Dairy Purchase Invoice</p>
-                        <p className="text-sm text-gray-500">Kerala Dairy Suppliers - 5000L milk</p>
+                        <p className={cn("font-medium", isDarkMode ? "text-gray-100" : "text-gray-900")}>Dairy Purchase Invoice</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Kerala Dairy Suppliers - 5000L milk</p>
                       </div>
                       <Badge variant="outline">₹125,000</Badge>
                     </div>
                     <div className="p-4 flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Wholesale Revenue</p>
-                        <p className="text-sm text-gray-500">Metro Cash & Carry - 500 units</p>
+                        <p className={cn("font-medium", isDarkMode ? "text-gray-100" : "text-gray-900")}>Wholesale Revenue</p>
+                        <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>Metro Cash & Carry - 500 units</p>
                       </div>
                       <Badge className="bg-green-100 text-green-800">₹75,000</Badge>
                     </div>

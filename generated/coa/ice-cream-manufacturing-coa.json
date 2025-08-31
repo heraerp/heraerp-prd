@@ -1,0 +1,629 @@
+{
+  "organization": {
+    "name": "Kochi Refreshments Ice Cream Factory",
+    "industry": "ice_cream_manufacturing",
+    "country": "IN",
+    "currency": "INR",
+    "created_date": "2024-01-01",
+    "organization_id": "1471e87b-b27e-42ef-8192-343cc5e0d656"
+  },
+  "chart_of_accounts": {
+    "assets": {
+      "1000": {
+        "account_name": "Assets",
+        "account_type": "header",
+        "ifrs_classification": "ASSETS",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.HEADER.v2"
+      },
+      "1100": {
+        "account_name": "Current Assets",
+        "account_type": "header",
+        "parent_account": "1000",
+        "ifrs_classification": "CURRENT_ASSETS",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.CURRENT.HEADER.v2"
+      },
+      "1110": {
+        "account_name": "Cash and Cash Equivalents",
+        "account_type": "header",
+        "parent_account": "1100",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.CASH.HEADER.v2"
+      },
+      "1111": {
+        "account_name": "Petty Cash",
+        "account_type": "asset",
+        "parent_account": "1110",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.CASH.PETTY.v2"
+      },
+      "1112": {
+        "account_name": "Cash in Bank - Operating",
+        "account_type": "asset",
+        "parent_account": "1110",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.BANK.OPERATING.v2"
+      },
+      "1113": {
+        "account_name": "Cash in Bank - GST",
+        "account_type": "asset",
+        "parent_account": "1110",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.BANK.GST.v2"
+      },
+      "1200": {
+        "account_name": "Accounts Receivable",
+        "account_type": "header",
+        "parent_account": "1100",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.AR.HEADER.v2"
+      },
+      "1210": {
+        "account_name": "Trade Receivables - Retail",
+        "account_type": "asset",
+        "parent_account": "1200",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.AR.RETAIL.v2"
+      },
+      "1211": {
+        "account_name": "Trade Receivables - Wholesale",
+        "account_type": "asset",
+        "parent_account": "1200",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.AR.WHOLESALE.v2"
+      },
+      "1212": {
+        "account_name": "Trade Receivables - Food Service",
+        "account_type": "asset",
+        "parent_account": "1200",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.AR.FOODSERVICE.v2"
+      },
+      "1300": {
+        "account_name": "Inventory",
+        "account_type": "header",
+        "parent_account": "1100",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.INVENTORY.HEADER.v2"
+      },
+      "1310": {
+        "account_name": "Raw Materials",
+        "account_type": "header",
+        "parent_account": "1300",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.HEADER.v2"
+      },
+      "1311": {
+        "account_name": "Raw Materials - Dairy Products",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.DAIRY.v2",
+        "description": "Milk, cream, butter, milk powder"
+      },
+      "1312": {
+        "account_name": "Raw Materials - Sugar & Sweeteners",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.SUGAR.v2",
+        "description": "Sugar, corn syrup, honey, artificial sweeteners"
+      },
+      "1313": {
+        "account_name": "Raw Materials - Flavoring & Colors",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.FLAVOR.v2",
+        "description": "Vanilla, chocolate, fruit extracts, food colors"
+      },
+      "1314": {
+        "account_name": "Raw Materials - Stabilizers & Emulsifiers",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.STABILIZER.v2"
+      },
+      "1315": {
+        "account_name": "Raw Materials - Inclusions",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.INCLUSION.v2",
+        "description": "Nuts, chocolate chips, fruit pieces, cookies"
+      },
+      "1316": {
+        "account_name": "Packaging Materials",
+        "account_type": "asset",
+        "parent_account": "1310",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.RAW.PACKAGING.v2",
+        "description": "Cups, cones, sticks, wrappers, boxes"
+      },
+      "1320": {
+        "account_name": "Work in Process",
+        "account_type": "header",
+        "parent_account": "1300",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.WIP.HEADER.v2"
+      },
+      "1321": {
+        "account_name": "WIP - Ice Cream Base",
+        "account_type": "asset",
+        "parent_account": "1320",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.WIP.BASE.v2"
+      },
+      "1322": {
+        "account_name": "WIP - Churning & Freezing",
+        "account_type": "asset",
+        "parent_account": "1320",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.WIP.CHURNING.v2"
+      },
+      "1330": {
+        "account_name": "Finished Goods",
+        "account_type": "header",
+        "parent_account": "1300",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.HEADER.v2"
+      },
+      "1331": {
+        "account_name": "FG - Ice Cream Cups/Tubs",
+        "account_type": "asset",
+        "parent_account": "1330",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.CUPS.v2"
+      },
+      "1332": {
+        "account_name": "FG - Ice Cream Bars/Sticks",
+        "account_type": "asset",
+        "parent_account": "1330",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.BARS.v2"
+      },
+      "1333": {
+        "account_name": "FG - Ice Cream Cones",
+        "account_type": "asset",
+        "parent_account": "1330",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.CONES.v2"
+      },
+      "1334": {
+        "account_name": "FG - Bulk Ice Cream",
+        "account_type": "asset",
+        "parent_account": "1330",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.BULK.v2"
+      },
+      "1335": {
+        "account_name": "FG - Kulfi Products",
+        "account_type": "asset",
+        "parent_account": "1330",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FG.KULFI.v2"
+      },
+      "1400": {
+        "account_name": "GST Input Credit",
+        "account_type": "header",
+        "parent_account": "1100",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.GST.HEADER.v2"
+      },
+      "1410": {
+        "account_name": "GST Input - Raw Materials",
+        "account_type": "asset",
+        "parent_account": "1400",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.GST.RAW.v2"
+      },
+      "1411": {
+        "account_name": "GST Input - Capital Goods",
+        "account_type": "asset",
+        "parent_account": "1400",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.GST.CAPITAL.v2"
+      },
+      "1412": {
+        "account_name": "GST Input - Services",
+        "account_type": "asset",
+        "parent_account": "1400",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.GST.SERVICES.v2"
+      },
+      "1600": {
+        "account_name": "Fixed Assets",
+        "account_type": "header",
+        "parent_account": "1000",
+        "ifrs_classification": "NON_CURRENT_ASSETS",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.FIXED.HEADER.v2"
+      },
+      "1610": {
+        "account_name": "Production Equipment",
+        "account_type": "asset",
+        "parent_account": "1600",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.EQUIPMENT.PRODUCTION.v2",
+        "description": "Pasteurizers, homogenizers, churning machines"
+      },
+      "1620": {
+        "account_name": "Freezing & Cold Storage Equipment",
+        "account_type": "asset",
+        "parent_account": "1600",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.EQUIPMENT.FREEZER.v2",
+        "description": "Blast freezers, cold rooms, display freezers"
+      },
+      "1630": {
+        "account_name": "Delivery Vehicles - Refrigerated",
+        "account_type": "asset",
+        "parent_account": "1600",
+        "smart_code": "HERA.IN.ICECREAM.GL.ASSET.VEHICLE.REFRIGERATED.v2"
+      }
+    },
+    "liabilities": {
+      "2000": {
+        "account_name": "Liabilities",
+        "account_type": "header",
+        "ifrs_classification": "LIABILITIES",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.HEADER.v2"
+      },
+      "2100": {
+        "account_name": "Current Liabilities",
+        "account_type": "header",
+        "parent_account": "2000",
+        "ifrs_classification": "CURRENT_LIABILITIES",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.CURRENT.HEADER.v2"
+      },
+      "2110": {
+        "account_name": "Accounts Payable - Suppliers",
+        "account_type": "liability",
+        "parent_account": "2100",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.AP.SUPPLIERS.v2"
+      },
+      "2111": {
+        "account_name": "Accounts Payable - Dairy Suppliers",
+        "account_type": "liability",
+        "parent_account": "2100",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.AP.DAIRY.v2"
+      },
+      "2200": {
+        "account_name": "GST Payable",
+        "account_type": "header",
+        "parent_account": "2100",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.GST.HEADER.v2"
+      },
+      "2210": {
+        "account_name": "GST Output - 18%",
+        "account_type": "liability",
+        "parent_account": "2200",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT18.v2"
+      },
+      "2211": {
+        "account_name": "GST Output - 12%",
+        "account_type": "liability",
+        "parent_account": "2200",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT12.v2"
+      },
+      "2220": {
+        "account_name": "GST Payable - Net",
+        "account_type": "liability",
+        "parent_account": "2200",
+        "smart_code": "HERA.IN.ICECREAM.GL.LIABILITY.GST.NET.v2"
+      }
+    },
+    "equity": {
+      "3000": {
+        "account_name": "Equity",
+        "account_type": "header",
+        "ifrs_classification": "EQUITY",
+        "smart_code": "HERA.IN.ICECREAM.GL.EQUITY.HEADER.v2"
+      },
+      "3100": {
+        "account_name": "Share Capital",
+        "account_type": "equity",
+        "parent_account": "3000",
+        "smart_code": "HERA.IN.ICECREAM.GL.EQUITY.CAPITAL.v2"
+      },
+      "3200": {
+        "account_name": "Retained Earnings",
+        "account_type": "equity",
+        "parent_account": "3000",
+        "smart_code": "HERA.IN.ICECREAM.GL.EQUITY.RETAINED.v2"
+      },
+      "3300": {
+        "account_name": "Current Year Earnings",
+        "account_type": "equity",
+        "parent_account": "3000",
+        "smart_code": "HERA.IN.ICECREAM.GL.EQUITY.CURRENT.v2"
+      }
+    },
+    "revenue": {
+      "4000": {
+        "account_name": "Revenue",
+        "account_type": "header",
+        "ifrs_classification": "REVENUE",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.HEADER.v2"
+      },
+      "4100": {
+        "account_name": "Ice Cream Sales",
+        "account_type": "header",
+        "parent_account": "4000",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.SALES.HEADER.v2"
+      },
+      "4110": {
+        "account_name": "Ice Cream Sales - Retail Stores",
+        "account_type": "revenue",
+        "parent_account": "4100",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.RETAIL.v2",
+        "gst_rate": "18%"
+      },
+      "4111": {
+        "account_name": "Ice Cream Sales - Wholesale",
+        "account_type": "revenue",
+        "parent_account": "4100",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.WHOLESALE.v2",
+        "gst_rate": "18%"
+      },
+      "4112": {
+        "account_name": "Ice Cream Sales - Food Service",
+        "account_type": "revenue",
+        "parent_account": "4100",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.FOODSERVICE.v2",
+        "gst_rate": "18%",
+        "description": "Hotels, restaurants, cafes"
+      },
+      "4113": {
+        "account_name": "Ice Cream Sales - Online/Delivery",
+        "account_type": "revenue",
+        "parent_account": "4100",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.ONLINE.v2",
+        "gst_rate": "18%"
+      },
+      "4114": {
+        "account_name": "Kulfi Sales - All Channels",
+        "account_type": "revenue",
+        "parent_account": "4100",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.KULFI.v2",
+        "gst_rate": "12%",
+        "description": "Traditional Indian ice cream"
+      },
+      "4200": {
+        "account_name": "Other Revenue",
+        "account_type": "header",
+        "parent_account": "4000",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.OTHER.HEADER.v2"
+      },
+      "4210": {
+        "account_name": "Scrap Sales - Damaged Products",
+        "account_type": "revenue",
+        "parent_account": "4200",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.SCRAP.v2"
+      },
+      "4220": {
+        "account_name": "Sales Returns & Allowances",
+        "account_type": "revenue",
+        "parent_account": "4200",
+        "smart_code": "HERA.IN.ICECREAM.GL.REVENUE.RETURNS.v2",
+        "is_contra": true
+      }
+    },
+    "cogs": {
+      "5000": {
+        "account_name": "Cost of Goods Sold",
+        "account_type": "header",
+        "ifrs_classification": "COST_OF_SALES",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.HEADER.v2"
+      },
+      "5100": {
+        "account_name": "Direct Material Costs",
+        "account_type": "header",
+        "parent_account": "5000",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.MATERIAL.HEADER.v2"
+      },
+      "5110": {
+        "account_name": "Dairy Products Cost",
+        "account_type": "expense",
+        "parent_account": "5100",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.DAIRY.v2"
+      },
+      "5111": {
+        "account_name": "Sugar & Sweeteners Cost",
+        "account_type": "expense",
+        "parent_account": "5100",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.SUGAR.v2"
+      },
+      "5112": {
+        "account_name": "Flavoring & Colors Cost",
+        "account_type": "expense",
+        "parent_account": "5100",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.FLAVOR.v2"
+      },
+      "5113": {
+        "account_name": "Inclusions Cost",
+        "account_type": "expense",
+        "parent_account": "5100",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.INCLUSION.v2"
+      },
+      "5114": {
+        "account_name": "Packaging Materials Cost",
+        "account_type": "expense",
+        "parent_account": "5100",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.PACKAGING.v2"
+      },
+      "5200": {
+        "account_name": "Direct Labor",
+        "account_type": "header",
+        "parent_account": "5000",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.LABOR.HEADER.v2"
+      },
+      "5210": {
+        "account_name": "Production Wages",
+        "account_type": "expense",
+        "parent_account": "5200",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.WAGES.v2"
+      },
+      "5211": {
+        "account_name": "Production Overtime",
+        "account_type": "expense",
+        "parent_account": "5200",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.OVERTIME.v2"
+      },
+      "5300": {
+        "account_name": "Manufacturing Overhead",
+        "account_type": "header",
+        "parent_account": "5000",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.OVERHEAD.HEADER.v2"
+      },
+      "5310": {
+        "account_name": "Factory Electricity - Refrigeration",
+        "account_type": "expense",
+        "parent_account": "5300",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.ELECTRICITY.v2"
+      },
+      "5311": {
+        "account_name": "Equipment Maintenance",
+        "account_type": "expense",
+        "parent_account": "5300",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.MAINTENANCE.v2"
+      },
+      "5312": {
+        "account_name": "Quality Control & Testing",
+        "account_type": "expense",
+        "parent_account": "5300",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.QUALITY.v2"
+      },
+      "5313": {
+        "account_name": "Cold Chain Maintenance",
+        "account_type": "expense",
+        "parent_account": "5300",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.COLDCHAIN.v2"
+      },
+      "5400": {
+        "account_name": "Variances",
+        "account_type": "header",
+        "parent_account": "5000",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.VARIANCE.HEADER.v2"
+      },
+      "5410": {
+        "account_name": "Material Usage Variance",
+        "account_type": "expense",
+        "parent_account": "5400",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.VARIANCE.MATERIAL.v2"
+      },
+      "5411": {
+        "account_name": "Yield Variance",
+        "account_type": "expense",
+        "parent_account": "5400",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.VARIANCE.YIELD.v2"
+      },
+      "5412": {
+        "account_name": "Cold Chain Wastage",
+        "account_type": "expense",
+        "parent_account": "5400",
+        "smart_code": "HERA.IN.ICECREAM.GL.COGS.VARIANCE.WASTAGE.v2"
+      }
+    },
+    "expenses": {
+      "6000": {
+        "account_name": "Operating Expenses",
+        "account_type": "header",
+        "ifrs_classification": "OPERATING_EXPENSES",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.HEADER.v2"
+      },
+      "6100": {
+        "account_name": "Sales & Distribution",
+        "account_type": "header",
+        "parent_account": "6000",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.SALES.HEADER.v2"
+      },
+      "6110": {
+        "account_name": "Delivery Vehicle Fuel",
+        "account_type": "expense",
+        "parent_account": "6100",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.FUEL.v2"
+      },
+      "6111": {
+        "account_name": "Delivery Vehicle Maintenance",
+        "account_type": "expense",
+        "parent_account": "6100",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.VEHICLE.v2"
+      },
+      "6112": {
+        "account_name": "Sales Commissions",
+        "account_type": "expense",
+        "parent_account": "6100",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.COMMISSION.v2"
+      },
+      "6113": {
+        "account_name": "Trade Promotions & Discounts",
+        "account_type": "expense",
+        "parent_account": "6100",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.PROMOTION.v2"
+      },
+      "6114": {
+        "account_name": "Freezer Placement Program",
+        "account_type": "expense",
+        "parent_account": "6100",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.FREEZER.PLACEMENT.v2"
+      },
+      "6200": {
+        "account_name": "Administrative Expenses",
+        "account_type": "header",
+        "parent_account": "6000",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.ADMIN.HEADER.v2"
+      },
+      "6210": {
+        "account_name": "Office Salaries",
+        "account_type": "expense",
+        "parent_account": "6200",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.SALARY.v2"
+      },
+      "6211": {
+        "account_name": "Office Rent",
+        "account_type": "expense",
+        "parent_account": "6200",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.RENT.v2"
+      },
+      "6212": {
+        "account_name": "Insurance - Product Liability",
+        "account_type": "expense",
+        "parent_account": "6200",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.INSURANCE.v2"
+      },
+      "6213": {
+        "account_name": "Food License & Certifications",
+        "account_type": "expense",
+        "parent_account": "6200",
+        "smart_code": "HERA.IN.ICECREAM.GL.EXPENSE.LICENSE.v2"
+      }
+    },
+    "other": {
+      "8000": {
+        "account_name": "Other Income & Expenses",
+        "account_type": "header",
+        "ifrs_classification": "OTHER_COMPREHENSIVE_INCOME",
+        "smart_code": "HERA.IN.ICECREAM.GL.OTHER.HEADER.v2"
+      },
+      "8100": {
+        "account_name": "Interest Income",
+        "account_type": "revenue",
+        "parent_account": "8000",
+        "smart_code": "HERA.IN.ICECREAM.GL.OTHER.INTEREST.INCOME.v2"
+      },
+      "8200": {
+        "account_name": "Interest Expense",
+        "account_type": "expense",
+        "parent_account": "8000",
+        "smart_code": "HERA.IN.ICECREAM.GL.OTHER.INTEREST.EXPENSE.v2"
+      }
+    }
+  },
+  "industry_specific_features": {
+    "cold_chain_tracking": true,
+    "batch_tracking": true,
+    "expiry_management": true,
+    "temperature_compliance": true,
+    "seasonal_variance_tracking": true,
+    "multi_location_inventory": true,
+    "gst_compliance": {
+      "ice_cream_gst_rate": "18%",
+      "kulfi_gst_rate": "12%",
+      "input_credit_eligible": true
+    }
+  },
+  "auto_journal_rules": [
+    {
+      "transaction_type": "ice_cream_sale_retail",
+      "debit": ["1112", "1210"],
+      "credit": ["4110", "2210"],
+      "description": "Retail ice cream sale with GST"
+    },
+    {
+      "transaction_type": "raw_material_purchase",
+      "debit": ["1311", "1410"],
+      "credit": ["2111", "1112"],
+      "description": "Purchase of dairy products with GST input"
+    },
+    {
+      "transaction_type": "production_completion",
+      "debit": ["1331"],
+      "credit": ["1321", "5110", "5210", "5310"],
+      "description": "Transfer from WIP to finished goods"
+    },
+    {
+      "transaction_type": "cold_chain_wastage",
+      "debit": ["5412"],
+      "credit": ["1331"],
+      "description": "Write-off of melted/damaged products"
+    }
+  ]
+}

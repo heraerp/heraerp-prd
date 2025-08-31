@@ -60,11 +60,22 @@ export class UniversalApiClient {
   private baseUrl: string
 
   constructor(config: UniversalApiConfig = {}) {
+    // Determine base URL based on environment
+    let defaultBaseUrl = '/api/v1/universal'
+    
+    // If we're on the server and have access to environment variables
+    if (typeof window === 'undefined') {
+      // Use localhost for server-side requests
+      defaultBaseUrl = process.env.NEXT_PUBLIC_APP_URL 
+        ? `${process.env.NEXT_PUBLIC_APP_URL}/api/v1/universal`
+        : 'http://localhost:3000/api/v1/universal'
+    }
+    
     this.config = {
-      baseUrl: '/api/v1/universal',
+      baseUrl: defaultBaseUrl,
       ...config
     }
-    this.baseUrl = this.config.baseUrl || '/api/v1/universal'
+    this.baseUrl = this.config.baseUrl || defaultBaseUrl
   }
 
   // Configuration

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createIntegratedAppointment } from '@/lib/salon/integrated-appointment-booking'
-import { UniversalWorkflow } from '@/lib/universal-workflow'
+import { ServerWorkflow } from '@/lib/salon/server-workflow'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -182,7 +182,7 @@ export async function PUT(request: NextRequest) {
       }, { status: 400 })
     }
 
-    const workflow = new UniversalWorkflow(organizationId)
+    const workflow = new ServerWorkflow(organizationId)
 
     // If status change requested, use workflow transition
     if (status) {
@@ -287,7 +287,7 @@ export async function DELETE(request: NextRequest) {
       }, { status: 400 })
     }
 
-    const workflow = new UniversalWorkflow(organizationId)
+    const workflow = new ServerWorkflow(organizationId)
 
     // Find CANCELLED status
     const { data: cancelledStatus } = await supabase

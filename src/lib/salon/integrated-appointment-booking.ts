@@ -3,13 +3,13 @@
  * Following HERA Universal Architecture principles
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { UniversalWorkflow } from '@/lib/universal-workflow'
+import { ServerWorkflow } from './server-workflow'
 import { createClient } from '@supabase/supabase-js'
 
+// Use service role key for server-side operations
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
 interface BookingData {
@@ -29,7 +29,7 @@ interface BookingData {
 }
 
 export async function createIntegratedAppointment(bookingData: BookingData) {
-  const workflow = new UniversalWorkflow(bookingData.organizationId)
+  const workflow = new ServerWorkflow(bookingData.organizationId)
   
   try {
     // 1. Find or Create Client Entity (NOT just metadata!)
@@ -52,46 +52,91 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
       await transitionClientToActive(clientId, bookingData.organizationId)
     } else {
       // Create new client entity
-      const newClient = await universalApi.createEntity({
-        organization_id: bookingData.organizationId,
-        entity_type: 'customer',
-        entity_name: bookingData.clientName,
-        entity_code: `CLIENT-${Date.now()}`,
-        smart_code: 'HERA.SALON.CLIENT.v1',
-        metadata: {
-          source: 'appointment_booking'
-        }
-      })
+      const { data: newClient, error: clientError } = await supabase
+        .from('core_entities')
+        .insert({
+          organization_id: bookingData.organizationId,
+          entity_type: 'customer',
+          entity_name: bookingData.clientName,
+          entity_code: `CLIENT-${Date.now()}`,
+          smart_code: 'HERA.SALON.CLIENT.v1',
+          metadata: {
+            source: 'appointment_booking'
+          }
+        })
+        .select()
+        .single()
+        
+      if (clientError || !newClient) {
+        throw new Error(`Failed to create client: ${clientError?.message || 'Unknown error'}`)
+      }
       
       clientId = newClient.id
       console.log('Created new client:', clientId)
       
       // Add client contact info as dynamic data
-      await universalApi.setDynamicField(clientId, 'phone', bookingData.clientPhone)
-      await universalApi.setDynamicField(clientId, 'email', bookingData.clientEmail)
+      if (bookingData.clientPhone) {
+        await supabase
+          .from('core_dynamic_data')
+          .insert({
+            organization_id: bookingData.organizationId,
+            entity_id: clientId,
+            field_name: 'phone',
+            field_value_text: bookingData.clientPhone,
+            smart_code: 'HERA.SALON.CLIENT.PHONE.v1'
+          })
+      }
+      
+      if (bookingData.clientEmail) {
+        await supabase
+          .from('core_dynamic_data')
+          .insert({
+            organization_id: bookingData.organizationId,
+            entity_id: clientId,
+            field_name: 'email',
+            field_value_text: bookingData.clientEmail,
+            smart_code: 'HERA.SALON.CLIENT.EMAIL.v1'
+          })
+      }
       
       // Assign CLIENT workflow and set to NEW status
       await assignClientWorkflow(clientId, bookingData.organizationId, 'NEW')
     }
     
     // 2. Create Appointment Transaction
-    const appointment = await universalApi.createTransaction({
-      organization_id: bookingData.organizationId,
-      transaction_type: 'appointment',
-      transaction_code: `APT-${Date.now()}`,
-      transaction_date: bookingData.date,
-      source_entity_id: clientId, // Link to actual client entity!
-      target_entity_id: bookingData.stylistId, // Link to stylist entity
-      total_amount: bookingData.servicePrice,
-      smart_code: 'HERA.SALON.APPOINTMENT.v1',
-      metadata: {
-        service_id: bookingData.serviceId,
-        service_name: bookingData.serviceName,
-        appointment_time: bookingData.time,
-        duration_minutes: bookingData.duration,
-        notes: bookingData.notes
-      }
-    })
+    // Check if stylistId is a valid UUID
+    const isStylistUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(bookingData.stylistId)
+    
+    const { data: appointment, error: appointmentError } = await supabase
+      .from('universal_transactions')
+      .insert({
+        organization_id: bookingData.organizationId,
+        transaction_type: 'appointment',
+        transaction_code: `APT-${Date.now()}`,
+        transaction_date: bookingData.date,
+        source_entity_id: clientId, // Link to actual client entity!
+        target_entity_id: isStylistUUID ? bookingData.stylistId : null, // Only set if valid UUID
+        total_amount: bookingData.servicePrice,
+        smart_code: 'HERA.SALON.APPOINTMENT.v1',
+        metadata: {
+          service_id: bookingData.serviceId,
+          service_name: bookingData.serviceName,
+          appointment_time: bookingData.time,
+          duration_minutes: bookingData.duration,
+          notes: bookingData.notes,
+          customer_name: bookingData.clientName,
+          customer_phone: bookingData.clientPhone,
+          customer_email: bookingData.clientEmail,
+          stylist_id: bookingData.stylistId, // Store original ID in metadata
+          stylist_name: bookingData.stylistName
+        }
+      })
+      .select()
+      .single()
+      
+    if (appointmentError || !appointment) {
+      throw new Error(`Failed to create appointment: ${appointmentError?.message || 'Unknown error'}`)
+    }
     
     // 3. Assign APPOINTMENT Workflow to the appointment
     const appointmentWorkflow = await findWorkflowTemplate(
@@ -115,20 +160,35 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
       }
     }
     
-    // 4. Create service line item
-    await universalApi.createTransactionLine({
-      transaction_id: appointment.id,
-      line_entity_id: bookingData.serviceId,
-      line_number: 1,
-      quantity: 1,
-      unit_price: bookingData.servicePrice,
-      line_amount: bookingData.servicePrice,
-      smart_code: 'HERA.SALON.APPOINTMENT.SERVICE.v1',
-      metadata: {
-        service_name: bookingData.serviceName,
-        duration_minutes: bookingData.duration
+    // 4. Create service line item (only if serviceId is a valid UUID)
+    // Skip line item creation if serviceId is not a UUID (for demo/testing)
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(bookingData.serviceId)
+    
+    if (isValidUUID) {
+      const { error: lineError } = await supabase
+        .from('universal_transaction_lines')
+        .insert({
+          transaction_id: appointment.id,
+          line_entity_id: bookingData.serviceId,
+          line_number: 1,
+          quantity: 1,
+          unit_price: bookingData.servicePrice,
+          line_amount: bookingData.servicePrice,
+          smart_code: 'HERA.SALON.APPOINTMENT.SERVICE.v1',
+          metadata: {
+            service_name: bookingData.serviceName,
+            duration_minutes: bookingData.duration
+          }
+        })
+        
+      if (lineError) {
+        console.error('Warning: Failed to create transaction line:', lineError)
+        // Don't fail the whole appointment for this
       }
-    })
+    } else {
+      // For non-UUID service IDs, store service info in transaction metadata
+      console.log('Service ID is not a UUID, storing service info in transaction metadata only')
+    }
     
     // 5. Update Staff Availability (if needed)
     // This would block the time slot for the stylist
@@ -144,14 +204,14 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
     console.error('Failed to create integrated appointment:', error)
     return {
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
     }
   }
 }
 
 // Helper function to transition client to active
 async function transitionClientToActive(clientId: string, orgId: string) {
-  const workflow = new UniversalWorkflow(orgId)
+  const workflow = new ServerWorkflow(orgId)
   
   // Get current client status
   const currentStatus = await workflow.getCurrentStatus(clientId)
@@ -170,7 +230,7 @@ async function transitionClientToActive(clientId: string, orgId: string) {
 
 // Helper to assign client workflow
 async function assignClientWorkflow(clientId: string, orgId: string, initialStatus: string) {
-  const workflow = new UniversalWorkflow(orgId)
+  const workflow = new ServerWorkflow(orgId)
   
   const clientWorkflow = await findWorkflowTemplate(orgId, 'CLIENT-LIFECYCLE')
   if (clientWorkflow) {

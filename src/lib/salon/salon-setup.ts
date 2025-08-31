@@ -23,7 +23,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
     const services = salonServices || []
     for (const service of services) {
       await api.createEntity({
-        entity_type: 'service',
+        entity_type: 'salon_service',
         entity_name: service.entity_name,
         entity_code: service.entity_code,
         smart_code: service.smart_code || 'HERA.SALON.SERVICE.v1',
@@ -73,11 +73,11 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
     ]
 
     for (const staff of staffMembers) {
-      const staffEntity = await universalApi.createEntity({
-        entity_type: 'employee',
+      const staffEntity = await api.createEntity({
+        entity_type: 'staff',
         entity_name: staff.entity_name,
         entity_code: staff.entity_code,
-        smart_code: 'HERA.SALON.STAFF.EMPLOYEE.v1',
+        smart_code: 'HERA.SALON.STAFF.v1',
         metadata: {
           role: staff.role,
           email: staff.email,
@@ -97,7 +97,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
     // 3. Create default salon products/inventory
     const products = salonProducts || []
     for (const product of products.slice(0, 10)) { // Start with 10 products
-      const productEntity = await universalApi.createEntity({
+      const productEntity = await api.createEntity({
         entity_type: 'product',
         entity_name: product.entity_name,
         entity_code: product.entity_code,
@@ -159,7 +159,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
       }
     }
 
-    const settingsEntity = await universalApi.createEntity({
+    const settingsEntity = await api.createEntity({
       entity_type: 'settings',
       entity_name: 'Salon Settings',
       entity_code: 'SETTINGS-SALON',
@@ -175,7 +175,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
     ]
 
     for (const customer of sampleCustomers) {
-      const customerEntity = await universalApi.createEntity({
+      const customerEntity = await api.createEntity({
         entity_type: 'customer',
         entity_name: customer.name,
         entity_code: `CUST-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
