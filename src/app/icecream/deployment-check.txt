@@ -1,0 +1,5 @@
+Ice cream module deployment check
+Created: 2025-08-31 10:42 IST
+This file verifies that the ice cream module is properly deployed.
+
+If you can see this file at /icecream/deployment-check.txt, then the deployment is working.
