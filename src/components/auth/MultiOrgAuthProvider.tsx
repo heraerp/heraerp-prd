@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { supabaseClient as supabase } from '@/lib/supabase-client'
 import { useRouter, usePathname } from 'next/navigation'
 
 // Types for multi-organization authentication

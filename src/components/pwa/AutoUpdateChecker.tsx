@@ -45,23 +45,29 @@ export function AutoUpdateChecker() {
     }
   }, [currentVersion])
 
-  const handleUpdate = useCallback(() => {
-    // Clear all caches
-    if ('caches' in window) {
-      caches.keys().then(names => {
-        names.forEach(name => caches.delete(name))
-      })
-    }
+  const handleUpdate = useCallback(async () => {
+    try {
+      // Send skip waiting message to service worker
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
+      }
 
-    // Unregister service worker to force fresh install
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(registration => registration.unregister())
-      })
-    }
+      // Wait a moment for service worker to update
+      await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Force reload with cache bypass
-    window.location.reload()
+      // Clear all caches
+      if ('caches' in window) {
+        const names = await caches.keys()
+        await Promise.all(names.map(name => caches.delete(name)))
+      }
+
+      // Force reload with cache bypass
+      window.location.reload()
+    } catch (error) {
+      console.error('Update failed:', error)
+      // Fallback: just reload
+      window.location.reload()
+    }
   }, [])
 
   useEffect(() => {

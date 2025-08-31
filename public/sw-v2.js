@@ -1,6 +1,6 @@
 // HERA Service Worker v3.0.0 - Aggressive Update Strategy
-const CACHE_NAME = 'hera-cache-v20250831095759';
-const APP_VERSION = '20250831095759';
+const CACHE_NAME = 'hera-cache-v20250831103402';
+const APP_VERSION = '20250831103402';
 
 // Skip caching for these patterns - always fetch fresh
 const SKIP_CACHE_PATTERNS = [
@@ -141,15 +141,3 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
-
-// Periodic update check (every 5 minutes)
-setInterval(() => {
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({
-        type: 'CHECK_FOR_UPDATE',
-        version: APP_VERSION
-      });
-    });
-  });
-}, 5 * 60 * 1000);
