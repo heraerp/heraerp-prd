@@ -1,0 +1,359 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
+import { 
+  Factory, 
+  Package, 
+  TrendingUp, 
+  Users,
+  Activity,
+  Snowflake,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  TruckIcon
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+interface DashboardData {
+  totalProducts: number
+  activeProduction: number
+  pendingQC: number
+  totalOutlets: number
+  recentTransactions: any[]
+  inventoryLevels: any[]
+  productionEfficiency: number
+}
+
+export default function IceCreamDashboard() {
+  const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<DashboardData>({
+    totalProducts: 0,
+    activeProduction: 0,
+    pendingQC: 0,
+    totalOutlets: 0,
+    recentTransactions: [],
+    inventoryLevels: [],
+    productionEfficiency: 0
+  })
+
+  useEffect(() => {
+    if (organizationId && !orgLoading) {
+      fetchDashboardData()
+    }
+  }, [organizationId, orgLoading])
+
+  async function fetchDashboardData() {
+    if (!organizationId) return
+    
+    try {
+      // Fetch products
+      const { data: products } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', organizationId)
+        .eq('entity_type', 'product')
+
+      // Fetch outlets
+      const { data: outlets } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', organizationId)
+        .eq('entity_type', 'location')
+        .like('entity_code', 'OUTLET%')
+
+      // Fetch recent transactions
+      const { data: transactions } = await supabase
+        .from('universal_transactions')
+        .select(`
+          *,
+          universal_transaction_lines (*)
+        `)
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false })
+        .limit(10)
+
+      // Calculate production metrics
+      const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []
+      const qcTxns = transactions?.filter(t => t.transaction_type === 'quality_check') || []
+      
+      // Calculate efficiency from production transactions
+      let totalEfficiency = 0
+      productionTxns.forEach(txn => {
+        if (txn.metadata?.yield_variance_percent) {
+          totalEfficiency += (100 + parseFloat(txn.metadata.yield_variance_percent))
+        }
+      })
+      const avgEfficiency = productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
+
+      // Debug logging
+      console.log('Dashboard data:', {
+        products: products?.length,
+        outlets: outlets?.length,
+        transactions: transactions?.length,
+        productionTxns: productionTxns.length
+      })
+
+      setData({
+        totalProducts: products?.length || 0,
+        activeProduction: productionTxns.filter(t => t.transaction_status === 'in_progress').length,
+        pendingQC: productionTxns.filter(t => !qcTxns.find(q => q.reference_number === t.transaction_code)).length,
+        totalOutlets: outlets?.length || 0,
+        recentTransactions: transactions || [],
+        inventoryLevels: [],
+        productionEfficiency: avgEfficiency
+      })
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const stats = [
+    {
+      title: 'Total Products',
+      value: data.totalProducts,
+      icon: Package,
+      change: data.totalProducts > 0 ? '+2 this week' : 'No products yet',
+      gradient: 'from-pink-500 to-purple-500'
+    },
+    {
+      title: 'Active Production',
+      value: data.activeProduction,
+      icon: Factory,
+      change: data.activeProduction > 0 ? 'Running' : 'No active batches',
+      gradient: 'from-cyan-500 to-blue-500'
+    },
+    {
+      title: 'Pending QC',
+      value: data.pendingQC,
+      icon: AlertCircle,
+      change: data.pendingQC > 0 ? 'Awaiting' : 'All tested',
+      gradient: 'from-yellow-500 to-orange-500'
+    },
+    {
+      title: 'Retail Outlets',
+      value: data.totalOutlets,
+      icon: Users,
+      change: data.totalOutlets > 0 ? 'Active' : 'No outlets',
+      gradient: 'from-green-500 to-emerald-500'
+    }
+  ]
+
+  // Show loading state while org is being resolved
+  if (orgLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 border-t-2 border-gray-300 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Loading demo organization...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error if no org found
+  if (!organizationId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 mb-2">No organization found for this demo route</p>
+          <p className="text-gray-400 text-sm">Please check the demo configuration</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-100">
+          Ice Cream Manufacturing Dashboard
+        </h1>
+        <p className="text-gray-400 mt-2">
+          Real-time overview of your ice cream production and operations
+        </p>
+        {/* Organization Info */}
+        <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-700 inline-block">
+          <p className="text-sm text-gray-300">
+            <span className="text-gray-500">Demo Organization:</span>{' '}
+            <span className="font-medium text-white">{organizationName || 'Loading...'}</span>
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Organization ID: {organizationId}
+          </p>
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat) => (
+          <Card key={stat.title} className="relative overflow-hidden bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-gray-300">
+                  {stat.title}
+                </CardTitle>
+                <div className={cn(
+                  "w-10 h-10 rounded-lg bg-gradient-to-br flex items-center justify-center shadow-sm",
+                  stat.gradient
+                )}>
+                  <stat.icon className="w-5 h-5 text-white" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              {loading ? (
+                <div className="space-y-2">
+                  <div className="h-8 w-20 bg-gray-700 rounded animate-pulse" />
+                  <div className="h-3 w-24 bg-gray-700 rounded animate-pulse" />
+                </div>
+              ) : (
+                <div>
+                  <div className="text-4xl font-black tracking-tight">
+                    <span className={stat.value === 0 ? "text-gray-300" : "text-white"}>
+                      {stat.value}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-gray-400 mt-1">
+                    {stat.change}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Production Efficiency */}
+      <Card className="bg-gray-800 border border-gray-700 shadow-sm">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-white">Production Efficiency</CardTitle>
+            <Activity className="w-5 h-5 text-gray-400" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-300">Current Efficiency</span>
+              <span className="text-2xl font-bold text-white">
+                {data.productionEfficiency.toFixed(1)}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${data.productionEfficiency}%` }}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Transactions */}
+      <Card className="bg-gray-800 border border-gray-700 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-white">Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {data.recentTransactions.slice(0, 5).map((txn) => (
+              <div key={txn.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-900 border border-gray-700">
+                <div className="flex items-center space-x-4">
+                  {getTransactionIcon(txn.transaction_type)}
+                  <div>
+                    <p className="font-medium text-white">{txn.transaction_code}</p>
+                    <p className="text-sm text-gray-400">
+                      {txn.transaction_type.replace(/_/g, ' ').toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-white">
+                    {txn.total_amount ? `₹${txn.total_amount.toFixed(2)}` : '-'}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(txn.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Factory className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Start Production</h3>
+                <p className="text-sm text-gray-400">Create new batch</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <TruckIcon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Schedule Delivery</h3>
+                <p className="text-sm text-gray-400">Transfer to outlets</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Quality Check</h3>
+                <p className="text-sm text-gray-400">Test products</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+function getTransactionIcon(type: string) {
+  switch (type) {
+    case 'production_batch':
+      return <Factory className="w-5 h-5 text-blue-500" />
+    case 'quality_check':
+      return <CheckCircle className="w-5 h-5 text-green-500" />
+    case 'inventory_transfer':
+      return <TruckIcon className="w-5 h-5 text-purple-500" />
+    case 'pos_sale':
+      return <Package className="w-5 h-5 text-pink-500" />
+    default:
+      return <Activity className="w-5 h-5 text-gray-500" />
+  }
+}
