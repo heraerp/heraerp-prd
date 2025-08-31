@@ -1,27 +1,34 @@
-# HERA ERP - User Acceptance Testing (UAT) Suite
+# HERA ERP - Playwright Testing Suite
 
-This directory contains comprehensive UI testing for HERA ERP using Playwright.
+This directory contains comprehensive API and UI testing for HERA ERP using Playwright, with a focus on API-first testing strategy.
 
 ## Overview
 
-The test suite validates all critical user journeys and functionality across the HERA Salon module, ensuring the application meets business requirements and provides a seamless user experience.
+The test suite validates critical functionality across multiple HERA modules, with API tests for CRUD operations and minimal UI smoke tests to ensure the application meets business requirements.
 
 ## Test Structure
 
 ```
 tests/
-├── e2e/
+├── api/                                 # API-focused tests
+│   └── icecream/
+│       ├── entities.spec.ts             # Entity CRUD operations
+│       ├── transactions.spec.ts         # Transaction management
+│       └── multi-tenancy.spec.ts       # Organization isolation
+├── e2e/                                 # End-to-end UI tests
+│   ├── icecream/
+│   │   └── smoke.spec.ts               # UI smoke tests
 │   └── salon/
-│       ├── appointments.spec.ts         # Original appointment tests
+│       ├── appointments.spec.ts         # Appointment management
 │       ├── clients.spec.ts              # Client management tests
 │       ├── pos.spec.ts                  # Point of Sale tests
 │       ├── services.spec.ts             # Service catalog tests
-│       ├── dashboard.spec.ts            # Dashboard functionality
-│       ├── navigation-fixed.spec.ts     # Fixed navigation tests
-│       ├── comprehensive-salon.spec.ts  # Full test suite
-│       ├── uat-report-generator.ts      # UAT report generation
-│       └── helpers/
-│           └── fix-overlapping.ts       # UI helper functions
+│       └── dashboard.spec.ts            # Dashboard functionality
+├── fixtures/
+│   └── api-fixtures.ts                  # Test fixtures and setup
+└── helpers/
+    ├── test-constants.ts                # Constants and test data
+    └── supabase-test-client.ts          # Supabase API wrapper
 ```
 
 ## Running Tests
@@ -42,6 +49,18 @@ npx playwright install
 # Run all tests
 npm run test:e2e
 
+# Run API tests only
+npm run test:api
+
+# Run ice cream module tests (API + UI)
+npm run test:icecream
+
+# Run ice cream API tests only
+npm run test:icecream:api
+
+# Run ice cream UI tests only
+npm run test:icecream:ui
+
 # Run salon tests only
 npm run test:e2e:salon
 
@@ -49,7 +68,7 @@ npm run test:e2e:salon
 npm run test:e2e:ui
 
 # Run tests in headed mode (see browser)
-npm run test:e2e:salon:headed
+npm run test:e2e:headed
 
 # Debug tests
 npm run test:e2e:debug
@@ -73,35 +92,30 @@ npx playwright test --project=chromium
 
 ## Test Categories
 
-### 1. Functional Tests
-- User authentication and authorization
-- CRUD operations (Create, Read, Update, Delete)
-- Business workflow validation
-- Data persistence and integrity
+### 1. API Tests (Primary Focus)
+- **Entity CRUD**: Customer, Product, Recipe management
+- **Transaction Management**: Production batches, sales, expenses
+- **Multi-Tenancy**: Organization isolation verification
+- **Dynamic Data**: Custom field operations
+- **Relationships**: Entity connections and hierarchies
 
-### 2. UI/UX Tests
-- Responsive design across devices
-- Navigation consistency
-- Visual feedback and animations
-- Error state handling
+### 2. UI Smoke Tests (Minimal)
+- Dashboard loading and navigation
+- Key page accessibility
+- Mobile responsive layout
+- Real-time metric display
 
-### 3. Performance Tests
-- Page load times (< 3 seconds)
-- Navigation response times (< 2 seconds)
-- Search functionality performance
-- API response times
-
-### 4. Integration Tests
+### 3. Integration Tests
 - Cross-module data flow
-- State management
-- API integration
-- Third-party service integration
+- API response validation
+- Organization context preservation
+- Data persistence verification
 
-### 5. Accessibility Tests
-- Keyboard navigation support
-- Screen reader compatibility
-- ARIA labels and roles
-- Color contrast compliance
+### 4. Performance Considerations
+- API response times (< 500ms)
+- Bulk operation handling
+- Concurrent request management
+- Database query optimization
 
 ## UAT Report Generation
 
@@ -125,56 +139,64 @@ npx playwright test uat-report-generator.ts
 
 ## Best Practices
 
-### 1. Page Object Model
-Use page objects for reusable components:
+### 1. API Test Structure
 ```typescript
-class SalonDashboardPage {
-  constructor(private page: Page) {}
+test('should create entity', async ({ supabaseClient, organizationId, testIds }) => {
+  const { data, error } = await supabaseClient.insert('core_entities', {
+    organization_id: organizationId,
+    entity_type: 'customer',
+    entity_code: `CUST-${testIds.uniqueId}`
+  })
   
-  async navigateToAppointments() {
-    await this.page.click('button:has-text("Appointments")');
-  }
-}
+  expect(error).toBeNull()
+  expect(data[0].organization_id).toBe(organizationId)
+})
 ```
 
 ### 2. Test Data Management
-- Use test-specific data
-- Clean up after tests
-- Avoid dependencies between tests
+- Always use `organizationId` from fixtures
+- Generate unique IDs with `testIds.uniqueId`
+- Clean up in `test.cleanup()` or `test.afterAll()`
+- Never share data between tests
 
-### 3. Selectors
-Priority order for selectors:
-1. Role-based: `getByRole('button', { name: 'Submit' })`
-2. Text content: `getByText('Welcome')`
-3. Test IDs: `getByTestId('submit-button')`
-4. CSS selectors: `locator('.submit-btn')`
+### 3. Multi-Tenancy Testing
+- Verify organization isolation in every test
+- Test cross-organization access prevention
+- Include organization_id in all operations
+- Use different org IDs for isolation tests
 
-### 4. Assertions
-- Use explicit waits: `await expect(element).toBeVisible()`
-- Set appropriate timeouts
-- Make assertions specific and meaningful
+### 4. Error Handling
+- Check for RLS policy violations
+- Handle API rate limits gracefully
+- Verify error messages are meaningful
+- Test edge cases and invalid inputs
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Elements not clickable**
-   - Solution: Use force click or wait for element
-   ```typescript
-   await element.click({ force: true });
+1. **RLS Policy Errors**
    ```
+   Error: new row violates row-level security policy
+   ```
+   - Ensure RLS policies exist for test organizations
+   - Use service role key for write operations
+   - Verify organization_id is included
 
-2. **Flaky tests**
-   - Solution: Add proper waits
-   ```typescript
-   await page.waitForLoadState('networkidle');
-   ```
+2. **API Test Failures**
+   - Check environment variables are set correctly
+   - Verify Supabase connection is active
+   - Ensure test data cleanup completed
 
-3. **Viewport issues**
-   - Solution: Set viewport explicitly
-   ```typescript
-   await page.setViewportSize({ width: 1280, height: 720 });
-   ```
+3. **Test Data Conflicts**
+   - Use unique IDs with timestamps
+   - Clean up test data properly
+   - Check for orphaned test records
+
+4. **Multi-Tenancy Issues**
+   - Verify organization context in fixtures
+   - Test with correct organization IDs
+   - Check middleware routing for UI tests
 
 ## CI/CD Integration
 

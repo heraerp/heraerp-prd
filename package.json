@@ -59,7 +59,11 @@
     "test:e2e:codegen": "playwright codegen http://localhost:3000",
     "test:e2e:install": "playwright install",
     "test:uat": "npm run test:e2e -- --grep @uat",
-    "test:smoke": "npm run test:e2e -- --grep @smoke"
+    "test:smoke": "npm run test:e2e -- --grep @smoke",
+    "test:api": "playwright test --project=api",
+    "test:icecream": "playwright test tests/api/icecream tests/e2e/icecream",
+    "test:icecream:api": "playwright test tests/api/icecream",
+    "test:icecream:ui": "playwright test tests/e2e/icecream"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
