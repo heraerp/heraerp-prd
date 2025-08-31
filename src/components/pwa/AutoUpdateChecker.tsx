@@ -34,11 +34,7 @@ export function AutoUpdateChecker() {
         if (data.version !== currentVersion) {
           console.log(`Update available: ${currentVersion} -> ${data.version}`)
           setUpdateAvailable(true)
-          
-          // Try to update service worker
-          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
-          }
+          // Don't send skip waiting here - only when user clicks update
         }
       }
     } catch (error) {
@@ -78,12 +74,12 @@ export function AutoUpdateChecker() {
       // Initial check
       await checkForUpdates()
 
-      // Check every 30 seconds
+      // Check every 5 minutes (300000ms) instead of 30 seconds
       interval = setInterval(() => {
-        if (mounted) {
+        if (mounted && !checkingRef.current) {
           checkForUpdates()
         }
-      }, 30000)
+      }, 300000)
 
       // Listen for service worker updates
       if ('serviceWorker' in navigator) {

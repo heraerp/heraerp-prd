@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
+import { supabaseClient } from '@/lib/supabase-client'
 import { 
   Factory, 
   Package, 
@@ -17,11 +17,6 @@ import {
   TruckIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 interface DashboardData {
   totalProducts: number
@@ -57,14 +52,14 @@ export default function IceCreamDashboard() {
     
     try {
       // Fetch products
-      const { data: products } = await supabase
+      const { data: products } = await supabaseClient
         .from('core_entities')
         .select('*')
         .eq('organization_id', organizationId)
         .eq('entity_type', 'product')
 
       // Fetch outlets
-      const { data: outlets } = await supabase
+      const { data: outlets } = await supabaseClient
         .from('core_entities')
         .select('*')
         .eq('organization_id', organizationId)
@@ -72,7 +67,7 @@ export default function IceCreamDashboard() {
         .like('entity_code', 'OUTLET%')
 
       // Fetch recent transactions
-      const { data: transactions } = await supabase
+      const { data: transactions } = await supabaseClient
         .from('universal_transactions')
         .select(`
           *,
