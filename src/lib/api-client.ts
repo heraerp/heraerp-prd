@@ -21,7 +21,7 @@ export class UniversalApiClient {
   /**
    * Fetch entities from core_entities table
    */
-  async getEntities(organizationId: string, entityType?: string, limit = 100): Promise<any[]> {
+  async getEntities(organizationId: string, entityType?: string, limit = 50): Promise<any[]> {
     const params = new URLSearchParams({
       org_id: organizationId,
       table: 'core_entities',
@@ -46,7 +46,7 @@ export class UniversalApiClient {
   /**
    * Fetch transactions from universal_transactions table
    */
-  async getTransactions(organizationId: string, transactionType?: string, limit = 100): Promise<any[]> {
+  async getTransactions(organizationId: string, transactionType?: string, limit = 20): Promise<any[]> {
     const params = new URLSearchParams({
       org_id: organizationId,
       table: 'universal_transactions',
@@ -128,10 +128,10 @@ export class UniversalApiClient {
    */
   async getDashboardData(organizationId: string) {
     const [products, customers, transactions, locations] = await Promise.all([
-      this.getEntities(organizationId, 'product', 50),
-      this.getEntities(organizationId, 'customer', 50),
-      this.getTransactions(organizationId, undefined, 20),
-      this.getEntities(organizationId, 'location', 20)
+      this.getEntities(organizationId, 'product', 30),
+      this.getEntities(organizationId, 'customer', 30), 
+      this.getTransactions(organizationId, undefined, 15),
+      this.getEntities(organizationId, 'location', 15)
     ])
 
     return {

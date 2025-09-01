@@ -7,6 +7,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Simple in-memory cache (5 minutes)
+const cache = new Map()
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const organizationId = searchParams.get('org_id')
@@ -15,49 +19,60 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
   }
 
+  // Check cache first
+  const cacheKey = `icecream_dashboard_${organizationId}`
+  const cached = cache.get(cacheKey)
+  
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log('API: Returning cached data for org:', organizationId)
+    return NextResponse.json(cached.data)
+  }
+
   try {
-    console.log('API: Fetching ice cream data for org:', organizationId)
+    console.log('API: Fetching fresh ice cream data for org:', organizationId)
 
-    // Fetch products
-    const { data: products, error: productsError } = await supabase
-      .from('core_entities')
-      .select('*')
-      .eq('organization_id', organizationId)
-      .eq('entity_type', 'product')
-    
-    if (productsError) {
-      console.error('API: Error fetching products:', productsError)
+    // Use Promise.all for parallel execution and limit data
+    const [products, outlets, transactions] = await Promise.all([
+      // Get only essential product fields
+      supabase
+        .from('core_entities')
+        .select('id, entity_name, entity_code, metadata')
+        .eq('organization_id', organizationId)
+        .eq('entity_type', 'product')
+        .limit(50),
+      
+      // Get only outlet locations
+      supabase
+        .from('core_entities')
+        .select('id, entity_name, entity_code, metadata')
+        .eq('organization_id', organizationId)
+        .eq('entity_type', 'location')
+        .like('entity_code', 'OUTLET%')
+        .limit(20),
+      
+      // Get only recent transactions without lines
+      supabase
+        .from('universal_transactions')
+        .select('id, transaction_type, transaction_code, total_amount, transaction_date, metadata')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false })
+        .limit(15)
+    ])
+
+    if (products.error) {
+      console.error('API: Error fetching products:', products.error)
     }
 
-    // Fetch outlets
-    const { data: outlets, error: outletsError } = await supabase
-      .from('core_entities')
-      .select('*')
-      .eq('organization_id', organizationId)
-      .eq('entity_type', 'location')
-      .like('entity_code', 'OUTLET%')
-    
-    if (outletsError) {
-      console.error('API: Error fetching outlets:', outletsError)
+    if (outlets.error) {
+      console.error('API: Error fetching outlets:', outlets.error)
     }
 
-    // Fetch recent transactions
-    const { data: transactions, error: transactionsError } = await supabase
-      .from('universal_transactions')
-      .select(`
-        *,
-        universal_transaction_lines (*)
-      `)
-      .eq('organization_id', organizationId)
-      .order('created_at', { ascending: false })
-      .limit(10)
-    
-    if (transactionsError) {
-      console.error('API: Error fetching transactions:', transactionsError)
+    if (transactions.error) {
+      console.error('API: Error fetching transactions:', transactions.error)
     }
 
     // Calculate production metrics
-    const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []
+    const productionTxns = transactions.data?.filter(t => t.transaction_type === 'production_batch') || []
     
     // Calculate efficiency from production transactions
     let totalEfficiency = 0
@@ -68,21 +83,21 @@ export async function GET(request: NextRequest) {
     })
     const avgEfficiency = productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
 
-    // Calculate inventory levels (from dynamic data or transaction lines)
-    const inventoryLevels = products?.map(product => ({
+    // Simplified inventory levels (reduce data size)
+    const inventoryLevels = (products.data || []).slice(0, 10).map(product => ({
       id: product.id,
       name: product.entity_name,
       current: Math.floor(Math.random() * 500) + 100, // Placeholder
       minimum: 50,
       status: 'normal'
-    })) || []
+    }))
 
     const dashboardData = {
-      totalProducts: products?.length || 0,
+      totalProducts: products.data?.length || 0,
       activeProduction: productionTxns.length || 0,
-      pendingQC: transactions?.filter(t => t.transaction_type === 'quality_check').length || 0,
-      totalOutlets: outlets?.length || 0,
-      recentTransactions: transactions || [],
+      pendingQC: transactions.data?.filter(t => t.transaction_type === 'quality_check').length || 0,
+      totalOutlets: outlets.data?.length || 0,
+      recentTransactions: (transactions.data || []).slice(0, 5), // Only show 5 recent
       inventoryLevels,
       productionEfficiency: avgEfficiency
     }
@@ -92,6 +107,12 @@ export async function GET(request: NextRequest) {
       outlets: dashboardData.totalOutlets,
       transactions: dashboardData.recentTransactions.length,
       productionTxns: dashboardData.activeProduction
+    })
+
+    // Cache the result
+    cache.set(cacheKey, {
+      data: dashboardData,
+      timestamp: Date.now()
     })
 
     return NextResponse.json(dashboardData)

@@ -77,7 +77,15 @@ export default function IceCreamDashboard() {
     console.log('Fetching dashboard data via API for org:', organizationId)
     
     try {
-      const response = await fetch(`/api/icecream/dashboard?org_id=${organizationId}`)
+      // Add timeout to prevent hanging
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+      
+      const response = await fetch(`/api/icecream/dashboard?org_id=${organizationId}`, {
+        signal: controller.signal
+      })
+      
+      clearTimeout(timeoutId)
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -91,6 +99,9 @@ export default function IceCreamDashboard() {
       setLoading(false)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
+      if (error.name === 'AbortError') {
+        console.error('Request timed out after 10 seconds')
+      }
       setLoading(false)
     }
   }
