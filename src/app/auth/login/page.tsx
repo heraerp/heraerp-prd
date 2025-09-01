@@ -21,36 +21,24 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   
-  // Debug: Log state changes
-  useEffect(() => {
-    console.log('Login form state:', { email, password, isLoading })
-  }, [email, password, isLoading])
 
   const returnTo = searchParams.get('return_to')
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      if (returnTo) {
-        // If there's a return URL, go there
-        window.location.href = returnTo
-      } else if (organizations.length === 0) {
-        // No organizations, create one
-        router.push('/auth/organizations/new')
-      } else if (organizations.length === 1) {
-        // Single organization, go directly
-        const org = organizations[0]
-        if (process.env.NODE_ENV === 'production') {
-          window.location.href = `https://${org.subdomain}.heraerp.com`
-        } else {
-          router.push(`/~${org.subdomain}`)
-        }
+      const redirectUrl = localStorage.getItem('redirectAfterLogin')
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin')
+        router.push(redirectUrl)
+      } else if (returnTo) {
+        router.push(returnTo)
       } else {
-        // Multiple organizations, show selector
-        router.push('/auth/organizations')
+        // Default to apps page after login
+        router.push('/apps')
       }
     }
-  }, [isAuthenticated, organizations, returnTo, router])
+  }, [isAuthenticated, returnTo, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,11 +81,7 @@ function LoginForm() {
                   type="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => {
-                    const newValue = e.target.value
-                    console.log('Email changed to:', newValue)
-                    setEmail(newValue)
-                  }}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -130,7 +114,6 @@ function LoginForm() {
                 type="submit"
                 className="w-full"
                 disabled={isLoading || !email || !password}
-                onClick={() => console.log('Button clicked, disabled state:', isLoading || !email || !password)}
               >
                 {isLoading ? (
                   <>

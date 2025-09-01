@@ -17,14 +17,12 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
 
 const BUSINESS_TYPES = [
-  { value: 'salon', label: 'Salon & Beauty', icon: Heart }
-  // Other business types coming soon!
-  // { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
-  // { value: 'retail', label: 'Retail & E-commerce', icon: Store },
-  // { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
-  // { value: 'professional', label: 'Professional Services', icon: Briefcase },
-  // { value: 'manufacturing', label: 'Manufacturing', icon: Factory },
-  // { value: 'general', label: 'Other / General Business', icon: Building2 }
+  { value: 'salon', label: 'Salon & Beauty', icon: Heart },
+  { value: 'icecream', label: 'Ice Cream Manufacturing', icon: Factory },
+  { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
+  { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
+  { value: 'jewelry', label: 'Jewelry Retail', icon: Sparkles },
+  { value: 'general', label: 'Other / General Business', icon: Building2 }
 ]
 
 export default function CreateOrganizationPage() {
@@ -109,28 +107,32 @@ export default function CreateOrganizationPage() {
         type: formData.organization_type
       }))
       
-      // If it's a salon, trigger automatic setup
-      if (formData.organization_type === 'salon') {
-        // Trigger salon setup in the background
-        fetch('/api/v1/salon/setup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('auth-token') || ''}`
-          },
-          body: JSON.stringify({
-            organizationId: org.id,
-            organizationName: formData.organization_name,
-            subdomain: formData.subdomain,
-            ownerEmail: org.user?.email || ''
-          })
-        }).catch(console.error) // Don't block on setup
-        
-        // For salon, skip app selection and go directly to salon dashboard with subdomain
-        router.push(`/~${formData.subdomain}/salon`)
+      // Redirect to appropriate app based on business type
+      const redirectAfterOrg = localStorage.getItem('redirectAfterOrg')
+      if (redirectAfterOrg) {
+        localStorage.removeItem('redirectAfterOrg')
+        router.push(redirectAfterOrg)
       } else {
-        // For other types, go to app selection
-        router.push(`/auth/organizations/${org.id}/apps`)
+        // Direct to appropriate app based on business type
+        switch (formData.organization_type) {
+          case 'salon':
+            router.push('/salon')
+            break
+          case 'icecream':
+            router.push('/icecream')
+            break
+          case 'restaurant':
+            router.push('/restaurant')
+            break
+          case 'healthcare':
+            router.push('/healthcare')
+            break
+          case 'jewelry':
+            router.push('/jewelry')
+            break
+          default:
+            router.push('/apps')
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create organization')

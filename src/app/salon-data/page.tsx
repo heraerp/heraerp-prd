@@ -1,4 +1,10 @@
 'use client'
+/**
+ * HERA Salon Calendar Demo Page
+ * Smart Code: HERA.SALON.DEMO.PAGE.v1
+ * 
+ * Comprehensive demonstration of salon calendar functionality using Universal HERA calendar DNA
+ */
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -6,8 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { apiClient } from '@/lib/api-client'
+import { SalonCalendar } from '@/components/salon/SalonCalendar'
+import { SalonBookingWorkflow } from '@/components/salon/SalonBookingWorkflow'
 import { 
   Users, 
   Calendar, 
@@ -28,9 +37,14 @@ import {
   Plus,
   Loader2,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Info,
+  Zap,
+  Crown,
+  MapPin
 } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 // Default organization ID for salon
 const DEFAULT_SALON_ORG_ID = '550e8400-e29b-41d4-a716-446655440000'
@@ -50,6 +64,8 @@ export default function SalonDataDashboard() {
   const router = useRouter()
   const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [refreshing, setRefreshing] = useState(false)
+  const [selectedDemo, setSelectedDemo] = useState<'overview' | 'calendar' | 'workflow'>('overview')
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [data, setData] = useState<DashboardData>({
     appointments: 0,
     customers: 0,
@@ -213,15 +229,117 @@ export default function SalonDataDashboard() {
     }
   ]
 
+  // Sample salon services for demo
+  const salonServices = [
+    {
+      id: 'srv-brazilian',
+      name: 'Brazilian Blowout',
+      category: 'Chemical Treatment',
+      duration: '4h 0m',
+      price: 500,
+      popularity: 95,
+      skillLevel: 'Celebrity',
+      icon: <Zap className="w-5 h-5 text-purple-600" />,
+      color: 'bg-purple-100 text-purple-800'
+    },
+    {
+      id: 'srv-bridal',
+      name: 'Complete Bridal Package',
+      category: 'Bridal',
+      duration: '6h 0m',
+      price: 800,
+      popularity: 98,
+      skillLevel: 'Celebrity',
+      icon: <Crown className="w-5 h-5 text-yellow-600" />,
+      color: 'bg-yellow-100 text-yellow-800'
+    },
+    {
+      id: 'srv-keratin',
+      name: 'Keratin Treatment',
+      category: 'Chemical Treatment',
+      duration: '3h 0m',
+      price: 350,
+      popularity: 88,
+      skillLevel: 'Senior',
+      icon: <Zap className="w-5 h-5 text-blue-600" />,
+      color: 'bg-blue-100 text-blue-800'
+    }
+  ]
+
+  const salonTeam = [
+    {
+      id: 'rocky',
+      name: 'Rocky',
+      title: 'Celebrity Hair Artist',
+      level: 'Celebrity',
+      specializations: ['Brazilian Blowout', 'Keratin Treatment', 'Bridal Styling'],
+      rating: 4.9,
+      reviews: 247,
+      hourlyRate: 200,
+      nextAvailable: 'Today 2:30 PM',
+      color: 'bg-purple-100 text-purple-800 border-purple-200',
+      avatar: 'R'
+    },
+    {
+      id: 'vinay',
+      name: 'Vinay',
+      title: 'Senior Hair Stylist',
+      level: 'Senior',
+      specializations: ['Cutting', 'Styling', 'Color'],
+      rating: 4.7,
+      reviews: 156,
+      hourlyRate: 150,
+      nextAvailable: 'Today 4:00 PM',
+      color: 'bg-blue-100 text-blue-800 border-blue-200',
+      avatar: 'V'
+    }
+  ]
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="container mx-auto p-6 space-y-8">
       {/* Header */}
+      <div className="text-center space-y-4">
+        <div className="flex items-center justify-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+            <Scissors className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+              HERA Salon Calendar System
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Universal Calendar DNA Implementation for Beauty & Wellness
+            </p>
+          </div>
+        </div>
+        
+        <Alert className="max-w-4xl mx-auto">
+          <Info className="w-4 h-4" />
+          <AlertDescription className="text-left">
+            <strong>🧬 HERA DNA Universal Calendar Implementation:</strong> This demonstrates how the Universal Calendar DNA 
+            adapts to salon operations using Sacred Six Tables architecture. Same components work for restaurants, 
+            healthcare, manufacturing, and professional services with industry-specific configurations.
+          </AlertDescription>
+        </Alert>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="flex justify-center">
+        <Tabs value={selectedDemo} onValueChange={(value: any) => setSelectedDemo(value)} className="w-full max-w-2xl">
+          <TabsList className="grid grid-cols-3 w-full">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="calendar">Live Calendar</TabsTrigger>
+            <TabsTrigger value="workflow">Booking Flow</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-8">{/* Header with real data */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome to {salonName}
-            </h1>
+            </h2>
             <p className="text-gray-600 text-lg flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-500" />
               Real-time data from Supabase
@@ -239,10 +357,6 @@ export default function SalonDataDashboard() {
             >
               <RefreshCw className={cn("w-4 h-4 mr-2", refreshing && "animate-spin")} />
               Refresh
-            </Button>
-            <Button variant="outline" onClick={() => router.push('/salon/settings')}>
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
             </Button>
           </div>
         </div>
@@ -268,80 +382,247 @@ export default function SalonDataDashboard() {
         ))}
       </div>
 
-      {/* Recent Data */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Appointments */}
-        <Card className="border-2">
+      {/* Services and Team Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Popular Services */}
+        <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Clock className="w-5 h-5 text-purple-600" />
-                Recent Appointments
-              </CardTitle>
-              <Button size="sm" variant="outline" onClick={() => router.push('/salon/appointments')}>
-                View All
-              </Button>
-            </div>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="w-5 h-5 text-yellow-500" />
+              Popular Services
+            </CardTitle>
+            <CardDescription>Our most requested treatments</CardDescription>
           </CardHeader>
-          <CardContent>
-            {data.recentAppointments.length > 0 ? (
-              <div className="space-y-3">
-                {data.recentAppointments.map((apt, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <div>
-                      <p className="font-medium text-gray-900">Appointment #{apt.id.slice(-6)}</p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(apt.transaction_date).toLocaleString()}
-                      </p>
-                    </div>
-                    <Badge variant="default" className="bg-green-100 text-green-700">
-                      {apt.transaction_type}
-                    </Badge>
+          <CardContent className="space-y-4">
+            {salonServices.map((service, index) => (
+              <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                    {service.icon}
                   </div>
-                ))}
+                  <div>
+                    <h4 className="font-medium">{service.name}</h4>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="w-3 h-3" />
+                      {service.duration}
+                      <span>•</span>
+                      <Badge variant="outline" className={service.color}>
+                        {service.skillLevel}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold">AED {service.price}</div>
+                  <div className="text-sm text-gray-500 flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-current text-yellow-500" />
+                    {service.popularity}% popular
+                  </div>
+                </div>
               </div>
-            ) : (
-              <p className="text-gray-500 text-center py-4">No appointments today</p>
-            )}
+            ))}
           </CardContent>
         </Card>
 
-        {/* Services */}
-        <Card className="border-2">
+        {/* Salon Team */}
+        <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-500" />
-                Available Services
-              </CardTitle>
-              <Button size="sm" variant="outline" onClick={() => router.push('/salon/services')}>
-                Manage Services
-              </Button>
-            </div>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-500" />
+              Salon Team
+            </CardTitle>
+            <CardDescription>Our expert stylists and specialists</CardDescription>
           </CardHeader>
-          <CardContent>
-            {data.topServices.length > 0 ? (
-              <div className="space-y-3">
-                {data.topServices.map((service, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-400 to-violet-400 flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{service.entity_name}</p>
-                        <p className="text-sm text-gray-600">{service.entity_code}</p>
-                      </div>
-                    </div>
+          <CardContent className="space-y-4">
+            {salonTeam.map(member => (
+              <div key={member.id} className="flex items-center space-x-3 p-4 border rounded-lg">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">{member.avatar}</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium">{member.name}</h4>
+                    <Badge variant="outline" className={member.color}>
+                      {member.level}
+                    </Badge>
                   </div>
-                ))}
+                  <p className="text-sm text-gray-600">{member.title}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-current text-yellow-500" />
+                      <span className="text-sm">{member.rating}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">({member.reviews} reviews)</span>
+                    <span className="text-xs text-gray-500">•</span>
+                    <span className="text-xs text-gray-500">AED {member.hourlyRate}/hr</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-green-600 font-medium">
+                    {member.nextAvailable}
+                  </div>
+                </div>
               </div>
-            ) : (
-              <p className="text-gray-500 text-center py-4">No services found</p>
-            )}
+            ))}
           </CardContent>
         </Card>
       </div>
+            </TabsContent>
+
+          {/* Live Calendar Tab */}
+          <TabsContent value="calendar" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Live Salon Calendar
+                </CardTitle>
+                <CardDescription>
+                  Full-featured salon calendar with resource scheduling, drag-and-drop, and UAE prayer time integration
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Alert className="mb-6">
+                  <Sparkles className="w-4 h-4" />
+                  <AlertDescription>
+                    <strong>🧬 Universal DNA Features:</strong> Prayer time blocks, VIP client highlighting, 
+                    stylist specialization matching, chemical treatment scheduling, and real-time availability.
+                  </AlertDescription>
+                </Alert>
+                <SalonCalendar className="min-h-[600px]" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Booking Workflow Tab */}
+          <TabsContent value="workflow" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Scissors className="w-5 h-5" />
+                  Intelligent Booking Workflow
+                </CardTitle>
+                <CardDescription>
+                  5-step booking process with service selection, stylist matching, and intelligent scheduling
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Alert>
+                  <Zap className="w-4 h-4" />
+                  <AlertDescription>
+                    <strong>🧠 Smart Features:</strong> Automatic stylist matching based on service requirements, 
+                    VIP client recognition, allergy alerts, and intelligent time slot suggestions.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Workflow Steps</h4>
+                    <div className="space-y-3">
+                      {[
+                        { step: 1, title: 'Service Selection', desc: 'Choose service with add-ons' },
+                        { step: 2, title: 'Stylist Matching', desc: 'AI-powered stylist recommendation' },
+                        { step: 3, title: 'Client Information', desc: 'Existing client or new registration' },
+                        { step: 4, title: 'Time Booking', desc: 'Available slots with conflict detection' },
+                        { step: 5, title: 'Confirmation', desc: 'Review and confirm appointment' }
+                      ].map(item => (
+                        <div key={item.step} className="flex items-center gap-3 p-3 border rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-semibold">
+                            {item.step}
+                          </div>
+                          <div>
+                            <div className="font-medium">{item.title}</div>
+                            <div className="text-sm text-gray-600">{item.desc}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Smart Features</h4>
+                    <div className="space-y-3">
+                      {[
+                        { icon: <Star className="w-4 h-4 text-yellow-500" />, title: 'VIP Recognition', desc: 'Automatic VIP client identification' },
+                        { icon: <AlertCircle className="w-4 h-4 text-red-500" />, title: 'Allergy Alerts', desc: 'Safety warnings for chemical services' },
+                        { icon: <Clock className="w-4 h-4 text-blue-500" />, title: 'Smart Scheduling', desc: 'Optimal time slot suggestions' },
+                        { icon: <Users className="w-4 h-4 text-purple-500" />, title: 'Stylist Matching', desc: 'Skill and preference based matching' },
+                        { icon: <MapPin className="w-4 h-4 text-green-500" />, title: 'Prayer Integration', desc: 'UAE prayer time consideration' }
+                      ].map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            {feature.icon}
+                          </div>
+                          <div>
+                            <div className="font-medium">{feature.title}</div>
+                            <div className="text-sm text-gray-600">{feature.desc}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center pt-6">
+                  <Button onClick={() => setIsBookingOpen(true)} size="lg">
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Try Booking Workflow
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Technical Implementation Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-blue-500" />
+            Technical Implementation
+          </CardTitle>
+          <CardDescription>
+            How HERA's Universal Calendar DNA adapts to salon operations
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-green-600">✅ Sacred Six Tables</h4>
+              <ul className="text-sm space-y-1 text-gray-600">
+                <li>• Appointments → universal_transactions</li>
+                <li>• Stylists → core_entities (staff)</li>
+                <li>• Services → core_entities (service)</li>
+                <li>• Availability → core_dynamic_data</li>
+                <li>• Assignments → core_relationships</li>
+                <li>• Service details → universal_transaction_lines</li>
+              </ul>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-semibold text-purple-600">🧬 Smart Codes</h4>
+              <ul className="text-sm space-y-1 text-gray-600">
+                <li>• HERA.SALON.CALENDAR.APPOINTMENT.*</li>
+                <li>• HERA.SALON.STAFF.CELEBRITY.STYLIST.*</li>
+                <li>• HERA.SALON.SERVICE.CHEMICAL.*</li>
+                <li>• HERA.SALON.CUSTOMER.VIP.*</li>
+                <li>• HERA.SALON.CALENDAR.BLOCK.PRAYER.*</li>
+              </ul>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-semibold text-blue-600">⚡ Features</h4>
+              <ul className="text-sm space-y-1 text-gray-600">
+                <li>• Real-time availability checking</li>
+                <li>• Double-booking prevention</li>
+                <li>• Prayer time integration</li>
+                <li>• VIP client workflows</li>
+                <li>• Chemical service restrictions</li>
+                <li>• Multi-tenant security</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Organization Info */}
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
@@ -349,6 +630,16 @@ export default function SalonDataDashboard() {
           Organization ID: <code className="bg-gray-200 px-2 py-1 rounded">{organizationId}</code>
         </p>
       </div>
+
+      {/* Booking Workflow Dialog */}
+      <SalonBookingWorkflow 
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        onBookingComplete={(booking) => {
+          console.log('Booking completed:', booking)
+          setIsBookingOpen(false)
+        }}
+      />
     </div>
   )
 }

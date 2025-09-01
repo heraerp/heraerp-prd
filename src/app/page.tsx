@@ -30,11 +30,11 @@ export default function HomePage() {
               <span className="text-xl font-light">HERA</span>
             </div>
             <div className="flex items-center gap-6">
-              <Link href="/dashboard-progressive" className="text-gray-600 hover:text-black transition-colors">
+              <Link href="/apps" className="text-gray-600 hover:text-black transition-colors">
                 Explore Apps
               </Link>
               <Button asChild className="bg-black hover:bg-gray-800 text-white hover:text-white rounded-full px-6">
-                <Link href="/get-started">
+                <Link href="/auth/login">
                   Get Started
                 </Link>
               </Button>
@@ -75,7 +75,7 @@ export default function HomePage() {
                   className="w-full sm:w-auto bg-gradient-to-r from-black to-gray-900 hover:from-gray-900 hover:to-black text-white hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
                   asChild
                 >
-                  <Link href="/get-started">
+                  <Link href="/auth/signup">
                     Start Your 2-Week Challenge
                   </Link>
                 </Button>
@@ -85,7 +85,7 @@ export default function HomePage() {
                   className="w-full sm:w-auto border-2 border-black text-black hover:bg-black hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light hover:shadow-lg transition-all duration-200"
                   asChild
                 >
-                  <Link href="/dashboard-progressive">
+                  <Link href="/apps">
                     Explore Live Demos
                   </Link>
                 </Button>
@@ -215,7 +215,7 @@ export default function HomePage() {
             </a>
 
             <a 
-              href="/financial-progressive" 
+              href="/financial" 
               className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -367,7 +367,7 @@ export default function HomePage() {
                 className="bg-gradient-to-r from-white to-gray-50 text-black hover:from-gray-50 hover:to-white text-lg px-16 py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
-                <Link href="/get-started">
+                <Link href="/auth/signup">
                   Accept the Challenge
                 </Link>
               </Button>
@@ -377,8 +377,8 @@ export default function HomePage() {
                 className="border-white text-white hover:bg-white hover:text-black text-lg px-16 py-6 rounded-full font-light"
                 asChild
               >
-                <Link href="/custom-request">
-                  Request Prototype
+                <Link href="/apps">
+                  View Demo Apps
                 </Link>
               </Button>
             </div>

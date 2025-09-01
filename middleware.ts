@@ -94,10 +94,10 @@ export function middleware(request: NextRequest) {
     })
   }
   
-  // Handle demo subdomain (progressive apps)
+  // Handle demo subdomain (redirect to apps)
   if (subdomain === 'demo') {
     const url = request.nextUrl.clone()
-    url.pathname = `/dashboard-progressive${request.nextUrl.pathname}`
+    url.pathname = `/apps${request.nextUrl.pathname}`
     return NextResponse.rewrite(url, {
       headers: requestHeaders
     })

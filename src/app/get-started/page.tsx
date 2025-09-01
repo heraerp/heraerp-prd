@@ -9,15 +9,15 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
-  Loader2, LogIn, UserPlus, AlertCircle, Rocket, Zap, 
-  ArrowRight, CheckCircle, Building2, Mail, Lock 
+  Loader2, LogIn, UserPlus, AlertCircle, Rocket,
+  CheckCircle, Building2, Shield, Zap, Globe
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import Link from 'next/link'
 
 export default function GetStartedPage() {
   const router = useRouter()
   const { login, register, isAuthenticated } = useMultiOrgAuth()
-  const [activeTab, setActiveTab] = useState<'trial' | 'production'>('trial')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
@@ -30,15 +30,13 @@ export default function GetStartedPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    businessName: '',
-    ownerName: '',
-    businessType: 'salon' // Default to salon since it's the only option available
+    fullName: ''
   })
 
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      router.push('/auth')
+      router.push('/auth/organizations')
     }
   }, [isAuthenticated, router])
 
@@ -49,7 +47,9 @@ export default function GetStartedPage() {
 
     try {
       await login(loginEmail, loginPassword)
-      router.push('/auth')
+      const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/auth/organizations'
+      localStorage.removeItem('redirectAfterLogin')
+      router.push(redirectUrl)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
     } finally {
@@ -76,14 +76,11 @@ export default function GetStartedPage() {
     setIsLoading(true)
 
     try {
-      // Register user with Supabase and create organization
       await register(registerData.email, registerData.password, {
-        business_name: registerData.businessName,
-        owner_name: registerData.ownerName,
-        business_type: registerData.businessType
+        full_name: registerData.fullName
       })
-
-      // The register function in auth context handles organization creation
+      
+      // After registration, redirect to organization creation
       router.push('/auth/organizations/new')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create account')
@@ -93,128 +90,135 @@ export default function GetStartedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header */}
       <header className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-100/50">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <span className="text-sm font-bold text-white">H</span>
               </div>
               <span className="text-xl font-light">HERA</span>
-            </div>
+            </Link>
+            <Link href="/apps" className="text-gray-600 hover:text-black transition-colors">
+              View All Apps
+            </Link>
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">Get Started with HERA</h1>
-            <p className="text-xl text-gray-700">
-              Choose your path to enterprise-grade ERP success
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <h1 className="text-5xl font-light text-gray-900 mb-6">
+              Start Your HERA Journey
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses 
+              already transforming their operations with HERA.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Progressive Trial Card */}
-            <Card className={`cursor-pointer transition-all duration-300 ${
-              activeTab === 'trial' ? 'ring-2 ring-blue-500 shadow-xl' : 'hover:shadow-lg'
-            }`} onClick={() => setActiveTab('trial')}>
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-2xl">Progressive Trial</CardTitle>
-                <CardDescription>
-                  Try HERA instantly with 30-day progressive apps
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">No signup required</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Instant access to all features</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Works offline with local storage</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Convert to production anytime</span>
-                  </li>
-                </ul>
-                <Button 
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                  onClick={() => router.push('/dashboard-progressive')}
-                >
-                  Start Free Trial
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
 
-            {/* Production Setup Card */}
-            <Card className={`cursor-pointer transition-all duration-300 ${
-              activeTab === 'production' ? 'ring-2 ring-blue-500 shadow-xl' : 'hover:shadow-lg'
-            }`} onClick={() => setActiveTab('production')}>
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                  <Rocket className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-2xl">Production Salon Setup</CardTitle>
-                <CardDescription>
-                  Full salon & beauty business with authentication
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Multi-user with role-based access</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Cloud database with backups</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">API access for integrations</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Custom subdomain available</span>
-                  </li>
-                </ul>
-                <div className="text-sm text-gray-600 italic">
-                  Sign in or create account below
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left Column - Benefits */}
+            <div className="space-y-8">
+              {/* Value Props */}
+              <Card className="border-2 border-gray-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <Rocket className="w-6 h-6 text-blue-600" />
+                    Why Choose HERA?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-gray-900">2-Week Implementation Guarantee</p>
+                        <p className="text-sm text-gray-600">Live in 14 days or your implementation is free</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-gray-900">70% Cost Savings</p>
+                        <p className="text-sm text-gray-600">Enterprise features at small business prices</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-gray-900">Industry-Specific Solutions</p>
+                        <p className="text-sm text-gray-600">Pre-configured for salon, restaurant, healthcare & more</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-gray-900">AI-Powered Automation</p>
+                        <p className="text-sm text-gray-600">85% journal automation, smart insights, and more</p>
+                      </div>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
 
-          {/* Authentication Forms for Production */}
-          {activeTab === 'production' && (
-            <Card className="mt-8 max-w-lg mx-auto">
+              {/* Security & Trust */}
+              <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Shield className="w-6 h-6 text-blue-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">Enterprise Security</h3>
+                  </div>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                      Perfect multi-tenant isolation
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                      SOC2 compliant infrastructure
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                      Daily automated backups
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                      99.9% uptime guarantee
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Demo Credentials */}
+              <Alert className="border-amber-200 bg-amber-50">
+                <Zap className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-gray-700">
+                  <strong>Quick Demo:</strong> Use mario@restaurant.com / securepass123 to explore a fully configured restaurant
+                </AlertDescription>
+              </Alert>
+            </div>
+
+            {/* Right Column - Auth Form */}
+            <Card className="shadow-xl border-2 border-gray-100">
               <CardHeader>
-                <CardTitle>Production Account</CardTitle>
+                <CardTitle className="text-2xl">Create Your Account</CardTitle>
                 <CardDescription>
-                  Sign in or create a new account to set up your HERA instance
+                  Start your free trial and get your business running in minutes
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Tabs defaultValue="login" className="w-full">
+                <Tabs defaultValue="register" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="login">Sign In</TabsTrigger>
-                    <TabsTrigger value="register">Create Account</TabsTrigger>
+                    <TabsTrigger value="register">Sign Up</TabsTrigger>
                   </TabsList>
                   
+                  {/* Login Form */}
                   <TabsContent value="login">
                     <form onSubmit={handleLogin} className="space-y-4">
                       {error && (
@@ -253,6 +257,7 @@ export default function GetStartedPage() {
                       <Button
                         type="submit"
                         className="w-full"
+                        size="lg"
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -267,13 +272,10 @@ export default function GetStartedPage() {
                           </>
                         )}
                       </Button>
-                      
-                      <div className="text-center text-sm text-gray-600">
-                        Demo: mario@restaurant.com / securepass123
-                      </div>
                     </form>
                   </TabsContent>
                   
+                  {/* Register Form */}
                   <TabsContent value="register">
                     <form onSubmit={handleRegister} className="space-y-4">
                       {error && (
@@ -284,29 +286,13 @@ export default function GetStartedPage() {
                       )}
                       
                       <div className="space-y-2">
-                        <Label htmlFor="business-name">Salon Business Name</Label>
+                        <Label htmlFor="full-name">Full Name</Label>
                         <Input
-                          id="business-name"
-                          type="text"
-                          placeholder="Your Salon Name"
-                          value={registerData.businessName}
-                          onChange={(e) => setRegisterData({...registerData, businessName: e.target.value})}
-                          required
-                          disabled={isLoading}
-                        />
-                        <p className="text-xs text-gray-500">
-                          This will create a salon & beauty business
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="owner-name">Owner Name</Label>
-                        <Input
-                          id="owner-name"
+                          id="full-name"
                           type="text"
                           placeholder="John Doe"
-                          value={registerData.ownerName}
-                          onChange={(e) => setRegisterData({...registerData, ownerName: e.target.value})}
+                          value={registerData.fullName}
+                          onChange={(e) => setRegisterData({...registerData, fullName: e.target.value})}
                           required
                           disabled={isLoading}
                         />
@@ -354,6 +340,7 @@ export default function GetStartedPage() {
                       <Button
                         type="submit"
                         className="w-full"
+                        size="lg"
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -364,45 +351,79 @@ export default function GetStartedPage() {
                         ) : (
                           <>
                             <UserPlus className="mr-2 h-4 w-4" />
-                            Create Account
+                            Create Free Account
                           </>
                         )}
                       </Button>
                       
-                      <p className="text-xs text-gray-600 text-center">
-                        By creating an account, you'll get a complete salon & beauty business setup with all features pre-configured
+                      <p className="text-xs text-gray-600 text-center mt-4">
+                        By signing up, you agree to our Terms of Service and Privacy Policy
                       </p>
                     </form>
                   </TabsContent>
                 </Tabs>
               </CardContent>
             </Card>
-          )}
+          </div>
 
-          {/* Why HERA Section */}
-          <div className="mt-16 bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-semibold mb-4">Why HERA?</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span>Universal 6-table architecture handles any business complexity</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span>30-second setup vs 18-month traditional ERP implementations</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span>90% cost savings with 92% proven success rate</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span>AI-native architecture with multi-provider intelligence</span>
-              </li>
-            </ul>
+          {/* Available Industries */}
+          <div className="mt-20">
+            <h2 className="text-2xl font-light text-center text-gray-900 mb-8">
+              Available Industry Solutions
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">✂️</span>
+                </div>
+                <p className="text-sm font-medium">Salon & Spa</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">🍽️</span>
+                </div>
+                <p className="text-sm font-medium">Restaurant</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">🍦</span>
+                </div>
+                <p className="text-sm font-medium">Ice Cream</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">🏥</span>
+                </div>
+                <p className="text-sm font-medium">Healthcare</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">💎</span>
+                </div>
+                <p className="text-sm font-medium">Jewelry</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">🛍️</span>
+                </div>
+                <p className="text-sm font-medium">Retail</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <span className="text-2xl">🏭</span>
+                </div>
+                <p className="text-sm font-medium">Manufacturing</p>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+                <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <Globe className="w-6 h-6 text-emerald-600" />
+                </div>
+                <p className="text-sm font-medium">Any Business</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
