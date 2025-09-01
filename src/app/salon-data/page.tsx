@@ -146,10 +146,10 @@ export default function SalonModernDashboard() {
   // Loading state
   if (contextLoading || data.loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 animate-pulse" />
+            <div className="w-20 h-20 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 animate-pulse shadow-lg" />
             <Scissors className="w-10 h-10 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
           </div>
           <p className="text-gray-600 dark:text-gray-400 mt-4 font-medium">Loading your salon...</p>
@@ -164,36 +164,36 @@ export default function SalonModernDashboard() {
       value: data.appointments.toString(),
       subtitle: 'appointments',
       icon: CalendarCheck,
-      gradient: 'from-pink-400 to-rose-600',
-      bgGradient: 'from-pink-50 to-rose-50',
-      darkBgGradient: 'dark:from-pink-900/20 dark:to-rose-900/20'
+      gradient: 'from-pink-500 to-rose-600',
+      bgGradient: 'from-white to-pink-50/50',
+      darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
       title: 'Active Clients',
       value: data.customers.toString(),
       subtitle: 'total clients',
       icon: UserCheck,
-      gradient: 'from-purple-400 to-indigo-600',
-      bgGradient: 'from-purple-50 to-indigo-50',
-      darkBgGradient: 'dark:from-purple-900/20 dark:to-indigo-900/20'
+      gradient: 'from-purple-500 to-indigo-600',
+      bgGradient: 'from-white to-purple-50/50',
+      darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
       title: 'Today\'s Revenue',
       value: `${data.todayRevenue.toFixed(0)}`,
       subtitle: 'AED',
       icon: TrendingUp,
-      gradient: 'from-emerald-400 to-teal-600',
-      bgGradient: 'from-emerald-50 to-teal-50',
-      darkBgGradient: 'dark:from-emerald-900/20 dark:to-teal-900/20'
+      gradient: 'from-emerald-500 to-teal-600',
+      bgGradient: 'from-white to-emerald-50/50',
+      darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
       title: 'Products',
       value: data.products.toString(),
       subtitle: 'in stock',
       icon: Package,
-      gradient: 'from-amber-400 to-orange-600',
-      bgGradient: 'from-amber-50 to-orange-50',
-      darkBgGradient: 'dark:from-amber-900/20 dark:to-orange-900/20'
+      gradient: 'from-amber-500 to-orange-600',
+      bgGradient: 'from-white to-amber-50/50',
+      darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     }
   ]
 
@@ -305,21 +305,21 @@ export default function SalonModernDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-pink-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-pink-100 dark:border-purple-800/30">
+      <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-md">
                 <Scissors className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   Luxury Salon
                 </h1>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Dubai Marina</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Dubai Marina</p>
               </div>
             </div>
 
@@ -332,8 +332,8 @@ export default function SalonModernDashboard() {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
                     selectedTab === item.id
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-pink-100 dark:hover:bg-purple-900/30"
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   )}
                 >
                   {item.icon}
@@ -345,7 +345,7 @@ export default function SalonModernDashboard() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-pink-100 dark:hover:bg-purple-900/30"
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -354,7 +354,7 @@ export default function SalonModernDashboard() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-pink-100 dark:border-purple-800/30 bg-white dark:bg-gray-900">
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <nav className="px-4 py-2 space-y-1">
               {navigationItems.map(item => (
                 <button
@@ -367,7 +367,7 @@ export default function SalonModernDashboard() {
                     "w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all",
                     selectedTab === item.id
                       ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-pink-100 dark:hover:bg-purple-900/30"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   )}
                 >
                   {item.icon}
@@ -386,15 +386,20 @@ export default function SalonModernDashboard() {
           <div className="space-y-6 animate-fadeIn">
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
                 <Plus className="w-4 h-4 mr-2" />
                 New Booking
               </Button>
-              <Button variant="outline" className="border-pink-300 hover:bg-pink-50 dark:hover:bg-purple-900/30">
+              <Button variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
                 <Phone className="w-4 h-4 mr-2" />
                 Call Client
               </Button>
-              <Button variant="outline" className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/30">
+              <Button 
+                variant="outline" 
+                onClick={fetchDashboardData}
+                disabled={refreshing}
+                className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
                 <RefreshCw className={cn("w-4 h-4 mr-2", refreshing && "animate-spin")} />
                 Refresh
               </Button>
@@ -406,10 +411,10 @@ export default function SalonModernDashboard() {
                 <div
                   key={index}
                   className={cn(
-                    "relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br",
+                    "relative overflow-hidden rounded-xl p-6 bg-gradient-to-br",
                     stat.bgGradient,
                     stat.darkBgGradient,
-                    "backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all cursor-pointer"
+                    "border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer"
                   )}
                 >
                   <div className={cn(
@@ -439,7 +444,7 @@ export default function SalonModernDashboard() {
             </div>
 
             {/* Recent Activity */}
-            <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+            <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="w-5 h-5 text-pink-500" />
@@ -449,7 +454,7 @@ export default function SalonModernDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {data.recentAppointments.slice(0, 3).map((apt, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20">
+                    <div key={idx} className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
                           <span className="text-white font-semibold">
@@ -477,7 +482,7 @@ export default function SalonModernDashboard() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20">
+              <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-yellow-500" />
@@ -502,7 +507,7 @@ export default function SalonModernDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-purple-100 dark:border-purple-800/30 shadow-xl bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+              <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Crown className="w-5 h-5 text-purple-500" />
@@ -517,7 +522,7 @@ export default function SalonModernDashboard() {
                     <div>
                       <p className="text-lg font-semibold">Brazilian Blowout</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">4 hours • AED 500</p>
-                      <Badge className="mt-1 bg-purple-100 text-purple-700 dark:bg-purple-900/50">
+                      <Badge className="mt-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200 border border-purple-200 dark:border-purple-700">
                         Booked 15 times this week
                       </Badge>
                     </div>
@@ -531,7 +536,7 @@ export default function SalonModernDashboard() {
         {/* Calendar Tab */}
         {selectedTab === 'calendar' && (
           <div className="animate-fadeIn">
-            <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+            <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-purple-500" />
@@ -564,7 +569,7 @@ export default function SalonModernDashboard() {
               {services.map((service, index) => (
                 <Card
                   key={index}
-                  className="border-pink-100 dark:border-purple-800/30 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer overflow-hidden group"
+                  className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer overflow-hidden group"
                 >
                   <div className={cn(
                     "h-2 bg-gradient-to-r",
@@ -579,7 +584,7 @@ export default function SalonModernDashboard() {
                         <div className="text-white">{service.icon}</div>
                       </div>
                       {service.popular && (
-                        <Badge className="bg-pink-100 text-pink-700 dark:bg-pink-900/50">
+                        <Badge className="bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-200 border border-pink-200 dark:border-pink-700">
                           Popular
                         </Badge>
                       )}
@@ -622,7 +627,7 @@ export default function SalonModernDashboard() {
               {team.map((member, index) => (
                 <Card
                   key={index}
-                  className="border-pink-100 dark:border-purple-800/30 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer overflow-hidden"
+                  className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer overflow-hidden"
                 >
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
@@ -640,7 +645,9 @@ export default function SalonModernDashboard() {
                           </div>
                           <Badge
                             variant={member.available ? "default" : "secondary"}
-                            className={member.available ? "bg-green-100 text-green-700 dark:bg-green-900/50" : ""}
+                            className={member.available 
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200 border border-green-200 dark:border-green-700" 
+                              : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"}
                           >
                             {member.available ? "Available" : "Busy"}
                           </Badge>
@@ -667,7 +674,7 @@ export default function SalonModernDashboard() {
                             <Badge
                               key={idx}
                               variant="outline"
-                              className="mr-2 mb-1 text-xs border-pink-300 text-pink-700 dark:border-purple-600 dark:text-purple-300"
+                              className="mr-2 mb-1 text-xs border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
                             >
                               {specialty}
                             </Badge>
@@ -689,7 +696,7 @@ export default function SalonModernDashboard() {
       </button>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-pink-100 dark:border-purple-800/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+      <footer className="mt-12 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
