@@ -262,7 +262,8 @@ export default function POSTerminalPage() {
               ))}
             </select>
             <div className="flex items-center space-x-2">
-              <Button
+              {/* TODO: Re-enable once React 18 onboarding is ready */}
+              {/* <Button
                 onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.POS.v1')}
                 variant="outline"
                 size="sm"
@@ -271,7 +272,7 @@ export default function POSTerminalPage() {
               >
                 <HelpCircle className="h-4 w-4" />
                 {isActive ? 'Tour Running...' : 'Help'}
-              </Button>
+              </Button> */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input

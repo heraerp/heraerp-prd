@@ -167,7 +167,8 @@ export default function ProductionPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
+          {/* TODO: Re-enable once React 18 onboarding is ready */}
+          {/* <Button
             onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.PRODUCTION.v1')}
             variant="outline"
             size="sm"
@@ -176,7 +177,7 @@ export default function ProductionPage() {
           >
             <HelpCircle className="h-4 w-4" />
             {isActive ? 'Tour Running...' : 'Help'}
-          </Button>
+          </Button> */}
           <Button 
             className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
             data-testid="create-batch-button"

@@ -143,7 +143,8 @@ export default function QualityControlPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
+          {/* TODO: Re-enable once React 18 onboarding is ready */}
+          {/* <Button
             onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.QUALITY.v1')}
             variant="outline"
             size="sm"
@@ -152,7 +153,7 @@ export default function QualityControlPage() {
           >
             <HelpCircle className="h-4 w-4" />
             {isActive ? 'Tour Running...' : 'Help'}
-          </Button>
+          </Button> */}
           <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white" data-testid="generate-report-button">
             <FileText className="w-4 h-4 mr-2" />
             Generate Report
