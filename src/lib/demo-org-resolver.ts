@@ -4,12 +4,8 @@
  * Uses HERA universal architecture - no custom tables
  */
 
-import { createClient } from '@supabase/supabase-js'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Import the shared Supabase client instead of creating a new one
+import { supabase } from './supabase'
 
 // HERA System Organization ID
 const SYSTEM_ORG_ID = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'

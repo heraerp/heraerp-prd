@@ -69,24 +69,34 @@ export default function IceCreamDashboard() {
   async function fetchDashboardData() {
     if (!organizationId) return
     
+    console.log('Fetching dashboard data for org:', organizationId)
+    
     try {
       // Fetch products
-      const { data: products } = await supabaseClient
+      const { data: products, error: productsError } = await supabaseClient
         .from('core_entities')
         .select('*')
         .eq('organization_id', organizationId)
         .eq('entity_type', 'product')
+      
+      if (productsError) {
+        console.error('Error fetching products:', productsError)
+      }
 
       // Fetch outlets
-      const { data: outlets } = await supabaseClient
+      const { data: outlets, error: outletsError } = await supabaseClient
         .from('core_entities')
         .select('*')
         .eq('organization_id', organizationId)
         .eq('entity_type', 'location')
         .like('entity_code', 'OUTLET%')
+      
+      if (outletsError) {
+        console.error('Error fetching outlets:', outletsError)
+      }
 
       // Fetch recent transactions
-      const { data: transactions } = await supabaseClient
+      const { data: transactions, error: transactionsError } = await supabaseClient
         .from('universal_transactions')
         .select(`
           *,
@@ -95,6 +105,10 @@ export default function IceCreamDashboard() {
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false })
         .limit(10)
+      
+      if (transactionsError) {
+        console.error('Error fetching transactions:', transactionsError)
+      }
 
       // Calculate production metrics
       const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []
