@@ -63,7 +63,10 @@ export default function IceCreamDashboard() {
 
   useEffect(() => {
     if (organizationId && !orgLoading) {
+      console.log('Organization ready, fetching data for:', organizationId)
       fetchDashboardData()
+    } else {
+      console.log('Waiting for organization:', { organizationId, orgLoading })
     }
   }, [organizationId, orgLoading])
 
@@ -124,13 +127,21 @@ export default function IceCreamDashboard() {
       })
       const avgEfficiency = productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
 
-      // Debug logging
-      console.log('Dashboard data:', {
-        products: products?.length,
-        outlets: outlets?.length,
-        transactions: transactions?.length,
+      // Enhanced debug logging
+      console.log('Dashboard data summary:', {
+        products: products?.length || 0,
+        outlets: outlets?.length || 0,
+        transactions: transactions?.length || 0,
         productionTxns: productionTxns.length
       })
+      
+      // Log sample data if available
+      if (products && products.length > 0) {
+        console.log('Sample product:', products[0])
+      }
+      if (transactions && transactions.length > 0) {
+        console.log('Sample transaction:', transactions[0])
+      }
 
       setData({
         totalProducts: products?.length || 0,
@@ -331,7 +342,12 @@ export default function IceCreamDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {data.recentTransactions.slice(0, 5).map((txn) => (
+            {data.recentTransactions.length === 0 ? (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+                No recent transactions
+              </p>
+            ) : (
+              data.recentTransactions.slice(0, 5).map((txn) => (
               <div key={txn.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center space-x-4">
                   {getTransactionIcon(txn.transaction_type)}
@@ -351,7 +367,7 @@ export default function IceCreamDashboard() {
                   </p>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </CardContent>
       </Card>
