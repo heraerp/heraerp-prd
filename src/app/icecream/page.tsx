@@ -18,7 +18,8 @@ import {
   CheckCircle,
   Clock,
   TruckIcon,
-  HelpCircle
+  HelpCircle,
+  RefreshCw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -273,17 +274,31 @@ export default function IceCreamDashboard() {
             </div>
           </div>
           
-          {/* Help Button - TODO: Re-enable once React 18 onboarding is ready */}
-          {/* <Button
-            onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1')}
-            variant="outline"
-            size="sm"
-            disabled={isActive}
-            className="flex items-center gap-2"
-          >
-            <HelpCircle className="h-4 w-4" />
-            {isActive ? 'Tour Running...' : 'Start Tour'}
-          </Button> */}
+          <div className="flex items-center gap-2">
+            {/* Refresh Button */}
+            <Button
+              onClick={() => window.location.href = '/refresh'}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              title="Force refresh to get latest version"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+            
+            {/* Help Button - TODO: Re-enable once React 18 onboarding is ready */}
+            {/* <Button
+              onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1')}
+              variant="outline"
+              size="sm"
+              disabled={isActive}
+              className="flex items-center gap-2"
+            >
+              <HelpCircle className="h-4 w-4" />
+              {isActive ? 'Tour Running...' : 'Start Tour'}
+            </Button> */}
+          </div>
         </div>
       </div>
 
