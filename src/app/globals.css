@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* FullCalendar styles */
+@import '@/styles/fullcalendar.css';
+
 
 /* Enhanced animations for enterprise-grade UI */
 @keyframes shimmer {

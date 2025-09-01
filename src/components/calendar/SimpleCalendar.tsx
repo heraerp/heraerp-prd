@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { EventInput } from '@fullcalendar/core'
+import '@/styles/fullcalendar.css'
 
 interface SimpleCalendarProps {
   events?: EventInput[]

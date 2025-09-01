@@ -1,0 +1,122 @@
+/* FullCalendar v6 styles */
+.fc {
+  /* fc is the main class */
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.fc .fc-toolbar {
+  justify-content: space-between;
+  margin-bottom: 1.5em;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.fc .fc-button-primary {
+  background-color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: #c4b5fd;
+  border-color: #c4b5fd;
+}
+
+.fc .fc-button-active {
+  background-color: #7c3aed !important;
+  border-color: #7c3aed !important;
+}
+
+.fc .fc-daygrid-day-number {
+  padding: 4px;
+}
+
+.fc .fc-col-header-cell-cushion {
+  padding: 4px;
+  font-weight: 600;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  padding: 4px;
+}
+
+/* Event styles */
+.fc-event {
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.fc-event-title {
+  font-weight: 500;
+}
+
+/* Today highlight */
+.fc .fc-day-today {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Dark mode support */
+.dark .fc {
+  color: #e5e7eb;
+}
+
+.dark .fc-theme-standard td,
+.dark .fc-theme-standard th {
+  border-color: #374151;
+}
+
+.dark .fc-theme-standard .fc-scrollgrid {
+  border-color: #374151;
+}
+
+.dark .fc .fc-button-primary {
+  background-color: #8b5cf6;
+  border-color: #8b5cf6;
+  color: white;
+}
+
+.dark .fc .fc-button-primary:hover {
+  background-color: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.dark .fc .fc-day-today {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+.dark .fc-event {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+/* Grid lines */
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #e5e7eb;
+}
+
+.dark .fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #374151;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    margin: 0.25em 0;
+  }
+}
