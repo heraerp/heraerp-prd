@@ -98,7 +98,7 @@ interface SalonCalendarProps {
 }
 
 export function SalonCalendar({ className }: SalonCalendarProps) {
-  const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization } = useMultiOrgAuth()
   const [events, setEvents] = useState<SalonAppointment[]>([])
   const [resources, setResources] = useState<CalendarResource[]>([])
   const [services, setServices] = useState<SalonService[]>([])
@@ -137,8 +137,6 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
 
   // Load salon data
   useEffect(() => {
-    if (!isAuthenticated || !currentOrganization) return
-
     const loadSalonData = async () => {
       setLoading(true)
       try {
@@ -157,7 +155,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
     }
 
     loadSalonData()
-  }, [isAuthenticated, currentOrganization])
+  }, [])
 
   const loadSampleSalonData = async () => {
     // Sample salon services
@@ -287,7 +285,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       extendedProps: {
         entity_id: stylist.id,
         smart_code: stylist.smartCode,
-        organization_id: currentOrganization?.id || '',
+        organization_id: currentOrganization?.id || 'demo-salon',
         resource_type: 'staff' as const,
         capacity: 1,
         skills: stylist.specializations,
@@ -318,7 +316,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         extendedProps: {
           entity_id: 'apt-001',
           smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.CHEMICAL.v1',
-          organization_id: currentOrganization?.id || '',
+          organization_id: currentOrganization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,
           customer_id: 'client-sarah-001',
@@ -348,7 +346,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         extendedProps: {
           entity_id: 'apt-002',
           smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.v1',
-          organization_id: currentOrganization?.id || '',
+          organization_id: currentOrganization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,
           customer_id: 'client-emma-001',
@@ -456,17 +454,6 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
     )
   }
 
-  if (!isAuthenticated || !currentOrganization) {
-    return (
-      <Card className="p-6">
-        <div className="text-center">
-          <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Authentication Required</h3>
-          <p className="text-gray-600 dark:text-gray-400">Please log in to access the salon calendar.</p>
-        </div>
-      </Card>
-    )
-  }
 
   return (
     <div className={cn("space-y-6", className)}>
