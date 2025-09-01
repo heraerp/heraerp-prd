@@ -5,6 +5,22 @@
 /* FullCalendar styles */
 @import '@/styles/fullcalendar.css';
 
+/* Salon-specific animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
 
 /* Enhanced animations for enterprise-grade UI */
 @keyframes shimmer {

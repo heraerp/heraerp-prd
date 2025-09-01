@@ -16,13 +16,15 @@
 }
 
 .fc .fc-button-primary {
-  background-color: #8b5cf6;
-  border-color: #8b5cf6;
+  background: linear-gradient(to right, #ec4899, #a855f7);
+  border: none;
+  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
 }
 
 .fc .fc-button-primary:hover {
-  background-color: #7c3aed;
-  border-color: #7c3aed;
+  background: linear-gradient(to right, #db2777, #9333ea);
+  box-shadow: 0 4px 8px rgba(236, 72, 153, 0.4);
+  transform: translateY(-1px);
 }
 
 .fc .fc-button-primary:disabled {
@@ -62,7 +64,7 @@
 
 /* Today highlight */
 .fc .fc-day-today {
-  background-color: rgba(139, 92, 246, 0.1) !important;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1)) !important;
 }
 
 /* Dark mode support */
@@ -95,8 +97,9 @@
 }
 
 .dark .fc-event {
-  background-color: #8b5cf6;
+  background: linear-gradient(to right, #ec4899, #a855f7);
   color: white;
+  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
 }
 
 /* Grid lines */

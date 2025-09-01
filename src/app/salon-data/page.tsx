@@ -1,13 +1,12 @@
 'use client'
 /**
- * HERA Salon Calendar Demo Page
- * Smart Code: HERA.SALON.DEMO.PAGE.v1
+ * HERA Salon Modern Full-Screen Dashboard
+ * Smart Code: HERA.SALON.MODERN.DASHBOARD.v1
  * 
- * Comprehensive demonstration of salon calendar functionality using Universal HERA calendar DNA
+ * Full-screen mobile-friendly modern salon interface
  */
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,25 +24,25 @@ import {
   Clock,
   Scissors,
   Package,
-  CreditCard,
-  BarChart,
-  Settings,
-  Heart,
   Sparkles,
   CalendarCheck,
   UserCheck,
-  PackageCheck,
   TrendingUp,
   Plus,
   Loader2,
   RefreshCw,
-  AlertCircle,
-  Info,
-  Zap,
+  Heart,
   Crown,
-  MapPin
+  Palette,
+  Gem,
+  Zap,
+  Instagram,
+  Phone,
+  MapPin,
+  ChevronRight,
+  Menu,
+  X
 } from 'lucide-react'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 // Default organization ID for salon
@@ -60,12 +59,11 @@ interface DashboardData {
   error: string | null
 }
 
-export default function SalonDataDashboard() {
-  const router = useRouter()
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+export default function SalonModernDashboard() {
+  const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [refreshing, setRefreshing] = useState(false)
-  const [selectedDemo, setSelectedDemo] = useState<'overview' | 'calendar' | 'workflow'>('overview')
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [selectedTab, setSelectedTab] = useState<'dashboard' | 'calendar' | 'services' | 'team'>('dashboard')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [data, setData] = useState<DashboardData>({
     appointments: 0,
     customers: 0,
@@ -92,11 +90,9 @@ export default function SalonDataDashboard() {
       return
     }
 
-    console.log('Fetching salon data for organization:', organizationId)
     setRefreshing(true)
 
     try {
-      // Fetch all data using the new API client
       const [customers, products, appointments, sales] = await Promise.all([
         apiClient.getEntities(organizationId, 'customer'),
         apiClient.getEntities(organizationId, 'product'),
@@ -104,14 +100,6 @@ export default function SalonDataDashboard() {
         apiClient.getTransactions(organizationId, 'sale', 50)
       ])
 
-      console.log('Fetched data:', {
-        customers: customers.length,
-        products: products.length,
-        appointments: appointments.length,
-        sales: sales.length
-      })
-
-      // Filter today's data (API doesn't support date filtering yet)
       const today = new Date()
       today.setHours(0, 0, 0, 0)
       
@@ -125,10 +113,8 @@ export default function SalonDataDashboard() {
         return saleDate >= today
       })
 
-      // Calculate today's revenue
       const todayRevenue = todaySales.reduce((sum, sale) => sum + (sale.total_amount || 0), 0)
 
-      // Filter services from products (simple filter for now)
       const services = products.filter(p => 
         p.entity_name.toLowerCase().includes('service') || 
         p.entity_type === 'service'
@@ -143,13 +129,6 @@ export default function SalonDataDashboard() {
         topServices: services.slice(0, 3),
         loading: false,
         error: null
-      })
-
-      console.log('Dashboard data fetched:', {
-        customers: customers.length,
-        appointments: todayAppointments.length,
-        products: products.length,
-        revenue: todayRevenue
       })
 
     } catch (error) {
@@ -167,479 +146,568 @@ export default function SalonDataDashboard() {
   // Loading state
   if (contextLoading || data.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-purple-600" />
-          <p className="text-gray-600">Loading salon dashboard...</p>
+          <div className="relative">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 animate-pulse" />
+            <Scissors className="w-10 h-10 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 mt-4 font-medium">Loading your salon...</p>
         </div>
       </div>
     )
   }
-
-  // Error state
-  if (data.error) {
-    return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{data.error}</AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  const salonName = currentOrganization?.name || 'Dubai Luxury Salon & Spa'
 
   const statsCards = [
     {
       title: 'Today\'s Appointments',
       value: data.appointments.toString(),
-      change: 'Live data',
+      subtitle: 'appointments',
       icon: CalendarCheck,
-      color: 'from-pink-500 to-rose-500',
-      bgColor: 'from-pink-50 to-rose-50',
-      borderColor: 'border-pink-200'
+      gradient: 'from-pink-400 to-rose-600',
+      bgGradient: 'from-pink-50 to-rose-50',
+      darkBgGradient: 'dark:from-pink-900/20 dark:to-rose-900/20'
     },
     {
-      title: 'Active Customers',
+      title: 'Active Clients',
       value: data.customers.toString(),
-      change: 'Total in database',
+      subtitle: 'total clients',
       icon: UserCheck,
-      color: 'from-purple-500 to-violet-500',
-      bgColor: 'from-purple-50 to-violet-50',
-      borderColor: 'border-purple-200'
+      gradient: 'from-purple-400 to-indigo-600',
+      bgGradient: 'from-purple-50 to-indigo-50',
+      darkBgGradient: 'dark:from-purple-900/20 dark:to-indigo-900/20'
     },
     {
       title: 'Today\'s Revenue',
-      value: `AED ${data.todayRevenue.toFixed(2)}`,
-      change: 'From sales today',
+      value: `${data.todayRevenue.toFixed(0)}`,
+      subtitle: 'AED',
       icon: TrendingUp,
-      color: 'from-emerald-500 to-teal-500',
-      bgColor: 'from-emerald-50 to-teal-50',
-      borderColor: 'border-emerald-200'
+      gradient: 'from-emerald-400 to-teal-600',
+      bgGradient: 'from-emerald-50 to-teal-50',
+      darkBgGradient: 'dark:from-emerald-900/20 dark:to-teal-900/20'
     },
     {
-      title: 'Products in Stock',
+      title: 'Products',
       value: data.products.toString(),
-      change: 'Total products',
-      icon: PackageCheck,
-      color: 'from-amber-500 to-orange-500',
-      bgColor: 'from-amber-50 to-orange-50',
-      borderColor: 'border-amber-200'
+      subtitle: 'in stock',
+      icon: Package,
+      gradient: 'from-amber-400 to-orange-600',
+      bgGradient: 'from-amber-50 to-orange-50',
+      darkBgGradient: 'dark:from-amber-900/20 dark:to-orange-900/20'
     }
   ]
 
-  // Sample salon services for demo
-  const salonServices = [
+  const services = [
     {
-      id: 'srv-brazilian',
       name: 'Brazilian Blowout',
+      duration: '4 hours',
+      price: 'AED 500',
       category: 'Chemical Treatment',
-      duration: '4h 0m',
-      price: 500,
-      popularity: 95,
-      skillLevel: 'Celebrity',
-      icon: <Zap className="w-5 h-5 text-purple-600" />,
-      color: 'bg-purple-100 text-purple-800'
+      popular: true,
+      icon: <Zap className="w-5 h-5" />,
+      gradient: 'from-purple-400 to-pink-600'
     },
     {
-      id: 'srv-bridal',
       name: 'Complete Bridal Package',
+      duration: '6 hours',
+      price: 'AED 800',
       category: 'Bridal',
-      duration: '6h 0m',
-      price: 800,
-      popularity: 98,
-      skillLevel: 'Celebrity',
-      icon: <Crown className="w-5 h-5 text-yellow-600" />,
-      color: 'bg-yellow-100 text-yellow-800'
+      popular: true,
+      icon: <Crown className="w-5 h-5" />,
+      gradient: 'from-pink-400 to-rose-600'
     },
     {
-      id: 'srv-keratin',
       name: 'Keratin Treatment',
+      duration: '3 hours',
+      price: 'AED 350',
       category: 'Chemical Treatment',
-      duration: '3h 0m',
-      price: 350,
-      popularity: 88,
-      skillLevel: 'Senior',
-      icon: <Zap className="w-5 h-5 text-blue-600" />,
-      color: 'bg-blue-100 text-blue-800'
+      icon: <Sparkles className="w-5 h-5" />,
+      gradient: 'from-indigo-400 to-purple-600'
+    },
+    {
+      name: 'Hair Color & Highlights',
+      duration: '3 hours',
+      price: 'AED 280',
+      category: 'Color',
+      icon: <Palette className="w-5 h-5" />,
+      gradient: 'from-rose-400 to-pink-600'
+    },
+    {
+      name: 'Premium Cut & Style',
+      duration: '1.5 hours',
+      price: 'AED 150',
+      category: 'Cut & Style',
+      icon: <Scissors className="w-5 h-5" />,
+      gradient: 'from-teal-400 to-emerald-600'
+    },
+    {
+      name: 'Luxury Spa Treatment',
+      duration: '2 hours',
+      price: 'AED 300',
+      category: 'Spa',
+      icon: <Gem className="w-5 h-5" />,
+      gradient: 'from-amber-400 to-orange-600'
     }
   ]
 
-  const salonTeam = [
+  const team = [
     {
-      id: 'rocky',
       name: 'Rocky',
       title: 'Celebrity Hair Artist',
-      level: 'Celebrity',
-      specializations: ['Brazilian Blowout', 'Keratin Treatment', 'Bridal Styling'],
+      specialties: ['Brazilian Blowout', 'Bridal Styling', 'Color Specialist'],
       rating: 4.9,
       reviews: 247,
-      hourlyRate: 200,
-      nextAvailable: 'Today 2:30 PM',
-      color: 'bg-purple-100 text-purple-800 border-purple-200',
-      avatar: 'R'
+      instagram: '@rocky_hair_dubai',
+      avatar: 'R',
+      gradient: 'from-purple-400 to-pink-600',
+      available: true
     },
     {
-      id: 'vinay',
       name: 'Vinay',
       title: 'Senior Hair Stylist',
-      level: 'Senior',
-      specializations: ['Cutting', 'Styling', 'Color'],
+      specialties: ['Cutting Expert', 'Men\'s Styling', 'Color'],
       rating: 4.7,
       reviews: 156,
-      hourlyRate: 150,
-      nextAvailable: 'Today 4:00 PM',
-      color: 'bg-blue-100 text-blue-800 border-blue-200',
-      avatar: 'V'
+      instagram: '@vinay_styles',
+      avatar: 'V',
+      gradient: 'from-blue-400 to-indigo-600',
+      available: true
+    },
+    {
+      name: 'Maya',
+      title: 'Color Specialist',
+      specialties: ['Balayage', 'Color Correction', 'Highlights'],
+      rating: 4.8,
+      reviews: 189,
+      instagram: '@maya_colorist',
+      avatar: 'M',
+      gradient: 'from-pink-400 to-rose-600',
+      available: false
+    },
+    {
+      name: 'Sophia',
+      title: 'Bridal Specialist',
+      specialties: ['Bridal Hair', 'Updos', 'Special Events'],
+      rating: 4.9,
+      reviews: 203,
+      instagram: '@sophia_bridal',
+      avatar: 'S',
+      gradient: 'from-amber-400 to-orange-600',
+      available: true
     }
+  ]
+
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: <Sparkles className="w-5 h-5" /> },
+    { id: 'calendar', label: 'Calendar', icon: <Calendar className="w-5 h-5" /> },
+    { id: 'services', label: 'Services', icon: <Scissors className="w-5 h-5" /> },
+    { id: 'team', label: 'Our Team', icon: <Users className="w-5 h-5" /> }
   ]
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-            <Scissors className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-              HERA Salon Calendar System
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Universal Calendar DNA Implementation for Beauty & Wellness
-            </p>
-          </div>
-        </div>
-        
-        <Alert className="max-w-4xl mx-auto">
-          <Info className="w-4 h-4" />
-          <AlertDescription className="text-left">
-            <strong>🧬 HERA DNA Universal Calendar Implementation:</strong> This demonstrates how the Universal Calendar DNA 
-            adapts to salon operations using Sacred Six Tables architecture. Same components work for restaurants, 
-            healthcare, manufacturing, and professional services with industry-specific configurations.
-          </AlertDescription>
-        </Alert>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div className="flex justify-center">
-        <Tabs value={selectedDemo} onValueChange={(value: any) => setSelectedDemo(value)} className="w-full max-w-2xl">
-          <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="calendar">Live Calendar</TabsTrigger>
-            <TabsTrigger value="workflow">Booking Flow</TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-8">{/* Header with real data */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome to {salonName}
-            </h2>
-            <p className="text-gray-600 text-lg flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
-              Real-time data from Supabase
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 px-4 py-2">
-              <Heart className="w-4 h-4 mr-2" />
-              Professional Plan
-            </Badge>
-            <Button 
-              variant="outline" 
-              onClick={fetchDashboardData}
-              disabled={refreshing}
-            >
-              <RefreshCw className={cn("w-4 h-4 mr-2", refreshing && "animate-spin")} />
-              Refresh
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {statsCards.map((stat, index) => (
-          <Card key={index} className={`bg-gradient-to-br ${stat.bgColor} ${stat.borderColor} border-2 hover:shadow-lg transition-all`}>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-gray-700">{stat.title}</CardTitle>
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                  <stat.icon className="w-5 h-5 text-white" />
-                </div>
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-pink-100 dark:border-purple-800/30">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <Scissors className="w-5 h-5 text-white" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-sm text-gray-600 mt-1">{stat.change}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                  Luxury Salon
+                </h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Dubai Marina</p>
+              </div>
+            </div>
 
-      {/* Services and Team Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Popular Services */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-500" />
-              Popular Services
-            </CardTitle>
-            <CardDescription>Our most requested treatments</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {salonServices.map((service, index) => (
-              <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                    {service.icon}
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navigationItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setSelectedTab(item.id as any)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
+                    selectedTab === item.id
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-pink-100 dark:hover:bg-purple-900/30"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-pink-100 dark:hover:bg-purple-900/30"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-pink-100 dark:border-purple-800/30 bg-white dark:bg-gray-900">
+            <nav className="px-4 py-2 space-y-1">
+              {navigationItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setSelectedTab(item.id as any)
+                    setMobileMenuOpen(false)
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all",
+                    selectedTab === item.id
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-pink-100 dark:hover:bg-purple-900/30"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content */}
+      <main className="px-4 sm:px-6 lg:px-8 py-6">
+        {/* Dashboard Tab */}
+        {selectedTab === 'dashboard' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                <Plus className="w-4 h-4 mr-2" />
+                New Booking
+              </Button>
+              <Button variant="outline" className="border-pink-300 hover:bg-pink-50 dark:hover:bg-purple-900/30">
+                <Phone className="w-4 h-4 mr-2" />
+                Call Client
+              </Button>
+              <Button variant="outline" className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/30">
+                <RefreshCw className={cn("w-4 h-4 mr-2", refreshing && "animate-spin")} />
+                Refresh
+              </Button>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {statsCards.map((stat, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br",
+                    stat.bgGradient,
+                    stat.darkBgGradient,
+                    "backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all cursor-pointer"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br opacity-20",
+                    stat.gradient,
+                    "blur-2xl"
+                  )} />
+                  <div className="relative">
+                    <div className={cn(
+                      "w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center mb-4",
+                      stat.gradient
+                    )}>
+                      <stat.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {stat.value}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {stat.subtitle}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                      {stat.title}
+                    </p>
                   </div>
-                  <div>
-                    <h4 className="font-medium">{service.name}</h4>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Clock className="w-3 h-3" />
-                      {service.duration}
-                      <span>•</span>
-                      <Badge variant="outline" className={service.color}>
-                        {service.skillLevel}
+                </div>
+              ))}
+            </div>
+
+            {/* Recent Activity */}
+            <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {data.recentAppointments.slice(0, 3).map((apt, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
+                          <span className="text-white font-semibold">
+                            {apt.transaction_code?.charAt(0) || 'A'}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            Appointment #{apt.id?.slice(-4) || '0001'}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {new Date(apt.transaction_date).toLocaleTimeString('en-US', { 
+                              hour: 'numeric', 
+                              minute: '2-digit' 
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    Top Rated Stylist
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-white">R</span>
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold">Rocky</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Celebrity Hair Artist</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                        <span className="text-sm font-medium">4.9</span>
+                        <span className="text-sm text-gray-500">(247 reviews)</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-purple-100 dark:border-purple-800/30 shadow-xl bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-purple-500" />
+                    Most Popular Service
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center">
+                      <Zap className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold">Brazilian Blowout</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">4 hours • AED 500</p>
+                      <Badge className="mt-1 bg-purple-100 text-purple-700 dark:bg-purple-900/50">
+                        Booked 15 times this week
                       </Badge>
                     </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold">AED {service.price}</div>
-                  <div className="text-sm text-gray-500 flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-current text-yellow-500" />
-                    {service.popularity}% popular
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
 
-        {/* Salon Team */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-500" />
-              Salon Team
-            </CardTitle>
-            <CardDescription>Our expert stylists and specialists</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {salonTeam.map(member => (
-              <div key={member.id} className="flex items-center space-x-3 p-4 border rounded-lg">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">{member.avatar}</span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-medium">{member.name}</h4>
-                    <Badge variant="outline" className={member.color}>
-                      {member.level}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600">{member.title}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-current text-yellow-500" />
-                      <span className="text-sm">{member.rating}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">({member.reviews} reviews)</span>
-                    <span className="text-xs text-gray-500">•</span>
-                    <span className="text-xs text-gray-500">AED {member.hourlyRate}/hr</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-green-600 font-medium">
-                    {member.nextAvailable}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-            </TabsContent>
-
-          {/* Live Calendar Tab */}
-          <TabsContent value="calendar" className="space-y-6">
-            <Card>
+        {/* Calendar Tab */}
+        {selectedTab === 'calendar' && (
+          <div className="animate-fadeIn">
+            <Card className="border-pink-100 dark:border-purple-800/30 shadow-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Live Salon Calendar
+                  <Calendar className="w-5 h-5 text-purple-500" />
+                  Salon Calendar
                 </CardTitle>
                 <CardDescription>
-                  Full-featured salon calendar with resource scheduling, drag-and-drop, and UAE prayer time integration
+                  Manage appointments and staff schedules
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Alert className="mb-6">
-                  <Sparkles className="w-4 h-4" />
-                  <AlertDescription>
-                    <strong>🧬 Universal DNA Features:</strong> Prayer time blocks, VIP client highlighting, 
-                    stylist specialization matching, chemical treatment scheduling, and real-time availability.
-                  </AlertDescription>
-                </Alert>
+              <CardContent className="p-0 sm:p-6">
                 <SalonCalendar className="min-h-[600px]" />
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* Booking Workflow Tab */}
-          <TabsContent value="workflow" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Scissors className="w-5 h-5" />
-                  Intelligent Booking Workflow
-                </CardTitle>
-                <CardDescription>
-                  5-step booking process with service selection, stylist matching, and intelligent scheduling
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <Alert>
-                  <Zap className="w-4 h-4" />
-                  <AlertDescription>
-                    <strong>🧠 Smart Features:</strong> Automatic stylist matching based on service requirements, 
-                    VIP client recognition, allergy alerts, and intelligent time slot suggestions.
-                  </AlertDescription>
-                </Alert>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Workflow Steps</h4>
-                    <div className="space-y-3">
-                      {[
-                        { step: 1, title: 'Service Selection', desc: 'Choose service with add-ons' },
-                        { step: 2, title: 'Stylist Matching', desc: 'AI-powered stylist recommendation' },
-                        { step: 3, title: 'Client Information', desc: 'Existing client or new registration' },
-                        { step: 4, title: 'Time Booking', desc: 'Available slots with conflict detection' },
-                        { step: 5, title: 'Confirmation', desc: 'Review and confirm appointment' }
-                      ].map(item => (
-                        <div key={item.step} className="flex items-center gap-3 p-3 border rounded-lg">
-                          <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-semibold">
-                            {item.step}
-                          </div>
-                          <div>
-                            <div className="font-medium">{item.title}</div>
-                            <div className="text-sm text-gray-600">{item.desc}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Smart Features</h4>
-                    <div className="space-y-3">
-                      {[
-                        { icon: <Star className="w-4 h-4 text-yellow-500" />, title: 'VIP Recognition', desc: 'Automatic VIP client identification' },
-                        { icon: <AlertCircle className="w-4 h-4 text-red-500" />, title: 'Allergy Alerts', desc: 'Safety warnings for chemical services' },
-                        { icon: <Clock className="w-4 h-4 text-blue-500" />, title: 'Smart Scheduling', desc: 'Optimal time slot suggestions' },
-                        { icon: <Users className="w-4 h-4 text-purple-500" />, title: 'Stylist Matching', desc: 'Skill and preference based matching' },
-                        { icon: <MapPin className="w-4 h-4 text-green-500" />, title: 'Prayer Integration', desc: 'UAE prayer time consideration' }
-                      ].map((feature, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
-                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                            {feature.icon}
-                          </div>
-                          <div>
-                            <div className="font-medium">{feature.title}</div>
-                            <div className="text-sm text-gray-600">{feature.desc}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center pt-6">
-                  <Button onClick={() => setIsBookingOpen(true)} size="lg">
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Try Booking Workflow
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Technical Implementation Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-blue-500" />
-            Technical Implementation
-          </CardTitle>
-          <CardDescription>
-            How HERA's Universal Calendar DNA adapts to salon operations
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-green-600">✅ Sacred Six Tables</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>• Appointments → universal_transactions</li>
-                <li>• Stylists → core_entities (staff)</li>
-                <li>• Services → core_entities (service)</li>
-                <li>• Availability → core_dynamic_data</li>
-                <li>• Assignments → core_relationships</li>
-                <li>• Service details → universal_transaction_lines</li>
-              </ul>
+        {/* Services Tab */}
+        {selectedTab === 'services' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                Our Premium Services
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                Experience luxury hair treatments and styling
+              </p>
             </div>
-            <div className="space-y-3">
-              <h4 className="font-semibold text-purple-600">🧬 Smart Codes</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>• HERA.SALON.CALENDAR.APPOINTMENT.*</li>
-                <li>• HERA.SALON.STAFF.CELEBRITY.STYLIST.*</li>
-                <li>• HERA.SALON.SERVICE.CHEMICAL.*</li>
-                <li>• HERA.SALON.CUSTOMER.VIP.*</li>
-                <li>• HERA.SALON.CALENDAR.BLOCK.PRAYER.*</li>
-              </ul>
-            </div>
-            <div className="space-y-3">
-              <h4 className="font-semibold text-blue-600">⚡ Features</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>• Real-time availability checking</li>
-                <li>• Double-booking prevention</li>
-                <li>• Prayer time integration</li>
-                <li>• VIP client workflows</li>
-                <li>• Chemical service restrictions</li>
-                <li>• Multi-tenant security</li>
-              </ul>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((service, index) => (
+                <Card
+                  key={index}
+                  className="border-pink-100 dark:border-purple-800/30 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer overflow-hidden group"
+                >
+                  <div className={cn(
+                    "h-2 bg-gradient-to-r",
+                    service.gradient
+                  )} />
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={cn(
+                        "w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center",
+                        service.gradient
+                      )}>
+                        <div className="text-white">{service.icon}</div>
+                      </div>
+                      {service.popular && (
+                        <Badge className="bg-pink-100 text-pink-700 dark:bg-pink-900/50">
+                          Popular
+                        </Badge>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-600 transition-colors">
+                      {service.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      {service.category}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        {service.duration}
+                      </div>
+                      <p className="text-lg font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                        {service.price}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        )}
 
-      {/* Organization Info */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <p className="text-sm text-gray-600">
-          Organization ID: <code className="bg-gray-200 px-2 py-1 rounded">{organizationId}</code>
-        </p>
-      </div>
+        {/* Team Tab */}
+        {selectedTab === 'team' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                Meet Our Expert Team
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                Award-winning stylists ready to transform your look
+              </p>
+            </div>
 
-      {/* Booking Workflow Dialog */}
-      <SalonBookingWorkflow 
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-        onBookingComplete={(booking) => {
-          console.log('Booking completed:', booking)
-          setIsBookingOpen(false)
-        }}
-      />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {team.map((member, index) => (
+                <Card
+                  key={index}
+                  className="border-pink-100 dark:border-purple-800/30 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all cursor-pointer overflow-hidden"
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className={cn(
+                        "w-20 h-20 rounded-full bg-gradient-to-r flex items-center justify-center flex-shrink-0",
+                        member.gradient
+                      )}>
+                        <span className="text-2xl font-bold text-white">{member.avatar}</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold">{member.name}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{member.title}</p>
+                          </div>
+                          <Badge
+                            variant={member.available ? "default" : "secondary"}
+                            className={member.available ? "bg-green-100 text-green-700 dark:bg-green-900/50" : ""}
+                          >
+                            {member.available ? "Available" : "Busy"}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 mt-3">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                            <span className="text-sm font-medium">{member.rating}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">({member.reviews} reviews)</span>
+                          <a
+                            href={`https://instagram.com/${member.instagram.slice(1)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-pink-600 hover:text-purple-600 transition-colors"
+                          >
+                            <Instagram className="w-4 h-4" />
+                          </a>
+                        </div>
+
+                        <div className="mt-4 space-y-1">
+                          {member.specialties.map((specialty, idx) => (
+                            <Badge
+                              key={idx}
+                              variant="outline"
+                              className="mr-2 mb-1 text-xs border-pink-300 text-pink-700 dark:border-purple-600 dark:text-purple-300"
+                            >
+                              {specialty}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Floating Action Button (Mobile) */}
+      <button className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center text-white transform hover:scale-110 transition-all">
+        <Plus className="w-6 h-6" />
+      </button>
+
+      {/* Footer */}
+      <footer className="mt-12 border-t border-pink-100 dark:border-purple-800/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+        <div className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <MapPin className="w-4 h-4" />
+              Dubai Marina Walk, Dubai, UAE
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="tel:+97144234567" className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 transition-colors">
+                <Phone className="w-4 h-4" />
+                +971 4 423 4567
+              </a>
+              <a href="https://instagram.com/luxurysalondubai" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:text-purple-600 transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
