@@ -1,0 +1,420 @@
+/* Modern Teams-inspired Calendar Styles for Salon */
+
+/* Calendar Container */
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: transparent;
+}
+
+/* Header Toolbar */
+.fc .fc-toolbar {
+  padding: 1rem 1.5rem;
+  margin-bottom: 0;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 1rem;
+}
+
+.dark .fc .fc-toolbar {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dark .fc .fc-toolbar-title {
+  color: #f9fafb;
+}
+
+/* Modern Button Styles */
+.fc .fc-button {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.fc .fc-button:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dark .fc .fc-button {
+  color: #9ca3af;
+}
+
+.dark .fc .fc-button:hover {
+  background: #374151;
+  color: #f9fafb;
+}
+
+.fc .fc-button-active {
+  background: #fce7f3 !important;
+  color: #be185d !important;
+  font-weight: 600;
+}
+
+.dark .fc .fc-button-active {
+  background: #831843 !important;
+  color: #fce7f3 !important;
+}
+
+.fc .fc-button-primary {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.2);
+}
+
+.fc .fc-button-primary:hover {
+  background: linear-gradient(135deg, #db2777 0%, #7c3aed 100%);
+  box-shadow: 0 4px 8px rgba(236, 72, 153, 0.3);
+}
+
+.fc .fc-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Calendar Grid */
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark .fc-theme-standard .fc-scrollgrid {
+  background: #1f2937;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Table Borders */
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid #e5e7eb;
+}
+
+.dark .fc-theme-standard td,
+.dark .fc-theme-standard th {
+  border-color: #374151;
+}
+
+/* Column Headers */
+.fc .fc-col-header {
+  background: #f9fafb;
+}
+
+.dark .fc .fc-col-header {
+  background: #111827;
+}
+
+.fc .fc-col-header-cell {
+  padding: 1rem 0;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+
+.dark .fc .fc-col-header-cell {
+  color: #9ca3af;
+}
+
+/* Day Grid Cells */
+.fc .fc-daygrid-day {
+  transition: background-color 0.2s;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.dark .fc .fc-daygrid-day:hover {
+  background: #374151;
+}
+
+.fc .fc-daygrid-day-frame {
+  min-height: 100px;
+  padding: 0.5rem;
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  padding: 0.25rem 0.5rem;
+}
+
+.dark .fc .fc-daygrid-day-number {
+  color: #d1d5db;
+}
+
+/* Today Highlight */
+.fc .fc-day-today {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05)) !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  color: white;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+}
+
+/* Time Grid */
+.fc .fc-timegrid-slot {
+  height: 3rem;
+}
+
+.fc .fc-timegrid-slot-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.dark .fc .fc-timegrid-slot-label {
+  color: #9ca3af;
+}
+
+.fc .fc-timegrid-axis {
+  padding: 0 1rem;
+}
+
+/* Events - Modern Card Style */
+.fc-event {
+  border: none !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s !important;
+  cursor: pointer;
+  margin: 0.125rem;
+}
+
+.fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Event Colors by Service Type */
+.fc-event-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Brazilian Blowout - Purple gradient */
+.fc-event[data-service="brazilian"] {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(124, 58, 237, 0.9)) !important;
+  color: white !important;
+}
+
+/* Bridal - Pink gradient */
+.fc-event[data-service="bridal"] {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9)) !important;
+  color: white !important;
+}
+
+/* Cut & Style - Teal gradient */
+.fc-event[data-service="cut"] {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.9), rgba(13, 148, 136, 0.9)) !important;
+  color: white !important;
+}
+
+/* Color - Rose gradient */
+.fc-event[data-service="color"] {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.9), rgba(225, 29, 72, 0.9)) !important;
+  color: white !important;
+}
+
+/* Default event style */
+.fc-event {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9)) !important;
+  color: white !important;
+}
+
+/* Event Time */
+.fc-event-time {
+  font-weight: 600;
+  font-size: 0.75rem;
+  opacity: 0.95;
+}
+
+/* Event Title */
+.fc-event-title {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  margin-top: 0.125rem;
+}
+
+/* Event Icons and Badges */
+.fc-event-desc {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  opacity: 0.9;
+}
+
+/* More Events Link */
+.fc-more-link {
+  color: #8b5cf6;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.fc-more-link:hover {
+  color: #7c3aed;
+  text-decoration: underline;
+}
+
+/* Popover */
+.fc-popover {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.fc-popover-header {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  color: white;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+/* Weekend styling */
+.fc-day-sat,
+.fc-day-sun {
+  background: rgba(249, 250, 251, 0.5);
+}
+
+.dark .fc-day-sat,
+.dark .fc-day-sun {
+  background: rgba(17, 24, 39, 0.5);
+}
+
+/* Scrollbar styling */
+.fc-scroller::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.fc-scroller::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.dark .fc-scroller::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.dark .fc-scroller::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Resource View */
+.fc-resource-header {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+  padding: 0.75rem;
+}
+
+.dark .fc-resource-header {
+  background: #111827;
+  color: #d1d5db;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    margin: 0.25rem 0;
+  }
+  
+  .fc-event {
+    font-size: 0.6875rem !important;
+    padding: 0.375rem !important;
+  }
+  
+  .fc .fc-daygrid-day-frame {
+    min-height: 80px;
+  }
+}
+
+/* Prayer Time Blocks */
+.fc-event[data-prayer="true"] {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9)) !important;
+  border-left: 3px solid #16a34a !important;
+  font-style: italic;
+}
+
+/* VIP Client Indicator */
+.fc-event[data-vip="platinum"] {
+  border-left: 3px solid #fbbf24 !important;
+  box-shadow: 0 0 0 1px #fbbf24 !important;
+}
+
+.fc-event[data-vip="gold"] {
+  border-left: 3px solid #f59e0b !important;
+  box-shadow: 0 0 0 1px #f59e0b !important;
+}
+
+/* Loading State */
+.fc-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fc-event {
+  animation: slideIn 0.3s ease-out;
+}

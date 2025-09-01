@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { apiClient } from '@/lib/api-client'
-import { SalonCalendar } from '@/components/salon/SalonCalendar'
+import { ModernSalonCalendar } from '@/components/salon/ModernSalonCalendar'
 import { SalonBookingWorkflow } from '@/components/salon/SalonBookingWorkflow'
 import { 
   Users, 
@@ -316,10 +316,10 @@ export default function SalonModernDashboard() {
                 <Scissors className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">
                   Luxury Salon
                 </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Dubai Marina</p>
+                <p className="text-xs !text-gray-500 dark:!text-gray-400">Dubai Marina</p>
               </div>
             </div>
 
@@ -332,8 +332,8 @@ export default function SalonModernDashboard() {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
                     selectedTab === item.id
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 !text-white shadow-md"
+                      : "!text-gray-700 dark:!text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   )}
                 >
                   {item.icon}
@@ -366,8 +366,8 @@ export default function SalonModernDashboard() {
                   className={cn(
                     "w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all",
                     selectedTab === item.id
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 !text-white"
+                      : "!text-gray-700 dark:!text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   )}
                 >
                   {item.icon}
@@ -429,13 +429,13 @@ export default function SalonModernDashboard() {
                     )}>
                       <stat.icon className="w-6 h-6 text-white" />
                     </div>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-3xl font-bold !text-gray-900 dark:!text-white">
                       {stat.value}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
                       {stat.subtitle}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                    <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-2">
                       {stat.title}
                     </p>
                   </div>
@@ -462,10 +462,10 @@ export default function SalonModernDashboard() {
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">
+                          <p className="font-medium !text-gray-900 dark:!text-white">
                             Appointment #{apt.id?.slice(-4) || '0001'}
                           </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">
                             {new Date(apt.transaction_date).toLocaleTimeString('en-US', { 
                               hour: 'numeric', 
                               minute: '2-digit' 
@@ -495,8 +495,8 @@ export default function SalonModernDashboard() {
                       <span className="text-2xl font-bold text-white">R</span>
                     </div>
                     <div>
-                      <p className="text-lg font-semibold">Rocky</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Celebrity Hair Artist</p>
+                      <p className="text-lg font-semibold !text-gray-900 dark:!text-white">Rocky</p>
+                      <p className="text-sm !text-gray-600 dark:!text-gray-400">Celebrity Hair Artist</p>
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                         <span className="text-sm font-medium">4.9</span>
@@ -520,8 +520,8 @@ export default function SalonModernDashboard() {
                       <Zap className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <p className="text-lg font-semibold">Brazilian Blowout</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">4 hours • AED 500</p>
+                      <p className="text-lg font-semibold !text-gray-900 dark:!text-white">Brazilian Blowout</p>
+                      <p className="text-sm !text-gray-600 dark:!text-gray-400">4 hours • AED 500</p>
                       <Badge className="mt-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200 border border-purple-200 dark:border-purple-700">
                         Booked 15 times this week
                       </Badge>
@@ -546,8 +546,8 @@ export default function SalonModernDashboard() {
                   Manage appointments and staff schedules
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-0 sm:p-6">
-                <SalonCalendar className="min-h-[600px]" />
+              <CardContent className="p-0">
+                <ModernSalonCalendar className="min-h-[600px]" />
               </CardContent>
             </Card>
           </div>
@@ -589,10 +589,10 @@ export default function SalonModernDashboard() {
                         </Badge>
                       )}
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-600 transition-colors">
+                    <h3 className="text-lg font-semibold mb-2 !text-gray-900 dark:!text-white group-hover:!text-purple-600 transition-colors">
                       {service.name}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-4">
                       {service.category}
                     </p>
                     <div className="flex items-center justify-between">
@@ -640,8 +640,8 @@ export default function SalonModernDashboard() {
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
                           <div>
-                            <h3 className="text-lg font-semibold">{member.name}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{member.title}</p>
+                            <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">{member.name}</h3>
+                            <p className="text-sm !text-gray-600 dark:!text-gray-400">{member.title}</p>
                           </div>
                           <Badge
                             variant={member.available ? "default" : "secondary"}
@@ -699,12 +699,12 @@ export default function SalonModernDashboard() {
       <footer className="mt-12 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-2 text-sm !text-gray-600 dark:!text-gray-400">
               <MapPin className="w-4 h-4" />
               Dubai Marina Walk, Dubai, UAE
             </div>
             <div className="flex items-center gap-4">
-              <a href="tel:+97144234567" className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 transition-colors">
+              <a href="tel:+97144234567" className="flex items-center gap-2 text-sm !text-gray-600 dark:!text-gray-400 hover:!text-purple-600 transition-colors">
                 <Phone className="w-4 h-4" />
                 +971 4 423 4567
               </a>

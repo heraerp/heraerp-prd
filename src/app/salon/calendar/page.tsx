@@ -195,10 +195,10 @@ export default function SalonCalendarManagementPage() {
                 <ChevronLeft className="h-5 w-5" />
               </Button>
               <div className="ml-4">
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                <h1 className="text-xl font-semibold !text-gray-900 dark:!text-gray-100">
                   Calendar Management
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm !text-gray-600 dark:!text-gray-400">
                   {currentOrganization?.name || 'Salon'}
                 </p>
               </div>
@@ -228,8 +228,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Today</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.todayAppointments}</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">Today</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">{stats.todayAppointments}</p>
                 </div>
                 <Calendar className="h-8 w-8 text-blue-600" />
               </div>
@@ -240,8 +240,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">This Week</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.weekAppointments}</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">This Week</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">{stats.weekAppointments}</p>
                 </div>
                 <CalendarRange className="h-8 w-8 text-purple-600" />
               </div>
@@ -252,8 +252,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">AED {stats.monthRevenue.toLocaleString()}</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">Revenue</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">AED {stats.monthRevenue.toLocaleString()}</p>
                 </div>
                 <DollarSign className="h-8 w-8 text-green-600" />
               </div>
@@ -264,8 +264,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Stylists</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.activeStylists}</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">Stylists</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">{stats.activeStylists}</p>
                 </div>
                 <Users className="h-8 w-8 text-orange-600" />
               </div>
@@ -276,8 +276,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Confirmed</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.confirmedRate}%</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">Confirmed</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">{stats.confirmedRate}%</p>
                 </div>
                 <CheckCircle2 className="h-8 w-8 text-cyan-600" />
               </div>
@@ -288,8 +288,8 @@ export default function SalonCalendarManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Time</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.averageServiceTime}m</p>
+                  <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">Avg Time</p>
+                  <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">{stats.averageServiceTime}m</p>
                 </div>
                 <Clock className="h-8 w-8 text-rose-600" />
               </div>
@@ -388,7 +388,7 @@ export default function SalonCalendarManagementPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="font-medium">{apt.client}</h4>
+                            <h4 className="font-medium !text-gray-900 dark:!text-white">{apt.client}</h4>
                             {apt.vip && (
                               <Badge variant="outline" className={
                                 apt.vip === 'platinum' ? 'bg-purple-100 text-purple-800' : 'bg-yellow-100 text-yellow-800'
@@ -397,7 +397,7 @@ export default function SalonCalendarManagementPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">
                             {apt.service} with {apt.stylist} • {apt.time} ({apt.duration})
                           </p>
                         </div>
@@ -437,8 +437,8 @@ export default function SalonCalendarManagementPage() {
                           }
                         </div>
                         <div>
-                          <h4 className="font-medium">{resource.name}</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <h4 className="font-medium !text-gray-900 dark:!text-white">{resource.name}</h4>
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">
                             {resource.type === 'stylist' ? 'Hair Stylist' : resource.type}
                           </p>
                         </div>
@@ -448,7 +448,7 @@ export default function SalonCalendarManagementPage() {
                           <Badge variant={resource.status === 'available' ? 'default' : 'secondary'}>
                             {resource.status}
                           </Badge>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs !text-gray-500 dark:!text-gray-400 mt-1">
                             {resource.nextBreak || resource.nextAvailable}
                           </p>
                         </div>
@@ -471,7 +471,7 @@ export default function SalonCalendarManagementPage() {
               <CardContent className="space-y-6">
                 {/* Business Hours */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Business Hours</h3>
+                  <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">Business Hours</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Opening Time</Label>
@@ -501,7 +501,7 @@ export default function SalonCalendarManagementPage() {
 
                 {/* Booking Rules */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Booking Rules</h3>
+                  <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">Booking Rules</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Time Slot Duration</Label>
@@ -540,7 +540,7 @@ export default function SalonCalendarManagementPage() {
 
                 {/* Features */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Features</h3>
+                  <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">Features</h3>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <Switch 
@@ -575,7 +575,7 @@ export default function SalonCalendarManagementPage() {
 
                 {/* Notifications */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Notifications</h3>
+                  <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">Notifications</h3>
                   <div className="flex items-center space-x-2">
                     <Switch 
                       checked={settings.sendReminders}
@@ -597,7 +597,7 @@ export default function SalonCalendarManagementPage() {
 
                 {/* Deposits */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Deposit Settings</h3>
+                  <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white">Deposit Settings</h3>
                   <div className="flex items-center space-x-2">
                     <Switch 
                       checked={settings.requireDeposit}
