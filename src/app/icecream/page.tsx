@@ -223,6 +223,32 @@ export default function IceCreamDashboard() {
     )
   }
 
+  // Function to set up demo data
+  const setupDemoData = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/v1/setup-demo/icecream', {
+        method: 'POST'
+      })
+      const result = await response.json()
+      
+      if (result.success) {
+        alert('Demo data created successfully! Refreshing page...')
+        window.location.reload()
+      } else {
+        alert('Error creating demo data: ' + result.error)
+      }
+    } catch (error) {
+      alert('Failed to create demo data')
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Check if there's no data
+  const hasNoData = !loading && data.totalProducts === 0 && data.totalOutlets === 0 && data.recentTransactions.length === 0
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -260,6 +286,30 @@ export default function IceCreamDashboard() {
           </Button> */}
         </div>
       </div>
+
+      {/* Show setup button if no data */}
+      {hasNoData && (
+        <Card className="backdrop-blur-xl bg-yellow-50/95 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 shadow-lg">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <AlertCircle className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 dark:text-white">No Demo Data Found</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Click the button to create sample ice cream products, outlets, and transactions.
+                </p>
+              </div>
+              <Button
+                onClick={setupDemoData}
+                disabled={loading}
+                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+              >
+                {loading ? 'Creating...' : 'Setup Demo Data'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
