@@ -73,23 +73,6 @@ export default function IceCreamDashboard() {
     console.log('Fetching dashboard data for org:', organizationId)
     
     try {
-      // Test query to check if we can access any data
-      const { data: testOrgs, error: testError } = await supabaseClient
-        .from('core_organizations')
-        .select('id, organization_name')
-        .limit(1)
-      
-      console.log('Test query - Organizations accessible:', !!testOrgs, testError || 'No error')
-      
-      // Check if this specific organization exists
-      const { data: thisOrg, error: thisOrgError } = await supabaseClient
-        .from('core_organizations')
-        .select('*')
-        .eq('id', organizationId)
-        .single()
-      
-      console.log('This organization exists:', !!thisOrg, thisOrgError || 'No error')
-      
       // Fetch products
       const { data: products, error: productsError } = await supabaseClient
         .from('core_entities')
@@ -100,7 +83,6 @@ export default function IceCreamDashboard() {
       if (productsError) {
         console.error('Error fetching products:', productsError)
       }
-      console.log('Products fetched:', products?.length || 0, products)
 
       // Fetch outlets
       const { data: outlets, error: outletsError } = await supabaseClient
@@ -113,7 +95,6 @@ export default function IceCreamDashboard() {
       if (outletsError) {
         console.error('Error fetching outlets:', outletsError)
       }
-      console.log('Outlets fetched:', outlets?.length || 0, outlets)
 
       // Fetch recent transactions
       const { data: transactions, error: transactionsError } = await supabaseClient
@@ -129,7 +110,6 @@ export default function IceCreamDashboard() {
       if (transactionsError) {
         console.error('Error fetching transactions:', transactionsError)
       }
-      console.log('Transactions fetched:', transactions?.length || 0, transactions)
 
       // Calculate production metrics
       const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []
@@ -224,31 +204,6 @@ export default function IceCreamDashboard() {
     )
   }
 
-  // Function to set up demo data
-  const setupDemoData = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch('/api/v1/setup-demo/icecream', {
-        method: 'POST'
-      })
-      const result = await response.json()
-      
-      if (result.success) {
-        alert('Demo data created successfully! Refreshing page...')
-        window.location.reload()
-      } else {
-        alert('Error creating demo data: ' + result.error)
-      }
-    } catch (error) {
-      alert('Failed to create demo data')
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Check if there's no data
-  const hasNoData = !loading && data.totalProducts === 0 && data.totalOutlets === 0 && data.recentTransactions.length === 0
 
   return (
     <div className="space-y-6">
@@ -265,7 +220,7 @@ export default function IceCreamDashboard() {
             {/* Organization Info */}
             <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block">
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                <span className="text-gray-500 dark:text-gray-500">Demo Organization:</span>{' '}
+                <span className="text-gray-500 dark:text-gray-500">Organization:</span>{' '}
                 <span className="font-medium text-gray-900 dark:text-white">{organizationName || 'Loading...'}</span>
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
@@ -302,29 +257,6 @@ export default function IceCreamDashboard() {
         </div>
       </div>
 
-      {/* Show setup button if no data */}
-      {hasNoData && (
-        <Card className="backdrop-blur-xl bg-yellow-50/95 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <AlertCircle className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-white">No Demo Data Found</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Click the button to create sample ice cream products, outlets, and transactions.
-                </p>
-              </div>
-              <Button
-                onClick={setupDemoData}
-                disabled={loading}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-              >
-                {loading ? 'Creating...' : 'Setup Demo Data'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
