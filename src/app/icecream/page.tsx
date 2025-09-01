@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { supabaseClient } from '@/lib/supabase-client'
-import { useOnboarding } from '@/lib/onboarding'
+// TODO: Re-enable once React 18 onboarding is ready
+// import { useOnboarding } from '@/lib/onboarding'
 import { Button } from '@/components/ui/button'
 import { 
   Factory, 
@@ -33,7 +34,8 @@ interface DashboardData {
 
 export default function IceCreamDashboard() {
   const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
-  const { startTour, isActive } = useOnboarding()
+  // TODO: Re-enable once React 18 onboarding is ready
+  // const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<DashboardData>({
     totalProducts: 0,
@@ -45,17 +47,18 @@ export default function IceCreamDashboard() {
     productionEfficiency: 0
   })
 
-  // Auto-start tour for first-time users
-  useEffect(() => {
-    const hasSeenTour = localStorage.getItem('hera_onboarding_HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1_completed')
+  // TODO: Re-enable once React 18 onboarding is ready
+  // // Auto-start tour for first-time users
+  // useEffect(() => {
+  //   const hasSeenTour = localStorage.getItem('hera_onboarding_HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1_completed')
     
-    if (!hasSeenTour && !isActive && !loading && !orgLoading) {
-      // Start tour after a short delay
-      setTimeout(() => {
-        startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1', { auto: true })
-      }, 1500)
-    }
-  }, [loading, orgLoading, isActive, startTour])
+  //   if (!hasSeenTour && !isActive && !loading && !orgLoading) {
+  //     // Start tour after a short delay
+  //     setTimeout(() => {
+  //       startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1', { auto: true })
+  //     }, 1500)
+  //   }
+  // }, [loading, orgLoading, isActive, startTour])
 
   useEffect(() => {
     if (organizationId && !orgLoading) {
@@ -210,8 +213,8 @@ export default function IceCreamDashboard() {
             </div>
           </div>
           
-          {/* Help Button */}
-          <Button
+          {/* Help Button - TODO: Re-enable once React 18 onboarding is ready */}
+          {/* <Button
             onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1')}
             variant="outline"
             size="sm"
@@ -220,7 +223,7 @@ export default function IceCreamDashboard() {
           >
             <HelpCircle className="h-4 w-4" />
             {isActive ? 'Tour Running...' : 'Start Tour'}
-          </Button>
+          </Button> */}
         </div>
       </div>
 

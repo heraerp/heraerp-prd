@@ -5,10 +5,11 @@ import { DemoOrgProvider, useDemoOrg } from '@/components/providers/DemoOrgProvi
 import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
 import { supabase } from '@/lib/supabase'
 import { ThemeProviderDNA, ThemeToggle } from '@/lib/dna/theme/theme-provider-dna'
-import { HeraOnboardingProvider } from '@/lib/onboarding'
-import { allIceCreamTours } from '@/lib/onboarding/tours/icecream-tours'
-import { iceCreamMessages } from '@/lib/onboarding/i18n/icecream-messages'
-import { defaultMessages } from '@/lib/onboarding/i18n'
+// TODO: Re-enable onboarding imports once React 18 implementation is complete
+// import { HeraOnboardingProvider } from '@/lib/onboarding'
+// import { allIceCreamTours } from '@/lib/onboarding/tours/icecream-tours'
+// import { iceCreamMessages } from '@/lib/onboarding/i18n/icecream-messages'
+// import { defaultMessages } from '@/lib/onboarding/i18n'
 import { 
   LayoutDashboard, 
   Factory, 
@@ -237,24 +238,26 @@ export default function IceCreamLayout({
 }: {
   children: React.ReactNode
 }) {
+  // TODO: Re-enable onboarding once React 18 implementation is complete
   // Register ice cream tours
-  useEffect(() => {
-    // Import dynamically to avoid SSR issues
-    import('@/lib/onboarding').then(({ registerTour }) => {
-      allIceCreamTours.forEach(tour => registerTour(tour))
-    })
-  }, [])
+  // useEffect(() => {
+  //   // Import dynamically to avoid SSR issues
+  //   import('@/lib/onboarding').then(({ registerTour }) => {
+  //     allIceCreamTours.forEach(tour => registerTour(tour))
+  //   })
+  // }, [])
 
-  // Combine messages
-  const allMessages = { ...defaultMessages, ...iceCreamMessages }
+  // // Combine messages
+  // const allMessages = { ...defaultMessages, ...iceCreamMessages }
 
-  // Get enabled tours from localStorage (could also come from user preferences)
-  const enabledTours = allIceCreamTours.map(tour => tour.tourSmartCode)
+  // // Get enabled tours from localStorage (could also come from user preferences)
+  // const enabledTours = allIceCreamTours.map(tour => tour.tourSmartCode)
 
   return (
     <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
       <DemoOrgProvider>
-        <HeraOnboardingProvider
+        {/* TODO: Re-enable HeraOnboardingProvider once React 18 implementation is complete */}
+        {/* <HeraOnboardingProvider
           organizationId="demo-ice-cream-org"
           enabledTours={enabledTours}
           messages={allMessages}
@@ -270,9 +273,9 @@ export default function IceCreamLayout({
             }
           }}
           debug={false}
-        >
+        > */}
           <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
-        </HeraOnboardingProvider>
+        {/* </HeraOnboardingProvider> */}
       </DemoOrgProvider>
     </ThemeProviderDNA>
   )
