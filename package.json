@@ -63,7 +63,12 @@
     "test:api": "playwright test --project=api",
     "test:icecream": "playwright test tests/api/icecream tests/e2e/icecream",
     "test:icecream:api": "playwright test tests/api/icecream",
-    "test:icecream:ui": "playwright test tests/e2e/icecream"
+    "test:icecream:ui": "playwright test tests/e2e/icecream",
+    "test:sap-fi:integration": "playwright test tests/api/sap-fi/sap-fi-integration.spec.ts --project=chromium",
+    "test:sap-fi:edge-cases": "playwright test tests/api/sap-fi/sap-fi-edge-cases.spec.ts --project=chromium",
+    "test:sap-fi:mcp": "node tests/mcp/sap-fi-mcp.test.js",
+    "test:sap-fi:report": "tsx tests/reports/sap-fi-test-report.ts",
+    "test:sap-fi:all": "npm run test:sap-fi:integration && npm run test:sap-fi:edge-cases && npm run test:sap-fi:mcp && npm run test:sap-fi:report"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
