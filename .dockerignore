@@ -1,10 +1,15 @@
 node_modules
 .git
 .next
-packages/hera-testing/node_modules
-packages/hera-testing/dist
+packages/
 *.log
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+test-results/
+coverage/

@@ -23,7 +23,7 @@ try {
   
   // Run the normal build process
   console.log('🔨 Running build process...');
-  execSync('npm run quality:pre-build && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build', {
+  execSync('npm run quality:pre-build && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && npx next build', {
     stdio: 'inherit',
     cwd: path.join(__dirname, '..')
   });

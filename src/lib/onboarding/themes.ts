@@ -118,7 +118,7 @@ export function getTheme(themeName: 'light' | 'dark' | 'highContrast' = 'light')
 /**
  * Convert HERA theme tokens to Joyride styles
  */
-export function getJoyrideStyles(theme: OnboardingTheme): JoyrideStyles {
+export function getJoyrideStyles(theme: OnboardingTheme): any {
   const { tokens } = theme;
   
   return {
@@ -267,7 +267,7 @@ export function getJoyrideStyles(theme: OnboardingTheme): JoyrideStyles {
  * Get accessibility-friendly styles
  * Ensures proper focus indicators and keyboard navigation
  */
-export function getA11yStyles(baseStyles: JoyrideStyles): JoyrideStyles {
+export function getA11yStyles(baseStyles: any): any {
   return {
     ...baseStyles,
     
@@ -309,7 +309,7 @@ export function getA11yStyles(baseStyles: JoyrideStyles): JoyrideStyles {
  * Get reduced motion styles
  * Removes animations for users who prefer reduced motion
  */
-export function getReducedMotionStyles(baseStyles: JoyrideStyles): JoyrideStyles {
+export function getReducedMotionStyles(baseStyles: any): any {
   return {
     ...baseStyles,
     
@@ -341,7 +341,10 @@ export function getReducedMotionStyles(baseStyles: JoyrideStyles): JoyrideStyles
 /**
  * Progress bar styles for step indicators
  */
-export function getProgressStyles(theme: OnboardingTheme, current: number, total: number): React.CSSProperties {
+export function getProgressStyles(theme: OnboardingTheme, current: number, total: number): {
+  container: React.CSSProperties;
+  bar: React.CSSProperties;
+} {
   const progress = (current / total) * 100;
   
   return {
