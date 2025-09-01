@@ -2,5 +2,5 @@
 providers = ["node"]
 
 [variables]
-NODE_VERSION = "20.11.0"
+NODE_VERSION = "20.18.0"
 NODE_ENV = "production"
