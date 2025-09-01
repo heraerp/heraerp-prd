@@ -82,6 +82,7 @@ export default function IceCreamDashboard() {
       if (productsError) {
         console.error('Error fetching products:', productsError)
       }
+      console.log('Products fetched:', products?.length || 0, products)
 
       // Fetch outlets
       const { data: outlets, error: outletsError } = await supabaseClient
@@ -94,6 +95,7 @@ export default function IceCreamDashboard() {
       if (outletsError) {
         console.error('Error fetching outlets:', outletsError)
       }
+      console.log('Outlets fetched:', outlets?.length || 0, outlets)
 
       // Fetch recent transactions
       const { data: transactions, error: transactionsError } = await supabaseClient
@@ -109,6 +111,7 @@ export default function IceCreamDashboard() {
       if (transactionsError) {
         console.error('Error fetching transactions:', transactionsError)
       }
+      console.log('Transactions fetched:', transactions?.length || 0, transactions)
 
       // Calculate production metrics
       const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []

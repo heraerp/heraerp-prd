@@ -4,7 +4,15 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
 
-// Configuration logging removed for production deployment
+// Log configuration status (not the actual values)
+if (typeof window !== 'undefined') {
+  console.log('Supabase client configuration:', {
+    hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    urlIsPlaceholder: supabaseUrl === 'https://placeholder.supabase.co',
+    keyIsPlaceholder: supabaseAnonKey === 'placeholder-key'
+  })
+}
 
 // Create Supabase client for client-side usage
 export const supabase = createClient(
