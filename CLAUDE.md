@@ -704,6 +704,13 @@ Custom utility classes are available in `src/app/globals.css`:
 - **Accessibility**: Enhanced contrast and focus states
 - **Usage**: Use `.hera-select-content` class or automatic global styling
 
+**Dark Mode Text Visibility Fix** - CRITICAL DNA PATTERN:
+- **Problem**: Global CSS rules override Tailwind classes causing dark text on dark backgrounds
+- **Solution**: Use `!important` modifier: `!text-gray-900 dark:!text-gray-100`
+- **DNA Component**: `StatCardDNA` automatically applies this fix
+- **Usage**: Always use StatCardDNA for stat cards to ensure visibility
+- **Documentation**: See `/docs/HERA-THEME-SYSTEM.md` for complete guide
+
 **Enterprise Table Styling** - Professional data display patterns:
 - **Visual Hierarchy**: Card opacity 95%, subtle shadows, proper spacing
 - **Zebra Striping**: Alternating rows with `bg-gray-50/30 dark:bg-gray-800/20` for subtle contrast
@@ -721,6 +728,10 @@ Custom utility classes are available in `src/app/globals.css`:
 - **Avoid Global Overrides**: Remove `!important` rules like `.text-gray-700 { color: ... !important }`
 - **Background Contrast**: Use `dark:bg-gray-800/70` for better text visibility
 - **Testing Pattern**: Always verify text is readable in both light and dark modes
+- **⚡ CRITICAL FIX for Stats Cards**: Use `!text-gray-900 dark:!text-gray-100` with !important modifier
+  - Global CSS rules in `globals.css` can override Tailwind classes for `.text-2xl.font-bold`, `.text-3xl.font-bold`
+  - Solution: Force colors with `!important` modifier on stat values
+  - DNA Component: Use `StatCardDNA` from `/src/lib/dna/components/ui/stat-card-dna.tsx` which handles this automatically
 
 ## Security & Multi-Tenancy
 
@@ -792,6 +803,12 @@ import { universalApi } from '@/lib/universal-api'
 - Steve Jobs-inspired authentication interface with Apple aesthetics
 - Universal patterns: UniversalTable, DynamicForm, NavigationSystem
 - Lucide React for consistent iconography across all business contexts
+- **HERA DNA Components**:
+  - `StatCardDNA` - Statistics cards with automatic dark mode text visibility fix
+  - `MiniStatCardDNA` - Compact stat cards for dashboard summaries
+  - `StatCardGrid` - Responsive grid layout for stat cards
+  - `ThemeProviderDNA` - Universal theme management with dark/light mode support
+- **HERA Theme System** - Complete theming solution with semantic colors (see `/docs/HERA-THEME-SYSTEM.md`)
 
 ## Universal Business Logic Patterns 🏗️
 
@@ -1785,7 +1802,6 @@ universal_transaction_lines → Invoice lines + journal entry lines
 - **HERA Production**: 4-8 weeks, 90% cost savings, 92% proven success rate
 - **HERA Progressive**: 30 seconds, 95% cost savings, instant deployment
 
-
 ### **📱 Progressive PWA Revolution**:
 - **Same Codebase**: Progressive trial and production use identical components
 - **DNA Integration**: All glassmorphism + Fiori components work in both modes
@@ -1797,6 +1813,41 @@ universal_transaction_lines → Invoice lines + journal entry lines
 - **Universal Reuse**: Components work across all industries and contexts
 - **MVP Guaranteed**: Auto-enhancement ensures 80%+ completeness
 - **Smart Evolution**: DNA patterns learn and improve over time
+
+### **🎯 Universal Onboarding System** ✅ PRODUCTION READY
+HERA now includes a comprehensive Smart Code-driven onboarding framework:
+
+**Key Features**:
+- **React-Joyride Integration**: Professional guided tours with HERA abstractions
+- **Smart Code Tours**: Every tour and step identified by `HERA.UI.ONBOARD.*` codes
+- **Universal Analytics**: All interactions tracked as universal_transactions
+- **Multi-Tenant Ready**: Organization isolation built into every event
+- **i18n Support**: Type-safe internationalization with message interpolation
+- **Theme System**: Light/dark/high-contrast with HERA design tokens
+- **Accessibility**: Keyboard nav, ARIA labels, reduced motion support
+- **Resilient Tours**: DOM guards, route navigation, retry logic
+- **Zero Schema Changes**: Uses existing 6-table architecture
+
+**Quick Usage**:
+```typescript
+import { HeraOnboardingProvider, useOnboarding } from '@/lib/onboarding';
+
+// Wrap your app
+<HeraOnboardingProvider
+  organizationId="org_123"
+  enabledTours={['HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1']}
+  theme="light"
+  onEmit={(txn, lines) => console.log('Event:', { txn, lines })}
+>
+  <App />
+</HeraOnboardingProvider>
+
+// Start tours anywhere
+const { startTour } = useOnboarding();
+startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1');
+```
+
+**See**: `/src/lib/onboarding/README.md` for complete documentation
 
 ### **🏆 The Ultimate Proof**:
 **HERA's universal architecture handles any business complexity with just 6 tables.** From restaurant operations to healthcare management, from manufacturing to professional services - all running on the same sacred foundation without schema changes.

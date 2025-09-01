@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,6 +10,7 @@ import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
+import { StatCardDNA, StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
 import { 
   Package, 
   AlertCircle,
@@ -29,11 +30,6 @@ import {
   ClipboardCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 interface InventoryItem {
   id: string
@@ -687,67 +683,43 @@ export default function InventoryPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide">Total Inventory Value</p>
-                <p className="text-3xl font-bold mt-2 text-gray-900 dark:text-gray-100">₹{totalValue.toLocaleString()}</p>
-                <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">+12.5% from last month</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <TrendingUp className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide">Total SKUs</p>
-                <p className="text-3xl font-bold mt-2 text-gray-900 dark:text-gray-100">{inventory.length}</p>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">{inventory.filter(i => i.entity_type === 'product').length} active products</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <Package className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide">Low Stock Alerts</p>
-                <p className="text-3xl font-bold mt-2 text-gray-900 dark:text-gray-100">{lowStockItems}</p>
-                <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1 font-medium">Requires attention</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <AlertCircle className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide">Expiring Soon</p>
-                <p className="text-3xl font-bold mt-2 text-gray-900 dark:text-gray-100">{expiringItems}</p>
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1 font-medium">Within 7 days</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <Calendar className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <StatCardGrid columns={4}>
+        <StatCardDNA
+          title="Total Inventory Value"
+          value={`₹${totalValue.toLocaleString()}`}
+          change="+12.5% from last month"
+          changeType="positive"
+          icon={TrendingUp}
+          iconGradient="from-green-500 to-emerald-500"
+        />
+        
+        <StatCardDNA
+          title="Total SKUs"
+          value={inventory.length}
+          change={`${inventory.filter(i => i.entity_type === 'product').length} active products`}
+          changeType="neutral"
+          icon={Package}
+          iconGradient="from-blue-500 to-purple-500"
+        />
+        
+        <StatCardDNA
+          title="Low Stock Alerts"
+          value={lowStockItems}
+          change="Requires attention"
+          changeType="negative"
+          icon={AlertCircle}
+          iconGradient="from-yellow-500 to-orange-500"
+        />
+        
+        <StatCardDNA
+          title="Expiring Soon"
+          value={expiringItems}
+          change="Within 7 days"
+          changeType="negative"
+          icon={Calendar}
+          iconGradient="from-red-500 to-pink-500"
+        />
+      </StatCardGrid>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">

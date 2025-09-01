@@ -221,7 +221,7 @@ Total time: < 2 minutes`}</pre>
                     Multi-level approvals based on amount, category, and department with mobile notifications
                   </p>
                 </div>
-                <span className="text-xs bg-success-subtle text-success-fg px-2 py-1 rounded">< 1 day</span>
+                <span className="text-xs bg-success-subtle text-success-fg px-2 py-1 rounded">&lt; 1 day</span>
               </div>
             </div>
             

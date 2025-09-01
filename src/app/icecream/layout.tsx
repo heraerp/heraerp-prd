@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { DemoOrgProvider, useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
-import { supabaseClient } from '@/lib/supabase-client'
+import { supabase } from '@/lib/supabase'
+import { ThemeProviderDNA, ThemeToggle } from '@/lib/dna/theme/theme-provider-dna'
 import { 
   LayoutDashboard, 
   Factory, 
@@ -114,8 +115,7 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
   const { organizationId } = useDemoOrg()
   const [productionData, setProductionData] = useState({
     totalProduction: 0,
-    efficiency: 0,
-    temperature: -19.5
+    efficiency: 0
   })
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
         
-        const { data: transactions } = await supabaseClient
+        const { data: transactions } = await supabase
           .from('universal_transactions')
           .select('*')
           .eq('organization_id', organizationId)
@@ -151,20 +151,9 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
         
         const avgEfficiency = batchCount > 0 ? totalEfficiency / batchCount : 0
         
-        // Get latest temperature reading
-        const { data: tempData } = await supabaseClient
-          .from('core_dynamic_data')
-          .select('field_value_number')
-          .eq('organization_id', organizationId)
-          .eq('field_name', 'current_temperature')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single()
-        
         setProductionData({
           totalProduction: totalLiters,
-          efficiency: avgEfficiency,
-          temperature: tempData?.field_value_number || -19.5
+          efficiency: avgEfficiency
         })
       } catch (error) {
         console.error('Error fetching production data:', error)
@@ -197,13 +186,8 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        {/* Temperature Alert */}
-        <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900 rounded-full">
-          <Snowflake className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
-            {productionData.temperature.toFixed(1)}°C
-          </span>
-        </div>
+        {/* Theme Toggle */}
+        <ThemeToggle showLabel />
         
         {/* User Menu */}
         <div className="flex items-center space-x-3">
@@ -250,8 +234,10 @@ export default function IceCreamLayout({
   children: React.ReactNode
 }) {
   return (
-    <DemoOrgProvider>
-      <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
-    </DemoOrgProvider>
+    <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
+      <DemoOrgProvider>
+        <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
+      </DemoOrgProvider>
+    </ThemeProviderDNA>
   )
 }

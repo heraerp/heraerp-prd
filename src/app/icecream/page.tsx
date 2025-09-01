@@ -174,19 +174,19 @@ export default function IceCreamDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-100">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
           Ice Cream Manufacturing Dashboard
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
           Real-time overview of your ice cream production and operations
         </p>
         {/* Organization Info */}
-        <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-700 inline-block">
-          <p className="text-sm text-gray-300">
-            <span className="text-gray-500">Demo Organization:</span>{' '}
-            <span className="font-medium text-white">{organizationName || 'Loading...'}</span>
+        <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            <span className="text-gray-500 dark:text-gray-500">Demo Organization:</span>{' '}
+            <span className="font-medium text-gray-900 dark:text-white">{organizationName || 'Loading...'}</span>
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
             Organization ID: {organizationId}
           </p>
         </div>
@@ -195,10 +195,10 @@ export default function IceCreamDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="relative overflow-hidden bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <Card key={stat.title} className="relative overflow-hidden backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-gray-300">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide">
                   {stat.title}
                 </CardTitle>
                 <div className={cn(
@@ -212,17 +212,17 @@ export default function IceCreamDashboard() {
             <CardContent className="pt-0">
               {loading ? (
                 <div className="space-y-2">
-                  <div className="h-8 w-20 bg-gray-700 rounded animate-pulse" />
-                  <div className="h-3 w-24 bg-gray-700 rounded animate-pulse" />
+                  <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  <div className="h-3 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                 </div>
               ) : (
                 <div>
                   <div className="text-4xl font-black tracking-tight">
-                    <span className={stat.value === 0 ? "text-gray-300" : "text-white"}>
+                    <span className={stat.value === 0 ? "text-gray-400 dark:text-gray-500" : "!text-gray-900 dark:!text-gray-100"}>
                       {stat.value}
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-gray-400 mt-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                     {stat.change}
                   </p>
                 </div>
@@ -233,22 +233,22 @@ export default function IceCreamDashboard() {
       </div>
 
       {/* Production Efficiency */}
-      <Card className="bg-gray-800 border border-gray-700 shadow-sm">
+      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white">Production Efficiency</CardTitle>
-            <Activity className="w-5 h-5 text-gray-400" />
+            <CardTitle className="text-gray-900 dark:text-white">Production Efficiency</CardTitle>
+            <Activity className="w-5 h-5 text-gray-400 dark:text-gray-400" />
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-300">Current Efficiency</span>
-              <span className="text-2xl font-bold text-white">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Current Efficiency</span>
+              <span className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">
                 {data.productionEfficiency.toFixed(1)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
               <div 
                 className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${data.productionEfficiency}%` }}
@@ -259,28 +259,28 @@ export default function IceCreamDashboard() {
       </Card>
 
       {/* Recent Transactions */}
-      <Card className="bg-gray-800 border border-gray-700 shadow-sm">
+      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-white">Recent Transactions</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-white">Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {data.recentTransactions.slice(0, 5).map((txn) => (
-              <div key={txn.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-900 border border-gray-700">
+              <div key={txn.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center space-x-4">
                   {getTransactionIcon(txn.transaction_type)}
                   <div>
-                    <p className="font-medium text-white">{txn.transaction_code}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="font-medium text-gray-900 dark:text-white">{txn.transaction_code}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {txn.transaction_type.replace(/_/g, ' ').toUpperCase()}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-white">
+                  <p className="font-semibold text-gray-900 dark:text-white">
                     {txn.total_amount ? `₹${txn.total_amount.toFixed(2)}` : '-'}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {new Date(txn.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -292,43 +292,43 @@ export default function IceCreamDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg hover:shadow-xl transition-all cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <Factory className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">Start Production</h3>
-                <p className="text-sm text-gray-400">Create new batch</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Start Production</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Create new batch</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg hover:shadow-xl transition-all cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <TruckIcon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">Schedule Delivery</h3>
-                <p className="text-sm text-gray-400">Transfer to outlets</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Schedule Delivery</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Transfer to outlets</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+        <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg hover:shadow-xl transition-all cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">Quality Check</h3>
-                <p className="text-sm text-gray-400">Test products</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Quality Check</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Test products</p>
               </div>
             </div>
           </CardContent>

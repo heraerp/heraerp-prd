@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { StatCardDNA, StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
 import { 
   Store,
   MapPin,
@@ -21,11 +22,6 @@ import {
   Calendar
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Kochi Ice Cream Org ID
 const ORG_ID = '1471e87b-b27e-42ef-8192-343cc5e0d656'
@@ -180,65 +176,35 @@ export default function OutletsPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Outlets</p>
-                <p className="text-2xl font-bold mt-1">{outlets.length}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                <Store className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
-                <p className="text-2xl font-bold mt-1">
-                  ₹{outlets.reduce((sum, o) => sum + (o.sales || 0), 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Staff</p>
-                <p className="text-2xl font-bold mt-1">12</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Avg Daily Sales</p>
-                <p className="text-2xl font-bold mt-1">₹42,000</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <StatCardGrid columns={4}>
+        <StatCardDNA
+          title="Total Outlets"
+          value={outlets.length}
+          icon={Store}
+          iconGradient="from-green-500 to-emerald-500"
+        />
+        
+        <StatCardDNA
+          title="Total Revenue"
+          value={`₹${outlets.reduce((sum, o) => sum + (o.sales || 0), 0).toLocaleString()}`}
+          icon={DollarSign}
+          iconGradient="from-blue-500 to-purple-500"
+        />
+        
+        <StatCardDNA
+          title="Active Staff"
+          value={12}
+          icon={Users}
+          iconGradient="from-purple-500 to-pink-500"
+        />
+        
+        <StatCardDNA
+          title="Avg Daily Sales"
+          value="₹42,000"
+          icon={TrendingUp}
+          iconGradient="from-orange-500 to-pink-500"
+        />
+      </StatCardGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Outlet List */}

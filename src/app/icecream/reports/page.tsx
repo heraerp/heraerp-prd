@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { StatCardDNA, StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
 import { 
   FileText,
   Download,
@@ -20,11 +21,6 @@ import {
   Send
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Kochi Ice Cream Org ID
 const ORG_ID = '1471e87b-b27e-42ef-8192-343cc5e0d656'
@@ -174,55 +170,35 @@ export default function ReportsPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-indigo-200/50 dark:border-indigo-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Available Reports</p>
-                <p className="text-2xl font-bold mt-1">{availableReports.length}</p>
-              </div>
-              <FileText className="w-8 h-8 text-indigo-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-indigo-200/50 dark:border-indigo-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Generated Today</p>
-                <p className="text-2xl font-bold mt-1">3</p>
-              </div>
-              <Clock className="w-8 h-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-indigo-200/50 dark:border-indigo-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Scheduled</p>
-                <p className="text-2xl font-bold mt-1">5</p>
-              </div>
-              <Calendar className="w-8 h-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-indigo-200/50 dark:border-indigo-800/50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Storage</p>
-                <p className="text-2xl font-bold mt-1">2.4 GB</p>
-              </div>
-              <Download className="w-8 h-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <StatCardGrid columns={4}>
+        <StatCardDNA
+          title="Available Reports"
+          value={availableReports.length}
+          icon={FileText}
+          iconGradient="from-indigo-500 to-purple-500"
+        />
+        
+        <StatCardDNA
+          title="Generated Today"
+          value={3}
+          icon={Clock}
+          iconGradient="from-green-500 to-emerald-500"
+        />
+        
+        <StatCardDNA
+          title="Scheduled"
+          value={5}
+          icon={Calendar}
+          iconGradient="from-purple-500 to-pink-500"
+        />
+        
+        <StatCardDNA
+          title="Total Storage"
+          value="2.4 GB"
+          icon={Download}
+          iconGradient="from-blue-500 to-cyan-500"
+        />
+      </StatCardGrid>
 
       {/* Report Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -249,8 +225,8 @@ export default function ReportsPage() {
                   </Badge>
                 </div>
                 
-                <h3 className="font-semibold text-lg mb-2">{report.name}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-gray-100">{report.name}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   {report.description}
                 </p>
                 
@@ -310,17 +286,17 @@ export default function ReportsPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Date Range</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Date Range</label>
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="date"
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800"
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                     value={dateRange.from}
                     onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
                   />
                   <input
                     type="date"
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800"
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                     value={dateRange.to}
                     onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
                   />
@@ -328,8 +304,8 @@ export default function ReportsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Format</label>
-                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800">
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Format</label>
+                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100">
                   <option>PDF</option>
                   <option>Excel</option>
                   <option>CSV</option>
@@ -337,18 +313,18 @@ export default function ReportsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Filters</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Filters</label>
                 <div className="flex items-center space-x-2">
                   <Filter className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
                     Additional filters available based on report type
                   </span>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Schedule</label>
-                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800">
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Schedule</label>
+                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100">
                   <option>One-time</option>
                   <option>Daily</option>
                   <option>Weekly</option>
