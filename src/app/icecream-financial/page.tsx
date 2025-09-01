@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { supabaseClient } from '@/lib/supabase-client'
+import { apiClient } from '@/lib/api-client'
 import { 
   IceCream,
   BookOpen,
@@ -62,64 +62,56 @@ export default function IceCreamFinancialPage() {
       const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
       const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
 
-      // Fetch revenue transactions for current month
-      const { data: currentMonthTxns } = await supabaseClient
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .in('transaction_type', ['pos_sale', 'invoice'])
-        .gte('transaction_date', startOfMonth.toISOString())
-        .lte('transaction_date', now.toISOString())
+      // Fetch all transactions using API client
+      const allTransactions = await apiClient.getTransactions(organizationId, undefined, 200)
 
-      // Fetch last month revenue for comparison
-      const { data: lastMonthTxns } = await supabaseClient
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .in('transaction_type', ['pos_sale', 'invoice'])
-        .gte('transaction_date', startOfLastMonth.toISOString())
-        .lte('transaction_date', endOfLastMonth.toISOString())
+      // Filter transactions by date and type (client-side filtering for now)
+      const currentMonthTxns = allTransactions.filter(t => {
+        const txnDate = new Date(t.transaction_date)
+        return ['pos_sale', 'invoice'].includes(t.transaction_type) &&
+               txnDate >= startOfMonth && txnDate <= now
+      })
+
+      const lastMonthTxns = allTransactions.filter(t => {
+        const txnDate = new Date(t.transaction_date)
+        return ['pos_sale', 'invoice'].includes(t.transaction_type) &&
+               txnDate >= startOfLastMonth && txnDate <= endOfLastMonth
+      })
 
       // Calculate revenues
-      const currentRevenue = currentMonthTxns?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
-      const lastRevenue = lastMonthTxns?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      const currentRevenue = currentMonthTxns.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      const lastRevenue = lastMonthTxns.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const revenueGrowth = lastRevenue > 0 ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 : 0
 
-      // Fetch cold chain costs (energy, maintenance, etc.)
-      const { data: coldChainTxns } = await supabaseClient
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .in('transaction_type', ['expense', 'utility'])
-        .or('smart_code.ilike.%COLD%,smart_code.ilike.%FREEZER%,smart_code.ilike.%ENERGY%')
-        .gte('transaction_date', startOfMonth.toISOString())
+      // Filter cold chain costs (client-side filtering)
+      const coldChainTxns = allTransactions.filter(t => {
+        const txnDate = new Date(t.transaction_date)
+        return ['expense', 'utility'].includes(t.transaction_type) &&
+               txnDate >= startOfMonth &&
+               (t.smart_code?.includes('COLD') || 
+                t.smart_code?.includes('FREEZER') || 
+                t.smart_code?.includes('ENERGY'))
+      })
 
-      const coldChainTotal = coldChainTxns?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      const coldChainTotal = coldChainTxns.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const coldChainPercent = currentRevenue > 0 ? (coldChainTotal / currentRevenue) * 100 : 0
 
-      // Fetch AP outstanding
-      const { data: apTxns } = await supabaseClient
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .eq('transaction_type', 'purchase_invoice')
-        .eq('transaction_status', 'pending')
+      // Filter AP and AR from existing transactions
+      const apTxns = allTransactions.filter(t => 
+        t.transaction_type === 'purchase_invoice' && t.transaction_status === 'pending'
+      )
 
-      const apOutstanding = apTxns?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
-      const apOverdue = apTxns?.filter(t => {
+      const apOutstanding = apTxns.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      const apOverdue = apTxns.filter(t => {
         const dueDate = new Date(t.metadata?.due_date || t.created_at)
         return dueDate < now
-      }).length || 0
+      }).length
 
-      // Fetch AR outstanding
-      const { data: arTxns } = await supabaseClient
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .eq('transaction_type', 'invoice')
-        .eq('transaction_status', 'pending')
+      const arTxns = allTransactions.filter(t => 
+        t.transaction_type === 'invoice' && t.transaction_status === 'pending'
+      )
 
-      const arOutstanding = arTxns?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      const arOutstanding = arTxns.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       
       // Calculate DSO (Days Sales Outstanding)
       const avgDailySales = currentRevenue / now.getDate()
