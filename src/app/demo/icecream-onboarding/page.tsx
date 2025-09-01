@@ -74,18 +74,25 @@ export default function IceCreamOnboardingDemo() {
     
     // The tour will auto-start on that page
     // Clear the completion status to allow restart
-    localStorage.removeItem(`hera_onboarding_${tourCode}_completed`)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(`hera_onboarding_${tourCode}_completed`)
+    }
   }
 
   const resetAllTours = () => {
-    tours.forEach(tour => {
-      localStorage.removeItem(`hera_onboarding_${tour.code}_completed`)
-    })
-    alert('All tours have been reset. They will auto-start when you visit each page.')
+    if (typeof window !== 'undefined') {
+      tours.forEach(tour => {
+        localStorage.removeItem(`hera_onboarding_${tour.code}_completed`)
+      })
+      alert('All tours have been reset. They will auto-start when you visit each page.')
+    }
   }
 
   const isTourCompleted = (tourCode: string) => {
-    return localStorage.getItem(`hera_onboarding_${tourCode}_completed`) === 'true'
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(`hera_onboarding_${tourCode}_completed`) === 'true'
+    }
+    return false
   }
 
   return (
