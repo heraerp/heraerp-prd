@@ -1,0 +1,6 @@
+# Force Node.js detection and prevent Deno usage
+[providers]
+node = "20.11.0"
+
+[variables]
+NODE_ENV = "production"

@@ -1,0 +1,10 @@
+node_modules
+.git
+.next
+packages/hera-testing/node_modules
+packages/hera-testing/dist
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
