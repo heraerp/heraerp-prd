@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
-import { supabaseClient } from '@/lib/supabase-client'
+// import { createClient } from '@supabase/supabase-js'
 // TODO: Re-enable once React 18 onboarding is ready
 // import { useOnboarding } from '@/lib/onboarding'
 import { Button } from '@/components/ui/button'
@@ -48,6 +48,7 @@ export default function IceCreamDashboard() {
     productionEfficiency: 0
   })
 
+
   // TODO: Re-enable once React 18 onboarding is ready
   // // Auto-start tour for first-time users
   // useEffect(() => {
@@ -73,89 +74,23 @@ export default function IceCreamDashboard() {
   async function fetchDashboardData() {
     if (!organizationId) return
     
-    console.log('Fetching dashboard data for org:', organizationId)
+    console.log('Fetching dashboard data via API for org:', organizationId)
     
     try {
-      // Fetch products
-      const { data: products, error: productsError } = await supabaseClient
-        .from('core_entities')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .eq('entity_type', 'product')
+      const response = await fetch(`/api/icecream/dashboard?org_id=${organizationId}`)
       
-      if (productsError) {
-        console.error('Error fetching products:', productsError)
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
-
-      // Fetch outlets
-      const { data: outlets, error: outletsError } = await supabaseClient
-        .from('core_entities')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .eq('entity_type', 'location')
-        .like('entity_code', 'OUTLET%')
       
-      if (outletsError) {
-        console.error('Error fetching outlets:', outletsError)
-      }
-
-      // Fetch recent transactions
-      const { data: transactions, error: transactionsError } = await supabaseClient
-        .from('universal_transactions')
-        .select(`
-          *,
-          universal_transaction_lines (*)
-        `)
-        .eq('organization_id', organizationId)
-        .order('created_at', { ascending: false })
-        .limit(10)
+      const dashboardData = await response.json()
       
-      if (transactionsError) {
-        console.error('Error fetching transactions:', transactionsError)
-      }
-
-      // Calculate production metrics
-      const productionTxns = transactions?.filter(t => t.transaction_type === 'production_batch') || []
-      const qcTxns = transactions?.filter(t => t.transaction_type === 'quality_check') || []
+      console.log('Dashboard data from API:', dashboardData)
       
-      // Calculate efficiency from production transactions
-      let totalEfficiency = 0
-      productionTxns.forEach(txn => {
-        if (txn.metadata?.yield_variance_percent) {
-          totalEfficiency += (100 + parseFloat(txn.metadata.yield_variance_percent))
-        }
-      })
-      const avgEfficiency = productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
-
-      // Enhanced debug logging
-      console.log('Dashboard data summary:', {
-        products: products?.length || 0,
-        outlets: outlets?.length || 0,
-        transactions: transactions?.length || 0,
-        productionTxns: productionTxns.length
-      })
-      
-      // Log sample data if available
-      if (products && products.length > 0) {
-        console.log('Sample product:', products[0])
-      }
-      if (transactions && transactions.length > 0) {
-        console.log('Sample transaction:', transactions[0])
-      }
-
-      setData({
-        totalProducts: products?.length || 0,
-        activeProduction: productionTxns.filter(t => t.transaction_status === 'in_progress').length,
-        pendingQC: productionTxns.filter(t => !qcTxns.find(q => q.reference_number === t.transaction_code)).length,
-        totalOutlets: outlets?.length || 0,
-        recentTransactions: transactions || [],
-        inventoryLevels: [],
-        productionEfficiency: avgEfficiency
-      })
-
+      setData(dashboardData)
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
-    } finally {
       setLoading(false)
     }
   }
