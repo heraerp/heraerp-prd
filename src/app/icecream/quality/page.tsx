@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { useOnboarding } from '@/lib/onboarding'
+// TODO: Re-enable once React 18 onboarding is ready
+// import { useOnboarding } from '@/lib/onboarding'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -48,7 +49,9 @@ interface TestResult {
 }
 
 export default function QualityControlPage() {
-  const { startTour, isActive } = useOnboarding()
+  // TODO: Re-enable once React 18 onboarding is ready
+  // const { startTour, isActive } = useOnboarding()
+  const isActive = false // temporary placeholder
   const [loading, setLoading] = useState(true)
   const [qualityChecks, setQualityChecks] = useState<QualityCheck[]>([])
   const [pendingBatches, setPendingBatches] = useState<any[]>([])

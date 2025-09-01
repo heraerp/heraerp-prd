@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
-import { useOnboarding } from '@/lib/onboarding'
+// TODO: Re-enable once React 18 onboarding is ready
+// import { useOnboarding } from '@/lib/onboarding'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -42,7 +43,9 @@ interface Recipe {
 
 export default function ProductionPage() {
   const { organizationId, loading: orgLoading } = useDemoOrg()
-  const { startTour, isActive } = useOnboarding()
+  // TODO: Re-enable once React 18 onboarding is ready
+  // const { startTour, isActive } = useOnboarding()
+  const isActive = false // temporary placeholder
   const [loading, setLoading] = useState(true)
   const [batches, setBatches] = useState<ProductionBatch[]>([])
   const [recipes, setRecipes] = useState<Recipe[]>([])

@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
-import { useOnboarding } from '@/lib/onboarding'
+// TODO: Re-enable once React 18 onboarding is ready
+// import { useOnboarding } from '@/lib/onboarding'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
@@ -59,7 +60,9 @@ interface StockLevel {
 
 export default function InventoryPage() {
   const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
-  const { startTour, isActive } = useOnboarding()
+  // TODO: Re-enable once React 18 onboarding is ready
+  // const { startTour, isActive } = useOnboarding()
+  const isActive = false // temporary placeholder
   const { toast } = useToast()
   const [loading, setLoading] = useState(true)
   const [inventory, setInventory] = useState<InventoryItem[]>([])
@@ -498,7 +501,8 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2" data-testid="inventory-actions">
-          <Button
+          {/* TODO: Re-enable once React 18 onboarding is ready */}
+          {/* <Button
             onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.INVENTORY.v1')}
             variant="outline"
             size="sm"
@@ -507,7 +511,7 @@ export default function InventoryPage() {
           >
             <HelpCircle className="h-4 w-4" />
             {isActive ? 'Tour Running...' : 'Help'}
-          </Button>
+          </Button> */}
           
           <Dialog open={showProductionDialog} onOpenChange={setShowProductionDialog}>
             <DialogTrigger asChild>
