@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
+import { useOnboarding } from '@/lib/onboarding'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
@@ -27,7 +28,8 @@ import {
   ArrowRightLeft,
   Trash2,
   Factory,
-  ClipboardCheck
+  ClipboardCheck,
+  HelpCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -57,6 +59,7 @@ interface StockLevel {
 
 export default function InventoryPage() {
   const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
+  const { startTour, isActive } = useOnboarding()
   const { toast } = useToast()
   const [loading, setLoading] = useState(true)
   const [inventory, setInventory] = useState<InventoryItem[]>([])
@@ -485,7 +488,7 @@ export default function InventoryPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-testid="inventory-header">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
             Inventory Management
@@ -494,10 +497,21 @@ export default function InventoryPage() {
             Track stock levels across all locations with FEFO management
           </p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2" data-testid="inventory-actions">
+          <Button
+            onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.INVENTORY.v1')}
+            variant="outline"
+            size="sm"
+            disabled={isActive}
+            className="flex items-center gap-2"
+          >
+            <HelpCircle className="h-4 w-4" />
+            {isActive ? 'Tour Running...' : 'Help'}
+          </Button>
+          
           <Dialog open={showProductionDialog} onOpenChange={setShowProductionDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="border-green-200 hover:bg-green-50">
+              <Button variant="outline" className="border-green-200 hover:bg-green-50" data-testid="new-production-button">
                 <Factory className="w-4 h-4 mr-2" />
                 New Production
               </Button>
@@ -541,7 +555,7 @@ export default function InventoryPage() {
 
           <Dialog open={showTransferDialog} onOpenChange={setShowTransferDialog}>
             <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white">
+              <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white" data-testid="stock-transfer-button">
                 <ArrowRightLeft className="w-4 h-4 mr-2" />
                 Stock Transfer
               </Button>
@@ -683,7 +697,7 @@ export default function InventoryPage() {
       </div>
 
       {/* Summary Cards */}
-      <StatCardGrid columns={4}>
+      <StatCardGrid columns={4} data-testid="inventory-summary">
         <StatCardDNA
           title="Total Inventory Value"
           value={`₹${totalValue.toLocaleString()}`}
@@ -722,7 +736,7 @@ export default function InventoryPage() {
       </StatCardGrid>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4" data-testid="inventory-filters">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <Input
@@ -730,6 +744,7 @@ export default function InventoryPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
+            data-testid="inventory-search"
           />
         </div>
         <select
@@ -745,7 +760,7 @@ export default function InventoryPage() {
       </div>
 
       {/* Stock Table */}
-      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-xl">
+      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-cyan-200/50 dark:border-cyan-800/50 shadow-xl" data-testid="stock-table">
         <CardHeader className="border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl font-semibold">Current Stock Levels</CardTitle>

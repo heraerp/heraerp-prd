@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
+import { useOnboarding } from '@/lib/onboarding'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +18,8 @@ import {
   Clock,
   Beaker,
   TrendingUp,
-  Package
+  Package,
+  HelpCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -40,6 +42,7 @@ interface Recipe {
 
 export default function ProductionPage() {
   const { organizationId, loading: orgLoading } = useDemoOrg()
+  const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
   const [batches, setBatches] = useState<ProductionBatch[]>([])
   const [recipes, setRecipes] = useState<Recipe[]>([])
@@ -151,7 +154,7 @@ export default function ProductionPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-testid="production-header">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
             Production Management
@@ -160,10 +163,25 @@ export default function ProductionPage() {
             Monitor and manage ice cream production batches
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-          <Plus className="w-4 h-4 mr-2" />
-          New Batch
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button
+            onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.PRODUCTION.v1')}
+            variant="outline"
+            size="sm"
+            disabled={isActive}
+            className="flex items-center gap-2"
+          >
+            <HelpCircle className="h-4 w-4" />
+            {isActive ? 'Tour Running...' : 'Help'}
+          </Button>
+          <Button 
+            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+            data-testid="create-batch-button"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Batch
+          </Button>
+        </div>
       </div>
 
       {/* Production Summary */}
@@ -253,7 +271,7 @@ export default function ProductionPage() {
       </div>
 
       {/* Batch List */}
-      <div className="space-y-4">
+      <div className="space-y-4" data-testid="active-batches">
         {loading ? (
           <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-purple-200/50 dark:border-purple-800/50">
             <CardContent className="p-12 text-center">

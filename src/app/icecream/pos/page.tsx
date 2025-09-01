@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { useOnboarding } from '@/lib/onboarding'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +18,8 @@ import {
   Receipt,
   Snowflake,
   Package,
-  Search
+  Search,
+  HelpCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -51,6 +53,7 @@ interface PaymentMethod {
 }
 
 export default function POSTerminalPage() {
+  const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState<Product[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
@@ -240,7 +243,7 @@ export default function POSTerminalPage() {
       {/* Products Section */}
       <div className="flex-1 pr-4 overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-4" data-testid="pos-header">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
             POS Terminal
           </h1>
@@ -249,25 +252,39 @@ export default function POSTerminalPage() {
               value={selectedOutlet}
               onChange={(e) => setSelectedOutlet(e.target.value)}
               className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-800"
+              data-testid="outlet-selector"
             >
               {outlets.map(outlet => (
                 <option key={outlet.id} value={outlet.id}>{outlet.entity_name}</option>
               ))}
             </select>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64"
-              />
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.POS.v1')}
+                variant="outline"
+                size="sm"
+                disabled={isActive}
+                className="flex items-center gap-2"
+              >
+                <HelpCircle className="h-4 w-4" />
+                {isActive ? 'Tour Running...' : 'Help'}
+              </Button>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-64"
+                  data-testid="product-search"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Categories */}
-        <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
+        <div className="flex space-x-2 mb-4 overflow-x-auto pb-2" data-testid="category-filters">
           <button
             onClick={() => setSelectedCategory('all')}
             className={cn(
@@ -308,7 +325,7 @@ export default function POSTerminalPage() {
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" data-testid="products-grid">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-pulse">Loading products...</div>
@@ -346,7 +363,7 @@ export default function POSTerminalPage() {
       </div>
 
       {/* Cart Section */}
-      <div className="w-96 bg-white dark:bg-slate-900 border-l border-gray-200 dark:border-gray-800 flex flex-col">
+      <div className="w-96 bg-white dark:bg-slate-900 border-l border-gray-200 dark:border-gray-800 flex flex-col" data-testid="cart-section">
         {/* Cart Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between">
@@ -428,7 +445,7 @@ export default function POSTerminalPage() {
             </div>
 
             {/* Payment Buttons */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2" data-testid="payment-buttons">
               {paymentMethods.slice(0, 4).map((method) => {
                 const Icon = method.metadata?.icon === '💵' ? Banknote :
                              method.metadata?.icon === '💳' ? CreditCard :
@@ -445,6 +462,7 @@ export default function POSTerminalPage() {
                     key={method.id}
                     onClick={() => processSale(method.entity_code)}
                     className={`bg-gradient-to-r ${gradient} text-white`}
+                    data-testid={`payment-${method.entity_code.toLowerCase()}`}
                   >
                     <Icon className="w-4 h-4 mr-1" />
                     {method.entity_name}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { useOnboarding } from '@/lib/onboarding'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,7 +17,8 @@ import {
   TrendingUp,
   Shield,
   Beaker,
-  Activity
+  Activity,
+  HelpCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -46,6 +48,7 @@ interface TestResult {
 }
 
 export default function QualityControlPage() {
+  const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
   const [qualityChecks, setQualityChecks] = useState<QualityCheck[]>([])
   const [pendingBatches, setPendingBatches] = useState<any[]>([])
@@ -127,7 +130,7 @@ export default function QualityControlPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-testid="quality-header">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Quality Control
@@ -136,14 +139,26 @@ export default function QualityControlPage() {
             FSSAI compliance testing and quality assurance
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
-          <FileText className="w-4 h-4 mr-2" />
-          Generate Report
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button
+            onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.QUALITY.v1')}
+            variant="outline"
+            size="sm"
+            disabled={isActive}
+            className="flex items-center gap-2"
+          >
+            <HelpCircle className="h-4 w-4" />
+            {isActive ? 'Tour Running...' : 'Help'}
+          </Button>
+          <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white" data-testid="generate-report-button">
+            <FileText className="w-4 h-4 mr-2" />
+            Generate Report
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4" data-testid="quality-stats">
         <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -202,7 +217,7 @@ export default function QualityControlPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit" data-testid="quality-tabs">
         <button
           onClick={() => setActiveTab('pending')}
           className={cn(
@@ -211,6 +226,7 @@ export default function QualityControlPage() {
               ? "bg-white dark:bg-slate-900 text-green-600 dark:text-green-400 shadow-sm"
               : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
           )}
+          data-testid="pending-tab"
         >
           Pending Tests ({pendingBatches.length})
         </button>
@@ -222,6 +238,7 @@ export default function QualityControlPage() {
               ? "bg-white dark:bg-slate-900 text-green-600 dark:text-green-400 shadow-sm"
               : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
           )}
+          data-testid="completed-tab"
         >
           Completed ({qualityChecks.length})
         </button>
@@ -229,7 +246,7 @@ export default function QualityControlPage() {
 
       {/* Content */}
       {activeTab === 'pending' ? (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="pending-tests">
           {loading ? (
             <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
               <CardContent className="p-12 text-center">
@@ -279,7 +296,7 @@ export default function QualityControlPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="completed-tests">
           {loading ? (
             <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-green-200/50 dark:border-green-800/50">
               <CardContent className="p-12 text-center">

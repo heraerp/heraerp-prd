@@ -139,7 +139,7 @@ export function HeraSidebar({
         </div>
 
         {/* Navigation */}
-        <nav className="mt-6 px-4 flex-1 overflow-y-auto">
+        <nav className="mt-6 px-4 flex-1 overflow-y-auto" data-testid="hera-sidebar-nav">
           <div className="space-y-1">
             {navigation.map((item) => {
               const active = isActive(item.href)

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { supabaseClient } from '@/lib/supabase-client'
+import { useOnboarding } from '@/lib/onboarding'
+import { Button } from '@/components/ui/button'
 import { 
   Factory, 
   Package, 
@@ -14,7 +16,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  TruckIcon
+  TruckIcon,
+  HelpCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -30,6 +33,7 @@ interface DashboardData {
 
 export default function IceCreamDashboard() {
   const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
+  const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<DashboardData>({
     totalProducts: 0,
@@ -40,6 +44,18 @@ export default function IceCreamDashboard() {
     inventoryLevels: [],
     productionEfficiency: 0
   })
+
+  // Auto-start tour for first-time users
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('hera_onboarding_HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1_completed')
+    
+    if (!hasSeenTour && !isActive && !loading && !orgLoading) {
+      // Start tour after a short delay
+      setTimeout(() => {
+        startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1', { auto: true })
+      }, 1500)
+    }
+  }, [loading, orgLoading, isActive, startTour])
 
   useEffect(() => {
     if (organizationId && !orgLoading) {
@@ -173,27 +189,43 @@ export default function IceCreamDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-          Ice Cream Manufacturing Dashboard
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Real-time overview of your ice cream production and operations
-        </p>
-        {/* Organization Info */}
-        <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="text-gray-500 dark:text-gray-500">Demo Organization:</span>{' '}
-            <span className="font-medium text-gray-900 dark:text-white">{organizationName || 'Loading...'}</span>
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            Organization ID: {organizationId}
-          </p>
+      <div data-testid="ice-cream-header">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              Ice Cream Manufacturing Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              Real-time overview of your ice cream production and operations
+            </p>
+            {/* Organization Info */}
+            <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <span className="text-gray-500 dark:text-gray-500">Demo Organization:</span>{' '}
+                <span className="font-medium text-gray-900 dark:text-white">{organizationName || 'Loading...'}</span>
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                Organization ID: {organizationId}
+              </p>
+            </div>
+          </div>
+          
+          {/* Help Button */}
+          <Button
+            onClick={() => startTour('HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1')}
+            variant="outline"
+            size="sm"
+            disabled={isActive}
+            className="flex items-center gap-2"
+          >
+            <HelpCircle className="h-4 w-4" />
+            {isActive ? 'Tour Running...' : 'Start Tour'}
+          </Button>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
         {stats.map((stat) => (
           <Card key={stat.title} className="relative overflow-hidden backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader className="pb-2">
@@ -233,7 +265,7 @@ export default function IceCreamDashboard() {
       </div>
 
       {/* Production Efficiency */}
-      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg">
+      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg" data-testid="production-status">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-gray-900 dark:text-white">Production Efficiency</CardTitle>
@@ -259,7 +291,7 @@ export default function IceCreamDashboard() {
       </Card>
 
       {/* Recent Transactions */}
-      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg">
+      <Card className="backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-pink-200/50 dark:border-pink-800/50 shadow-lg" data-testid="inventory-levels">
         <CardHeader>
           <CardTitle className="text-gray-900 dark:text-white">Recent Transactions</CardTitle>
         </CardHeader>
