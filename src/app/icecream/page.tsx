@@ -72,6 +72,23 @@ export default function IceCreamDashboard() {
     console.log('Fetching dashboard data for org:', organizationId)
     
     try {
+      // Test query to check if we can access any data
+      const { data: testOrgs, error: testError } = await supabaseClient
+        .from('core_organizations')
+        .select('id, organization_name')
+        .limit(1)
+      
+      console.log('Test query - Organizations accessible:', !!testOrgs, testError || 'No error')
+      
+      // Check if this specific organization exists
+      const { data: thisOrg, error: thisOrgError } = await supabaseClient
+        .from('core_organizations')
+        .select('*')
+        .eq('id', organizationId)
+        .single()
+      
+      console.log('This organization exists:', !!thisOrg, thisOrgError || 'No error')
+      
       // Fetch products
       const { data: products, error: productsError } = await supabaseClient
         .from('core_entities')

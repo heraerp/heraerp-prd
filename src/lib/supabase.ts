@@ -10,7 +10,11 @@ if (typeof window !== 'undefined') {
     hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     urlIsPlaceholder: supabaseUrl === 'https://placeholder.supabase.co',
-    keyIsPlaceholder: supabaseAnonKey === 'placeholder-key'
+    keyIsPlaceholder: supabaseAnonKey === 'placeholder-key',
+    // Extract project ID from URL (safe to log)
+    projectId: supabaseUrl.includes('supabase.co') 
+      ? supabaseUrl.split('.')[0].replace('https://', '') 
+      : 'unknown'
   })
 }
 
