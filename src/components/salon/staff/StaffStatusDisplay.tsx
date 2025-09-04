@@ -102,7 +102,11 @@ export function StaffStatusDisplay() {
     if (!currentOrganization) return
     
     const db = getSupabase()
-    if (!db) return
+    if (!db) {
+      // No Supabase configured - show empty state
+      setIsLoading(false)
+      return
+    }
     
     try {
       // Get all staff members
