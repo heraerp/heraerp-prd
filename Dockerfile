@@ -38,9 +38,9 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/api/health-simple', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+# Health check using the simplified health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
-# Start the application using our custom server script
-CMD ["node", "scripts/start-server.js"]
+# Start the application using the shell script
+CMD ["./start.sh"]
