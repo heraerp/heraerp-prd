@@ -3,15 +3,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 
-// Initialize services
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Initialize services lazily
+let supabase: ReturnType<typeof createClient> | null = null
+let anthropic: Anthropic | null = null
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!
-})
+function getSupabase() {
+  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    )
+  }
+  return supabase
+}
+
+function getAnthropic() {
+  if (!anthropic && process.env.ANTHROPIC_API_KEY) {
+    anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY
+    })
+  }
+  return anthropic
+}
 
 // Analytical thinking prompt
 const ANALYTICS_SYSTEM_PROMPT = `You are the analytical brain for HERA's universal ERP/BI system.
@@ -75,7 +88,7 @@ export async function POST(request: NextRequest) {
     
     // Use Claude for analytical processing
     if (useAnalyticsBrain && process.env.ANTHROPIC_API_KEY) {
-      const completion = await anthropic.messages.create({
+      const completion = await getAnthropic()?.messages.create({
         model: 'claude-3-5-sonnet-latest',
         max_tokens: 1500,
         temperature: 0.2,
@@ -222,7 +235,7 @@ async function generateRevenueForecast(organizationId: string, period: string = 
   const startDate = new Date()
   startDate.setMonth(startDate.getMonth() - lookbackMonths)
   
-  const { data: historicalData, error } = await supabase
+  const { data: historicalData, error } = await getSupabase()?
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -360,7 +373,7 @@ async function executeAnalyticalQueries(organizationId: string, queries: any[]) 
           })
         }
       } else if (query.type === 'entities') {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabase()?
           .from('core_entities')
           .select('*, core_dynamic_data(*)')
           .eq('organization_id', organizationId)
@@ -454,7 +467,7 @@ async function handlePatternBasedAnalytics(message: string, organizationId: stri
   
   // Revenue analysis
   if (lower.includes('revenue') || lower.includes('sales')) {
-    const { data } = await supabase
+    const { data } = await getSupabase()?
       .from('universal_transactions')
       .select('*')
       .eq('organization_id', organizationId)
@@ -507,7 +520,7 @@ async function handlePatternBasedAnalytics(message: string, organizationId: stri
   
   // Customer analysis
   if (lower.includes('customer') || lower.includes('client')) {
-    const { data } = await supabase
+    const { data } = await getSupabase()?
       .from('core_entities')
       .select('*')
       .eq('organization_id', organizationId)

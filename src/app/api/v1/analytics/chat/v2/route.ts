@@ -3,15 +3,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 
-// Initialize services
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Initialize services lazily
+let supabase: ReturnType<typeof createClient> | null = null
+let anthropic: Anthropic | null = null
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!
-})
+function getSupabase() {
+  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    )
+  }
+  return supabase
+}
+
+function getAnthropic() {
+  if (!anthropic && process.env.ANTHROPIC_API_KEY) {
+    anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY
+    })
+  }
+  return anthropic
+}
 
 // Enhanced analytical thinking prompt
 const ENHANCED_ANALYTICS_PROMPT = `You are the enhanced analytical brain for HERA's enterprise ERP/BI system (v2).
@@ -88,7 +101,12 @@ export async function POST(request: NextRequest) {
     if (useAnalyticsBrain && process.env.ANTHROPIC_API_KEY) {
       const contextInfo = buildContextString(context)
       
-      const completion = await anthropic.messages.create({
+      const anthropicClient = getAnthropic()
+      if (!anthropicClient) {
+        return NextResponse.json({ error: 'Anthropic API not configured' }, { status: 503 })
+      }
+      
+      const completion = await anthropicClient.messages.create({
         model: 'claude-3-5-sonnet-latest',
         max_tokens: 2000,
         temperature: 0.3,
@@ -345,7 +363,7 @@ async function generateAdvancedForecast(
   const startDate = new Date()
   startDate.setMonth(startDate.getMonth() - lookbackMonths)
   
-  const { data: historicalData } = await supabase
+  const { data: historicalData } = await getSupabase()?.from
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -418,7 +436,7 @@ async function analyzeTrends(
   context: AnalyticsContext
 ): Promise<any> {
   // Sophisticated trend analysis with anomaly detection
-  const { data } = await supabase
+  const { data } = await getSupabase()?.from
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -447,7 +465,7 @@ async function analyzeSegments(
   dimensions: string[]
 ): Promise<any> {
   // Customer segmentation analysis
-  const { data: customers } = await supabase
+  const { data: customers } = await getSupabase()?.from
     .from('core_entities')
     .select('*, core_dynamic_data(*)')
     .eq('organization_id', organizationId)
@@ -503,7 +521,7 @@ async function getMetricsForPeriod(
   const startDate = new Date(endDate)
   startDate.setDate(startDate.getDate() - days)
   
-  const { data } = await supabase
+  const { data } = await getSupabase()?.from
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
