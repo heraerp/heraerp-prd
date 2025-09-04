@@ -5,5 +5,8 @@ providers = ["node"]
 NODE_VERSION = "20.18.0"
 NODE_ENV = "production"
 
+[phases.install]
+cmds = ["npm ci"]
+
 [phases.build]
-cmds = ["npm install && npm run build:railway"]
+cmds = ["npm run build:railway"]
