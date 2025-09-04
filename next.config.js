@@ -13,7 +13,6 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  swcMinify: false, // Disable SWC minification which can cause issues
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
