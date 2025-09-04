@@ -22,8 +22,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@hera/dna-sdk": ["./packages/hera-dna-sdk/src/index"],
-      "@hera/dna-sdk/*": ["./packages/hera-dna-sdk/src/*"]
+      "@hera/dna-sdk": ["./packages/hera-dna-sdk/dist/index"],
+      "@hera/dna-sdk/*": ["./packages/hera-dna-sdk/dist/*"]
     }
   },
   "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],

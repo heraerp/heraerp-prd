@@ -33,7 +33,7 @@ const nextConfig = {
     // Ensure proper module resolution for local packages
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@hera/dna-sdk': path.resolve(__dirname, 'packages/hera-dna-sdk/src'),
+      '@hera/dna-sdk': path.resolve(__dirname, 'packages/hera-dna-sdk/dist'),
     };
 
     // Optimize for Railway's container environment
