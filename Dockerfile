@@ -36,15 +36,17 @@ RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
-EXPOSE 3000 3001
+EXPOSE 3000 8080
 
-# Health check using the main Next.js server
+# Health check using the dedicated health server
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
-  CMD node -e "require('http').get('http://localhost:3000/api/health-simple', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+  CMD node -e "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
-# Copy and make startup script executable
+# Copy server files
+COPY --chown=nextjs:nodejs server-simple.js ./
+COPY --chown=nextjs:nodejs health-check-handler.js ./
 COPY --chown=nextjs:nodejs start-railway.sh ./
 RUN chmod +x start-railway.sh
 
-# Start the application using the railway script
-CMD ["./start-railway.sh"]
+# Start the application with health check handler
+CMD ["node", "health-check-handler.js"]
