@@ -8,6 +8,10 @@ echo "Supabase Key configured: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:+Yes}"
 
 # Ensure the server can bind to all interfaces
 export HOSTNAME="0.0.0.0"
+export PORT=${PORT:-3000}
 
-# Start Next.js directly
-exec npm start
+# Add error logging
+export NODE_OPTIONS="${NODE_OPTIONS} --trace-warnings"
+
+# Start Next.js directly with port specification
+exec npm start -- -p $PORT
