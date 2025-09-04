@@ -126,8 +126,41 @@ interface SalonSettings {
 
 export default function SettingsPage() {
   const router = useRouter()
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
-  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
+  const { currentOrganization, isLoading, isLoadingOrgs } = useMultiOrgAuth()
+  const contextLoading = isLoading || isLoadingOrgs
+  
+  // For subdomain access, try to get organization directly from subdomain
+  const [subdomainOrg, setSubdomainOrg] = useState<any>(null)
+  const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(false)
+  
+  const getSubdomain = () => {
+    if (typeof window === 'undefined') return null
+    const hostname = window.location.hostname
+    if (hostname.endsWith('.lvh.me')) {
+      return hostname.split('.')[0]
+    }
+    return null
+  }
+  
+  // Load organization by subdomain if no auth context
+  useEffect(() => {
+    const subdomain = getSubdomain()
+    if (subdomain && !currentOrganization && !contextLoading) {
+      setLoadingSubdomainOrg(true)
+      fetch(`/api/v1/organizations/by-subdomain?subdomain=${subdomain}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.organization) {
+            setSubdomainOrg(data.organization)
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingSubdomainOrg(false))
+    }
+  }, [currentOrganization, contextLoading])
+  
+  const organization = currentOrganization || subdomainOrg
+  const organizationId = organization?.id || DEFAULT_ORG_ID
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(true)
@@ -137,10 +170,11 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<SalonSettings | null>(null)
 
   useEffect(() => {
-    if (organizationId && !contextLoading) {
+    // For demo pages, we always have the default org ID, so fetch settings immediately
+    if (organizationId) {
       fetchSettings()
     }
-  }, [organizationId, contextLoading])
+  }, [organizationId])
 
   const fetchSettings = async () => {
     try {
@@ -237,12 +271,15 @@ export default function SettingsPage() {
     setHasChanges(true)
   }
 
-  if (contextLoading || loading) {
+  if (loading || loadingSubdomainOrg) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-purple-600" />
-          <p className="text-gray-600">Loading settings...</p>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex">
+        <SalonProductionSidebar />
+        <div className="flex-1 ml-16 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 !text-purple-600 dark:!text-purple-400" />
+            <p className="!text-gray-600 dark:!text-gray-300">Loading settings...</p>
+          </div>
         </div>
       </div>
     )
@@ -262,7 +299,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white flex">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex">
       <SalonProductionSidebar />
       <div className="flex-1 ml-16">
         <div className="p-6 max-w-7xl mx-auto">
@@ -272,18 +309,18 @@ export default function SettingsPage() {
               variant="ghost" 
               size="sm" 
               onClick={() => router.push('/salon')}
-              className="mb-4"
+              className="mb-4 !text-gray-900 dark:!text-gray-100"
             >
-              <ChevronLeft className="w-4 h-4 mr-2" />
+              <ChevronLeft className="w-4 h-4 mr-2 !text-gray-900 dark:!text-gray-100" />
               Back to Dashboard
             </Button>
             
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold !text-gray-900 dark:!text-gray-100 mb-2">
                   Settings & Configuration
                 </h1>
-                <p className="text-gray-600 text-lg">
+                <p className="text-lg !text-gray-600 dark:!text-gray-300">
                   Manage your salon settings and preferences
                 </p>
               </div>
@@ -292,24 +329,25 @@ export default function SettingsPage() {
                   variant="outline"
                   onClick={fetchSettings}
                   disabled={loading}
+                  className="!text-gray-900 dark:!text-gray-100 border-gray-300 dark:border-gray-600"
                 >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-4 h-4 mr-2 !text-gray-900 dark:!text-gray-100 ${loading ? 'animate-spin' : ''}`} />
                   Refresh
                 </Button>
                 {hasChanges && (
                   <Button
                     onClick={saveSettings}
                     disabled={saving}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 !text-white"
                   >
                     {saving ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin !text-white" />
                         Saving...
                       </>
                     ) : (
                       <>
-                        <Save className="w-4 h-4 mr-2" />
+                        <Save className="w-4 h-4 mr-2 !text-white" />
                         Save Changes
                       </>
                     )}
@@ -320,125 +358,134 @@ export default function SettingsPage() {
           </div>
 
           {hasChanges && (
-            <Alert className="mb-6 border-yellow-200 bg-yellow-50">
-              <AlertCircle className="w-4 h-4 text-yellow-600" />
-              <AlertDescription className="text-yellow-800">
+            <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20">
+              <AlertCircle className="w-4 h-4 !text-yellow-600 dark:!text-yellow-400" />
+              <AlertDescription className="!text-yellow-800 dark:!text-yellow-200">
                 You have unsaved changes. Click "Save Changes" to persist your configuration.
               </AlertDescription>
             </Alert>
           )}
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-              <TabsTrigger value="business">Business</TabsTrigger>
-              <TabsTrigger value="appointments">Appointments</TabsTrigger>
-              <TabsTrigger value="payments">Payments</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="staff">Staff</TabsTrigger>
-              <TabsTrigger value="system">System</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-gray-100 dark:bg-gray-800">
+              <TabsTrigger value="business" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Business</TabsTrigger>
+              <TabsTrigger value="appointments" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Appointments</TabsTrigger>
+              <TabsTrigger value="payments" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Payments</TabsTrigger>
+              <TabsTrigger value="notifications" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Notifications</TabsTrigger>
+              <TabsTrigger value="staff" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Staff</TabsTrigger>
+              <TabsTrigger value="subdomain" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">Subdomain</TabsTrigger>
+              <TabsTrigger value="system" className="!text-gray-700 dark:!text-gray-300 data-[state=active]:!text-gray-900 data-[state=active]:dark:!text-gray-100">System</TabsTrigger>
             </TabsList>
 
             {/* Business Information Tab */}
             <TabsContent value="business" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Store className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Store className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Business Information
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Basic information about your salon
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="businessName">Business Name</Label>
+                      <Label htmlFor="businessName" className="!text-gray-700 dark:!text-gray-300">Business Name</Label>
                       <Input
                         id="businessName"
                         value={settings.business_info.name}
                         onChange={(e) => updateSettings('business_info', 'name', e.target.value)}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="businessType">Business Type</Label>
+                      <Label htmlFor="businessType" className="!text-gray-700 dark:!text-gray-300">Business Type</Label>
                       <Input
                         id="businessType"
                         value={settings.business_info.type}
                         onChange={(e) => updateSettings('business_info', 'type', e.target.value)}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="address">Address</Label>
+                      <Label htmlFor="address" className="!text-gray-700 dark:!text-gray-300">Address</Label>
                       <Textarea
                         id="address"
                         value={settings.business_info.address}
                         onChange={(e) => updateSettings('business_info', 'address', e.target.value)}
                         rows={3}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone" className="!text-gray-700 dark:!text-gray-300">Phone</Label>
                         <Input
                           id="phone"
                           value={settings.business_info.phone}
                           onChange={(e) => updateSettings('business_info', 'phone', e.target.value)}
+                          className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="!text-gray-700 dark:!text-gray-300">Email</Label>
                         <Input
                           id="email"
                           type="email"
                           value={settings.business_info.email}
                           onChange={(e) => updateSettings('business_info', 'email', e.target.value)}
+                          className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                         />
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="website">Website</Label>
+                      <Label htmlFor="website" className="!text-gray-700 dark:!text-gray-300">Website</Label>
                       <Input
                         id="website"
                         value={settings.business_info.website || ''}
                         onChange={(e) => updateSettings('business_info', 'website', e.target.value)}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="taxId">Tax ID</Label>
+                        <Label htmlFor="taxId" className="!text-gray-700 dark:!text-gray-300">Tax ID</Label>
                         <Input
                           id="taxId"
                           value={settings.business_info.tax_id || ''}
                           onChange={(e) => updateSettings('business_info', 'tax_id', e.target.value)}
+                          className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="regNumber">Registration Number</Label>
+                        <Label htmlFor="regNumber" className="!text-gray-700 dark:!text-gray-300">Registration Number</Label>
                         <Input
                           id="regNumber"
                           value={settings.business_info.registration_number || ''}
                           onChange={(e) => updateSettings('business_info', 'registration_number', e.target.value)}
+                          className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                         />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Clock className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Business Hours
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Set your salon's operating hours
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {Object.entries(settings.business_hours).map(([day, hours]) => (
                       <div key={day} className="flex items-center gap-4">
-                        <div className="w-24 text-sm font-medium capitalize">{day}</div>
+                        <div className="w-24 text-sm font-medium capitalize !text-gray-700 dark:!text-gray-300">{day}</div>
                         <Switch
                           checked={!hours.closed}
                           onCheckedChange={(checked) => 
@@ -453,7 +500,7 @@ export default function SettingsPage() {
                               onChange={(e) => updateNestedSettings('business_hours', day, 'open', e.target.value)}
                               className="w-32"
                             />
-                            <span className="text-sm text-gray-500">to</span>
+                            <span className="text-sm !text-gray-500 dark:!text-gray-400">to</span>
                             <Input
                               type="time"
                               value={hours.close}
@@ -462,7 +509,7 @@ export default function SettingsPage() {
                             />
                           </div>
                         ) : (
-                          <div className="flex-1 text-sm text-gray-500">Closed</div>
+                          <div className="flex-1 text-sm !text-gray-500 dark:!text-gray-400">Closed</div>
                         )}
                       </div>
                     ))}
@@ -473,43 +520,46 @@ export default function SettingsPage() {
 
             {/* Appointments Tab */}
             <TabsContent value="appointments" className="space-y-6">
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-purple-600" />
+                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                    <Calendar className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                     Appointment Settings
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="!text-gray-600 dark:!text-gray-400">
                     Configure appointment booking and scheduling preferences
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="defaultDuration">Default Duration (minutes)</Label>
+                      <Label htmlFor="defaultDuration" className="!text-gray-700 dark:!text-gray-300">Default Duration (minutes)</Label>
                       <Input
                         id="defaultDuration"
                         type="number"
                         value={settings.appointment_settings.default_duration}
                         onChange={(e) => updateSettings('appointment_settings', 'default_duration', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="bufferTime">Buffer Time (minutes)</Label>
+                      <Label htmlFor="bufferTime" className="!text-gray-700 dark:!text-gray-300">Buffer Time (minutes)</Label>
                       <Input
                         id="bufferTime"
                         type="number"
                         value={settings.appointment_settings.buffer_time}
                         onChange={(e) => updateSettings('appointment_settings', 'buffer_time', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="maxAdvance">Max Advance Booking (days)</Label>
+                      <Label htmlFor="maxAdvance" className="!text-gray-700 dark:!text-gray-300">Max Advance Booking (days)</Label>
                       <Input
                         id="maxAdvance"
                         type="number"
                         value={settings.appointment_settings.max_advance_booking}
                         onChange={(e) => updateSettings('appointment_settings', 'max_advance_booking', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                   </div>
@@ -517,8 +567,8 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="onlineBooking">Allow Online Booking</Label>
-                        <p className="text-sm text-gray-600">Enable clients to book appointments online</p>
+                        <Label htmlFor="onlineBooking" className="!text-gray-700 dark:!text-gray-300">Allow Online Booking</Label>
+                        <p className="text-sm !text-gray-600 dark:!text-gray-400">Enable clients to book appointments online</p>
                       </div>
                       <Switch
                         id="onlineBooking"
@@ -529,8 +579,8 @@ export default function SettingsPage() {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="requireDeposit">Require Deposit for Booking</Label>
-                        <p className="text-sm text-gray-600">Require upfront payment to confirm bookings</p>
+                        <Label htmlFor="requireDeposit" className="!text-gray-700 dark:!text-gray-300">Require Deposit for Booking</Label>
+                        <p className="text-sm !text-gray-600 dark:!text-gray-400">Require upfront payment to confirm bookings</p>
                       </div>
                       <Switch
                         id="requireDeposit"
@@ -541,44 +591,48 @@ export default function SettingsPage() {
 
                     {settings.appointment_settings.require_deposit && (
                       <div>
-                        <Label htmlFor="depositAmount">Deposit Amount (AED)</Label>
+                        <Label htmlFor="depositAmount" className="!text-gray-700 dark:!text-gray-300">Deposit Amount (AED)</Label>
                         <Input
                           id="depositAmount"
                           type="number"
                           value={settings.appointment_settings.deposit_amount}
                           onChange={(e) => updateSettings('appointment_settings', 'deposit_amount', parseInt(e.target.value))}
+                          className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                         />
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <Label htmlFor="cancellationPolicy">Cancellation Policy</Label>
+                    <Label htmlFor="cancellationPolicy" className="!text-gray-700 dark:!text-gray-300">Cancellation Policy</Label>
                     <Textarea
                       id="cancellationPolicy"
                       value={settings.appointment_settings.cancellation_policy}
                       onChange={(e) => updateSettings('appointment_settings', 'cancellation_policy', e.target.value)}
                       rows={3}
+                      className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="emailReminder">Email Reminder (hours before)</Label>
+                      <Label htmlFor="emailReminder" className="!text-gray-700 dark:!text-gray-300">Email Reminder (hours before)</Label>
                       <Input
                         id="emailReminder"
                         type="number"
                         value={settings.appointment_settings.reminder_timing.email}
                         onChange={(e) => updateNestedSettings('appointment_settings', 'reminder_timing', 'email', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="smsReminder">SMS Reminder (hours before)</Label>
+                      <Label htmlFor="smsReminder" className="!text-gray-700 dark:!text-gray-300">SMS Reminder (hours before)</Label>
                       <Input
                         id="smsReminder"
                         type="number"
                         value={settings.appointment_settings.reminder_timing.sms}
                         onChange={(e) => updateNestedSettings('appointment_settings', 'reminder_timing', 'sms', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                   </div>
@@ -589,20 +643,20 @@ export default function SettingsPage() {
             {/* Payments Tab */}
             <TabsContent value="payments" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <CreditCard className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Payment Methods
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Configure accepted payment methods
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {Object.entries(settings.payment_settings.accepted_methods).map(([method, enabled]) => (
                       <div key={method} className="flex items-center justify-between">
-                        <Label htmlFor={method} className="capitalize">
+                        <Label htmlFor={method} className="capitalize !text-gray-700 dark:!text-gray-300">
                           {method.replace(/_/g, ' ')}
                         </Label>
                         <Switch
@@ -617,30 +671,31 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <DollarSign className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Financial Settings
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Tax rates, tips, and loyalty program
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="taxRate">VAT/Tax Rate (%)</Label>
+                      <Label htmlFor="taxRate" className="!text-gray-700 dark:!text-gray-300">VAT/Tax Rate (%)</Label>
                       <Input
                         id="taxRate"
                         type="number"
                         step="0.1"
                         value={settings.payment_settings.tax_rate}
                         onChange={(e) => updateSettings('payment_settings', 'tax_rate', parseFloat(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                     
                     <div>
-                      <Label>Tip Suggestions (%)</Label>
+                      <Label className="!text-gray-700 dark:!text-gray-300">Tip Suggestions (%)</Label>
                       <div className="grid grid-cols-4 gap-2 mt-2">
                         {settings.payment_settings.tip_suggestions.map((tip, index) => (
                           <Input
@@ -658,19 +713,19 @@ export default function SettingsPage() {
                     </div>
 
                     <div>
-                      <Label htmlFor="currency">Currency</Label>
+                      <Label htmlFor="currency" className="!text-gray-700 dark:!text-gray-300">Currency</Label>
                       <Select
                         value={settings.payment_settings.currency}
                         onValueChange={(value) => updateSettings('payment_settings', 'currency', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="AED">AED - UAE Dirham</SelectItem>
-                          <SelectItem value="USD">USD - US Dollar</SelectItem>
-                          <SelectItem value="EUR">EUR - Euro</SelectItem>
-                          <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="AED" className="hera-select-item">AED - UAE Dirham</SelectItem>
+                          <SelectItem value="USD" className="hera-select-item">USD - US Dollar</SelectItem>
+                          <SelectItem value="EUR" className="hera-select-item">EUR - Euro</SelectItem>
+                          <SelectItem value="GBP" className="hera-select-item">GBP - British Pound</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -678,8 +733,8 @@ export default function SettingsPage() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label htmlFor="loyaltyProgram">Loyalty Program</Label>
-                          <p className="text-sm text-gray-600">Enable points and rewards system</p>
+                          <Label htmlFor="loyaltyProgram" className="!text-gray-700 dark:!text-gray-300">Loyalty Program</Label>
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">Enable points and rewards system</p>
                         </div>
                         <Switch
                           id="loyaltyProgram"
@@ -690,12 +745,13 @@ export default function SettingsPage() {
 
                       {settings.payment_settings.loyalty_program_active && (
                         <div>
-                          <Label htmlFor="pointsPerCurrency">Points per {settings.payment_settings.currency}</Label>
+                          <Label htmlFor="pointsPerCurrency" className="!text-gray-700 dark:!text-gray-300">Points per {settings.payment_settings.currency}</Label>
                           <Input
                             id="pointsPerCurrency"
                             type="number"
                             value={settings.payment_settings.points_per_currency}
                             onChange={(e) => updateSettings('payment_settings', 'points_per_currency', parseInt(e.target.value))}
+                            className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                           />
                         </div>
                       )}
@@ -708,20 +764,20 @@ export default function SettingsPage() {
             {/* Notifications Tab */}
             <TabsContent value="notifications" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Mail className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Mail className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Email Notifications
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Configure email notification preferences
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {Object.entries(settings.notification_settings.email).map(([type, enabled]) => (
                       <div key={type} className="flex items-center justify-between">
-                        <Label htmlFor={`email-${type}`} className="capitalize">
+                        <Label htmlFor={`email-${type}`} className="capitalize !text-gray-700 dark:!text-gray-300">
                           {type.replace(/_/g, ' ')}
                         </Label>
                         <Switch
@@ -736,20 +792,20 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Smartphone className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Smartphone className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       SMS Notifications
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Configure SMS notification preferences
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {Object.entries(settings.notification_settings.sms).map(([type, enabled]) => (
                       <div key={type} className="flex items-center justify-between">
-                        <Label htmlFor={`sms-${type}`} className="capitalize">
+                        <Label htmlFor={`sms-${type}`} className="capitalize !text-gray-700 dark:!text-gray-300">
                           {type.replace(/_/g, ' ')}
                         </Label>
                         <Switch
@@ -768,60 +824,62 @@ export default function SettingsPage() {
 
             {/* Staff Tab */}
             <TabsContent value="staff" className="space-y-6">
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-purple-600" />
+                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                    <Users className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                     Staff Management Settings
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="!text-gray-600 dark:!text-gray-400">
                     Configure staff commissions and management preferences
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="commissionStructure">Commission Structure</Label>
+                      <Label htmlFor="commissionStructure" className="!text-gray-700 dark:!text-gray-300">Commission Structure</Label>
                       <Select
                         value={settings.staff_settings.commission_structure}
                         onValueChange={(value: 'percentage' | 'fixed') => updateSettings('staff_settings', 'commission_structure', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="percentage">Percentage</SelectItem>
-                          <SelectItem value="fixed">Fixed Amount</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="percentage" className="hera-select-item">Percentage</SelectItem>
+                          <SelectItem value="fixed" className="hera-select-item">Fixed Amount</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="defaultCommission">Default Commission Rate (%)</Label>
+                      <Label htmlFor="defaultCommission" className="!text-gray-700 dark:!text-gray-300">Default Commission Rate (%)</Label>
                       <Input
                         id="defaultCommission"
                         type="number"
                         value={settings.staff_settings.default_commission_rate}
                         onChange={(e) => updateSettings('staff_settings', 'default_commission_rate', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="overtimeRate">Overtime Rate Multiplier</Label>
+                    <Label htmlFor="overtimeRate" className="!text-gray-700 dark:!text-gray-300">Overtime Rate Multiplier</Label>
                     <Input
                       id="overtimeRate"
                       type="number"
                       step="0.1"
                       value={settings.staff_settings.overtime_rate}
                       onChange={(e) => updateSettings('staff_settings', 'overtime_rate', parseFloat(e.target.value))}
+                      className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                     />
                   </div>
 
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="staffSchedule">Allow Staff Schedule Management</Label>
-                        <p className="text-sm text-gray-600">Let staff manage their own schedules</p>
+                        <Label htmlFor="staffSchedule" className="!text-gray-700 dark:!text-gray-300">Allow Staff Schedule Management</Label>
+                        <p className="text-sm !text-gray-600 dark:!text-gray-400">Let staff manage their own schedules</p>
                       </div>
                       <Switch
                         id="staffSchedule"
@@ -832,8 +890,8 @@ export default function SettingsPage() {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="clockIn">Require Staff Clock-In</Label>
-                        <p className="text-sm text-gray-600">Track staff working hours with clock-in/out</p>
+                        <Label htmlFor="clockIn" className="!text-gray-700 dark:!text-gray-300">Require Staff Clock-In</Label>
+                        <p className="text-sm !text-gray-600 dark:!text-gray-400">Track staff working hours with clock-in/out</p>
                       </div>
                       <Switch
                         id="clockIn"
@@ -846,128 +904,218 @@ export default function SettingsPage() {
               </Card>
             </TabsContent>
 
+            {/* Subdomain Tab */}
+            <TabsContent value="subdomain" className="space-y-6">
+              <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                    <Globe className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
+                    Subdomain & Branding
+                  </CardTitle>
+                  <CardDescription className="!text-gray-600 dark:!text-gray-400">
+                    Configure your salon's custom subdomain and professional URLs
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Current Configuration */}
+                  <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <h3 className="font-medium !text-purple-900 dark:!text-purple-200 mb-2">
+                      Current Configuration
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="!text-purple-700 dark:!text-purple-300">Current URL: </span>
+                        <code className="px-2 py-1 bg-purple-100 dark:bg-purple-800 rounded text-xs !text-purple-900 dark:!text-purple-200">
+                          localhost:3000/salon
+                        </code>
+                      </div>
+                      <div>
+                        <span className="!text-purple-700 dark:!text-purple-300">Organization: </span>
+                        <span className="font-medium !text-purple-900 dark:!text-purple-200">
+                          {organization?.organization_name || 'Hair Talkz Salon'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Professional Benefits */}
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h3 className="font-medium !text-blue-900 dark:!text-blue-200 mb-2">
+                      Professional Salon Branding
+                    </h3>
+                    <p className="!text-blue-700 dark:!text-blue-300 text-sm mb-3">
+                      Configure a custom subdomain to get professional URLs like 
+                      <code className="mx-1 px-1 bg-blue-100 dark:bg-blue-800 rounded text-xs !text-blue-900 dark:!text-blue-200">
+                        yoursalon.heraerp.com
+                      </code>
+                      for branded access to your salon management system.
+                    </p>
+                    <ul className="!text-blue-700 dark:!text-blue-300 text-sm space-y-1">
+                      <li>• Professional URLs for client booking</li>
+                      <li>• Branded staff access portals</li>
+                      <li>• Custom domain support (coming soon)</li>
+                      <li>• SSL security included</li>
+                    </ul>
+                  </div>
+
+                  {/* Action Button */}
+                  <div className="flex justify-center">
+                    <Button 
+                      onClick={() => router.push('/salon/settings/subdomain')}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 !text-white"
+                    >
+                      <Globe className="w-4 h-4 mr-2 !text-white" />
+                      Configure Subdomain Settings
+                    </Button>
+                  </div>
+
+                  {/* Quick Reference */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                    <div>
+                      <h4 className="font-medium !text-gray-900 dark:!text-white mb-2">Good Examples</h4>
+                      <ul className="text-sm !text-gray-600 dark:!text-gray-400 space-y-1">
+                        <li><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded !text-gray-900 dark:!text-gray-200">hair-talkz-dubai</code></li>
+                        <li><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded !text-gray-900 dark:!text-gray-200">salon-elegance</code></li>
+                        <li><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded !text-gray-900 dark:!text-gray-200">beauty-lounge-marina</code></li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium !text-gray-900 dark:!text-white mb-2">Best Practices</h4>
+                      <ul className="text-sm !text-gray-600 dark:!text-gray-400 space-y-1">
+                        <li>• Use lowercase letters and hyphens</li>
+                        <li>• Keep it short and memorable</li>
+                        <li>• Include your salon name or location</li>
+                        <li>• Avoid special characters</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* System Tab */}
             <TabsContent value="system" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Globe className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Globe className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Localization
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Regional and language settings
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="timezone">Timezone</Label>
+                      <Label htmlFor="timezone" className="!text-gray-700 dark:!text-gray-300">Timezone</Label>
                       <Select
                         value={settings.system_settings.timezone}
                         onValueChange={(value) => updateSettings('system_settings', 'timezone', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Asia/Dubai">Dubai (GMT+4)</SelectItem>
-                          <SelectItem value="Asia/Abu_Dhabi">Abu Dhabi (GMT+4)</SelectItem>
-                          <SelectItem value="Asia/Riyadh">Riyadh (GMT+3)</SelectItem>
-                          <SelectItem value="Asia/Kuwait">Kuwait (GMT+3)</SelectItem>
-                          <SelectItem value="Asia/Doha">Doha (GMT+3)</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="Asia/Dubai" className="hera-select-item">Dubai (GMT+4)</SelectItem>
+                          <SelectItem value="Asia/Abu_Dhabi" className="hera-select-item">Abu Dhabi (GMT+4)</SelectItem>
+                          <SelectItem value="Asia/Riyadh" className="hera-select-item">Riyadh (GMT+3)</SelectItem>
+                          <SelectItem value="Asia/Kuwait" className="hera-select-item">Kuwait (GMT+3)</SelectItem>
+                          <SelectItem value="Asia/Doha" className="hera-select-item">Doha (GMT+3)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="dateFormat">Date Format</Label>
+                      <Label htmlFor="dateFormat" className="!text-gray-700 dark:!text-gray-300">Date Format</Label>
                       <Select
                         value={settings.system_settings.date_format}
                         onValueChange={(value) => updateSettings('system_settings', 'date_format', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
-                          <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
-                          <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="DD/MM/YYYY" className="hera-select-item">DD/MM/YYYY</SelectItem>
+                          <SelectItem value="MM/DD/YYYY" className="hera-select-item">MM/DD/YYYY</SelectItem>
+                          <SelectItem value="YYYY-MM-DD" className="hera-select-item">YYYY-MM-DD</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="timeFormat">Time Format</Label>
+                      <Label htmlFor="timeFormat" className="!text-gray-700 dark:!text-gray-300">Time Format</Label>
                       <Select
                         value={settings.system_settings.time_format}
                         onValueChange={(value) => updateSettings('system_settings', 'time_format', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="12h">12 Hour (AM/PM)</SelectItem>
-                          <SelectItem value="24h">24 Hour</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="12h" className="hera-select-item">12 Hour (AM/PM)</SelectItem>
+                          <SelectItem value="24h" className="hera-select-item">24 Hour</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="language">Language</Label>
+                      <Label htmlFor="language" className="!text-gray-700 dark:!text-gray-300">Language</Label>
                       <Select
                         value={settings.system_settings.language}
                         onValueChange={(value) => updateSettings('system_settings', 'language', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="en">English</SelectItem>
-                          <SelectItem value="ar">Arabic</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="en" className="hera-select-item">English</SelectItem>
+                          <SelectItem value="ar" className="hera-select-item">Arabic</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="theme">Theme</Label>
+                      <Label htmlFor="theme" className="!text-gray-700 dark:!text-gray-300">Theme</Label>
                       <Select
                         value={settings.system_settings.theme}
                         onValueChange={(value: 'light' | 'dark') => updateSettings('system_settings', 'theme', value)}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                          <SelectValue className="!text-gray-900 dark:!text-gray-100" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="light">Light</SelectItem>
-                          <SelectItem value="dark">Dark</SelectItem>
+                        <SelectContent className="hera-select-content">
+                          <SelectItem value="light" className="hera-select-item">Light</SelectItem>
+                          <SelectItem value="dark" className="hera-select-item">Dark</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                      <Shield className="w-5 h-5 !text-purple-600 dark:!text-purple-400" />
                       Security & Data
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="!text-gray-600 dark:!text-gray-400">
                       Security and data protection settings
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
+                      <Label htmlFor="sessionTimeout" className="!text-gray-700 dark:!text-gray-300">Session Timeout (minutes)</Label>
                       <Input
                         id="sessionTimeout"
                         type="number"
                         value={settings.system_settings.session_timeout}
                         onChange={(e) => updateSettings('system_settings', 'session_timeout', parseInt(e.target.value))}
+                        className="!text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                       />
                     </div>
 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label htmlFor="passwordChange">Require Periodic Password Change</Label>
-                          <p className="text-sm text-gray-600">Force password updates every 90 days</p>
+                          <Label htmlFor="passwordChange" className="!text-gray-700 dark:!text-gray-300">Require Periodic Password Change</Label>
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">Force password updates every 90 days</p>
                         </div>
                         <Switch
                           id="passwordChange"
@@ -978,8 +1126,8 @@ export default function SettingsPage() {
                       
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label htmlFor="twoFactor">Two-Factor Authentication</Label>
-                          <p className="text-sm text-gray-600">Additional security layer for login</p>
+                          <Label htmlFor="twoFactor" className="!text-gray-700 dark:!text-gray-300">Two-Factor Authentication</Label>
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">Additional security layer for login</p>
                         </div>
                         <Switch
                           id="twoFactor"
@@ -990,8 +1138,8 @@ export default function SettingsPage() {
                       
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label htmlFor="dataBackup">Automatic Data Backup</Label>
-                          <p className="text-sm text-gray-600">Daily backup of all salon data</p>
+                          <Label htmlFor="dataBackup" className="!text-gray-700 dark:!text-gray-300">Automatic Data Backup</Label>
+                          <p className="text-sm !text-gray-600 dark:!text-gray-400">Daily backup of all salon data</p>
                         </div>
                         <Switch
                           id="dataBackup"

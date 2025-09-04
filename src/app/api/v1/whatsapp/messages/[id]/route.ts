@@ -7,10 +7,11 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const organizationId = process.env.DEFAULT_ORGANIZATION_ID || '3df8cc52-3d81-42d5-b088-7736ae26cc7c'
-  const messageId = params.id
+  const resolvedParams = await params
+  const messageId = resolvedParams.id
   
   try {
     const body = await request.json()
@@ -100,10 +101,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const organizationId = process.env.DEFAULT_ORGANIZATION_ID || '3df8cc52-3d81-42d5-b088-7736ae26cc7c'
-  const messageId = params.id
+  const resolvedParams = await params
+  const messageId = resolvedParams.id
   
   try {
     // Hard delete message

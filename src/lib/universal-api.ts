@@ -14,6 +14,7 @@
 import { UniversalCOATemplateGenerator } from './coa/universal-coa-template'
 import { processTransactionForJournal, runBatchProcessing, checkJournalRelevance } from './auto-journal-engine'
 import { HeraSacredValidator } from './hera-sacred-validator'
+import { createAutoJournalService, AutoJournalDNAService } from './dna/services/auto-journal-dna-service'
 
 interface UniversalApiConfig {
   baseUrl?: string
@@ -2001,6 +2002,462 @@ export class UniversalApiClient {
         success: false,
         error: error.message,
         mode: this.mode
+      }
+    }
+  }
+
+  // ================================================================================
+  // CASHFLOW STATEMENT FUNCTIONS
+  // ================================================================================
+
+  /**
+   * Generate cashflow statement using direct or indirect method
+   */
+  async generateCashflowStatement(params: {
+    organizationId?: string
+    startDate: string
+    endDate: string
+    method?: 'direct' | 'indirect'
+    currency?: string
+  }): Promise<ApiResponse> {
+    try {
+      const {
+        organizationId = this.config.organizationId,
+        startDate,
+        endDate,
+        method = 'direct',
+        currency = 'AED'
+      } = params
+
+      if (!organizationId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/cashflow?action=generate_statement&organization_id=${organizationId}&start_date=${startDate}&end_date=${endDate}&method=${method}&currency=${currency}`,
+        {
+          headers: this.getHeaders()
+        }
+      )
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Generate cashflow forecast
+   */
+  async generateCashflowForecast(params: {
+    organizationId?: string
+    forecastMonths?: number
+    baselineMonths?: number
+    currency?: string
+  }): Promise<ApiResponse> {
+    try {
+      const {
+        organizationId = this.config.organizationId,
+        forecastMonths = 12,
+        baselineMonths = 6,
+        currency = 'AED'
+      } = params
+
+      if (!organizationId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/cashflow?action=generate_forecast&organization_id=${organizationId}&forecast_months=${forecastMonths}&baseline_months=${baselineMonths}&currency=${currency}`,
+        {
+          headers: this.getHeaders()
+        }
+      )
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Analyze cashflow trends
+   */
+  async analyzeCashflowTrends(params: {
+    organizationId?: string
+    periods?: number
+    currency?: string
+  }): Promise<ApiResponse> {
+    try {
+      const {
+        organizationId = this.config.organizationId,
+        periods = 6,
+        currency = 'AED'
+      } = params
+
+      if (!organizationId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/cashflow?action=analyze_trends&organization_id=${organizationId}&periods=${periods}&currency=${currency}`,
+        {
+          headers: this.getHeaders()
+        }
+      )
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Setup cashflow tracking for organization
+   */
+  async setupCashflowTracking(organizationId?: string, industry?: string): Promise<ApiResponse> {
+    try {
+      const orgId = organizationId || this.config.organizationId
+
+      if (!orgId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(`${this.baseUrl}/api/v1/cashflow`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          action: 'setup_tracking',
+          organization_id: orgId,
+          industry
+        })
+      })
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Setup Hair Salon demo data for cashflow testing
+   */
+  async setupHairSalonCashflowDemo(organizationId?: string): Promise<ApiResponse> {
+    try {
+      const orgId = organizationId || this.config.organizationId
+
+      if (!orgId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(`${this.baseUrl}/api/v1/cashflow/demo`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          action: 'setup_hair_salon_demo',
+          organization_id: orgId
+        })
+      })
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Create cashflow scenario for testing
+   */
+  async createCashflowScenario(params: {
+    organizationId?: string
+    scenarioType: 'peak_season' | 'slow_season' | 'equipment_purchase' | 'new_stylist'
+    description?: string
+  }): Promise<ApiResponse> {
+    try {
+      const {
+        organizationId = this.config.organizationId,
+        scenarioType,
+        description
+      } = params
+
+      if (!organizationId) {
+        throw new Error('Organization ID is required')
+      }
+
+      const response = await fetch(`${this.baseUrl}/api/v1/cashflow/demo`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          action: 'create_scenario',
+          organization_id: organizationId,
+          scenario_type: scenarioType,
+          description
+        })
+      })
+
+      return response.json()
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // ================================================================================
+  // AUTO-JOURNAL DNA INTEGRATION
+  // ================================================================================
+
+  /**
+   * Initialize auto-journal DNA service for the organization
+   * Returns a configured service instance with industry-specific settings
+   */
+  async getAutoJournalDNAService(industryType?: string): Promise<AutoJournalDNAService | null> {
+    try {
+      if (!this.organizationId) {
+        throw new Error('Organization ID is required for DNA service')
+      }
+
+      return await createAutoJournalService(this.organizationId, industryType)
+
+    } catch (error: any) {
+      console.error('Failed to create auto-journal DNA service:', error)
+      return null
+    }
+  }
+
+  /**
+   * Process transaction using DNA-configured auto-journal service
+   * Applies industry-specific rules and thresholds
+   */
+  async processTransactionWithDNA(transactionId: string): Promise<ApiResponse> {
+    try {
+      const service = await this.getAutoJournalDNAService()
+      
+      if (!service) {
+        return {
+          success: false,
+          error: 'Failed to initialize auto-journal DNA service'
+        }
+      }
+
+      const result = await service.processTransaction(transactionId)
+      
+      return {
+        success: result.success,
+        data: {
+          journal_created: result.journal_created,
+          journal_id: result.journal_id,
+          processing_mode: result.processing_mode,
+          industry_optimized: true
+        },
+        message: result.message
+      }
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Run DNA-configured batch processing
+   * Applies industry-specific batching strategies
+   */
+  async runDNABatchProcessing(): Promise<ApiResponse> {
+    try {
+      const service = await this.getAutoJournalDNAService()
+      
+      if (!service) {
+        return {
+          success: false,
+          error: 'Failed to initialize auto-journal DNA service'
+        }
+      }
+
+      const result = await service.runBatchProcessing()
+      
+      return {
+        success: result.success,
+        data: {
+          batched_count: result.batched_count,
+          journals_created: result.journals_created,
+          industry_optimized: true
+        },
+        message: result.message
+      }
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Get comprehensive DNA auto-journal statistics
+   * Includes industry-specific metrics and cost savings
+   */
+  async getDNAAutoJournalStatistics(days: number = 7): Promise<ApiResponse> {
+    try {
+      const service = await this.getAutoJournalDNAService()
+      
+      if (!service) {
+        return {
+          success: false,
+          error: 'Failed to initialize auto-journal DNA service'
+        }
+      }
+
+      const stats = await service.getStatistics(days)
+      
+      return {
+        success: true,
+        data: {
+          ...stats,
+          industry_optimized: true,
+          dna_powered: true,
+          savings_confidence: 'high'
+        },
+        message: 'DNA auto-journal statistics retrieved successfully'
+      }
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Configure auto-journal settings using DNA system
+   * Updates industry-specific configuration with custom overrides
+   */
+  async configureAutoJournalDNA(updates: any): Promise<ApiResponse> {
+    try {
+      const service = await this.getAutoJournalDNAService()
+      
+      if (!service) {
+        return {
+          success: false,
+          error: 'Failed to initialize auto-journal DNA service'
+        }
+      }
+
+      const result = await service.updateConfiguration(updates)
+      
+      return {
+        success: result.success,
+        message: result.message,
+        data: {
+          configuration_updated: true,
+          industry_optimized: true
+        }
+      }
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Enhanced transaction creation with DNA auto-journal processing
+   * Uses industry-specific rules and AI classification
+   */
+  async createTransactionWithDNAAutoJournal(transactionData: any): Promise<ApiResponse> {
+    try {
+      // Create transaction first
+      const transactionResult = await this.create('universal_transactions', transactionData)
+      
+      if (!transactionResult.success) {
+        return transactionResult
+      }
+
+      // Process with DNA auto-journal service
+      if (transactionResult.data?.id) {
+        const journalResult = await this.processTransactionWithDNA(transactionResult.data.id)
+        
+        return {
+          success: true,
+          data: {
+            transaction: transactionResult.data,
+            journal_processing: journalResult.data,
+            dna_enhanced: true
+          },
+          message: 'Transaction created and processed with DNA auto-journal optimization'
+        }
+      }
+
+      return transactionResult
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Get auto-journal DNA configuration for the organization
+   * Returns industry-specific rules and thresholds
+   */
+  async getAutoJournalDNAConfiguration(): Promise<ApiResponse> {
+    try {
+      const service = await this.getAutoJournalDNAService()
+      
+      if (!service) {
+        return {
+          success: false,
+          error: 'Failed to initialize auto-journal DNA service'
+        }
+      }
+
+      // Access the configuration (note: this accesses private property for API purposes)
+      const config = (service as any).config
+      
+      return {
+        success: true,
+        data: {
+          ...config,
+          industry_optimized: true,
+          dna_powered: true
+        },
+        message: 'DNA auto-journal configuration retrieved successfully'
+      }
+
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
       }
     }
   }

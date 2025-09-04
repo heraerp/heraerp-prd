@@ -13,11 +13,6 @@ export function UpdateChecker() {
   const checkForUpdates = async () => {
     setIsChecking(true)
     try {
-      // Force service worker update check
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ type: 'CHECK_UPDATE' })
-      }
-
       // Check version API
       const response = await fetch('/api/v1/version', {
         cache: 'no-cache',

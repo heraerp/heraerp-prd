@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Service Worker Cache</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .success {
+            color: #10b981;
+            margin-top: 20px;
+        }
+        .error {
+            color: #ef4444;
+            margin-top: 20px;
+        }
+        pre {
+            text-align: left;
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>HERA Service Worker Cache Manager</h1>
+    <p>Use this page to clear service worker cache when experiencing issues.</p>
+    
+    <button onclick="clearAllCaches()">Clear All Caches</button>
+    <button onclick="unregisterServiceWorkers()">Unregister Service Workers</button>
+    <button onclick="fullReset()">Full Reset (Both)</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        const statusDiv = document.getElementById('status');
+        
+        async function clearAllCaches() {
+            try {
+                statusDiv.innerHTML = '<p>Clearing caches...</p>';
+                
+                const cacheNames = await caches.keys();
+                const results = await Promise.all(
+                    cacheNames.map(name => caches.delete(name))
+                );
+                
+                statusDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Caches Cleared!</h3>
+                        <p>Deleted ${cacheNames.length} cache(s):</p>
+                        <pre>${cacheNames.join('\n')}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error clearing caches</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        async function unregisterServiceWorkers() {
+            try {
+                statusDiv.innerHTML = '<p>Unregistering service workers...</p>';
+                
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                const results = await Promise.all(
+                    registrations.map(registration => registration.unregister())
+                );
+                
+                statusDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Service Workers Unregistered!</h3>
+                        <p>Unregistered ${registrations.length} service worker(s)</p>
+                    </div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error unregistering service workers</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        async function fullReset() {
+            try {
+                statusDiv.innerHTML = '<p>Performing full reset...</p>';
+                
+                // Clear caches
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                
+                // Unregister service workers
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(registrations.map(registration => registration.unregister()));
+                
+                statusDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Full Reset Complete!</h3>
+                        <p>• Cleared ${cacheNames.length} cache(s)</p>
+                        <p>• Unregistered ${registrations.length} service worker(s)</p>
+                        <br>
+                        <p><strong>Now refresh your app to continue!</strong></p>
+                    </div>
+                `;
+                
+                // Redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = '/salon-demo';
+                }, 3000);
+                
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error during reset</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

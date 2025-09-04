@@ -83,13 +83,23 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     const hostname = window.location.hostname
     const pathname = window.location.pathname
     
-    // Development: check for /~subdomain pattern
+    // Development: check for /~subdomain pattern on localhost
     if (hostname === 'localhost' && pathname.startsWith('/~')) {
       const match = pathname.match(/^\/~([^\/]+)/)
       return match ? match[1] : null
     }
     
-    // Production: check actual subdomain
+    // Development: check for *.lvh.me domains (resolves to 127.0.0.1)
+    if (hostname.endsWith('.lvh.me')) {
+      return hostname.split('.')[0]
+    }
+    
+    // Development: check for *.localhost domains
+    if (hostname.endsWith('.localhost')) {
+      return hostname.split('.')[0]
+    }
+    
+    // Production: check actual subdomain (e.g., mario.heraerp.com)
     const parts = hostname.split('.')
     if (parts.length >= 3 || (parts.length === 2 && !parts[0].includes('localhost'))) {
       return parts[0]
@@ -131,7 +141,12 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
           // Set current organization based on subdomain or first org
           const subdomain = getSubdomain()
           if (subdomain) {
-            const org = data.organizations.find((o: Organization) => o.subdomain === subdomain)
+            // Check settings.subdomain first, then fallback to metadata.subdomain for backwards compatibility
+            const org = data.organizations.find((o: Organization) => 
+              o.settings?.subdomain === subdomain || 
+              o.metadata?.subdomain === subdomain ||
+              o.subdomain === subdomain
+            )
             if (org) {
               setCurrentOrganization(org)
               // Store in localStorage for persistence
@@ -331,10 +346,16 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       
       // In production, redirect to organization subdomain
       if (process.env.NODE_ENV === 'production') {
-        window.location.href = `https://${org.subdomain}.heraerp.com`
+        window.location.href = `https://${org.subdomain}.heraerp.com/org/salon`
       } else {
-        // In development, use simulated subdomain path
-        router.push(`/~${org.subdomain}`)
+        // In development, use .lvh.me for proper subdomain simulation
+        const currentHost = window.location.hostname
+        const currentPort = window.location.port
+        const protocol = window.location.protocol
+        
+        // Use .lvh.me domains which resolve to 127.0.0.1
+        const portSuffix = currentPort ? `:${currentPort}` : ''
+        window.location.href = `${protocol}//${org.subdomain}.lvh.me${portSuffix}/org/salon`
       }
     }
   }

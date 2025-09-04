@@ -158,17 +158,41 @@ const apps: AppCard[] = [
 
 export default function AppsPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, currentOrganization } = useMultiOrgAuth()
+  const { isAuthenticated, isLoading, currentOrganization, contextLoading } = useMultiOrgAuth()
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>('all')
+  const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout | null>(null)
 
   // Check authentication status
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    // Clear any existing timer
+    if (redirectTimer) {
+      clearTimeout(redirectTimer)
+    }
+
+    // Don't redirect while loading
+    if (isLoading || contextLoading) {
+      return
+    }
+
+    if (!isAuthenticated) {
+      console.log('Not authenticated, redirecting to login...')
       // Store the intended destination
       localStorage.setItem('redirectAfterLogin', '/apps')
-      router.push('/auth/login')
+      
+      // Set a timer to redirect (prevents infinite loops)
+      const timer = setTimeout(() => {
+        router.push('/auth/login')
+      }, 100)
+      
+      setRedirectTimer(timer)
     }
-  }, [isAuthenticated, isLoading, router])
+
+    return () => {
+      if (redirectTimer) {
+        clearTimeout(redirectTimer)
+      }
+    }
+  }, [isAuthenticated, isLoading, contextLoading, router])
 
   const handleAppClick = (app: AppCard) => {
     if (app.status === 'coming-soon') {
@@ -188,10 +212,34 @@ export default function AppsPage() {
     ? apps 
     : apps.filter(app => app.category === selectedCategory)
 
-  if (isLoading) {
+  if (isLoading || contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="space-y-4 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="text-sm text-gray-600">Loading apps...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If still here but not authenticated, show a message
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="py-8">
+            <div className="text-center space-y-4">
+              <p className="text-gray-600">Redirecting to login...</p>
+              <Button 
+                onClick={() => router.push('/auth/login')}
+                variant="outline"
+              >
+                Go to Login Now
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     )
   }

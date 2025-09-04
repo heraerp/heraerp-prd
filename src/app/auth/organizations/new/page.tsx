@@ -113,25 +113,41 @@ export default function CreateOrganizationPage() {
         localStorage.removeItem('redirectAfterOrg')
         router.push(redirectAfterOrg)
       } else {
-        // Direct to appropriate app based on business type
+        // Redirect to subdomain URL
+        const protocol = window.location.protocol
+        const hostname = window.location.hostname
+        const port = window.location.port
+        
+        // Use appropriate subdomain pattern for development vs production
+        let baseUrl: string
+        
+        if (process.env.NODE_ENV === 'production') {
+          // Production: use actual heraerp.com subdomains
+          baseUrl = `${protocol}//${formData.subdomain}.heraerp.com`
+        } else {
+          // Development: use .lvh.me for proper subdomain simulation
+          const portSuffix = port ? `:${port}` : ''
+          baseUrl = `${protocol}//${formData.subdomain}.lvh.me${portSuffix}`
+        }
+        
         switch (formData.organization_type) {
           case 'salon':
-            router.push('/salon')
+            window.location.href = `${baseUrl}/org/salon`
             break
           case 'icecream':
-            router.push('/icecream')
+            window.location.href = `${baseUrl}/org/dashboard`
             break
           case 'restaurant':
-            router.push('/restaurant')
+            window.location.href = `${baseUrl}/org/restaurant`
             break
           case 'healthcare':
-            router.push('/healthcare')
+            window.location.href = `${baseUrl}/org/healthcare`
             break
           case 'jewelry':
-            router.push('/jewelry')
+            window.location.href = `${baseUrl}/org/jewelry`
             break
           default:
-            router.push('/apps')
+            window.location.href = `${baseUrl}/org/dashboard`
         }
       }
     } catch (err) {

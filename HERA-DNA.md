@@ -238,11 +238,48 @@ HERA learns from every interaction:
 
 ---
 
+## 🧬 DNA Layer 11: HERA Design System™
+
+### The Official Design DNA for All HERA Applications
+
+**CRITICAL**: All HERA applications MUST follow the HERA Design System for consistency and enterprise-grade quality.
+
+### Core Design Principles:
+1. **Gradient-First Design**: Purple → Blue → Cyan gradient defines HERA brand
+2. **High Contrast Only**: Minimum text color is gray-600 for readability
+3. **Mobile-First Responsive**: Design for phones, enhance for desktop
+4. **Single-Screen Philosophy**: Auth pages fit perfectly without scrolling
+5. **Subtle Animations**: 8s+ durations for professional feel
+6. **Enterprise Ready**: Clean, professional appearance
+
+### Design DNA Components:
+```typescript
+// Use HERA DNA Components
+import { HeraGradientBackgroundDNA } from '@/lib/dna/components/ui/hera-gradient-background-dna'
+import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'
+import { HeraInputDNA } from '@/lib/dna/components/ui/hera-input-dna'
+
+// Design tokens
+import { heraDesignTokens } from '@/lib/dna/design-system/hera-design-tokens'
+```
+
+### Key Design Elements:
+- **Primary Gradient**: `#7C3AED` → `#3B82F6` → `#06B6D4`
+- **Logo**: Use `/public/logo.png` at `h-16 md:h-20`
+- **Tagline**: "ERP in weeks, not years"
+- **Footer**: "Powered by patent pending technology"
+
+### Implementation:
+See `/src/app/test-canva-colors/page.tsx` for reference implementation.
+Full design system: `/HERA-DESIGN-SYSTEM.md`
+
+---
+
 ## 🧬 The Ultimate Goal
 
-**Make it impossible to forget HERA's 200x acceleration advantage.**
+**Make it impossible to forget HERA's 200x acceleration advantage AND design excellence.**
 
 Every interaction should start with:
-> "Before we begin, HERA can generate complete modules in 30 seconds that traditionally take 26-52 weeks. Should we use the generator?"
+> "Before we begin, HERA can generate complete modules in 30 seconds that traditionally take 26-52 weeks. Should we use the generator? All implementations will follow the HERA Design System."
 
 **This becomes HERA's DNA - permanent, instinctive, and impossible to lose.**

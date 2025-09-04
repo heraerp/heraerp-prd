@@ -1,0 +1,269 @@
+{
+  "$schema": "./schema/hera-dna-schema.json",
+  "version": "1.0.0",
+  "dna": {
+    "sacredTables": [
+      "core_organizations",
+      "core_entities",
+      "core_dynamic_data",
+      "core_relationships",
+      "universal_transactions",
+      "universal_transaction_lines"
+    ],
+    "smartCodePattern": "^HERA\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.v\\d+$",
+    "organizationIdFormat": "uuid",
+    "gates": {
+      "compile": {
+        "enabled": true,
+        "rules": [
+          {
+            "name": "no-direct-db-access",
+            "description": "Prevent direct database access - must use SDK",
+            "pattern": "/@supabase\\/supabase-js/",
+            "severity": "error"
+          },
+          {
+            "name": "no-raw-sql",
+            "description": "Prevent raw SQL queries",
+            "pattern": "/\\.sql\\(|SELECT\\s+.*FROM/i",
+            "severity": "error"
+          },
+          {
+            "name": "require-smart-codes",
+            "description": "All operations must include smart codes",
+            "pattern": "/smart_code:\\s*['\"](?!HERA\\.)/",
+            "severity": "error"
+          },
+          {
+            "name": "require-org-id",
+            "description": "All operations must include organization ID",
+            "pattern": "/organization_id:\\s*(undefined|null)/",
+            "severity": "error"
+          }
+        ]
+      },
+      "runtime": {
+        "enabled": true,
+        "checks": [
+          {
+            "name": "validate-smart-codes",
+            "description": "Validate smart code format at runtime"
+          },
+          {
+            "name": "enforce-org-isolation",
+            "description": "Ensure organization isolation"
+          },
+          {
+            "name": "audit-operations",
+            "description": "Log all DNA operations"
+          },
+          {
+            "name": "validate-sacred-tables",
+            "description": "Ensure only sacred tables are accessed"
+          }
+        ]
+      }
+    },
+    "standardEntities": [
+      {
+        "type": "customer",
+        "smartCodePrefix": "HERA.CRM.CUST"
+      },
+      {
+        "type": "vendor",
+        "smartCodePrefix": "HERA.SCM.VEND"
+      },
+      {
+        "type": "product",
+        "smartCodePrefix": "HERA.INV.PROD"
+      },
+      {
+        "type": "employee",
+        "smartCodePrefix": "HERA.HR.EMP"
+      },
+      {
+        "type": "gl_account",
+        "smartCodePrefix": "HERA.FIN.GL"
+      },
+      {
+        "type": "budget",
+        "smartCodePrefix": "HERA.FIN.BUDG"
+      },
+      {
+        "type": "workflow_status",
+        "smartCodePrefix": "HERA.WF.STAT"
+      }
+    ],
+    "standardTransactions": [
+      {
+        "type": "sale",
+        "smartCodePrefix": "HERA.SAL.TXN"
+      },
+      {
+        "type": "purchase",
+        "smartCodePrefix": "HERA.PUR.TXN"
+      },
+      {
+        "type": "payment",
+        "smartCodePrefix": "HERA.FIN.PAY"
+      },
+      {
+        "type": "journal_entry",
+        "smartCodePrefix": "HERA.FIN.JE"
+      },
+      {
+        "type": "audit_log",
+        "smartCodePrefix": "HERA.SYS.AUDIT"
+      }
+    ],
+    "standardRelationships": [
+      {
+        "type": "has_status",
+        "description": "Entity has a workflow status"
+      },
+      {
+        "type": "parent_of",
+        "description": "Hierarchical parent-child relationship"
+      },
+      {
+        "type": "reports_to",
+        "description": "Organizational reporting structure"
+      },
+      {
+        "type": "customer_of",
+        "description": "Customer relationship"
+      },
+      {
+        "type": "vendor_of",
+        "description": "Vendor/supplier relationship"
+      }
+    ],
+    "industries": [
+      {
+        "code": "REST",
+        "name": "Restaurant"
+      },
+      {
+        "code": "HLTH",
+        "name": "Healthcare"
+      },
+      {
+        "code": "MFG",
+        "name": "Manufacturing"
+      },
+      {
+        "code": "RETL",
+        "name": "Retail"
+      },
+      {
+        "code": "PROF",
+        "name": "Professional Services"
+      },
+      {
+        "code": "FIN",
+        "name": "Financial Services"
+      },
+      {
+        "code": "EDU",
+        "name": "Education"
+      },
+      {
+        "code": "TECH",
+        "name": "Technology"
+      }
+    ],
+    "modules": [
+      {
+        "code": "CRM",
+        "name": "Customer Relationship Management"
+      },
+      {
+        "code": "FIN",
+        "name": "Finance & Accounting"
+      },
+      {
+        "code": "INV",
+        "name": "Inventory Management"
+      },
+      {
+        "code": "HR",
+        "name": "Human Resources"
+      },
+      {
+        "code": "SAL",
+        "name": "Sales"
+      },
+      {
+        "code": "PUR",
+        "name": "Purchasing"
+      },
+      {
+        "code": "PRD",
+        "name": "Production"
+      },
+      {
+        "code": "QUA",
+        "name": "Quality Assurance"
+      },
+      {
+        "code": "WF",
+        "name": "Workflow"
+      },
+      {
+        "code": "SYS",
+        "name": "System"
+      }
+    ]
+  },
+  "generator": {
+    "outputDir": "./generated",
+    "templates": {
+      "sdk": "./templates/sdk-functions.ts.hbs",
+      "types": "./templates/types.ts.hbs",
+      "validators": "./templates/validators.ts.hbs"
+    },
+    "mcp": {
+      "endpoint": "${MCP_ENDPOINT}",
+      "tools": [
+        "create-entity",
+        "create-transaction",
+        "set-dynamic-field",
+        "create-relationship",
+        "query-universal",
+        "create-hera-user",
+        "setup-organization-security",
+        "create-user-membership",
+        "check-user-authorization",
+        "create-auth-policy",
+        "generate-test-jwt",
+        "test-authorization-flow"
+      ]
+    }
+  },
+  "lint": {
+    "rules": [
+      {
+        "id": "no-status-columns",
+        "description": "Never add status columns - use relationships",
+        "severity": "error",
+        "pattern": "/(status|state)\\s*:\\s*['\"]/"
+      },
+      {
+        "id": "no-schema-changes",
+        "description": "Never modify sacred table schemas",
+        "severity": "error",
+        "pattern": "/ALTER\\s+TABLE\\s+(core_|universal_)/i"
+      },
+      {
+        "id": "require-smart-codes",
+        "description": "All data must have smart codes",
+        "severity": "error"
+      },
+      {
+        "id": "require-org-isolation",
+        "description": "All queries must filter by organization_id",
+        "severity": "error"
+      }
+    ]
+  }
+}

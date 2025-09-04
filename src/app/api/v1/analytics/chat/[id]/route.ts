@@ -4,7 +4,7 @@ import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // const userContext = await getUserContext(request);
@@ -20,24 +20,25 @@ export async function DELETE(
     }
     */
 
+    const resolvedParams = await params;
     const storage = createAnalyticsChatStorage(organizationId);
     const { searchParams } = new URL(request.url);
     const deleteType = searchParams.get('type') || 'message';
 
     if (deleteType === 'session') {
       // Delete entire session
-      await storage.deleteSession(params.id);
+      await storage.deleteSession(resolvedParams.id);
     } else if (deleteType === 'all') {
       // Clear all history
       await storage.clearAllHistory();
     } else {
       // Delete single message
-      await storage.deleteMessage(params.id);
+      await storage.deleteMessage(resolvedParams.id);
     }
 
     return NextResponse.json({
       success: true,
-      deleted: params.id,
+      deleted: resolvedParams.id,
       type: deleteType
     });
   } catch (error) {

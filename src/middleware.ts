@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { heraMetrics } from '@/lib/monitoring/prometheus-metrics'
 import { geoAnalytics } from '@/lib/monitoring/geo-analytics'
+import { getOrganizationContext } from '@/lib/organization-context'
+import { getOrgByHostOrSubdomain } from '@/lib/server/organizations'
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -11,13 +13,29 @@ export async function middleware(request: NextRequest) {
   const host = request.headers.get('host') || ''
   const subdomain = host.split('.')[0]
   const isSubdomain = !!(subdomain && subdomain !== 'heraerp' && subdomain !== 'www' && subdomain !== 'localhost')
+  
+  // Get organization context
+  const orgContext = await getOrganizationContext(host, pathname)
+  
+  // Create response with organization context headers
+  const requestHeaders = new Headers(request.headers)
+  if (orgContext) {
+    requestHeaders.set('x-organization-id', orgContext.organizationId)
+    requestHeaders.set('x-organization-demo', orgContext.isDemo.toString())
+    requestHeaders.set('x-organization-subdomain', orgContext.subdomain || '')
+  }
+  requestHeaders.set('x-pathname', pathname)
 
   // Track visitor analytics for all requests (before auth checks)
   trackVisitorAnalytics(request, pathname)
 
   // Skip auth for public routes
   if (shouldSkipAuth(pathname, isSubdomain)) {
-    const response = NextResponse.next()
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
     trackResponseMetrics(request, pathname, 200, startTime)
     return response
   }
@@ -62,7 +80,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  // Default response with organization context headers
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
 }
 
 function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean {
@@ -87,10 +110,6 @@ function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean
     return true
   }
   
-  // Progressive apps (public demos)
-  if (pathname.endsWith('-progressive')) {
-    return true
-  }
   
   // For subdomains, be more permissive with public routes
   // This allows new pages to work on subdomains without explicit listing
@@ -130,14 +149,6 @@ function trackVisitorAnalytics(request: NextRequest, pathname: string) {
       heraMetrics.trackSubdomainActivity(subdomain, 'page_view', businessType)
     }
     
-    // Track progressive app usage with geo data
-    if (pathname.endsWith('-progressive')) {
-      const progressiveBusinessType = pathname.split('/')[1]?.replace('-progressive', '') || 'unknown'
-      heraMetrics.trackProgressiveBehavior('page_view', progressiveBusinessType, 0)
-      
-      // Track geographic trial engagement
-      geoAnalytics.trackGeoConversion(request, 'trial_started', progressiveBusinessType, true)
-    }
     
   } catch (error) {
     // Silent fail for analytics - don't break the request

@@ -72,6 +72,7 @@ export function middleware(request: NextRequest) {
     .replace(':3000', '')
     .replace('.heraerp.com', '')
     .replace('.localhost', '')
+    .replace('.lvh.me', '') // Add support for lvh.me domains
   
   // Extract subdomain
   const subdomain = currentHost.split('.')[0]

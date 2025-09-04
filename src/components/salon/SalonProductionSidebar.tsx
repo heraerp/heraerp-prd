@@ -299,7 +299,7 @@ export function SalonProductionSidebar() {
           {isExpanded && (
             <Button
               onClick={() => setShowQuickActionsModal(true)}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 !text-white dark:!text-white shadow-lg hover:shadow-xl transition-all duration-200"
               size="sm"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -311,7 +311,7 @@ export function SalonProductionSidebar() {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() => setShowQuickActionsModal(true)}
-                  className="w-10 h-10 p-0 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-10 h-10 p-0 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 !text-white dark:!text-white shadow-lg hover:shadow-xl transition-all duration-200"
                   size="sm"
                 >
                   <Plus className="w-5 h-5" />
@@ -355,10 +355,10 @@ export function SalonProductionSidebar() {
                   </div>
                   {isExpanded && (
                     <>
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium text-gray-900">{item.label}</span>
                       {item.badge && (
                         <Badge 
-                          className="ml-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0"
+                          className="ml-auto bg-gradient-to-r from-pink-500 to-purple-500 !text-white dark:!text-white border-0"
                           variant="secondary"
                         >
                           {item.badge}
@@ -754,7 +754,7 @@ export function SalonProductionSidebar() {
                 variant="outline"
               >
                 <div className="text-purple-600">{item.icon}</div>
-                <span className="font-medium text-sm">{item.label}</span>
+                <span className="font-medium text-sm text-gray-900">{item.label}</span>
                 <span className="text-xs text-gray-500 text-center">{item.description}</span>
               </Button>
             ))}

@@ -37,9 +37,10 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface ModernSalonCalendarProps {
   className?: string
+  onNewBooking?: () => void
 }
 
-export function ModernSalonCalendar({ className }: ModernSalonCalendarProps) {
+export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCalendarProps) {
   const { currentOrganization } = useMultiOrgAuth()
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
   const [selectedStylist, setSelectedStylist] = useState<string>('all')
@@ -179,7 +180,10 @@ export function ModernSalonCalendar({ className }: ModernSalonCalendarProps) {
             </Button>
 
             {/* New Appointment Button */}
-            <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg">
+            <Button 
+              onClick={onNewBooking}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg"
+            >
               <Plus className="w-4 h-4 mr-2" />
               New Booking
             </Button>

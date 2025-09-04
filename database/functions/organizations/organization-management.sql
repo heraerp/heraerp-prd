@@ -47,13 +47,14 @@ BEGIN
         ) RETURNING id INTO v_org_id;
 
         -- 2. Create organization record in core_organizations
+        -- Store subdomain in settings (not metadata) as per HERA DNA
         INSERT INTO core_organizations (
             id,
             organization_name,
             organization_type,
             subscription_plan,
             is_active,
-            metadata,
+            settings,
             created_at,
             updated_at
         ) VALUES (
@@ -64,6 +65,7 @@ BEGIN
             true,
             jsonb_build_object(
                 'subdomain', p_subdomain,
+                'domains', to_jsonb(ARRAY[p_subdomain || '.lvh.me']::text[]),
                 'owner_id', p_owner_id
             ),
             NOW(),

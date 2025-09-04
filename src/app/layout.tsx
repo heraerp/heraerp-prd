@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ServiceWorkerProvider } from "@/components/pwa/ServiceWorkerProvider";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
-import { UpdateNotification } from "@/components/pwa/UpdateNotification";
-import { AutoUpdateChecker } from "@/components/pwa/AutoUpdateChecker";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
@@ -24,17 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "HERA Universal ERP",
   description: "Run your entire business in one beautiful platform. From day one to enterprise scale.",
-  applicationName: "HERA ERP",
   authors: [{ name: "HERA Team" }],
   creator: "HERA Corporation",
   publisher: "HERA Corporation",
   formatDetection: {
     telephone: false,
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "HERA ERP",
   },
   openGraph: {
     title: "HERA Universal ERP",
@@ -75,11 +66,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="HERA ERP" />
+        {/* PWA functionality has been removed from HERA for multi-tenant safety */}
+        {/* Setting cache control headers for multi-tenant security */}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
@@ -91,8 +82,6 @@ export default function RootLayout({
               <MultiOrgAuthProvider>
                 <ToastProvider>
                   {children}
-                  <UpdateNotification />
-                  <AutoUpdateChecker />
                 </ToastProvider>
               </MultiOrgAuthProvider>
             </QueryProvider>

@@ -1,6 +1,6 @@
-// HERA Service Worker v3.0.0 - Aggressive Update Strategy
-const CACHE_NAME = 'hera-cache-v20250901161607';
-const APP_VERSION = '20250901161607';
+// HERA Service Worker v3.0.2 - Aggressive Update Strategy
+const CACHE_NAME = 'hera-cache-v20250904193226';
+const APP_VERSION = '20250904193226';
 
 // Skip caching for these patterns - always fetch fresh
 const SKIP_CACHE_PATTERNS = [
@@ -81,7 +81,12 @@ self.addEventListener('fetch', (event) => {
   
   if (shouldSkipCache) {
     // Always fetch from network, no caching
-    event.respondWith(fetch(request));
+    event.respondWith(
+      fetch(request).catch(() => {
+        // For API calls and other skipped resources, return empty response on failure
+        return new Response('', { status: 204 });
+      })
+    );
     return;
   }
 
@@ -103,7 +108,14 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Only use cache as fallback for offline
           return caches.match(request)
-            .then(response => response || caches.match('/offline'));
+            .then(response => {
+              if (response) return response;
+              // Return a fallback response instead of undefined
+              return new Response('Offline - Page not available', { 
+                status: 503,
+                headers: { 'Content-Type': 'text/plain' }
+              });
+            });
         })
     );
     return;
@@ -129,7 +141,17 @@ self.addEventListener('fetch', (event) => {
     })
     .catch(() => {
       // Fall back to cache only if network fails
-      return caches.match(request);
+      return caches.match(request).then(cached => {
+        if (cached) return cached;
+        // Return a proper error response instead of undefined
+        return new Response('Service temporarily unavailable', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: new Headers({
+            'Content-Type': 'text/plain'
+          })
+        });
+      });
     })
   );
 });

@@ -1,0 +1,365 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* HERA Salon Semantic Tokens - Light Mode */
+    --hera-bg: 255 255 255; /* white */
+    --hera-bg-subtle: 249 250 251; /* hera.bg.50 */
+    --hera-card: 255 255 255; /* white */
+    --hera-border: 229 231 235; /* hera.line.200 */
+    --hera-ring: 139 128 249; /* hera.primary.400 */
+    --hera-ink: 17 24 39; /* hera.ink.900 */
+    --hera-ink-muted: 75 85 99; /* hera.ink.600 */
+    --hera-primary: 99 102 241; /* hera.primary.600 */
+    --hera-primary-foreground: 255 255 255; /* white */
+    --hera-secondary: 236 72 153; /* hera.pink.500 */
+    --hera-secondary-foreground: 255 255 255; /* white */
+    --hera-accent: 16 185 129; /* hera.teal.500 */
+    --hera-accent-foreground: 6 40 31; /* dark teal */
+
+    /* Shadcn/ui compatibility */
+    --background: var(--hera-bg);
+    --foreground: var(--hera-ink);
+    --card: var(--hera-card);
+    --card-foreground: var(--hera-ink);
+    --popover: var(--hera-card);
+    --popover-foreground: var(--hera-ink);
+    --primary: var(--hera-primary);
+    --primary-foreground: var(--hera-primary-foreground);
+    --secondary: 243 244 246; /* gray-100 */
+    --secondary-foreground: var(--hera-ink);
+    --muted: var(--hera-bg-subtle);
+    --muted-foreground: var(--hera-ink-muted);
+    --accent: var(--hera-accent);
+    --accent-foreground: var(--hera-accent-foreground);
+    --destructive: 239 68 68; /* red-500 */
+    --destructive-foreground: 255 255 255;
+    --border: var(--hera-border);
+    --input: var(--hera-border);
+    --ring: var(--hera-ring);
+
+    /* Border radius using HERA values */
+    --radius: 10px; /* md */
+  }
+
+  .dark {
+    /* HERA Salon Semantic Tokens - Dark Mode */
+    --hera-bg: 17 24 39; /* hera.ink.900 */
+    --hera-bg-subtle: 55 65 81; /* hera.ink.700 */  
+    --hera-card: 31 41 55; /* gray-800 */
+    --hera-border: 55 65 81; /* hera.ink.700 */
+    --hera-ring: 139 128 249; /* hera.primary.400 */
+    --hera-ink: 249 250 251; /* near white */
+    --hera-ink-muted: 156 163 175; /* gray-400 */
+    --hera-primary: 139 128 249; /* hera.primary.400 */
+    --hera-primary-foreground: 17 24 39; /* dark */
+    --hera-secondary: 244 114 182; /* hera.pink.400 */
+    --hera-secondary-foreground: 17 24 39; /* dark */
+    --hera-accent: 52 211 153; /* hera.teal.400 */
+    --hera-accent-foreground: 6 40 31; /* dark teal */
+
+    /* Shadcn/ui compatibility - dark mode */
+    --background: var(--hera-bg);
+    --foreground: var(--hera-ink);
+    --card: var(--hera-card);
+    --card-foreground: var(--hera-ink);
+    --popover: var(--hera-card);
+    --popover-foreground: var(--hera-ink);
+    --primary: var(--hera-primary);
+    --primary-foreground: var(--hera-primary-foreground);
+    --secondary: var(--hera-bg-subtle);
+    --secondary-foreground: var(--hera-ink);
+    --muted: var(--hera-bg-subtle);
+    --muted-foreground: var(--hera-ink-muted);
+    --accent: var(--hera-accent);
+    --accent-foreground: var(--hera-accent-foreground);
+    --destructive: 239 68 68; /* red-500 */
+    --destructive-foreground: 255 255 255;
+    --border: var(--hera-border);
+    --input: var(--hera-border);
+    --ring: var(--hera-ring);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* HERA Salon Typography Scale */
+  .hera-h1 {
+    @apply text-5xl md:text-6xl font-bold tracking-tight;
+    line-height: 1.167; /* 56px at 48px, proportional at larger sizes */
+  }
+
+  .hera-h2 {
+    @apply text-4xl font-semibold tracking-tight;
+    line-height: 1.25; /* 40px at 32px */
+  }
+
+  .hera-h3 {
+    @apply text-2xl font-semibold;
+    line-height: 1.333; /* 32px at 24px */
+  }
+
+  .hera-h4 {
+    @apply text-xl font-semibold;
+    line-height: 1.4; /* 28px at 20px */
+  }
+
+  .hera-body-lg {
+    @apply text-lg leading-7;
+  }
+
+  .hera-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .hera-subtle {
+    @apply text-sm;
+    color: hsl(var(--hera-ink-muted));
+  }
+
+  .hera-link {
+    color: hsl(var(--hera-primary));
+    @apply hover:underline focus:outline-none focus:ring-2;
+    focus-ring-color: hsl(var(--hera-ring));
+  }
+
+  /* Focus styles - HERA Salon accessible focus rings */
+  .hera-focus {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: hsl(var(--hera-ring) / 0.4);
+  }
+
+  /* Motion - respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* HERA Salon Button Base Styles */
+  .hera-btn {
+    @apply inline-flex items-center justify-center rounded-md font-medium transition-colors;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:pointer-events-none;
+    --tw-ring-color: hsl(var(--hera-ring) / 0.4);
+  }
+
+  .hera-btn-sm {
+    @apply h-9 px-3 text-sm;
+  }
+
+  .hera-btn-md {
+    @apply h-10 px-4 text-sm;
+  }
+
+  .hera-btn-lg {
+    @apply h-11 px-5 text-base;
+  }
+
+  /* HERA Salon Button Variants */
+  .hera-btn-primary {
+    background-color: hsl(var(--hera-primary));
+    color: hsl(var(--hera-primary-foreground));
+  }
+
+  .hera-btn-primary:hover:not(:disabled) {
+    @apply bg-hera-primary-700;
+  }
+
+  .hera-btn-secondary {
+    @apply bg-white border border-hera-primary-600 text-hera-primary-600;
+  }
+
+  .hera-btn-secondary:hover:not(:disabled) {
+    @apply bg-hera-primary-50;
+  }
+
+  .hera-btn-ghost {
+    @apply bg-transparent text-hera-primary-600;
+  }
+
+  .hera-btn-ghost:hover:not(:disabled) {
+    @apply bg-hera-primary-50;
+  }
+
+  .hera-btn-destructive {
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .hera-btn-destructive:hover:not(:disabled) {
+    @apply bg-red-600;
+  }
+
+  .hera-btn-link {
+    @apply bg-transparent text-hera-primary-600 underline-offset-4 hover:underline;
+    @apply h-auto p-0;
+  }
+
+  /* HERA Salon Input Styles */
+  .hera-input {
+    @apply w-full rounded-md border border-hera-line-200 bg-white px-3 py-2;
+    @apply text-hera-ink-900 placeholder-hera-ink-500 shadow-hera-sm;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus:border-transparent;
+    --tw-ring-color: hsl(var(--hera-ring) / 0.4);
+  }
+
+  .hera-input:invalid,
+  .hera-input[aria-invalid="true"] {
+    @apply border-hera-danger focus-visible:ring-red-300;
+  }
+
+  .dark .hera-input {
+    @apply bg-hera-bg border-hera-border text-hera-ink;
+  }
+
+  /* HERA Salon Card Styles */
+  .hera-card {
+    @apply rounded-xl shadow-hera-sm border;
+    background-color: hsl(var(--hera-card));
+    border-color: hsl(var(--hera-border));
+  }
+
+  .hera-card-header {
+    @apply p-5;
+  }
+
+  .hera-card-content {
+    @apply p-5 pt-0;
+  }
+
+  .hera-card-footer {
+    @apply p-5 pt-0;
+  }
+
+  /* HERA Salon Badge Styles */
+  .hera-badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .hera-badge-neutral {
+    @apply bg-hera-bg text-hera-ink border-hera-border;
+  }
+
+  .hera-badge-primary {
+    @apply bg-hera-primary-100 text-hera-primary-700 border-hera-primary-200;
+  }
+
+  .hera-badge-pink {
+    @apply bg-hera-pink-100 text-hera-pink-700 border-hera-pink-200;
+  }
+
+  .hera-badge-teal {
+    @apply bg-hera-teal-100 text-hera-teal-700 border-hera-teal-200;
+  }
+
+  /* HERA Salon Alert Base */
+  .hera-alert {
+    @apply rounded-lg border p-4;
+    @apply border-l-4;
+  }
+
+  .hera-alert-info {
+    @apply bg-blue-50 border-blue-200 border-l-blue-500 text-blue-900;
+  }
+
+  .hera-alert-success {
+    @apply bg-green-50 border-green-200 border-l-green-500 text-green-900;
+  }
+
+  .hera-alert-warning {
+    @apply bg-yellow-50 border-yellow-200 border-l-yellow-500 text-yellow-900;
+  }
+
+  .hera-alert-danger {
+    @apply bg-red-50 border-red-200 border-l-red-500 text-red-900;
+  }
+
+  .dark .hera-alert-info {
+    @apply bg-blue-950/10 border-blue-800 text-blue-200;
+  }
+
+  .dark .hera-alert-success {
+    @apply bg-green-950/10 border-green-800 text-green-200;
+  }
+
+  .dark .hera-alert-warning {
+    @apply bg-yellow-950/10 border-yellow-800 text-yellow-200;
+  }
+
+  .dark .hera-alert-danger {
+    @apply bg-red-950/10 border-red-800 text-red-200;
+  }
+}
+
+@layer utilities {
+  .hera-shadow-soft {
+    box-shadow: 
+      0 1px 2px 0 rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .hera-shadow-layered {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .hera-shadow-overlay {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Text color utilities using HERA semantic tokens */
+  .text-hera-primary {
+    color: hsl(var(--hera-primary));
+  }
+
+  .text-hera-secondary {
+    color: hsl(var(--hera-secondary)); 
+  }
+
+  .text-hera-accent {
+    color: hsl(var(--hera-accent));
+  }
+
+  .text-hera-ink {
+    color: hsl(var(--hera-ink));
+  }
+
+  .text-hera-muted {
+    color: hsl(var(--hera-ink-muted));
+  }
+
+  /* Background utilities */
+  .bg-hera-primary {
+    background-color: hsl(var(--hera-primary));
+  }
+
+  .bg-hera-secondary {
+    background-color: hsl(var(--hera-secondary));
+  }
+
+  .bg-hera-accent {
+    background-color: hsl(var(--hera-accent));
+  }
+}

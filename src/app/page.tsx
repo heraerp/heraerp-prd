@@ -1,417 +1,610 @@
 'use client'
 
-import React from 'react'
-import { Button } from '@/components/ui/button'
-import { 
-  ArrowRight, 
-  CheckCircle, 
-  Clock, 
-  DollarSign, 
-  Shield, 
-  Zap,
-  Rocket,
-  Target,
-  Star,
-  Wand2
-} from 'lucide-react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { 
+  Scissors, 
+  IceCream2, 
+  UtensilsCrossed, 
+  Stethoscope, 
+  Factory,
+  Store,
+  Briefcase,
+  GraduationCap,
+  ArrowRight,
+  Clock,
+  Shield,
+  Zap,
+  Globe,
+  Users,
+  TrendingUp,
+  Sparkles,
+  Play,
+  Building,
+  ChevronRight,
+  Check,
+  Star,
+  Rocket,
+  Menu,
+  X,
+  MessageCircle,
+  BarChart3
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
-export default function HomePage() {
+// Industry showcase data
+const industries = [
+  {
+    id: 'salon',
+    title: 'Salon & Spa',
+    description: 'Complete salon management with appointments, inventory, and customer loyalty',
+    icon: Scissors,
+    color: 'from-purple-500 to-pink-600',
+    bgColor: 'from-purple-50 to-pink-50',
+    darkBgColor: 'dark:from-purple-900/20 dark:to-pink-900/20',
+    features: ['Appointment Booking', 'Staff Management', 'Inventory Tracking', 'WhatsApp Integration'],
+    demoUrl: '/salon-data',
+    buildUrl: '/discover',
+    stats: { businesses: '2,400+', revenue: '$4.2M processed', time: '30 seconds' }
+  },
+  {
+    id: 'icecream',
+    title: 'Ice Cream & Desserts',
+    description: 'Multi-location distribution, route optimization, and inventory management',
+    icon: IceCream2,
+    color: 'from-blue-500 to-cyan-600',
+    bgColor: 'from-blue-50 to-cyan-50',
+    darkBgColor: 'dark:from-blue-900/20 dark:to-cyan-900/20',
+    features: ['Route Management', 'Multi-location', 'Real-time Tracking', 'Analytics Dashboard'],
+    demoUrl: '/salon-data',
+    buildUrl: '/discover',
+    stats: { businesses: '500+', revenue: '$8.5M tracked', time: '45 seconds' }
+  },
+  {
+    id: 'restaurant',
+    title: 'Restaurant & Cafe',
+    description: 'Full restaurant operations from menu to kitchen, billing to analytics',
+    icon: UtensilsCrossed,
+    color: 'from-orange-500 to-red-600',
+    bgColor: 'from-orange-50 to-red-50',
+    darkBgColor: 'dark:from-orange-900/20 dark:to-red-900/20',
+    features: ['Table Management', 'Kitchen Display', 'Online Ordering', 'Automated Accounting'],
+    demoUrl: '/org/restaurant',
+    buildUrl: '/discover',
+    stats: { businesses: '3,200+', revenue: '$12M processed', time: '60 seconds' }
+  },
+  {
+    id: 'clinic',
+    title: 'Healthcare Clinic',
+    description: 'Patient management, appointments, prescriptions, and billing',
+    icon: Stethoscope,
+    color: 'from-green-500 to-emerald-600',
+    bgColor: 'from-green-50 to-emerald-50',
+    darkBgColor: 'dark:from-green-900/20 dark:to-emerald-900/20',
+    features: ['Patient Records', 'Appointment System', 'E-Prescriptions', 'Insurance Claims'],
+    demoUrl: '/validate',
+    buildUrl: '/discover',
+    stats: { businesses: '800+', revenue: '$6.3M billed', time: '90 seconds' }
+  }
+]
+
+// User journey stages
+const journeyStages = [
+  {
+    stage: 'Discover',
+    description: 'Explore live demos of real businesses',
+    icon: Play,
+    action: 'Try Demo Apps'
+  },
+  {
+    stage: 'Validate',
+    description: 'See if it fits your business needs',
+    icon: Check,
+    action: 'Run through checklist'
+  },
+  {
+    stage: 'Build',
+    description: 'Customize with your requirements',
+    icon: Rocket,
+    action: 'Start Building'
+  },
+  {
+    stage: 'Deploy',
+    description: 'Go live in days, not months',
+    icon: Globe,
+    action: 'Launch Business'
+  }
+]
+
+// Value propositions
+const valueProps = [
+  {
+    title: '70% Cost Savings',
+    description: 'vs traditional ERP systems',
+    icon: TrendingUp,
+    metric: '$2M+ saved by customers'
+  },
+  {
+    title: '92% Success Rate',
+    description: 'Implementation guarantee',
+    icon: Shield,
+    metric: '10,000+ businesses'
+  },
+  {
+    title: '30 Second Setup',
+    description: 'From zero to running',
+    icon: Zap,
+    metric: 'Instant deployment'
+  },
+  {
+    title: '6 Sacred Tables',
+    description: 'Universal architecture',
+    icon: Globe,
+    metric: 'Infinite flexibility'
+  }
+]
+
+// Coming soon industries
+const comingSoon = [
+  { title: 'Manufacturing', icon: Factory },
+  { title: 'Retail Chain', icon: Store },
+  { title: 'Professional Services', icon: Briefcase },
+  { title: 'Education', icon: GraduationCap }
+]
+
+export default function LandingPage() {
+  const router = useRouter()
+  const [isVisible, setIsVisible] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Minimal Header */}
-      <header className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-100/50">
-        <div className="container mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 overflow-x-hidden">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
+        <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
+      </div>
+
+      {/* Header with Mobile Menu */}
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold text-white">H</span>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm sm:text-lg">H</span>
               </div>
-              <span className="text-xl font-light">HERA</span>
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">HERA ERP</h1>
+                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">Universal Business Platform</p>
+              </div>
             </div>
-            <div className="flex items-center gap-6">
-              <Link href="/apps" className="text-gray-600 hover:text-black transition-colors">
-                Explore Apps
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link href="/discover" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                Discover
               </Link>
-              <Button asChild className="bg-black hover:bg-gray-800 text-white hover:text-white rounded-full px-6">
-                <Link href="/auth/login">
-                  Get Started
-                </Link>
+              <Link href="/validate" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                Solutions
+              </Link>
+              <Link href="/pricing" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                Pricing
+              </Link>
+              <Link href="/docs" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                Docs
+              </Link>
+              <Button variant="outline" size="sm" className="ml-2 !text-slate-700 dark:!text-slate-200">
+                Sign In
               </Button>
-            </div>
+              <Button size="sm" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white">
+                Start Free Trial
+              </Button>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              ) : (
+                <Menu className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+            <div className="container mx-auto px-4 py-4 space-y-4">
+              <Link href="/discover" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Discover
+              </Link>
+              <Link href="/validate" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Solutions
+              </Link>
+              <Link href="/pricing" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Pricing
+              </Link>
+              <Link href="/docs" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Docs
+              </Link>
+              <div className="pt-4 space-y-2">
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+                </Button>
+                <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white" asChild>
+                  <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section - Above the Fold Optimized with Glassmorphism */}
-      <section className="py-8 md:py-16 min-h-[80vh] flex items-center relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40"></div>
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-6xl mx-auto text-center">
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 sm:pt-32 sm:pb-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-6 sm:space-y-8 animate-fadeIn">
+            <Badge className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-xs sm:text-sm">Trusted by 10,000+ businesses worldwide</span>
+            </Badge>
             
-            {/* Optimized Headline - Mobile Responsive */}
-            <div className="mb-8 md:mb-12">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-thin text-gray-900 mb-6 md:mb-8 leading-tight">
-                Enterprise-grade ERP.
-                <br />
-                <span className="font-light text-blue-600">Small-business price.</span>
-                <br />
-                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600">Live in 2 weeks — or your implementation is free.*</span>
-              </h1>
-            </div>
-
-            {/* Tagline - Mobile Optimized */}
-            <div className="mb-8 md:mb-12">
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 font-light leading-relaxed max-w-4xl mx-auto px-2">
-                Revolutionary enterprise software that eliminates the pain of traditional ERP implementations.
-              </p>
-            </div>
-
-            {/* Call-to-Action Buttons - Above the Fold */}
-            <div className="mb-8 md:mb-16">
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-8 justify-center items-center max-w-2xl mx-auto">
-                <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto bg-gradient-to-r from-black to-gray-900 hover:from-gray-900 hover:to-black text-white hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
-                  asChild
-                >
-                  <Link href="/auth/signup">
-                    Start Your 2-Week Challenge
-                  </Link>
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="w-full sm:w-auto border-2 border-black text-black hover:bg-black hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light hover:shadow-lg transition-all duration-200"
-                  asChild
-                >
-                  <Link href="/apps">
-                    Explore Live Demos
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
-            {/* Proof Points - Mobile Optimized with Glassmorphism */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 px-4">
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">70%</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Cost Savings</p>
-              </div>
-              
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">2</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Week Guarantee</p>
-              </div>
-              
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">92%</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Success Rate</p>
-              </div>
-              
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">0</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Configuration</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Section - Minimal Table with Enhanced Glassmorphism */}
-      <section className="py-32 bg-gradient-to-b from-gray-50/40 to-white backdrop-blur-sm relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-blue-50/60 to-indigo-50/40"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
+              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent">
+                Run Your Entire Business
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 dark:from-blue-400 dark:via-indigo-400 dark:to-blue-400 bg-clip-text text-transparent">
+                In One Beautiful Platform
+              </span>
+            </h1>
             
-            {/* Breathing Space */}
-            <div className="text-center mb-20">
-              <h2 className="text-5xl font-thin text-gray-900 mb-8">
-                The difference is clear.
-              </h2>
-            </div>
-
-            {/* Clean Comparison Table with Enhanced Glassmorphism */}
-            <div className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-white/20 backdrop-blur-sm">
-                  <tr>
-                    <th className="text-left py-8 px-8 font-light text-xl text-gray-600">Solution</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-black">HERA</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-gray-400">SAP</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-gray-400">Salesforce</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Implementation</td>
-                    <td className="py-8 px-8 text-center font-light text-black">2 weeks</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">12-21 months</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">6+ months</td>
-                  </tr>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Annual Cost</td>
-                    <td className="py-8 px-8 text-center font-light text-black">$50,000</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">$150,000+</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">$144,000+</td>
-                  </tr>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Success Rate</td>
-                    <td className="py-8 px-8 text-center font-light text-black">92%</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">40%</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">60%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Apps Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-thin text-gray-900 mb-4">Try HERA Apps Now</h2>
-            <p className="text-xl font-light text-gray-600 max-w-3xl mx-auto">
-              Experience enterprise-grade functionality with industry-specific apps. 
-              No signup required - start planning your business immediately.
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl md:max-w-3xl mx-auto">
+              HERA transforms how businesses operate. Explore live demos of real companies, 
+              then build your own customized version in minutes.
             </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <a 
-              href="/budgeting/salon" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <span className="text-2xl">✂️</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Budgeting</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Complete budgeting for beauty salons with service-based revenue planning, staff productivity tracking, and seasonal analysis.
-              </p>
-              <div className="flex items-center text-pink-600 font-medium">
-                <span>Try Demo</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/budgeting" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Universal Budgeting</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Enterprise budgeting for any industry. Multi-dimensional planning, variance analysis, and rolling forecasts built-in.
-              </p>
-              <div className="flex items-center text-blue-600 font-medium">
-                <span>Explore Apps</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/financial" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <DollarSign className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Financial Management</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Complete financial suite with GL, AR, AP, budgeting, and real-time reporting. IFRS-compliant from day one.
-              </p>
-              <div className="flex items-center text-green-600 font-medium">
-                <span>Try Financial</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/digital-accountant" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <span className="text-2xl">🧮</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Digital Accountant</h3>
-              <p className="text-gray-600 font-light mb-4">
-                AI-powered accounting with natural language. Post journals, create invoices, reconcile accounts through chat.
-              </p>
-              <div className="flex items-center text-emerald-600 font-medium">
-                <span>Try Digital Accountant</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/auto-journal" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <span className="text-2xl">🤖</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Auto-Journal Engine</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Intelligent journal entry automation with AI. 85%+ automation rate, 92% time savings, zero manual intervention.
-              </p>
-              <div className="flex items-center text-indigo-600 font-medium">
-                <span>Try Auto-Journal</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/salon-manager" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <span className="text-2xl">💅</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Manager</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Complete salon operations with AI. Book appointments, manage inventory, track revenue, calculate commissions through natural language.
-              </p>
-              <div className="flex items-center text-purple-600 font-medium">
-                <span>Try Salon Manager</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-
-            <a 
-              href="/mcp-tools" 
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Wand2 className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">MCP Conversion Tools</h3>
-              <p className="text-gray-600 font-light mb-4">
-                Convert progressive demos to production. SQL generation, code transformation, batch conversion, and automated deployment.
-              </p>
-              <div className="flex items-center text-cyan-600 font-medium">
-                <span>Open Tools</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </a>
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-sm text-gray-500 font-light">
-              ✨ All apps include sample data - no setup required. Experience enterprise features instantly.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Vision Section - Startup Mission */}
-      <section className="py-32">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            
-            {/* Breathing Space */}
-            <div className="mb-16">
-              <blockquote className="text-4xl font-thin text-gray-900 leading-relaxed">
-                "Every business deserves enterprise-grade tools
-                <br />
-                without enterprise complexity or cost.
-                <br />
-                That's why we built HERA."
-              </blockquote>
-            </div>
-
-            <div className="flex items-center justify-center">
-              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-6">
-                <span className="text-gray-600 font-light text-lg">HT</span>
-              </div>
-              <div className="text-left">
-                <p className="font-light text-gray-900 text-lg">HERA Team</p>
-                <p className="text-gray-600 font-light">Launching September 2025</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA - Powerful and Simple */}
-      <section className="py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            
-            {/* Massive Breathing Space */}
-            <div className="mb-20">
-              <h2 className="text-6xl font-thin mb-12 leading-tight">
-                Ready to challenge
-                <br />
-                the 2-week guarantee?
-              </h2>
-            </div>
-
-            {/* Breathing Space */}
-            <div className="mb-20">
-              <p className="text-2xl font-light text-gray-300 leading-relaxed">
-                We're so confident in HERA that we'll implement your ERP in 2 weeks
-                <br />
-                or you don't pay a dime.
-              </p>
-            </div>
-
-            {/* Simple, Powerful Buttons */}
-            <div className="flex flex-col sm:flex-row gap-8 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-white to-gray-50 text-black hover:from-gray-50 hover:to-white text-lg px-16 py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
-                asChild
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <Link href="/auth/signup">
-                  Accept the Challenge
-                </Link>
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Explore Live Demos
+              </Button>
+              <Button 
+                size="lg" 
+                className="bg-purple-600 hover:bg-purple-700 !text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                onClick={() => router.push('/readiness-questionnaire')}
+              >
+                <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                ERP Readiness Check
+              </Button>
+              <Button 
+                size="lg" 
+                className="bg-[#00a884] hover:bg-[#00a884]/90 !text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                onClick={() => router.push('/salon-whatsapp-desktop')}
+              >
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                WhatsApp Desktop
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black text-lg px-16 py-6 rounded-full font-light"
-                asChild
+                className="border-2 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto !text-slate-700 dark:!text-slate-200"
+                onClick={() => router.push('/auth/signup')}
               >
-                <Link href="/apps">
-                  View Demo Apps
-                </Link>
+                Start Free Trial
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="py-16 bg-white border-t border-gray-100">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col space-y-6">
-            {/* Main Footer Content */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-black rounded flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">H</span>
+      {/* Stats Section - Positioned Lower to Prevent Cutoff */}
+      <section className="relative py-8 sm:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
+            {[
+              { value: '30 sec', label: 'Setup Time', icon: Clock },
+              { value: '99.9%', label: 'Uptime SLA', icon: Shield },
+              { value: '$2M+', label: 'Cost Savings', icon: TrendingUp },
+              { value: '6 Tables', label: 'Universal Schema', icon: Zap }
+            ].map((stat, index) => (
+              <div
+                key={index}
+                className={`bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 mb-2" />
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* User Journey Section */}
+      <section id="discover" className="py-16 sm:py-20 md:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+              Your Journey to Modern Business
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+              From discovery to deployment in <span className="text-[#B0B0B0] font-semibold">days, not months</span>
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {journeyStages.map((stage, index) => (
+              <div
+                key={index}
+                className={`relative ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: `${(index + 4) * 100}ms` }}
+              >
+                <Card className="hover:shadow-lg transition-all duration-300 h-full">
+                  <CardHeader>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                      <stage.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-white">{stage.stage}</CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-[#B0B0B0] font-medium">{stage.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="link" className="p-0 h-auto text-sm sm:text-base !text-blue-600 dark:!text-blue-400 hover:!text-blue-700 dark:hover:!text-blue-300">
+                      {stage.action} <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
+                    </Button>
+                  </CardContent>
+                </Card>
+                {index < journeyStages.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                    <ChevronRight className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Industry Showcase */}
+      <section id="industries" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+              <span className="text-[#B0B0B0]">Explore</span> Real Business Demos
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              See how successful businesses use HERA. Each demo is a <span className="text-[#B0B0B0] font-semibold">real implementation</span> you can explore and customize.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
+            {industries.map((industry, index) => (
+              <div
+                key={industry.id}
+                className={`group ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: `${(index + 8) * 100}ms` }}
+              >
+                <Card className="hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
+                  <div className={`h-2 bg-gradient-to-r ${industry.color}`} />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <div className="flex items-start justify-between mb-3 sm:mb-4">
+                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${industry.bgColor} ${industry.darkBgColor} flex items-center justify-center`}>
+                        <industry.icon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-700 dark:text-slate-300" />
+                      </div>
+                      <Badge variant="secondary" className="text-xs sm:text-sm text-slate-700 dark:text-slate-200">Live Demo</Badge>
+                    </div>
+                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">{industry.title}</CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-gray-700 dark:text-gray-200">{industry.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      {industry.features.map((feature, featureIndex) => (
+                        <Badge key={featureIndex} variant="outline" className="text-xs text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600">
+                          {feature}
+                        </Badge>
+                      ))}
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 py-3 sm:py-4 border-y">
+                      <div className="text-center">
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.businesses}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400">Active</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.revenue}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400">Revenue</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.time}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400">Setup</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex gap-2 sm:gap-3">
+                        <Button 
+                          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
+                          onClick={() => router.push(industry.demoUrl)}
+                        >
+                          <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                          Try Demo
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 text-sm sm:text-base !text-gray-700 dark:!text-gray-200"
+                          onClick={() => router.push(industry.buildUrl)}
+                        >
+                          Build Your Own
+                        </Button>
+                      </div>
+                      {industry.id === 'salon' && (
+                        <Button 
+                          className="w-full bg-[#00a884] hover:bg-[#00a884]/90 !text-white text-sm sm:text-base"
+                          onClick={() => router.push('/salon-whatsapp-desktop')}
+                        >
+                          <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                          WhatsApp Desktop
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+
+          {/* Build Your Own CTA */}
+          <div className="mt-12 sm:mt-16 text-center">
+            <Card className="max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
+              <CardHeader>
+                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">Don't see your industry?</CardTitle>
+                <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  HERA's universal architecture works for any business type
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
+                  onClick={() => router.push('/build')}
+                >
+                  Build Custom Solution
+                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Coming Soon Section */}
+      <section className="py-16 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10">
+            <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3">
+              Coming Soon
+            </h3>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+              More industry-specific demos launching soon
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-3xl mx-auto">
+            {comingSoon.map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                  <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400" />
                 </div>
-                <span className="font-light text-gray-600">HERA</span>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{item.title}</p>
               </div>
-              <div className="text-sm text-gray-400 font-light">
-                Enterprise-grade ERP. Small-business price.
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Value Props Section */}
+      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+              Why Businesses Choose HERA
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+              Revolutionary architecture that delivers <span className="text-[#B0B0B0] font-semibold">real results</span>
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-6xl mx-auto">
+            {valueProps.map((prop, index) => (
+              <div
+                key={index}
+                className={`text-center ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: `${(index + 12) * 100}ms` }}
+              >
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <prop.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white mb-1 sm:mb-2">{prop.title}</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2">{prop.description}</p>
+                <p className="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-400">{prop.metric}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
+              Ready to Transform Your Business?
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 sm:mb-8">
+              Join <span className="text-[#B0B0B0] font-semibold">thousands of businesses</span> already running on HERA's revolutionary platform
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Button 
+                size="lg" 
+                className="bg-white text-slate-900 hover:bg-slate-100 !text-slate-900 dark:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                onClick={() => router.push('/auth/signup')}
+              >
+                Start Your Free Trial
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white !text-white hover:bg-white hover:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
+                onClick={() => router.push('/contact')}
+              >
+                Talk to Sales
+              </Button>
             </div>
             
-            {/* Disclaimer */}
-            <div className="border-t border-gray-100 pt-6">
-              <p className="text-xs text-gray-400 font-light max-w-4xl">
-                *2-week implementation guarantee applies to standard business configurations using HERA's universal templates. 
-                Complex integrations, custom development, or enterprise-scale deployments may require additional time. 
-                Free implementation offer available for qualifying businesses. Terms and conditions apply. 
-                HERA launches September 1, 2025.
-              </p>
-            </div>
+            <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-slate-400">
+              <span className="text-[#B0B0B0]">No credit card required</span> • <span className="text-[#B0B0B0]">14-day free trial</span> • Cancel anytime
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 sm:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              © 2025 HERA ERP. All rights reserved. • 
+              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white"> Privacy</Link> • 
+              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white"> Terms</Link>
+            </p>
           </div>
         </div>
       </footer>

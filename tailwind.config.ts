@@ -106,6 +106,7 @@ const config: Config = {
         'scale-in': 'scaleIn 0.2s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
         'float': 'float 3s ease-in-out infinite',
+        'fadeIn': 'fadeIn 0.6s ease-in-out forwards',
       },
       
       keyframes: {

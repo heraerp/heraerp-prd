@@ -22,6 +22,9 @@ export default function AuthLandingPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <Link href="/how-it-works">
+                <Button variant="ghost">See Demos</Button>
+              </Link>
               <Link href="/auth/login">
                 <Button variant="ghost">Sign In</Button>
               </Link>
@@ -52,15 +55,15 @@ export default function AuthLandingPage() {
             From restaurants to healthcare, manufacturing to services - all on one universal platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/signup">
+            <Link href="/how-it-works">
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8">
-                Start Free Trial
+                See Live Demos
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/auth/login">
+            <Link href="/auth/signup">
               <Button size="lg" variant="outline" className="px-8">
-                Sign In to Dashboard
+                Start Free Trial
               </Button>
             </Link>
           </div>

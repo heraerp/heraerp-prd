@@ -6,7 +6,10 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function GET(request: NextRequest) {
-  const organizationId = process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+  const searchParams = request.nextUrl.searchParams
+  const organizationId = searchParams.get('org_id') || 
+                         process.env.DEFAULT_ORGANIZATION_ID || 
+                         '44d2d8f8-167d-46a7-a704-c0e5435863d6'
   
   try {
     // Step 1: Get all WhatsApp conversations
@@ -25,7 +28,7 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('transaction_type', 'whatsapp_message')
       .eq('organization_id', organizationId)
-      .order('occurred_at', { ascending: false })
+      .order('transaction_date', { ascending: false })
       .limit(100)
     
     if (txnError) throw txnError
@@ -33,22 +36,29 @@ export async function GET(request: NextRequest) {
     // Step 3: Get transaction IDs
     const transactionIds = transactions?.map(t => t.id) || []
     
-    // Step 4: Get all dynamic data for these transactions
-    const { data: dynamicData, error: dynError } = await supabase
-      .from('core_dynamic_data')
-      .select('*')
-      .eq('entity_type', 'transaction')
-      .in('entity_id', transactionIds)
+    // Step 4: Get all dynamic data for these transactions (only if we have transactions)
+    let dynamicData: any[] = []
+    if (transactionIds.length > 0) {
+      const { data: dynData, error: dynError } = await supabase
+        .from('core_dynamic_data')
+        .select('*')
+        .in('entity_id', transactionIds)
+      
+      if (dynError) throw dynError
+      dynamicData = dynData || []
+    }
     
-    if (dynError) throw dynError
-    
-    // Step 5: Get all relationships for these transactions
-    const { data: relationships, error: relError } = await supabase
-      .from('core_relationships')
-      .select('*')
-      .or(`from_entity_id.in.(${transactionIds.join(',')}),to_entity_id.in.(${transactionIds.join(',')})`)
-    
-    if (relError) throw relError
+    // Step 5: Get all relationships for these transactions (only if we have transactions)
+    let relationships: any[] = []
+    if (transactionIds.length > 0) {
+      const { data: relData, error: relError } = await supabase
+        .from('core_relationships')
+        .select('*')
+        .or(`from_entity_id.in.(${transactionIds.join(',')}),to_entity_id.in.(${transactionIds.join(',')})`)
+      
+      if (relError) throw relError
+      relationships = relData || []
+    }
     
     // Step 6: Get all customers referenced in relationships
     const customerIds = new Set<string>()
@@ -58,13 +68,17 @@ export async function GET(request: NextRequest) {
       }
     })
     
-    const { data: customers, error: custError } = await supabase
-      .from('core_entities')
-      .select('*')
-      .eq('entity_type', 'customer')
-      .in('id', Array.from(customerIds))
-    
-    if (custError) throw custError
+    let customers: any[] = []
+    if (customerIds.size > 0) {
+      const { data: custData, error: custError } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('entity_type', 'customer')
+        .in('id', Array.from(customerIds))
+      
+      if (custError) throw custError
+      customers = custData || []
+    }
     
     // Step 7: Build message objects
     const messages = transactions?.map(txn => {
@@ -90,21 +104,31 @@ export async function GET(request: NextRequest) {
       const conversationId = convRel?.to_entity_id
       const conversation = conversations?.find(c => c.id === conversationId)
       
-      // Determine direction from smart code
-      const direction = txn.smart_code?.includes('RECEIVED') ? 'inbound' : 'outbound'
+      // Determine direction from smart code or metadata
+      const direction = txn.smart_code?.includes('RECEIVED') || txn.metadata?.direction === 'inbound' ? 'inbound' : 'outbound'
+      
+      // Get text from metadata or dynamic fields
+      const messageText = txn.metadata?.text || dynamicFields.text || ''
+      
+      // Get wa_id from metadata
+      const waId = txn.metadata?.wa_id || dynamicFields.wa_id || ''
+      
+      // For now, we'll use the wa_id to find the conversation
+      const matchingConv = conversations?.find(c => c.metadata?.wa_id === waId)
+      const matchingCustomer = customers?.find(c => c.metadata?.wa_id === waId)
       
       return {
         id: txn.id,
-        text: dynamicFields.text || '',
+        text: messageText,
         direction,
-        wa_id: dynamicFields.wa_id || customer?.metadata?.wa_id || '',
-        phone: customer?.metadata?.phone || '',
-        customerName: customer?.entity_name || 'Unknown',
-        conversationId,
-        conversationName: conversation?.entity_name || '',
-        waba_message_id: dynamicFields.waba_message_id || txn.external_id,
+        wa_id: waId,
+        phone: matchingCustomer?.metadata?.phone || txn.metadata?.phone || '',
+        customerName: matchingCustomer?.entity_name || 'Unknown',
+        conversationId: matchingConv?.id || conversationId,
+        conversationName: matchingConv?.entity_name || '',
+        waba_message_id: txn.metadata?.waba_message_id || dynamicFields.waba_message_id || txn.external_id,
         created_at: txn.created_at,
-        occurred_at: txn.occurred_at,
+        occurred_at: txn.transaction_date,
         smart_code: txn.smart_code,
         metadata: {
           ...txn.metadata,
