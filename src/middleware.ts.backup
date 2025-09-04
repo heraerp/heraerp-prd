@@ -1,0 +1,195 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { heraMetrics } from '@/lib/monitoring/prometheus-metrics'
+import { geoAnalytics } from '@/lib/monitoring/geo-analytics'
+import { getOrganizationContext } from '@/lib/organization-context'
+import { getOrgByHostOrSubdomain } from '@/lib/server/organizations'
+
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  const startTime = Date.now()
+  
+  // Get the host to check for subdomains
+  const host = request.headers.get('host') || ''
+  const subdomain = host.split('.')[0]
+  const isSubdomain = !!(subdomain && subdomain !== 'heraerp' && subdomain !== 'www' && subdomain !== 'localhost')
+  
+  // Get organization context
+  const orgContext = await getOrganizationContext(host, pathname)
+  
+  // Create response with organization context headers
+  const requestHeaders = new Headers(request.headers)
+  if (orgContext) {
+    requestHeaders.set('x-organization-id', orgContext.organizationId)
+    requestHeaders.set('x-organization-demo', orgContext.isDemo.toString())
+    requestHeaders.set('x-organization-subdomain', orgContext.subdomain || '')
+  }
+  requestHeaders.set('x-pathname', pathname)
+
+  // Track visitor analytics for all requests (before auth checks)
+  trackVisitorAnalytics(request, pathname)
+
+  // Skip auth for public routes
+  if (shouldSkipAuth(pathname, isSubdomain)) {
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
+    trackResponseMetrics(request, pathname, 200, startTime)
+    return response
+  }
+
+  // For API routes, check for valid Supabase session
+  if (pathname.startsWith('/api/v1/')) {
+    // Most API routes require authentication
+    const res = NextResponse.next()
+    const supabase = createMiddlewareClient({ req: request, res })
+    
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session) {
+      return Response.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    
+    return res
+  }
+
+  // For protected routes (dashboard, salon, etc), check Supabase session
+  const protectedRoutes = ['/dashboard', '/salon', '/admin']
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  
+  if (isProtectedRoute) {
+    const res = NextResponse.next()
+    const supabase = createMiddlewareClient({ req: request, res })
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        return NextResponse.redirect(new URL('/auth/login', request.url))
+      }
+      
+      return res
+    } catch (error) {
+      console.error('Auth middleware error:', error)
+      return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
+  }
+
+  // Default response with organization context headers
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
+}
+
+function shouldSkipAuth(pathname: string, isSubdomain: boolean = false): boolean {
+  // Public routes that don't require authentication
+  const publicRoutes = [
+    '/',
+    '/auth/login',
+    '/auth/register',
+    '/auth/callback',
+    '/get-started',          // Get started page
+    '/select-app',           // App selector for multi-app users
+    '/onboarding'            // Onboarding for new organizations
+  ]
+  
+  // Static files and Next.js internals
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/favicon.ico') ||
+    pathname.startsWith('/api/health') ||
+    pathname.includes('.')
+  ) {
+    return true
+  }
+  
+  
+  // For subdomains, be more permissive with public routes
+  // This allows new pages to work on subdomains without explicit listing
+  if (isSubdomain) {
+    // Protected subdomain routes that still require auth
+    const protectedSubdomainRoutes = ['/dashboard', '/admin', '/settings']
+    const isProtected = protectedSubdomainRoutes.some(route => pathname.startsWith(route))
+    
+    // If it's not explicitly protected, allow it
+    if (!isProtected) {
+      return true
+    }
+  }
+  
+  return publicRoutes.some(route => pathname === route || pathname.startsWith(route))
+}
+
+/**
+ * Track visitor analytics for all requests
+ */
+function trackVisitorAnalytics(request: NextRequest, pathname: string) {
+  try {
+    const businessType = detectBusinessType(pathname)
+    
+    // Enhanced geographic tracking
+    geoAnalytics.trackUserLocation(request, pathname, businessType)
+    
+    // Original page view tracking
+    heraMetrics.trackPageView(request, pathname)
+    
+    // Track subdomain activity
+    const host = request.headers.get('host') || ''
+    const subdomain = host.split('.')[0]
+    
+    if (subdomain && subdomain !== 'heraerp' && subdomain !== 'www') {
+      // This is a business subdomain
+      heraMetrics.trackSubdomainActivity(subdomain, 'page_view', businessType)
+    }
+    
+    
+  } catch (error) {
+    // Silent fail for analytics - don't break the request
+    console.error('Analytics tracking error:', error)
+  }
+}
+
+/**
+ * Track response metrics
+ */
+function trackResponseMetrics(request: NextRequest, pathname: string, statusCode: number, startTime: number) {
+  try {
+    const duration = Date.now() - startTime
+    const method = request.method
+    
+    heraMetrics.trackAPICall(pathname, method, statusCode, duration)
+    
+  } catch (error) {
+    console.error('Response metrics error:', error)
+  }
+}
+
+/**
+ * Detect business type from pathname
+ */
+function detectBusinessType(pathname: string): string {
+  if (pathname.includes('salon')) return 'salon'
+  if (pathname.includes('restaurant')) return 'restaurant'
+  if (pathname.includes('clinic') || pathname.includes('healthcare')) return 'healthcare'
+  if (pathname.includes('retail') || pathname.includes('store')) return 'retail'
+  if (pathname.includes('manufacturing')) return 'manufacturing'
+  if (pathname.includes('jewelry')) return 'jewelry'
+  if (pathname.includes('airline')) return 'airline'
+  if (pathname.includes('crm')) return 'crm'
+  if (pathname.includes('financial')) return 'financial'
+  return 'general'
+}
+
+export const config = {
+  matcher: [
+    // Monitor all routes for analytics
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ]
+}

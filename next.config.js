@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
+// Apply polyfills for server-side rendering
+require('./scripts/setup-globals.js');
+
 const nextConfig = {
   output: 'standalone',
   typescript: {
@@ -10,6 +13,7 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  swcMinify: false, // Disable SWC minification which can cause issues
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
