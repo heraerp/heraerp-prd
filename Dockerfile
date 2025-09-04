@@ -2,12 +2,12 @@
 FROM node:20.18.0-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --only=production --legacy-peer-deps
 
 FROM node:20.18.0-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 COPY . .
 
 # Set environment variables for build
