@@ -25,6 +25,10 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    // Skip static optimization for API routes
+    outputFileTracingExcludes: {
+      '/api/*': ['*'],
+    },
   },
   // Webpack configuration to handle DNA SDK issues
   webpack: (config, { isServer }) => {

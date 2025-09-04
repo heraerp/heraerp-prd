@@ -1,11 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-
-// Create Supabase service client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { getSupabaseClient } from '@/lib/supabase-lazy'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -32,7 +26,12 @@ export async function GET(request: NextRequest) {
       limit: parseInt(limit)
     })
 
-    let query = supabase
+    const db = getSupabaseClient()
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
+    
+    let query = db
       .from(table)
       .select('*')
       .eq('organization_id', organizationId)
@@ -93,7 +92,12 @@ export async function POST(request: NextRequest) {
       ? insertData.map(record => ({ ...record, organization_id: organizationId }))
       : { ...insertData, organization_id: organizationId }
 
-    const { data, error } = await supabase
+    const db = getSupabaseClient()
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
+    
+    const { data, error } = await db
       .from(table)
       .insert(dataWithOrgId)
       .select()
