@@ -42,5 +42,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health-simple', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
-# Start the application using next start with error handling
-CMD ["sh", "-c", "npm start || (echo 'Server failed to start' && exit 1)"]
+# Start the application using our custom server script
+CMD ["node", "scripts/start-server.js"]
