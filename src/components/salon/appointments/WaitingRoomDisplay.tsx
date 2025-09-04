@@ -8,10 +8,18 @@ import { createClient } from '@supabase/supabase-js'
 import { format } from 'date-fns'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Lazy initialization to handle build-time issues
+let supabase: ReturnType<typeof createClient> | null = null
+
+function getSupabase() {
+  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
+  }
+  return supabase
+}
 
 interface CheckedInAppointment {
   id: string
@@ -31,10 +39,13 @@ export function WaitingRoomDisplay() {
   useEffect(() => {
     if (!currentOrganization) return
     
+    const db = getSupabase()
+    if (!db) return
+    
     fetchCheckedInAppointments()
     
     // Set up real-time subscription
-    const subscription = supabase
+    const subscription = db
       .channel('waiting-room')
       .on(
         'postgres_changes',
@@ -63,9 +74,12 @@ export function WaitingRoomDisplay() {
   const fetchCheckedInAppointments = async () => {
     if (!currentOrganization) return
     
+    const db = getSupabase()
+    if (!db) return
+    
     try {
       // Get all appointments with CHECKED_IN status
-      const { data: appointments } = await supabase
+      const { data: appointments } = await db
         .from('universal_transactions')
         .select(`
           *,

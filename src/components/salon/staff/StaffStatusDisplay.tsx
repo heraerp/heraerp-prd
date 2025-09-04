@@ -7,10 +7,18 @@ import { User, Clock, Coffee, Power } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Lazy initialization to handle build-time issues
+let supabase: ReturnType<typeof createClient> | null = null
+
+function getSupabase() {
+  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
+  }
+  return supabase
+}
 
 interface StaffMember {
   id: string
@@ -62,10 +70,13 @@ export function StaffStatusDisplay() {
   useEffect(() => {
     if (!currentOrganization) return
     
+    const db = getSupabase()
+    if (!db) return
+    
     fetchStaffStatuses()
     
     // Set up real-time subscription
-    const subscription = supabase
+    const subscription = db
       .channel('staff-status')
       .on(
         'postgres_changes',
@@ -90,9 +101,12 @@ export function StaffStatusDisplay() {
   const fetchStaffStatuses = async () => {
     if (!currentOrganization) return
     
+    const db = getSupabase()
+    if (!db) return
+    
     try {
       // Get all staff members
-      const { data: staff } = await supabase
+      const { data: staff } = await db
         .from('core_entities')
         .select(`
           *,

@@ -18,6 +18,7 @@ ENV SKIP_STATIC_GENERATION=true
 
 # Build the application with placeholder environment variables
 RUN NEXT_PUBLIC_SUPABASE_URL="https://placeholder.supabase.co" \
+    NEXT_PUBLIC_SUPABASE_ANON_KEY="placeholder-anon-key" \
     SUPABASE_SERVICE_ROLE_KEY="placeholder-key" \
     npm run build || echo "Build completed with warnings"
 
