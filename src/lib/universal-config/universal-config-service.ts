@@ -203,20 +203,27 @@ export class UniversalConfigService {
 
     // Fetch from database
     try {
-      // Query core_entities for rules
-      const ruleEntities = await universalApi.query('entities', {
-        entity_type: 'universal_rule',
-        organization_id: orgId,
-        filters: [
-          { field: 'smart_code', operator: 'like', value: `${family}%` }
-        ]
-      })
+      // Query core_entities for rules using read method
+      const response = await universalApi.read('core_entities', undefined, orgId)
+      
+      if (!response.success || !response.data) {
+        console.error('Failed to fetch rule entities:', response.error)
+        return []
+      }
+      
+      // Filter for universal_rule entities with matching smart code
+      const ruleEntities = response.data.filter(
+        (entity: any) => 
+          entity.entity_type === 'universal_rule' &&
+          entity.smart_code?.startsWith(family)
+      )
 
       // Fetch dynamic data for each rule
       const rules: UniversalRule[] = await Promise.all(
-        ruleEntities.map(async (entity) => {
+        ruleEntities.map(async (entity: any) => {
           // Get rule data from dynamic fields
-          const dynamicData = await universalApi.getDynamicFields(entity.id)
+          const dynamicResponse = await universalApi.getDynamicData(entity.id, orgId)
+          const dynamicData = dynamicResponse.success ? dynamicResponse.data : []
           
           return this.entityToRule(entity, dynamicData)
         })
