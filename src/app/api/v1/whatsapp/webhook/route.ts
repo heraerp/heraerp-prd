@@ -53,6 +53,8 @@ export async function POST(request: NextRequest) {
     const phoneToOrgMap: Record<string, string> = {
       '919945896033': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Hair Talkz
       '971501234567': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Hair Talkz alternate
+      '712631301940690': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Hair Talkz phone number ID
+      '447515668004': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Your UK number
     }
     
     // Check if this is a status update
