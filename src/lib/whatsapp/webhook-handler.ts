@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Create Supabase client inside the class to avoid initialization issues
+const getSupabaseClient = () => {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export interface WhatsAppWebhookMessage {
   from: string
@@ -104,6 +107,7 @@ export class WhatsAppWebhookHandler {
   }
 
   private async findOrCreateCustomer(waId: string, name: string) {
+    const supabase = getSupabaseClient()
     // Check if customer exists
     const { data: existing, error: searchError } = await supabase
       .from('core_entities')
@@ -158,6 +162,7 @@ export class WhatsAppWebhookHandler {
   }
 
   private async findOrCreateConversation(customerId: string, waId: string) {
+    const supabase = getSupabaseClient()
     // Check if active conversation exists
     const { data: existing, error: searchError } = await supabase
       .from('core_entities')
@@ -227,6 +232,7 @@ export class WhatsAppWebhookHandler {
     const messageContent = message.text?.body || '[Non-text message]'
     const messageType = message.type || 'text'
     
+    const supabase = getSupabaseClient()
     // Store as universal transaction
     const { data: storedMessage, error } = await supabase
       .from('universal_transactions')
@@ -297,6 +303,7 @@ export class WhatsAppWebhookHandler {
   async handleStatusUpdate(statusUpdate: any) {
     console.log('📊 Processing WhatsApp status update...')
     
+    const supabase = getSupabaseClient()
     // Find the original message
     const { data: originalMessage, error } = await supabase
       .from('universal_transactions')
