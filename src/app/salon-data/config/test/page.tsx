@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { UCRRuleTester } from '@/components/salon/UCRRuleTester'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-export default function TestRulePage() {
+function TestRuleContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const ruleId = searchParams.get('rule')
@@ -102,5 +102,22 @@ export default function TestRulePage() {
         />
       </div>
     </div>
+  )
+}
+
+export default function TestRulePage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <TestRuleContent />
+    </Suspense>
   )
 }
