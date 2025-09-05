@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { WhatsAppMessageRouter } from '@/lib/whatsapp/message-router'
 import { WhatsAppWebhookHandler } from '@/lib/whatsapp/webhook-handler'
+import { WhatsAppService } from '@/lib/whatsapp/whatsapp-service'
 
 // Webhook verification for WhatsApp Business API
 export async function GET(request: NextRequest) {
@@ -107,6 +108,29 @@ export async function POST(request: NextRequest) {
     if (!storeResult.success) {
       console.error('Failed to store message:', storeResult.error)
       // Continue anyway - we don't want to fail the webhook
+    }
+    
+    // Handle BOOK messages directly for immediate response
+    if (text && text.toUpperCase().includes('BOOK')) {
+      console.log('📚 BOOK request detected from:', from)
+      try {
+        // Send immediate response
+        const whatsappService = new WhatsAppService(
+          process.env.WHATSAPP_ACCESS_TOKEN || '',
+          process.env.WHATSAPP_PHONE_NUMBER_ID || '',
+          process.env.WHATSAPP_WEBHOOK_TOKEN || '',
+          organizationId
+        )
+        
+        const response = await whatsappService.sendTextMessage(
+          from,
+          "Hi! Welcome to Hair Talkz! 💇‍♀️\n\nI'd be happy to help you book an appointment. What service are you interested in?\n\n✂️ Haircut\n💆‍♀️ Hair Treatment\n💅 Manicure/Pedicure\n💄 Makeup\n\nPlease reply with your choice!"
+        )
+        
+        console.log('BOOK response sent:', response)
+      } catch (bookError) {
+        console.error('Error handling BOOK message:', bookError)
+      }
     }
     
     // Then route for AI processing if text message
