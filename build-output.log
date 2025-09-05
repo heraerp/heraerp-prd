@@ -1,0 +1,23 @@
+
+> heraerp@1.2.1 prebuild
+> echo 'Pre-build hook - schema validation included in quality checks'
+
+Pre-build hook - schema validation included in quality checks
+
+> heraerp@1.2.1 build
+> node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS='--max-old-space-size=8192' next build
+
+🔄 Clearing browser cache configurations...
+✅ Updated service worker version to: 20250905173207
+✅ Updated service worker v2 version to: 20250905173207
+✅ Updated manifest.json with cache busting
+✅ Updated vercel.json with cache headers
+✨ Cache clearing complete!
+✅ Build version injected: 20250905173207
+✅ Release date: 2025-09-05
+   ▲ Next.js 15.4.6
+   - Environments: .env.local, .env.production, .env
+   - Experiments (use with caution):
+     · serverActions
+
+   Creating an optimized production build ...

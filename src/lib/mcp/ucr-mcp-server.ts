@@ -6,13 +6,19 @@
  * Integrated directly into the HERA app for rule management without schema changes
  */
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js'
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  Tool,
-} from '@modelcontextprotocol/sdk/types.js'
+// MCP imports temporarily commented out - missing dependencies
+// import { Server } from '@modelcontextprotocol/sdk/server/index.js'
+// import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+// import {
+//   CallToolRequestSchema,
+//   ListToolsRequestSchema,
+//   Tool,
+// } from '@modelcontextprotocol/sdk/types.js'
+
+// Temporary type definitions to prevent TypeScript errors
+type Tool = any
+type Server = any
+
 import { z } from 'zod'
 import { universalApi } from '@/lib/universal-api'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
@@ -198,7 +204,8 @@ const UCR_TEMPLATES = [
   },
 ]
 
-// MCP Server implementation
+// MCP Server implementation - temporarily disabled due to missing dependencies
+/* 
 class UCRMCPServer {
   private server: Server
   private organizationId: string = ''
@@ -1041,11 +1048,29 @@ class UCRMCPServer {
     }
   }
 }
+*/
 
-// Export for use in the app
-export const ucrMCPServer = new UCRMCPServer()
+// Export for use in the app - temporarily disabled due to missing MCP dependencies
+// export const ucrMCPServer = new UCRMCPServer()
+
+// Placeholder export to prevent import errors
+export const ucrMCPServer = {
+  run: async () => {
+    console.warn('UCR MCP Server is temporarily disabled - missing @modelcontextprotocol dependencies')
+    return Promise.resolve()
+  },
+  handleToolCall: async (toolName: string, args: any) => {
+    console.warn('UCR MCP Server handleToolCall is temporarily disabled - missing @modelcontextprotocol dependencies')
+    return {
+      isError: true,
+      content: [{
+        text: 'MCP server temporarily disabled - missing dependencies'
+      }]
+    }
+  }
+}
 
 // CLI entry point
-if (require.main === module) {
-  ucrMCPServer.run().catch(console.error)
-}
+// if (require.main === module) {
+//   ucrMCPServer.run().catch(console.error)
+// }

@@ -4,9 +4,41 @@ import { getSupabase } from '@/lib/supabase/client'
 
 /**
  * GET /api/v1/config/templates/index
- * Fetch the UCR template catalog
+ * Fetch the UCR template catalog or search templates
  */
 export async function GET(request: NextRequest) {
+  // Check if this is a search request
+  if (request.url.includes('/search')) {
+    try {
+      const { searchParams } = new URL(request.url)
+      const organizationId = searchParams.get('organization_id')
+      const query = searchParams.get('q')
+
+      if (!organizationId || !query) {
+        return NextResponse.json(
+          { error: 'organization_id and q (query) are required' },
+          { status: 400 }
+        )
+      }
+
+      const results = await ucrTemplateIndex.searchTemplates(organizationId, query)
+
+      return NextResponse.json({
+        success: true,
+        query,
+        results,
+        count: results.length
+      })
+    } catch (error) {
+      console.error('Error searching UCR templates:', error)
+      return NextResponse.json(
+        { error: 'Failed to search templates' },
+        { status: 500 }
+      )
+    }
+  }
+
+  // Regular GET request for template index
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
@@ -109,38 +141,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * GET /api/v1/config/templates/index/search
- * Search templates
- */
-export async function GET(request: NextRequest) {
-  if (request.url.includes('/search')) {
-    try {
-      const { searchParams } = new URL(request.url)
-      const organizationId = searchParams.get('organization_id')
-      const query = searchParams.get('q')
-
-      if (!organizationId || !query) {
-        return NextResponse.json(
-          { error: 'organization_id and q (query) are required' },
-          { status: 400 }
-        )
-      }
-
-      const results = await ucrTemplateIndex.searchTemplates(organizationId, query)
-
-      return NextResponse.json({
-        success: true,
-        query,
-        results,
-        count: results.length
-      })
-    } catch (error) {
-      console.error('Error searching UCR templates:', error)
-      return NextResponse.json(
-        { error: 'Failed to search templates' },
-        { status: 500 }
-      )
-    }
-  }
-}

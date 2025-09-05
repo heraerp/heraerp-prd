@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { ucrMCPServer } from '@/lib/mcp/ucr-mcp-server'
-import { initializeUCRMCP } from '@/lib/mcp/initialize-ucr-mcp'
+// import { initializeUCRMCP } from '@/lib/mcp/initialize-ucr-mcp'
 
-// Ensure MCP server is initialized
-initializeUCRMCP()
+// Ensure MCP server is initialized - temporarily disabled
+// initializeUCRMCP()
 
 // Create Supabase client
 function getSupabase() {
@@ -80,9 +80,18 @@ export async function POST(request: NextRequest) {
       organization_id: organizationId
     }
 
-    // Call the MCP server handler directly
-    const result = await ucrMCPServer.handleToolCall(mcpToolName, toolArgs)
+    // Call the MCP server handler directly - temporarily disabled
+    // const result = await ucrMCPServer.handleToolCall(mcpToolName, toolArgs)
     
+    // Return placeholder response
+    return NextResponse.json({ 
+      error: 'MCP server temporarily disabled - missing dependencies',
+      tool: mcpToolName,
+      args: toolArgs
+    }, { status: 503 })
+    
+    // Code below temporarily disabled
+    /*
     // Extract the response content
     if (result.isError) {
       return NextResponse.json({ 
@@ -100,6 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(parsedResponse)
+    */
 
   } catch (error: any) {
     console.error('MCP UCR API error:', error)
