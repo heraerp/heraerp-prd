@@ -49,24 +49,24 @@ interface SidebarItem {
 // Main sidebar items (reduced for space)
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
-  { title: 'Calendar', href: '/salon-data?tab=calendar', icon: Calendar, badge: '12', badgeColor: 'bg-pink-500' },
+  { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar, badge: '12', badgeColor: 'bg-pink-500' },
   { title: 'Clients', href: '/salon-data/customers', icon: Users, badge: '248', badgeColor: 'bg-purple-500' },
-  { title: 'Services', href: '/salon-data?tab=services', icon: Scissors },
+  { title: 'Services', href: '/salon-data/services', icon: Scissors },
   { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
-  { title: 'WhatsApp', href: '/salon-data?tab=whatsapp', icon: MessageCircle, badge: 'New', badgeColor: 'bg-green-500' },
+  { title: 'WhatsApp', href: '/salon-data/whatsapp', icon: MessageCircle, badge: 'New', badgeColor: 'bg-green-500' },
   { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
 ]
 
 // All apps for the modal
 const allApps: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
-  { title: 'Calendar', href: '/salon-data?tab=calendar', icon: Calendar },
+  { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar },
   { title: 'Appointments', href: '/salon-data/appointments', icon: Clock },
   { title: 'Clients', href: '/salon-data/customers', icon: Users },
-  { title: 'Services', href: '/salon-data?tab=services', icon: Scissors },
+  { title: 'Services', href: '/salon-data/services', icon: Scissors },
   { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
   { title: 'Products', href: '/salon-data/products', icon: Package },
-  { title: 'WhatsApp', href: '/salon-data?tab=whatsapp', icon: MessageCircle },
+  { title: 'WhatsApp', href: '/salon-data/whatsapp', icon: MessageCircle },
   { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
   { title: 'Payments', href: '/salon-data/payments', icon: CreditCard },
   { title: 'Promotions', href: '/salon-data/promotions', icon: Gift },
