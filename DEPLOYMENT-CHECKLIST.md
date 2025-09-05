@@ -1,121 +1,88 @@
-# 🚀 HERA Deployment Checklist
+# HERA Deployment Checklist 🚀
 
-## Pre-Deployment
+## Pre-Deployment Checks
 
-- [ ] **Code is committed and pushed to GitHub**
-  ```bash
-  git status
-  git add -A
-  git commit -m "Your commit message"
-  git push origin main
-  ```
-
-- [ ] **Environment variables prepared**
-  - NEXT_PUBLIC_SUPABASE_URL
-  - NEXT_PUBLIC_SUPABASE_ANON_KEY
-  - SUPABASE_SERVICE_ROLE_KEY
-  - DEFAULT_ORGANIZATION_ID
-
-- [ ] **Supabase database is set up**
-  - Tables created (6 universal tables)
-  - RLS policies configured
-  - Service role key obtained
-
-## Railway Deployment
-
-### Option 1: One-Click Deploy (Easiest)
-- [ ] Click the Railway deploy button in README
-- [ ] Connect your GitHub account
-- [ ] Enter required environment variables
-- [ ] Deploy!
-
-### Option 2: Manual Deploy
-- [ ] Login to Railway: `railway login`
-- [ ] Create new project: `railway new`
-- [ ] Connect GitHub repository
-- [ ] Set environment variables
-- [ ] Deploy: `railway up`
-
-## Post-Deployment Verification
-
-- [ ] **Check deployment health**
-  ```bash
-  node scripts/check-deployment.js https://your-app.railway.app
-  ```
-
-- [ ] **Test Universal API**
-  ```bash
-  curl https://your-app.railway.app/api/v1/universal?action=schema
-  ```
-
-- [ ] **Run production tests**
-  ```bash
-  cd packages/hera-testing
-  node bin/direct-production-test.js salon --org-id "your-org-id"
-  ```
-
-- [ ] **Verify database connection**
-  - Check health endpoint shows Supabase as "ok"
-  - Create a test entity via API
-
-## Domain Configuration (Optional)
-
-- [ ] Generate Railway domain or add custom domain
-- [ ] Update NEXT_PUBLIC_APP_URL environment variable
-- [ ] Test SSL certificate is working
-
-## Monitoring Setup
-
-- [ ] Check Railway logs: `railway logs`
-- [ ] Set up alerts for failures
-- [ ] Monitor memory and CPU usage
-- [ ] Check response times
-
-## Production Readiness
-
-- [ ] **Security**
-  - [ ] All API keys are using secrets
-  - [ ] CORS is properly configured
-  - [ ] Rate limiting is enabled
-
-- [ ] **Performance**
-  - [ ] Build completes successfully
-  - [ ] Response times < 500ms
-  - [ ] Memory usage < 1GB
-
-- [ ] **Business Features**
-  - [ ] Authentication working
-  - [ ] Multi-tenant isolation verified
-  - [ ] Smart codes validating correctly
-  - [ ] Transactions creating successfully
-
-## Troubleshooting Commands
-
+### 1. **Run Automated Checks** ✅
 ```bash
-# View logs
-railway logs
-
-# Check environment variables
-railway variables
-
-# Restart service
-railway restart
-
-# Run locally with Railway env
-railway run npm run dev
-
-# SSH into container (if enabled)
-railway shell
+npm run predeploy
 ```
 
-## Success Criteria
+This will automatically:
+- Fix useSearchParams Suspense issues
+- Fix import errors
+- Check dependencies
+- Run TypeScript checks
+- Run production build
 
-✅ Health check returning "healthy"
-✅ Can create entities via API
-✅ Can run business process tests
-✅ Response times acceptable
-✅ No errors in logs
+### 2. **Manual Checks** 👀
 
----
+#### Code Quality
+- [ ] All new features have been tested locally
+- [ ] No console.log statements in production code
+- [ ] All TODOs addressed or documented
 
-**Ready to go live? Your HERA instance is production-ready! 🎉**
+#### Dependencies
+- [ ] Check for security vulnerabilities: `npm audit`
+- [ ] All required dependencies installed
+- [ ] No conflicting dependency versions
+
+#### Environment Variables
+- [ ] All required env vars documented
+- [ ] Railway has all necessary env vars set
+- [ ] No sensitive data in code
+
+### 3. **Common Issues & Fixes** 🔧
+
+#### Next.js 15 Suspense Error
+**Error**: `useSearchParams() should be wrapped in a suspense boundary`
+**Fix**: Run `node scripts/fix-use-search-params.js`
+
+#### Import Errors
+**Error**: `'toast' is not exported from '@/components/ui/use-toast'`
+**Fix**: Run `node scripts/fix-toast-imports.js`
+
+#### Missing Dependencies
+**Error**: `Module not found: Can't resolve '@opentelemetry/...'`
+**Fix**: Check enterprise features dependencies
+
+### 4. **Railway Deployment** 🚂
+
+1. **Before Pushing**:
+   ```bash
+   npm run predeploy
+   git add .
+   git commit -m "fix: pre-deployment fixes"
+   ```
+
+2. **Push to Deploy**:
+   ```bash
+   git push origin main
+   ```
+
+3. **Monitor Build**:
+   - Watch Railway logs for build errors
+   - Check health endpoint after deployment
+   - Verify all features working
+
+### 5. **Post-Deployment** ✨
+
+- [ ] Check application is accessible
+- [ ] Test critical user flows
+- [ ] Monitor error logs
+- [ ] Verify database connections
+- [ ] Check performance metrics
+
+## Emergency Rollback 🚨
+
+If deployment fails:
+1. Revert to previous commit: `git revert HEAD`
+2. Push to trigger rollback: `git push origin main`
+3. Investigate issues locally
+
+## Continuous Improvement 📈
+
+After each deployment:
+1. Document any new issues in this checklist
+2. Update automated scripts to catch new error patterns
+3. Consider adding more pre-commit hooks
+4. Update CI/CD pipeline if needed

@@ -11,6 +11,8 @@
     "start": "next start",
     "start:custom": "node server-simple.js",
     "lint": "next lint",
+    "build:check": "node scripts/build-check.js",
+    "predeploy": "node scripts/pre-deploy.js",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:salon": "playwright test tests/e2e/salon/",
