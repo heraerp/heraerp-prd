@@ -38,12 +38,13 @@ USER nextjs
 
 EXPOSE 3000 3001
 
-# Health check on main port
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+# Health check with longer start period
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=10 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
 # Copy server files
-COPY --chown=nextjs:nodejs railway-start.js ./
+COPY --chown=nextjs:nodejs simple-server.js ./
+RUN chmod +x simple-server.js
 
-# Start the application with Railway startup script
-CMD ["node", "railway-start.js"]
+# Start the application with simple server
+CMD ["node", "simple-server.js"]
