@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Sparkles,
   Save,
@@ -55,6 +55,7 @@ interface UCRTemplateCustomizerProps {
 export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplateCustomizerProps) {
   const { currentOrganization } = useMultiOrgAuth()
   const { validateRule, simulateRule } = useUCRMCP()
+  const { toast } = useToast()
   const [customizedRule, setCustomizedRule] = useState<any>(null)
   const [activeTab, setActiveTab] = useState('basics')
   const [validationResult, setValidationResult] = useState<any>(null)

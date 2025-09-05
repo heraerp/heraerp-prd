@@ -35,7 +35,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { format } from 'date-fns'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Dialog,
   DialogContent,
@@ -62,6 +62,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
     simulateRule,
     getAuditLog
   } = useUCRMCP()
+  const { toast } = useToast()
   
   const [rules, setRules] = useState<any[]>([])
   const [templates, setTemplates] = useState<any[]>([])

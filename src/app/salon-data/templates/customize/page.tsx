@@ -9,7 +9,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 
 function CustomizeTemplateContent() {
   const router = useRouter()
@@ -17,6 +17,7 @@ function CustomizeTemplateContent() {
   const templateId = searchParams.get('template')
   const { currentOrganization } = useMultiOrgAuth()
   const { listTemplates, cloneTemplate, loading } = useUCRMCP()
+  const { toast } = useToast()
   const [template, setTemplate] = useState<any>(null)
   const [loadingTemplate, setLoadingTemplate] = useState(true)
 

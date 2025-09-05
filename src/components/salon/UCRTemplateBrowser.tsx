@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import {
-  Template,
+  FileText,
   Copy,
   Eye,
   Search,
@@ -46,6 +46,7 @@ interface UCRTemplate {
 export function UCRTemplateBrowser() {
   const { currentOrganization } = useMultiOrgAuth()
   const { listTemplates, cloneTemplate, loading } = useUCRMCP()
+  const { toast } = useToast()
   const [templates, setTemplates] = useState<UCRTemplate[]>([])
   const [filteredTemplates, setFilteredTemplates] = useState<UCRTemplate[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -100,7 +101,7 @@ export function UCRTemplateBrowser() {
     if (smartCode.includes('DISCOUNT') || smartCode.includes('PRICING')) return DollarSign
     if (smartCode.includes('NOTIFICATION')) return MessageCircle
     if (smartCode.includes('CANCEL')) return Calendar
-    return Template
+    return FileText
   }
 
   const getCategoryColor = (smartCode: string) => {
@@ -201,7 +202,7 @@ export function UCRTemplateBrowser() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-              <Template className="w-6 h-6 text-white" />
+              <FileText className="w-6 h-6 text-white" />
             </div>
             <div>
               <CardTitle className="text-2xl">UCR Template Library</CardTitle>

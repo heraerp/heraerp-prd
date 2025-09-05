@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Rocket,
   Shield,
@@ -85,6 +85,7 @@ interface Approval {
 export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCRDeploymentManagerProps) {
   const { currentOrganization } = useMultiOrgAuth()
   const { getRule, deployRule, validateRule, getAuditLog, simulateRule } = useUCRMCP()
+  const { toast } = useToast()
   const [currentRule, setCurrentRule] = useState<any>(rule)
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')

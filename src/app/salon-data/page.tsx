@@ -48,7 +48,6 @@ import {
   CreditCard,
   TrendingDown,
   BarChart3,
-  Template,
   Scale,
   TestTube,
   Rocket
