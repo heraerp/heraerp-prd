@@ -2,7 +2,8 @@
 const path = require('path');
 
 // Apply polyfills for server-side rendering
-require('./scripts/setup-globals.js');
+// Temporarily disabled to fix document is not defined error
+// require('./scripts/setup-globals.js');
 
 const nextConfig = {
   typescript: {
@@ -24,10 +25,10 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
-    // Skip static optimization for API routes
-    outputFileTracingExcludes: {
-      '/api/*': ['*'],
-    },
+  },
+  // Skip static optimization for API routes
+  outputFileTracingExcludes: {
+    '/api/*': ['*'],
   },
   // Webpack configuration to handle DNA SDK issues
   webpack: (config, { isServer }) => {

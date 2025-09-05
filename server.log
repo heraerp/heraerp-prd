@@ -1,15 +1,89 @@
 
-> heraerp@1.2.0 dev
-> next dev -p 3002
+> heraerp@1.2.1 predev
+> npm run schema:types
 
- ⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3002
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3002)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3002
-}
-[?25h
+
+> heraerp@1.2.1 schema:types
+> node mcp-server/schema-introspection.js types
+
+[dotenv@17.2.1] injecting env (21) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:96612) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+✅ TypeScript types generated at: /Users/san/Documents/PRD/heraerp-prd/src/types/hera-database.types.ts
+
+✨ Done!
+
+> heraerp@1.2.1 dev
+> next dev
+
+✅ Global polyfills applied for SSR
+✅ Global polyfills applied for SSR
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.101:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+     · outputFileTracingExcludes
+
+ ✓ Starting...
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Unrecognized key(s) in object: 'outputFileTracingExcludes' at "experimental"
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ⚠ `experimental.outputFileTracingExcludes` has been moved to `outputFileTracingExcludes`. Please update your next.config.js file accordingly.
+ ✓ Ready in 3.6s
+ ✓ Compiled /middleware in 198ms (108 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 698ms (359 modules)
+ ⨯ ReferenceError: document is not defined
+    at next/dist/compiled/next-server/pages.runtime.dev.js (.next/server/pages/_document.js:22:18)
+    at (pages-dir-node)/./node_modules/next/dist/server/route-modules/pages/module.compiled.js (.next/server/vendor-chunks/next.js:392:1)
+    at (pages-dir-node)/./node_modules/next/dist/server/route-modules/pages/vendored/contexts/html-context.js (.next/server/vendor-chunks/next.js:425:1)
+    at (pages-dir-node)/./node_modules/next/dist/pages/_document.js (.next/server/vendor-chunks/next.js:172:1)
+    at __webpack_exec__ (.next/server/pages/_document.js:62:39)
+    at <unknown> (.next/server/pages/_document.js:63:104)
+    at <unknown> (.next/server/pages/_document.js:63:47)
+[ReferenceError: document is not defined]
+ ⨯ ReferenceError: document is not defined
+    at next/dist/compiled/next-server/pages.runtime.dev.js (.next/server/pages/_document.js:22:18)
+    at (pages-dir-node)/./node_modules/next/dist/server/route-modules/pages/module.compiled.js (.next/server/vendor-chunks/next.js:392:1)
+    at (pages-dir-node)/./node_modules/next/dist/server/route-modules/pages/vendored/contexts/html-context.js (.next/server/vendor-chunks/next.js:425:1)
+    at (pages-dir-node)/./node_modules/next/dist/pages/_document.js (.next/server/vendor-chunks/next.js:172:1)
+    at __webpack_exec__ (.next/server/pages/_document.js:62:39)
+    at <unknown> (.next/server/pages/_document.js:63:104)
+    at <unknown> (.next/server/pages/_document.js:63:47)
+[ReferenceError: document is not defined]
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.101:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+     · outputFileTracingExcludes
+
+ ✓ Starting...
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Unrecognized key(s) in object: 'outputFileTracingExcludes' at "experimental"
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ⚠ `experimental.outputFileTracingExcludes` has been moved to `outputFileTracingExcludes`. Please update your next.config.js file accordingly.
+ ✓ Ready in 1782ms
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.101:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 1858ms
+ ✓ Compiled /middleware in 420ms (108 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 10.1s (967 modules)
+(node:97022) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET / 200 in 10854ms
+ ✓ Compiled in 1364ms (399 modules)
+ GET / 200 in 174ms
