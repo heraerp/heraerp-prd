@@ -107,63 +107,37 @@ export async function POST(request: NextRequest) {
       // Continue anyway - we don't want to fail the webhook
     }
     
-    // Then route for appointment booking or AI processing if text message
+    // Then route for AI processing if text message
     if (text && storeResult.success) {
       try {
-        // Check if this is an appointment booking request
-        const lowerText = text.toLowerCase().trim()
-        if (lowerText.includes('book') || lowerText.includes('appointment') || 
-            lowerText === '1' || lowerText === '2' || lowerText === '3' || 
-            lowerText === '4' || lowerText === '5' || lowerText === 'yes' || 
-            lowerText === 'no' || lowerText === 'cancel' || lowerText === 'restart') {
-          
-          // Use appointment handler
-          const { handleIncomingMessage, sendWhatsAppMessage } = await import('@/lib/whatsapp/appointment-handler')
-          
-          // Create reply function
-          const sendReply = async (phone: string, replyText: string) => {
-            await sendWhatsAppMessage(
-              phone,
-              replyText,
-              phoneNumberId || process.env.WHATSAPP_PHONE_NUMBER_ID || '712631301940690',
-              process.env.WHATSAPP_ACCESS_TOKEN || ''
-            )
-          }
-          
-          // Handle the appointment booking
-          await handleIncomingMessage(message, sendReply)
-          
-          console.log('Appointment handler processed message')
-        } else {
-          // Use AI router for other messages
-          const router = new WhatsAppMessageRouter(
-            organizationId,
-            process.env.CLAUDE_API_KEY || ''
-          )
-          
-          // Build context with contact information
-          const customerData = {
-            phone: from,
-            name: contact?.profile?.name || 'Unknown',
-            whatsapp_id: from
-          }
-          
-          // Route the message
-          const result = await router.routeMessage({
-            organizationId,
-            waContactId: from,
-            text: text || '',
-            customerData,
-            messageHistory: [] // You could fetch previous messages here
-          })
-          
-          // Log result
-          console.log('Message routing result:', {
-            success: result.success,
-            messagesSent: result.messagesSent,
-            totalCost: result.totalCost
-          })
+        // Initialize message router (MCP)
+        const router = new WhatsAppMessageRouter(
+          organizationId,
+          process.env.CLAUDE_API_KEY || ''
+        )
+        
+        // Build context with contact information
+        const customerData = {
+          phone: from,
+          name: contact?.profile?.name || 'Unknown',
+          whatsapp_id: from
         }
+        
+        // Route the message through MCP (handles all messages including appointments)
+        const result = await router.routeMessage({
+          organizationId,
+          waContactId: from,
+          text: text || '',
+          customerData,
+          messageHistory: [] // You could fetch previous messages here
+        })
+        
+        // Log result
+        console.log('Message routing result:', {
+          success: result.success,
+          messagesSent: result.messagesSent,
+          totalCost: result.totalCost
+        })
       } catch (routingError) {
         console.error('Error routing message:', routingError)
         // Don't fail the webhook
