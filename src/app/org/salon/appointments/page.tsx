@@ -6,7 +6,8 @@ import { Calendar, Clock, Plus, Search, Filter } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function SalonAppointmentsPage() {
+function SalonAppointmentsContent() {
+
   const searchParams = useSearchParams()
   const action = searchParams.get('action')
   const [showNewAppointment, setShowNewAppointment] = useState(false)
@@ -17,7 +18,8 @@ export default function SalonAppointmentsPage() {
     }
   }, [action])
 
-  return (
+  
+return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
@@ -121,5 +123,23 @@ export default function SalonAppointmentsPage() {
         </Card>
       </div>
     </div>
+  )
+
+}
+
+export default function SalonAppointmentsPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto">Loading...</div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <SalonAppointmentsContent />
+    </Suspense>
   )
 }
