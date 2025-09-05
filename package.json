@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS='--max-old-space-size=8192' next build",
-    "build:railway": "npm run schema:types && node scripts/setup-globals.js && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS='--max-old-space-size=4096' RAILWAY_ENVIRONMENT=true next build --no-lint",
+    "build:railway": "npm run schema:types && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && node scripts/build-without-env.js",
     "clean:build": "rm -rf .next || true",
     "build:local": "npm run quality:pre-build && npm run dna:gate && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
     "start": "next start",

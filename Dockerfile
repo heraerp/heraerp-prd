@@ -16,11 +16,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=true
 ENV SKIP_STATIC_GENERATION=true
 
-# Build the application with placeholder values
-# These are only used during build time and will be replaced by Railway env vars at runtime
-ENV NEXT_PUBLIC_SUPABASE_URL="https://placeholder.supabase.co"
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="placeholder-anon-key"
-ENV SUPABASE_SERVICE_ROLE_KEY="placeholder-service-key"
+# Build the application
+# Use ARG to accept build-time variables from Railway
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG SUPABASE_SERVICE_ROLE_KEY
+
+# Set them as ENV for the build process
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
 
 RUN npm run build || echo "Build completed with warnings"
 

@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Supabase configuration from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key'
+// Supabase configuration - get fresh values at runtime
+const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 // Create a singleton instance that can be initialized later
 let supabaseInstance: ReturnType<typeof createClient> | null = null
@@ -10,11 +10,14 @@ let supabaseInstance: ReturnType<typeof createClient> | null = null
 // Initialize Supabase client only when needed
 export const getSupabase = () => {
   if (!supabaseInstance) {
+    const url = getSupabaseUrl()
+    const key = getSupabaseAnonKey()
+    
     // Only create client if we have valid configuration
-    if (supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('placeholder')) {
+    if (url && key && !url.includes('placeholder')) {
       supabaseInstance = createClient(
-        supabaseUrl,
-        supabaseAnonKey,
+        url,
+        key,
         {
           auth: {
             persistSession: true,
@@ -27,28 +30,22 @@ export const getSupabase = () => {
       // Log configuration status (not the actual values)
       if (typeof window !== 'undefined') {
         console.log('Supabase client configuration:', {
-          hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-          hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-          projectId: supabaseUrl.includes('supabase.co') 
-            ? supabaseUrl.split('.')[0].replace('https://', '') 
+          hasUrl: !!url,
+          hasKey: !!key,
+          projectId: url.includes('supabase.co') 
+            ? url.split('.')[0].replace('https://', '') 
             : 'unknown'
         })
       }
     } else {
-      // Return a placeholder client that throws meaningful errors
-      console.warn('Supabase client not configured - using placeholder')
-      // Create a minimal client for build time
-      supabaseInstance = createClient(
-        'https://placeholder.supabase.co',
-        'placeholder-anon-key',
-        {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-            detectSessionInUrl: false
-          }
-        }
-      )
+      // For build time, create a no-op client
+      const noop = () => Promise.reject(new Error('Supabase not configured'))
+      supabaseInstance = {
+        from: () => ({ select: noop, insert: noop, update: noop, delete: noop }),
+        auth: { getSession: noop, signIn: noop, signOut: noop },
+        storage: { from: () => ({ upload: noop, download: noop }) },
+        rpc: noop
+      } as any
     }
   }
   return supabaseInstance
