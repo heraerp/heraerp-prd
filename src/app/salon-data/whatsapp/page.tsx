@@ -406,9 +406,9 @@ export default function SalonWhatsAppPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="h-screen bg-gray-900 flex flex-col overflow-hidden">
       {/* Header with Menu Button */}
-      <header className="bg-gray-800/90 backdrop-blur-lg border-b border-gray-700 sticky top-0 z-50">
+      <header className="bg-gray-800/90 backdrop-blur-lg border-b border-gray-700 flex-shrink-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
@@ -446,10 +446,10 @@ export default function SalonWhatsAppPage() {
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="flex flex-1 overflow-hidden">
 
         {/* Chat List Sidebar */}
-        <div className="w-96 bg-[#111b21] border-r border-[#2a3942] flex flex-col">
+        <div className="w-96 bg-[#111b21] border-r border-[#2a3942] flex flex-col h-full overflow-hidden">
           {/* Search */}
           <div className="p-3 border-b border-[#2a3942]">
             <div className="relative">
@@ -464,15 +464,15 @@ export default function SalonWhatsAppPage() {
           </div>
 
           {/* Tabs */}
-          <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col">
-            <TabsList className="grid grid-cols-4 w-full rounded-none bg-[#202c33] border-b border-[#2a3942]">
+          <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col overflow-hidden">
+            <TabsList className="grid grid-cols-4 w-full rounded-none bg-[#202c33] border-b border-[#2a3942] flex-shrink-0">
               <TabsTrigger value="chat" className="text-xs text-[#8696a0] data-[state=active]:text-[#00a884]">CHATS</TabsTrigger>
               <TabsTrigger value="automation" className="text-xs text-[#8696a0] data-[state=active]:text-[#00a884]">AUTOMATION</TabsTrigger>
               <TabsTrigger value="costs" className="text-xs text-[#8696a0] data-[state=active]:text-[#00a884]">COSTS</TabsTrigger>
               <TabsTrigger value="tools" className="text-xs text-[#8696a0] data-[state=active]:text-[#00a884]">TOOLS</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="chat" className="flex-1 m-0">
+            <TabsContent value="chat" className="flex-1 m-0 overflow-hidden">
               <ScrollArea className="h-full">
                 {filteredContacts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full p-6 text-center">
@@ -584,7 +584,8 @@ export default function SalonWhatsAppPage() {
               </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="costs" className="flex-1 m-0 p-4">
+            <TabsContent value="costs" className="flex-1 m-0 overflow-hidden">
+              <ScrollArea className="h-full p-4">
               <div className="space-y-4">
                 <Card className="bg-[#202c33] border-[#2a3942]">
                   <div className="p-4">
@@ -614,9 +615,11 @@ export default function SalonWhatsAppPage() {
                   </AlertDescription>
                 </Alert>
               </div>
+              </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="tools" className="flex-1 m-0 p-4">
+            <TabsContent value="tools" className="flex-1 m-0 overflow-hidden">
+              <ScrollArea className="h-full p-4">
               <div className="space-y-3">
                 <div className="text-sm text-[#8696a0] mb-4">
                   MCP Tools Available:
@@ -640,15 +643,16 @@ export default function SalonWhatsAppPage() {
                   </div>
                 ))}
               </div>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
         </div>
 
         {/* Chat Area */}
         {selectedContact ? (
-          <div className="flex-1 flex flex-col bg-[#0b141a]">
+          <div className="flex-1 flex flex-col bg-[#0b141a] h-full overflow-hidden">
             {/* Chat Header */}
-            <div className="bg-[#202c33] p-4 border-b border-[#2a3942] flex items-center justify-between">
+            <div className="bg-[#202c33] p-4 border-b border-[#2a3942] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <Avatar className="w-10 h-10">
                   <AvatarFallback className="bg-[#6a7175] text-white">
@@ -721,8 +725,9 @@ export default function SalonWhatsAppPage() {
             )}
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-4 max-w-4xl mx-auto">
+            <div className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full p-4">
+                <div className="space-y-4 max-w-4xl mx-auto">
                 {messages.map(message => (
                   <div
                     key={message.id}
@@ -788,11 +793,12 @@ export default function SalonWhatsAppPage() {
                   </div>
                 ))}
                 <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                </div>
+              </ScrollArea>
+            </div>
 
             {/* Input Area */}
-            <div className="bg-[#202c33] p-4">
+            <div className="bg-[#202c33] p-4 flex-shrink-0">
               {selectedContact.windowState === 'closed' && (
                 <Alert className="mb-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                   <Info className="w-4 h-4" />
@@ -847,7 +853,7 @@ export default function SalonWhatsAppPage() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-[#0b141a]">
+          <div className="flex-1 flex items-center justify-center bg-[#0b141a] h-full overflow-hidden">
             <div className="text-center max-w-md mx-auto p-6">
               {contacts.length === 0 ? (
                 <>
