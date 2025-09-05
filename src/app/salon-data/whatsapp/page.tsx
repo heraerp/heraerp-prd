@@ -135,6 +135,11 @@ export default function SalonWhatsAppPage() {
     // For salon routes, use the Hair Talkz demo organization
     const salonOrgId = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Hair Talkz • Park Regis
     setOrganizationId(salonOrgId)
+
+    // Check WhatsApp configuration
+    if (!process.env.WHATSAPP_ACCESS_TOKEN && !process.env.NEXT_PUBLIC_WHATSAPP_ACCESS_TOKEN) {
+      console.warn('WhatsApp credentials not configured. Set WHATSAPP_ACCESS_TOKEN in your .env file')
+    }
   }, [])
 
   // Fetch real WhatsApp data
@@ -201,21 +206,9 @@ export default function SalonWhatsAppPage() {
             windowUtilization: formattedContacts.length > 0 ? openWindows / formattedContacts.length : 0
           }))
         } else {
-          // Show demo data if no real conversations
-          const demoNote: Contact = {
-            id: 'demo',
-            waContactId: 'demo',
-            name: 'No conversations yet',
-            phone: 'Start chatting on WhatsApp',
-            lastMessage: 'Messages sent to your WhatsApp number will appear here',
-            lastMessageTime: new Date(),
-            unreadCount: 0,
-            windowState: 'closed',
-            tags: ['Info'],
-            conversationCost: 0
-          }
-          setContacts([demoNote])
-          setSelectedContact(demoNote)
+          // No conversations found - don't show dummy data
+          setContacts([])
+          setSelectedContact(null)
         }
       } catch (error) {
         console.error('Error fetching WhatsApp data:', error)
@@ -261,15 +254,6 @@ export default function SalonWhatsAppPage() {
       }
       
       fetchMessages()
-    } else if (selectedContact?.id === 'demo') {
-      // Show demo message for empty state
-      setMessages([{
-        id: 'demo-msg',
-        content: 'Your WhatsApp conversations will appear here. Make sure your WhatsApp webhook is configured to receive messages.',
-        type: 'text',
-        direction: 'inbound',
-        timestamp: new Date()
-      }])
     }
   }, [selectedContact, organizationId])
 
@@ -490,7 +474,20 @@ export default function SalonWhatsAppPage() {
 
             <TabsContent value="chat" className="flex-1 m-0">
               <ScrollArea className="h-full">
-                {filteredContacts.map(contact => {
+                {filteredContacts.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                    <MessageCircle className="w-12 h-12 text-[#8696a0] mb-3" />
+                    <p className="text-sm text-[#8696a0]">
+                      {searchQuery ? 'No conversations match your search' : 'No conversations yet'}
+                    </p>
+                    {!searchQuery && (
+                      <p className="text-xs text-[#8696a0] mt-2">
+                        Messages will appear here once your webhook is configured
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  filteredContacts.map(contact => {
                   const windowStatus = getWindowStatus(contact)
                   return (
                     <div
@@ -560,7 +557,7 @@ export default function SalonWhatsAppPage() {
                       </div>
                     </div>
                   )
-                })}
+                }))}
               </ScrollArea>
             </TabsContent>
 
@@ -851,9 +848,63 @@ export default function SalonWhatsAppPage() {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center bg-[#0b141a]">
-            <div className="text-center">
-              <MessageCircle className="w-16 h-16 text-[#8696a0] mx-auto mb-4" />
-              <p className="text-[#8696a0]">Select a conversation to start messaging</p>
+            <div className="text-center max-w-md mx-auto p-6">
+              {contacts.length === 0 ? (
+                <>
+                  <MessageCircle className="w-16 h-16 text-[#8696a0] mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-white mb-2">No WhatsApp Conversations Yet</h3>
+                  <p className="text-[#8696a0] mb-6">
+                    To receive messages, you need to configure your WhatsApp webhook.
+                  </p>
+                  
+                  <Alert className="mb-4 bg-[#202c33] border-[#2a3942]">
+                    <Info className="w-4 h-4 text-[#00a884]" />
+                    <AlertDescription className="text-left">
+                      <strong className="text-white">Quick Setup:</strong>
+                      <ol className="mt-2 space-y-1 text-sm text-[#8696a0]">
+                        <li>1. Go to Meta Business Manager → WhatsApp → Configuration</li>
+                        <li>2. Set Webhook URL to: <code className="text-xs bg-[#0b141a] px-1 py-0.5 rounded break-all">{typeof window !== 'undefined' ? `${window.location.origin}/api/v1/whatsapp/webhook` : 'https://your-app.com/api/v1/whatsapp/webhook'}</code></li>
+                        <li>3. Use Verify Token: <code className="text-xs bg-[#0b141a] px-1 py-0.5 rounded">hera-whatsapp-webhook-2024-secure-token</code></li>
+                        <li>4. Subscribe to: messages, message_status</li>
+                        <li>5. Send a test message to your WhatsApp number: <code className="text-xs bg-[#0b141a] px-1 py-0.5 rounded">+919945896033</code></li>
+                      </ol>
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <div className="flex gap-3 justify-center">
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/v1/whatsapp/webhook-status')
+                          const status = await response.json()
+                          console.log('Webhook Status:', status)
+                          alert('Check console for webhook status details')
+                        } catch (error) {
+                          console.error('Failed to check webhook status:', error)
+                        }
+                      }}
+                      variant="outline"
+                      className="bg-[#202c33] border-[#2a3942] text-white hover:bg-[#2a3942]"
+                    >
+                      <Info className="w-4 h-4 mr-2" />
+                      Check Webhook Status
+                    </Button>
+                    
+                    <Button
+                      onClick={() => window.open('https://business.facebook.com/latest/whatsapp_manager', '_blank')}
+                      className="bg-[#00a884] hover:bg-[#00957a] text-white"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Open Meta Business
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <MessageCircle className="w-16 h-16 text-[#8696a0] mx-auto mb-4" />
+                  <p className="text-[#8696a0]">Select a conversation to start messaging</p>
+                </>
+              )}
             </div>
           </div>
         )}
