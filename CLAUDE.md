@@ -82,6 +82,7 @@ localhost:3000/admin/audit                            # Real-time audit viewer
 4. ORGANIZATION_ID REQUIRED - Multi-tenant isolation
 5. SMART CODES EVERYWHERE - Business context mandatory
 6. ENTERPRISE FEATURES - Use middleware stack for all APIs
+7. **ALWAYS RUN `npm run predeploy` BEFORE PUSHING** - Catches build errors, import issues, and dependency problems automatically
 
 ## Project Overview
 
@@ -439,6 +440,18 @@ npm run schema:validate      # Validate schema assumptions before build
 npm run generate-progressive-pwa --business="Restaurant" --type=restaurant  # Complete PWA in 30 seconds
 npm run generate-progressive-pwa --business="Clinic" --type=healthcare     # Healthcare PWA ready instantly
 npm run generate-progressive-pwa --business="Store" --type=retail          # Retail PWA with offline sync
+
+# 🚀 DEPLOYMENT (CRITICAL - ALWAYS RUN BEFORE PUSHING)
+npm run predeploy            # MANDATORY: Fixes all common deployment errors automatically
+# This command will:
+# - Fix useSearchParams() Suspense boundary issues
+# - Fix incorrect toast imports
+# - Check for missing dependencies
+# - Run TypeScript validation
+# - Execute production build test
+# - Prevent 99% of deployment failures
+
+# If you skip this, deployment WILL fail with Next.js 15 errors!
 
 ```
 
