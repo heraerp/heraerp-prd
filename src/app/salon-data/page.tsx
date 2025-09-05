@@ -50,7 +50,8 @@ import {
   BarChart3,
   Scale,
   TestTube,
-  Rocket
+  Rocket,
+  FileText
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -453,7 +454,7 @@ export default function SalonModernDashboard() {
     { id: 'services', label: 'Services', icon: <Scissors className="w-5 h-5" />, href: '/salon-data/services' },
     { id: 'inventory', label: 'Inventory', icon: <Package className="w-5 h-5" />, href: '/salon-data/inventory' },
     { id: 'pos', label: 'POS', icon: <CreditCard className="w-5 h-5" />, href: '/salon-data/pos' },
-    { id: 'templates', label: 'Templates', icon: <Template className="w-5 h-5" />, href: '/salon-data/templates', badge: 'New' },
+    { id: 'templates', label: 'Templates', icon: <FileText className="w-5 h-5" />, href: '/salon-data/templates', badge: 'New' },
     { id: 'config', label: 'UCR Rules', icon: <Scale className="w-5 h-5" />, href: '/salon-data/config' },
     { id: 'finance', label: 'Finance', icon: <TrendingDown className="w-5 h-5" />, href: '/salon-data/finance' },
     { id: 'pnl', label: 'P&L', icon: <BarChart3 className="w-5 h-5" />, href: '/salon-data/financials/p&l' },
