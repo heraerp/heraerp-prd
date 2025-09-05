@@ -1,0 +1,162 @@
+{
+  "organization": {
+    "organization_name": "Demo Salon - Hair Talkz",
+    "organization_type": "salon",
+    "metadata": {
+      "tier": "enterprise",
+      "demo": true
+    }
+  },
+  "entities": [
+    {
+      "entity_type": "branch",
+      "entity_name": "Hair Talkz Downtown",
+      "entity_code": "HT-DOWNTOWN",
+      "smart_code": "HERA.SALON.BRANCH.MAIN.v1",
+      "metadata": {
+        "address": "123 Main St, Downtown",
+        "capacity": 12
+      }
+    },
+    {
+      "entity_type": "employee",
+      "entity_name": "Sarah Johnson",
+      "entity_code": "EMP001",
+      "smart_code": "HERA.SALON.EMPLOYEE.STYLIST.v1",
+      "dynamic_data": {
+        "role": "Senior Stylist",
+        "commission_rate": 0.45,
+        "specializations": ["Color", "Extensions"],
+        "availability": "Tuesday-Saturday"
+      }
+    },
+    {
+      "entity_type": "service",
+      "entity_name": "Premium Hair Color",
+      "entity_code": "SVC-COLOR-01",
+      "smart_code": "HERA.SALON.SERVICE.HAIR.COLOR.v1",
+      "dynamic_data": {
+        "duration_minutes": 120,
+        "price": 150.00,
+        "category": "Chemical Services",
+        "requires_consultation": true
+      }
+    },
+    {
+      "entity_type": "customer",
+      "entity_name": "Emma Thompson",
+      "entity_code": "CUST001",
+      "smart_code": "HERA.SALON.CUSTOMER.VIP.v1",
+      "dynamic_data": {
+        "loyalty_tier": "Gold",
+        "preferred_stylist": "Sarah Johnson",
+        "allergies": "PPD sensitive",
+        "lifetime_value": 4500.00
+      }
+    },
+    {
+      "entity_type": "product",
+      "entity_name": "Olaplex No. 3",
+      "entity_code": "PROD-OLAPLEX-3",
+      "smart_code": "HERA.SALON.PRODUCT.TREATMENT.v1",
+      "dynamic_data": {
+        "brand": "Olaplex",
+        "category": "Treatment",
+        "retail_price": 28.00,
+        "cost": 14.00,
+        "stock_on_hand": 25,
+        "reorder_point": 10
+      }
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_type": "appointment",
+      "transaction_date": "2025-01-15T10:00:00Z",
+      "smart_code": "HERA.SALON.APPOINTMENT.SERVICE.v1",
+      "from_entity_id": "@customer:CUST001",
+      "to_entity_id": "@employee:EMP001",
+      "total_amount": 150.00,
+      "metadata": {
+        "services": ["Premium Hair Color"],
+        "duration": 120,
+        "status": "confirmed"
+      },
+      "lines": [
+        {
+          "line_entity_id": "@service:SVC-COLOR-01",
+          "line_number": 1,
+          "quantity": 1,
+          "unit_price": 150.00,
+          "line_amount": 150.00,
+          "smart_code": "HERA.SALON.SERVICE.LINE.v1"
+        }
+      ]
+    },
+    {
+      "transaction_type": "sale",
+      "transaction_date": "2025-01-15T12:00:00Z",
+      "smart_code": "HERA.SALON.SALE.RETAIL.v1",
+      "from_entity_id": "@customer:CUST001",
+      "to_entity_id": "@branch:HT-DOWNTOWN",
+      "total_amount": 28.00,
+      "metadata": {
+        "payment_method": "credit_card",
+        "receipt_number": "HT-2025-0115-001"
+      },
+      "lines": [
+        {
+          "line_entity_id": "@product:PROD-OLAPLEX-3",
+          "line_number": 1,
+          "quantity": 1,
+          "unit_price": 28.00,
+          "line_amount": 28.00,
+          "smart_code": "HERA.SALON.SALE.PRODUCT.LINE.v1",
+          "metadata": {
+            "cost": 14.00,
+            "margin": 14.00
+          }
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from_entity_id": "@employee:EMP001",
+      "to_entity_id": "@branch:HT-DOWNTOWN",
+      "relationship_type": "works_at",
+      "smart_code": "HERA.SALON.REL.EMPLOYMENT.v1"
+    },
+    {
+      "from_entity_id": "@customer:CUST001",
+      "to_entity_id": "@employee:EMP001",
+      "relationship_type": "preferred_stylist",
+      "smart_code": "HERA.SALON.REL.PREFERENCE.v1"
+    }
+  ],
+  "ucr_rules": [
+    {
+      "name": "Double Booking Prevention",
+      "rule_family": "BOOKING",
+      "smart_code": "HERA.SALON.UCR.BOOKING.DOUBLE.v1",
+      "conditions": {
+        "check_overlapping_appointments": true,
+        "buffer_minutes": 15
+      },
+      "actions": {
+        "on_conflict": "suggest_alternative_times"
+      }
+    },
+    {
+      "name": "VIP Customer Pricing",
+      "rule_family": "PRICING",
+      "smart_code": "HERA.SALON.UCR.PRICING.VIP.v1",
+      "conditions": {
+        "customer_tier": ["Gold", "Platinum"]
+      },
+      "actions": {
+        "apply_discount": 0.15
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "dashboard": {
+    "title": "HERA Guardrail Health",
+    "uid": "hera-guardrail-health",
+    "version": 1,
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Guardrail Blocks (24h)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(hera_guardrail_blocks_total[5m])) by (table)",
+            "legendFormat": "{{table}}"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Auto-Fix Success Rate",
+        "type": "gauge",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(hera_guardrail_autofix_total[24h])) / sum(rate(hera_guardrail_blocks_total[24h])) * 100"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 50, "color": "yellow" },
+                { "value": 80, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Validation Latency (p95)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(hera_guardrail_validation_duration_ms_bucket[5m])) by (table, le))",
+            "legendFormat": "{{table}}"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Top Block Reasons",
+        "type": "table",
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "topk(10, sum(hera_guardrail_blocks_total) by (reason))"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Auto-Fix Types Distribution",
+        "type": "piechart",
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(hera_guardrail_autofix_total) by (fix_type)"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Organization Block Heatmap",
+        "type": "heatmap",
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(hera_guardrail_blocks_total[1h])) by (organization_id)"
+          }
+        ]
+      }
+    ]
+  }
+}

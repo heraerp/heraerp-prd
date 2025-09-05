@@ -235,7 +235,7 @@ async function generateRevenueForecast(organizationId: string, period: string = 
   const startDate = new Date()
   startDate.setMonth(startDate.getMonth() - lookbackMonths)
   
-  const { data: historicalData, error } = await getSupabase()?
+  const { data: historicalData, error } = await getSupabase()
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -255,8 +255,8 @@ async function generateRevenueForecast(organizationId: string, period: string = 
   // Calculate monthly averages
   const monthlyTotals: Record<string, number> = {}
   historicalData.forEach(txn => {
-    const monthKey = txn.transaction_date.substring(0, 7) // YYYY-MM
-    monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + (txn.total_amount || 0)
+    const monthKey = (txn.transaction_date as string).substring(0, 7) // YYYY-MM
+    monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + ((txn.total_amount as number) || 0)
   })
   
   const monthlyValues = Object.values(monthlyTotals)
@@ -359,7 +359,7 @@ async function executeAnalyticalQueries(organizationId: string, queries: any[]) 
           let filteredData = data
           if (query.filters?.service) {
             filteredData = data.filter(t => {
-              const serviceName = t.metadata?.service_name?.toLowerCase() || ''
+              const serviceName = ((t.metadata as any)?.service_name as string)?.toLowerCase() || ''
               return serviceName.includes(query.filters.service.toLowerCase())
             })
           }
@@ -367,13 +367,13 @@ async function executeAnalyticalQueries(organizationId: string, queries: any[]) 
           results.push({
             type: 'transactions',
             count: filteredData.length,
-            total: filteredData.reduce((sum, t) => sum + (t.total_amount || 0), 0),
+            total: filteredData.reduce((sum, t) => sum + ((t.total_amount as number) || 0), 0),
             data: aggregateData(filteredData, query.aggregation),
             filter_applied: query.filters?.service || 'none'
           })
         }
       } else if (query.type === 'entities') {
-        const { data, error } = await getSupabase()?
+        const { data, error } = await getSupabase()
           .from('core_entities')
           .select('*, core_dynamic_data(*)')
           .eq('organization_id', organizationId)
@@ -467,7 +467,7 @@ async function handlePatternBasedAnalytics(message: string, organizationId: stri
   
   // Revenue analysis
   if (lower.includes('revenue') || lower.includes('sales')) {
-    const { data } = await getSupabase()?
+    const { data } = await getSupabase()
       .from('universal_transactions')
       .select('*')
       .eq('organization_id', organizationId)
@@ -479,12 +479,12 @@ async function handlePatternBasedAnalytics(message: string, organizationId: stri
     let filteredData = data || []
     if (serviceFilter && data) {
       filteredData = data.filter(t => {
-        const serviceName = t.metadata?.service_name?.toLowerCase() || ''
+        const serviceName = ((t.metadata as any)?.service_name as string)?.toLowerCase() || ''
         return serviceName.includes(serviceFilter)
       })
     }
     
-    const total = filteredData.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+    const total = filteredData.reduce((sum, t) => sum + ((t.total_amount as number) || 0), 0)
     const count = filteredData.length
     
     // Convert to business language
@@ -520,7 +520,7 @@ async function handlePatternBasedAnalytics(message: string, organizationId: stri
   
   // Customer analysis
   if (lower.includes('customer') || lower.includes('client')) {
-    const { data } = await getSupabase()?
+    const { data } = await getSupabase()
       .from('core_entities')
       .select('*')
       .eq('organization_id', organizationId)

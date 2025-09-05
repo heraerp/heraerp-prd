@@ -80,7 +80,7 @@ export async function buildMySalon(input: unknown) {
     .insert({
       organization_id: org.id,
       transaction_type: 'org_settings_update',
-      transaction_code: `ORG-CREATE-${Date.now()}`,
+      reference_number: `ORG-CREATE-${Date.now()}`,
       smart_code: 'HERA.IDENTITY.ORG.CREATE.SALON.v1',
       total_amount: 0,
       transaction_date: new Date().toISOString(),
@@ -350,7 +350,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
           .insert({
             organization_id: orgId,
             transaction_type: 'sale',
-            transaction_code: `SALE-${Date.now()}`,
+            reference_number: `SALE-${Date.now()}`,
             smart_code: 'HERA.SALON.SALE.SERVICE.v1',
             from_entity_id: customerId,
             to_entity_id: aptEntity.id,

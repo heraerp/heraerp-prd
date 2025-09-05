@@ -1,0 +1,110 @@
+# HERA Rate Limiting Configuration
+# Configurable limits per API group and organization
+
+default_limits:
+  read_apis:
+    requests_per_minute: 300
+    requests_per_hour: 10000
+    burst_size: 50
+    enable_idempotency: false
+
+  write_apis:
+    requests_per_minute: 100
+    requests_per_hour: 3000
+    burst_size: 20
+    enable_idempotency: true
+
+  reporting_apis:
+    requests_per_minute: 10
+    requests_per_hour: 100
+    burst_size: 5
+    enable_idempotency: true
+
+  auth_apis:
+    requests_per_minute: 20
+    requests_per_hour: 100
+    burst_size: 5
+    enable_idempotency: false
+
+  admin_apis:
+    requests_per_minute: 50
+    requests_per_hour: 500
+    burst_size: 10
+    enable_idempotency: true
+
+# Organization-specific overrides
+org_overrides:
+  # Enterprise tier
+  enterprise:
+    read_apis:
+      requests_per_minute: 1000
+      requests_per_hour: 50000
+      burst_size: 200
+    write_apis:
+      requests_per_minute: 500
+      requests_per_hour: 15000
+      burst_size: 100
+    reporting_apis:
+      requests_per_minute: 50
+      requests_per_hour: 500
+      burst_size: 20
+
+  # Free tier
+  free:
+    read_apis:
+      requests_per_minute: 100
+      requests_per_hour: 2000
+      burst_size: 20
+    write_apis:
+      requests_per_minute: 30
+      requests_per_hour: 500
+      burst_size: 10
+    reporting_apis:
+      requests_per_minute: 5
+      requests_per_hour: 20
+      burst_size: 2
+
+# Endpoint-specific limits
+endpoint_limits:
+  "/api/v1/reports/pl":
+    requests_per_minute: 5
+    requests_per_hour: 50
+    burst_size: 2
+    enable_idempotency: true
+    
+  "/api/v1/fiscal/close":
+    requests_per_minute: 1
+    requests_per_hour: 5
+    burst_size: 1
+    enable_idempotency: true
+    
+  "/api/v1/config/templates":
+    requests_per_minute: 10
+    requests_per_hour: 100
+    burst_size: 5
+    enable_idempotency: true
+
+# IP-based limits (for DDoS protection)
+ip_limits:
+  global:
+    requests_per_minute: 1000
+    requests_per_hour: 20000
+    burst_size: 200
+    
+  suspicious:
+    requests_per_minute: 50
+    requests_per_hour: 200
+    burst_size: 10
+
+# Idempotency configuration
+idempotency:
+  ttl_hours: 24
+  max_retries: 3
+  retry_delay_seconds: 5
+
+# Rate limit headers
+headers:
+  limit: "X-RateLimit-Limit"
+  remaining: "X-RateLimit-Remaining"
+  reset: "X-RateLimit-Reset"
+  retry_after: "Retry-After"

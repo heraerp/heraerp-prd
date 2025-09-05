@@ -1,0 +1,20 @@
+# Standard User Role Policy
+role: USER
+allow:
+  - api: "GET /api/v1/**"
+    smart_code_family: "HERA.*.READ.**"
+  - api: "POST /api/v1/transactions"
+    smart_code_family: "HERA.*.TXN.CREATE.**"
+    resource_type: "own"
+  - api: "PUT /api/v1/entities/*"
+    smart_code_family: "HERA.*.ENTITY.UPDATE.**"
+    resource_type: "own"
+  - smart_code_family: "HERA.CRM.CUSTOMER.**"
+    actions: ["read", "create", "update"]
+deny:
+  - api: "DELETE /api/v1/**"
+  - api: "POST /api/v1/config/**"
+  - api: "PUT /api/v1/config/**"
+  - smart_code_family: "HERA.SECURITY.**"
+  - smart_code_family: "HERA.ADMIN.**"
+  - smart_code_family: "HERA.SYSTEM.**"

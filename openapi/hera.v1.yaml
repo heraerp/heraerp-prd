@@ -1,0 +1,600 @@
+openapi: 3.0.3
+info:
+  title: HERA Enterprise API
+  description: |
+    HERA (Hierarchical Enterprise Resource Architecture) API provides universal ERP capabilities
+    through a revolutionary 6-table architecture. All operations maintain strict multi-tenant
+    isolation and smart code integration.
+  version: 1.0.0
+  contact:
+    name: HERA Support
+    email: support@heraerp.com
+  license:
+    name: Proprietary
+    url: https://heraerp.com/license
+
+servers:
+  - url: https://api.heraerp.com/api/v1
+    description: Production
+  - url: https://api.staging.heraerp.com/api/v1
+    description: Staging
+  - url: http://localhost:3000/api/v1
+    description: Development
+
+security:
+  - bearerAuth: []
+  - apiKeyAuth: []
+
+tags:
+  - name: Configuration
+    description: UCR templates and system configuration
+  - name: Reports
+    description: Financial and operational reporting
+  - name: Fiscal
+    description: Fiscal period management and closing
+  - name: Guardrails
+    description: Data validation and auto-correction
+  - name: Audit
+    description: Audit trail and compliance
+
+paths:
+  /config/templates:
+    get:
+      operationId: getTemplates
+      summary: List UCR templates
+      tags: [Configuration]
+      x-smart-code-families:
+        - HERA.UCR.TEMPLATE.**
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/Industry'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        200:
+          $ref: '#/components/responses/TemplateList'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      operationId: createTemplate
+      summary: Create UCR template
+      tags: [Configuration]
+      x-smart-code-families:
+        - HERA.UCR.TEMPLATE.CREATE.**
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateCreate'
+      responses:
+        201:
+          $ref: '#/components/responses/TemplateCreated'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+  /config/templates/{templateId}:
+    get:
+      operationId: getTemplate
+      summary: Get UCR template by ID
+      tags: [Configuration]
+      x-smart-code-families:
+        - HERA.UCR.TEMPLATE.READ.**
+      parameters:
+        - $ref: '#/components/parameters/TemplateId'
+        - $ref: '#/components/parameters/OrganizationId'
+      responses:
+        200:
+          $ref: '#/components/responses/Template'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      operationId: updateTemplate
+      summary: Update UCR template
+      tags: [Configuration]
+      x-smart-code-families:
+        - HERA.UCR.TEMPLATE.UPDATE.**
+      parameters:
+        - $ref: '#/components/parameters/TemplateId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/Template'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /reports/{type}:
+    get:
+      operationId: generateReport
+      summary: Generate financial report
+      tags: [Reports]
+      x-smart-code-families:
+        - HERA.FIN.REPORT.**
+      parameters:
+        - $ref: '#/components/parameters/ReportType'
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/Period'
+        - name: branch_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: currency
+          in: query
+          schema:
+            type: string
+            default: USD
+        - name: include_details
+          in: query
+          schema:
+            type: boolean
+            default: false
+        - name: comparison_period
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/Report'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/RateLimitExceeded'
+
+  /fiscal/periods:
+    get:
+      operationId: getFiscalPeriods
+      summary: List fiscal periods
+      tags: [Fiscal]
+      x-smart-code-families:
+        - HERA.FISCAL.PERIOD.**
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, current, closed]
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        200:
+          $ref: '#/components/responses/FiscalPeriodList'
+
+  /fiscal/closing-step:
+    post:
+      operationId: updateClosingStep
+      summary: Update fiscal closing step
+      tags: [Fiscal]
+      x-smart-code-families:
+        - HERA.FISCAL.CLOSE.**
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClosingStepUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/ClosingStepResult'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+  /guardrails/validate:
+    post:
+      operationId: validatePayload
+      summary: Validate payload (dry-run)
+      tags: [Guardrails]
+      x-smart-code-families:
+        - HERA.GUARDRAIL.VALIDATE.**
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardrailValidation'
+      responses:
+        200:
+          $ref: '#/components/responses/GuardrailResult'
+
+  /audit/stream:
+    get:
+      operationId: auditStream
+      summary: Stream audit events
+      tags: [Audit]
+      x-smart-code-families:
+        - HERA.SECURITY.AUDIT.**
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Server-sent event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Organization context for multi-tenant isolation
+
+    TemplateId:
+      name: templateId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    ReportType:
+      name: type
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [pl, balance_sheet, cashflow, trial_balance]
+
+    Period:
+      name: period
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^(\\d{4}|\\d{4}-Q[1-4]|\\d{4}-(0[1-9]|1[0-2]))$'
+
+    Industry:
+      name: industry
+      in: query
+      schema:
+        type: string
+        enum: [salon, restaurant, healthcare, retail, manufacturing]
+
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Pagination cursor
+
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      schema:
+        type: string
+      description: Unique key for idempotent requests
+
+  schemas:
+    Error:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        guardrail_id:
+          type: string
+        autofix_applied:
+          type: boolean
+        ai_confidence:
+          type: number
+
+    PaginationMeta:
+      type: object
+      properties:
+        total:
+          type: integer
+        has_more:
+          type: boolean
+        next_cursor:
+          type: string
+
+    TemplateBase:
+      type: object
+      required: [name, industry, rule_families]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        industry:
+          type: string
+        rule_families:
+          type: array
+          items:
+            type: string
+        version:
+          type: string
+        smart_code:
+          type: string
+
+    TemplateCreate:
+      allOf:
+        - $ref: '#/components/schemas/TemplateBase'
+        - type: object
+          required: [organization_id]
+          properties:
+            organization_id:
+              type: string
+              format: uuid
+
+    TemplateUpdate:
+      allOf:
+        - $ref: '#/components/schemas/TemplateBase'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [active, inactive]
+
+    Template:
+      allOf:
+        - $ref: '#/components/schemas/TemplateBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    Report:
+      type: object
+      properties:
+        report_type:
+          type: string
+        organization_id:
+          type: string
+        period:
+          type: string
+        generated_at:
+          type: string
+          format: date-time
+        currency:
+          type: string
+        sections:
+          type: array
+          items:
+            type: object
+        totals:
+          type: object
+          additionalProperties:
+            type: number
+
+    FiscalPeriod:
+      type: object
+      properties:
+        period_code:
+          type: string
+        period_type:
+          type: string
+        status:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        closing_progress:
+          type: number
+        organization_id:
+          type: string
+
+    ClosingStepUpdate:
+      type: object
+      required: [organization_id, period_code, step_code, status]
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+        period_code:
+          type: string
+        step_code:
+          type: string
+        status:
+          type: string
+          enum: [in_progress, completed]
+        notes:
+          type: string
+
+    GuardrailValidation:
+      type: object
+      required: [table, payload]
+      properties:
+        table:
+          type: string
+        payload:
+          type: object
+        organization_id:
+          type: string
+
+  responses:
+    TemplateList:
+      description: List of UCR templates
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
+              meta:
+                $ref: '#/components/schemas/PaginationMeta'
+              next_cursor:
+                type: string
+
+    Template:
+      description: UCR template
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Template'
+
+    TemplateCreated:
+      description: Template created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Template'
+
+    Report:
+      description: Financial report
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              report:
+                $ref: '#/components/schemas/Report'
+              comparison:
+                type: object
+              metadata:
+                type: object
+
+    FiscalPeriodList:
+      description: List of fiscal periods
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FiscalPeriod'
+              meta:
+                $ref: '#/components/schemas/PaginationMeta'
+
+    ClosingStepResult:
+      description: Closing step update result
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              step:
+                type: object
+
+    GuardrailResult:
+      description: Guardrail validation result
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+              fixes_applied:
+                type: integer
+              corrected_payload:
+                type: object
+              errors:
+                type: array
+                items:
+                  type: object
+
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+        Retry-After:
+          schema:
+            type: integer
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'

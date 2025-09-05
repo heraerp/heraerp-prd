@@ -88,7 +88,7 @@ export async function updateOrgSubdomainAction(input: unknown) {
     // 1) Audit: Create a SmartCode'd transaction for the settings update
     await universalApi.createTransaction({
       transaction_type: 'org_settings_update',
-      transaction_code: `SUBDOMAIN-${Date.now()}`,
+      reference_number: `SUBDOMAIN-${Date.now()}`,
       organization_id: org.id,
       smart_code: 'HERA.IDENTITY.ORG.SETTINGS.SUBDOMAIN.UPDATE.v1',
       total_amount: 0,

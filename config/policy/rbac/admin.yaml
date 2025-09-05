@@ -1,0 +1,18 @@
+# Administrator Role Policy
+role: ADMIN
+allow:
+  - api: "**"
+    smart_code_family: "HERA.**"
+deny:
+  - api: "DELETE /api/v1/system/**"
+    smart_code_family: "HERA.SYSTEM.CRITICAL.**"
+conditions:
+  - type: mfa_required
+    config:
+      always: true
+  - type: ip_range
+    config:
+      allowed_ranges:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"

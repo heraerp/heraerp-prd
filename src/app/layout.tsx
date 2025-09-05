@@ -4,6 +4,7 @@ import { ServiceWorkerProvider } from "@/components/pwa/ServiceWorkerProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
+import { DemoAuthHandler } from "@/components/auth/DemoAuthHandler";
 import { ToastProvider } from "@/components/ui/use-toast";
 import "./globals.css";
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
@@ -80,9 +81,11 @@ export default function RootLayout({
           <ServiceWorkerProvider>
             <QueryProvider>
               <MultiOrgAuthProvider>
-                <ToastProvider>
-                  {children}
-                </ToastProvider>
+                <DemoAuthHandler>
+                  <ToastProvider>
+                    {children}
+                  </ToastProvider>
+                </DemoAuthHandler>
               </MultiOrgAuthProvider>
             </QueryProvider>
           </ServiceWorkerProvider>

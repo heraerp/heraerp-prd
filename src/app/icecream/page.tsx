@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useDemoOrg } from '@/components/providers/DemoOrgProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 // import { createClient } from '@supabase/supabase-js'
 // TODO: Re-enable once React 18 onboarding is ready
 // import { useOnboarding } from '@/lib/onboarding'
@@ -34,7 +34,10 @@ interface DashboardData {
 }
 
 export default function IceCreamDashboard() {
-  const { organizationId, organizationName, loading: orgLoading } = useDemoOrg()
+  const { currentOrganization, isLoadingOrgs } = useMultiOrgAuth()
+  const organizationId = currentOrganization?.id || null
+  const organizationName = currentOrganization?.name || ''
+  const orgLoading = isLoadingOrgs
   // TODO: Re-enable once React 18 onboarding is ready
   // const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)

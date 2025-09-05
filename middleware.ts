@@ -21,6 +21,15 @@ const RESERVED_SUBDOMAINS = [
   'help'
 ]
 
+// Demo app routes that use demo user authentication
+const DEMO_ROUTES = [
+  'salon',
+  'salon-data',
+  'icecream',
+  'restaurant',
+  'healthcare'
+]
+
 export function middleware(request: NextRequest) {
   // Get hostname (e.g., acme.heraerp.com, app.heraerp.com, localhost:3000)
   const hostname = request.headers.get('host') || 'localhost:3000'
@@ -34,6 +43,14 @@ export function middleware(request: NextRequest) {
     // e.g., localhost:3000/~acme/dashboard → acme subdomain
     
     const pathname = request.nextUrl.pathname
+    
+    // Check if this is a demo route (e.g., /salon, /icecream)
+    const firstSegment = pathname.split('/')[1]
+    if (DEMO_ROUTES.includes(firstSegment)) {
+      // Demo routes use demo user authentication
+      // No rewriting needed - let them pass through
+      return NextResponse.next()
+    }
     
     // Check for subdomain simulation pattern
     if (pathname.startsWith('/~')) {
@@ -102,6 +119,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url, {
       headers: requestHeaders
     })
+  }
+  
+  // Handle demo-specific subdomains (e.g., demo-salon.heraerp.com)
+  if (subdomain.startsWith('demo-')) {
+    const demoType = subdomain.replace('demo-', '')
+    if (DEMO_ROUTES.includes(demoType)) {
+      const url = request.nextUrl.clone()
+      url.pathname = `/${demoType}${request.nextUrl.pathname}`
+      return NextResponse.rewrite(url, {
+        headers: requestHeaders
+      })
+    }
   }
   
   // Handle organization subdomains

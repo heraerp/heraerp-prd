@@ -134,15 +134,20 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
 
       if (response.ok) {
         const data = await response.json()
+        console.log('Organizations API response:', data)
         
-        if (data.success && data.organizations) {
-          setOrganizations(data.organizations)
+        // Handle both new format (with success property) and direct array response
+        const orgs = data.success ? data.organizations : data.organizations ? data.organizations : Array.isArray(data) ? data : []
+        console.log('Parsed organizations:', orgs)
+        
+        if (orgs && orgs.length > 0) {
+          setOrganizations(orgs)
           
           // Set current organization based on subdomain or first org
           const subdomain = getSubdomain()
           if (subdomain) {
             // Check settings.subdomain first, then fallback to metadata.subdomain for backwards compatibility
-            const org = data.organizations.find((o: Organization) => 
+            const org = orgs.find((o: Organization) => 
               o.settings?.subdomain === subdomain || 
               o.metadata?.subdomain === subdomain ||
               o.subdomain === subdomain
@@ -152,36 +157,124 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
               // Store in localStorage for persistence
               localStorage.setItem('current-organization-id', org.id)
             }
-          } else if (data.organizations.length === 1) {
+          } else if (orgs.length === 1) {
             // If user has only one org, set it as current
-            setCurrentOrganization(data.organizations[0])
-            localStorage.setItem('current-organization-id', data.organizations[0].id)
-          } else if (data.organizations.length > 1) {
+            setCurrentOrganization(orgs[0])
+            localStorage.setItem('current-organization-id', orgs[0].id)
+          } else if (orgs.length > 1) {
             // Try to restore from localStorage
             const storedOrgId = localStorage.getItem('current-organization-id')
             if (storedOrgId) {
-              const storedOrg = data.organizations.find((o: Organization) => o.id === storedOrgId)
+              const storedOrg = orgs.find((o: Organization) => o.id === storedOrgId)
               if (storedOrg) {
                 setCurrentOrganization(storedOrg)
               }
             }
-          } else if (data.organizations.length === 0 && process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
-            // No organizations found, use default organization for development
-            console.log('No organizations found, using default organization for development')
-            const defaultOrg: Organization = {
-              id: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
-              name: 'Dubai Luxury Salon & Spa',
-              subdomain: 'salon',
-              type: 'salon',
-              subscription_plan: 'professional',
-              role: 'admin',
-              permissions: ['*'],
-              is_active: true
-            }
-            setOrganizations([defaultOrg])
-            setCurrentOrganization(defaultOrg)
-            localStorage.setItem('current-organization-id', defaultOrg.id)
           }
+        } else {
+            // No organizations found, check if this is a demo user
+            console.log('No organizations found from API, checking for demo user')
+            const userEmail = authUser.email || ''
+            console.log('User email:', userEmail)
+            
+            // Universal demo user has access to all demo organizations
+            if (userEmail === 'demo@heraerp.com') {
+              const allDemoOrgs: Organization[] = [
+                {
+                  id: '519d9c67-6fa4-4c73-9c56-6d132a6649c1',
+                  name: 'Bella Beauty Salon (Demo)',
+                  subdomain: 'demo-salon',
+                  type: 'salon',
+                  subscription_plan: 'demo',
+                  role: 'owner',
+                  permissions: ['*'],
+                  is_active: true
+                },
+                {
+                  id: '6c3bc585-eec9-40a2-adc5-a89bfb398a16',
+                  name: 'Kochi Ice Cream Manufacturing (Demo)',
+                  subdomain: 'demo-icecream',
+                  type: 'icecream',
+                  subscription_plan: 'demo',
+                  role: 'owner',
+                  permissions: ['*'],
+                  is_active: true
+                },
+                {
+                  id: '3740d358-f283-47e8-8055-852b67eee1a6',
+                  name: "Mario's Restaurant (Demo)",
+                  subdomain: 'demo-restaurant',
+                  type: 'restaurant',
+                  subscription_plan: 'demo',
+                  role: 'owner',
+                  permissions: ['*'],
+                  is_active: true
+                },
+                {
+                  id: '037aac11-2323-4a71-8781-88a8454c9695',
+                  name: 'Dr. Smith Family Practice (Demo)',
+                  subdomain: 'demo-healthcare',
+                  type: 'healthcare',
+                  subscription_plan: 'demo',
+                  role: 'owner',
+                  permissions: ['*'],
+                  is_active: true
+                }
+              ]
+              
+              setOrganizations(allDemoOrgs)
+              
+              // Set current organization based on subdomain or pathname
+              const subdomain = getSubdomain()
+              const pathname = window.location.pathname
+              let selectedOrg: Organization | null = null
+              
+              // Check subdomain first
+              if (subdomain) {
+                selectedOrg = allDemoOrgs.find(o => o.subdomain === subdomain) || null
+              }
+              
+              // If no subdomain match, check pathname for demo routes
+              if (!selectedOrg && pathname) {
+                const basePath = pathname.split('/')[1]
+                const demoRouteMap: Record<string, string> = {
+                  'salon': 'demo-salon',
+                  'salon-data': 'demo-salon',
+                  'icecream': 'demo-icecream',
+                  'restaurant': 'demo-restaurant',
+                  'healthcare': 'demo-healthcare'
+                }
+                
+                if (demoRouteMap[basePath]) {
+                  selectedOrg = allDemoOrgs.find(o => o.subdomain === demoRouteMap[basePath]) || null
+                }
+              }
+              
+              // Set the selected organization or default to first one
+              if (selectedOrg) {
+                setCurrentOrganization(selectedOrg)
+                localStorage.setItem('current-organization-id', selectedOrg.id)
+              } else if (allDemoOrgs.length > 0) {
+                setCurrentOrganization(allDemoOrgs[0])
+                localStorage.setItem('current-organization-id', allDemoOrgs[0].id)
+              }
+            } else if (process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
+              // Use default organization for development
+              console.log('No organizations found, using default organization for development')
+              const defaultOrg: Organization = {
+                id: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+                name: 'Dubai Luxury Salon & Spa',
+                subdomain: 'salon',
+                type: 'salon',
+                subscription_plan: 'professional',
+                role: 'admin',
+                permissions: ['*'],
+                is_active: true
+              }
+              setOrganizations([defaultOrg])
+              setCurrentOrganization(defaultOrg)
+              localStorage.setItem('current-organization-id', defaultOrg.id)
+            }
         }
       }
     } catch (error) {
@@ -343,6 +436,14 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     const org = organizations.find(o => o.id === orgId)
     if (org) {
       setCurrentOrganization(org)
+      localStorage.setItem('current-organization-id', org.id)
+      
+      // For demo organizations, don't redirect - just update state
+      // The app will handle the organization context change
+      if (org.subdomain && org.subdomain.startsWith('demo-')) {
+        console.log(`Switched to demo organization: ${org.name}`)
+        return
+      }
       
       // In production, redirect to organization subdomain
       if (process.env.NODE_ENV === 'production') {

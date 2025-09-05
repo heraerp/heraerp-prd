@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { DemoOrgProvider, useDemoOrg } from '@/components/providers/DemoOrgProvider'
 import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
 import { supabase } from '@/lib/supabase'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { ThemeProviderDNA, ThemeToggle } from '@/lib/dna/theme/theme-provider-dna'
 // TODO: Re-enable onboarding imports once React 18 implementation is complete
 // import { HeraOnboardingProvider } from '@/lib/onboarding'
@@ -118,7 +118,8 @@ const iceCreamTheme = {
 }
 
 function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
-  const { organizationId } = useDemoOrg()
+  const { currentOrganization } = useMultiOrgAuth()
+  const organizationId = currentOrganization?.id || null
   const [productionData, setProductionData] = useState({
     totalProduction: 0,
     efficiency: 0
@@ -187,7 +188,7 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
       <div className="flex items-center space-x-4">
         <div className="hidden sm:block">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Organization: Kochi Ice Cream Manufacturing
+            Organization: {currentOrganization?.name || 'Loading...'}
           </p>
         </div>
       </div>
@@ -256,28 +257,26 @@ export default function IceCreamLayout({
 
   return (
     <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
-      <DemoOrgProvider>
-        {/* TODO: Re-enable HeraOnboardingProvider once React 18 implementation is complete */}
-        {/* <HeraOnboardingProvider
-          organizationId="demo-ice-cream-org"
-          enabledTours={enabledTours}
-          messages={allMessages}
-          theme="light"
-          onEmit={(txn, lines) => {
-            // Log events for demo
-            console.log('Ice Cream Onboarding Event:', { txn, lines })
-            
-            // Store completion status
-            if (txn.metadata.event === 'tour_completed') {
-              const tourCode = txn.smart_code
-              localStorage.setItem(`hera_onboarding_${tourCode}_completed`, 'true')
-            }
-          }}
-          debug={false}
-        > */}
-          <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
-        {/* </HeraOnboardingProvider> */}
-      </DemoOrgProvider>
+      {/* TODO: Re-enable HeraOnboardingProvider once React 18 implementation is complete */}
+      {/* <HeraOnboardingProvider
+        organizationId="demo-ice-cream-org"
+        enabledTours={enabledTours}
+        messages={allMessages}
+        theme="light"
+        onEmit={(txn, lines) => {
+          // Log events for demo
+          console.log('Ice Cream Onboarding Event:', { txn, lines })
+          
+          // Store completion status
+          if (txn.metadata.event === 'tour_completed') {
+            const tourCode = txn.smart_code
+            localStorage.setItem(`hera_onboarding_${tourCode}_completed`, 'true')
+          }
+        }}
+        debug={false}
+      > */}
+        <IceCreamLayoutContent>{children}</IceCreamLayoutContent>
+      {/* </HeraOnboardingProvider> */}
     </ThemeProviderDNA>
   )
 }

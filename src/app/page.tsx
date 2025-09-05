@@ -28,7 +28,6 @@ import {
   Rocket,
   Menu,
   X,
-  MessageCircle,
   BarChart3
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -295,14 +294,6 @@ export default function LandingPage() {
               </Button>
               <Button 
                 size="lg" 
-                className="bg-[#00a884] hover:bg-[#00a884]/90 !text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
-                onClick={() => router.push('/salon-whatsapp-desktop')}
-              >
-                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                WhatsApp Desktop
-              </Button>
-              <Button 
-                size="lg" 
                 variant="outline"
                 className="border-2 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto !text-slate-700 dark:!text-slate-200"
                 onClick={() => router.push('/auth/signup')}
@@ -461,15 +452,6 @@ export default function LandingPage() {
                           Build Your Own
                         </Button>
                       </div>
-                      {industry.id === 'salon' && (
-                        <Button 
-                          className="w-full bg-[#00a884] hover:bg-[#00a884]/90 !text-white text-sm sm:text-base"
-                          onClick={() => router.push('/salon-whatsapp-desktop')}
-                        >
-                          <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                          WhatsApp Desktop
-                        </Button>
-                      )}
                     </div>
                   </CardContent>
                 </Card>

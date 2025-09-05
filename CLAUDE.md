@@ -65,6 +65,14 @@ node profit-loss-dna-cli.js monthly --org uuid --budget  # Monthly P&L with budg
 node profit-loss-dna-cli.js hair-talkz                # All Hair Talkz P&L statements
 node profit-loss-dna-cli.js trends --org uuid --periods 12  # 12-month trend analysis
 node demo-hair-talkz-profit-loss.js ytd               # Working demo with real data
+
+# HERA Enterprise Features (ENTERPRISE GA READY) 🔐
+node scripts/test-enterprise-features.js              # Test all enterprise capabilities
+# Access enterprise endpoints
+curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/metrics  # Prometheus metrics
+curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/audit/events  # Audit trail
+# Enterprise admin UI
+localhost:3000/admin/audit                            # Real-time audit viewer
 ```
 
 **SACRED RULES:**
@@ -72,6 +80,8 @@ node demo-hair-talkz-profit-loss.js ytd               # Working demo with real d
 2. NO SCHEMA CHANGES - Use dynamic fields
 3. ALWAYS USE CLI TOOLS - Not manual queries
 4. ORGANIZATION_ID REQUIRED - Multi-tenant isolation
+5. SMART CODES EVERYWHERE - Business context mandatory
+6. ENTERPRISE FEATURES - Use middleware stack for all APIs
 
 ## Project Overview
 
@@ -97,6 +107,80 @@ Our complete implementation proves HERA's universal architecture works for sophi
 - **Forms**: React Hook Form 7.61.1 with Zod 4.0.10 validation
 - **UI Components**: Shadcn/ui (New York style) with Lucide React icons + Jobs-inspired components
 - **AI Integration**: Multi-provider AI orchestration (OpenAI, Claude, Gemini) with intelligent routing
+- **Enterprise Security**: SSO/SAML 2.0/OIDC, RBAC, KMS encryption, complete audit trail
+- **Observability**: OpenTelemetry tracing, Prometheus metrics, structured logging
+- **Reliability**: Rate limiting, idempotency, automatic RLS enforcement, disaster recovery
+
+## 🔐 ENTERPRISE GA FEATURES (PRODUCTION READY)
+
+**HERA now includes comprehensive enterprise features for General Availability while maintaining strict adherence to the Sacred Six tables architecture.**
+
+### **🛡️ Security & Compliance**
+- **SSO Provider** - SAML 2.0 and OIDC with JIT provisioning (`/src/lib/auth/sso-provider.ts`)
+- **RBAC Policy Engine** - YAML-based with smart code families (`/src/lib/rbac/policy-engine.ts`)
+- **KMS Encryption** - Envelope encryption for PII with key rotation (`/src/lib/crypto/kms-provider.ts`)
+- **Audit Trail** - Complete activity logging in universal_transactions
+- **Real-time Audit UI** - Live event viewer with SSE (`/src/app/admin/audit/page.tsx`)
+
+### **⚡ Reliability & Performance**
+- **Rate Limiting** - Sliding window with configurable tiers (`/src/lib/limits/rate-limiter.ts`)
+- **Idempotency** - Safe request retries with 24h TTL
+- **Automatic RLS** - Query interception via proxy pattern (`/src/lib/rbac/query-builder-middleware.ts`)
+- **Enterprise Middleware** - Unified stack for all APIs (`/src/lib/middleware/enterprise-middleware.ts`)
+- **High Availability** - Multi-region support with automatic failover
+
+### **📊 Observability Suite**
+- **Distributed Tracing** - OpenTelemetry integration (`/src/lib/observability/tracer.ts`)
+- **Metrics Collection** - Prometheus-compatible (`/src/lib/observability/metrics.ts`)
+- **Structured Logging** - JSON with context preservation (`/src/lib/observability/logger.ts`)
+- **Monitoring Dashboards** - 4 Grafana-ready dashboards (`/ops/dashboards/*.json`)
+- **Health Checks** - Comprehensive system status endpoints
+
+### **📋 API Governance**
+- **OpenAPI 3.0.3 Spec** - Complete API documentation (`/openapi/hera.v1.yaml`)
+- **Versioning** - Smart code-based API evolution
+- **Problem+JSON** - RFC7807 compliant error responses
+- **Pagination** - Cursor-based with consistent ordering
+
+### **🔧 Enterprise Endpoints**
+```bash
+# Metrics endpoint (Prometheus format)
+GET /api/v1/metrics
+
+# Audit event query
+GET /api/v1/audit/events?organization_id={org}&timeRange=24h
+
+# Real-time audit stream (SSE)
+GET /api/v1/audit/stream?organization_id={org}
+
+# Guardrail validation (dry-run)
+POST /api/v1/guardrails/validate
+
+# Enterprise operations
+POST /api/v1/enterprise
+```
+
+### **📚 Enterprise Documentation**
+- `/docs/enterprise/SECURITY.md` - Authentication, encryption, audit
+- `/docs/enterprise/RBAC.md` - Policy structure and permissions
+- `/docs/enterprise/OBSERVABILITY.md` - Logging, tracing, metrics
+- `/docs/enterprise/DISASTER-RECOVERY.md` - RPO ≤ 5min, RTO ≤ 30min
+- `/docs/enterprise/OPERATIONS.md` - Daily operations guide
+
+### **🚀 Enterprise Middleware Usage**
+```typescript
+import { enterpriseMiddleware } from '@/lib/middleware/enterprise-middleware'
+
+export async function GET(request: NextRequest) {
+  return enterpriseMiddleware(request, async (req, ctx) => {
+    // Automatic: Rate limiting, RBAC, RLS, tracing, logging
+    // ctx contains: requestId, organizationId, userId, roles
+    
+    // Your business logic here
+    return NextResponse.json({ success: true })
+  })
+}
+```
 
 ## 🏢 MULTI-TENANT SAAS AUTHENTICATION (PRODUCTION READY)
 
@@ -2009,6 +2093,18 @@ interface MultiOrgAuthContext {
 
 ## 🐛 Troubleshooting Common Issues
 
+### **Server Startup Errors**
+```bash
+# ERROR: ReferenceError: document is not defined
+# CAUSE: Global polyfills conflicting with Next.js SSR
+# FIX: Disable global polyfills in next.config.js
+# Comment out: require('./scripts/setup-globals.js')
+
+# ERROR: Invalid next.config.js options detected
+# CAUSE: outputFileTracingExcludes in experimental block
+# FIX: Move it to top level of config
+```
+
 ### **Column Not Found Errors**
 ```bash
 # ERROR: column "transaction_number" does not exist
@@ -2066,6 +2162,8 @@ node hera-cli.js validate-smart-code "HERA.CRM.CUST.ENT.PROF.v1"
 - **Monitoring-ready**: Production monitoring stack included with Prometheus and Grafana
 - **Schema Accuracy**: Always verify column names with `node check-schema.js`
 - **Status Patterns**: Use relationships for all status workflows, never add status columns
+- **SSR Compatibility**: Avoid global polyfills that mock browser APIs - they conflict with Next.js
+- **Deployment Ready**: Use deployment checklist in `/docs/DEPLOYMENT-CHECKLIST.md` before production
 
 ## 🧬 HERA Development Workflow
 
@@ -2331,6 +2429,22 @@ universal_transaction_lines → Invoice lines + journal entry lines
 - **PWA Implementation** - Advanced offline support with universal data sync
 - **Auto-Documentation** - AI-powered documentation generation and maintenance
 - **📊 Production Monitoring** - Complete observability stack with Prometheus, Grafana, and custom dashboards
+- **🔐 Enterprise GA Features** - Complete enterprise readiness pack (NEW ENTERPRISE GA)
+  - **SSO/SAML 2.0/OIDC**: Enterprise authentication with JIT provisioning
+  - **RBAC Policy Engine**: YAML-based policies with smart code family permissions
+  - **KMS Encryption**: Envelope encryption for PII with automatic key rotation
+  - **Rate Limiting**: Sliding window with idempotency support (24h TTL)
+  - **Distributed Tracing**: OpenTelemetry with specialized trace methods
+  - **Metrics Collection**: Prometheus-compatible with business/technical metrics
+  - **Structured Logging**: JSON with context preservation and correlation
+  - **Audit Trail**: Complete activity logging with real-time streaming (SSE)
+  - **RLS Enforcement**: Automatic query interception via proxy pattern
+  - **Enterprise Middleware**: Unified stack combining all enterprise features
+  - **OpenAPI 3.0.3**: Complete API specification with smart code annotations
+  - **Monitoring Dashboards**: 4 pre-configured Grafana dashboards
+  - **Disaster Recovery**: RPO ≤ 5min, RTO ≤ 30min with complete runbooks
+  - **Zero New Tables**: All enterprise data stored in Sacred Six tables
+  - **Smart Code Everywhere**: Every enterprise operation has business context
 
 
 ---

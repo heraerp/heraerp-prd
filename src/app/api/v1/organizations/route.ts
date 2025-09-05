@@ -57,6 +57,58 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Check if this is the universal demo user
+    if (user.email === 'demo@heraerp.com') {
+      // Return pre-configured demo organizations
+      const demoOrgs = [
+        {
+          id: '519d9c67-6fa4-4c73-9c56-6d132a6649c1',
+          name: 'Bella Beauty Salon (Demo)',
+          type: 'salon',
+          subdomain: 'demo-salon',
+          subscription_plan: 'demo',
+          role: 'owner',
+          permissions: ['*'],
+          is_active: true
+        },
+        {
+          id: '6c3bc585-eec9-40a2-adc5-a89bfb398a16',
+          name: 'Kochi Ice Cream Manufacturing (Demo)',
+          type: 'icecream',
+          subdomain: 'demo-icecream',
+          subscription_plan: 'demo',
+          role: 'owner',
+          permissions: ['*'],
+          is_active: true
+        },
+        {
+          id: '3740d358-f283-47e8-8055-852b67eee1a6',
+          name: "Mario's Restaurant (Demo)",
+          type: 'restaurant',
+          subdomain: 'demo-restaurant',
+          subscription_plan: 'demo',
+          role: 'owner',
+          permissions: ['*'],
+          is_active: true
+        },
+        {
+          id: '037aac11-2323-4a71-8781-88a8454c9695',
+          name: 'Dr. Smith Family Practice (Demo)',
+          type: 'healthcare',
+          subdomain: 'demo-healthcare',
+          subscription_plan: 'demo',
+          role: 'owner',
+          permissions: ['*'],
+          is_active: true
+        }
+      ]
+      
+      return NextResponse.json({
+        success: true,
+        organizations: demoOrgs
+      })
+    }
+
     return NextResponse.json(data)
   } catch (error) {
     console.error('Organizations API error:', error)

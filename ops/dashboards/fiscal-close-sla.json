@@ -1,0 +1,123 @@
+{
+  "dashboard": {
+    "title": "HERA Fiscal Close SLA",
+    "uid": "hera-fiscal-close-sla",
+    "version": 1,
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Average Days to Close",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "avg(fiscal_close_duration_days)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "days",
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 5, "color": "yellow" },
+                { "value": 10, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Periods Meeting SLA",
+        "type": "gauge",
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "sum(fiscal_close_sla_met) / sum(fiscal_close_total) * 100"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 80, "color": "yellow" },
+                { "value": 95, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Current Open Periods",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "count(fiscal_period_status{status=\"open\"})"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Overdue Closings",
+        "type": "stat",
+        "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "count(fiscal_period_overdue)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 1, "color": "yellow" },
+                { "value": 5, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Closing Progress by Step",
+        "type": "bargraph",
+        "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(fiscal_closing_step_status) by (step_code, status)"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Historical Close Times",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "fiscal_close_duration_days",
+            "legendFormat": "{{period_code}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Bottleneck Steps",
+        "type": "table",
+        "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+        "targets": [
+          {
+            "expr": "topk(5, avg(fiscal_step_duration_hours) by (step_code))"
+          }
+        ]
+      }
+    ]
+  }
+}

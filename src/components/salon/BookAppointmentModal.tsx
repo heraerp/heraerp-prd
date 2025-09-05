@@ -33,13 +33,15 @@ import {
   Star,
   Sparkles,
   Timer,
-  Users
+  Users,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { format, addMinutes, parseISO, isWithinInterval } from 'date-fns'
 import { SchedulingAssistant } from './SchedulingAssistant'
 import { useToast } from '@/hooks/use-toast'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 
 interface Service {
   id: string
@@ -339,6 +341,61 @@ export function BookAppointmentModal({
 
     setLoading(true)
     try {
+      // Check booking rules via UCR before creating appointment
+      universalConfigService.setOrganizationId(organizationId)
+      
+      const bookingContext = {
+        organization_id: organizationId,
+        business_type: 'salon',
+        customer_id: selectedCustomer.id,
+        customer_segments: selectedCustomer.vip_level ? [`vip_${selectedCustomer.vip_level}`] : ['regular'],
+        specialist_id: selectedStylist.id,
+        service_ids: selectedServices.map(s => s.id),
+        appointment_time: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
+        appointment_value: totalPrice,
+        now: new Date(),
+        lead_minutes: (new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`).getTime() - new Date().getTime()) / (1000 * 60)
+      }
+
+      // Check booking availability rules
+      const availabilityDecision = await universalConfigService.decide({
+        family: 'HERA.UNIV.CONFIG.BOOKING.AVAILABILITY',
+        context: bookingContext
+      })
+
+      console.log('UCR Booking Decision:', availabilityDecision)
+
+      // Apply UCR decision
+      if (availabilityDecision.decision === 'unavailable') {
+        toast({
+          title: 'Booking Not Available',
+          description: availabilityDecision.reason || 'This time slot is not available according to salon policies.',
+          variant: 'destructive'
+        })
+        return
+      }
+
+      // Check pricing rules for any adjustments
+      const pricingDecision = await universalConfigService.decide({
+        family: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT',
+        context: bookingContext,
+        inputs: { original_price: totalPrice }
+      })
+
+      console.log('UCR Pricing Decision:', pricingDecision)
+
+      // Apply pricing adjustments if any
+      const finalPrice = pricingDecision.payload?.final_price || totalPrice
+      const discountApplied = pricingDecision.payload?.total_discount || 0
+
+      if (discountApplied > 0) {
+        toast({
+          title: 'Discount Applied!',
+          description: `${pricingDecision.reason} - AED ${discountApplied.toFixed(0)} discount applied.`,
+          variant: 'default'
+        })
+      }
+
       // Create appointment transaction
       const appointmentData = {
         organization_id: organizationId,
@@ -346,7 +403,7 @@ export function BookAppointmentModal({
         transaction_date: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
         source_entity_id: selectedCustomer.id,
         target_entity_id: selectedStylist.id,
-        total_amount: totalPrice,
+        total_amount: finalPrice,
         transaction_status: isHold ? 'hold' : 'confirmed',
         smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
         business_context: {
@@ -397,7 +454,7 @@ export function BookAppointmentModal({
 
       toast({
         title: 'Appointment Booked',
-        description: `${title} on ${format(selectedDate, 'MMM d')} at ${startTime}`,
+        description: `${title} on ${format(selectedDate, 'MMM d')} at ${startTime}${discountApplied > 0 ? ` - Final price: AED ${finalPrice.toFixed(0)} (${discountApplied.toFixed(0)} discount applied)` : ` - Total: AED ${finalPrice.toFixed(0)}`}`,
       })
 
       onBookingComplete?.({
@@ -430,9 +487,9 @@ export function BookAppointmentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl w-[90vw] h-[85vh] max-h-[900px] p-0 bg-[#1b1b1b] border-[#323232] shadow-2xl overflow-hidden !top-[45%]">
-        <DialogHeader className="px-6 py-3 border-b border-[#323232] bg-[#2b2b2b] flex flex-row items-center justify-between">
-          <DialogTitle className="text-base font-normal text-[#e1e1e1]">
+      <DialogContent className="max-w-6xl w-[90vw] h-[85vh] max-h-[900px] p-0 bg-background border-border shadow-2xl overflow-hidden !top-[45%] dark:bg-gray-900 dark:border-gray-700">
+        <DialogHeader className="px-6 py-3 border-b border-border bg-card flex flex-row items-center justify-between dark:bg-gray-800 dark:border-gray-700">
+          <DialogTitle className="text-base font-normal text-card-foreground dark:text-white">
             New event
           </DialogTitle>
         </DialogHeader>
@@ -460,27 +517,29 @@ export function BookAppointmentModal({
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="Add a title"
-                        className="border-0 border-b border-[#323232] rounded-none bg-transparent text-[#e1e1e1] placeholder-[#7a7a7a] text-lg focus:border-b-2 focus:border-[#4c7cf0] px-0 pb-2"
+                        className="border-0 border-b border-border rounded-none bg-transparent text-foreground placeholder-muted-foreground text-lg focus:border-b-2 focus:border-primary px-0 pb-2 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
+                        style={{ backgroundColor: 'transparent' }}
                       />
                     </div>
 
                     {/* Customer Selection */}
                     <div className="mb-6">
-                      <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
-                        <User className="w-5 h-5 text-[#7a7a7a]" />
+                      <div className="flex items-center gap-3 py-3 border-b border-border dark:border-gray-700">
+                        <User className="w-5 h-5 text-muted-foreground dark:text-gray-400" />
                         <div className="flex-1">
                           <Input
                             id="customer"
                             placeholder="Invite attendees"
                             value={customerSearch}
                             onChange={(e) => setCustomerSearch(e.target.value)}
-                            className="border-0 bg-transparent text-[#e1e1e1] placeholder-[#7a7a7a] text-sm p-0 focus:ring-0"
+                            className="border-0 bg-transparent text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
+                            style={{ backgroundColor: 'transparent' }}
                           />
                         </div>
                         {searchingCustomer && (
-                          <Loader2 className="w-4 h-4 animate-spin text-[#7a7a7a]" />
+                          <Loader2 className="w-4 h-4 animate-spin text-muted-foreground dark:text-gray-400" />
                         )}
-                        <span className="text-sm text-[#7a7a7a]">Optional</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Optional</span>
                       </div>
                         
                       {/* Customer List */}
@@ -492,22 +551,22 @@ export function BookAppointmentModal({
                               className={cn(
                                 "flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-all text-sm",
                                 selectedCustomer?.id === customer.id
-                                  ? "bg-[#2b2b2b] text-[#e1e1e1]"
-                                  : "hover:bg-[#2b2b2b] text-[#b3b3b3]"
+                                  ? "bg-accent text-accent-foreground dark:bg-gray-800 dark:text-white"
+                                  : "hover:bg-accent text-muted-foreground dark:hover:bg-gray-800 dark:text-gray-300"
                               )}
                               onClick={() => setSelectedCustomer(customer)}
                             >
                               <Avatar className="w-8 h-8">
-                                <AvatarFallback className="bg-[#4c7cf0] text-white text-xs">
+                                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                                   {customer.entity_name.charAt(0)}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
                                 <p className="font-normal">{customer.entity_name}</p>
-                                <p className="text-xs text-[#7a7a7a]">{customer.email}</p>
+                                <p className="text-xs text-muted-foreground dark:text-gray-400">{customer.email}</p>
                               </div>
                               {selectedCustomer?.id === customer.id && (
-                                <X className="w-4 h-4 text-[#7a7a7a] hover:text-[#e1e1e1]" 
+                                <X className="w-4 h-4 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white" 
                                    onClick={(e) => {
                                      e.stopPropagation()
                                      setSelectedCustomer(null)
@@ -534,20 +593,20 @@ export function BookAppointmentModal({
                         value={selectedStylist?.id}
                         onValueChange={(id) => setSelectedStylist(stylists.find(s => s.id === id) || null)}
                       >
-                        <SelectTrigger className="bg-[#2b2b2b] border-[#323232] text-[#e1e1e1] h-10 text-sm">
+                        <SelectTrigger className="bg-gray-800 border-gray-600 text-white h-10 text-sm" style={{ backgroundColor: '#2b2b2b' }}>
                           <SelectValue placeholder="Select a stylist" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#2b2b2b] border-[#323232]">
+                        <SelectContent className="bg-gray-800 border-gray-600" style={{ backgroundColor: '#2b2b2b' }}>
                           {stylists.map(stylist => (
-                            <SelectItem key={stylist.id} value={stylist.id} className="text-[#e1e1e1] hover:bg-[#323232] focus:bg-[#323232]">
+                            <SelectItem key={stylist.id} value={stylist.id} className="text-popover-foreground hover:bg-accent focus:bg-accent dark:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700 hera-select-item">
                               <div className="flex items-center gap-2">
                                 <Avatar className="w-6 h-6">
-                                  <AvatarFallback className="bg-[#4c7cf0] text-white text-xs">
+                                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                                     {stylist.avatar}
                                   </AvatarFallback>
                                 </Avatar>
                                 <span>{stylist.entity_name}</span>
-                                <Badge variant="secondary" className="ml-auto text-xs bg-[#323232] text-[#b3b3b3]">
+                                <Badge variant="secondary" className="ml-auto text-xs">
                                   {stylist.level}
                                 </Badge>
                               </div>
@@ -558,25 +617,25 @@ export function BookAppointmentModal({
 
                       {/* Service Selection */}
                       <div className="space-y-2">
-                        <p className="text-xs text-[#7a7a7a] mb-2">Select services</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Select services</p>
                         {services.map(service => (
                           <div
                             key={service.id}
                             className={cn(
                               "flex items-center gap-3 p-3 rounded cursor-pointer transition-all",
                               selectedServices.find(s => s.id === service.id)
-                                ? "bg-[#2b2b2b] border border-[#4c7cf0]"
-                                : "bg-[#2b2b2b] border border-[#323232] hover:border-[#4c7cf0]/50"
+                                ? "bg-accent border border-primary dark:bg-gray-800 dark:border-blue-500"
+                                : "bg-card border border-border hover:border-primary/50 dark:bg-gray-800 dark:border-gray-600 dark:hover:border-blue-500/50"
                             )}
                             onClick={() => toggleService(service)}
                           >
                             <Checkbox
                               checked={!!selectedServices.find(s => s.id === service.id)}
-                              className="border-[#7a7a7a] data-[state=checked]:bg-[#4c7cf0] data-[state=checked]:border-[#4c7cf0]"
+                              className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
                             />
                             <div className="flex-1">
-                              <p className="text-sm text-[#e1e1e1]">{service.entity_name}</p>
-                              <p className="text-xs text-[#7a7a7a]">
+                              <p className="text-sm text-card-foreground dark:text-white">{service.entity_name}</p>
+                              <p className="text-xs text-muted-foreground dark:text-gray-400">
                                 {service.duration} min • AED {service.price}
                               </p>
                             </div>
@@ -586,12 +645,12 @@ export function BookAppointmentModal({
                       
                       {/* Service Summary */}
                       {selectedServices.length > 0 && (
-                        <div className="mt-3 p-3 bg-[#252525] rounded text-sm">
+                        <div className="mt-3 p-3 bg-secondary rounded text-sm dark:bg-gray-700">
                           <div className="flex justify-between items-center">
-                            <span className="text-[#b3b3b3]">
+                            <span className="text-secondary-foreground dark:text-gray-300">
                               Duration: {Math.floor(totalDuration / 60)}h {totalDuration % 60}m
                             </span>
-                            <span className="text-[#e1e1e1] font-medium">
+                            <span className="text-foreground font-medium dark:text-white">
                               Total: AED {totalPrice}
                             </span>
                           </div>
@@ -608,7 +667,7 @@ export function BookAppointmentModal({
                             type="date"
                             value={format(selectedDate, 'yyyy-MM-dd')}
                             onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                            className="border-0 bg-transparent text-[#e1e1e1] text-sm p-0 focus:ring-0 [color-scheme:dark]"
+                            className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
                           />
                           <span className="text-[#7a7a7a]">to</span>
                           <div className="flex items-center gap-2">
@@ -616,14 +675,14 @@ export function BookAppointmentModal({
                               type="time"
                               value={startTime}
                               onChange={(e) => setStartTime(e.target.value)}
-                              className="border-0 bg-transparent text-[#e1e1e1] text-sm p-0 focus:ring-0 w-20 [color-scheme:dark]"
+                              className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 w-20 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
                             />
                             <span className="text-[#7a7a7a]">-</span>
                             <Input
                               type="time"
                               value={endTime}
                               disabled
-                              className="border-0 bg-transparent text-[#7a7a7a] text-sm p-0 focus:ring-0 w-20 cursor-not-allowed [color-scheme:dark]"
+                              className="border-0 bg-background text-muted-foreground text-sm p-0 focus:ring-0 w-20 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:[color-scheme:dark]"
                             />
                           </div>
                           <Button
@@ -645,7 +704,7 @@ export function BookAppointmentModal({
                           placeholder="Add description"
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
-                          className="border-0 bg-transparent text-[#e1e1e1] placeholder-[#7a7a7a] text-sm p-0 focus:ring-0"
+                          className="border-0 bg-background text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white"
                         />
                       </div>
                     </div>
@@ -656,17 +715,17 @@ export function BookAppointmentModal({
                         <Checkbox
                           checked={!isPrivate}
                           onCheckedChange={(checked) => setIsPrivate(!checked)}
-                          className="border-[#7a7a7a] data-[state=checked]:bg-[#4c7cf0] data-[state=checked]:border-[#4c7cf0]"
+                          className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
                         />
-                        <span className="text-sm text-[#e1e1e1]">Show as busy</span>
+                        <span className="text-sm text-foreground dark:text-white">Show as busy</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer ml-6">
                         <Checkbox
                           checked={isHold}
                           onCheckedChange={(checked) => setIsHold(!!checked)}
-                          className="border-[#7a7a7a] data-[state=checked]:bg-[#4c7cf0] data-[state=checked]:border-[#4c7cf0]"
+                          className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
                         />
-                        <span className="text-sm text-[#e1e1e1]">Tentative booking</span>
+                        <span className="text-sm text-foreground dark:text-white">Tentative booking</span>
                       </label>
                     </div>
 
@@ -684,7 +743,7 @@ export function BookAppointmentModal({
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-7 w-7 p-0 text-[#7a7a7a] hover:text-[#e1e1e1] hover:bg-[#323232]"
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
                         >
                           ‹
@@ -692,7 +751,7 @@ export function BookAppointmentModal({
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-7 w-7 p-0 text-[#7a7a7a] hover:text-[#e1e1e1] hover:bg-[#323232]"
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
                         >
                           ›
@@ -800,7 +859,7 @@ export function BookAppointmentModal({
               <ChevronRight className="w-4 h-4 mr-1" />
               Response options
             </Button>
-            <div className="flex items-center gap-2 text-sm text-[#7a7a7a]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 15 minutes before
@@ -815,7 +874,7 @@ export function BookAppointmentModal({
             <Button
               onClick={handleBook}
               disabled={loading || !selectedCustomer || !selectedStylist || selectedServices.length === 0}
-              className="bg-[#4c7cf0] hover:bg-[#6b95ff] text-white h-8 px-4 text-sm disabled:bg-[#323232] disabled:text-[#7a7a7a]"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-4 text-sm disabled:bg-secondary disabled:text-muted-foreground dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white dark:disabled:bg-gray-700 dark:disabled:text-gray-500"
             >
               {loading ? (
                 <>
