@@ -16,8 +16,12 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=true
 ENV SKIP_STATIC_GENERATION=true
 
-# Build the application
-# NOTE: Environment variables must be set in Railway for this to work
+# Build the application with placeholder values
+# These are only used during build time and will be replaced by Railway env vars at runtime
+ENV NEXT_PUBLIC_SUPABASE_URL="https://placeholder.supabase.co"
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="placeholder-anon-key"
+ENV SUPABASE_SERVICE_ROLE_KEY="placeholder-service-key"
+
 RUN npm run build || echo "Build completed with warnings"
 
 # Set production environment
