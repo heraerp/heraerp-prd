@@ -12,7 +12,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import BookingAutomationPanel from '@/components/whatsapp/BookingAutomationPanel'
 import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { 
   MessageCircle,
   Search,
@@ -47,7 +46,6 @@ import {
   Users,
   Package,
   CreditCard,
-  Menu,
   Sparkles,
   Scale,
   TrendingDown
@@ -430,16 +428,6 @@ export default function SalonWhatsAppPage() {
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              {/* Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden text-gray-300 hover:text-white hover:bg-gray-700"
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
-              
               {/* Logo */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
@@ -474,77 +462,7 @@ export default function SalonWhatsAppPage() {
         </div>
       </header>
 
-      {/* Mobile Menu Sidebar */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-          <div className="fixed left-0 top-0 w-64 h-full bg-gray-800 shadow-xl">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-white">Navigation</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-gray-300 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-              <nav className="space-y-2">
-                {navigationItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                      item.active 
-                        ? "bg-purple-600 text-white" 
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                    )}
-                  >
-                    {item.icon}
-                    <span className="font-medium">{item.label}</span>
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-auto">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="flex h-[calc(100vh-4rem)]">
-        {/* Desktop Navigation Sidebar */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-gray-800 border-r border-gray-700">
-          <nav className="flex-1 px-4 py-4 space-y-2">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                  item.active 
-                    ? "bg-purple-600 text-white" 
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                )}
-              >
-                {item.icon}
-                <span className="font-medium">{item.label}</span>
-                {item.badge && (
-                  <Badge variant="secondary" className="ml-auto">
-                    {item.badge}
-                  </Badge>
-                )}
-              </Link>
-            ))}
-          </nav>
-        </aside>
 
         {/* Chat List Sidebar */}
         <div className="w-96 bg-[#111b21] border-r border-[#2a3942] flex flex-col">
