@@ -1172,7 +1172,7 @@ export default function SalonModernDashboard() {
                     <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-green-400" />
+                          <UserCheck className="w-4 h-4 text-green-400" />
                         </div>
                         <span className="text-xs text-gray-600 dark:text-gray-400">Active Rules</span>
                       </div>
