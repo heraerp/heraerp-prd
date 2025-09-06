@@ -915,7 +915,7 @@ export default function SalonModernDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Template className="w-7 h-7 text-white" />
+                        <FileText className="w-7 h-7 text-white" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold !text-gray-900 dark:!text-white mb-1">
