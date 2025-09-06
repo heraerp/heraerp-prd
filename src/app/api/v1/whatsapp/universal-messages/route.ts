@@ -127,15 +127,15 @@ export async function GET(request: NextRequest) {
     })) || []
 
     // Query actual conversation entities from database
-    const { data: conversationEntities, error: convError } = await supabase
+    const { data: conversationEntities, error: convEntitiesError } = await supabase
       .from('core_entities')
       .select('*')
       .eq('entity_type', 'whatsapp_conversation')
       .eq('organization_id', organizationId)
       .order('created_at', { ascending: false })
     
-    if (convError) {
-      console.error('Error fetching conversations:', convError)
+    if (convEntitiesError) {
+      console.error('Error fetching conversations:', convEntitiesError)
     }
 
     console.log('📊 Found conversation entities:', conversationEntities?.length || 0)

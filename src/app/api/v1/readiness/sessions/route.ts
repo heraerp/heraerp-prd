@@ -39,12 +39,28 @@ export async function GET(request: NextRequest) {
     // For each session, fetch the answer lines
     const sessionsWithAnswers = await Promise.all(
       (sessions || []).map(async (session) => {
+        console.log(`📋 Fetching answers for session ${session.id}...`)
+        
         // Get transaction lines for this session
-        const { data: answers } = await supabase
+        const { data: answers, error: answersError } = await supabase
           .from('universal_transaction_lines')
           .select('*')
           .eq('transaction_id', session.id)
           .order('line_number', { ascending: true })
+        
+        if (answersError) {
+          console.error(`❌ Error fetching answers for session ${session.id}:`, answersError)
+        } else {
+          console.log(`✅ Found ${answers?.length || 0} answers for session ${session.id}`)
+          if (answers && answers.length > 0) {
+            console.log(`📝 First answer sample:`, {
+              line_number: answers[0].line_number,
+              description: answers[0].description,
+              line_data: answers[0].line_data,
+              unit_amount: answers[0].unit_amount
+            })
+          }
+        }
         
         // Get AI insights from dynamic data
         const { data: insightsData } = await supabase
@@ -61,13 +77,22 @@ export async function GET(request: NextRequest) {
           console.warn('Failed to parse AI insights for session', session.id)
         }
 
-        return {
+        const sessionWithAnswers = {
           ...session,
           answers: answers || [],
           insights,
           completionRate: session.metadata?.completionRate || 0,
           totalQuestions: session.metadata?.totalQuestions || 0
         }
+        
+        console.log(`📊 Session ${session.id} summary:`, {
+          status: session.transaction_status,
+          answers_count: sessionWithAnswers.answers.length,
+          has_insights: !!insights,
+          completion_rate: sessionWithAnswers.completionRate
+        })
+        
+        return sessionWithAnswers
       })
     )
 

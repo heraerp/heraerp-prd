@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
+import { usePathname } from 'next/navigation'
 // import { createClient } from '@supabase/supabase-js'
 // TODO: Re-enable once React 18 onboarding is ready
 // import { useOnboarding } from '@/lib/onboarding'
@@ -34,10 +36,14 @@ interface DashboardData {
 }
 
 export default function IceCreamDashboard() {
-  const { currentOrganization, isLoadingOrgs } = useMultiOrgAuth()
-  const organizationId = currentOrganization?.id || null
-  const organizationName = currentOrganization?.name || ''
-  const orgLoading = isLoadingOrgs
+  const pathname = usePathname()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
+  
+  // Use authenticated org if available, otherwise use demo org, fallback to Kochi Ice Cream
+  const organizationId = currentOrganization?.id || demoOrg?.id || '1471e87b-b27e-42ef-8192-343cc5e0d656'
+  const organizationName = currentOrganization?.name || demoOrg?.name || 'Kochi Ice Cream Manufacturing'
+  const orgLoading = isAuthenticated ? isLoadingOrgs : false
   // TODO: Re-enable once React 18 onboarding is ready
   // const { startTour, isActive } = useOnboarding()
   const [loading, setLoading] = useState(true)
@@ -51,6 +57,19 @@ export default function IceCreamDashboard() {
     productionEfficiency: 0
   })
 
+  // Load demo organization if not authenticated
+  useEffect(() => {
+    async function loadDemoOrg() {
+      if (!isAuthenticated && !currentOrganization) {
+        const orgInfo = await getDemoOrganizationInfo(pathname)
+        if (orgInfo) {
+          setDemoOrg({ id: orgInfo.id, name: orgInfo.name })
+          console.log('Demo organization loaded:', orgInfo)
+        }
+      }
+    }
+    loadDemoOrg()
+  }, [isAuthenticated, currentOrganization, pathname])
 
   // TODO: Re-enable once React 18 onboarding is ready
   // // Auto-start tour for first-time users

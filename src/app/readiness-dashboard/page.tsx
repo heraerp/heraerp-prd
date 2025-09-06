@@ -117,6 +117,18 @@ export default function ReadinessDashboardPage() {
     fetchSessions()
   }, [])
 
+  useEffect(() => {
+    if (selectedSession) {
+      console.log('🎯 Selected session changed:', {
+        id: selectedSession.id,
+        status: selectedSession.transaction_status,
+        answers_count: selectedSession.answers?.length || 0,
+        has_insights: !!selectedSession.insights,
+        metadata: selectedSession.metadata
+      })
+    }
+  }, [selectedSession])
+
   const fetchSessions = async () => {
     const orgId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000'
     
@@ -140,12 +152,29 @@ export default function ReadinessDashboardPage() {
       console.log('📊 Sessions API response data:', JSON.stringify(data, null, 2))
       console.log('📝 Found sessions:', data.data?.length || 0)
       
+      // Log the first session details
+      if (data.data?.length > 0) {
+        console.log('🔍 First session details:', {
+          id: data.data[0].id,
+          status: data.data[0].transaction_status,
+          answers_count: data.data[0].answers?.length || 0,
+          metadata: data.data[0].metadata,
+          insights: data.data[0].insights,
+          answers_sample: data.data[0].answers?.slice(0, 2)
+        })
+      }
+      
       setSessions(data.data || [])
       
       // Select first session by default
       if (data.data?.length > 0 && !selectedSession) {
+        console.log('📌 Setting selected session:', data.data[0].id)
         setSelectedSession(data.data[0])
       }
+      
+      // Debug: Check if any sessions have answers
+      const sessionsWithAnswers = data.data?.filter(s => s.answers?.length > 0) || []
+      console.log(`📊 Sessions with answers: ${sessionsWithAnswers.length} out of ${data.data?.length || 0} total sessions`)
     } catch (error) {
       console.error('❌ Error fetching sessions:', error)
     } finally {
@@ -891,52 +920,101 @@ export default function ReadinessDashboardPage() {
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
-                      {/* Overall Score */}
-                      <motion.div 
-                        className="text-center py-8"
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <div className="relative inline-flex items-center justify-center mb-4">
-                          <motion.div
-                            animate={{ rotate: [0, 360] }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="absolute w-32 h-32 rounded-full"
-                            style={{
-                              background: `conic-gradient(
-                                from 0deg,
-                                rgba(59, 130, 246, 0.2) 0deg,
-                                rgba(147, 51, 234, 0.2) ${(selectedSession.metadata.overallScore || 0) * 3.6}deg,
-                                rgba(255, 255, 255, 0.05) ${(selectedSession.metadata.overallScore || 0) * 3.6}deg,
-                                rgba(255, 255, 255, 0.05) 360deg
-                              )`,
-                              filter: 'blur(20px)'
-                            }}
-                          />
-                          <div className="relative text-6xl font-bold !text-white drop-shadow-2xl">
-                            {selectedSession.metadata.overallScore || 0}%
-                          </div>
-                        </div>
-                        <Badge 
-                          className="text-sm px-4 py-2"
-                          style={{
-                            background: selectedSession.insights?.readinessLevel === 'High' 
-                              ? 'rgba(16, 185, 129, 0.2)'
-                              : selectedSession.insights?.readinessLevel === 'Medium'
-                              ? 'rgba(251, 146, 60, 0.2)'
-                              : 'rgba(239, 68, 68, 0.2)',
-                            color: selectedSession.insights?.readinessLevel === 'High'
-                              ? '#10b981'
-                              : selectedSession.insights?.readinessLevel === 'Medium'
-                              ? '#fb923c'
-                              : '#ef4444',
-                            border: `1px solid ${selectedSession.insights?.readinessLevel === 'High' ? 'rgba(16, 185, 129, 0.4)' : selectedSession.insights?.readinessLevel === 'Medium' ? 'rgba(251, 146, 60, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`
-                          }}
+                      {selectedSession.transaction_status === 'completed' ? (
+                        <>
+                          {/* Overall Score */}
+                          <motion.div 
+                            className="text-center py-8"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            <div className="relative inline-flex items-center justify-center mb-4">
+                              <motion.div
+                                animate={{ rotate: [0, 360] }}
+                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                className="absolute w-32 h-32 rounded-full"
+                                style={{
+                                  background: `conic-gradient(
+                                    from 0deg,
+                                    rgba(59, 130, 246, 0.2) 0deg,
+                                    rgba(147, 51, 234, 0.2) ${(selectedSession.metadata.overallScore || 0) * 3.6}deg,
+                                    rgba(255, 255, 255, 0.05) ${(selectedSession.metadata.overallScore || 0) * 3.6}deg,
+                                    rgba(255, 255, 255, 0.05) 360deg
+                                  )`,
+                                  filter: 'blur(20px)'
+                                }}
+                              />
+                              <div className="relative text-6xl font-bold !text-white drop-shadow-2xl">
+                                {selectedSession.metadata.overallScore || 0}%
+                              </div>
+                            </div>
+                            <Badge 
+                              className="text-sm px-4 py-2"
+                              style={{
+                                background: selectedSession.insights?.readinessLevel === 'High' 
+                                  ? 'rgba(16, 185, 129, 0.2)'
+                                  : selectedSession.insights?.readinessLevel === 'Medium'
+                                  ? 'rgba(251, 146, 60, 0.2)'
+                                  : 'rgba(239, 68, 68, 0.2)',
+                                color: selectedSession.insights?.readinessLevel === 'High'
+                                  ? '#10b981'
+                                  : selectedSession.insights?.readinessLevel === 'Medium'
+                                  ? '#fb923c'
+                                  : '#ef4444',
+                                border: `1px solid ${selectedSession.insights?.readinessLevel === 'High' ? 'rgba(16, 185, 129, 0.4)' : selectedSession.insights?.readinessLevel === 'Medium' ? 'rgba(251, 146, 60, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`
+                              }}
+                            >
+                              {selectedSession.insights?.readinessLevel || 'Not Analyzed'} Readiness
+                            </Badge>
+                          </motion.div>
+                        </>
+                      ) : (
+                        <motion.div 
+                          className="text-center py-8"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
                         >
-                          {selectedSession.insights?.readinessLevel || 'Not Analyzed'} Readiness
-                        </Badge>
-                      </motion.div>
+                          <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                            style={{
+                              background: 'rgba(251, 146, 60, 0.1)',
+                              backdropFilter: 'blur(10px)',
+                              border: '1px solid rgba(251, 146, 60, 0.2)',
+                            }}
+                          >
+                            <Activity className="h-10 w-10 text-orange-400 drop-shadow-md" />
+                          </div>
+                          <h3 className="text-xl font-bold !text-white mb-3">
+                            Assessment In Progress
+                          </h3>
+                          <p className="text-gray-400 mb-6">
+                            This assessment is {selectedSession.metadata?.completionRate || 0}% complete
+                          </p>
+                          <div className="max-w-xs mx-auto mb-6">
+                            <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${selectedSession.metadata?.completionRate || 0}%` }}
+                                transition={{ duration: 0.8 }}
+                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500"
+                              />
+                            </div>
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => window.location.href = '/readiness-questionnaire'}
+                            className="px-6 py-3 rounded-xl text-sm font-medium text-white shadow-lg transition-all inline-flex items-center"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.8) 0%, rgba(245, 158, 11, 0.8) 100%)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                            }}
+                          >
+                            <Zap className="h-4 w-4 mr-2" />
+                            Continue Assessment
+                          </motion.button>
+                        </motion.div>
+                      )}
 
                       {/* Insights */}
                       {selectedSession.insights && (
@@ -1024,7 +1102,8 @@ export default function ReadinessDashboardPage() {
 
                     <TabsContent value="categories">
                       <div className="space-y-4">
-                        {Object.entries(selectedSession.metadata.categoryScores || {}).map(([category, data], index) => (
+                        {selectedSession.metadata?.categoryScores && Object.keys(selectedSession.metadata.categoryScores).length > 0 ? (
+                          Object.entries(selectedSession.metadata.categoryScores).map(([category, data], index) => (
                           <motion.div 
                             key={category}
                             initial={{ opacity: 0, x: -20 }}
@@ -1063,13 +1142,19 @@ export default function ReadinessDashboardPage() {
                               />
                             </div>
                           </motion.div>
-                        ))}
+                          ))
+                        ) : (
+                          <div className="text-center py-8">
+                            <p className="text-gray-400">No category scores available</p>
+                          </div>
+                        )}
                       </div>
                     </TabsContent>
 
                     <TabsContent value="answers">
                       <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
-                        {selectedSession.answers.map((answer, index) => (
+                        {selectedSession.answers && selectedSession.answers.length > 0 ? (
+                          selectedSession.answers.map((answer, index) => (
                           <motion.div 
                             key={index}
                             initial={{ opacity: 0, y: 10 }}
@@ -1108,7 +1193,41 @@ export default function ReadinessDashboardPage() {
                               </span>
                             </div>
                           </motion.div>
-                        ))}
+                          ))
+                        ) : (
+                          <div className="text-center py-8">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                              style={{
+                                background: 'rgba(251, 146, 60, 0.1)',
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid rgba(251, 146, 60, 0.2)',
+                              }}
+                            >
+                              <AlertCircle className="h-8 w-8 text-orange-400" />
+                            </div>
+                            <p className="text-gray-300 font-medium mb-2">No answers recorded yet</p>
+                            <p className="text-gray-400 text-sm">
+                              {selectedSession.transaction_status === 'in_progress' 
+                                ? 'This assessment is still in progress. Answers will appear here as they are submitted.'
+                                : 'No answers were recorded for this assessment.'}
+                            </p>
+                            {selectedSession.transaction_status === 'in_progress' && (
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => window.location.href = `/readiness-questionnaire?sessionId=${selectedSession.id}`}
+                                className="mt-4 px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg transition-all inline-flex items-center"
+                                style={{
+                                  background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.8) 0%, rgba(239, 68, 68, 0.8) 100%)',
+                                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                                }}
+                              >
+                                <Activity className="h-4 w-4 mr-2" />
+                                Continue Assessment
+                              </motion.button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </TabsContent>
                   </Tabs>

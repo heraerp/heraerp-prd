@@ -30,7 +30,9 @@ export async function POST(
       organization_id 
     } = body
 
-    const orgId = organization_id || 'demo-org-123'
+    const orgId = organization_id || '550e8400-e29b-41d4-a716-446655440000'
+    console.log('📝 Saving answer with org ID:', orgId)
+    
     if (!orgId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
@@ -132,7 +134,9 @@ export async function GET(
 
     const sessionId = params.sessionId
     const { searchParams } = new URL(request.url)
-    const organizationId = searchParams.get('organization_id') || 'demo-org-123'
+    const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
+    
+    console.log('📖 Fetching answers for session:', sessionId, 'org:', organizationId)
     
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })

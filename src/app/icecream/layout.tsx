@@ -5,6 +5,8 @@ import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
 import { supabase } from '@/lib/supabase'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { ThemeProviderDNA, ThemeToggle } from '@/lib/dna/theme/theme-provider-dna'
+import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
+import { usePathname } from 'next/navigation'
 // TODO: Re-enable onboarding imports once React 18 implementation is complete
 // import { HeraOnboardingProvider } from '@/lib/onboarding'
 // import { allIceCreamTours } from '@/lib/onboarding/tours/icecream-tours'
@@ -118,12 +120,31 @@ const iceCreamTheme = {
 }
 
 function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
-  const { currentOrganization } = useMultiOrgAuth()
-  const organizationId = currentOrganization?.id || null
+  const pathname = usePathname()
+  const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
+  const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
+  
+  // Use authenticated org if available, otherwise use demo org, fallback to Kochi Ice Cream
+  const organizationId = currentOrganization?.id || demoOrg?.id || '1471e87b-b27e-42ef-8192-343cc5e0d656'
+  const organizationName = currentOrganization?.name || demoOrg?.name || 'Kochi Ice Cream Manufacturing'
   const [productionData, setProductionData] = useState({
     totalProduction: 0,
     efficiency: 0
   })
+
+  // Load demo organization if not authenticated
+  useEffect(() => {
+    async function loadDemoOrg() {
+      if (!isAuthenticated && !currentOrganization) {
+        const orgInfo = await getDemoOrganizationInfo(pathname)
+        if (orgInfo) {
+          setDemoOrg({ id: orgInfo.id, name: orgInfo.name })
+          console.log('Demo organization loaded for layout:', orgInfo)
+        }
+      }
+    }
+    loadDemoOrg()
+  }, [isAuthenticated, currentOrganization, pathname])
 
   useEffect(() => {
     async function fetchProductionData() {
@@ -188,7 +209,7 @@ function IceCreamLayoutContent({ children }: { children: React.ReactNode }) {
       <div className="flex items-center space-x-4">
         <div className="hidden sm:block">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Organization: {currentOrganization?.name || 'Loading...'}
+            Organization: {organizationName || 'Loading...'}
           </p>
         </div>
       </div>
