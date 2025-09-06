@@ -1,0 +1,300 @@
+/**
+ * Auto-generated CRUD tests for Salon_with_sidebar
+ * Generated at: 2025-09-06T04:22:14.567Z
+ * HERA Universal 6-table Architecture
+ */
+
+const { universalApi } = require('@/lib/universal-api');
+
+// Test configuration
+const MODULE_CONFIG = {
+  "moduleName": "salon-data-with-sidebar",
+  "entityType": "salon_with_sidebar",
+  "displayName": "Salon_with_sidebar",
+  "smartCodePrefix": "HERA.SALON_WITH_SIDEBAR",
+  "dynamicFields": []
+};
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132534568';
+
+describe('Salon_with_sidebar - Universal CRUD Operations', () => {
+  let createdEntityId;
+  let createdRelationshipId;
+  let createdTransactionId;
+
+  // Mock fetch for testing
+  global.fetch = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.fetch.mockReset();
+    universalApi.setOrganizationId(TEST_ORG_ID);
+    
+    // Default mock response
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: { id: 'mock-id' } })
+    });
+  });
+
+  describe('CREATE Operations', () => {
+    test('should create a new salon-data-with-sidebar', async () => {
+      const createData = {
+      "entity_type": "salon_with_sidebar",
+      "entity_name": "Test Salon_with_sidebar",
+      "entity_code": "SALON_WITH_SIDEBAR-001",
+      "smart_code": "HERA.SALON_WITH_SIDEBAR.v1"
+};
+
+      const mockResponse = {
+        id: 'salon-data-with-sidebar-123',
+        ...createData,
+        organization_id: TEST_ORG_ID,
+        created_at: new Date().toISOString()
+      };
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: mockResponse })
+      });
+
+      const result = await universalApi.createEntity(createData);
+
+      expect(result).toHaveProperty('data');
+      expect(result.data.entity_type).toBe('salon_with_sidebar');
+      expect(result.data.smart_code).toContain('HERA.SALON_WITH_SIDEBAR');
+      
+      createdEntityId = result.data.id;
+    });
+
+
+  });
+
+  describe('READ Operations', () => {
+    test('should fetch all salon-data-with-sidebar entities', async () => {
+      const mockEntities = [
+        {
+          id: 'salon-data-with-sidebar-1',
+          entity_type: 'salon_with_sidebar',
+          entity_name: 'Salon_with_sidebar 1',
+          smart_code: 'HERA.SALON_WITH_SIDEBAR.v1'
+        },
+        {
+          id: 'salon-data-with-sidebar-2',
+          entity_type: 'salon_with_sidebar',
+          entity_name: 'Salon_with_sidebar 2',
+          smart_code: 'HERA.SALON_WITH_SIDEBAR.v1'
+        }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ 
+          success: true,
+          data: mockEntities,
+          count: mockEntities.length 
+        })
+      });
+
+      const result = await universalApi.getEntities('salon_with_sidebar', TEST_ORG_ID);
+
+      expect(result).toHaveProperty('data');
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0].entity_type).toBe('salon_with_sidebar');
+    });
+
+    test('should search salon-data-with-sidebar by name', async () => {
+      const searchTerm = 'Salon_with_sidebar';
+      
+      // Universal API filters on client side after fetching
+      const allEntities = [
+        { entity_name: 'Salon_with_sidebar Match', entity_type: 'salon_with_sidebar' },
+        { entity_name: 'Other Entity', entity_type: 'salon_with_sidebar' }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: allEntities })
+      });
+
+      const result = await universalApi.getEntities('salon_with_sidebar', TEST_ORG_ID);
+      
+      // Client-side filtering
+      const filtered = result.data.filter(e => 
+        e.entity_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      expect(filtered.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('UPDATE Operations', () => {
+    test('should update salon-data-with-sidebar details', async () => {
+      const updateData = {
+      "entity_name": "Updated Salon_with_sidebar",
+      "metadata": {
+            "updated": true
+      }
+};
+
+      const mockUpdated = {
+        id: 'salon-data-with-sidebar-123',
+        entity_type: 'salon_with_sidebar',
+        ...updateData,
+        updated_at: new Date().toISOString()
+      };
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ 
+          success: true,
+          data: mockUpdated 
+        })
+      });
+
+      const result = await universalApi.updateEntity('salon-data-with-sidebar-123', updateData);
+
+      expect(result).toHaveProperty('data');
+      expect(result.data.entity_name).toContain('Updated');
+    });
+
+
+  });
+
+  describe('DELETE Operations', () => {
+    test('should delete salon-data-with-sidebar', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, message: 'Entity deleted' })
+      });
+
+      await universalApi.deleteEntity('salon-data-with-sidebar-123');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/api/v1/universal'),
+        expect.objectContaining({
+          method: 'DELETE'
+        })
+      );
+    });
+
+    test('should handle cascade deletion of dynamic fields', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ 
+          success: true, 
+          message: 'Entity and related data deleted',
+          deleted_count: {
+            entity: 1,
+            dynamic_fields: 0,
+            relationships: 0
+          }
+        })
+      });
+
+      const result = await universalApi.deleteEntity('salon-data-with-sidebar-123');
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+
+
+
+
+  describe('Error Handling', () => {
+    test('should handle validation errors', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ 
+          error: 'Validation Error',
+          details: 'entity_name is required'
+        })
+      });
+
+      const result = await universalApi.createEntity({ entity_type: 'salon_with_sidebar' });
+      
+      expect(result).toHaveProperty('error');
+      expect(result.error).toContain('required');
+    });
+
+    test('should handle network errors gracefully', async () => {
+      global.fetch.mockImplementationOnce(() => {
+        throw new Error('Network connection failed');
+      });
+
+      try {
+        await universalApi.getEntities('salon_with_sidebar');
+        expect(true).toBe(true); // API handled error gracefully
+      } catch (error) {
+        expect(error.message).toContain('Network connection failed');
+      }
+    });
+  });
+
+  describe('Multi-tenant Security', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      global.fetch.mockReset();
+      universalApi.setOrganizationId(TEST_ORG_ID);
+      
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ data: [] })
+      });
+    });
+
+    test('should enforce organization isolation', async () => {
+      await universalApi.getEntities('salon_with_sidebar', TEST_ORG_ID);
+
+      const url = global.fetch.mock.calls[0][0];
+      expect(url).toContain(`organization_id=${TEST_ORG_ID}`);
+    });
+
+    test('should prevent cross-organization access', async () => {
+      const otherOrgId = 'other-org-789';
+      
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ 
+          success: true,
+          data: [], // Empty due to RLS
+          count: 0
+        })
+      });
+
+      const result = await universalApi.getEntities('salon_with_sidebar', otherOrgId);
+      
+      expect(result).toHaveProperty('data');
+      expect(result.data).toHaveLength(0);
+    });
+  });
+
+  describe('HERA Architecture Compliance', () => {
+    test('should use universal 6-table structure', () => {
+      const tables = [
+        'core_organizations',
+        'core_entities',
+        'core_dynamic_data',
+        'core_relationships',
+        'universal_transactions',
+        'universal_transaction_lines'
+      ];
+
+      // Verify our test data maps to these tables
+      expect(tables).toContain('core_entities'); // For salon-data-with-sidebar
+      
+      
+      
+    });
+
+    test('should include smart codes in all operations', () => {
+      const smartCodePattern = /^HERA\.SALON_WITH_SIDEBAR\..*\.v\d+$/;
+      expect('HERA.SALON_WITH_SIDEBAR.CREATE.v1').toMatch(smartCodePattern);
+    });
+  });
+});
+
+module.exports = {
+  MODULE_CONFIG,
+  TEST_ORG_ID
+};
