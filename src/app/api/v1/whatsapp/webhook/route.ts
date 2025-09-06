@@ -183,40 +183,45 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Then route for AI processing if text message
+    // Route through Universal Handler (configuration-driven processing)
     if (text && storeResult.success) {
       try {
-        // Initialize message router (MCP)
-        const router = new WhatsAppMessageRouter(
-          organizationId,
-          process.env.CLAUDE_API_KEY || ''
-        )
+        const { UniversalWhatsAppHandler } = await import('@/lib/whatsapp/universal-handler')
         
-        // Build context with contact information
-        const customerData = {
-          phone: from,
-          name: contact?.profile?.name || 'Unknown',
-          whatsapp_id: from
+        const handler = new UniversalWhatsAppHandler(organizationId)
+        
+        // Build processing context
+        const context = {
+          organizationId,
+          messageId,
+          from,
+          text: text || '',
+          customerData: {
+            phone: from,
+            name: contact?.profile?.name || 'Unknown',
+            whatsapp_id: from
+          },
+          correlationId: `conv-${from}-${Date.now()}`
         }
         
-        // Route the message through MCP (handles all messages including appointments)
-        const result = await router.routeMessage({
-          organizationId,
-          waContactId: from,
-          text: text || '',
-          customerData,
-          messageHistory: [] // You could fetch previous messages here
+        // Process with universal configuration-driven handler
+        const result = await handler.handleIncomingMessage(context)
+        
+        console.log('🎯 Universal Handler Result:', {
+          success: result.success,
+          provider: result.providerUsed,
+          intent: result.intent,
+          confidence: result.confidence,
+          cost: result.cost,
+          transactionId: result.transactionId
         })
         
-        // Log result
-        console.log('Message routing result:', {
-          success: result.success,
-          messagesSent: result.messagesSent,
-          totalCost: result.totalCost
-        })
-      } catch (routingError) {
-        console.error('Error routing message:', routingError)
-        // Don't fail the webhook
+        if (!result.success && result.error) {
+          console.error('Universal Handler Error:', result.error)
+        }
+      } catch (handlerError) {
+        console.error('Error in Universal Handler:', handlerError)
+        // Don't fail the webhook - fallback to keyword responses above
       }
     }
     
