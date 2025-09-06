@@ -28,13 +28,14 @@ async function getOrgBySlug(slug: string) {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     orgSlug: string;
-  };
+  }>;
 }
 
 export default async function SubdomainSettingsPage({ params }: PageProps) {
-  const org = await getOrgBySlug(params.orgSlug);
+  const { orgSlug } = await params;
+  const org = await getOrgBySlug(orgSlug);
   
   if (!org) {
     notFound();

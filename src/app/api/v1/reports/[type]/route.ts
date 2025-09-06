@@ -9,10 +9,11 @@ import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { type: string } }
+  { params }: { params: Promise<{ type: string }> }
 ) {
   try {
-    const reportType = params.type as 'pl' | 'balance_sheet' | 'cashflow' | 'trial_balance'
+    const { type } = await params
+    const reportType = type as 'pl' | 'balance_sheet' | 'cashflow' | 'trial_balance'
     const { searchParams } = new URL(request.url)
     
     const organizationId = searchParams.get('organization_id')
@@ -91,10 +92,11 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { type: string } }
+  { params }: { params: Promise<{ type: string }> }
 ) {
   try {
-    const reportType = params.type as 'pl' | 'balance_sheet' | 'cashflow' | 'trial_balance'
+    const { type } = await params
+    const reportType = type as 'pl' | 'balance_sheet' | 'cashflow' | 'trial_balance'
     const body = await request.json()
     const { organization_id, custom_config } = body
 

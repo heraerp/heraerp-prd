@@ -644,16 +644,10 @@ export default function ReadinessDashboardPage() {
                   >
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
-                  <SelectContent 
-                    className="bg-gray-900 border-gray-700"
-                    style={{
-                      background: 'rgba(31, 41, 55, 0.95)',
-                      backdropFilter: 'blur(10px)',
-                    }}
-                  >
-                    <SelectItem value="all" className="text-gray-300 focus:bg-gray-800 focus:text-white">All Status</SelectItem>
-                    <SelectItem value="completed" className="text-gray-300 focus:bg-gray-800 focus:text-white">Completed</SelectItem>
-                    <SelectItem value="in_progress" className="text-gray-300 focus:bg-gray-800 focus:text-white">In Progress</SelectItem>
+                  <SelectContent className="hera-select-content">
+                    <SelectItem value="all" className="hera-select-item">All Status</SelectItem>
+                    <SelectItem value="completed" className="hera-select-item">Completed</SelectItem>
+                    <SelectItem value="in_progress" className="hera-select-item">In Progress</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select
@@ -668,19 +662,13 @@ export default function ReadinessDashboardPage() {
                   >
                     <SelectValue placeholder="Filter by industry" />
                   </SelectTrigger>
-                  <SelectContent 
-                    className="bg-gray-900 border-gray-700"
-                    style={{
-                      background: 'rgba(31, 41, 55, 0.95)',
-                      backdropFilter: 'blur(10px)',
-                    }}
-                  >
-                    <SelectItem value="all" className="text-gray-300 focus:bg-gray-800 focus:text-white">All Industries</SelectItem>
-                    <SelectItem value="general" className="text-gray-300 focus:bg-gray-800 focus:text-white">General</SelectItem>
-                    <SelectItem value="manufacturing" className="text-gray-300 focus:bg-gray-800 focus:text-white">Manufacturing</SelectItem>
-                    <SelectItem value="retail" className="text-gray-300 focus:bg-gray-800 focus:text-white">Retail</SelectItem>
-                    <SelectItem value="healthcare" className="text-gray-300 focus:bg-gray-800 focus:text-white">Healthcare</SelectItem>
-                    <SelectItem value="services" className="text-gray-300 focus:bg-gray-800 focus:text-white">Services</SelectItem>
+                  <SelectContent className="hera-select-content">
+                    <SelectItem value="all" className="hera-select-item">All Industries</SelectItem>
+                    <SelectItem value="general" className="hera-select-item">General</SelectItem>
+                    <SelectItem value="manufacturing" className="hera-select-item">Manufacturing</SelectItem>
+                    <SelectItem value="retail" className="hera-select-item">Retail</SelectItem>
+                    <SelectItem value="healthcare" className="hera-select-item">Healthcare</SelectItem>
+                    <SelectItem value="services" className="hera-select-item">Services</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

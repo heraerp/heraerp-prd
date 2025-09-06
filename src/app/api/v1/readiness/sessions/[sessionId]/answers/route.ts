@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 // POST /api/v1/readiness/sessions/:sessionId/answers - Save answer
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
     // Authentication temporarily disabled for testing
@@ -19,7 +19,7 @@ export async function POST(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     // }
 
-    const sessionId = params.sessionId
+    const { sessionId } = await params
     const body = await request.json()
     const { 
       question_id, 
@@ -123,7 +123,7 @@ export async function POST(
 // GET /api/v1/readiness/sessions/:sessionId/answers - Get all answers for session
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
     // Authentication temporarily disabled for testing
@@ -132,7 +132,7 @@ export async function GET(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     // }
 
-    const sessionId = params.sessionId
+    const { sessionId } = await params
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
     

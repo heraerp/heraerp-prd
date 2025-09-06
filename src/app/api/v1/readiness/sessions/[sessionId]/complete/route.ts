@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 // POST /api/v1/readiness/sessions/:sessionId/complete - Complete session and generate insights
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
     // Authentication temporarily disabled for testing
@@ -19,7 +19,7 @@ export async function POST(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     // }
 
-    const sessionId = params.sessionId
+    const { sessionId } = await params
     const body = await request.json()
     const { organization_id } = body
 
