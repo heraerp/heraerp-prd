@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { WhatsAppMessageRouter } from '@/lib/whatsapp/message-router'
 import { WhatsAppWebhookHandler } from '@/lib/whatsapp/webhook-handler'
 import { WhatsAppService } from '@/lib/whatsapp/whatsapp-service'
+import { universalApi } from '@/lib/universal-api'
 
 // Webhook verification for WhatsApp Business API
 export async function GET(request: NextRequest) {
@@ -113,9 +114,15 @@ export async function POST(request: NextRequest) {
       // Continue anyway - we don't want to fail the webhook
     }
     
-    // Handle BOOK messages directly for immediate response
-    if (text && text.toUpperCase().includes('BOOK')) {
-      console.log('📚 BOOK request detected from:', from)
+    // Handle BOOK messages and campaign keywords
+    const upperText = text?.toUpperCase() || ''
+    
+    // Check for booking keywords
+    if (upperText.includes('BOOK') || upperText.includes('HAIR') || 
+        upperText.includes('NAILS') || upperText.includes('APPOINTMENT')) {
+      console.log('📚 Booking request detected from:', from)
+      console.log('🏷️ Keyword used:', upperText)
+      
       try {
         // Send immediate response
         const whatsappService = new WhatsAppService(
@@ -125,14 +132,54 @@ export async function POST(request: NextRequest) {
           organizationId
         )
         
-        const response = await whatsappService.sendTextMessage(
-          from,
-          "Hi! Welcome to Hair Talkz! 💇‍♀️\n\nI'd be happy to help you book an appointment. What service are you interested in?\n\n✂️ Haircut\n💆‍♀️ Hair Treatment\n💅 Manicure/Pedicure\n💄 Makeup\n\nPlease reply with your choice!"
+        let responseMessage = "Hi! Welcome to Hair Talkz! 💇‍♀️\n\n"
+        
+        // Customize response based on keyword
+        if (upperText.includes('HAIR')) {
+          responseMessage += "I see you're interested in our hair services! "
+        } else if (upperText.includes('NAILS')) {
+          responseMessage += "Looking for the perfect manicure? You've come to the right place! "
+        }
+        
+        responseMessage += "I'd be happy to help you book an appointment. What service are you interested in?\n\n✂️ Haircut\n💆‍♀️ Hair Treatment\n💅 Manicure/Pedicure\n💄 Makeup\n\nPlease reply with your choice!"
+        
+        const response = await whatsappService.sendTextMessage(from, responseMessage)
+        
+        console.log('Booking response sent:', response)
+        
+        // Track campaign source
+        if (storeResult.success && storeResult.data) {
+          await universalApi.setDynamicField(
+            storeResult.data.conversationId,
+            'campaign_source',
+            upperText.split(' ')[0] // First word is likely the campaign keyword
+          )
+        }
+      } catch (bookError) {
+        console.error('Error handling booking message:', bookError)
+      }
+    }
+    
+    // Handle promotional keywords
+    if (upperText.includes('PROMO') || upperText.includes('OFFER')) {
+      console.log('🎁 Promo request detected from:', from)
+      try {
+        const whatsappService = new WhatsAppService(
+          process.env.WHATSAPP_ACCESS_TOKEN || '',
+          process.env.WHATSAPP_PHONE_NUMBER_ID || '',
+          process.env.WHATSAPP_WEBHOOK_TOKEN || '',
+          organizationId
         )
         
-        console.log('BOOK response sent:', response)
-      } catch (bookError) {
-        console.error('Error handling BOOK message:', bookError)
+        const promoMessage = "🎉 Special Offers at Hair Talkz!\n\n" +
+          "💇‍♀️ 20% off on Hair Treatments this week\n" +
+          "💅 Buy 2 Get 1 Free on Manicures\n" +
+          "💄 Bridal Makeup Package at special rates\n\n" +
+          "Would you like to book any of these services? Just reply with your choice!"
+        
+        await whatsappService.sendTextMessage(from, promoMessage)
+      } catch (error) {
+        console.error('Error sending promo message:', error)
       }
     }
     
