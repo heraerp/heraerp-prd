@@ -86,6 +86,9 @@ export default function ReadinessDashboardPage() {
   const [refreshing, setRefreshing] = useState(false)
   const [selectedSession, setSelectedSession] = useState<Session | null>(null)
   const [filter, setFilter] = useState({ status: 'all', industry: 'all', search: '' })
+  const [answerSearch, setAnswerSearch] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const answersPerPage = 10
   
   // Mouse tracking for interactive background
   const containerRef = useRef<HTMLDivElement>(null)
@@ -262,28 +265,39 @@ export default function ReadinessDashboardPage() {
   */
 
   return (
-    <div 
-      ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background: `
-          linear-gradient(135deg, 
-            rgba(0, 0, 0, 0.95) 0%, 
-            rgba(17, 24, 39, 0.95) 25%,
-            rgba(31, 41, 55, 0.9) 50%,
-            rgba(17, 24, 39, 0.95) 75%,
-            rgba(0, 0, 0, 0.95) 100%
-          ),
-          radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-            rgba(59, 130, 246, 0.08) 0%, 
-            rgba(147, 51, 234, 0.05) 25%,
-            rgba(16, 185, 129, 0.03) 50%,
-            transparent 70%
-          ),
-          #0a0a0a
-        `
-      }}
-    >
+    <>
+      {/* Skip to main content link for keyboard navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+      
+      <div 
+        ref={containerRef}
+        className="min-h-screen relative overflow-hidden"
+        role="main"
+        aria-label="ERP Readiness Assessment Dashboard"
+        style={{
+          background: `
+            linear-gradient(135deg, 
+              rgba(0, 0, 0, 0.95) 0%, 
+              rgba(17, 24, 39, 0.95) 25%,
+              rgba(31, 41, 55, 0.9) 50%,
+              rgba(17, 24, 39, 0.95) 75%,
+              rgba(0, 0, 0, 0.95) 100%
+            ),
+            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(59, 130, 246, 0.08) 0%, 
+              rgba(147, 51, 234, 0.05) 25%,
+              rgba(16, 185, 129, 0.03) 50%,
+              transparent 70%
+            ),
+            #0a0a0a
+          `
+        }}
+      >
       {/* Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
         <motion.div 
@@ -374,7 +388,7 @@ export default function ReadinessDashboardPage() {
                   <h1 className="text-xl font-bold !text-white">
                     Readiness Analytics
                   </h1>
-                  <p className="text-xs text-gray-400 font-medium">
+                  <p className="text-xs text-gray-500 dark:text-gray-300 font-medium">
                     ERP Assessment Dashboard
                   </p>
                 </div>
@@ -416,7 +430,7 @@ export default function ReadinessDashboardPage() {
           </div>
         </header>
 
-          <div className="p-4 sm:p-6 lg:p-8">
+          <main id="main-content" className="p-4 sm:p-6 lg:p-8">
 
             {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -724,7 +738,7 @@ export default function ReadinessDashboardPage() {
               <h3 className="text-xl font-bold !text-white mb-3">
                 No assessments found
               </h3>
-              <p className="text-gray-400 mb-6">
+              <p className="text-gray-500 dark:text-gray-300 mb-6">
                 Start by creating your first readiness assessment.
               </p>
               <motion.button
@@ -815,7 +829,7 @@ export default function ReadinessDashboardPage() {
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-400">
+                        <span className="text-gray-800 dark:text-gray-100">
                           {format(new Date(session.transaction_date), 'MMM d, yyyy')}
                         </span>
                         {session.transaction_status === 'completed' && (
@@ -870,7 +884,7 @@ export default function ReadinessDashboardPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-xl !text-white mb-1">Assessment Details</CardTitle>
-                      <CardDescription className="text-gray-400">
+                      <CardDescription className="text-gray-800 dark:text-gray-100">
                         {selectedSession.metadata.user_email} • {format(new Date(selectedSession.transaction_date), 'MMMM d, yyyy')}
                       </CardDescription>
                     </div>
@@ -987,7 +1001,7 @@ export default function ReadinessDashboardPage() {
                           <h3 className="text-xl font-bold !text-white mb-3">
                             Assessment In Progress
                           </h3>
-                          <p className="text-gray-400 mb-6">
+                          <p className="text-gray-500 dark:text-gray-300 mb-6">
                             This assessment is {selectedSession.metadata?.completionRate || 0}% complete
                           </p>
                           <div className="max-w-xs mx-auto mb-6">
@@ -1145,33 +1159,80 @@ export default function ReadinessDashboardPage() {
                           ))
                         ) : (
                           <div className="text-center py-8">
-                            <p className="text-gray-400">No category scores available</p>
+                            <p className="text-gray-500 dark:text-gray-300">No category scores available</p>
                           </div>
                         )}
                       </div>
                     </TabsContent>
 
                     <TabsContent value="answers">
+                      {/* Search and pagination controls */}
+                      <div className="mb-4 space-y-4">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                          <Input
+                            type="text"
+                            placeholder="Search questions..."
+                            value={answerSearch}
+                            onChange={(e) => {
+                              setAnswerSearch(e.target.value)
+                              setCurrentPage(1)
+                            }}
+                            className="pl-10 bg-white/5 border-white/10 text-gray-900 dark:text-white placeholder-gray-500"
+                            aria-label="Search answers"
+                          />
+                        </div>
+                        {selectedSession.answers && selectedSession.answers.length > 0 && (
+                          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                            <span>
+                              Total: {selectedSession.answers.length} questions ({selectedSession.answers.filter(a => a.line_data?.answer_value === 'yes').length} Yes, {selectedSession.answers.filter(a => a.line_data?.answer_value === 'partial').length} Partial, {selectedSession.answers.filter(a => a.line_data?.answer_value === 'no').length} No)
+                            </span>
+                          </div>
+                        )}
+                      </div>
                       <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
                         {selectedSession.answers && selectedSession.answers.length > 0 ? (
-                          selectedSession.answers.map((answer, index) => (
+                          (() => {
+                            // Filter answers based on search
+                            const filteredAnswers = selectedSession.answers.filter((answer) => {
+                              if (!answerSearch) return true
+                              const searchLower = answerSearch.toLowerCase()
+                              return (
+                                answer.description?.toLowerCase().includes(searchLower) ||
+                                answer.line_data?.category?.toLowerCase().includes(searchLower) ||
+                                answer.line_data?.answer_value?.toLowerCase().includes(searchLower)
+                              )
+                            })
+                            
+                            // Paginate filtered results
+                            const totalPages = Math.ceil(filteredAnswers.length / answersPerPage)
+                            const startIndex = (currentPage - 1) * answersPerPage
+                            const paginatedAnswers = filteredAnswers.slice(startIndex, startIndex + answersPerPage)
+                            
+                            return (
+                              <>
+                                {paginatedAnswers.map((answer, index) => (
                           <motion.div 
                             key={index}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
-                            className="rounded-xl p-4"
+                            className="rounded-xl p-4 hover:shadow-lg transition-shadow"
                             style={{
-                              background: 'rgba(255, 255, 255, 0.02)',
-                              border: '1px solid rgba(255, 255, 255, 0.1)',
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              backdropFilter: 'blur(10px)',
+                              border: '1px solid rgba(255, 255, 255, 0.15)',
                             }}
+                            role="article"
+                            aria-labelledby={`answer-${index}`}
                           >
-                            <p className="text-sm font-medium !text-white mb-3">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white mb-3" aria-label={`Question: ${answer.description}`}>
                               {answer.description}
                             </p>
                             <div className="flex items-center justify-between">
                               <Badge 
-                                className="text-xs"
+                                className="text-xs font-semibold"
+                                aria-label={`Answer: ${answer.line_data?.answer_value || 'Unknown'}`}
                                 style={{
                                   background: answer.line_data?.answer_value === 'yes' 
                                     ? 'rgba(16, 185, 129, 0.2)'
@@ -1188,12 +1249,69 @@ export default function ReadinessDashboardPage() {
                               >
                                 {answer.line_data?.answer_value || 'Unknown'}
                               </Badge>
-                              <span className="text-xs text-gray-400 capitalize">
+                              <span className="text-xs text-gray-900 dark:text-white capitalize" aria-label={`Category: ${answer.line_data?.category || 'General'}`}>
                                 {answer.line_data?.category || 'General'}
                               </span>
                             </div>
                           </motion.div>
-                          ))
+                                ))}
+                                
+                                {/* Pagination controls */}
+                                {filteredAnswers.length > answersPerPage && (
+                                  <div className="mt-6 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+                                    <p className="text-sm text-gray-900 dark:text-white">
+                                      Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
+                                      <span className="font-medium">
+                                        {Math.min(startIndex + answersPerPage, filteredAnswers.length)}
+                                      </span>{' '}
+                                      of <span className="font-medium">{filteredAnswers.length}</span> results
+                                    </p>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                        disabled={currentPage === 1}
+                                        className="disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600"
+                                        aria-label="Previous page"
+                                      >
+                                        Previous
+                                      </Button>
+                                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                        const pageNum = i + 1
+                                        return (
+                                          <Button
+                                            key={pageNum}
+                                            variant={pageNum === currentPage ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setCurrentPage(pageNum)}
+                                            aria-label={`Go to page ${pageNum}`}
+                                            aria-current={pageNum === currentPage ? 'page' : undefined}
+                                            className={pageNum === currentPage 
+                                              ? "" 
+                                              : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600"
+                                            }
+                                          >
+                                            {pageNum}
+                                          </Button>
+                                        )
+                                      })}
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600"
+                                        aria-label="Next page"
+                                      >
+                                        Next
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )
+                          })()
                         ) : (
                           <div className="text-center py-8">
                             <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
@@ -1262,7 +1380,7 @@ export default function ReadinessDashboardPage() {
           </motion.div>
         </div>
       )}
-          </div>
+          </main>
         </div>
       
         {/* Custom scrollbar styles */}
@@ -1270,5 +1388,6 @@ export default function ReadinessDashboardPage() {
           __html: customScrollbarStyles
         }} />
       </div>
+    </>
   )
 }
