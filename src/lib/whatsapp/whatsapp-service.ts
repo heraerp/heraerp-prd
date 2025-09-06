@@ -1,5 +1,6 @@
 /**
  * WhatsApp Service for sending messages
+ * Fixed: Added missing service implementation
  */
 
 export class WhatsAppService {
