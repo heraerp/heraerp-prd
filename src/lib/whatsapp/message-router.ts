@@ -5,6 +5,7 @@
 
 import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
 import { ClaudeWhatsAppService } from '@/lib/ai/claude-whatsapp-service'
+import { UniversalWhatsAppAI } from '@/lib/ai/universal-whatsapp-ai'
 import { universalApi } from '@/lib/universal-api'
 
 export interface MessageContext {
@@ -25,12 +26,14 @@ export interface RouteResult {
 export class WhatsAppMessageRouter {
   private mcp: MCPTools
   private claude: ClaudeWhatsAppService
+  private universalAI: UniversalWhatsAppAI
   private organizationId: string
 
   constructor(organizationId: string, claudeApiKey: string) {
     this.organizationId = organizationId
     this.mcp = new MCPTools(organizationId)
     this.claude = new ClaudeWhatsAppService(organizationId, claudeApiKey)
+    this.universalAI = new UniversalWhatsAppAI(organizationId)
   }
 
   /**
@@ -52,8 +55,8 @@ export class WhatsAppMessageRouter {
 
       const window = windowResult.data!
 
-      // Step 2: Extract intent with Claude
-      const nlu = await this.claude.extractIntent(text, ctx.customerData)
+      // Step 2: Extract intent with Universal AI (Claude -> OpenAI fallback)
+      const nlu = await this.universalAI.extractIntent(text, ctx.customerData)
 
       // Step 3: Route based on window state
       if (window.state === 'open') {
@@ -100,8 +103,8 @@ export class WhatsAppMessageRouter {
       }
     }
 
-    // Craft optimal response
-    const reply = this.claude.craftLowestTurnMessage(slots, intent)
+    // Craft optimal response with Universal AI
+    const reply = await this.universalAI.craftResponse(slots, intent)
 
     // Send free-form message (no cost)
     const sendResult = await this.mcp.waSend({
@@ -157,8 +160,8 @@ export class WhatsAppMessageRouter {
   ): Promise<RouteResult> {
     const { organizationId, waContactId } = ctx
 
-    // Get template decision from Claude
-    const decision = await this.claude.selectTemplate(intent, {
+    // Get template decision from Universal AI
+    const decision = await this.universalAI.selectTemplate(intent, {
       ...ctx.customerData,
       wa_contact_id: waContactId
     })
