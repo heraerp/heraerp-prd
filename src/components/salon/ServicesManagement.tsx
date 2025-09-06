@@ -526,7 +526,7 @@ export default function ServicesManagement() {
                           placeholder="Search services..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-9 lg:w-64"
+                          className="pl-9 lg:w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900"
                         />
                       </div>
 
@@ -534,7 +534,7 @@ export default function ServicesManagement() {
                       <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        className="px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:bg-white dark:focus:bg-gray-900"
                       >
                         <option value="">All Categories</option>
                         {categories.map(category => (
@@ -579,7 +579,7 @@ export default function ServicesManagement() {
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
-                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm"
+                        className="px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:bg-white dark:focus:bg-gray-900"
                       >
                         <option value="name">Sort by Name</option>
                         <option value="price">Sort by Price</option>
@@ -908,7 +908,7 @@ export default function ServicesManagement() {
                           placeholder="Search categories..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-9 sm:w-64"
+                          className="pl-9 sm:w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900"
                         />
                       </div>
                       
@@ -1031,7 +1031,7 @@ export default function ServicesManagement() {
       {/* Service Form Modal */}
       {showServiceForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 bg-white dark:bg-gray-800">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="border-b border-gray-200 dark:border-gray-700">
               <CardTitle className="flex items-center justify-between">
                 <span>{editingService ? 'Edit Service' : 'Create New Service'}</span>
@@ -1057,6 +1057,7 @@ export default function ServicesManagement() {
                     placeholder="e.g., Premium Cut & Style"
                     value={serviceForm.name}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
                 
@@ -1065,7 +1066,7 @@ export default function ServicesManagement() {
                   <select
                     value={serviceForm.categoryId}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, categoryId: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:bg-gray-50 dark:focus:bg-gray-900"
                   >
                     <option value="">Select a category</option>
                     {categories.map(category => (
@@ -1083,6 +1084,7 @@ export default function ServicesManagement() {
                   placeholder="Brief description of the service"
                   value={serviceForm.description}
                   onChange={(e) => setServiceForm(prev => ({ ...prev, description: e.target.value }))}
+                  className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                 />
               </div>
 
@@ -1095,6 +1097,7 @@ export default function ServicesManagement() {
                     placeholder="60"
                     value={serviceForm.duration}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, duration: Number(e.target.value) }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
                 
@@ -1106,6 +1109,7 @@ export default function ServicesManagement() {
                     placeholder="150.00"
                     value={serviceForm.price}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, price: Number(e.target.value) }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
                 
@@ -1117,6 +1121,7 @@ export default function ServicesManagement() {
                     placeholder="37.50"
                     value={serviceForm.cost}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, cost: Number(e.target.value) }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
               </div>
@@ -1131,6 +1136,7 @@ export default function ServicesManagement() {
                     placeholder="1"
                     value={serviceForm.staffRequired}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, staffRequired: Number(e.target.value) }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
                 
@@ -1140,6 +1146,7 @@ export default function ServicesManagement() {
                     placeholder="premium, consultation, styling"
                     value={serviceForm.tags}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, tags: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
               </div>
@@ -1181,7 +1188,7 @@ export default function ServicesManagement() {
                     placeholder="Instructions for staff performing this service..."
                     value={serviceForm.instructions}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, instructions: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-gray-50 dark:focus:bg-gray-900"
                     rows={3}
                   />
                 </div>
@@ -1192,7 +1199,7 @@ export default function ServicesManagement() {
                     placeholder="Instructions for client aftercare..."
                     value={serviceForm.aftercare}
                     onChange={(e) => setServiceForm(prev => ({ ...prev, aftercare: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-gray-50 dark:focus:bg-gray-900"
                     rows={3}
                   />
                 </div>
@@ -1226,7 +1233,7 @@ export default function ServicesManagement() {
       {/* Category Form Modal */}
       {showCategoryForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4 bg-white dark:bg-gray-800">
+          <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="border-b border-gray-200 dark:border-gray-700">
               <CardTitle className="flex items-center justify-between">
                 <span>{editingCategory ? 'Edit Category' : 'Create New Category'}</span>
@@ -1259,6 +1266,7 @@ export default function ServicesManagement() {
                     placeholder="e.g., Hair Services"
                     value={categoryForm.name}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
                 
@@ -1268,6 +1276,7 @@ export default function ServicesManagement() {
                     placeholder="Brief description of the category"
                     value={categoryForm.description}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, description: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
                   />
                 </div>
               </div>
