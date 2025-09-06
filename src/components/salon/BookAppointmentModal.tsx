@@ -42,6 +42,7 @@ import { SchedulingAssistant } from './SchedulingAssistant'
 import { useToast } from '@/hooks/use-toast'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
 
 interface Service {
   id: string
@@ -120,41 +121,134 @@ export function BookAppointmentModal({
   const [customerSearch, setCustomerSearch] = useState('')
   const [showNewCustomer, setShowNewCustomer] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
   const [conflicts, setConflicts] = useState<any[]>([])
 
-  // Mock data - stylists
-  const stylists: Stylist[] = [
-    {
-      id: 'rocky',
-      entity_name: 'Rocky',
-      entity_code: 'STAFF-001',
-      smart_code: 'HERA.SALON.STAFF.CELEBRITY.v1',
-      avatar: 'R',
-      skills: ['Brazilian Blowout', 'Keratin', 'Bridal', 'Color Specialist'],
-      level: 'celebrity',
-      allow_double_book: false
-    },
-    {
-      id: 'vinay',
-      entity_name: 'Vinay',
-      entity_code: 'STAFF-002',
-      smart_code: 'HERA.SALON.STAFF.SENIOR.v1',
-      avatar: 'V',
-      skills: ['Cut & Style', 'Color', 'Men\'s Styling'],
-      level: 'senior',
-      allow_double_book: false
-    },
-    {
-      id: 'maya',
-      entity_name: 'Maya',
-      entity_code: 'STAFF-003',
-      smart_code: 'HERA.SALON.STAFF.SENIOR.v1',
-      avatar: 'M',
-      skills: ['Color Specialist', 'Balayage', 'Highlights'],
-      level: 'senior',
-      allow_double_book: true
+  // Data state
+  const [stylists, setStylists] = useState<Stylist[]>([])
+  const [services, setServices] = useState<Service[]>([])
+  const [customers, setCustomers] = useState<Customer[]>([])
+
+  // Fetch salon data on mount
+  useEffect(() => {
+    const fetchSalonData = async () => {
+      if (!organizationId) return
+      
+      setLoadingData(true)
+      universalApi.setOrganizationId(organizationId)
+      
+      try {
+        // Fetch stylists (staff entities)
+        const stylistsResponse = await universalApi.readEntities({
+          entity_type: 'staff',
+          organization_id: organizationId
+        })
+        
+        if (stylistsResponse && stylistsResponse.data) {
+          const formattedStylists = stylistsResponse.data.map((staff: any) => ({
+            id: staff.id,
+            entity_name: staff.entity_name,
+            entity_code: staff.entity_code || staff.id,
+            smart_code: staff.smart_code || 'HERA.SALON.STAFF.v1',
+            avatar: staff.entity_name?.charAt(0) || 'S',
+            skills: staff.metadata?.skills || [],
+            level: staff.metadata?.level || 'senior',
+            allow_double_book: staff.metadata?.allow_double_book || false
+          }))
+          setStylists(formattedStylists)
+        }
+
+        // Fetch services
+        const servicesResponse = await universalApi.readEntities({
+          entity_type: 'service',
+          organization_id: organizationId
+        })
+        
+        if (servicesResponse && servicesResponse.data) {
+          const formattedServices = servicesResponse.data.map((service: any) => ({
+            id: service.id,
+            entity_name: service.entity_name,
+            entity_code: service.entity_code || service.id,
+            smart_code: service.smart_code || 'HERA.SALON.SERVICE.v1',
+            duration: service.metadata?.duration || 60,
+            price: service.metadata?.price || 0,
+            buffer_before: service.metadata?.buffer_before || 5,
+            buffer_after: service.metadata?.buffer_after || 10,
+            category: service.metadata?.category || 'General',
+            skills_required: service.metadata?.skills_required || []
+          }))
+          setServices(formattedServices)
+        }
+
+        // Fetch recent customers
+        const customersResponse = await universalApi.readEntities({
+          entity_type: 'customer',
+          organization_id: organizationId,
+          limit: 50
+        })
+        
+        if (customersResponse && customersResponse.data) {
+          const formattedCustomers = customersResponse.data.map((customer: any) => ({
+            id: customer.id,
+            entity_name: customer.entity_name,
+            entity_code: customer.entity_code || customer.id,
+            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+            phone: customer.metadata?.phone || '',
+            email: customer.metadata?.email || '',
+            vip_level: customer.metadata?.vip_level || null,
+            preferences: customer.metadata?.preferences || {}
+          }))
+          setCustomers(formattedCustomers)
+        }
+      } catch (error) {
+        console.error('Failed to fetch salon data:', error)
+        toast({
+          title: 'Failed to load data',
+          description: 'Unable to fetch salon data. Please try again.',
+          variant: 'destructive'
+        })
+      } finally {
+        setLoadingData(false)
+      }
     }
-  ]
+
+    fetchSalonData()
+  }, [organizationId, toast])
+
+  // Use real data if available, otherwise fall back to empty arrays
+  useEffect(() => {
+    // If no data loaded and we have mock data for demo, use it
+    if (!loadingData && stylists.length === 0 && organizationId === 'demo-salon') {
+      // Demo data for testing
+      setStylists([
+        {
+          id: 'rocky',
+          entity_name: 'Rocky',
+          entity_code: 'STAFF-001',
+          smart_code: 'HERA.SALON.STAFF.CELEBRITY.v1',
+          avatar: 'R',
+          skills: ['Brazilian Blowout', 'Keratin', 'Bridal', 'Color Specialist'],
+          level: 'celebrity',
+          allow_double_book: false
+        }
+      ])
+      
+      setServices([
+        {
+          id: 'srv-1',
+          entity_name: 'Brazilian Blowout',
+          entity_code: 'SRV-001',
+          smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+          duration: 240,
+          price: 500,
+          buffer_before: 15,
+          buffer_after: 30,
+          category: 'Chemical Treatment',
+          skills_required: ['Brazilian Blowout']
+        }
+      ])
+    }
+  }, [loadingData, stylists.length, organizationId])
 
   // Initialize selected stylist from prop
   useEffect(() => {
@@ -166,78 +260,6 @@ export function BookAppointmentModal({
     }
   }, [preSelectedStylist, selectedStylist, stylists])
 
-  // Mock data - customers
-  const [customers, setCustomers] = useState<Customer[]>([
-    {
-      id: 'cust-1',
-      entity_name: 'Sarah Johnson',
-      entity_code: 'CUST-001',
-      smart_code: 'HERA.SALON.CRM.CUSTOMER.VIP.v1',
-      phone: '+971 55 123 4567',
-      email: 'sarah.j@email.com',
-      vip_level: 'platinum'
-    },
-    {
-      id: 'cust-2',
-      entity_name: 'Emma Davis',
-      entity_code: 'CUST-002',
-      smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
-      phone: '+971 55 234 5678',
-      email: 'emma.d@email.com',
-      vip_level: 'gold'
-    }
-  ])
-
-  const services: Service[] = [
-    {
-      id: 'srv-1',
-      entity_name: 'Brazilian Blowout',
-      entity_code: 'SRV-001',
-      smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
-      duration: 240,
-      price: 500,
-      buffer_before: 15,
-      buffer_after: 30,
-      category: 'Chemical Treatment',
-      skills_required: ['Brazilian Blowout']
-    },
-    {
-      id: 'srv-2',
-      entity_name: 'Keratin Treatment',
-      entity_code: 'SRV-002',
-      smart_code: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1',
-      duration: 180,
-      price: 350,
-      buffer_before: 10,
-      buffer_after: 20,
-      category: 'Chemical Treatment',
-      skills_required: ['Keratin']
-    },
-    {
-      id: 'srv-3',
-      entity_name: 'Premium Cut & Style',
-      entity_code: 'SRV-003',
-      smart_code: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1',
-      duration: 90,
-      price: 150,
-      buffer_before: 5,
-      buffer_after: 10,
-      category: 'Cut & Style',
-      skills_required: ['Cut & Style']
-    },
-    {
-      id: 'srv-4',
-      entity_name: 'Color & Highlights',
-      entity_code: 'SRV-004',
-      smart_code: 'HERA.SALON.SERVICE.COLOR.HIGHLIGHTS.v1',
-      duration: 180,
-      price: 280,
-      buffer_before: 10,
-      buffer_after: 15,
-      category: 'Color',
-      skills_required: ['Color Specialist']
-    }
-  ]
 
   // Calculate total duration and price
   const totalDuration = selectedServices.reduce((sum, service) => 
@@ -298,19 +320,39 @@ export function BookAppointmentModal({
     
     setSearchingCustomer(true)
     try {
-      // In real implementation, call API
-      // const response = await fetch(`/api/entities?entity_type=customer&q=${query}&organization_id=${organizationId}`)
-      // Mock search
+      // Search customers via universal API
+      const searchResponse = await universalApi.readEntities({
+        entity_type: 'customer',
+        organization_id: organizationId,
+        search: query
+      })
+      
+      if (searchResponse && searchResponse.data) {
+        const searchResults = searchResponse.data.map((customer: any) => ({
+          id: customer.id,
+          entity_name: customer.entity_name,
+          entity_code: customer.entity_code || customer.id,
+          smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+          phone: customer.metadata?.phone || '',
+          email: customer.metadata?.email || '',
+          vip_level: customer.metadata?.vip_level || null,
+          preferences: customer.metadata?.preferences || {}
+        }))
+        setCustomers(searchResults)
+      }
+    } catch (error) {
+      console.error('Failed to search customers:', error)
+      // Fall back to local search
       const filtered = customers.filter(c => 
         c.entity_name.toLowerCase().includes(query.toLowerCase()) ||
         c.phone?.includes(query) ||
         c.email?.toLowerCase().includes(query.toLowerCase())
       )
-      // For demo, just use existing customers
+      setCustomers(filtered)
     } finally {
       setSearchingCustomer(false)
     }
-  }, [customers, organizationId])
+  }, [organizationId])
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -417,39 +459,75 @@ export function BookAppointmentModal({
         }
       }
 
-      // In real implementation, POST to API
-      // const response = await fetch('/api/universal_transactions', { ... })
+      // Create appointment transaction using universalApi
+      universalApi.setOrganizationId(organizationId)
       
-      // Create transaction lines for services
-      const serviceLines = selectedServices.map((service, index) => ({
+      const response = await universalApi.createTransaction({
         organization_id: organizationId,
-        transaction_id: 'mock-transaction-id', // Would come from response
-        line_number: index + 1,
-        entity_id: service.id,
-        line_type: 'service',
-        description: service.entity_name,
-        quantity: 1,
-        unit_amount: service.price,
-        line_amount: service.price,
-        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.v1',
-        line_data: {
-          duration_minutes: service.duration,
-          buffer_before: service.buffer_before,
-          buffer_after: service.buffer_after
+        transaction_type: 'appointment',
+        transaction_date: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
+        source_entity_id: selectedCustomer.id,
+        target_entity_id: selectedStylist.id,
+        total_amount: finalPrice,
+        transaction_status: isHold ? 'hold' : 'confirmed',
+        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
+        business_context: {
+          end_time: `${format(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
+          hold: isHold,
+          private: isPrivate,
+          // Add salon-specific fields
+          branch_id: organizationId, // TODO: Get actual branch if multi-location
+          service_category: selectedServices[0]?.category || 'general',
+          skills_required: selectedServices.flatMap(s => s.skills_required || []),
+          estimated_duration: totalDuration,
+          buffer_time: selectedServices.reduce((sum, s) => sum + s.buffer_before + s.buffer_after, 0),
+          ucr_discount_applied: discountApplied,
+          ucr_final_price: finalPrice
+        },
+        metadata: {
+          title,
+          notes,
+          discount_reason: pricingDecision.reason || null,
+          original_price: totalPrice
         }
-      }))
+      })
 
-      // Save notes if any
-      if (notes) {
-        const noteData = {
+      if (!response || !response.data) {
+        throw new Error('Failed to create appointment transaction')
+      }
+
+      const transactionId = response.data.id
+
+      // Create transaction lines for each service
+      for (const [index, service] of selectedServices.entries()) {
+        await universalApi.createTransactionLine({
           organization_id: organizationId,
-          entity_id: 'mock-transaction-id', // Would be the transaction ID
-          field_name: 'appointment_notes',
-          field_type: 'text',
-          field_value_text: notes,
-          smart_code: 'HERA.SALON.NOTES.APPOINTMENT.v1'
-        }
-        // POST to /api/core_dynamic_data
+          transaction_id: transactionId,
+          line_number: index + 1,
+          line_entity_id: service.id,
+          line_type: 'service',
+          description: service.entity_name,
+          quantity: 1,
+          unit_amount: service.price,
+          line_amount: service.price,
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.v1',
+          line_data: {
+            duration_minutes: service.duration,
+            buffer_before: service.buffer_before,
+            buffer_after: service.buffer_after,
+            category: service.category
+          }
+        })
+      }
+
+      // Save notes as dynamic data if any
+      if (notes) {
+        await universalApi.setDynamicField(
+          transactionId,
+          'appointment_notes',
+          notes,
+          'HERA.SALON.NOTES.APPOINTMENT.v1'
+        )
       }
 
       toast({
@@ -458,6 +536,8 @@ export function BookAppointmentModal({
       })
 
       onBookingComplete?.({
+        id: transactionId,
+        transaction_id: transactionId,
         ...appointmentData,
         services: selectedServices,
         customer: selectedCustomer,
@@ -494,6 +574,15 @@ export function BookAppointmentModal({
           </DialogTitle>
         </DialogHeader>
 
+        {loadingData ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+              <p className="text-sm text-muted-foreground">Loading salon data...</p>
+            </div>
+          </div>
+        ) : (
+        <>
         <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="flex-1 bg-[#1b1b1b]">
           <TabsList className="px-6 bg-transparent border-0 gap-0">
             <TabsTrigger value="event" className="text-sm font-normal text-[#b3b3b3] data-[state=active]:text-[#e1e1e1] data-[state=active]:border-b-2 data-[state=active]:border-[#4c7cf0] rounded-none px-4 pb-3">
@@ -846,8 +935,7 @@ export function BookAppointmentModal({
             </TabsContent>
           </div>
         </Tabs>
-
-        {/* Footer */}
+        
         <div className="px-6 py-3 border-t border-[#323232] bg-[#2b2b2b] flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Additional options */}
@@ -887,6 +975,8 @@ export function BookAppointmentModal({
             </Button>
           </div>
         </div>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   )

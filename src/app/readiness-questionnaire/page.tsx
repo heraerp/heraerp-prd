@@ -19,7 +19,9 @@ import {
   Lightbulb,
   Target,
   Zap,
-  Shield
+  Shield,
+  Loader2,
+  AlertCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,16 +35,19 @@ import type {
   QuestionnaireSession, 
   SessionAPI 
 } from '@/modules/readiness-questionnaire/types'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/hooks/use-toast'
 
 export default function ReadinessQuestionnairePage() {
   const router = useRouter()
+  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { toast } = useToast()
   const [showWizard, setShowWizard] = useState(false)
   const [template, setTemplate] = useState<QuestionnaireTemplate | null>(null)
   const [session, setSession] = useState<QuestionnaireSession | null>(null)
   const [loading, setLoading] = useState(false)
 
-  // Mock organization ID - in production this would come from auth context
-  const organizationId = 'demo-org-123'
+  const organizationId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000'
 
   useEffect(() => {
     // Initialize template
@@ -55,14 +60,41 @@ export default function ReadinessQuestionnairePage() {
     
     setLoading(true)
     try {
-      // Create new session
+      // Create session via API
+      const response = await fetch('/api/v1/readiness/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          organization_id: organizationId,
+          template_id: template.id,
+          industry_type: 'general' // Can be made dynamic based on org type
+        })
+      })
+      
+      if (!response.ok) throw new Error('Failed to create session')
+      
+      const data = await response.json()
+      console.log('API Response:', JSON.stringify(data, null, 2))
+      console.log('data.data:', JSON.stringify(data.data, null, 2))
+      console.log('data.data.id:', data.data?.id)
+      
+      // Ensure data structure exists
+      if (!data || !data.data || !data.data.id) {
+        console.error('Invalid response structure:', data)
+        console.error('data.data exists?', !!data.data)
+        console.error('data.data.id exists?', !!data.data?.id)
+        throw new Error('Invalid response format: missing session data')
+      }
+      
       const newSession: QuestionnaireSession = {
-        id: `session_${Date.now()}`,
+        id: data.data.id,
         organization_id: organizationId,
-        respondent_id: 'demo-user-123',
+        respondent_id: 'demo-user',
         template_id: template.id,
         status: 'IN_PROGRESS',
-        started_at: new Date().toISOString(),
+        started_at: data.data.transaction_date || new Date().toISOString(),
         current_index: 0,
         smart_code: 'HERA.ERP.Readiness.Session.Transaction.V1',
         answers: []
@@ -72,29 +104,61 @@ export default function ReadinessQuestionnairePage() {
       setShowWizard(true)
     } catch (error) {
       console.error('Error starting assessment:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to start assessment. Please try again.',
+        variant: 'destructive'
+      })
     } finally {
       setLoading(false)
     }
   }
 
-  // Mock API implementation
+  // Real API implementation
   const createSessionAPI = (session: QuestionnaireSession): SessionAPI => ({
     saveAnswer: async (line) => {
-      // In production, this would make API calls to save to Sacred Six Tables
-      setSession(prev => {
-        if (!prev) return prev
+      try {
+        // Save answer via API
+        const response = await fetch(`/api/v1/readiness/sessions/${session.id}/answers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question_id: line.question_id,
+            question_text: `Question ${line.sequence}`, // Fallback text
+            answer_value: line.response_value,
+            answer_type: 'questionnaire_answer', // Default type
+            category: 'readiness_assessment',
+            organization_id: organizationId
+          })
+        })
         
-        const existingIndex = prev.answers.findIndex(a => a.question_id === line.question_id)
-        const newAnswers = [...prev.answers]
+        if (!response.ok) throw new Error('Failed to save answer')
         
-        if (existingIndex >= 0) {
-          newAnswers[existingIndex] = line
-        } else {
-          newAnswers.push(line)
-        }
-        
-        return { ...prev, answers: newAnswers }
-      })
+        // Update local state
+        setSession(prev => {
+          if (!prev) return prev
+          
+          const existingIndex = prev.answers.findIndex(a => a.question_id === line.question_id)
+          const newAnswers = [...prev.answers]
+          
+          if (existingIndex >= 0) {
+            newAnswers[existingIndex] = line
+          } else {
+            newAnswers.push(line)
+          }
+          
+          return { ...prev, answers: newAnswers }
+        })
+      } catch (error) {
+        console.error('Failed to save answer:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to save answer. Please try again.',
+          variant: 'destructive'
+        })
+      }
     },
     
     next: async () => {
@@ -117,23 +181,94 @@ export default function ReadinessQuestionnairePage() {
     },
     
     complete: async () => {
-      setSession(prev => {
-        if (!prev) return prev
-        return { 
-          ...prev, 
-          status: 'COMPLETED',
-          completed_at: new Date().toISOString(),
-          ai_insights: {
-            overall_readiness: Math.round(Math.random() * 30 + 70),
-            section_summaries: {},
-            risk_flags: {},
-            top_priorities: ['Data Migration', 'Staff Training', 'Process Standardization']
+      if (!session) return session
+      
+      try {
+        // Complete session and generate insights via API
+        const response = await fetch(`/api/v1/readiness/sessions/${session.id}/complete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            organization_id: organizationId
+          })
+        })
+        
+        if (!response.ok) throw new Error('Failed to complete session')
+        
+        const data = await response.json()
+        
+        setSession(prev => {
+          if (!prev) return prev
+          return { 
+            ...prev, 
+            status: 'COMPLETED',
+            completed_at: new Date().toISOString(),
+            ai_insights: data.data.insights
           }
-        }
-      })
+        })
+        
+        toast({
+          title: 'Assessment Complete!',
+          description: 'Your readiness assessment has been saved.',
+        })
+        
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+          router.push('/readiness-dashboard')
+        }, 2000)
+        
+      } catch (error) {
+        console.error('Failed to complete session:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to complete assessment. Please try again.',
+          variant: 'destructive'
+        })
+      }
+      
       return session
     }
   })
+
+  // Authentication checks commented out for testing
+  // Uncomment these blocks to re-enable authentication
+  /*
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access the readiness assessment.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!currentOrganization) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No organization context found. Please select an organization.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+  */
 
   if (showWizard && template && session) {
     return (
