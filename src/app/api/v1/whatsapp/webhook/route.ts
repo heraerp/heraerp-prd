@@ -76,6 +76,8 @@ export async function POST(request: NextRequest) {
       console.log('   Text:', message.text?.body)
       console.log('   Type:', message.type)
       console.log('   Timestamp:', new Date(parseInt(message.timestamp) * 1000).toLocaleString())
+      console.log('   Phone Number ID:', phoneNumberId)
+      console.log('   Organization ID will be:', phoneToOrgMap[message.from] || phoneToOrgMap[phoneNumberId] || 'default')
     }
     
     if (!messages || messages.length === 0) {
