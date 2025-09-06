@@ -99,6 +99,7 @@ export default function EnhancedFactoryDashboard() {
   });
   const [notifications, setNotifications] = useState<any[]>([]);
   const [guardrailDialog, setGuardrailDialog] = useState<any>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const { 
     transactions, 
@@ -160,8 +161,15 @@ export default function EnhancedFactoryDashboard() {
     }));
   };
 
+  // Initialize component
+  useEffect(() => {
+    setIsInitialized(true);
+  }, []);
+
   // Check for alerts
   useEffect(() => {
+    if (!isInitialized) return;
+    
     const alerts = [];
 
     // Low coverage alert
@@ -198,7 +206,19 @@ export default function EnhancedFactoryDashboard() {
     }
 
     setNotifications(alerts);
-  }, [kpis]);
+  }, [kpis, isInitialized]);
+
+  // Prevent rendering until data is loaded
+  if (loading && !isInitialized) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-gray-500" />
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -295,9 +315,11 @@ export default function EnhancedFactoryDashboard() {
               {/* Time Range */}
               <Select
                 value={filters.timeRange}
-                onValueChange={(value: any) => 
-                  setFilters(prev => ({ ...prev, timeRange: value }))
-                }
+                onValueChange={(value) => {
+                  if (value !== filters.timeRange) {
+                    setFilters(prev => ({ ...prev, timeRange: value as any }));
+                  }
+                }}
               >
                 <SelectTrigger className="w-32">
                   <SelectValue />
