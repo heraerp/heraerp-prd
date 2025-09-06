@@ -48,7 +48,8 @@ import {
   CreditCard,
   Sparkles,
   Scale,
-  TrendingDown
+  TrendingDown,
+  Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -148,56 +149,61 @@ export default function SalonWhatsAppPage() {
       
       const result = await response.json()
       console.log('Test message result:', result)
-      
+
       if (result.success) {
         // Refresh the conversation list to show the new message
         setTimeout(() => {
-          // Re-fetch conversations
-          const fetchWhatsAppData = async () => {
-            const response = await fetch(`/api/v1/whatsapp/universal-messages?org_id=${organizationId}`)
-            const result = await response.json()
-            
-            if (result.success && result.data.conversationsWithMessages.length > 0) {
-              const formattedContacts: Contact[] = result.data.conversationsWithMessages.map((item: any) => ({
-                id: item.id,
-                waContactId: item.waContactId,
-                name: item.name,
-                phone: item.phone,
-                lastMessage: item.lastMessage?.text || 'No messages yet',
-                lastMessageTime: item.lastMessageTime ? new Date(item.lastMessageTime) : new Date(),
-                unreadCount: item.unreadCount || 0,
-                windowState: item.windowState || 'closed',
-                windowExpiresAt: item.windowExpiresAt ? new Date(item.windowExpiresAt) : undefined,
-                tags: item.tags || [],
-                conversationCost: item.conversationCost || 0
-              }))
-              
-              setContacts(formattedContacts)
-              if (formattedContacts.length > 0) {
-                setSelectedContact(formattedContacts[0])
-                if (formattedContacts[0].messages || result.data.conversationsWithMessages[0].messages) {
-                  const messages = result.data.conversationsWithMessages[0].messages || []
-                  const formattedMessages = messages.map((msg: any) => ({
-                    id: msg.id,
-                    content: msg.text || '',
-                    type: 'text' as const,
-                    direction: msg.direction || 'inbound',
-                    timestamp: new Date(msg.timestamp || msg.occurred_at || msg.created_at),
-                    status: msg.status || 'delivered',
-                    cost: msg.cost || 0,
-                    templateUsed: msg.provider,
-                    metadata: msg.metadata
-                  }))
-                  setMessages(formattedMessages)
-                }
-              }
-            }
-          }
-          fetchWhatsAppData()
+          window.location.reload() // Simple refresh to show new message
         }, 1000)
       }
     } catch (error) {
       console.error('Error creating test message:', error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // Live message function - simulates actual webhook
+  const createLiveMessage = async () => {
+    try {
+      setIsProcessing(true)
+      const messages = [
+        'I want to book a haircut for Friday at 2pm',
+        'Hi! Can I get an appointment with Sara?',
+        'What are your prices for hair coloring?',
+        'Cancel my appointment for tomorrow please',
+        'BOOK manicure Monday 11am',
+        'Do you have any slots available this weekend?'
+      ]
+      const phones = ['+918885551234', '+971501234567', '+447515668004', '+918883333144']
+      
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)]
+      const randomPhone = phones[Math.floor(Math.random() * phones.length)]
+      
+      const response = await fetch(`/api/v1/whatsapp/webhook-test-live`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phone: randomPhone,
+          message: randomMessage,
+          direction: 'inbound',
+          organizationId: organizationId
+        })
+      })
+      
+      const result = await response.json()
+      console.log('Live message result:', result)
+      
+      if (result.success) {
+        // Refresh the conversation list to show the new message
+        setTimeout(() => {
+          window.location.reload() // Simple refresh to show new message
+        }, 1000)
+      }
+    } catch (error) {
+      console.error('Error creating live message:', error)
     } finally {
       setIsProcessing(false)
     }
@@ -216,14 +222,13 @@ export default function SalonWhatsAppPage() {
   }, [])
 
   // Fetch real WhatsApp data
-  useEffect(() => {
+  const fetchWhatsAppData = async () => {
     if (!organizationId) return
-
-    const fetchWhatsAppData = async () => {
-      setIsLoading(true)
-      setError(null)
-      
-      try {
+    
+    setIsLoading(true)
+    setError(null)
+    
+    try {
         const response = await fetch(`/api/v1/whatsapp/universal-messages?org_id=${organizationId}`)
         const result = await response.json()
         
@@ -293,11 +298,14 @@ export default function SalonWhatsAppPage() {
       } finally {
         setIsLoading(false)
       }
-    }
+  }
+  
+  useEffect(() => {
+    if (!organizationId) return
     
     fetchWhatsAppData()
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchWhatsAppData, 30000)
+    // Refresh every 5 seconds for better real-time experience
+    const interval = setInterval(fetchWhatsAppData, 5000)
     return () => clearInterval(interval)
   }, [organizationId])
 
@@ -506,9 +514,9 @@ export default function SalonWhatsAppPage() {
               </div>
             </div>
 
-            {/* Budget Info & Test Button */}
-            <div className="flex items-center gap-4">
-              {/* Test Message Button */}
+            {/* Budget Info & Test Buttons */}
+            <div className="flex items-center gap-3">
+              {/* Test Seed Message Button */}
               <Button
                 onClick={createTestMessage}
                 disabled={isProcessing}
@@ -524,7 +532,48 @@ export default function SalonWhatsAppPage() {
                 ) : (
                   <>
                     <Zap className="w-3 h-3 mr-1" />
-                    Test Message
+                    Test Seed
+                  </>
+                )}
+              </Button>
+
+              {/* Live Message Button */}
+              <Button
+                onClick={createLiveMessage}
+                disabled={isProcessing}
+                variant="outline"
+                size="sm"
+                className="text-xs bg-green-600 hover:bg-green-700 text-white border-green-600"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Bot className="w-3 h-3 mr-1" />
+                    Live Msg
+                  </>
+                )}
+              </Button>
+              
+              <Button
+                onClick={fetchWhatsAppData}
+                size="sm"
+                variant="outline"
+                className="bg-[#202c33] hover:bg-[#2a3942] text-[#00a884] border-[#2a3942]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    Refreshing
+                  </>
+                ) : (
+                  <>
+                    <ArrowLeft className="w-3 h-3 mr-1 rotate-180" />
+                    Refresh
                   </>
                 )}
               </Button>

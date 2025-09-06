@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/lib/universal-api'
+import { createClient } from '@supabase/supabase-js'
 import { verifyAuth } from '@/lib/auth/verify-auth'
+
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // POST /api/v1/readiness/sessions/:sessionId/complete - Complete session and generate insights
 export async function POST(
@@ -23,20 +28,27 @@ export async function POST(
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
-    universalApi.setOrganizationId(orgId)
-
     // Get all answers for scoring
-    const answers = await universalApi.readTransactionLines({
-      transaction_id: sessionId,
-      organization_id: orgId
-    })
+    const { data: answers, error: answersError } = await supabase
+      .from('universal_transaction_lines')
+      .select('*')
+      .eq('transaction_id', sessionId)
+      .eq('organization_id', orgId)
+
+    if (answersError) {
+      console.error('Failed to fetch answers:', answersError)
+      return NextResponse.json(
+        { error: 'Failed to fetch answers' },
+        { status: 500 }
+      )
+    }
 
     // Calculate scores by category
     const categoryScores: Record<string, { total: number, count: number, score: number }> = {}
     let totalScore = 0
     let totalQuestions = 0
 
-    for (const answer of (answers.data || [])) {
+    for (const answer of (answers || [])) {
       const category = answer.line_data?.category || 'general'
       const score = answer.unit_amount || 0
       
@@ -75,25 +87,35 @@ export async function POST(
     }
 
     // Update session with completion data
-    await universalApi.updateTransaction(sessionId, {
-      transaction_status: 'completed',
-      total_amount: overallScore, // Store overall score as amount
-      metadata: {
-        completionRate: 100,
-        completed_at: new Date().toISOString(),
-        totalQuestions,
-        overallScore,
-        categoryScores
-      }
-    })
+    const { error: updateError } = await supabase
+      .from('universal_transactions')
+      .update({
+        transaction_status: 'completed',
+        total_amount: overallScore, // Store overall score as amount
+        metadata: {
+          completionRate: 100,
+          completed_at: new Date().toISOString(),
+          totalQuestions,
+          overallScore,
+          categoryScores
+        }
+      })
+      .eq('id', sessionId)
+
+    if (updateError) {
+      console.error('Failed to update session:', updateError)
+    }
 
     // Store AI insights as dynamic data
-    await universalApi.setDynamicField(
-      sessionId,
-      'ai_insights',
-      JSON.stringify(insights),
-      'HERA.ERP.Readiness.AI.Analysis.V1'
-    )
+    const { error: insightsError } = await supabase
+      .from('core_dynamic_data')
+      .insert([{
+        organization_id: orgId,
+        entity_id: sessionId,
+        field_name: 'ai_insights',
+        field_value_text: JSON.stringify(insights),
+        smart_code: 'HERA.ERP.Readiness.AI.Analysis.V1'
+      }])
 
     return NextResponse.json({
       success: true,

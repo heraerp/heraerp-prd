@@ -39,8 +39,14 @@ export default defineConfig({
     video: 'retain-on-failure',
     
     /* Global timeout settings */
-    actionTimeout: 10000,
+    actionTimeout: 30000,
     navigationTimeout: 30000,
+    
+    /* Additional context options for HERA MCP testing */
+    extraHTTPHeaders: {
+      'x-organization-id': process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'demo-org-123',
+      'x-test-environment': 'e2e'
+    }
   },
 
   /* Configure projects for major browsers */

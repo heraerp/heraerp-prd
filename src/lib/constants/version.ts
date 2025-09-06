@@ -1,7 +1,7 @@
 // HERA Version Configuration
 export const APP_VERSION = {
   current: '1.2.0',
-  build: '20250906063512',
+  build: '20250906121428',
   releaseDate: '2025-09-06',
   features: [
     'Universal 6-table architecture',

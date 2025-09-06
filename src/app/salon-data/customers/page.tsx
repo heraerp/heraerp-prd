@@ -14,6 +14,14 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
@@ -99,6 +107,9 @@ import {
   X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ModalPortal } from '@/components/ui/modal-portal'
+import { CustomerFormModal } from '@/components/salon/CustomerFormModal'
+import { useToast } from '@/components/ui/use-toast'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 
@@ -312,16 +323,22 @@ const getSegmentColor = (segment: string): string => {
 
 // ----------------------------- Customer Detail Modal ------------------------------------
 
-const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null, onClose: () => void }) => {
+const CustomerDetailModal = ({ customer, onClose, onEdit, onDelete }: { customer: Customer | null, onClose: () => void, onEdit?: (customer: Customer) => void, onDelete?: (customerId: string) => void }) => {
   const [activeTab, setActiveTab] = useState('profile')
+  const [mounted, setMounted] = useState(false)
   
-  if (!customer) return null
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
+  
+  if (!mounted || !customer) return null
 
   const segment = getCustomerSegment(customer)
   const daysSinceVisit = getDaysSinceLastVisit(customer.last_visit)
 
-  // Mock activity data
-  const activities: CustomerActivity[] = [
+  // Only show activity data for customers with visits (not new customers)
+  const activities: CustomerActivity[] = customer.visit_count && customer.visit_count > 0 ? [
     {
       id: '1',
       transaction_type: 'APPOINTMENT',
@@ -349,9 +366,9 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
       amount: 46,
       type: 'earn'
     }
-  ]
+  ] : []
 
-  const loyaltyHistory: LoyaltyTransaction[] = [
+  const loyaltyHistory: LoyaltyTransaction[] = customer.loyalty_balance && customer.loyalty_balance > 0 ? [
     {
       id: '1',
       date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
@@ -368,7 +385,7 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
       description: 'Redeemed for discount',
       balance_after: (customer.loyalty_balance || 0) - 46
     }
-  ]
+  ] : []
 
   const currentMembership: Membership | null = customer.membership_status === 'active' ? {
     id: '1',
@@ -381,8 +398,15 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
   } : null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <ModalPortal>
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
         
         {/* Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
@@ -681,8 +705,17 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
             
             {/* Activity Tab */}
             <TabsContent value="activity" className="p-6">
-              <div className="space-y-4">
-                {activities.map((activity) => (
+              {activities.length === 0 ? (
+                <div className="text-center py-12">
+                  <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">No activity yet</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500">
+                    Customer activities will appear here once they start booking appointments.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {activities.map((activity) => (
                   <Card key={activity.id}>
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
@@ -714,8 +747,9 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </TabsContent>
             
             {/* Value Programs Tab */}
@@ -935,7 +969,16 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
         <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  if (onEdit) {
+                    onEdit(customer)
+                    onClose()
+                  }
+                }}
+              >
                 <Edit className="w-4 h-4 mr-1" />
                 Edit Profile
               </Button>
@@ -949,20 +992,26 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                <Ban className="w-4 h-4 mr-1" />
-                Blacklist
-              </Button>
-              <Button variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-1" />
-                Merge
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                onClick={() => {
+                  if (onDelete && confirm(`Are you sure you want to delete ${customer.entity_name}? This action cannot be undone.`)) {
+                    onDelete(customer.id)
+                  }
+                }}
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete
               </Button>
             </div>
           </div>
         </div>
         
+        </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 
@@ -970,6 +1019,7 @@ const CustomerDetailModal = ({ customer, onClose }: { customer: Customer | null,
 
 export default function SalonCustomersPage() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<{
     status?: string
@@ -982,15 +1032,131 @@ export default function SalonCustomersPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set())
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
+  const [customers, setCustomers] = useState<Customer[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   
   // Default organization ID for salon - Hair Talkz Park Regis
   const organizationId = currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
   
-  // Generate mock data
-  const allCustomers = generateMockCustomers()
+  // Fetch customers from Supabase
+  const fetchCustomers = async () => {
+    try {
+      setIsLoading(true)
+      
+      // Set the organization context for the API
+      universalApi.setOrganizationId(organizationId)
+      
+      // Fetch customer entities using getEntities method
+      const entitiesResponse = await universalApi.getEntities('customer', organizationId)
+      
+      if (!entitiesResponse.success || !entitiesResponse.data) {
+        throw new Error(entitiesResponse.error || 'Failed to fetch customers')
+      }
+      
+      // For each customer, fetch their dynamic data
+      const customersData: Customer[] = []
+      
+      for (const entity of entitiesResponse.data) {
+        // Fetch dynamic fields for this customer
+        const fieldsResponse = await universalApi.getDynamicData(entity.id, organizationId)
+        
+        let dynamicData: any = {}
+        if (fieldsResponse.success && fieldsResponse.data) {
+          // Convert dynamic fields array to object
+          fieldsResponse.data.forEach((field: any) => {
+            // Check field type and extract value from appropriate column
+            if (field.field_type === 'text' && field.field_value !== null) {
+              dynamicData[field.field_name] = field.field_value
+            } else if (field.field_type === 'number' && field.field_value_number !== null) {
+              dynamicData[field.field_name] = field.field_value_number
+            } else if (field.field_type === 'boolean' && field.field_value_boolean !== null) {
+              dynamicData[field.field_name] = field.field_value_boolean
+            } else if (field.field_type === 'date' && field.field_value_date !== null) {
+              dynamicData[field.field_name] = field.field_value_date
+            } else if (field.field_type === 'json' && field.field_value_json !== null) {
+              try {
+                dynamicData[field.field_name] = typeof field.field_value_json === 'string' 
+                  ? JSON.parse(field.field_value_json)
+                  : field.field_value_json
+              } catch {
+                dynamicData[field.field_name] = field.field_value_json
+              }
+            }
+          })
+        }
+        
+        // Parse metadata for business rules and notes
+        let businessRules = {}
+        let notes = ''
+        if (entity.metadata) {
+          if (entity.metadata.business_rules) {
+            businessRules = entity.metadata.business_rules
+          }
+          if (entity.metadata.notes) {
+            notes = entity.metadata.notes
+          }
+        }
+        
+        // Create customer object
+        const customer: Customer = {
+          id: entity.id,
+          entity_type: 'customer',
+          entity_name: entity.entity_name,
+          entity_code: entity.entity_code,
+          smart_code: entity.smart_code,
+          status: entity.status || 'active',
+          created_at: entity.created_at,
+          updated_at: entity.updated_at,
+          business_rules: businessRules,
+          metadata: { notes },
+          // Spread dynamic data
+          ...dynamicData,
+          // Ensure required fields have defaults
+          email: dynamicData.email || '',
+          phone: dynamicData.phone || '',
+          membership_status: dynamicData.membership_status || 'none',
+          lifetime_value: dynamicData.lifetime_value || 0,
+          loyalty_balance: dynamicData.loyalty_balance || 0,
+          gift_card_balance: dynamicData.gift_card_balance || 0,
+          deposit_balance: dynamicData.deposit_balance || 0,
+          no_show_count: dynamicData.no_show_count || 0,
+          visit_count: dynamicData.visit_count || 0,
+          average_ticket: dynamicData.average_ticket || 0,
+          referral_count: dynamicData.referral_count || 0,
+          tags: dynamicData.tags || []
+        }
+        
+        customersData.push(customer)
+      }
+      
+      // Sort by created date (newest first)
+      customersData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      
+      setCustomers(customersData)
+    } catch (error) {
+      console.error('Error fetching customers:', error)
+      toast({
+        title: "Error",
+        description: "Failed to load customers. Please try again.",
+        variant: "destructive",
+      })
+      setCustomers([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  // Initialize customers - fetch from Supabase
+  useEffect(() => {
+    if (organizationId) {
+      fetchCustomers()
+    }
+  }, [organizationId])
   
   // Filter customers
-  const filteredCustomers = allCustomers.filter(customer => {
+  const filteredCustomers = customers.filter(customer => {
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
@@ -1056,6 +1222,364 @@ export default function SalonCustomersPage() {
     setSelectedCustomers(newSelection)
   }
   
+  const handleCreateCustomer = async (formData: any) => {
+    try {
+      // Set the organization context for the API
+      universalApi.setOrganizationId(organizationId)
+      
+      // Create the customer entity in Supabase
+      const entityResponse = await universalApi.createEntity({
+        entity_type: 'customer',
+        entity_name: formData.entity_name,
+        entity_code: `CUS-${String(Date.now()).slice(-6)}`, // Generate unique code
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.v1',
+        status: 'active',
+        organization_id: organizationId,
+        metadata: {
+          business_rules: {
+            vip: formData.tags?.includes('VIP'),
+            deposit_required: false,
+            preferred_location_id: formData.preferred_location,
+            preferred_staff_id: formData.preferred_staff
+          },
+          notes: formData.notes
+        }
+      })
+      
+      if (!entityResponse.success || !entityResponse.data) {
+        throw new Error(entityResponse.error || 'Failed to create customer entity')
+      }
+      
+      const customerId = entityResponse.data.id
+      
+      // Set dynamic fields for the customer
+      const dynamicFields = [
+        // Text fields
+        { field_name: 'email', field_value: formData.email, field_type: 'text' },
+        { field_name: 'phone', field_value: formData.phone, field_type: 'text' },
+        { field_name: 'whatsapp', field_value: formData.whatsapp || '', field_type: 'text' },
+        { field_name: 'address', field_value: formData.address || '', field_type: 'text' },
+        { field_name: 'dob', field_value: formData.dob || '', field_type: 'date' },
+        { field_name: 'gender', field_value: formData.gender || '', field_type: 'text' },
+        { field_name: 'hair_type', field_value: formData.hair_type || '', field_type: 'text' },
+        { field_name: 'skin_type', field_value: formData.skin_type || '', field_type: 'text' },
+        { field_name: 'color_formula', field_value: formData.color_formula || '', field_type: 'text' },
+        { field_name: 'marketing_consent', field_value: formData.marketing_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'sms_consent', field_value: formData.sms_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'whatsapp_consent', field_value: formData.whatsapp_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'preferred_staff', field_value: formData.preferred_staff || '', field_type: 'text' },
+        { field_name: 'preferred_location', field_value: formData.preferred_location || '', field_type: 'text' },
+        { field_name: 'tags', field_value: JSON.stringify(formData.tags || []), field_type: 'json' },
+        // Initialize metrics
+        { field_name: 'lifetime_value', field_value: '0', field_type: 'number' },
+        { field_name: 'loyalty_balance', field_value: '0', field_type: 'number' },
+        { field_name: 'membership_status', field_value: 'none', field_type: 'text' },
+        { field_name: 'gift_card_balance', field_value: '0', field_type: 'number' },
+        { field_name: 'deposit_balance', field_value: '0', field_type: 'number' },
+        { field_name: 'no_show_count', field_value: '0', field_type: 'number' },
+        { field_name: 'visit_count', field_value: '0', field_type: 'number' },
+        { field_name: 'average_ticket', field_value: '0', field_type: 'number' },
+        { field_name: 'referral_count', field_value: '0', field_type: 'number' }
+      ]
+      
+      // Set all dynamic fields
+      for (const field of dynamicFields) {
+        const fieldData = {
+          entity_id: customerId,
+          field_name: field.field_name,
+          field_type: field.field_type,
+          field_label: field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.v1',
+          organization_id: organizationId
+        }
+        
+        // Set the appropriate value field based on type
+        if (field.field_type === 'number') {
+          fieldData.field_value_number = parseFloat(field.field_value) || 0
+        } else if (field.field_type === 'boolean') {
+          fieldData.field_value_boolean = field.field_value === '1'
+        } else if (field.field_type === 'date') {
+          fieldData.field_value_date = field.field_value || null
+        } else if (field.field_type === 'json') {
+          fieldData.field_value_json = field.field_value
+        } else {
+          fieldData.field_value = field.field_value
+        }
+        
+        const fieldResponse = await universalApi.create('core_dynamic_data', fieldData, organizationId)
+        
+        if (!fieldResponse.success) {
+          console.error(`Failed to set field ${field.field_name}:`, fieldResponse.error)
+          // Continue with other fields even if one fails
+        }
+      }
+      
+      // Create a customer object for the UI
+      const newCustomer: Customer = {
+        id: customerId,
+        entity_type: 'customer',
+        entity_name: formData.entity_name,
+        entity_code: entityResponse.data.entity_code,
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.v1',
+        status: 'active',
+        created_at: entityResponse.data.created_at,
+        updated_at: entityResponse.data.updated_at,
+        business_rules: {
+          vip: formData.tags?.includes('VIP'),
+          deposit_required: false,
+          preferred_location_id: formData.preferred_location,
+          preferred_staff_id: formData.preferred_staff
+        },
+        // Contact info
+        email: formData.email,
+        phone: formData.phone,
+        whatsapp: formData.whatsapp,
+        address: formData.address,
+        // Personal info
+        dob: formData.dob,
+        gender: formData.gender,
+        // Preferences
+        hair_type: formData.hair_type,
+        skin_type: formData.skin_type,
+        color_formula: formData.color_formula,
+        // Consents
+        marketing_consent: formData.marketing_consent,
+        sms_consent: formData.sms_consent,
+        whatsapp_consent: formData.whatsapp_consent,
+        // Staff/Location
+        preferred_staff: formData.preferred_staff,
+        preferred_location: formData.preferred_location,
+        // Tags
+        tags: formData.tags || [],
+        // Initialize metrics
+        last_visit: undefined,
+        next_appointment: undefined,
+        lifetime_value: 0,
+        loyalty_balance: 0,
+        membership_status: 'none',
+        gift_card_balance: 0,
+        deposit_balance: 0,
+        no_show_count: 0,
+        visit_count: 0,
+        average_ticket: 0,
+        referral_count: 0,
+        // Notes
+        metadata: {
+          notes: formData.notes
+        }
+      }
+      
+      toast({
+        title: "Success",
+        description: "Customer created successfully!",
+      })
+      setShowCreateModal(false)
+      
+      // Clear search to show the new customer
+      setSearchQuery('')
+      
+      // Refresh the customer list to get the latest data
+      await fetchCustomers()
+      
+    } catch (error) {
+      console.error('Error creating customer:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create customer. Please try again.",
+        variant: "destructive",
+      })
+      throw error // Re-throw to keep the form in loading state
+    }
+  }
+  
+  const handleUpdateCustomer = async (formData: any) => {
+    try {
+      if (!editingCustomer) return
+      
+      // Set the organization context for the API
+      universalApi.setOrganizationId(organizationId)
+      
+      // Update the entity in Supabase
+      const updateResponse = await universalApi.updateEntity(editingCustomer.id, {
+        entity_name: formData.entity_name,
+        metadata: {
+          business_rules: {
+            vip: formData.tags?.includes('VIP'),
+            deposit_required: false,
+            preferred_location_id: formData.preferred_location,
+            preferred_staff_id: formData.preferred_staff
+          },
+          notes: formData.notes
+        }
+      })
+      
+      if (!updateResponse.success) {
+        throw new Error(updateResponse.error || 'Failed to update customer entity')
+      }
+      
+      // For updates, we need to delete existing dynamic fields and create new ones
+      // First, get existing fields
+      const existingFields = await universalApi.getDynamicData(editingCustomer.id, organizationId)
+      
+      // Delete existing fields for fields we're updating
+      if (existingFields.success && existingFields.data) {
+        const fieldsToUpdate = ['email', 'phone', 'whatsapp', 'address', 'dob', 'gender', 
+                               'hair_type', 'skin_type', 'color_formula', 'marketing_consent', 
+                               'sms_consent', 'whatsapp_consent', 'preferred_staff', 
+                               'preferred_location', 'tags']
+        
+        for (const field of existingFields.data) {
+          if (fieldsToUpdate.includes(field.field_name)) {
+            await universalApi.delete('core_dynamic_data', field.id, organizationId)
+          }
+        }
+      }
+      
+      // Create new dynamic fields
+      const dynamicFields = [
+        { field_name: 'email', field_value: formData.email, field_type: 'text' },
+        { field_name: 'phone', field_value: formData.phone, field_type: 'text' },
+        { field_name: 'whatsapp', field_value: formData.whatsapp || '', field_type: 'text' },
+        { field_name: 'address', field_value: formData.address || '', field_type: 'text' },
+        { field_name: 'dob', field_value: formData.dob || '', field_type: 'date' },
+        { field_name: 'gender', field_value: formData.gender || '', field_type: 'text' },
+        { field_name: 'hair_type', field_value: formData.hair_type || '', field_type: 'text' },
+        { field_name: 'skin_type', field_value: formData.skin_type || '', field_type: 'text' },
+        { field_name: 'color_formula', field_value: formData.color_formula || '', field_type: 'text' },
+        { field_name: 'marketing_consent', field_value: formData.marketing_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'sms_consent', field_value: formData.sms_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'whatsapp_consent', field_value: formData.whatsapp_consent ? '1' : '0', field_type: 'boolean' },
+        { field_name: 'preferred_staff', field_value: formData.preferred_staff || '', field_type: 'text' },
+        { field_name: 'preferred_location', field_value: formData.preferred_location || '', field_type: 'text' },
+        { field_name: 'tags', field_value: JSON.stringify(formData.tags || []), field_type: 'json' }
+      ]
+      
+      // Create all dynamic fields
+      for (const field of dynamicFields) {
+        const fieldData = {
+          entity_id: editingCustomer.id,
+          field_name: field.field_name,
+          field_type: field.field_type,
+          field_label: field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.v1',
+          organization_id: organizationId
+        }
+        
+        // Set the appropriate value field based on type
+        if (field.field_type === 'number') {
+          fieldData.field_value_number = parseFloat(field.field_value) || 0
+        } else if (field.field_type === 'boolean') {
+          fieldData.field_value_boolean = field.field_value === '1'
+        } else if (field.field_type === 'date') {
+          fieldData.field_value_date = field.field_value || null
+        } else if (field.field_type === 'json') {
+          fieldData.field_value_json = field.field_value
+        } else {
+          fieldData.field_value = field.field_value
+        }
+        
+        const fieldResponse = await universalApi.create('core_dynamic_data', fieldData, organizationId)
+        
+        if (!fieldResponse.success) {
+          console.error(`Failed to update field ${field.field_name}:`, fieldResponse.error)
+          // Continue with other fields even if one fails
+        }
+      }
+      
+      // Update the customer in the state
+      setCustomers(prevCustomers => 
+        prevCustomers.map(customer => 
+          customer.id === editingCustomer.id
+            ? {
+                ...customer,
+                entity_name: formData.entity_name,
+                email: formData.email,
+                phone: formData.phone,
+                whatsapp: formData.whatsapp,
+                address: formData.address,
+                dob: formData.dob,
+                gender: formData.gender,
+                hair_type: formData.hair_type,
+                skin_type: formData.skin_type,
+                color_formula: formData.color_formula,
+                marketing_consent: formData.marketing_consent,
+                sms_consent: formData.sms_consent,
+                whatsapp_consent: formData.whatsapp_consent,
+                preferred_staff: formData.preferred_staff,
+                preferred_location: formData.preferred_location,
+                tags: formData.tags || [],
+                updated_at: new Date().toISOString(),
+                business_rules: {
+                  ...customer.business_rules,
+                  vip: formData.tags?.includes('VIP'),
+                  preferred_location_id: formData.preferred_location,
+                  preferred_staff_id: formData.preferred_staff
+                },
+                metadata: {
+                  ...customer.metadata,
+                  notes: formData.notes
+                }
+              }
+            : customer
+        )
+      )
+      
+      toast({
+        title: "Success", 
+        description: "Customer updated successfully!",
+      })
+      setEditingCustomer(null)
+      
+      // If the updated customer is currently selected, update it too
+      if (selectedCustomer?.id === editingCustomer.id) {
+        setSelectedCustomer(null)
+      }
+      
+    } catch (error) {
+      console.error('Error updating customer:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update customer. Please try again.",
+        variant: "destructive",
+      })
+      throw error
+    }
+  }
+  
+  const handleDeleteCustomer = async (customerId: string) => {
+    try {
+      // Set the organization context for the API
+      universalApi.setOrganizationId(organizationId)
+      
+      // Delete the customer entity from Supabase
+      const deleteResponse = await universalApi.deleteEntity(customerId)
+      
+      if (!deleteResponse.success) {
+        throw new Error(deleteResponse.error || 'Failed to delete customer')
+      }
+      
+      // Remove from state
+      setCustomers(prevCustomers => prevCustomers.filter(c => c.id !== customerId))
+      
+      toast({
+        title: "Success",
+        description: "Customer deleted successfully!",
+      })
+      
+      // Close the detail modal if this customer was being viewed
+      if (selectedCustomer?.id === customerId) {
+        setSelectedCustomer(null)
+      }
+    } catch (error) {
+      console.error('Error deleting customer:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete customer. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+  
   const selectAllCustomers = () => {
     if (selectedCustomers.size === filteredCustomers.length) {
       setSelectedCustomers(new Set())
@@ -1064,7 +1588,7 @@ export default function SalonCustomersPage() {
     }
   }
   
-  if (contextLoading) {
+  if (contextLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -1093,6 +1617,15 @@ export default function SalonCustomersPage() {
           <div className="flex gap-2">
             <Button
               variant="outline"
+              onClick={() => fetchCustomers()}
+              disabled={isLoading}
+              className="bg-white dark:bg-gray-800"
+            >
+              <RefreshCw className={cn("w-4 h-4 mr-2", isLoading && "animate-spin")} />
+              Refresh
+            </Button>
+            <Button
+              variant="outline"
               onClick={() => setShowFilters(!showFilters)}
               className="bg-white dark:bg-gray-800"
             >
@@ -1106,6 +1639,7 @@ export default function SalonCustomersPage() {
             </Button>
             <Button
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              onClick={() => setShowCreateModal(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Customer
@@ -1361,7 +1895,31 @@ export default function SalonCustomersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCustomers.slice(0, 20).map((customer) => {
+                  {filteredCustomers.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center justify-center">
+                          <Users className="w-12 h-12 text-gray-300 mb-4" />
+                          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">
+                            No customers found
+                          </p>
+                          <p className="text-gray-400 dark:text-gray-500 text-sm mb-4">
+                            {searchQuery ? `No results for "${searchQuery}"` : 'Start by adding your first customer'}
+                          </p>
+                          {!searchQuery && (
+                            <Button
+                              size="sm"
+                              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                              onClick={() => setShowCreateModal(true)}
+                            >
+                              <Plus className="w-4 h-4 mr-2" />
+                              Add First Customer
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : filteredCustomers.slice(0, 20).map((customer) => {
                     const segment = getCustomerSegment(customer)
                     const daysSinceVisit = getDaysSinceLastVisit(customer.last_visit)
                     
@@ -1507,15 +2065,63 @@ export default function SalonCustomersPage() {
                             >
                               <MessageCircle className="w-4 h-4" />
                             </Button>
-                            <div className="relative">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                >
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent 
+                                align="end" 
+                                className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
                               >
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </div>
+                                <DropdownMenuLabel className="text-gray-900 dark:text-gray-100">Actions</DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                                <DropdownMenuItem 
+                                  onClick={() => setSelectedCustomer(customer)}
+                                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                >
+                                  <ChevronRight className="w-4 h-4 mr-2" />
+                                  View Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  onClick={() => setEditingCustomer(customer)}
+                                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                >
+                                  <Edit className="w-4 h-4 mr-2" />
+                                  Edit Customer
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                                <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <Calendar className="w-4 h-4 mr-2" />
+                                  Book Appointment
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  Send Message
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <Receipt className="w-4 h-4 mr-2" />
+                                  View Transactions
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                                <DropdownMenuItem 
+                                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
+                                  onClick={() => {
+                                    if (confirm(`Are you sure you want to delete ${customer.entity_name}? This action cannot be undone.`)) {
+                                      handleDeleteCustomer(customer.id)
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                  Delete Customer
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </td>
                       </tr>
@@ -1549,6 +2155,44 @@ export default function SalonCustomersPage() {
         <CustomerDetailModal 
           customer={selectedCustomer}
           onClose={() => setSelectedCustomer(null)}
+          onEdit={(customer) => setEditingCustomer(customer)}
+          onDelete={handleDeleteCustomer}
+        />
+      )}
+      
+      {/* Create Customer Modal */}
+      <CustomerFormModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateCustomer}
+        mode="create"
+      />
+      
+      {/* Edit Customer Modal */}
+      {editingCustomer && (
+        <CustomerFormModal
+          isOpen={true}
+          onClose={() => setEditingCustomer(null)}
+          onSubmit={handleUpdateCustomer}
+          initialData={{
+            entity_name: editingCustomer.entity_name,
+            email: editingCustomer.email || '',
+            phone: editingCustomer.phone || '',
+            whatsapp: editingCustomer.whatsapp || '',
+            address: editingCustomer.address || '',
+            dob: editingCustomer.dob || '',
+            gender: editingCustomer.gender || '',
+            hair_type: editingCustomer.hair_type || '',
+            skin_type: editingCustomer.skin_type || '',
+            color_formula: editingCustomer.color_formula || '',
+            preferred_staff: editingCustomer.preferred_staff || 'none',
+            preferred_location: editingCustomer.preferred_location || 'none',
+            marketing_consent: editingCustomer.marketing_consent || false,
+            sms_consent: editingCustomer.sms_consent || false,
+            whatsapp_consent: editingCustomer.whatsapp_consent || false,
+            tags: editingCustomer.tags || [],
+          }}
+          mode="edit"
         />
       )}
     </div>

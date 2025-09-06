@@ -1,0 +1,114 @@
+name: Customer CRUD E2E Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/app/salon-data/customers/**'
+      - 'src/components/salon/**'
+      - 'tests/e2e/salon/customers*.spec.ts'
+      - '.github/workflows/customers-e2e-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/app/salon-data/customers/**'
+      - 'src/components/salon/**'
+      - 'tests/e2e/salon/customers*.spec.ts'
+
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps ${{ matrix.browser }}
+    
+    - name: Setup environment
+      run: |
+        cp .env.example .env.local
+        echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
+        echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.local
+    
+    - name: Build application
+      run: npm run build
+      
+    - name: Run Customer CRUD E2E tests
+      run: npm run test:e2e:customers -- --project=${{ matrix.browser }}
+      env:
+        CI: true
+        NODE_ENV: test
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-results-${{ matrix.browser }}
+        path: |
+          test-results/
+          playwright-report/
+          test-results/customers-report/
+          test-results/customers-results.json
+        retention-days: 30
+    
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-screenshots-${{ matrix.browser }}
+        path: test-results/**/*.png
+        retention-days: 7
+        
+    - name: Upload videos
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-videos-${{ matrix.browser }}
+        path: test-results/**/*.webm
+        retention-days: 7
+
+  test-summary:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all test results
+      uses: actions/download-artifact@v4
+      with:
+        pattern: playwright-results-*
+        merge-multiple: true
+    
+    - name: Merge test results
+      run: |
+        npx playwright merge-reports --reporter html ./playwright-results-*
+        
+    - name: Upload merged report
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-merged
+        path: playwright-report/
+        retention-days: 30
+        
+    - name: Comment PR with results
+      uses: daun/playwright-report-comment@v3
+      if: github.event_name == 'pull_request'
+      with:
+        report-file: test-results/customers-results.json

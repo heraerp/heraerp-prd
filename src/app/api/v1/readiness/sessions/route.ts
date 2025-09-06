@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/lib/universal-api'
+import { createClient } from '@supabase/supabase-js'
 import { verifyAuth } from '@/lib/auth/verify-auth'
+
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // GET /api/v1/readiness/sessions - List all sessions
 export async function GET(request: NextRequest) {
@@ -18,66 +23,50 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
-    universalApi.setOrganizationId(organizationId)
-
     // Fetch questionnaire sessions (stored as transactions)
-    console.log('🔍 Fetching transactions for org:', organizationId)
-    const allTransactions = await universalApi.getTransactions(organizationId)
-    console.log('📊 All transactions response:', allTransactions)
+    const { data: sessions, error } = await supabase
+      .from('universal_transactions')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .eq('transaction_type', 'readiness_assessment')
+      .order('created_at', { ascending: false })
     
-    // Filter for readiness assessments
-    const sessions = {
-      success: allTransactions.success,
-      data: allTransactions.success && allTransactions.data ? 
-        allTransactions.data.filter((t: any) => t.transaction_type === 'readiness_assessment') : 
-        [],
-      error: allTransactions.error
+    if (error) {
+      console.error('Failed to fetch sessions:', error)
+      return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
     }
-    
-    console.log('📝 Filtered sessions:', sessions.data?.length || 0)
 
     // For each session, fetch the answer lines
     const sessionsWithAnswers = await Promise.all(
-      (sessions.data || []).map(async (session) => {
-        try {
-          // Get all transaction lines and filter for this session
-          const allLines = await universalApi.read('universal_transaction_lines', undefined, organizationId)
-          const answers = {
-            success: allLines.success,
-            data: allLines.success && allLines.data ? 
-              allLines.data.filter((line: any) => line.transaction_id === session.id) : 
-              []
-          }
-          
-          // Get AI insights from dynamic data (simplified for now)
-          let insights = null
-          try {
-            // Query dynamic data for AI insights
-            const dynamicData = await universalApi.read('core_dynamic_data', undefined, organizationId)
-            const insightsData = dynamicData.success && dynamicData.data ? 
-              dynamicData.data.find((d: any) => d.entity_id === session.id && d.field_name === 'ai_insights') : 
-              null
-            insights = insightsData?.field_value_text ? JSON.parse(insightsData.field_value_text) : null
-          } catch (e) {
-            console.warn('Failed to parse AI insights for session', session.id, e)
-          }
+      (sessions || []).map(async (session) => {
+        // Get transaction lines for this session
+        const { data: answers } = await supabase
+          .from('universal_transaction_lines')
+          .select('*')
+          .eq('transaction_id', session.id)
+          .order('line_number', { ascending: true })
+        
+        // Get AI insights from dynamic data
+        const { data: insightsData } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('entity_id', session.id)
+          .eq('field_name', 'ai_insights')
+          .single()
 
-          return {
-            ...session,
-            answers: answers.data || [],
-            insights,
-            completionRate: session.metadata?.completionRate || 0,
-            totalQuestions: session.metadata?.totalQuestions || 0
-          }
-        } catch (error) {
-          console.error('Error processing session', session.id, error)
-          return {
-            ...session,
-            answers: [],
-            insights: null,
-            completionRate: 0,
-            totalQuestions: 0
-          }
+        let insights = null
+        try {
+          insights = insightsData?.field_value_text ? JSON.parse(insightsData.field_value_text) : null
+        } catch (e) {
+          console.warn('Failed to parse AI insights for session', session.id)
+        }
+
+        return {
+          ...session,
+          answers: answers || [],
+          insights,
+          completionRate: session.metadata?.completionRate || 0,
+          totalQuestions: session.metadata?.totalQuestions || 0
         }
       })
     )
@@ -112,19 +101,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
-    universalApi.setOrganizationId(orgId)
-
     // Create session as a transaction
-    console.log('🔄 Creating readiness session with org:', orgId)
     const transactionCode = `READINESS-${Date.now()}`
-    const session = await universalApi.createTransaction({
+    const sessionData = {
       organization_id: orgId,
       transaction_type: 'readiness_assessment',
       transaction_code: transactionCode,
       transaction_date: new Date().toISOString(),
       total_amount: 0, // Score will be updated as answers come in
-      status: 'in_progress',
-      smart_code: 'HERA.GEN.READINESS.ASSESS.SESSION.v1',
+      transaction_status: 'in_progress',
+      smart_code: 'HERA.ERP.Readiness.Session.Transaction.V1',
       metadata: {
         template_id,
         industry_type: industry_type || 'general',
@@ -134,35 +120,25 @@ export async function POST(request: NextRequest) {
         user_id: 'demo-user',
         user_email: 'demo@example.com'
       }
-    })
-
-    console.log('🔍 Universal API response:', JSON.stringify(session, null, 2))
-
-    // Check if session creation was successful
-    if (!session || !session.success || !session.data || !session.data.id) {
-      console.error('❌ Session creation failed:', session)
-      throw new Error(`Failed to create session in database: ${session?.error || 'Unknown error'}`)
     }
 
-    const sessionId = session.data.id
+    const { data: session, error } = await supabase
+      .from('universal_transactions')
+      .insert([sessionData])
+      .select()
+      .single()
 
-    // Ensure we return the expected format
-    const responseData = {
-      id: sessionId,
-      transaction_id: sessionId,
-      transaction_date: session.data?.transaction_date || new Date().toISOString(),
-      smart_code: 'HERA.ERP.READINESS.SESSION.CREATED.v1',
-      template_id,
-      industry_type: industry_type || 'general',
-      status: 'in_progress',
-      ...session.data
+    if (error || !session) {
+      console.error('Failed to create session:', error)
+      return NextResponse.json(
+        { error: 'Failed to create session' },
+        { status: 500 }
+      )
     }
-
-    console.log('✅ Session created successfully:', responseData.id)
 
     return NextResponse.json({
       success: true,
-      data: responseData
+      data: session
     })
   } catch (error) {
     console.error('Failed to create session:', error)

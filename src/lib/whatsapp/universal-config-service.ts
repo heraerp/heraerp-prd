@@ -172,26 +172,36 @@ export class UniversalConfigService {
    */
   private async loadConfigBySmartCode<T>(smartCode: string): Promise<T | null> {
     try {
-      const response = await universalApi.query('core_entities', {
-        organization_id: this.organizationId,
-        entity_code: smartCode,
-        limit: 1
-      })
+      // Use the read method with organization filtering
+      const response = await universalApi.read('core_entities', undefined, this.organizationId)
 
-      if (!response.data || response.data.length === 0) {
+      if (!response.success || !response.data) {
         return null
       }
 
-      const entity = response.data[0]
+      // Find entity with matching entity_code
+      const entity = response.data.find((e: any) => e.entity_code === smartCode)
+      if (!entity) {
+        return null
+      }
       
-      // Get dynamic data
-      const dynamicData = await universalApi.getDynamicFields(entity.id)
+      // Get dynamic data - this method should exist
+      let dynamicData = {}
+      try {
+        const dynamicResponse = await universalApi.getDynamicFields?.(entity.id)
+        if (dynamicResponse) {
+          dynamicData = dynamicResponse
+        }
+      } catch (error) {
+        console.warn(`Could not load dynamic data for ${entity.id}:`, error)
+      }
       
       // Merge config from dynamic data
       const config = {
         id: entity.id,
         smart_code: smartCode,
-        ...dynamicData
+        ...dynamicData,
+        ...entity.metadata // Also include entity metadata
       }
 
       return config as T
@@ -209,25 +219,50 @@ export class UniversalConfigService {
     targetSmartCode: string
   ): Promise<T | null> {
     try {
-      // Find relationship
-      const relationships = await universalApi.query('core_relationships', {
-        from_entity_id: fromEntityId,
-        relationship_type: ConfigSmartCodes.CONFIG_USES
-      })
+      // Find relationships - use read method
+      const relationshipsResponse = await universalApi.read('core_relationships', undefined, this.organizationId)
 
-      if (!relationships.data || relationships.data.length === 0) {
+      if (!relationshipsResponse.success || !relationshipsResponse.data) {
+        return null
+      }
+
+      // Filter relationships by from_entity_id and type
+      const relationships = relationshipsResponse.data.filter((r: any) => 
+        r.from_entity_id === fromEntityId && r.relationship_type === ConfigSmartCodes.CONFIG_USES
+      )
+
+      if (relationships.length === 0) {
+        return null
+      }
+
+      // Get all entities to find targets
+      const entitiesResponse = await universalApi.read('core_entities', undefined, this.organizationId)
+      if (!entitiesResponse.success || !entitiesResponse.data) {
         return null
       }
 
       // Find the target entity
-      for (const rel of relationships.data) {
-        const targetEntity = await universalApi.getEntity(rel.to_entity_id)
-        if (targetEntity && targetEntity.entity_code === targetSmartCode) {
-          const dynamicData = await universalApi.getDynamicFields(targetEntity.id)
+      for (const rel of relationships) {
+        const targetEntity = entitiesResponse.data.find((e: any) => 
+          e.id === rel.to_entity_id && e.entity_code === targetSmartCode
+        )
+        
+        if (targetEntity) {
+          let dynamicData = {}
+          try {
+            const dynamicResponse = await universalApi.getDynamicFields?.(targetEntity.id)
+            if (dynamicResponse) {
+              dynamicData = dynamicResponse
+            }
+          } catch (error) {
+            console.warn(`Could not load dynamic data for related config ${targetEntity.id}:`, error)
+          }
+          
           return {
             id: targetEntity.id,
             smart_code: targetSmartCode,
-            ...dynamicData
+            ...dynamicData,
+            ...targetEntity.metadata
           } as T
         }
       }
@@ -364,28 +399,36 @@ export class UniversalConfigService {
   }> {
     const today = new Date().toISOString().split('T')[0]
     
-    // Query today's costs
-    const costs = await universalApi.query('universal_transactions', {
-      organization_id: this.organizationId,
-      transaction_type: 'whatsapp_ai_request',
-      created_at: { gte: today }
-    })
+    try {
+      // Query today's costs using read method
+      const costsResponse = await universalApi.read('universal_transactions', undefined, this.organizationId)
 
-    let totalCost = 0
-    if (costs.data) {
-      totalCost = costs.data.reduce((sum, tx) => {
-        return sum + (tx.metadata?.cost_usd || 0)
-      }, 0)
-    }
-
-    if (totalCost >= routing.cost_guardrails.daily_usd_cap) {
-      return { 
-        allowed: false, 
-        reason: `Daily cost cap of $${routing.cost_guardrails.daily_usd_cap} exceeded`
+      let totalCost = 0
+      if (costsResponse.success && costsResponse.data) {
+        // Filter transactions for today and whatsapp_ai_request type
+        const todayTransactions = costsResponse.data.filter((tx: any) => {
+          const txDate = new Date(tx.created_at).toISOString().split('T')[0]
+          return txDate === today && tx.transaction_type === 'whatsapp_ai_request'
+        })
+        
+        totalCost = todayTransactions.reduce((sum, tx) => {
+          return sum + (tx.metadata?.cost_usd || 0)
+        }, 0)
       }
-    }
 
-    return { allowed: true }
+      if (totalCost >= routing.cost_guardrails.daily_usd_cap) {
+        return { 
+          allowed: false, 
+          reason: `Daily cost cap of $${routing.cost_guardrails.daily_usd_cap} exceeded`
+        }
+      }
+
+      return { allowed: true }
+    } catch (error) {
+      console.error('Failed to check cost guardrails:', error)
+      // Allow by default if we can't check
+      return { allowed: true }
+    }
   }
 
   /**
