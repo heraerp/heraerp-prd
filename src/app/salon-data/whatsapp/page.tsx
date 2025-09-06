@@ -130,6 +130,79 @@ export default function SalonWhatsAppPage() {
   })
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  // Test function to create sample messages
+  const createTestMessage = async () => {
+    try {
+      setIsProcessing(true)
+      const response = await fetch(`/api/v1/whatsapp/universal-messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          organization_id: organizationId,
+          test_message: 'BOOK haircut tomorrow at 3pm',
+          from_phone: '+91888333114'
+        })
+      })
+      
+      const result = await response.json()
+      console.log('Test message result:', result)
+      
+      if (result.success) {
+        // Refresh the conversation list to show the new message
+        setTimeout(() => {
+          // Re-fetch conversations
+          const fetchWhatsAppData = async () => {
+            const response = await fetch(`/api/v1/whatsapp/universal-messages?org_id=${organizationId}`)
+            const result = await response.json()
+            
+            if (result.success && result.data.conversationsWithMessages.length > 0) {
+              const formattedContacts: Contact[] = result.data.conversationsWithMessages.map((item: any) => ({
+                id: item.id,
+                waContactId: item.waContactId,
+                name: item.name,
+                phone: item.phone,
+                lastMessage: item.lastMessage?.text || 'No messages yet',
+                lastMessageTime: item.lastMessageTime ? new Date(item.lastMessageTime) : new Date(),
+                unreadCount: item.unreadCount || 0,
+                windowState: item.windowState || 'closed',
+                windowExpiresAt: item.windowExpiresAt ? new Date(item.windowExpiresAt) : undefined,
+                tags: item.tags || [],
+                conversationCost: item.conversationCost || 0
+              }))
+              
+              setContacts(formattedContacts)
+              if (formattedContacts.length > 0) {
+                setSelectedContact(formattedContacts[0])
+                if (formattedContacts[0].messages || result.data.conversationsWithMessages[0].messages) {
+                  const messages = result.data.conversationsWithMessages[0].messages || []
+                  const formattedMessages = messages.map((msg: any) => ({
+                    id: msg.id,
+                    content: msg.text || '',
+                    type: 'text' as const,
+                    direction: msg.direction || 'inbound',
+                    timestamp: new Date(msg.timestamp || msg.occurred_at || msg.created_at),
+                    status: msg.status || 'delivered',
+                    cost: msg.cost || 0,
+                    templateUsed: msg.provider,
+                    metadata: msg.metadata
+                  }))
+                  setMessages(formattedMessages)
+                }
+              }
+            }
+          }
+          fetchWhatsAppData()
+        }, 1000)
+      }
+    } catch (error) {
+      console.error('Error creating test message:', error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   // Get organization ID - Use the salon demo organization from middleware
   useEffect(() => {
     // For salon routes, use the Hair Talkz demo organization
@@ -151,10 +224,10 @@ export default function SalonWhatsAppPage() {
       setError(null)
       
       try {
-        const response = await fetch(`/api/v1/whatsapp/messages-v2?org_id=${organizationId}`)
+        const response = await fetch(`/api/v1/whatsapp/universal-messages?org_id=${organizationId}`)
         const result = await response.json()
         
-        if (result.status === 'error') {
+        if (!result.success) {
           throw new Error(result.error || 'Failed to fetch messages')
         }
         
@@ -165,20 +238,18 @@ export default function SalonWhatsAppPage() {
           
           // Transform conversations to Contact format
           const formattedContacts: Contact[] = result.data.conversationsWithMessages.map((item: any) => {
-            const conv = item.conversation
-            const lastMsg = item.lastMessage
             return {
-              id: conv.id,
-              waContactId: conv.metadata?.wa_id || conv.entity_code,
-              name: conv.entity_name || 'Unknown',
-              phone: conv.metadata?.phone || '',
-              lastMessage: lastMsg?.text || 'No messages yet',
-              lastMessageTime: lastMsg?.created_at ? new Date(lastMsg.created_at) : new Date(),
-              unreadCount: conv.metadata?.unread_count || 0,
-              windowState: (conv.metadata?.window_state || 'closed') as 'open' | 'closed',
-              windowExpiresAt: conv.metadata?.window_expires_at ? new Date(conv.metadata.window_expires_at) : undefined,
-              tags: conv.metadata?.tags || [],
-              conversationCost: conv.metadata?.conversation_cost || 0
+              id: item.id,
+              waContactId: item.waContactId,
+              name: item.name,
+              phone: item.phone,
+              lastMessage: item.lastMessage?.text || 'No messages yet',
+              lastMessageTime: item.lastMessageTime ? new Date(item.lastMessageTime) : new Date(),
+              unreadCount: item.unreadCount || 0,
+              windowState: item.windowState || 'closed',
+              windowExpiresAt: item.windowExpiresAt ? new Date(item.windowExpiresAt) : undefined,
+              tags: item.tags || [],
+              conversationCost: item.conversationCost || 0
             }
           })
           
@@ -188,11 +259,17 @@ export default function SalonWhatsAppPage() {
             // Also set messages for the first contact
             if (result.data.conversationsWithMessages[0].messages) {
               const formattedMessages = result.data.conversationsWithMessages[0].messages.map((msg: any) => ({
-                ...msg,
+                id: msg.id,
                 content: msg.text || '',
-                timestamp: new Date(msg.occurred_at || msg.created_at),
-                type: 'text' as const
+                type: 'text' as const,
+                direction: msg.direction || 'inbound',
+                timestamp: new Date(msg.timestamp || msg.occurred_at || msg.created_at),
+                status: msg.status || 'delivered',
+                cost: msg.cost || 0,
+                templateUsed: msg.provider,
+                metadata: msg.metadata
               }))
+              console.log('📱 Setting messages for first contact:', formattedMessages)
               setMessages(formattedMessages)
             }
           }
@@ -231,20 +308,25 @@ export default function SalonWhatsAppPage() {
       // But we can fetch more detailed messages here if needed
       const fetchMessages = async () => {
         try {
-          const response = await fetch(`/api/v1/whatsapp/messages-v2?org_id=${organizationId}`)
+          const response = await fetch(`/api/v1/whatsapp/universal-messages?org_id=${organizationId}`)
           const result = await response.json()
           
-          if (result.status === 'success') {
-            const conversationData = result.data.conversationsWithMessages.find((c: any) => c.conversation.id === selectedContact.id)
+          if (result.success) {
+            const conversationData = result.data.conversationsWithMessages.find((c: any) => c.id === selectedContact.id)
             if (conversationData && conversationData.messages) {
               const formattedMessages = conversationData.messages.map((msg: any) => ({
-                ...msg,
+                id: msg.id,
                 content: msg.text || '',
-                timestamp: new Date(msg.occurred_at || msg.created_at),
-                type: 'text' as const
+                type: 'text' as const,
+                direction: msg.direction || 'inbound',
+                timestamp: new Date(msg.timestamp || msg.occurred_at || msg.created_at),
+                status: msg.status || 'delivered',
+                cost: msg.cost || 0,
+                templateUsed: msg.provider,
+                metadata: msg.metadata
               }))
-              console.log('Messages for', selectedContact.name, ':', formattedMessages)
-              console.log('Incoming messages:', formattedMessages.filter((m: any) => m.direction === 'inbound'))
+              console.log('💬 Messages for', selectedContact.name, ':', formattedMessages)
+              console.log('📨 Incoming messages:', formattedMessages.filter((m: any) => m.direction === 'inbound'))
               setMessages(formattedMessages)
             }
           }
@@ -424,8 +506,29 @@ export default function SalonWhatsAppPage() {
               </div>
             </div>
 
-            {/* Budget Info */}
+            {/* Budget Info & Test Button */}
             <div className="flex items-center gap-4">
+              {/* Test Message Button */}
+              <Button
+                onClick={createTestMessage}
+                disabled={isProcessing}
+                variant="outline"
+                size="sm"
+                className="text-xs bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    Testing...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-3 h-3 mr-1" />
+                    Test Message
+                  </>
+                )}
+              </Button>
+              
               <div className="text-sm text-gray-300">
                 <span className="opacity-75">Daily Budget:</span>{' '}
                 <span className="font-semibold">
@@ -481,9 +584,14 @@ export default function SalonWhatsAppPage() {
                       {searchQuery ? 'No conversations match your search' : 'No conversations yet'}
                     </p>
                     {!searchQuery && (
-                      <p className="text-xs text-[#8696a0] mt-2">
-                        Messages will appear here once your webhook is configured
-                      </p>
+                      <div className="text-xs text-[#8696a0] mt-2 space-y-2">
+                        <p>Messages will appear here once customers send WhatsApp messages</p>
+                        <div className="space-y-1">
+                          <p className="font-medium">To test:</p>
+                          <p>1. Click "Test Message" above, or</p>
+                          <p>2. Send "BOOK" to +918883333144</p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 ) : (
