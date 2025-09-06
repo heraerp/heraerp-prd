@@ -388,7 +388,7 @@ export default function ReadinessDashboardPage() {
                   <h1 className="text-xl font-bold !text-white">
                     Readiness Analytics
                   </h1>
-                  <p className="text-xs text-gray-500 dark:text-gray-300 font-medium">
+                  <p className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                     ERP Assessment Dashboard
                   </p>
                 </div>
@@ -915,19 +915,22 @@ export default function ReadinessDashboardPage() {
                     >
                       <TabsTrigger 
                         value="overview" 
-                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white text-gray-400"
+                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                        style={{ color: 'rgb(204, 251, 241)' }}
                       >
                         Overview
                       </TabsTrigger>
                       <TabsTrigger 
                         value="categories"
-                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white text-gray-400"
+                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                        style={{ color: 'rgb(204, 251, 241)' }}
                       >
                         Categories
                       </TabsTrigger>
                       <TabsTrigger 
                         value="answers"
-                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white text-gray-400"
+                        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                        style={{ color: 'rgb(204, 251, 241)' }}
                       >
                         Answers
                       </TabsTrigger>
