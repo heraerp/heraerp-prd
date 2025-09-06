@@ -5,8 +5,8 @@
 'use client';
 
 import React from 'react';
-import EnhancedFactoryDashboard from '@/components/factory/EnhancedFactoryDashboard';
+import FactoryDashboardFixed from '@/components/factory/FactoryDashboardFixed';
 
 export default function FactoryPage() {
-  return <EnhancedFactoryDashboard />;
+  return <FactoryDashboardFixed />;
 }
