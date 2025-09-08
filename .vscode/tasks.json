@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "HERA Control Center",
+      "type": "shell",
+      "command": "node mcp-server/hera-control-center.js control",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Check System Health",
+      "type": "shell",
+      "command": "node mcp-server/hera-control-center.js health --detailed",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Check Guardrails",
+      "type": "shell",
+      "command": "node mcp-server/hera-control-center.js guardrails",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Deployment Check",
+      "type": "shell",
+      "command": "node mcp-server/hera-control-center.js deploy-check",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Rebuild Module Index",
+      "type": "shell",
+      "command": "node mcp-server/hera-control-center.js index --rebuild",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "smart_code": "HERA.SALON.SALE.POSTED.v1",
+  "event_time": "2025-09-08T10:30:00Z",
+  "currency": "AED",
+  "source_system": "SalonDigitalAccountant",
+  "origin_txn_id": "SALE-489188",
+  "ai_confidence": 0.95,
+  "metadata": {
+    "client_name": "Maya",
+    "service_type": "coloring and treatment",
+    "payment_method": "cash",
+    "vat_included": true,
+    "vat_rate": 0.05
+  },
+  "lines": [
+    {
+      "entity_id": "COA:110000",
+      "role": "Cash",
+      "amount": 450,
+      "dr": 450,
+      "cr": 0
+    },
+    {
+      "entity_id": "COA:400000", 
+      "role": "Service Revenue",
+      "amount": 428.57,
+      "dr": 0,
+      "cr": 428.57
+    },
+    {
+      "entity_id": "COA:220000",
+      "role": "VAT Payable",
+      "amount": 21.43,
+      "dr": 0,
+      "cr": 21.43
+    }
+  ]
+}

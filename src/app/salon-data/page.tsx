@@ -51,7 +51,8 @@ import {
   Scale,
   TestTube,
   Rocket,
-  FileText
+  FileText,
+  Brain
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -454,13 +455,15 @@ export default function SalonModernDashboard() {
     { id: 'services', label: 'Services', icon: <Scissors className="w-5 h-5" />, href: '/salon-data/services' },
     { id: 'inventory', label: 'Inventory', icon: <Package className="w-5 h-5" />, href: '/salon-data/inventory' },
     { id: 'pos', label: 'POS', icon: <CreditCard className="w-5 h-5" />, href: '/salon-data/pos' },
+    { id: 'leave', label: 'Leave', icon: <CalendarCheck className="w-5 h-5" />, href: '/salon-data/leave' },
     { id: 'templates', label: 'Templates', icon: <FileText className="w-5 h-5" />, href: '/salon-data/templates', badge: 'New' },
     { id: 'config', label: 'UCR Rules', icon: <Scale className="w-5 h-5" />, href: '/salon-data/config' },
     { id: 'finance', label: 'Finance', icon: <TrendingDown className="w-5 h-5" />, href: '/salon-data/finance' },
     { id: 'pnl', label: 'P&L', icon: <BarChart3 className="w-5 h-5" />, href: '/salon-data/financials/p&l' },
     { id: 'bs', label: 'Balance Sheet', icon: <Scale className="w-5 h-5" />, href: '/salon-data/financials/bs' },
     { id: 'payroll', label: 'Payroll', icon: <DollarSign className="w-5 h-5" />, href: '/salon-data/payroll' },
-    { id: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-5 h-5" />, href: '/salon-data/whatsapp' }
+    { id: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-5 h-5" />, href: '/salon-data/whatsapp' },
+    { id: 'accountant', label: 'Smart Accountant', icon: <Brain className="w-5 h-5" />, href: '/salon-data/digital-accountant', badge: 'AI' }
   ]
 
   return (

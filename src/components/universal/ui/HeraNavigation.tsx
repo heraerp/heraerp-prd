@@ -12,7 +12,8 @@ import {
   Settings, 
   User,
   Menu,
-  X
+  X,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -30,6 +31,12 @@ const navigation: NavigationItem[] = [
     href: '/',
     icon: Home,
     description: 'Main dashboard'
+  },
+  {
+    name: 'POS',
+    href: '/pos',
+    icon: CreditCard,
+    description: 'Point of Sale System'
   },
   {
     name: 'PWM System',

@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import BookingAutomationPanel from '@/components/whatsapp/BookingAutomationPanel'
 import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
+import { WhatsAppCampaignManager } from '@/components/salon/whatsapp/WhatsAppCampaignManager'
 import { useRouter } from 'next/navigation'
 import { 
   MessageCircle,
@@ -777,29 +778,49 @@ export default function SalonWhatsAppPage() {
 
             <TabsContent value="tools" className="flex-1 m-0 overflow-hidden">
               <ScrollArea className="h-full p-4">
-              <div className="space-y-3">
-                <div className="text-sm text-[#8696a0] mb-4">
-                  MCP Tools Available:
-                </div>
-                {[
-                  { name: 'calendar.find_slots', status: 'ready', icon: Calendar },
-                  { name: 'wa.send', status: 'ready', icon: Send },
-                  { name: 'wa.window_state', status: 'ready', icon: Clock },
-                  { name: 'hera.txn.write', status: 'ready', icon: FileText },
-                  { name: 'pricing.estimate', status: 'ready', icon: DollarSign },
-                  { name: 'ics.generate', status: 'ready', icon: Download }
-                ].map(tool => (
-                  <div key={tool.name} className="flex items-center justify-between p-3 bg-[#202c33] border border-[#2a3942] rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <tool.icon className="w-4 h-4 text-[#8696a0]" />
-                      <code className="text-xs text-[#e9edef]">{tool.name}</code>
-                    </div>
-                    <Badge variant="outline" className="text-xs bg-[#00a884]/20 text-[#00a884] border-[#00a884]/50">
-                      {tool.status}
-                    </Badge>
+                <div className="space-y-6">
+                  {/* WhatsApp Campaign Manager */}
+                  <div>
+                    <WhatsAppCampaignManager 
+                      organizationId={organizationId}
+                      onCampaignCreate={(campaign) => {
+                        console.log('Creating campaign:', campaign)
+                        // Handle campaign creation
+                      }}
+                      onCampaignRun={(campaignId) => {
+                        console.log('Running campaign:', campaignId)
+                        // Handle campaign execution
+                      }}
+                    />
                   </div>
-                ))}
-              </div>
+
+                  {/* MCP Tools */}
+                  <div>
+                    <h3 className="text-sm font-medium text-[#e9edef] mb-3">
+                      MCP Tools Available
+                    </h3>
+                    <div className="space-y-2">
+                      {[
+                        { name: 'calendar.find_slots', status: 'ready', icon: Calendar },
+                        { name: 'wa.send', status: 'ready', icon: Send },
+                        { name: 'wa.window_state', status: 'ready', icon: Clock },
+                        { name: 'hera.txn.write', status: 'ready', icon: FileText },
+                        { name: 'pricing.estimate', status: 'ready', icon: DollarSign },
+                        { name: 'ics.generate', status: 'ready', icon: Download }
+                      ].map(tool => (
+                        <div key={tool.name} className="flex items-center justify-between p-3 bg-[#202c33] border border-[#2a3942] rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <tool.icon className="w-4 h-4 text-[#8696a0]" />
+                            <code className="text-xs text-[#e9edef]">{tool.name}</code>
+                          </div>
+                          <Badge variant="outline" className="text-xs bg-[#00a884]/20 text-[#00a884] border-[#00a884]/50">
+                            {tool.status}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </ScrollArea>
             </TabsContent>
           </Tabs>

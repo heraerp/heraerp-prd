@@ -11,7 +11,8 @@ import {
   Clock,
   DollarSign,
   BookOpen,
-  Coffee
+  Coffee,
+  CreditCard
 } from 'lucide-react'
 import { getModuleTheme } from '@/lib/theme/module-themes'
 
@@ -32,6 +33,14 @@ const sidebarItems = [
     href: '/restaurant/orders',
     badge: '12',
     color: 'hover:bg-red-100'
+  },
+  {
+    id: 'pos',
+    label: 'Point of Sale',
+    icon: <CreditCard className="w-5 h-5" />,
+    href: '/restaurant/pos',
+    color: 'hover:bg-purple-100',
+    badge: 'NEW'
   },
   {
     id: 'menu',
@@ -88,6 +97,14 @@ const sidebarItems = [
 ]
 
 const quickActions = [
+  {
+    id: 'open-pos',
+    label: 'Open POS',
+    icon: <CreditCard className="w-5 h-5" />,
+    href: '/restaurant/pos',
+    color: 'hover:bg-purple-100',
+    description: 'Launch Point of Sale'
+  },
   {
     id: 'new-order',
     label: 'New Order',

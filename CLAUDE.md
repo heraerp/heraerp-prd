@@ -2,6 +2,35 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🎛️ HERA MASTER CONTROL CENTER - ALWAYS USE FIRST
+
+**The Control Center is your automatic co-pilot for HERA development. It ensures system health, enforces guardrails, and maintains quality standards.**
+
+```bash
+# ALWAYS START WITH CONTROL CENTER CHECKS
+npm run cc                    # Open Control Center dashboard
+npm run cc:health            # Check system health (90%+ required)
+npm run cc:guardrails        # Validate all guardrails are passing
+npm run cc:deploy            # Verify deployment readiness
+
+# Control Center enforces:
+- Sacred 6 tables only (no custom tables)
+- Organization ID on all operations  
+- Smart codes for every transaction
+- Complete audit trails
+- Multi-tenant isolation
+- Build quality standards
+- Test coverage requirements
+```
+
+**IMPORTANT**: The Control Center runs automatically on:
+- Every `npm run dev` startup
+- Every git commit (pre-commit hook)
+- Every git push (pre-push hook) 
+- Every API call (middleware validation)
+
+If Control Center blocks you, fix the issue - don't bypass it!
+
 ## 🚨 QUICK REFERENCE - USE THESE TOOLS ALWAYS
 
 ```bash
@@ -33,7 +62,7 @@ node use-system-templates.js demo-complete-flow  # See templates in action
 
 # HERA Auto-Journal Engine (NEW CORE DNA COMPONENT)
 node auto-journal-dna-cli.js explore restaurant   # Restaurant auto-journal config
-node auto-journal-dna-cli.js test-relevance "HERA.REST.SALE.ORDER.v1"  # Test AI classification
+node auto-journal-dna-cli.js test-relevance "RESTAURANT_SALE_ORDER"  # Test AI classification
 node auto-journal-dna-cli.js compare-industries   # Compare all industry configs
 
 # HERA Universal Cashflow DNA System (NEW CORE DNA COMPONENT)
@@ -66,6 +95,12 @@ node profit-loss-dna-cli.js hair-talkz                # All Hair Talkz P&L state
 node profit-loss-dna-cli.js trends --org uuid --periods 12  # 12-month trend analysis
 node demo-hair-talkz-profit-loss.js ytd               # Working demo with real data
 
+# HERA Finance DNA Integration System (NEW CORE DNA COMPONENT) 🧬
+node finance-dna-cli.js activate --org uuid --industry restaurant  # Activate Finance DNA
+node finance-dna-cli.js rules --org uuid              # View posting rules
+node finance-dna-cli.js test-posting --org uuid --event sample.json  # Test GL posting
+node finance-dna-cli.js coa --org uuid                # View Chart of Accounts
+
 # HERA Enterprise Features (ENTERPRISE GA READY) 🔐
 node scripts/test-enterprise-features.js              # Test all enterprise capabilities
 # Access enterprise endpoints
@@ -73,20 +108,30 @@ curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/metrics  # Prometheus
 curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/audit/events  # Audit trail
 # Enterprise admin UI
 localhost:3000/admin/audit                            # Real-time audit viewer
+
+# HERA MASTER CONTROL CENTER (USE ALWAYS) 🎛️
+npm run cc                            # Open Control Center dashboard
+npm run cc:health                     # Quick system health check  
+npm run cc:deploy                     # Check deployment readiness
+npm run cc:guardrails                 # Validate guardrails
+node hera-control-center.js control   # Full system overview
+node hera-control-center.js health --detailed  # Detailed health metrics
+# Control Center Dashboard
+localhost:3000/control-center         # Visual control panel
 ```
 
-**SACRED RULES:**
+**KEY RULES:**
 1. NO STATUS COLUMNS - Use relationships
-2. NO SCHEMA CHANGES - Use dynamic fields
+2. NO STRUCTURAL CHANGES - Use dynamic fields
 3. ALWAYS USE CLI TOOLS - Not manual queries
 4. ORGANIZATION_ID REQUIRED - Multi-tenant isolation
-5. SMART CODES EVERYWHERE - Business context mandatory
+5. CLASSIFICATION REQUIRED - Business context mandatory
 6. ENTERPRISE FEATURES - Use middleware stack for all APIs
 7. **ALWAYS RUN `npm run predeploy` BEFORE PUSHING** - Catches build errors, import issues, and dependency problems automatically
 
 ## Project Overview
 
-HERA (Hierarchical Enterprise Resource Architecture) is a revolutionary ERP platform built on a **universal 6-table database architecture**, designed to handle infinite business complexity without requiring schema changes. HERA eliminates the traditional ERP implementation nightmare through mathematical proof that **any business process can be modeled with just 6 universal tables**.
+HERA (Hierarchical Enterprise Resource Architecture) is a revolutionary ERP platform built on a **universal database architecture**, designed to handle infinite business complexity with a flexible structure. HERA eliminates the traditional ERP implementation nightmare through a proven universal approach to business modeling.
 
 ### **🏆 PRODUCTION VALIDATED: Mario's Authentic Italian Restaurant**
 Our complete implementation proves HERA's universal architecture works for sophisticated business operations:
@@ -558,6 +603,14 @@ node explore-system-org.js copy-to <org-id>
 - Dynamic role-based permissions managed through universal entities
 - JWT tokens with organization context and automatic validation
 - Apple-inspired authentication interface with seamless user experience
+
+**✅ Finance DNA Integration** (`/src/lib/dna/integration/` - NEW CORE DNA COMPONENT)
+- Universal Finance↔SD↔MM↔HR integration for all business apps
+- Smart code-driven automatic GL posting with industry templates
+- Policy-as-data posting rules stored in universal tables
+- Zero integration code - apps just emit events with smart codes
+- Perfect audit trail with AI-enhanced confidence scoring
+- Module activation matrix with per-organization configuration
 
 ## 🏛️ IFRS LINEAGE - STANDARD FEATURE ACROSS ALL COA ✅
 
@@ -2437,6 +2490,19 @@ universal_transaction_lines → Invoice lines + journal entry lines
   - **Multi-Currency Ready**: Global business support with FX impact analysis
   - **Hair Talkz Validated**: 97.8% operating cash margin demonstrated with 65 transactions
   - **🧬 BREAKTHROUGH**: First universal cashflow system that works across all business types
+- **🔗 Finance DNA Integration** - Universal Finance↔SD↔MM↔HR integration system (NEW CORE DNA COMPONENT)
+  - **Universal Event Contract**: All modules emit standardized financial events
+  - **Smart Code-Driven Posting**: Automatic GL posting based on business context
+  - **Policy as Data**: Posting rules stored in database, not hardcoded
+  - **Module Activation Matrix**: Per-organization configuration and deactivation handling
+  - **Industry Templates**: Pre-configured rules for restaurant, salon, healthcare, manufacturing
+  - **Account Derivation Engine**: Dynamic GL account resolution from master data
+  - **Multi-Currency Support**: FX handling with gain/loss calculations
+  - **AI-Enhanced Confidence**: Scoring system for automatic vs staged posting
+  - **Perfect Audit Trail**: Complete traceability from source events to GL
+  - **Zero Integration Code**: Apps just emit events, Finance DNA handles the rest
+  - **CLI Management**: Complete command-line interface for activation and testing
+  - **🧬 REVOLUTIONARY**: First universal financial integration that works across all business apps
 - **🗄️ Document Management** - GSPU 2025 compliant with Supabase integration
 - **📋 Authentication System** - Dual-provider architecture with universal entities
 - **PWA Implementation** - Advanced offline support with universal data sync

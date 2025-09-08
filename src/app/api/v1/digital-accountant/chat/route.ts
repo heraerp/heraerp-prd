@@ -3,9 +3,51 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createDigitalAccountantService } from '@/lib/digital-accountant'
 import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage'
 import { supabaseAdmin } from '@/lib/supabase-server'
+// import { FinanceEventProcessor } from '@/lib/dna/integration/finance-event-processor'
 
 // Smart code patterns for intent detection
 const INTENT_PATTERNS = {
+  // Salon-specific patterns
+  salonSale: {
+    patterns: [
+      /^[\w\s]+\s+paid\s+\d+/i,  // "Maya paid 450"
+      /client\s+paid/i,
+      /customer\s+paid/i,
+      /received\s+payment/i,
+      /cash\s+sale/i,
+      /card\s+sale/i
+    ],
+    smartCode: 'HERA.SALON.SALE.POSTED.v1'
+  },
+  salonExpense: {
+    patterns: [
+      /bought\s+[\w\s]+\s+for/i,  // "Bought supplies for 250"
+      /paid\s+bill/i,
+      /paid\s+[\w\s]+\s+bill/i,    // "Paid electricity bill"
+      /purchased\s+/i,
+      /buy\s+supplies/i
+    ],
+    smartCode: 'HERA.SALON.EXPENSE.POSTED.v1'
+  },
+  salonCommission: {
+    patterns: [
+      /pay\s+[\w\s]+\s+commission/i,  // "Pay Sarah commission"
+      /pay\s+staff\s+commission/i,
+      /commission\s+for/i,
+      /pay\s+[\w\s]+\s+\d+%/i        // "Pay Sarah 40%"
+    ],
+    smartCode: 'HERA.SALON.PAYROLL.COMMISSION.v1'
+  },
+  salonSummary: {
+    patterns: [
+      /show.*today.*total/i,
+      /today.*summary/i,
+      /daily.*report/i,
+      /show.*sales/i,
+      /how.*much.*today/i
+    ],
+    smartCode: 'HERA.SALON.REPORT.DAILY.v1'
+  },
   journal: {
     patterns: [
       /post.*journal/i,
@@ -230,11 +272,14 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    console.log('Digital Accountant received:', { message, organizationId, context })
+    
     // Initialize chat storage
     const chatStorage = createAnalyticsChatStorage(organizationId)
     
     // Detect intent
     const intent = detectIntent(message)
+    console.log('Detected intent:', intent)
     
     if (!intent) {
       // No specific accounting intent detected
@@ -253,6 +298,405 @@ export async function POST(request: NextRequest) {
     
     // Process based on intent
     switch (intent.type) {
+      // Handle salon-specific intents
+      case 'salonSale': {
+        // Extract amount and client name from message
+        const amountMatch = message.match(/\$?([\d,]+(?:\.\d{2})?)/g)
+        const amount = amountMatch ? parseFloat(amountMatch[0].replace(/[$,]/g, '')) : 0
+        
+        // Extract client name - look for pattern "Name paid"
+        const nameMatch = message.match(/^([\w\s]+)\s+paid/i)
+        const clientName = nameMatch ? nameMatch[1].trim() : 'Client'
+        
+        // Determine payment method
+        const isCash = message.toLowerCase().includes('cash')
+        const isCard = message.toLowerCase().includes('card')
+        
+        // Calculate VAT (5% UAE)
+        const vatRate = 0.05
+        const baseAmount = amount / (1 + vatRate)
+        const vatAmount = amount - baseAmount
+        
+        // Create the transaction
+        const transactionCode = `SALE-${Date.now().toString().slice(-6)}`
+        
+        try {
+          // Create the main sale transaction
+          const { data: saleTransaction, error: txError } = await supabaseAdmin
+            .from('universal_transactions')
+            .insert({
+              organization_id: organizationId,
+              transaction_type: 'sale',
+              transaction_code: transactionCode,
+              transaction_date: new Date().toISOString(),
+              total_amount: amount,
+              smart_code: intent.smartCode,
+              metadata: {
+                client_name: clientName,
+                payment_method: isCash ? 'cash' : isCard ? 'card' : 'cash',
+                vat_included: true,
+                vat_amount: vatAmount,
+                base_amount: baseAmount,
+                source: 'Salon Digital Accountant',
+                status: 'completed'
+              }
+            })
+            .select()
+            .single()
+            
+          if (txError) throw txError
+          
+          // Create automatic journal entry using Finance DNA pattern
+          const journalCode = `JE-${transactionCode}`
+          const { data: journalEntry, error: jeError } = await supabaseAdmin
+            .from('universal_transactions')
+            .insert({
+              organization_id: organizationId,
+              transaction_type: 'journal_entry',
+              transaction_code: journalCode,
+              transaction_date: new Date().toISOString(),
+              total_amount: amount,
+              smart_code: 'HERA.FIN.GL.TXN.AUTO_POST.v1',
+              metadata: {
+                source_smart_code: intent.smartCode,
+                source_transaction: transactionCode,
+                posted_by: 'Finance DNA Engine',
+                status: 'posted'
+              }
+            })
+            .select()
+            .single()
+            
+          let journalMessage = '📋 Sale recorded (Journal pending)'
+          if (!jeError && journalEntry) {
+            // Create journal lines
+            const journalLines = [
+              {
+                organization_id: organizationId,
+                transaction_id: journalEntry.id,
+                line_number: 1,
+                line_type: 'journal_line',
+                description: 'Cash/Card',
+                quantity: 1,
+                unit_amount: amount,
+                line_amount: amount,
+                smart_code: 'HERA.FIN.GL.LINE.DEBIT.v1',
+                line_data: {
+                  account_code: '110000',
+                  account_name: 'Cash',
+                  debit: amount,
+                  credit: 0,
+                  role: 'Cash'
+                }
+              },
+              {
+                organization_id: organizationId,
+                transaction_id: journalEntry.id,
+                line_number: 2,
+                line_type: 'journal_line',
+                description: 'Service Revenue',
+                quantity: 1,
+                unit_amount: baseAmount,
+                line_amount: baseAmount,
+                smart_code: 'HERA.FIN.GL.LINE.CREDIT.v1',
+                line_data: {
+                  account_code: '400000',
+                  account_name: 'Service Revenue',
+                  debit: 0,
+                  credit: baseAmount,
+                  role: 'Revenue'
+                }
+              },
+              {
+                organization_id: organizationId,
+                transaction_id: journalEntry.id,
+                line_number: 3,
+                line_type: 'journal_line',
+                description: 'VAT Payable',
+                quantity: 1,
+                unit_amount: vatAmount,
+                line_amount: vatAmount,
+                smart_code: 'HERA.FIN.GL.LINE.CREDIT.v1',
+                line_data: {
+                  account_code: '220000',
+                  account_name: 'VAT Payable',
+                  debit: 0,
+                  credit: vatAmount,
+                  role: 'Tax'
+                }
+              }
+            ]
+            
+            const { error: lineError } = await supabaseAdmin
+              .from('universal_transaction_lines')
+              .insert(journalLines)
+            
+            if (!lineError) {
+              journalMessage = `✅ Journal Entry Posted: ${journalCode}`
+            }
+          }
+          
+          return NextResponse.json({
+            success: true,
+            type: 'salon_sale',
+            category: 'revenue',
+            amount: amount,
+            vat_amount: vatAmount,
+            message: `✅ Great! I've recorded the payment of AED ${amount}.\n\n💰 Money received and added to your daily sales.\n📊 VAT included: AED ${vatAmount.toFixed(2)}\n\n${journalMessage}\n\nYour books are updated automatically!`,
+            result: {
+              transaction_code: transactionCode,
+              total_amount: amount,
+              client_name: clientName,
+              journal_code: journalCode,
+              posting_status: 'posted'
+            },
+            journalEntry: {
+              debits: [{
+                account: 'Cash',
+                amount: amount
+              }],
+              credits: [
+                {
+                  account: 'Service Revenue',
+                  amount: baseAmount
+                },
+                {
+                  account: 'VAT Payable',
+                  amount: vatAmount
+                }
+              ]
+            }
+          })
+        } catch (error) {
+          console.error('Error recording sale:', error)
+          return NextResponse.json({
+            success: false,
+            message: `Sorry, I couldn't record that sale. Please try again.`,
+            error: error.message
+          })
+        }
+      }
+      
+      case 'salonExpense': {
+        // Extract amount from message
+        const amountMatch = message.match(/\$?([\d,]+(?:\.\d{2})?)/g)
+        const amount = amountMatch ? parseFloat(amountMatch[0].replace(/[$,]/g, '')) : 0
+        
+        // Determine expense category
+        let category = 'Operating Expense'
+        let expenseType = 'general'
+        
+        const lower = message.toLowerCase()
+        if (lower.includes('hair') || lower.includes('color') || lower.includes('shampoo')) {
+          category = 'Salon Supplies'
+          expenseType = 'supplies'
+        } else if (lower.includes('electricity') || lower.includes('water')) {
+          category = 'Utilities'
+          expenseType = 'utilities'
+        } else if (lower.includes('rent')) {
+          category = 'Rent'
+          expenseType = 'rent'
+        }
+        
+        // Extract vendor if mentioned
+        const vendorMatch = message.match(/from\s+([\w\s]+?)(?:\s+for|\s*$)/i)
+        const vendor = vendorMatch ? vendorMatch[1].trim() : null
+        
+        // Calculate VAT
+        const vatRate = 0.05
+        const baseAmount = amount / (1 + vatRate)
+        const vatAmount = amount - baseAmount
+        
+        const transactionCode = `EXP-${Date.now().toString().slice(-6)}`
+        
+        try {
+          const { data: expenseTransaction, error: txError } = await supabaseAdmin
+            .from('universal_transactions')
+            .insert({
+              organization_id: organizationId,
+              transaction_type: 'expense',
+              transaction_code: transactionCode,
+              transaction_date: new Date().toISOString(),
+              total_amount: amount,
+              smart_code: intent.smartCode,
+              metadata: {
+                category: category,
+                expense_type: expenseType,
+                vendor: vendor,
+                vat_included: true,
+                vat_amount: vatAmount,
+                base_amount: baseAmount,
+                source: 'Salon Digital Accountant',
+                status: 'completed'
+              }
+            })
+            .select()
+            .single()
+            
+          if (txError) throw txError
+          
+          return NextResponse.json({
+            success: true,
+            type: 'salon_expense',
+            category: 'expense',
+            amount: amount,
+            vat_amount: vatAmount,
+            vendor: vendor,
+            message: `✅ Expense recorded: AED ${amount}\n\n📂 Category: ${category}\n📊 VAT included: AED ${vatAmount.toFixed(2)}\n${vendor ? `🏪 Vendor: ${vendor}` : ''}\n\nAll set! Your expenses are tracked.`,
+            result: {
+              transaction_code: transactionCode,
+              total_amount: amount,
+              category: category
+            }
+          })
+        } catch (error) {
+          console.error('Error recording expense:', error)
+          return NextResponse.json({
+            success: false,
+            message: `Sorry, I couldn't record that expense. Please try again.`,
+            error: error.message
+          })
+        }
+      }
+      
+      case 'salonCommission': {
+        // Parse commission details
+        const amountMatch = message.match(/\$?([\d,]+(?:\.\d{2})?)/g)
+        const percentMatch = message.match(/(\d+)%/)
+        
+        let commissionAmount = 0
+        let staffName = 'Staff'
+        
+        // Extract staff name
+        const nameMatch = message.match(/pay\s+([\w\s]+?)(?:\s+commission|\s+\d+%)/i)
+        if (nameMatch) {
+          staffName = nameMatch[1].trim()
+        }
+        
+        // Calculate commission
+        if (percentMatch && amountMatch) {
+          const percentage = parseFloat(percentMatch[1]) / 100
+          const baseAmount = parseFloat(amountMatch[0].replace(/[$,]/g, ''))
+          commissionAmount = baseAmount * percentage
+        } else if (amountMatch) {
+          commissionAmount = parseFloat(amountMatch[0].replace(/[$,]/g, ''))
+        }
+        
+        const transactionCode = `COM-${Date.now().toString().slice(-6)}`
+        
+        try {
+          const { data: commissionTransaction, error: txError } = await supabaseAdmin
+            .from('universal_transactions')
+            .insert({
+              organization_id: organizationId,
+              transaction_type: 'payment',
+              transaction_code: transactionCode,
+              transaction_date: new Date().toISOString(),
+              total_amount: commissionAmount,
+              smart_code: intent.smartCode,
+              metadata: {
+                payment_type: 'commission',
+                staff_name: staffName,
+                commission_percentage: percentMatch ? parseFloat(percentMatch[1]) : null,
+                source: 'Salon Digital Accountant',
+                status: 'pending'
+              }
+            })
+            .select()
+            .single()
+            
+          if (txError) throw txError
+          
+          return NextResponse.json({
+            success: true,
+            type: 'salon_commission',
+            category: 'commission',
+            amount: commissionAmount,
+            message: `✅ Commission calculated!\n\n👩‍💼 Staff: ${staffName}\n${percentMatch ? `📊 Commission (${percentMatch[1]}%): AED ${commissionAmount.toFixed(2)}` : `💰 Commission: AED ${commissionAmount.toFixed(2)}`}\n💸 Ready to process\n\nWould you like to pay now or add to payroll?`,
+            result: {
+              transaction_code: transactionCode,
+              total_amount: commissionAmount,
+              staff_name: staffName
+            }
+          })
+        } catch (error) {
+          console.error('Error recording commission:', error)
+          return NextResponse.json({
+            success: false,
+            message: `Sorry, I couldn't calculate that commission. Please try again.`,
+            error: error.message
+          })
+        }
+      }
+      
+      case 'salonSummary': {
+        try {
+          // Get today's transactions
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          
+          const { data: todayTransactions, error } = await supabaseAdmin
+            .from('universal_transactions')
+            .select('*')
+            .eq('organization_id', organizationId)
+            .gte('created_at', today.toISOString())
+            .in('transaction_type', ['sale', 'expense', 'payment'])
+            
+          if (error) throw error
+          
+          // Calculate totals
+          let totalRevenue = 0
+          let totalExpenses = 0
+          let totalCommissions = 0
+          let clientCount = new Set()
+          
+          const services = {}
+          
+          todayTransactions?.forEach(tx => {
+            if (tx.transaction_type === 'sale') {
+              totalRevenue += tx.total_amount
+              if (tx.metadata?.client_name) {
+                clientCount.add(tx.metadata.client_name)
+              }
+              // Track services (simplified for demo)
+              const serviceName = tx.metadata?.service_type || 'General Service'
+              services[serviceName] = (services[serviceName] || 0) + 1
+            } else if (tx.transaction_type === 'expense') {
+              totalExpenses += tx.total_amount
+            } else if (tx.transaction_type === 'payment' && tx.metadata?.payment_type === 'commission') {
+              totalCommissions += tx.total_amount
+            }
+          })
+          
+          const netProfit = totalRevenue - totalExpenses - totalCommissions
+          
+          // Get top services
+          const topServices = Object.entries(services)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+          
+          return NextResponse.json({
+            success: true,
+            type: 'salon_summary',
+            category: 'summary',
+            message: `📅 Today's Summary - ${new Date().toLocaleDateString()}\n\n💰 Money In: AED ${totalRevenue.toFixed(2)}\n💸 Money Out: AED ${(totalExpenses + totalCommissions).toFixed(2)}\n📈 Net Profit: AED ${netProfit.toFixed(2)}\n\nClients served: ${clientCount.size}\n\n${topServices.length > 0 ? `Top Services Today:\n${topServices.map(([service, count], i) => `${i + 1}. ${service} (${count} clients)`).join('\n')}` : ''}\n\n${netProfit > 0 ? '🎉 Great day!' : '💪 Keep going!'}`,
+            result: {
+              total_revenue: totalRevenue,
+              total_expenses: totalExpenses + totalCommissions,
+              net_profit: netProfit,
+              client_count: clientCount.size
+            }
+          })
+        } catch (error) {
+          console.error('Error generating summary:', error)
+          return NextResponse.json({
+            success: false,
+            message: `Sorry, I couldn't generate today's summary. Please try again.`,
+            error: error.message
+          })
+        }
+      }
+      
       case 'journal': {
         const journalData = parseJournalFromNL(message)
         

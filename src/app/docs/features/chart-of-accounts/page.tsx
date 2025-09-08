@@ -37,7 +37,7 @@ export default function ChartOfAccountsDoc() {
           <h3 className="docs-nav-section-title">Related Topics</h3>
           <Link href="/docs/features/auto-journal" className="docs-nav-link">Auto-Journal Engine</Link>
           <Link href="/docs/features/budgeting" className="docs-nav-link">Budgeting System</Link>
-          <Link href="/docs/features/smart-codes" className="docs-nav-link">Smart Code System</Link>
+          <Link href="/docs/features/smart-codes" className="docs-nav-link">Business Classification</Link>
         </div>
       </nav>
       
@@ -107,7 +107,7 @@ export default function ChartOfAccountsDoc() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-success-fg" />
-                  No schema changes ever
+                  Flexible architecture
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-success-fg" />

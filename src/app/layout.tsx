@@ -6,7 +6,8 @@ import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
 import { DemoAuthHandler } from "@/components/auth/DemoAuthHandler";
 import { ToastProvider } from "@/components/ui/use-toast";
-import "./globals.css";
+// import "./globals.css"; // Original - temporarily disabled for migration testing
+import "./globals-migration-test.css"; // Migration test - imports both styles
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
 
 const inter = Inter({
@@ -77,7 +78,7 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
         suppressHydrationWarning={true}
       >
-        <HeraThemeProvider defaultTheme="light">
+        <HeraThemeProvider defaultTheme="dark">
           <ServiceWorkerProvider>
             <QueryProvider>
               <MultiOrgAuthProvider>

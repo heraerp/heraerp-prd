@@ -1,8 +1,8 @@
 // HERA Version Configuration
 export const APP_VERSION = {
   current: '1.2.0',
-  build: '20250906203052',
-  releaseDate: '2025-09-06',
+  build: '20250908144614',
+  releaseDate: '2025-09-08',
   features: [
     'Universal 6-table architecture',
     'PWA support with offline capability',

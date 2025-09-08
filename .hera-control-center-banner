@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# HERA Control Center Banner
+# Add to your shell profile: source .hera-control-center-banner
+
+echo ""
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║          🎛️  HERA MASTER CONTROL CENTER ACTIVE 🎛️            ║"
+echo "╠══════════════════════════════════════════════════════════════╣"
+echo "║  Quick Commands:                                             ║"
+echo "║  npm run cc         - Open Control Center                   ║"
+echo "║  npm run cc:health  - Check system health                   ║" 
+echo "║  npm run cc:deploy  - Check deployment readiness            ║"
+echo "║                                                              ║"
+echo "║  Control Center enforces all sacred rules automatically!     ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
+echo ""

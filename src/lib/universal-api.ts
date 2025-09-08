@@ -543,6 +543,26 @@ export class UniversalApiClient {
   }
 
   /**
+   * Transaction Line Operations
+   */
+  async createTransactionLine(data: {
+    transaction_id: string
+    line_number: number
+    line_amount: number
+    line_entity_id?: string
+    quantity?: number
+    unit_price?: number
+    smart_code?: string
+    metadata?: any
+  }, organizationId?: string) {
+    return this.create('universal_transaction_lines', data, organizationId)
+  }
+
+  async getTransactionLines(transactionId: string, organizationId?: string) {
+    return this.read('universal_transaction_lines', undefined, organizationId)
+  }
+
+  /**
    * Relationship Operations
    */
   async createRelationship(data: {

@@ -165,6 +165,25 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 overflow-x-hidden">
+      {/* Prelaunch Notification Banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+        <div className="relative z-10 flex items-center justify-center gap-3 text-sm md:text-base flex-wrap">
+          <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+            <Rocket className="w-3 h-3 mr-1" />
+            PRELAUNCH
+          </Badge>
+          <span className="font-medium">
+            Welcome to HERA ERP Preview! Feel free to explore. 
+            <span className="hidden sm:inline"> Official launch on</span>
+            <span className="font-bold sm:hidden"> Launching</span>
+            {' '}
+            <span className="font-bold text-yellow-300">October 1st, 2025</span>
+          </span>
+          <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse hidden sm:block" />
+        </div>
+      </div>
+
       {/* Background Pattern */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
@@ -314,7 +333,7 @@ export default function LandingPage() {
               { value: '30 sec', label: 'Setup Time', icon: Clock },
               { value: '99.9%', label: 'Uptime SLA', icon: Shield },
               { value: '$2M+', label: 'Cost Savings', icon: TrendingUp },
-              { value: '6 Tables', label: 'Universal Schema', icon: Zap }
+              { value: 'Flexible', label: 'Universal Schema', icon: Zap }
             ].map((stat, index) => (
               <div
                 key={index}

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { controlCenterMiddleware } from '@/lib/middleware/control-center-middleware'
 
 // Reserved subdomains that should not be treated as organizations
 const RESERVED_SUBDOMAINS = [
@@ -30,7 +31,12 @@ const DEMO_ROUTES = [
   'healthcare'
 ]
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // Run Control Center middleware first for API routes
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return await controlCenterMiddleware(request)
+  }
+  
   // Get hostname (e.g., acme.heraerp.com, app.heraerp.com, localhost:3000)
   const hostname = request.headers.get('host') || 'localhost:3000'
   

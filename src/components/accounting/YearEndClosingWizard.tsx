@@ -29,12 +29,15 @@ import {
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { createFiscalYearManager, type ClosingResult, type FiscalPeriod } from '@/lib/dna/fiscal-year/universal-fiscal-year'
+import { createFiscalCloseEngine, type FiscalCloseResult } from '@/lib/dna/fiscal-year/fiscal-close-engine'
 import { format } from 'date-fns'
 
 interface YearEndClosingWizardProps {
   className?: string
   fiscalYear?: number
   onComplete?: (result: ClosingResult) => void
+  retainedEarningsAccountId?: string
+  currentYearEarningsAccountId?: string
 }
 
 interface ChecklistItem {
@@ -56,9 +59,13 @@ export function YearEndClosingWizard({
   const [periods, setPeriods] = useState<FiscalPeriod[]>([])
   const [checklist, setChecklist] = useState<ChecklistItem[]>([])
   const [closingResult, setClosingResult] = useState<ClosingResult | null>(null)
+  const [closePreview, setClosePreview] = useState<FiscalCloseResult | null>(null)
   const [progress, setProgress] = useState(0)
+  const [retainedEarningsAccountId, setRetainedEarningsAccountId] = useState('')
+  const [currentYearEarningsAccountId, setCurrentYearEarningsAccountId] = useState('')
 
   const fiscalManager = currentOrganization ? createFiscalYearManager(currentOrganization.id) : null
+  const fiscalCloseEngine = currentOrganization ? createFiscalCloseEngine(currentOrganization.id) : null
 
   // Load fiscal periods
   useEffect(() => {

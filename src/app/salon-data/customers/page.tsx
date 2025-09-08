@@ -25,6 +25,7 @@ import {
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
+import { CustomerWhatsAppActions } from '@/components/salon/whatsapp/CustomerWhatsAppActions'
 import type { CustomerMetadata, CustomerBusinessRules } from '@/types/salon.types'
 import { 
   Users,
@@ -323,7 +324,7 @@ const getSegmentColor = (segment: string): string => {
 
 // ----------------------------- Customer Detail Modal ------------------------------------
 
-const CustomerDetailModal = ({ customer, onClose, onEdit, onDelete }: { customer: Customer | null, onClose: () => void, onEdit?: (customer: Customer) => void, onDelete?: (customerId: string) => void }) => {
+const CustomerDetailModal = ({ customer, onClose, onEdit, onDelete, organizationId }: { customer: Customer | null, onClose: () => void, onEdit?: (customer: Customer) => void, onDelete?: (customerId: string) => void, organizationId: string }) => {
   const [activeTab, setActiveTab] = useState('profile')
   const [mounted, setMounted] = useState(false)
   
@@ -699,6 +700,33 @@ const CustomerDetailModal = ({ customer, onClose, onEdit, onDelete }: { customer
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* WhatsApp Actions */}
+                {customer.whatsapp_consent && customer.whatsapp && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">WhatsApp Campaigns</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CustomerWhatsAppActions 
+                        customer={{
+                          id: customer.id,
+                          name: customer.entity_name,
+                          phone: customer.whatsapp || customer.phone || '',
+                          email: customer.email,
+                          metadata: {
+                            birthday: customer.dob,
+                            last_visit: customer.last_visit,
+                            total_visits: customer.visit_count,
+                            favorite_service: customer.color_formula ? 'Hair Color' : undefined,
+                            vip_status: customer.business_rules?.vip
+                          }
+                        }}
+                        organizationId={organizationId}
+                      />
+                    </CardContent>
+                  </Card>
+                )}
                 
               </div>
             </TabsContent>
@@ -2157,6 +2185,7 @@ export default function SalonCustomersPage() {
           onClose={() => setSelectedCustomer(null)}
           onEdit={(customer) => setEditingCustomer(customer)}
           onDelete={handleDeleteCustomer}
+          organizationId={organizationId}
         />
       )}
       

@@ -32,7 +32,7 @@
 }
 
 /* Dark theme */
-[data-theme="dark"] {
+.dark {
   --color-canvas-default: #0d1117;
   --color-canvas-subtle: #161b22;
   --color-canvas-inset: #010409;
@@ -376,6 +376,11 @@
     margin-left: 0;
     padding: 24px;
   }
+  
+  .docs-theme-toggle {
+    top: 1rem;
+    right: 1rem;
+  }
 }
 
 /* Syntax Highlighting */
@@ -428,4 +433,16 @@
 
 .hljs-emphasis {
   font-style: italic;
+}
+
+/* Theme Toggle for Docs */
+.docs-theme-toggle {
+  background-color: var(--color-canvas-subtle);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-fg-default);
+}
+
+.docs-theme-toggle:hover {
+  background-color: var(--color-neutral-subtle);
+  color: var(--color-accent-fg);
 }

@@ -68,7 +68,7 @@ export default function HowItWorks() {
           {/* System Overview */}
           <HeraSection
             title="Universal Architecture"
-            subtitle="Six tables that model any business - from healthcare to manufacturing to wealth management"
+            subtitle="Flexible structure that models any business - from healthcare to manufacturing to wealth management"
           >
             <HeraGrid cols={3} gap="lg">
               <HeraGlassCard animation="fade-in" animationDelay={100}>
@@ -83,9 +83,9 @@ export default function HowItWorks() {
                     Organizations, Entities, and Dynamic Data provide the foundation for any business model
                   </p>
                   <div className="text-xs text-muted-foreground space-y-1">
-                    <div>• core_organizations</div>
-                    <div>• core_entities</div>
-                    <div>• core_dynamic_data</div>
+                    <div>• Multi-tenant organizations</div>
+                    <div>• Universal entities</div>
+                    <div>• Flexible dynamic data</div>
                   </div>
                 </div>
               </HeraGlassCard>
@@ -102,7 +102,7 @@ export default function HowItWorks() {
                     Flexible relationship modeling connects any entity to any other entity
                   </p>
                   <div className="text-xs text-muted-foreground">
-                    <div>• core_relationships</div>
+                    <div>• Universal relationships</div>
                   </div>
                 </div>
               </HeraGlassCard>

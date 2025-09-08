@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
+import { PaymentWhatsAppActions } from '@/components/salon/whatsapp/PaymentWhatsAppActions'
 import type { CartItem, Payment, TransactionData } from '@/types/salon.types'
 import { 
   CreditCard,
@@ -1035,6 +1036,29 @@ export default function DubaiPOSSystem() {
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
+                
+                {/* WhatsApp Payment Confirmation */}
+                {customerPhone && lastTransactionData && (
+                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                    <PaymentWhatsAppActions
+                      payment={{
+                        id: lastTransactionData.id,
+                        amount: lastTransactionData.totals.total,
+                        date: lastTransactionData.date.toISOString(),
+                        customer_name: lastTransactionData.customer?.entity_name || 'Walk-in Customer',
+                        customer_phone: customerPhone,
+                        payment_method: lastTransactionData.payments[0]?.method || 'cash',
+                        transaction_id: lastTransactionData.receiptNumber,
+                        services: lastTransactionData.items.map(item => item.product.entity_name).join(', '),
+                        status: 'paid'
+                      }}
+                      organizationId={organizationId}
+                      onSendConfirmation={() => {
+                        console.log('WhatsApp payment confirmation sent')
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               
               <Button

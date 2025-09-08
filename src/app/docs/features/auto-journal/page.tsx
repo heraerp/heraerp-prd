@@ -25,7 +25,7 @@ export default function AutoJournalDoc() {
           <a href="#overview" className="docs-nav-link">Overview</a>
           <a href="#how-it-works" className="docs-nav-link">How It Works</a>
           <a href="#processing-modes" className="docs-nav-link">Processing Modes</a>
-          <a href="#smart-codes" className="docs-nav-link">Smart Code Integration</a>
+          <a href="#smart-codes" className="docs-nav-link">Business Classification</a>
           <a href="#business-impact" className="docs-nav-link">Business Impact</a>
           <a href="#api-reference" className="docs-nav-link">API Reference</a>
           <a href="#configuration" className="docs-nav-link">Configuration</a>
@@ -34,7 +34,7 @@ export default function AutoJournalDoc() {
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Related Topics</h3>
           <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">Chart of Accounts</Link>
-          <Link href="/docs/features/smart-codes" className="docs-nav-link">Smart Code System</Link>
+          <Link href="/docs/features/smart-codes" className="docs-nav-link">Business Classification</Link>
           <Link href="/docs/features/ai-integration" className="docs-nav-link">AI Integration</Link>
         </div>
       </nav>
@@ -105,7 +105,7 @@ export default function AutoJournalDoc() {
                 <div>
                   <h4 className="font-semibold">Transaction Analysis</h4>
                   <p className="text-sm text-muted-foreground">
-                    System examines transaction type, smart code, and metadata to determine journal relevance
+                    System examines transaction type, business classification, and metadata to determine journal relevance
                   </p>
                 </div>
               </div>
@@ -115,9 +115,9 @@ export default function AutoJournalDoc() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-semibold">Smart Code Classification</h4>
+                  <h4 className="font-semibold">Business Classification</h4>
                   <p className="text-sm text-muted-foreground">
-                    Smart codes provide instant context for appropriate GL account mapping
+                    Business classification provides instant context for appropriate GL account mapping
                   </p>
                 </div>
               </div>

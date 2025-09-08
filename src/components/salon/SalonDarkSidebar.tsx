@@ -50,6 +50,7 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
   { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar, badge: '12', badgeColor: 'bg-pink-500' },
+  { title: 'Appts', href: '/salon-data/appointments', icon: Clock, badge: '5', badgeColor: 'bg-yellow-500' },
   { title: 'Clients', href: '/salon-data/customers', icon: Users, badge: '248', badgeColor: 'bg-purple-500' },
   { title: 'Services', href: '/salon-data/services', icon: Scissors },
   { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },

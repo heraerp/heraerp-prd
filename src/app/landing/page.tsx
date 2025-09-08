@@ -73,7 +73,7 @@ export default function LandingPage() {
       title: "Universal Configuration",
       description: "HERA generates your custom business modules",
       icon: Zap,
-      details: "Using our 6-table universal architecture, we configure your entire business system in hours, not months."
+      details: "Using our flexible universal architecture, we configure your entire business system in hours, not months."
     },
     {
       day: "Day 5-7",

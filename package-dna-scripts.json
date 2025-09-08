@@ -1,0 +1,39 @@
+{
+  "name": "hera-dna-color-system",
+  "description": "HERA DNA Color Palette Scripts - Add these to your package.json",
+  "scripts": {
+    "dna:colors": "node -e \"console.log('🧬 HERA DNA Color System Active')\"",
+    "dna:contrast": "node scripts/contrast-check-dna.js",
+    "dna:contrast:detailed": "node scripts/contrast-check-dna.js --detailed",
+    "dna:contrast:ci": "node scripts/contrast-check-dna.js",
+    "dna:generate-css": "node -e \"const { HeraCSSVariableGenerator } = require('./src/lib/dna/design-system/hera-color-palette-dna'); console.log(HeraCSSVariableGenerator.generateCompleteCSSVars())\"",
+    "dna:generate-tailwind": "node -e \"const { HeraTailwindConfigGenerator } = require('./src/lib/dna/design-system/hera-color-palette-dna'); console.log(HeraTailwindConfigGenerator.generateTailwindConfigString())\"",
+    "dna:theme-test": "node -e \"const { HeraThemeManager } = require('./src/lib/dna/design-system/hera-color-palette-dna'); const tm = HeraThemeManager.getInstance(); console.log('Theme:', tm.getTheme()); tm.toggleTheme(); console.log('Toggled to:', tm.getTheme())\"",
+    "dna:validate-colors": "npm run dna:contrast && echo '✅ All color validations passed!'",
+    "dna:build-check": "npm run dna:contrast && npm run build",
+    "predeploy": "npm run dna:validate-colors && npm run build",
+    "precommit": "npm run dna:contrast:ci",
+    "test:accessibility": "npm run dna:contrast:detailed"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/hera-erp"
+  },
+  "keywords": [
+    "hera",
+    "dna",
+    "design-system",
+    "colors",
+    "accessibility",
+    "contrast",
+    "wcag",
+    "tailwind",
+    "css-variables"
+  ]
+}

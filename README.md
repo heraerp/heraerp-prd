@@ -5,7 +5,7 @@
 
 ## 🎯 **What is HERA?**
 
-HERA (Hierarchical Enterprise Resource Architecture) is a revolutionary ERP platform that uses **6 universal tables** to model any business complexity with **zero schema changes**. Unlike traditional ERPs that require months of customization, HERA delivers **enterprise-grade systems in 30 seconds**.
+HERA (Hierarchical Enterprise Resource Architecture) is a revolutionary ERP platform that uses a **flexible universal architecture** to model any business complexity. Unlike traditional ERPs that require months of customization, HERA delivers **enterprise-grade systems in 30 seconds**.
 
 ### **🏆 Proven Success: Mario's Authentic Italian Restaurant**
 Our complete implementation validates HERA's universal architecture:
@@ -19,26 +19,22 @@ Our complete implementation validates HERA's universal architecture:
 
 ## 🏗️ **Universal Architecture Foundation**
 
-### **The Sacred 6-Table Pattern**
-Every business, regardless of industry, uses exactly the same foundation:
+### **The Universal Pattern**
+Every business, regardless of industry, uses the same flexible foundation:
 
-```sql
-core_organizations        -- Multi-tenant business isolation
-core_entities            -- ALL business objects (customers, products, GL accounts)
-core_dynamic_data         -- Schema-less custom fields for any industry  
-core_relationships       -- Universal business connections and hierarchies
-universal_transactions   -- ALL business activities (sales, purchases, labor)
-universal_transaction_lines -- Transaction details and line-item breakdowns
-```
+- **Organizations** - Multi-tenant business isolation
+- **Entities** - All business objects (customers, products, GL accounts)
+- **Dynamic Data** - Flexible custom fields for any industry  
+- **Relationships** - Universal business connections and hierarchies
+- **Transactions** - All business activities (sales, purchases, labor)
+- **Transaction Details** - Line-item breakdowns and analysis
 
-### **Smart Code Intelligence**
-Universal pattern that adapts to any industry:
-```typescript
-HERA.REST.SALE.ORDER.v1        // Restaurant food sales
-HERA.HLTH.PATIENT.VISIT.v1     // Healthcare consultations
-HERA.MFG.PRODUCTION.ORDER.v1   // Manufacturing work orders
-HERA.PROF.TIME.BILLING.v1      // Professional services billing
-```
+### **Intelligent Business Classification**
+Universal patterns that adapt to any industry:
+- Restaurant food sales and operations
+- Healthcare consultations and patient care
+- Manufacturing work orders and production
+- Professional services time and billing
 
 ---
 

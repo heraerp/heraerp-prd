@@ -11,7 +11,8 @@ import {
   Calculator,
   MessageSquare,
   TrendingUp,
-  Banknote
+  Banknote,
+  GitBranch
 } from 'lucide-react'
 
 export default function DocsHome() {
@@ -22,6 +23,7 @@ export default function DocsHome() {
           <h3 className="docs-nav-section-title">Getting Started</h3>
           <Link href="/docs/overview" className="docs-nav-link">Overview</Link>
           <Link href="/docs/quickstart" className="docs-nav-link">Quick Start</Link>
+          <Link href="/docs/methodology" className="docs-nav-link">Implementation Methodology</Link>
           <Link href="/docs/architecture" className="docs-nav-link">Architecture</Link>
         </div>
         
@@ -29,7 +31,7 @@ export default function DocsHome() {
           <h3 className="docs-nav-section-title">Core Features</h3>
           <Link href="/docs/features/universal-api" className="docs-nav-link">Universal API</Link>
           <Link href="/docs/features/multi-tenant" className="docs-nav-link">Multi-Tenant SaaS</Link>
-          <Link href="/docs/features/smart-codes" className="docs-nav-link">Smart Code System</Link>
+          <Link href="/docs/features/smart-codes" className="docs-nav-link">Intelligent Classification</Link>
           <Link href="/docs/features/ai-integration" className="docs-nav-link">AI Integration</Link>
         </div>
         
@@ -67,15 +69,26 @@ export default function DocsHome() {
       <main className="docs-main">
         <h1>HERA Documentation</h1>
         <p className="text-lg text-muted-foreground mb-8">
-          Enterprise Resource Planning with Universal 6-Table Architecture
+          Enterprise Resource Planning with Universal Architecture
         </p>
         
         <div className="docs-feature-grid">
           <div className="docs-feature-card">
+            <GitBranch className="docs-feature-icon" />
+            <h3 className="docs-card-title">Implementation Methodology</h3>
+            <p className="docs-card-description">
+              21-day implementation journey with MCP orchestration. From requirements to production with flexible architecture.
+            </p>
+            <Link href="/docs/methodology" className="text-accent-fg hover:underline">
+              View Methodology →
+            </Link>
+          </div>
+          
+          <div className="docs-feature-card">
             <Database className="docs-feature-icon" />
             <h3 className="docs-card-title">Universal Architecture</h3>
             <p className="docs-card-description">
-              6 tables handle infinite business complexity without schema changes. Learn how HERA's revolutionary architecture works.
+              Revolutionary architecture handles infinite business complexity. Learn how HERA's innovative approach works.
             </p>
             <Link href="/docs/architecture" className="text-accent-fg hover:underline">
               Explore Architecture →
@@ -145,7 +158,7 @@ export default function DocsHome() {
               <h4 className="font-medium mb-2">Popular Features</h4>
               <ul className="space-y-1 text-sm">
                 <li><Link href="/docs/features/auto-journal" className="text-accent-fg hover:underline">Auto-Journal Engine</Link></li>
-                <li><Link href="/docs/features/smart-codes" className="text-accent-fg hover:underline">Smart Code System</Link></li>
+                <li><Link href="/docs/features/smart-codes" className="text-accent-fg hover:underline">Intelligent Classification</Link></li>
                 <li><Link href="/docs/features/budgeting" className="text-accent-fg hover:underline">Universal Budgeting</Link></li>
                 <li><Link href="/docs/features/ifrs-compliance" className="text-accent-fg hover:underline">IFRS Compliance</Link></li>
               </ul>
@@ -160,10 +173,18 @@ export default function DocsHome() {
               </ul>
             </div>
             <div>
+              <h4 className="font-medium mb-2">Implementation Resources</h4>
+              <ul className="space-y-1 text-sm">
+                <li><Link href="/docs/methodology" className="text-accent-fg hover:underline">21-Day Methodology</Link></li>
+                <li><Link href="/docs/methodology/complete-guide" className="text-accent-fg hover:underline">Complete Guide (PDF)</Link></li>
+                <li><Link href="/docs/methodology/detailed-flow" className="text-accent-fg hover:underline">Visual Diagrams</Link></li>
+                <li><Link href="/docs/quickstart" className="text-accent-fg hover:underline">Quick Start</Link></li>
+              </ul>
+            </div>
+            <div>
               <h4 className="font-medium mb-2">Getting Help</h4>
               <ul className="space-y-1 text-sm">
                 <li><a href="https://github.com/anthropics/claude-code/issues" className="text-accent-fg hover:underline">Report Issues</a></li>
-                <li><Link href="/docs/quickstart" className="text-accent-fg hover:underline">Getting Started</Link></li>
                 <li><Link href="/docs/overview" className="text-accent-fg hover:underline">Overview</Link></li>
                 <li><a href="mailto:support@heraerp.com" className="text-accent-fg hover:underline">Contact Support</a></li>
               </ul>

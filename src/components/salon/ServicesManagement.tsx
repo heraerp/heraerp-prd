@@ -49,6 +49,8 @@ import {
   RefreshCw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ServiceWhatsAppActions } from '@/components/salon/whatsapp/ServiceWhatsAppActions'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 
@@ -220,6 +222,10 @@ const mockServices: Service[] = [
 // ----------------------------- Main Component ------------------------------------
 
 export default function ServicesManagement() {
+  // ----------------------------- Get Organization ID ------------------------------------
+  const { currentOrganization } = useMultiOrgAuth()
+  const organizationId = currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || ''
+  
   // ----------------------------- State Management ------------------------------------
   const [activeTab, setActiveTab] = useState<'services' | 'categories'>('services')
   const [services, setServices] = useState<Service[]>(mockServices)
@@ -742,6 +748,27 @@ export default function ServicesManagement() {
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
+
+                            {/* WhatsApp Campaign for New Services */}
+                            {service.createdAt && new Date().getTime() - service.createdAt.getTime() < 30 * 24 * 60 * 60 * 1000 && (
+                              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <ServiceWhatsAppActions
+                                  service={{
+                                    id: service.id,
+                                    name: service.name,
+                                    price: service.price,
+                                    duration: service.duration,
+                                    description: service.description,
+                                    category: service.categoryName,
+                                    isNew: true
+                                  }}
+                                  organizationId={organizationId}
+                                  onCampaignSent={() => {
+                                    console.log(`WhatsApp campaign sent for service: ${service.name}`)
+                                  }}
+                                />
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}

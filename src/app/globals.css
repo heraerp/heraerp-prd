@@ -1580,6 +1580,77 @@ html {
    =============================================== */
 
 /* ===============================================
+   HERA DARK INPUT FIELDS - LEAVE MANAGEMENT
+   =============================================== */
+
+/* Dark theme input fields for glassmorphism backgrounds */
+.hera-dark-input {
+  background-color: rgba(31, 41, 55, 0.5) !important;
+  border: 1px solid rgb(75, 85, 99) !important;
+  color: white !important;
+}
+
+.hera-dark-input:hover {
+  background-color: rgba(31, 41, 55, 0.7) !important;
+  border-color: rgb(107, 114, 128) !important;
+}
+
+.hera-dark-input:focus {
+  background-color: rgba(31, 41, 55, 0.8) !important;
+  border-color: rgb(99, 102, 241) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Dark theme select dropdowns */
+.hera-dark-select-trigger {
+  background-color: rgba(31, 41, 55, 0.5) !important;
+  border: 1px solid rgb(75, 85, 99) !important;
+  color: white !important;
+}
+
+.hera-dark-select-trigger:hover {
+  background-color: rgba(31, 41, 55, 0.7) !important;
+  border-color: rgb(107, 114, 128) !important;
+}
+
+.hera-dark-select-trigger:focus {
+  background-color: rgba(31, 41, 55, 0.8) !important;
+  border-color: rgb(99, 102, 241) !important;
+}
+
+/* Placeholder text in dark inputs */
+.hera-dark-input::placeholder {
+  color: rgb(156, 163, 175) !important;
+}
+
+/* Date picker icon inversion for dark theme */
+.hera-dark-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* Checkbox styling for dark theme */
+.hera-dark-checkbox {
+  background-color: rgba(31, 41, 55, 0.5) !important;
+  border: 1px solid rgb(75, 85, 99) !important;
+}
+
+.hera-dark-checkbox:checked {
+  background-color: rgb(99, 102, 241) !important;
+  border-color: rgb(99, 102, 241) !important;
+}
+
+/* Label styling for dark forms */
+.hera-dark-label {
+  color: rgb(209, 213, 219) !important;
+}
+
+/* ===============================================
+   END HERA DARK INPUT FIELDS
+   =============================================== */
+
+/* ===============================================
    HERA DNA ACCESSIBILITY STANDARDS
    WCAG AA Compliance for Text Contrast
    =============================================== */

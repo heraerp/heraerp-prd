@@ -1,0 +1,32 @@
+{
+  "created": "2025-09-06T20:48:20.214Z",
+  "updated": "2025-09-06T20:56:00.000Z",
+  "phase": "component-migration",
+  "componentsToMigrate": [
+    {
+      "path": "src/components/ui/card.tsx",
+      "status": "migrated",
+      "dnaPath": "src/components/ui/card.dna.tsx",
+      "notes": "Basic card with glass effects"
+    },
+    {
+      "path": "src/components/franchise/StatsCard.tsx", 
+      "status": "migrated",
+      "dnaPath": "src/components/franchise/StatsCard.dna.tsx",
+      "notes": "Stats card with improved dark mode visibility"
+    }
+  ],
+  "cssToClean": [
+    {
+      "file": "src/app/globals.css",
+      "lines": "1714-1950",
+      "issue": "Global text color overrides",
+      "status": "using-migration-test-css"
+    }
+  ],
+  "status": "in-progress",
+  "testPages": [
+    "/test-dna-migration",
+    "/test-dna-stats"
+  ]
+}
