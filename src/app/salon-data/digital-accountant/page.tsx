@@ -166,6 +166,7 @@ I'll handle all the technical accounting for you! 💅`,
   const [activeView, setActiveView] = useState<'chat' | 'expense' | 'history' | 'insights'>('chat')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [showScrollButton, setShowScrollButton] = useState(false)
+  const [useMCP, setUseMCP] = useState(true) // Default to MCP mode
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -241,13 +242,18 @@ I'll handle all the technical accounting for you! 💅`,
     setShowExamples(false)
     
     try {
-      // Call the digital accountant API
-      const response = await fetch('/api/v1/digital-accountant/chat', {
+      // Use MCP or pattern-based API based on toggle
+      const apiEndpoint = useMCP 
+        ? '/api/v1/digital-accountant/mcp'  // Claude-powered intelligent responses
+        : '/api/v1/digital-accountant/chat' // Pattern-based responses
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: trimmedInput,
           organizationId,
+          sessionId: sessionStorage.getItem('chatSessionId') || undefined,
           context: {
             mode: 'salon',
             businessType: 'salon',
@@ -257,6 +263,11 @@ I'll handle all the technical accounting for you! 💅`,
       })
       
       const data = await response.json()
+      
+      // Store session ID for conversation continuity
+      if (data.sessionId) {
+        sessionStorage.setItem('chatSessionId', data.sessionId)
+      }
       
       // Create assistant response
       const assistantMessage: SalonMessage = {
@@ -720,10 +731,21 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
               </div>
             </div>
             
-            <Badge variant="secondary" className="gap-1">
-              <Sparkles className="w-3 h-3" />
-              AI Powered
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge 
+                variant={useMCP ? "default" : "secondary"} 
+                className="gap-1 cursor-pointer"
+                onClick={() => setUseMCP(!useMCP)}
+                title={useMCP ? "Using Claude AI (Click to switch to pattern mode)" : "Using pattern matching (Click to switch to Claude AI)"}
+              >
+                <Brain className="w-3 h-3" />
+                {useMCP ? "Claude AI" : "Pattern Mode"}
+              </Badge>
+              <Badge variant="secondary" className="gap-1">
+                <Sparkles className="w-3 h-3" />
+                AI Powered
+              </Badge>
+            </div>
           </div>
         </div>
         
