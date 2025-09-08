@@ -38,6 +38,16 @@ const INTENT_PATTERNS = {
     ],
     smartCode: 'HERA.SALON.PAYROLL.COMMISSION.v1'
   },
+  salonPayCommission: {
+    patterns: [
+      /^pay\s+now$/i,                // "pay now"
+      /^yes\s+pay$/i,                // "yes pay"
+      /^process\s+payment$/i,        // "process payment"
+      /^confirm\s+payment$/i,        // "confirm payment"
+      /^pay\s+commission\s+now$/i    // "pay commission now"
+    ],
+    smartCode: 'HERA.SALON.PAYROLL.PAY.v1'
+  },
   salonSummary: {
     patterns: [
       /show.*today.*total/i,
@@ -629,6 +639,71 @@ export async function POST(request: NextRequest) {
         }
       }
       
+      case 'salonPayCommission': {
+        try {
+          // Check for pending commission transaction in recent messages or session
+          const recentCommissions = await supabaseAdmin
+            .from('universal_transactions')
+            .select('*')
+            .eq('organization_id', organizationId)
+            .eq('transaction_type', 'payment')
+            .eq('metadata->payment_type', 'commission')
+            .eq('metadata->status', 'pending')
+            .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // Last 5 minutes
+            .order('created_at', { ascending: false })
+            .limit(1)
+            
+          if (!recentCommissions.data || recentCommissions.data.length === 0) {
+            return NextResponse.json({
+              success: false,
+              message: "I don't see any pending commission payments. Please tell me who you want to pay commission to and how much.",
+              category: 'commission'
+            })
+          }
+          
+          const commissionTx = recentCommissions.data[0]
+          const staffName = commissionTx.metadata?.staff_name || 'Staff'
+          const amount = commissionTx.total_amount
+          
+          // Update the commission transaction to paid status
+          const { error: updateError } = await supabaseAdmin
+            .from('universal_transactions')
+            .update({
+              metadata: {
+                ...commissionTx.metadata,
+                status: 'paid',
+                paid_at: new Date().toISOString(),
+                payment_method: 'cash' // Default to cash for salon
+              }
+            })
+            .eq('id', commissionTx.id)
+            
+          if (updateError) throw updateError
+          
+          return NextResponse.json({
+            success: true,
+            type: 'salon_payment',
+            category: 'payment',
+            amount: amount,
+            message: `✅ Commission paid successfully!\n\n👩‍💼 Staff: ${staffName}\n💵 Amount: AED ${amount.toFixed(2)}\n💸 Payment Method: Cash\n📅 Paid: ${new Date().toLocaleString()}\n\nThe commission has been recorded and ${staffName}'s payment is complete!`,
+            result: {
+              transaction_id: commissionTx.id,
+              transaction_code: commissionTx.transaction_code,
+              total_amount: amount,
+              staff_name: staffName
+            }
+          })
+          
+        } catch (error) {
+          console.error('Error processing commission payment:', error)
+          return NextResponse.json({
+            success: false,
+            message: "Sorry, I couldn't process the commission payment. Please try again.",
+            error: error.message
+          })
+        }
+      }
+      
       case 'salonSummary': {
         try {
           // Get today's transactions
@@ -1101,12 +1176,94 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      default:
+      default: {
+        // Check if it might be a contextual response
+        const lowerMessage = message.toLowerCase()
+        
+        // Check for common contextual responses
+        if (lowerMessage.includes('thank') || lowerMessage === 'thanks') {
+          return NextResponse.json({
+            success: true,
+            message: "You're welcome! I'm here to help with all your salon accounting needs. Just let me know what you need!",
+            category: 'general'
+          })
+        }
+        
+        if (lowerMessage === 'ok' || lowerMessage === 'okay' || lowerMessage === 'great') {
+          return NextResponse.json({
+            success: true,
+            message: "Perfect! Is there anything else I can help you with today?",
+            category: 'general'
+          })
+        }
+        
+        // For salon mode, provide helpful suggestions
+        if (context?.mode === 'salon') {
+          // Try using AI to understand the query better
+          try {
+            const aiResponse = await fetch(`${request.url.origin}/api/v1/ai/universal`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'custom_request',
+                smart_code: 'HERA.SALON.AI.CHAT.v1',
+                task_type: 'chat',
+                prompt: `You are a friendly salon accounting assistant. The user said: "${message}". 
+                
+Context: This might be related to a recent commission calculation where you asked if they want to "pay now or add to payroll".
+
+If they seem to be confirming a payment, respond with encouragement to use the specific commands.
+Otherwise, help them with salon accounting in simple terms.
+
+Keep your response brief and friendly, focused on salon business operations like:
+- Recording client payments
+- Tracking expenses
+- Calculating staff commissions
+- Daily summaries`,
+                max_tokens: 150,
+                temperature: 0.7,
+                fallback_enabled: true,
+                organization_id: organizationId
+              })
+            })
+            
+            if (aiResponse.ok) {
+              const aiData = await aiResponse.json()
+              if (aiData.success && aiData.response) {
+                return NextResponse.json({
+                  success: true,
+                  message: aiData.response,
+                  category: 'general',
+                  ai_assisted: true
+                })
+              }
+            }
+          } catch (aiError) {
+            console.error('AI fallback error:', aiError)
+          }
+          
+          // If AI fails, return helpful suggestions
+          return NextResponse.json({
+            success: false,
+            message: `I didn't quite understand that. Here's what I can help with:
+
+💇 **Record a Sale**: "Sarah paid 350 for coloring"
+🛍️ **Record an Expense**: "Bought hair products for 200"
+💰 **Pay Commission**: "Pay Maya her commission"
+📊 **Daily Summary**: "Show today's total"
+
+Just tell me what happened in simple words!`,
+            category: 'help'
+          })
+        }
+        
+        // For general mode, provide accounting-focused help
         return NextResponse.json({
           success: false,
-          message: "I couldn't understand that accounting request. Please try again with more specific details.",
+          message: `I understand accounting operations like posting journals, creating invoices, recording payments, and generating reports. Please be more specific about what you'd like to do.`,
           confidence: 0
         })
+      }
     }
     
   } catch (error) {
