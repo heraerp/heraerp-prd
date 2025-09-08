@@ -9,12 +9,11 @@ import {
   BasicTracerProvider, 
   ConsoleSpanExporter, 
   SimpleSpanProcessor,
-  SpanContext,
-  SpanKind
+  SpanContext
 } from '@opentelemetry/sdk-trace-base'
 import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
-import { trace, context, SpanStatusCode } from '@opentelemetry/api'
+import { trace, context, SpanStatusCode, SpanKind } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { v4 as uuidv4 } from 'uuid'
 

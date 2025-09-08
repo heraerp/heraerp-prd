@@ -1,6 +1,6 @@
 // HERA Service Worker v2.0.0 - Enhanced Update System
-const CACHE_NAME = 'hera-cache-v20250908144614';
-const APP_VERSION = '20250908144614';
+const CACHE_NAME = 'hera-cache-v20250908203821';
+const APP_VERSION = '20250908203821';
 const UPDATE_CHECK_INTERVAL = 30 * 1000; // Check every 30 seconds in production
 const SKIP_CACHE_PATTERNS = [
   /\/api\//,

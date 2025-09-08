@@ -145,7 +145,7 @@ export default function MethodologyPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <li>• Provision client.heraerp.com/{industry}</li>
+                  <li>• Provision client.heraerp.com/sandbox</li>
                   <li>• Load template data</li>
                   <li>• Generate test scenarios</li>
                   <li>• Client playground testing</li>
@@ -217,7 +217,7 @@ export default function MethodologyPage() {
                   <li>• Production cutover</li>
                   <li>• CI guardrails validation</li>
                   <li>• Fiscal setup activation</li>
-                  <li>• client.heraerp.com/{org} live</li>
+                  <li>• client.heraerp.com/production live</li>
                 </ul>
               </CardContent>
             </Card>

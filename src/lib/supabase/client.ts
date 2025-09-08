@@ -24,3 +24,6 @@ export const createClient = () => {
     }
   })
 }
+
+// Legacy support - alias for createClient
+export const getSupabase = createClient

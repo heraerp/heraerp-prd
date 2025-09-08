@@ -16,7 +16,7 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Template,
+  FileText,
   Sparkles,
   Search,
   Plus,
@@ -186,7 +186,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                 onClick={() => setShowTemplates(true)}
                 className="flex items-center gap-2"
               >
-                <Template className="w-4 h-4" />
+                <FileText className="w-4 h-4" />
                 Templates
               </Button>
               <Button
@@ -324,7 +324,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
               className="mt-4"
               variant="outline"
             >
-              <Template className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
               Browse Templates
             </Button>
           </CardContent>

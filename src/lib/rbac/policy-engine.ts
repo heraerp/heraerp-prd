@@ -6,7 +6,7 @@
 import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 import yaml from 'js-yaml'
-import minimatch from 'minimatch'
+import { minimatch } from 'minimatch'
 
 export interface PolicyRule {
   role: string

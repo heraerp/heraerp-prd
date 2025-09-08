@@ -108,3 +108,10 @@ export function useToast() {
   }
   return context
 }
+
+// Export toast function directly for convenience
+export const toast = (props: Omit<Toast, "id">) => {
+  // This will only work within a ToastProvider context
+  // For usage outside context, consider using a global toast system
+  throw new Error("toast() must be used within useToast() hook inside ToastProvider")
+}

@@ -216,7 +216,7 @@ export default function CompleteGuidePage() {
                 phase: 3,
                 name: "Sandbox Testing",
                 days: "6-10",
-                description: "Client playground at client.heraerp.com/{industry}, real-time feedback"
+                description: "Client playground at client.heraerp.com/sandbox, real-time feedback"
               },
               {
                 phase: 4,
