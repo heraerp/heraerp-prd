@@ -1,6 +1,6 @@
 // HERA Service Worker v3.0.2 - Aggressive Update Strategy
-const CACHE_NAME = 'hera-cache-v20250908203821';
-const APP_VERSION = '20250908203821';
+const CACHE_NAME = 'hera-cache-v20250908211542';
+const APP_VERSION = '20250908211542';
 
 // Skip caching for these patterns - always fetch fresh
 const SKIP_CACHE_PATTERNS = [

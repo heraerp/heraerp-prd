@@ -56,7 +56,9 @@ import {
   Settings,
   Download,
   Moon,
-  Sun
+  Sun,
+  ArrowDown,
+  ChevronDown
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -163,30 +165,61 @@ I'll handle all the technical accounting for you! 💅`,
   const [showExamples, setShowExamples] = useState(true)
   const [activeView, setActiveView] = useState<'chat' | 'expense' | 'history' | 'insights'>('chat')
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [showScrollButton, setShowScrollButton] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   
   const organizationId = currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
   
-  // Auto-scroll to bottom (WhatsApp style)
+  // Auto-scroll to bottom with smooth animation
   useEffect(() => {
-    // Small delay to ensure DOM is updated, then scroll to bottom
-    const timer = setTimeout(() => {
+    // Use requestAnimationFrame for smoother scrolling
+    const scrollToBottom = () => {
       if (scrollAreaRef.current) {
-        // Find the ScrollArea viewport (Radix UI specific)
         const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
         if (viewport) {
-          // Scroll to the absolute bottom
-          viewport.scrollTop = viewport.scrollHeight
+          // Smooth scroll to bottom
+          viewport.scrollTo({
+            top: viewport.scrollHeight,
+            behavior: 'smooth'
+          })
         }
       }
-      // Also use scrollIntoView as backup
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    }, 100)
+    }
+    
+    // Delay to ensure DOM is updated
+    const timer = setTimeout(() => {
+      requestAnimationFrame(scrollToBottom)
+    }, 50)
     
     return () => clearTimeout(timer)
   }, [messages])
+  
+  // Detect scroll position
+  useEffect(() => {
+    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+    if (!viewport) return
+    
+    const handleScroll = () => {
+      const isNearBottom = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 100
+      setShowScrollButton(!isNearBottom)
+    }
+    
+    viewport.addEventListener('scroll', handleScroll)
+    return () => viewport.removeEventListener('scroll', handleScroll)
+  }, [])
+  
+  // Manual scroll to bottom
+  const scrollToBottomManual = () => {
+    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+    if (viewport) {
+      viewport.scrollTo({
+        top: viewport.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  }
   
   // Handle message submission
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -396,10 +429,101 @@ All set! Your expenses are tracked.`
     alert('Voice input will be available soon! For now, please type your message.')
   }
   
+  // Handle file attachment for receipts/evidence
+  const handleFileAttachment = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/heic']
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please upload a PDF or image file (JPEG, PNG, HEIC)')
+      return
+    }
+    
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      alert('File size must be less than 5MB')
+      return
+    }
+    
+    // Show loading state
+    setLoading(true)
+    
+    try {
+      // Create FormData
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('organizationId', organizationId)
+      formData.append('fileType', file.type)
+      formData.append('fileName', file.name)
+      
+      // Upload file
+      const uploadResponse = await fetch('/api/v1/documents/upload', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload file')
+      }
+      
+      const uploadResult = await uploadResponse.json()
+      const { documentId, publicUrl } = uploadResult.data
+      
+      // Add message showing the attachment
+      const attachmentMessage: SalonMessage = {
+        id: Date.now().toString() + '-attachment',
+        type: 'assistant',
+        content: `✅ Receipt attached successfully!\n\n📎 **${file.name}**\nSize: ${(file.size / 1024).toFixed(1)}KB\nType: ${file.type.includes('pdf') ? 'PDF Document' : 'Image'}\n\nThis document has been linked to your transaction and stored securely.`,
+        timestamp: new Date(),
+        status: 'success',
+        actions: [
+          {
+            icon: FileText,
+            label: 'View Document',
+            action: 'view_document',
+            variant: 'outline',
+            data: { documentId, url: publicUrl, fileName: file.name }
+          }
+        ]
+      }
+      
+      setMessages(prev => [...prev, attachmentMessage])
+      
+      // Store document reference in session for later use
+      sessionStorage.setItem('lastAttachedDocument', JSON.stringify({
+        documentId,
+        fileName: file.name,
+        fileType: file.type,
+        uploadedAt: new Date().toISOString()
+      }))
+      
+    } catch (error) {
+      console.error('Error uploading file:', error)
+      const errorMessage: SalonMessage = {
+        id: Date.now().toString() + '-upload-error',
+        type: 'system',
+        content: "❌ Failed to upload the file. Please try again or contact support.",
+        timestamp: new Date(),
+        status: 'error'
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setLoading(false)
+      // Reset file input
+      event.target.value = ''
+    }
+  }
+  
   // Handle camera input for receipts
   const handleCameraInput = () => {
-    // In production, this would open camera/file picker
-    alert('Receipt scanning coming soon! For now, please type the expense details.')
+    // Trigger file input click
+    const fileInput = document.getElementById('receipt-file-input') as HTMLInputElement
+    if (fileInput) {
+      fileInput.click()
+    }
   }
   
   // Toggle dark mode
@@ -549,8 +673,8 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-7xl mx-auto p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 flex flex-col">
+      <div className="max-w-7xl mx-auto p-4 flex-1 flex flex-col w-full">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -655,8 +779,8 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
         </div>
         
         {/* Main Interface with Tabs */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <CardHeader>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-1 flex flex-col">
+          <CardHeader className="flex-shrink-0">
             <Tabs value={activeView} onValueChange={(v) => setActiveView(v as any)}>
               <TabsList className="grid grid-cols-4 w-full max-w-lg">
                 <TabsTrigger value="chat" className="gap-2">
@@ -679,19 +803,38 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             </Tabs>
           </CardHeader>
           
-          <CardContent>
-            <Tabs value={activeView} className="w-full">
+          <CardContent className="flex-1 overflow-hidden">
+            <Tabs value={activeView} className="w-full h-full">
               {/* Chat Tab */}
-              <TabsContent value="chat" className="mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <TabsContent value="chat" className="mt-0 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
                   {/* Chat Area */}
-                  <div className="lg:col-span-2">
-                    <Card className="h-[600px] flex flex-col border-0 shadow-none">
-                      <CardContent className="flex-1 flex flex-col p-0">
+                  <div className="lg:col-span-2 h-full">
+                    <Card className="h-full flex flex-col border-0 shadow-none" style={{ minHeight: '600px', maxHeight: '80vh' }}>
+                      <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
                         {/* Messages - Fixed height with proper overflow */}
                         <div className="flex-1 overflow-hidden relative">
-                          <ScrollArea ref={scrollAreaRef} className="h-full overflow-y-auto" style={{ height: '100%' }}>
-                            <div className="p-6 pb-2 min-h-full flex flex-col justify-end">
+                          <ScrollArea ref={scrollAreaRef} className="h-full pr-2" style={{ height: '100%' }}>
+                            <style jsx global>{`
+                              [data-radix-scroll-area-viewport] {
+                                scrollbar-width: thin;
+                                scrollbar-color: rgba(147, 51, 234, 0.3) transparent;
+                              }
+                              [data-radix-scroll-area-viewport]::-webkit-scrollbar {
+                                width: 8px;
+                              }
+                              [data-radix-scroll-area-viewport]::-webkit-scrollbar-track {
+                                background: transparent;
+                              }
+                              [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb {
+                                background-color: rgba(147, 51, 234, 0.3);
+                                border-radius: 4px;
+                              }
+                              [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb:hover {
+                                background-color: rgba(147, 51, 234, 0.5);
+                              }
+                            `}</style>
+                            <div className="p-6 pb-2">
                               <div className="space-y-4 max-w-4xl mx-auto w-full">
                                 {messages.map((message) => (
                                 <div
@@ -744,6 +887,24 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                                   status: 'error'
                                                 }
                                                 setMessages(prev => [...prev, cancelMessage])
+                                              } else if (action.action === 'view_document') {
+                                                // Open document in new tab
+                                                if (action.data?.url) {
+                                                  window.open(action.data.url, '_blank')
+                                                } else if (action.data?.documentId) {
+                                                  // Fetch document URL if not provided
+                                                  fetch(`/api/v1/documents/upload?documentId=${action.data.documentId}&organizationId=${organizationId}`)
+                                                    .then(res => res.json())
+                                                    .then(data => {
+                                                      if (data.success && data.data?.publicUrl) {
+                                                        window.open(data.data.publicUrl, '_blank')
+                                                      }
+                                                    })
+                                                    .catch(err => {
+                                                      console.error('Error fetching document:', err)
+                                                      alert('Failed to open document. Please try again.')
+                                                    })
+                                                }
                                               }
                                             }}
                                           >
@@ -771,10 +932,31 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                               </div>
                             </div>
                           </ScrollArea>
+                          
+                          {/* Scroll to bottom button */}
+                          {showScrollButton && (
+                            <Button
+                              onClick={scrollToBottomManual}
+                              size="sm"
+                              className="absolute bottom-4 right-4 rounded-full shadow-lg bg-purple-600 hover:bg-purple-700 text-white"
+                              style={{ zIndex: 10 }}
+                            >
+                              <ArrowDown className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                         
                         {/* Input Area - Fixed at bottom */}
                         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                          {/* Hidden file input */}
+                          <input
+                            id="receipt-file-input"
+                            type="file"
+                            accept="application/pdf,image/jpeg,image/jpg,image/png,image/heic"
+                            onChange={handleFileAttachment}
+                            className="hidden"
+                          />
+                          
                           <form onSubmit={handleSubmit} className="flex gap-2">
                             <div className="flex-1 relative">
                               <Input
@@ -792,6 +974,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                   variant="ghost"
                                   onClick={handleVoiceInput}
                                   className="h-7 w-7"
+                                  title="Voice input (coming soon)"
                                 >
                                   <Mic className="w-4 h-4" />
                                 </Button>
@@ -801,6 +984,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                   variant="ghost"
                                   onClick={handleCameraInput}
                                   className="h-7 w-7"
+                                  title="Attach receipt or document"
                                 >
                                   <Camera className="w-4 h-4" />
                                 </Button>
