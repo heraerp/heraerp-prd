@@ -294,7 +294,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Initialize chat storage for context
-    const chatStorage = createAnalyticsChatStorage()
+    const chatStorage = createAnalyticsChatStorage(organizationId)
     
     // Save user message
     await chatStorage.saveMessage({
@@ -306,7 +306,10 @@ export async function POST(request: NextRequest) {
     })
     
     // Get conversation history for context
-    const history = sessionId ? await chatStorage.getRecentMessages(sessionId, 10) : []
+    const history = sessionId ? await chatStorage.getChatHistory({
+      session_id: sessionId,
+      limit: 10
+    }) : []
     
     // Build conversation context
     const conversationContext = history.map(msg => ({
