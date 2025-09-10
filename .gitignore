@@ -43,3 +43,4 @@ next-env.d.ts
 # Railway configuration
 .railway-service.json
 railway.env
+.env
