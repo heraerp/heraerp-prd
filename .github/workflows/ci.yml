@@ -1,41 +1,42 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
 
 jobs:
-  quality-checks:
+  build-test:
     runs-on: ubuntu-latest
-    
+    env:
+      PLAYWRIGHT_BASE_URL: http://localhost:3000
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Type check
-        run: npm run type-check || true  # Currently allow failures
-      
-      - name: Lint
-        run: npm run lint || true  # Currently allow failures
-      
-      - name: Build test (CI mode)
-        run: CI=true npm run build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co' }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy-anon-key' }}
-          
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run type-check
+      - run: npm run schema:types && npm run schema:validate
+      - run: npm run lint && npm run format:check
+      - run: npm run db:migrate
+      - run: npm run db:seed:test
+      - run: npx playwright install --with-deps
       - name: Run tests
-        run: npm test || true  # Currently allow failures
-        
-  security-scan:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Run security audit
-        run: npm audit --audit-level=high || true
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            npm run test:unit
+            npm run test:api
+            npm run test:e2e:smoke
+            npm run test:a11y
+            npm run test:perf
+          else
+            npm run test:unit
+            npm run test:api
+            npm run test:e2e
+            npm run test:a11y
+            npm run test:perf
+          fi
+
