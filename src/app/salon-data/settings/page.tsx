@@ -215,12 +215,9 @@ export default function SalonDataSettingsPage() {
                 
                 return (
                   <Link key={item.name} href={item.href} className="group">
-                    <div className="relative h-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 
-                      hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl
-                      hover:border-white/20 cursor-pointer">
+                    <div className="relative h-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 cursor-pointer">
                       <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} 
-                          flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
                           <item.icon className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1">
@@ -244,13 +241,10 @@ export default function SalonDataSettingsPage() {
 
         {/* UCR Highlight Card */}
         <div className="relative mt-12">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 
-            rounded-2xl blur-xl" />
-          <div className="relative bg-gradient-to-r from-purple-900/50 via-pink-900/50 to-blue-900/50 
-            backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:border-white/30 transition-colors">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl blur-xl" />
+          <div className="relative bg-gradient-to-r from-purple-900/50 via-pink-900/50 to-blue-900/50 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:border-white/30 transition-colors">
             <div className="flex items-start gap-6">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-purple-400 to-pink-600 
-                flex items-center justify-center shadow-2xl">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center shadow-2xl">
                 <Code className="h-8 w-8 text-white" />
               </div>
               <div className="flex-1">
@@ -263,8 +257,7 @@ export default function SalonDataSettingsPage() {
                 </p>
                 <Link 
                   href="/salon-data/settings/ucr"
-                  className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 
-                    font-medium transition-colors group"
+                  className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors group"
                 >
                   Manage Salon UCR Rules
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

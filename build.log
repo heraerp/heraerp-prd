@@ -5,15 +5,15 @@
 Pre-build hook - schema validation included in quality checks
 
 > heraerp@1.2.1 build
-> node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS='--max-old-space-size=8192' next build
+> node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS="--max-old-space-size=8192" next build
 
 🔄 Clearing browser cache configurations...
-✅ Updated service worker version to: 20250910071034
-✅ Updated service worker v2 version to: 20250910071034
+✅ Updated service worker version to: 20250910212018
+✅ Updated service worker v2 version to: 20250910212018
 ✅ Updated manifest.json with cache busting
 ✅ Updated vercel.json with cache headers
 ✨ Cache clearing complete!
-✅ Build version injected: 20250910071034
+✅ Build version injected: 20250910212019
 ✅ Release date: 2025-09-10
    ▲ Next.js 15.4.6
    - Environments: .env.local, .env.production, .env
@@ -21,3 +21,453 @@ Pre-build hook - schema validation included in quality checks
      · serverActions
 
    Creating an optimized production build ...
+ ⚠ Compiled with warnings in 4.9min
+
+./src/app/furniture/products/[id]/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Edit,Image,MoreVertical,Package!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/furniture/products/[id]/page.tsx
+
+./src/app/furniture/products/catalog/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,BarChart,Bed,Briefcase,Download,Edit,Eye,Filter,Grid3x3,Package,Plus,Search,Sofa,Square,Upload!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/furniture/products/catalog/page.tsx
+
+./src/app/org/salon/inventory/page.tsx
+Attempted import error: 'UniversalApiClient' is not exported from '@/lib/universal-api' (imported as 'UniversalApiClient').
+
+Import trace for requested module:
+./src/app/org/salon/inventory/page.tsx
+
+./src/app/salon-data/customers/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowDownRight,Award,Cake,Calendar,CalendarCheck,CheckCircle,ChevronRight,Crown,DollarSign,Download,Edit,FileText,Filter,Gem,Gift,History,Home,Mail,MapPin,MessageCircle,MoreVertical,Palette,Phone,Plus,Receipt,RefreshCw,Scissors,Search,ShoppingBag,Smartphone,Sparkles,Tag,Trash2,TrendingUp,Upload,User,UserCheck,UserPlus,Users,Wallet,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/customers/page.tsx
+
+./src/app/salon-data/customers/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowDownRight,Award,Cake,Calendar,CalendarCheck,CheckCircle,ChevronRight,Crown,DollarSign,Download,Edit,FileText,Filter,Gem,Gift,History,Home,Mail,MapPin,MessageCircle,MoreVertical,Palette,Phone,Plus,Receipt,RefreshCw,Scissors,Search,ShoppingBag,Smartphone,Sparkles,Tag,Trash2,TrendingUp,Upload,User,UserCheck,UserPlus,Users,Wallet,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/customers/page.tsx
+
+./src/app/salon-data/inventory/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowLeft,ArrowRight,Award,BarChart3,Bell,Calendar,Clock,DollarSign,Download,Edit,FileText,Hash,Home,Link,Mail,Minus,Package,Plus,RefreshCw,Save,Search,Settings,ShoppingCart,TrendingUp,Upload,User,UserCheck,Webhook,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/inventory/page.tsx
+
+./src/app/salon-data/payroll/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Bell,Calculator,Calendar,CheckCircle,ChevronRight,Clock,CreditCard,DollarSign,Download,Edit,FileText,Filter,Info,Percent,Play,Plus,Printer,Receipt,RefreshCw,Search,Send,Shield,Users,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/payroll/page.tsx
+
+./src/app/salon-data/payroll/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Bell,Calculator,Calendar,CheckCircle,ChevronRight,Clock,CreditCard,DollarSign,Download,Edit,FileText,Filter,Info,Percent,Play,Plus,Printer,Receipt,RefreshCw,Search,Send,Shield,Users,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/payroll/page.tsx
+
+./src/components/admin/config/RulesList.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,CheckCircle,Edit,Eye,Filter,Plus,RefreshCw,Search,Trash2!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/admin/config/RulesList.tsx
+./src/components/admin/config/index.ts
+./src/app/salon-data/config/page.tsx
+
+./src/components/development/HERADevelopmentDashboard.tsx
+Attempted import error: 'GitCommit' is not exported from '__barrel_optimize__?names=Activity,Bug,CheckCircle2,Circle,Clock,Code2,Cpu,Database,FileCode,GitBranch,GitCommit,Package,RefreshCw,Rocket,Sparkles,Target,Timer,Users,Zap!=!lucide-react' (imported as 'GitCommit').
+
+Import trace for requested module:
+./src/components/development/HERADevelopmentDashboard.tsx
+./src/app/development/dashboard/page.tsx
+
+./src/components/docs/DocMeta.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=Calendar,Clock,Edit,User!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/docs/DocMeta.tsx
+
+./src/components/furniture/FurnitureDarkSidebar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=AlertCircle,Armchair,BarChart3,BookOpen,Box,Brain,Calculator,CheckCircle,ClipboardList,Clock,DollarSign,Factory,FileText,Grid3X3,Home,Package,Ruler,Settings,Shield,ShoppingCart,Target,TrendingUp,Truck,Users,Wrench,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/furniture/FurnitureDarkSidebar.tsx
+./src/components/furniture/FurnitureDarkLayout.tsx
+
+./src/components/furniture/UCRRuleManager.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertTriangle,Calculator,Calendar,CheckCircle,Code,DollarSign,Edit,Play,Plus,Settings,Shield!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/furniture/UCRRuleManager.tsx
+./src/app/furniture/settings/ucr/page.tsx
+
+./src/components/restaurant/POSTerminal.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowLeft,Beef,Check,Coffee,CreditCard,DollarSign,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingCart,Soup,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminal.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/restaurant/POSTerminalGlass.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowLeft,Beef,Check,Clock,Coffee,CreditCard,DollarSign,Edit,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingBag,ShoppingCart,Soup,Sparkles,Star,Table,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminalGlass.tsx
+./src/app/pos/page.tsx
+
+./src/components/restaurant/POSTerminalGlass.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Beef,Check,Clock,Coffee,CreditCard,DollarSign,Edit,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingBag,ShoppingCart,Soup,Sparkles,Star,Table,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminalGlass.tsx
+./src/app/pos/page.tsx
+
+./src/components/restaurant/SuppliersManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertTriangle,BarChart3,Building2,Check,DollarSign,Edit,Loader2,Mail,Package,Phone,Plus,RefreshCw,Search,ShoppingCart,Star,Truck,Users!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/restaurant/SuppliersManagement.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/restaurant/TableManagement.tsx
+Attempted import error: 'Edit2' is not exported from '__barrel_optimize__?names=AlertCircle,Calendar,CheckCircle,Clock,Edit2,Loader2,Plus,RefreshCw,Settings,TableProperties,User,Users,X!=!lucide-react' (imported as 'Edit2').
+
+Import trace for requested module:
+./src/components/restaurant/TableManagement.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/salon/SalonDarkSidebar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=Award,BarChart,BookOpen,Briefcase,Calendar,Camera,Clock,Coffee,CreditCard,FileText,Gift,Grid3X3,Home,Megaphone,MessageCircle,Package,Palette,Receipt,Scissors,Settings,Shield,ShoppingBag,Sparkles,Star,UserPlus,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/SalonDarkSidebar.tsx
+./src/components/salon/SalonDarkLayout.tsx
+
+./src/components/salon/SalonResourceCalendar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ChevronLeft,ChevronRight,Columns,Crown,Filter,Grid3X3,MapPin,MoreVertical,Palette,Plus,Scissors,Search,Settings,Sparkles,Star,User,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/SalonResourceCalendar.tsx
+./src/app/salon-data/calendar/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/digital-accountant/TransactionHistory.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,CheckCircle,Clock,DollarSign,Edit,Eye,Receipt,RefreshCw,Trash2,TrendingDown,TrendingUp,XCircle!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/digital-accountant/TransactionHistory.tsx
+./src/app/salon-data/digital-accountant/page.tsx
+
+./src/components/universal-config/UniversalConfigManager.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=Edit,Plus,Search,Trash2!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/universal-config/UniversalConfigManager.tsx
+./src/app/finance/expense-categories/page.tsx
+
+./src/app/furniture/products/[id]/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Edit,Image,MoreVertical,Package!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/furniture/products/[id]/page.tsx
+
+./src/app/furniture/products/catalog/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,BarChart,Bed,Briefcase,Download,Edit,Eye,Filter,Grid3x3,Package,Plus,Search,Sofa,Square,Upload!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/furniture/products/catalog/page.tsx
+
+./src/app/org/salon/inventory/page.tsx
+Attempted import error: 'UniversalApiClient' is not exported from '@/lib/universal-api' (imported as 'UniversalApiClient').
+
+Import trace for requested module:
+./src/app/org/salon/inventory/page.tsx
+
+./src/app/salon-data/customers/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowDownRight,Award,Cake,Calendar,CalendarCheck,CheckCircle,ChevronRight,Crown,DollarSign,Download,Edit,FileText,Filter,Gem,Gift,History,Home,Mail,MapPin,MessageCircle,MoreVertical,Palette,Phone,Plus,Receipt,RefreshCw,Scissors,Search,ShoppingBag,Smartphone,Sparkles,Tag,Trash2,TrendingUp,Upload,User,UserCheck,UserPlus,Users,Wallet,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/customers/page.tsx
+
+./src/app/salon-data/customers/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowDownRight,Award,Cake,Calendar,CalendarCheck,CheckCircle,ChevronRight,Crown,DollarSign,Download,Edit,FileText,Filter,Gem,Gift,History,Home,Mail,MapPin,MessageCircle,MoreVertical,Palette,Phone,Plus,Receipt,RefreshCw,Scissors,Search,ShoppingBag,Smartphone,Sparkles,Tag,Trash2,TrendingUp,Upload,User,UserCheck,UserPlus,Users,Wallet,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/customers/page.tsx
+
+./src/app/salon-data/inventory/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowLeft,ArrowRight,Award,BarChart3,Bell,Calendar,Clock,DollarSign,Download,Edit,FileText,Hash,Home,Link,Mail,Minus,Package,Plus,RefreshCw,Save,Search,Settings,ShoppingCart,TrendingUp,Upload,User,UserCheck,Webhook,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/inventory/page.tsx
+
+./src/app/salon-data/payroll/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Bell,Calculator,Calendar,CheckCircle,ChevronRight,Clock,CreditCard,DollarSign,Download,Edit,FileText,Filter,Info,Percent,Play,Plus,Printer,Receipt,RefreshCw,Search,Send,Shield,Users,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/payroll/page.tsx
+
+./src/app/salon-data/payroll/page.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Bell,Calculator,Calendar,CheckCircle,ChevronRight,Clock,CreditCard,DollarSign,Download,Edit,FileText,Filter,Info,Percent,Play,Plus,Printer,Receipt,RefreshCw,Search,Send,Shield,Users,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/app/salon-data/payroll/page.tsx
+
+./src/components/admin/config/RulesList.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,CheckCircle,Edit,Eye,Filter,Plus,RefreshCw,Search,Trash2!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/admin/config/RulesList.tsx
+./src/components/admin/config/index.ts
+./src/app/salon-data/config/page.tsx
+
+./src/components/development/HERADevelopmentDashboard.tsx
+Attempted import error: 'GitCommit' is not exported from '__barrel_optimize__?names=Activity,Bug,CheckCircle2,Circle,Clock,Code2,Cpu,Database,FileCode,GitBranch,GitCommit,Package,RefreshCw,Rocket,Sparkles,Target,Timer,Users,Zap!=!lucide-react' (imported as 'GitCommit').
+
+Import trace for requested module:
+./src/components/development/HERADevelopmentDashboard.tsx
+./src/app/development/dashboard/page.tsx
+
+./src/components/docs/DocMeta.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=Calendar,Clock,Edit,User!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/docs/DocMeta.tsx
+
+./src/components/furniture/FurnitureDarkSidebar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=AlertCircle,Armchair,BarChart3,BookOpen,Box,Brain,Calculator,CheckCircle,ClipboardList,Clock,DollarSign,Factory,FileText,Grid3X3,Home,Package,Ruler,Settings,Shield,ShoppingCart,Target,TrendingUp,Truck,Users,Wrench,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/furniture/FurnitureDarkSidebar.tsx
+./src/components/furniture/FurnitureDarkLayout.tsx
+
+./src/components/furniture/UCRRuleManager.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertTriangle,Calculator,Calendar,CheckCircle,Code,DollarSign,Edit,Play,Plus,Settings,Shield!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/furniture/UCRRuleManager.tsx
+./src/app/furniture/settings/ucr/page.tsx
+
+./src/components/restaurant/POSTerminal.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=AlertCircle,ArrowLeft,Beef,Check,Coffee,CreditCard,DollarSign,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingCart,Soup,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminal.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/restaurant/POSTerminalGlass.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowLeft,Beef,Check,Clock,Coffee,CreditCard,DollarSign,Edit,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingBag,ShoppingCart,Soup,Sparkles,Star,Table,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminalGlass.tsx
+./src/app/pos/page.tsx
+
+./src/components/restaurant/POSTerminalGlass.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowLeft,Beef,Check,Clock,Coffee,CreditCard,DollarSign,Edit,Fish,Grid3X3,IceCream,List,Loader2,Minus,Package,Percent,Phone,Pizza,Plus,Salad,Search,ShoppingBag,ShoppingCart,Soup,Sparkles,Star,Table,Trash2,Truck,Utensils,Wine,X!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/restaurant/POSTerminalGlass.tsx
+./src/app/pos/page.tsx
+
+./src/components/restaurant/SuppliersManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertTriangle,BarChart3,Building2,Check,DollarSign,Edit,Loader2,Mail,Package,Phone,Plus,RefreshCw,Search,ShoppingCart,Star,Truck,Users!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/restaurant/SuppliersManagement.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/restaurant/TableManagement.tsx
+Attempted import error: 'Edit2' is not exported from '__barrel_optimize__?names=AlertCircle,Calendar,CheckCircle,Clock,Edit2,Loader2,Plus,RefreshCw,Settings,TableProperties,User,Users,X!=!lucide-react' (imported as 'Edit2').
+
+Import trace for requested module:
+./src/components/restaurant/TableManagement.tsx
+./src/app/restaurant/page.tsx
+
+./src/components/salon/SalonDarkSidebar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=Award,BarChart,BookOpen,Briefcase,Calendar,Camera,Clock,Coffee,CreditCard,FileText,Gift,Grid3X3,Home,Megaphone,MessageCircle,Package,Palette,Receipt,Scissors,Settings,Shield,ShoppingBag,Sparkles,Star,UserPlus,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/SalonDarkSidebar.tsx
+./src/components/salon/SalonDarkLayout.tsx
+
+./src/components/salon/SalonResourceCalendar.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ChevronLeft,ChevronRight,Columns,Crown,Filter,Grid3X3,MapPin,MoreVertical,Palette,Plus,Scissors,Search,Settings,Sparkles,Star,User,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/SalonResourceCalendar.tsx
+./src/app/salon-data/calendar/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/ServicesManagement.tsx
+Attempted import error: 'Grid3X3' is not exported from '__barrel_optimize__?names=ArrowUpDown,Clock,Crown,DollarSign,Download,Edit,Gem,Grid3X3,List,Palette,Plus,Save,Scissors,Search,Sparkles,Trash2,TrendingUp,Users,X,Zap!=!lucide-react' (imported as 'Grid3X3').
+
+Import trace for requested module:
+./src/components/salon/ServicesManagement.tsx
+./src/app/salon-data/services/page.tsx
+
+./src/components/salon/digital-accountant/TransactionHistory.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=AlertCircle,CheckCircle,Clock,DollarSign,Edit,Eye,Receipt,RefreshCw,Trash2,TrendingDown,TrendingUp,XCircle!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/salon/digital-accountant/TransactionHistory.tsx
+./src/app/salon-data/digital-accountant/page.tsx
+
+./src/components/universal-config/UniversalConfigManager.tsx
+Attempted import error: 'Edit' is not exported from '__barrel_optimize__?names=Edit,Plus,Search,Trash2!=!lucide-react' (imported as 'Edit').
+
+Import trace for requested module:
+./src/components/universal-config/UniversalConfigManager.tsx
+./src/app/finance/expense-categories/page.tsx
+
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/index.js
+./node_modules/@opentelemetry/sdk-node/build/src/sdk.js
+./node_modules/@opentelemetry/sdk-node/build/src/index.js
+./src/lib/observability/tracer.ts
+./src/lib/middleware/enterprise-middleware.ts
+./src/app/api/v1/enterprise/route.ts
+
+./node_modules/@opentelemetry/sdk-node/build/src/TracerProviderWithEnvExporter.js
+Module not found: Can't resolve '@opentelemetry/exporter-jaeger' in '/Users/san/Documents/PRD/heraerp-prd/node_modules/@opentelemetry/sdk-node/build/src'
+
+Import trace for requested module:
+./node_modules/@opentelemetry/sdk-node/build/src/TracerProviderWithEnvExporter.js
+./node_modules/@opentelemetry/sdk-node/build/src/sdk.js
+./node_modules/@opentelemetry/sdk-node/build/src/index.js
+./src/lib/observability/tracer.ts
+./src/lib/middleware/enterprise-middleware.ts
+./src/app/api/v1/enterprise/route.ts
+
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+(node:14489) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14490) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14494) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14492) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14493) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14491) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+   Generating static pages (0/457) ...
+(node:14521) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14520) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+   Generating static pages (114/457) 
+(node:14523) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14522) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14524) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14525) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:14526) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error occurred prerendering page "/furniture/finance/chart-of-accounts". Read more: https://nextjs.org/docs/messages/prerender-error
+[Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined.] {
+  digest: '1234351317'
+}
+Export encountered an error on /furniture/finance/chart-of-accounts/page: /furniture/finance/chart-of-accounts, exiting the build.
+   Generating static pages (228/457) 
+Error occurred prerendering page "/admin/provisioning". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: `TabsContent` must be used within `Tabs`
+    at <unknown> (.next/server/chunks/23942.js:1:6999)
+    at <unknown> (.next/server/chunks/55146.js:1:3815) {
+  digest: '1601202627'
+}
+Export encountered an error on /admin/provisioning/page: /admin/provisioning, exiting the build.
+ ⨯ Next.js build worker exited with code: 1 and signal: null

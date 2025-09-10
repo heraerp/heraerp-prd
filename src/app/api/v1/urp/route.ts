@@ -7,15 +7,17 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
-import { universalApiAuth } from '@/lib/auth/universal-api-auth'
+import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate request
-    const authResult = await universalApiAuth(request)
-    if (!authResult.authenticated || !authResult.organizationId) {
+    // Get organization ID from headers (set by middleware)
+    const headersList = await headers()
+    const organizationId = headersList.get('x-organization-id')
+    
+    if (!organizationId) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Organization context required' },
         { status: 401 }
       )
     }
@@ -34,7 +36,7 @@ export async function POST(request: NextRequest) {
     
     // Initialize report engine
     const reportEngine = new UniversalReportEngine({
-      organizationId: authResult.organizationId,
+      organizationId: organizationId,
       smartCodePrefix: 'HERA.URP',
       enableCaching: true,
       enableMaterializedViews: false,

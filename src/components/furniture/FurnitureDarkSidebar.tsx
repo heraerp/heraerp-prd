@@ -30,7 +30,8 @@ import {
   Clock,
   AlertCircle,
   Box,
-  Brain
+  Brain,
+  BookOpen
 } from 'lucide-react'
 
 interface SidebarItem {
@@ -66,6 +67,7 @@ const allApps: SidebarItem[] = [
   { title: 'Materials', href: '/furniture/inventory/materials', icon: Box },
   { title: 'Quality', href: '/furniture/quality/inspection', icon: CheckCircle },
   { title: 'Finance', href: '/furniture/finance/postings', icon: DollarSign },
+  { title: 'Chart of Accounts', href: '/furniture/finance/chart-of-accounts', icon: BookOpen },
   { title: 'GST', href: '/furniture/finance/gst', icon: FileText },
   { title: 'Cashflow', href: '/furniture/finance/cashflow', icon: TrendingUp },
   { title: 'HR', href: '/furniture/hr/employees', icon: Users },
