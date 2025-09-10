@@ -133,6 +133,22 @@ npm test           # Run comprehensive test suite
 cd mcp-server && npm start    # Start HERA MCP server for Claude Desktop integration
 ```
 
+### **HERA CLI**
+Use the CLI to validate Smart Codes, seed data, and create/list universal transactions.
+
+```bash
+# CLI docs
+open src/cli/README.md
+
+# Validate a Smart Code (semantic checks optional)
+npm run hera -- smart-code validate "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --semantic --json
+
+# Create a universal transaction (deterministic example)
+export DATABASE_URL=postgres://...
+export ORG=11111111-1111-1111-1111-111111111111
+npm run hera -- tx create --org $ORG --type SALE --code "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --lines '[{"line_number":1,"line_type":"ITEM","line_amount":19.99,"smart_code":"HERA.RETAIL.ORDERS.LINE.ITEM.v1"}]' --json
+```
+
 ### **Environment Setup**
 ```bash
 # Required environment variables

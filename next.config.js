@@ -8,18 +8,19 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Temporarily disabled to fix document is not defined error
 // require('./scripts/setup-globals.js');
 
+const isCI = process.env.CI === 'true';
+
 const nextConfig = {
+  output: 'standalone', // Smaller, simpler runtime
   typescript: {
     // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
+    // In CI, we want to catch type errors. In production, we prioritize uptime.
     // !! WARN !!
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: !isCI,
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // Warning: In CI, we want to catch lint errors. In production, we prioritize uptime.
+    ignoreDuringBuilds: !isCI,
   },
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',

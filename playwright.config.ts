@@ -11,6 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 export default defineConfig({
   testDir: './tests',
   testMatch: ['**/*.e2e.spec.ts', '**/*.spec.ts'],
+  globalSetup: 'tests/e2e/auth.setup.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -49,6 +50,7 @@ export default defineConfig({
     navigationTimeout: 30000,
     
     /* Additional context options for HERA MCP testing */
+    storageState: 'tests/.auth/state.json',
     extraHTTPHeaders: {
       'x-organization-id': process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'demo-org-123',
       'x-test-environment': 'e2e'

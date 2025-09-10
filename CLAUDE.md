@@ -2260,6 +2260,78 @@ cd mcp-server && npm start
 "Create demo data for financial analytics dashboard"
 ```
 
+## 🤝 CODEX INTEGRATION - CODE REVIEW & CI/CD
+
+### **RACI Operating Model**
+- **Claude (Designer/Spec Author)**: Creates specifications, designs CLI UX, defines contracts
+- **Codex (Engineer/Tester/CI)**: Reviews code, validates tests, maintains CI/CD pipelines
+- **User (Product Owner)**: Approves specifications, stewards HERA principles
+
+### **Handover Process for Codex**
+When handing over to Codex for code review and testing:
+
+1. **Create CLI Handover Package** with:
+   - Complete command specifications with JSON schemas
+   - Test vectors and expected outcomes
+   - Guardrail validation rules
+   - CI/CD pipeline requirements
+   - Success metrics and exit codes
+
+2. **Reference AGENTS.md** for:
+   - Repository structure and conventions
+   - Build and test commands
+   - CI gates and quality checks
+   - HERA principles and Sacred Six enforcement
+
+3. **Definition of Done** for each command:
+   - Contract tested (unit + API), e2e happy path + 1 failure
+   - Writes flow through universal_transactions + universal_transaction_lines
+   - Smart Codes validated with proper versioning
+   - Telemetry + logs with stable --json output
+   - Documentation updated in AGENTS.md
+
+### **Codex Review Checklist**
+```bash
+# Codex validates these on every PR:
+✅ Uses only Sacred Six tables (no schema drift)
+✅ Smart Code present & valid on all entities/transactions
+✅ organization_id always present and filtered
+✅ Transactions balanced per currency (GL entries)
+✅ Complete audit trail fields populated
+✅ All exit codes documented and tested (0-33)
+✅ JSON output stable and schema-compliant
+✅ Error messages helpful and actionable
+✅ Performance benchmarks met (CI <12min, commands <5s)
+```
+
+### **Example Handover Format**
+```markdown
+## CLI Command: hera [command]
+
+**Purpose**: [Clear description]
+
+**Input Schema**: [JSON Schema]
+
+**Output Schema**: [JSON Schema]
+
+**Exit Codes**:
+- 0: Success
+- 10-13: Connection/setup errors
+- 20-21: Validation errors
+- 30-33: Business rule violations
+
+**Test Vectors**: [Happy path + failure cases]
+
+**CI Requirements**: [Specific gates and benchmarks]
+```
+
+### **Key Files for Codex Reference**
+- `/CLI-HANDOVER-PACKAGE.md` - Complete handover template
+- `/src/lib/guardrails/hera-guardrails.ts` - Guardrail enforcement
+- `/src/cli/schemas.ts` - Zod validation schemas
+- `/tests/cli/fixtures/test-data.ts` - Test fixtures
+- `/AGENTS.md` - Repository guidelines and CI requirements
+
 
 
 
