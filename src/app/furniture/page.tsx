@@ -24,10 +24,10 @@ import Link from 'next/link'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 
-export default function FurnitureDashboard() {
+function FurnitureDashboard() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  // Dashboard stats - in production these would come from Universal API
-  const stats = [
+  // Dashboard stats - in production these would come from Universal API - Memoized to prevent re-creation
+  const stats = React.useMemo(() => [
     {
       label: 'Active Orders',
       value: '47',
@@ -60,9 +60,9 @@ export default function FurnitureDashboard() {
       icon: Package,
       gradient: 'from-amber-500 to-orange-500'
     }
-  ]
+  ], [])
 
-  const recentActivities = [
+  const recentActivities = React.useMemo(() => [
     {
       id: '1',
       type: 'order' as const,
@@ -86,21 +86,21 @@ export default function FurnitureDashboard() {
       time: '6 hours ago',
       amount: '₹8,50,000'
     }
-  ]
+  ], [])
 
-  const productionKPIs = [
+  const productionKPIs = React.useMemo(() => [
     { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
     { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
     { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
     { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
-  ]
+  ], [])
 
-  const quickActions = [
+  const quickActions = React.useMemo(() => [
     { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
     { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
     { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
     { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
-  ]
+  ], [])
 
   // Show loading state while organization is loading
   if (orgLoading) {
@@ -361,7 +361,7 @@ export default function FurnitureDashboard() {
   )
 }
 
-function ModuleLink({ href, icon: Icon, label }: { 
+const ModuleLink = React.memo(function ModuleLink({ href, icon: Icon, label }: { 
   href: string
   icon: React.ElementType
   label: string 
@@ -376,4 +376,6 @@ function ModuleLink({ href, icon: Icon, label }: {
       </Card>
     </Link>
   )
-}
+})
+
+export default React.memo(FurnitureDashboard)

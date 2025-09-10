@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import FurnitureDarkSidebar from './FurnitureDarkSidebar'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
@@ -10,7 +10,7 @@ interface FurnitureDarkLayoutProps {
   children: React.ReactNode
 }
 
-export default function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
+function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -68,3 +68,5 @@ export default function FurnitureDarkLayout({ children }: FurnitureDarkLayoutPro
     </div>
   )
 }
+
+export default React.memo(FurnitureDarkLayout)

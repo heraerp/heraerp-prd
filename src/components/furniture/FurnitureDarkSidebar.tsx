@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -41,7 +41,7 @@ interface SidebarItem {
   badgeColor?: string
 }
 
-// Main sidebar items (compact view)
+// Main sidebar items (compact view) - moved outside component to prevent recreation
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/furniture', icon: Home },
   { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-amber-500' },
@@ -53,7 +53,7 @@ const sidebarItems: SidebarItem[] = [
   { title: 'HR', href: '/furniture/hr', icon: Users },
 ]
 
-// All apps for the modal
+// All apps for the modal - moved outside component to prevent recreation
 const allApps: SidebarItem[] = [
   { title: 'Dashboard', href: '/furniture', icon: Home },
   { title: 'Sales Orders', href: '/furniture/sales/orders', icon: ShoppingCart },
@@ -84,14 +84,18 @@ const bottomItems: SidebarItem[] = [
   { title: 'Settings', href: '/furniture/settings', icon: Settings },
 ]
 
-// Apps Modal Component
-function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean }) {
+// Apps Modal Component - Memoized to prevent unnecessary re-renders
+const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    return () => setMounted(false)
-  }, [])
+    if (isOpen) {
+      setMounted(true)
+    } else {
+      const timeout = setTimeout(() => setMounted(false), 300)
+      return () => clearTimeout(timeout)
+    }
+  }, [isOpen])
 
   if (!isOpen || !mounted) return null
 
@@ -166,17 +170,17 @@ function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: ()
     </>,
     document.body
   )
-}
+})
 
-export default function FurnitureDarkSidebar() {
+function FurnitureDarkSidebar() {
   const pathname = usePathname()
   const [showAppsModal, setShowAppsModal] = useState(false)
 
-  const isActive = (href: string) => {
+  const isActive = useCallback((href: string) => {
     if (href === '/furniture' && pathname === '/furniture') return true
     if (href !== '/furniture' && pathname.startsWith(href)) return true
     return false
-  }
+  }, [pathname])
 
   return (
     <div className="fixed left-0 top-0 h-full bg-gray-800/90 backdrop-blur-xl border-r border-gray-700/50 w-20 z-40 shadow-xl">
@@ -330,3 +334,5 @@ export default function FurnitureDarkSidebar() {
     </div>
   )
 }
+
+export default React.memo(FurnitureDarkSidebar)

@@ -11,7 +11,7 @@ interface FurniturePageHeaderProps {
   className?: string
 }
 
-export default function FurniturePageHeader({ 
+function FurniturePageHeader({ 
   title, 
   subtitle, 
   actions,
@@ -40,3 +40,5 @@ export default function FurniturePageHeader({
     </div>
   )
 }
+
+export default React.memo(FurniturePageHeader)

@@ -13,7 +13,7 @@ interface FurnitureOrgContextType {
 
 const FurnitureOrgContext = createContext<FurnitureOrgContextType | null>(null)
 
-export function FurnitureOrgProvider({ children }: { children: ReactNode }) {
+export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
@@ -42,7 +42,7 @@ export function FurnitureOrgProvider({ children }: { children: ReactNode }) {
       {children}
     </FurnitureOrgContext.Provider>
   )
-}
+})
 
 export function useFurnitureOrg() {
   const context = useContext(FurnitureOrgContext)
