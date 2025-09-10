@@ -137,7 +137,15 @@ function FurnitureDashboard() {
           <h2 className="text-xl font-semibold">Business Overview</h2>
           <StatCardGrid>
             {stats.map((stat) => (
-              <StatCardDNA key={stat.label} {...stat} />
+              <StatCardDNA 
+                key={stat.label} 
+                title={stat.label}
+                value={stat.value}
+                change={stat.change}
+                changeType={stat.trend === 'up' ? 'positive' : stat.trend === 'down' ? 'negative' : 'neutral'}
+                icon={stat.icon}
+                iconGradient={stat.gradient}
+              />
             ))}
           </StatCardGrid>
         </div>
