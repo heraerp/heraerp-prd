@@ -51,15 +51,48 @@ export default function SignUpPage() {
 
     try {
       // Register with Supabase
-      await register(formData.email, formData.password, {
+      const result = await register(formData.email, formData.password, {
         full_name: formData.full_name || formData.email.split('@')[0],
         phone: formData.phone
       })
 
-      // Move to next step
+      // Check if this was an existing user
+      // Supabase returns a user object but no session for existing users
+      // The user object has identities array empty for existing users
+      if (result && result.user) {
+        // For new users, identities array will have entries
+        // For existing users, it will be empty or the user object will have different characteristics
+        const isExistingUser = !result.session || 
+                              (result.user.identities && result.user.identities.length === 0) ||
+                              result.user.email_confirmed_at !== null
+
+        if (isExistingUser) {
+          setError('An account with this email already exists. Please sign in instead.')
+          // Redirect to login after 2 seconds
+          setTimeout(() => {
+            router.push('/auth/login')
+          }, 2000)
+          return
+        }
+      }
+
+      // Move to next step only for new users
       setStep(2)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create account')
+      // Handle specific Supabase errors
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create account'
+      
+      // Check for common existing user error messages
+      if (errorMessage.toLowerCase().includes('already registered') || 
+          errorMessage.toLowerCase().includes('already exists')) {
+        setError('An account with this email already exists. Please sign in instead.')
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push('/auth/login')
+        }, 2000)
+      } else {
+        setError(errorMessage)
+      }
     } finally {
       setIsLoading(false)
     }

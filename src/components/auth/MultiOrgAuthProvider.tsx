@@ -383,6 +383,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       throw error
     }
 
+    // Return the full response to allow checking for existing users
     return data
   }
 
