@@ -46,6 +46,26 @@
   animation: fadeIn 0.5s ease-out;
 }
 
+/* Float animation for glassmorphic elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(10px) translateX(-10px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(20px);
+  }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
 /* Gradient animations for login page */
 @keyframes gradient-x {
   0%, 100% {
