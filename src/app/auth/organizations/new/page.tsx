@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
   Loader2, Building2, AlertCircle, CheckCircle, X, 
   ArrowLeft, ArrowRight, Sparkles, Store, Heart, 
-  Briefcase, Factory, Users, Globe, Shield, Zap
+  Briefcase, Factory, Users, Globe, Shield, Zap, Hammer
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
@@ -21,6 +21,7 @@ const BUSINESS_TYPES = [
   { value: 'icecream', label: 'Ice Cream Manufacturing', icon: Factory },
   { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
   { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
+  { value: 'furniture', label: 'Furniture Manufacturing', icon: Hammer },
   { value: 'general', label: 'Other / General Business', icon: Building2 }
 ]
 
