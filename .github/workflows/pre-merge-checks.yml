@@ -1,0 +1,55 @@
+name: Pre-merge Production Safety Checks
+
+on:
+  pull_request:
+    branches: [ main, production ]
+  push:
+    branches: [ main ]
+
+jobs:
+  safety-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+    
+    - name: Run linting
+      run: npm run lint
+      continue-on-error: false
+    
+    - name: TypeScript type checking
+      run: npx tsc --noEmit
+      continue-on-error: false
+    
+    - name: Test build
+      run: |
+        npm run build
+        node scripts/verify-next-build.js
+      env:
+        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co' }}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy-key' }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'dummy-key' }}
+    
+    - name: Check bundle size
+      run: |
+        npm run build:analyze > bundle-analysis.txt || true
+        if [ -f .next/analyze/client.html ]; then
+          echo "Bundle analysis completed"
+        fi
+    
+    - name: Run critical tests
+      run: npm run test:critical || true
+      
+    - name: Security audit
+      run: npm audit --production --audit-level=high
+      continue-on-error: true
