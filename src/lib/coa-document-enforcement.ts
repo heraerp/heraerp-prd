@@ -20,7 +20,7 @@ interface COAValidationResult {
 }
 
 interface DocumentNumberResult {
-  transaction_number: string
+  transaction_code: string
   reference_number: string
   external_reference?: string
 }
@@ -143,7 +143,7 @@ export class COADocumentEnforcer {
     }
 
     return {
-      transaction_number: transactionNumber,
+      transaction_code: transactionNumber,
       reference_number: referenceNumber,
       external_reference: `${this.businessType.toUpperCase()}-${timestamp}`
     }

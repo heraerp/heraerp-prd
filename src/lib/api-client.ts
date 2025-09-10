@@ -16,7 +16,7 @@ interface UniversalDataResponse {
   error?: string
 }
 
-export class UniversalApiClient {
+export class universalApi {
   
   /**
    * Fetch entities from core_entities table
@@ -150,4 +150,4 @@ export class UniversalApiClient {
 }
 
 // Export singleton instance
-export const apiClient = new UniversalApiClient()
+export const apiClient = new universalApi()

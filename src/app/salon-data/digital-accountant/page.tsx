@@ -562,7 +562,7 @@ ${journalEntry?.credits?.map((c: any) => `• CR ${c.account}: AED ${c.amount}`)
 
 **Actions Available:**
 ✅ Post to General Ledger
-📝 Edit Entry
+📝 Pencil Entry
 ❌ Cancel Entry
 
 Would you like to post this journal entry to the GL?`,

@@ -475,7 +475,7 @@ export function DocumentManager({
                           <Eye className="h-3 w-3" />
                         </Button>
                         <Button size="sm" variant="outline">
-                          <Edit className="h-3 w-3" />
+                          <Pencil className="h-3 w-3" />
                         </Button>
                         <Button 
                           size="sm" 

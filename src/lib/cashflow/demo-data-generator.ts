@@ -293,7 +293,7 @@ export class CashflowDemoDataGenerator {
         try {
           const transaction = await universalApi.createTransaction({
             transaction_type: template.transaction_type,
-            transaction_number: this.generateTransactionNumber(template.transaction_type),
+            transaction_code: this.generateTransactionNumber(template.transaction_type),
             transaction_date: transactionDate.toISOString(),
             reference_number: `DEMO-${template.transaction_type.toUpperCase()}-${Date.now()}-${i}`,
             description: template.description,
@@ -337,7 +337,7 @@ export class CashflowDemoDataGenerator {
     // Create an initial cash balance transaction
     await universalApi.createTransaction({
       transaction_type: 'opening_balance',
-      transaction_number: 'OB-CASH-001',
+      transaction_code: 'OB-CASH-001',
       transaction_date: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(), // 6 months ago
       description: 'Opening cash balance for Hair Talkz salon',
       reference_number: 'OPENING-BALANCE',
@@ -516,7 +516,7 @@ export class CashflowDemoDataGenerator {
       try {
         const result = await universalApi.createTransaction({
           transaction_type: txn.type,
-          transaction_number: this.generateTransactionNumber(txn.type),
+          transaction_code: this.generateTransactionNumber(txn.type),
           transaction_date: new Date().toISOString(),
           description: txn.description,
           reference_number: `SCENARIO-${scenarioName.toUpperCase()}-${Date.now()}`,

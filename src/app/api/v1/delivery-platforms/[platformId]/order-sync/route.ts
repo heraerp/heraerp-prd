@@ -594,7 +594,7 @@ export async function GET(
           recent_orders: platformOrders?.map(order => ({
             id: order.id,
             platform_order_id: order.metadata?.platform_order_id,
-            transaction_number: order.transaction_number,
+            transaction_code: order.transaction_code,
             status: order.status,
             total_amount: order.total_amount,
             created_at: order.created_at,

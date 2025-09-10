@@ -13,8 +13,8 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
   
   try {
     // Create a new instance of universalApi with proper configuration for server-side
-    const { UniversalApiClient } = await import('@/lib/universal-api')
-    const api = new UniversalApiClient({ 
+    const { universalApi } = await import('@/lib/universal-api')
+    const api = new universalApi({ 
       baseUrl,
       organizationId 
     })

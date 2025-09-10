@@ -362,8 +362,8 @@ export function useCustomers(organizationId?: string) {
 
     // Create relationship
     return universalApi.createRelationship({
-      parent_entity_id: customerId,
-      child_entity_id: statusEntity.id,
+      from_entity_id: customerId,
+      to_entity_id: statusEntity.id,
       relationship_type: 'has_status',
       relationship_metadata: {
         status_type: 'loyalty_tier',

@@ -587,7 +587,7 @@ export class LeadScoringEngine {
       await universalApi.createTransaction({
         organization_id: this.organizationId,
         transaction_type: 'lead_scoring_update',
-        transaction_number: `SCORE-${Date.now()}`,
+        transaction_code: `SCORE-${Date.now()}`,
         transaction_date: new Date().toISOString().split('T')[0],
         reference_number: score.email,
         total_amount: score.total_score,

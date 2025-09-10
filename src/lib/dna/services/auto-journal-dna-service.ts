@@ -209,7 +209,7 @@ export class AutoJournalDNAService {
           journal_created: result.journal_created,
           journal_id: result.journal_id,
           processing_mode: 'immediate',
-          message: `Journal entry created immediately for transaction ${transaction.transaction_number}`
+          message: `Journal entry created immediately for transaction ${transaction.transaction_code}`
         };
       } else {
         // Mark for batch processing
@@ -219,7 +219,7 @@ export class AutoJournalDNAService {
           success: true,
           journal_created: false,
           processing_mode: 'batched',
-          message: `Transaction ${transaction.transaction_number} queued for batch processing`
+          message: `Transaction ${transaction.transaction_code} queued for batch processing`
         };
       }
 

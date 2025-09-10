@@ -145,7 +145,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
                 )}
                 {onEditEntry && (
                   <Button variant="outline" size="sm" onClick={() => onEditEntry(entry)}>
-                    <Edit className="w-4 h-4 mr-1" />
+                    <Pencil className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
                 )}

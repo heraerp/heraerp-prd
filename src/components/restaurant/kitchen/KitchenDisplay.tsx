@@ -43,7 +43,7 @@ import {
   VolumeX,
   Settings,
   Monitor,
-  Grid3X3,
+  Grid3x3,
   List,
   Filter,
   RefreshCw,

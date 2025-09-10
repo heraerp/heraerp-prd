@@ -675,7 +675,7 @@ export function SuppliersManagement({
                         setShowEditSupplier(true)
                       }}
                     >
-                      <Edit className="h-4 w-4 mr-1" />
+                      <Pencil className="h-4 w-4 mr-1" />
                       Edit
                     </Button>
                     <Button
@@ -1068,11 +1068,11 @@ export function SuppliersManagement({
         </DialogContent>
       </Dialog>
       
-      {/* Edit Supplier Dialog */}
+      {/* Pencil Supplier Dialog */}
       <Dialog open={showEditSupplier} onOpenChange={setShowEditSupplier}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Supplier</DialogTitle>
+            <DialogTitle>Pencil Supplier</DialogTitle>
           </DialogHeader>
           {/* Same form as Add Supplier */}
           <div className="grid grid-cols-2 gap-4">

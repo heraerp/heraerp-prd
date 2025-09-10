@@ -212,7 +212,7 @@ export function ResourcePanel({
                 size="sm"
                 onClick={() => setEditingResource(resource)}
               >
-                <Edit className="h-4 w-4" />
+                <Pencil className="h-4 w-4" />
               </Button>
               
               <Button
@@ -560,7 +560,7 @@ export function ResourcePanel({
         on_save={handleCreateResource}
       />
 
-      {/* Resource Edit Modal */}
+      {/* Resource Pencil Modal */}
       {editingResource && (
         <ResourceEditModal
           organization_id={organization_id}

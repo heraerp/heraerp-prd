@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
 import { Card } from '@/components/ui/card'
@@ -160,7 +163,7 @@ const columns = [
         </Link>
         <Link href={`/furniture/products/${row.id}/edit`}>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-700">
-            <Edit className="h-4 w-4" />
+            <Pencil className="h-4 w-4" />
           </Button>
         </Link>
       </div>

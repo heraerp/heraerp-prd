@@ -474,7 +474,7 @@ export function AppointmentModal({
             <Calendar className="h-5 w-5" />
             <span>
               {mode === 'create' ? 'New Appointment' : 
-               mode === 'edit' ? 'Edit Appointment' : 'View Appointment'}
+               mode === 'edit' ? 'Pencil Appointment' : 'View Appointment'}
             </span>
             {smartCodeSuggestion && (
               <Badge variant="outline" className="ml-2">
@@ -484,7 +484,7 @@ export function AppointmentModal({
           </DialogTitle>
           <DialogDescription>
             {mode === 'create' ? 'Create a new appointment in your calendar' :
-             mode === 'edit' ? 'Edit appointment details' : 'View appointment information'}
+             mode === 'edit' ? 'Pencil appointment details' : 'View appointment information'}
           </DialogDescription>
         </DialogHeader>
 

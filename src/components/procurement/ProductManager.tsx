@@ -537,11 +537,11 @@ export function ProductManager() {
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    console.log('Edit button clicked for:', product.name)
+                    console.log('Pencil button clicked for:', product.name)
                     openEditModal(product)
                   }}
                 >
-                  <Edit className="w-4 h-4 mr-2 inline" />
+                  <Pencil className="w-4 h-4 mr-2 inline" />
                   Edit
                 </button>
                 <button
@@ -889,12 +889,12 @@ export function ProductManager() {
         </div>
       )}
 
-      {/* Edit Product Modal - Similar structure to Create Modal */}
+      {/* Pencil Product Modal - Similar structure to Create Modal */}
       {showEditModal && editingProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Edit Product</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Pencil Product</h2>
               <p className="text-gray-600 mt-1">Update product information and specifications</p>
             </div>
             

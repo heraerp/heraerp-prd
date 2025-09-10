@@ -149,7 +149,7 @@ export class DemoApiService {
         id: trans.id,
         organization_id: DEMO_ORG_ID,
         transaction_type: trans.type,
-        transaction_number: trans.number,
+        transaction_code: trans.number,
         transaction_date: trans.date,
         status: trans.status,
         total_amount: trans.total,

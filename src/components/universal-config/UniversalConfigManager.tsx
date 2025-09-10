@@ -398,7 +398,7 @@ export function UniversalConfigManager({
                           size="sm"
                           onClick={() => openEditDialog(item)}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -420,7 +420,7 @@ export function UniversalConfigManager({
         </CardContent>
       </Card>
 
-      {/* Add/Edit Dialog */}
+      {/* Add/Pencil Dialog */}
       <Dialog open={isAddDialogOpen || isEditDialogOpen} onOpenChange={(open) => {
         if (!open) {
           setIsAddDialogOpen(false)

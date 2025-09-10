@@ -39,7 +39,7 @@ import {
   Loader2,
   Check,
   ArrowLeft,
-  Grid3X3,
+  Grid3x3,
   List,
   Clock,
   Phone,
@@ -625,7 +625,7 @@ export function POSTerminalGlass({
                 onClick={() => setViewMode('grid')}
                 className={viewMode === 'grid' ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white hover:bg-white/10'}
               >
-                <Grid3X3 className="h-4 w-4" />
+                <Grid3x3 className="h-4 w-4" />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
@@ -741,7 +741,7 @@ export function POSTerminalGlass({
                           
                           {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
                             <Badge variant="outline" className="text-xs border-white/30 text-white/70">
-                              <Edit className="h-3 w-3 mr-1" />
+                              <Pencil className="h-3 w-3 mr-1" />
                               Custom
                             </Badge>
                           )}

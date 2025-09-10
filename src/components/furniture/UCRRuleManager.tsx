@@ -306,7 +306,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4 mr-1" />
+                    <Pencil className="h-4 w-4 mr-1" />
                     Edit
                   </Button>
                   <Button 

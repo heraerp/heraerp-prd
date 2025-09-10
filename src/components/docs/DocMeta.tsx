@@ -77,7 +77,7 @@ export default function DocMeta({
         </div>
       )}
 
-      {/* Edit Link */}
+      {/* Pencil Link */}
       {editUrl && (
         <div className="ml-auto">
           <Button asChild variant="ghost" size="sm">
@@ -87,8 +87,8 @@ export default function DocMeta({
               rel="noopener noreferrer"
               className="flex items-center gap-2"
             >
-              <Edit className="h-4 w-4" />
-              Edit this page
+              <Pencil className="h-4 w-4" />
+              Pencil this page
             </Link>
           </Button>
         </div>

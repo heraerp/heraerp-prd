@@ -663,7 +663,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                           size="sm"
                           onClick={() => handleEdit(table)}
                         >
-                          <Edit className="w-4 h-4" />
+                          <Pencil className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -708,11 +708,11 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
         )}
       </Card>
       
-      {/* Edit Dialog */}
+      {/* Pencil Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Table</DialogTitle>
+            <DialogTitle>Pencil Table</DialogTitle>
             <DialogDescription>
               Update table configuration
             </DialogDescription>

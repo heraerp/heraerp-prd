@@ -323,11 +323,11 @@ export function MenuManager() {
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    console.log('Edit button clicked for:', item.entity_name)
+                    console.log('Pencil button clicked for:', item.entity_name)
                     setEditingItem(item)
                   }}
                 >
-                  <Edit className="w-4 h-4 mr-2" />
+                  <Pencil className="w-4 h-4 mr-2" />
                   Edit
                 </button>
                 <button
@@ -402,7 +402,7 @@ export function MenuManager() {
         />
       )}
 
-      {/* Edit Menu Item Form Modal */}
+      {/* Pencil Menu Item Form Modal */}
       {editingItem && (
         <EditMenuItemForm
           item={editingItem}

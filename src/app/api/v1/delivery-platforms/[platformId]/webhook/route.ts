@@ -368,7 +368,7 @@ export async function POST(
     const orderData = {
       organization_id: organizationId,
       transaction_type: 'order',
-      transaction_number: `${platformProps.platform_type.toUpperCase()}-${parsedOrder.platform_order_id}`,
+      transaction_code: `${platformProps.platform_type.toUpperCase()}-${parsedOrder.platform_order_id}`,
       transaction_date: new Date(parsedOrder.created_at).toISOString().split('T')[0],
       total_amount: parsedOrder.totals.total,
       tax_amount: parsedOrder.totals.tax,

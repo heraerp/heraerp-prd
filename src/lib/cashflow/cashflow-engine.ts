@@ -15,7 +15,7 @@ interface CashflowTransaction {
   id: string
   organization_id: string
   transaction_type: string
-  transaction_number: string
+  transaction_code: string
   transaction_date: string
   total_amount: number
   currency: string
@@ -453,7 +453,7 @@ export class DirectMethodCashflowGenerator {
       
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
-        description: txn.description || txn.transaction_number,
+        description: txn.description || txn.transaction_code,
         amount: amount,
         account_code: txn.metadata?.gl_account_code || 'N/A',
         transaction_count: 1
@@ -484,7 +484,7 @@ export class DirectMethodCashflowGenerator {
       
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
-        description: txn.description || txn.transaction_number,
+        description: txn.description || txn.transaction_code,
         amount: amount,
         account_code: txn.metadata?.gl_account_code || 'N/A',
         transaction_count: 1
@@ -515,7 +515,7 @@ export class DirectMethodCashflowGenerator {
       
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
-        description: txn.description || txn.transaction_number,
+        description: txn.description || txn.transaction_code,
         amount: amount,
         account_code: txn.metadata?.gl_account_code || 'N/A',
         transaction_count: 1
@@ -1107,7 +1107,7 @@ export class UniversalCashflowAPI {
     // Create cashflow tracking transaction
     await universalApi.createTransaction({
       transaction_type: 'cashflow_setup',
-      transaction_number: `CF-SETUP-${Date.now()}`,
+      transaction_code: `CF-SETUP-${Date.now()}`,
       description: 'Cashflow tracking system setup',
       reference_number: `CF-${organizationId}`,
       total_amount: 0,

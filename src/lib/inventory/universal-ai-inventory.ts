@@ -43,8 +43,8 @@ export interface CoreDynamicData {
 
 export interface CoreRelationship {
   id: string
-  parent_entity_id: string
-  child_entity_id: string
+  from_entity_id: string
+  to_entity_id: string
   relationship_type: string
   relationship_strength?: number
   metadata?: Record<string, any>

@@ -147,7 +147,7 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
     <UniversalModal
       isOpen={true}
       onClose={onClose}
-      title={isEditing ? 'Edit Customer' : 'Add New Customer'}
+      title={isEditing ? 'Pencil Customer' : 'Add New Customer'}
       maxWidth="lg"
     >
       <UniversalForm onSubmit={handleSubmit}>
@@ -479,7 +479,7 @@ export function CustomerManager() {
                         className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
                         onClick={() => setEditingCustomer(customer)}
                       >
-                        <Edit className="w-4 h-4 mr-2" />
+                        <Pencil className="w-4 h-4 mr-2" />
                         Edit
                       </button>
                       
@@ -529,7 +529,7 @@ export function CustomerManager() {
           />
         )}
 
-        {/* Edit Customer Form */}
+        {/* Pencil Customer Form */}
         {editingCustomer && (
           <CustomerForm
             customer={editingCustomer}

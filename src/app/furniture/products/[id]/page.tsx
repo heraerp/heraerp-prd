@@ -117,8 +117,8 @@ export default function ProductDetailPage() {
           
           <div className="flex items-center gap-2">
             <Button variant="outline" className="gap-2">
-              <Edit className="h-4 w-4" />
-              Edit Product
+              <Pencil className="h-4 w-4" />
+              Pencil Product
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

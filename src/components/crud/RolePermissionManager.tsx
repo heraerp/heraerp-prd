@@ -86,14 +86,14 @@ const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Entity Management - Low to Medium Risk
   { id: 'entities:read', name: 'View Entities', description: 'View all entity types (customers, products, etc.)', category: 'entities', is_system: true, risk_level: 'low' },
   { id: 'entities:create', name: 'Create Entities', description: 'Create new entities', category: 'entities', is_system: true, risk_level: 'medium' },
-  { id: 'entities:update', name: 'Edit Entities', description: 'Modify existing entities', category: 'entities', is_system: true, risk_level: 'medium' },
+  { id: 'entities:update', name: 'Pencil Entities', description: 'Modify existing entities', category: 'entities', is_system: true, risk_level: 'medium' },
   { id: 'entities:delete', name: 'Delete Entities', description: 'Remove entities from system', category: 'entities', is_system: true, risk_level: 'high' },
   { id: 'entities:*', name: 'Full Entity Access', description: 'Complete control over all entities', category: 'entities', is_system: true, risk_level: 'critical' },
   
   // Transaction Operations - Medium to High Risk
   { id: 'transactions:read', name: 'View Transactions', description: 'View transaction records', category: 'transactions', is_system: true, risk_level: 'low' },
   { id: 'transactions:create', name: 'Create Transactions', description: 'Create new transactions', category: 'transactions', is_system: true, risk_level: 'medium' },
-  { id: 'transactions:update', name: 'Edit Transactions', description: 'Modify transaction records', category: 'transactions', is_system: true, risk_level: 'high' },
+  { id: 'transactions:update', name: 'Pencil Transactions', description: 'Modify transaction records', category: 'transactions', is_system: true, risk_level: 'high' },
   { id: 'transactions:delete', name: 'Delete Transactions', description: 'Remove transaction records', category: 'transactions', is_system: true, risk_level: 'critical' },
   { id: 'transactions:approve', name: 'Approve Transactions', description: 'Approve pending transactions', category: 'transactions', is_system: true, risk_level: 'high' },
   { id: 'transactions:*', name: 'Full Transaction Access', description: 'Complete transaction management', category: 'transactions', is_system: true, risk_level: 'critical' },
@@ -101,14 +101,14 @@ const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Relationship Management - Low to Medium Risk
   { id: 'relationships:read', name: 'View Relationships', description: 'View entity relationships', category: 'relationships', is_system: true, risk_level: 'low' },
   { id: 'relationships:create', name: 'Create Relationships', description: 'Establish entity connections', category: 'relationships', is_system: true, risk_level: 'medium' },
-  { id: 'relationships:update', name: 'Edit Relationships', description: 'Modify relationships', category: 'relationships', is_system: true, risk_level: 'medium' },
+  { id: 'relationships:update', name: 'Pencil Relationships', description: 'Modify relationships', category: 'relationships', is_system: true, risk_level: 'medium' },
   { id: 'relationships:delete', name: 'Delete Relationships', description: 'Remove relationships', category: 'relationships', is_system: true, risk_level: 'high' },
   { id: 'relationships:*', name: 'Full Relationship Access', description: 'Complete relationship management', category: 'relationships', is_system: true, risk_level: 'critical' },
   
   // User Administration - High to Critical Risk
   { id: 'users:read', name: 'View Users', description: 'View user accounts', category: 'users', is_system: true, risk_level: 'medium' },
   { id: 'users:create', name: 'Create Users', description: 'Add new users to organization', category: 'users', is_system: true, risk_level: 'high' },
-  { id: 'users:update', name: 'Edit Users', description: 'Modify user accounts', category: 'users', is_system: true, risk_level: 'high' },
+  { id: 'users:update', name: 'Pencil Users', description: 'Modify user accounts', category: 'users', is_system: true, risk_level: 'high' },
   { id: 'users:delete', name: 'Delete Users', description: 'Remove user accounts', category: 'users', is_system: true, risk_level: 'critical' },
   { id: 'users:manage', name: 'Full User Management', description: 'Complete user administration', category: 'users', is_system: true, risk_level: 'critical' },
   
@@ -475,7 +475,7 @@ export function RolePermissionManager() {
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm">
-                              <Edit className="h-3 w-3" />
+                              <Pencil className="h-3 w-3" />
                             </Button>
                             <Button variant="ghost" size="sm" className="text-red-600">
                               <Trash2 className="h-3 w-3" />

@@ -95,7 +95,7 @@ class UniversalAPIExtended {
       const coaAccounts = accounts?.map(account => ({
         entity_code: account.entity_code,
         entity_name: account.entity_name,
-        parent_entity_code: account.parent_entity_id,
+        parent_entity_code: account.from_entity_id,
         account_type: account.business_rules?.account_type || 'ASSET',
         account_subtype: account.business_rules?.account_subtype || 'CURRENT_ASSET',
         allow_posting: account.business_rules?.allow_posting ?? true,

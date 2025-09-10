@@ -98,7 +98,7 @@ export async function createSecureWealthEntity(
         entity_type: entity.entity_type,
         entity_name: entity.entity_name,
         entity_code: entity.entity_code,
-        parent_entity_id: entity.parent_entity_id,
+        from_entity_id: entity.from_entity_id,
         is_active: entity.is_active,
         dynamic_data: Object.entries(encryptedFields).map(([field, encryptedData]) => ({
           field_name: `encrypted_${field}`,

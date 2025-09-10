@@ -53,7 +53,7 @@ export interface CoreRelationship {
 export interface UniversalTransaction {
   id: string
   organization_id: string
-  transaction_number: string
+  transaction_code: string
   smart_code: string
   source_entity_id: string // Customer
   target_entity_id: string // Service
@@ -479,7 +479,7 @@ export class UniversalAppointmentSystem {
     const appointment: UniversalTransaction = {
       id: uuidv4(),
       organization_id: this.organizationId,
-      transaction_number: this.generateAppointmentNumber(),
+      transaction_code: this.generateAppointmentNumber(),
       smart_code: service.smart_code,
       source_entity_id: params.customerId,
       target_entity_id: params.serviceId,

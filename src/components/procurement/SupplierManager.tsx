@@ -562,7 +562,7 @@ export function SupplierManager() {
                   onClick={() => setEditingSupplier(supplier)}
                   className="flex-1 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors flex items-center justify-center space-x-2"
                 >
-                  <Edit className="w-4 h-4" />
+                  <Pencil className="w-4 h-4" />
                   <span>Edit</span>
                 </button>
               </div>

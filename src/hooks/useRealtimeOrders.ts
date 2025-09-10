@@ -116,7 +116,7 @@ export const useRealtimeOrders = ({
 
         return {
           id: transaction.id,
-          order_number: transaction.transaction_number,
+          order_number: transaction.transaction_code,
           status: transaction.status,
           kitchen_status: getFieldValue('kitchen_status') || 'pending',
           total_amount: transaction.total_amount || 0,

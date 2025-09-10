@@ -487,7 +487,7 @@ async function storeConfigurationRecord(configurationId: string, request: Indust
     .insert([{
       organization_id: request.organization_id,
       transaction_type: 'industry_configuration',
-      transaction_number: configurationId,
+      transaction_code: configurationId,
       reference_number: request.industry_type,
       transaction_date: new Date().toISOString(),
       total_amount: results.deploymentPlan.total_implementation_hours,

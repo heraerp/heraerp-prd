@@ -207,7 +207,7 @@ export class LeadConversionPipeline {
       await universalApi.createTransaction({
         organization_id: this.organizationId,
         transaction_type: 'lead_processing',
-        transaction_number: `LEAD-PROC-${Date.now()}`,
+        transaction_code: `LEAD-PROC-${Date.now()}`,
         transaction_date: new Date().toISOString().split('T')[0],
         reference_number: email,
         total_amount: leadScore.total_score,
@@ -258,7 +258,7 @@ export class LeadConversionPipeline {
       await universalApi.createTransaction({
         organization_id: this.organizationId,
         transaction_type: 'pipeline_stage_change',
-        transaction_number: `STAGE-${Date.now()}`,
+        transaction_code: `STAGE-${Date.now()}`,
         transaction_date: new Date().toISOString().split('T')[0],
         reference_number: leadId,
         total_amount: targetStageInfo.stage_order,
@@ -341,7 +341,7 @@ export class LeadConversionPipeline {
       await universalApi.createTransaction({
         organization_id: this.organizationId,
         transaction_type: 'opportunity_created',
-        transaction_number: `OPP-CREATE-${Date.now()}`,
+        transaction_code: `OPP-CREATE-${Date.now()}`,
         transaction_date: new Date().toISOString().split('T')[0],
         reference_number: opportunityId,
         total_amount: estimatedValue,
@@ -543,7 +543,7 @@ export class LeadConversionPipeline {
     await universalApi.createTransaction({
       organization_id: this.organizationId,
       transaction_type: 'nurturing_sequence_triggered',
-      transaction_number: `NURTURE-${Date.now()}`,
+      transaction_code: `NURTURE-${Date.now()}`,
       transaction_date: new Date().toISOString().split('T')[0],
       reference_number: leadId,
       status: 'completed',
@@ -591,7 +591,7 @@ export class LeadConversionPipeline {
     await universalApi.createTransaction({
       organization_id: this.organizationId,
       transaction_type: 'deal_closed',
-      transaction_number: `DEAL-${Date.now()}`,
+      transaction_code: `DEAL-${Date.now()}`,
       transaction_date: new Date().toISOString().split('T')[0],
       reference_number: opportunityId,
       total_amount: parseFloat(estimatedValue || '0'),

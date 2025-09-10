@@ -23,7 +23,7 @@ import {
   UserPlus,
   FileText,
   TrendingUp,
-  Grid3X3,
+  Grid3x3,
   ShoppingBag,
   Megaphone,
   Receipt,
@@ -259,7 +259,7 @@ export default function SalonWhatsAppSidebar() {
               "text-[#8696a0] hover:text-white hover:bg-[#2a3942]"
             )}
           >
-            <Grid3X3 className="h-5 w-5 text-[#8696a0] group-hover:text-[#00a884]" />
+            <Grid3x3 className="h-5 w-5 text-[#8696a0] group-hover:text-[#00a884]" />
             <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-[#8696a0] group-hover:text-[#aebac1]">
               More
             </span>

@@ -122,7 +122,7 @@ export function StockMovementModal({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {movement ? 'Edit Stock Movement' : 'Add Stock Movement'}
+              {movement ? 'Pencil Stock Movement' : 'Add Stock Movement'}
             </DialogTitle>
             <DialogDescription>
               Record inventory changes for products

@@ -11,10 +11,10 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
-import { UniversalApiClient } from '@/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
-const universalApi = new UniversalApiClient()
+const universalApi = new universalApi()
 
 function SalonInventoryContent() {
 

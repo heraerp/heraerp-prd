@@ -624,7 +624,7 @@ function TeamDetails({
           </div>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline">
-              <Edit className="w-4 h-4 mr-1" />
+              <Pencil className="w-4 h-4 mr-1" />
               Edit
             </Button>
             <Button 

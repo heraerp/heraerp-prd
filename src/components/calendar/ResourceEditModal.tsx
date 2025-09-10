@@ -1,6 +1,6 @@
 'use client'
 
-// HERA Universal Resource Edit Modal
+// HERA Universal Resource Pencil Modal
 // Handles editing existing calendar resources
 
 import React, { useState, useEffect, useMemo } from 'react'
@@ -157,7 +157,7 @@ export function ResourceEditModal({
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             <Users className="h-5 w-5" />
-            <span>Edit Resource</span>
+            <span>Pencil Resource</span>
             <Badge variant="outline">{resource.industry_type}</Badge>
           </DialogTitle>
           <DialogDescription>

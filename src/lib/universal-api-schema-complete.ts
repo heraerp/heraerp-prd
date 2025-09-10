@@ -167,7 +167,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       entity_code: request.entity_code,
       entity_description: request.entity_description,
       status: request.status || 'active',
-      parent_entity_id: request.parent_entity_id,
+      from_entity_id: request.from_entity_id,
       smart_code_status: request.smart_code_status || 'ACTIVE',
       tags: request.tags,
       metadata: request.metadata || {},
@@ -259,7 +259,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     if (filters.entity_name) queryFilters.entity_name = { contains: filters.entity_name }
     if (filters.entity_code) queryFilters.entity_code = filters.entity_code
     if (filters.status) queryFilters.status = Array.isArray(filters.status) ? { in: filters.status } : filters.status
-    if (filters.parent_entity_id) queryFilters.parent_entity_id = filters.parent_entity_id
+    if (filters.from_entity_id) queryFilters.from_entity_id = filters.from_entity_id
     if (filters.smart_code) queryFilters.smart_code = filters.smart_code
     if (filters.smart_code_status) queryFilters.smart_code_status = filters.smart_code_status
     if (filters.ai_classification) queryFilters.ai_classification = Array.isArray(filters.ai_classification) ? { in: filters.ai_classification } : filters.ai_classification
@@ -346,7 +346,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     if (request.entity_code !== undefined) updateData.entity_code = request.entity_code
     if (request.entity_description !== undefined) updateData.entity_description = request.entity_description
     if (request.status !== undefined) updateData.status = request.status
-    if (request.parent_entity_id !== undefined) updateData.parent_entity_id = request.parent_entity_id
+    if (request.from_entity_id !== undefined) updateData.from_entity_id = request.from_entity_id
     if (request.smart_code !== undefined) updateData.smart_code = request.smart_code
     if (request.smart_code_status !== undefined) updateData.smart_code_status = request.smart_code_status
     if (request.tags !== undefined) updateData.tags = request.tags
@@ -419,12 +419,12 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           organization_id: organizationId,
           smart_code: 'HERA.ENT.HIERARCHY.QUERY.v1',
           query: {
-            filters: { parent_entity_id: rootEntityId },
+            filters: { from_entity_id: rootEntityId },
             joins: [
               {
                 entity: 'core_entities',
                 alias: 'children',
-                on: { left: 'id', right: 'parent_entity_id' },
+                on: { left: 'id', right: 'from_entity_id' },
                 type: 'left'
               }
             ]
@@ -530,11 +530,11 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
   async validateEntitySchema(organizationId: string): Promise<any> {
     return {
       requiredFields: ['id', 'organization_id', 'entity_type', 'entity_name', 'smart_code'],
-      optionalFields: ['entity_code', 'entity_description', 'status', 'parent_entity_id', 'tags', 'metadata', 'business_rules', 'ai_confidence', 'ai_insights', 'ai_classification', 'smart_code_status', 'version', 'created_at', 'updated_at', 'created_by', 'updated_by'],
+      optionalFields: ['entity_code', 'entity_description', 'status', 'from_entity_id', 'tags', 'metadata', 'business_rules', 'ai_confidence', 'ai_insights', 'ai_classification', 'smart_code_status', 'version', 'created_at', 'updated_at', 'created_by', 'updated_by'],
       aiFields: ['ai_confidence', 'ai_insights', 'ai_classification'],
       auditFields: ['created_at', 'updated_at', 'created_by', 'updated_by', 'version'],
       businessFields: ['metadata', 'business_rules', 'tags'],
-      hierarchyFields: ['parent_entity_id'],
+      hierarchyFields: ['from_entity_id'],
       smartCodeFields: ['smart_code', 'smart_code_status'],
       
       validation: await this.query({

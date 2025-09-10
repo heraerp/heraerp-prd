@@ -319,7 +319,7 @@ async function processEmailEngagement(
   const engagementTransaction = await universalApi.createTransaction({
     organization_id: organizationId,
     transaction_type: `email_${engagement.event_type}`,
-    transaction_number: `ENG-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    transaction_code: `ENG-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     transaction_date: new Date(engagement.timestamp).toISOString().split('T')[0],
     reference_number: engagement.message_id,
     total_amount: getEngagementScore(engagement.event_type),

@@ -418,7 +418,7 @@ async function getFinancialData(timeRange: string) {
     // Format recent transactions with time-appropriate data
     const recentTransactions = transactions?.length > 0 
       ? transactions.map(txn => ({
-          id: txn.transaction_number || txn.reference_number,
+          id: txn.transaction_code || txn.reference_number,
           type: txn.transaction_type,
           amount: txn.total_amount,
           time: getTimeAgo(new Date(txn.created_at)),

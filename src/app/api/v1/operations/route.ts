@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
       
       const transformedOrder = {
         id: order.id,
-        order_number: order.transaction_number,
+        order_number: order.transaction_code,
         status: order.status,
         fulfillment_type: fulfillmentType,
         total_amount: order.total_amount || 0,

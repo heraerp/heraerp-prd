@@ -434,8 +434,8 @@ export class IntegrationWeaver {
           action: 'create',
           table: 'core_relationships',
           data: {
-            parent_entity_id: integration.source_component,
-            child_entity_id: integration.target_component,
+            from_entity_id: integration.source_component,
+            to_entity_id: integration.target_component,
             relationship_type: 'vibe_integration',
             smart_code: integration.smart_code,
             metadata: {

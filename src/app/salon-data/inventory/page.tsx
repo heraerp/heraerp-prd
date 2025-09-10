@@ -838,7 +838,7 @@ export default function SalonInventoryManagement() {
                       size="sm"
                       onClick={() => handleStockAdjustment(item.id, 0, 'Manual adjustment')}
                     >
-                      <Edit className="w-4 h-4 mr-1" />
+                      <Pencil className="w-4 h-4 mr-1" />
                       Adjust
                     </Button>
                     {item.stock_on_hand <= item.reorder_point && (
@@ -1321,7 +1321,7 @@ export default function SalonInventoryManagement() {
         <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>{selectedProduct ? 'Edit Product' : 'Add New Product'}</span>
+              <span>{selectedProduct ? 'Pencil Product' : 'Add New Product'}</span>
               <Button
                 variant="ghost"
                 size="sm"

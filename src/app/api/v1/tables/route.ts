@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
         ...(currentOrder && {
           current_order: {
             id: currentOrder.id,
-            order_number: currentOrder.transaction_number,
+            order_number: currentOrder.transaction_code,
             status: currentOrder.status,
             total_amount: currentOrder.total_amount || 0,
             created_at: currentOrder.created_at,

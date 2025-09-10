@@ -37,7 +37,7 @@ import {
   Loader2,
   Check,
   ArrowLeft,
-  Grid3X3,
+  Grid3x3,
   List,
   Clock,
   Phone,
@@ -498,7 +498,7 @@ export function POSTerminal({
                 size="sm"
                 onClick={() => setViewMode('grid')}
               >
-                <Grid3X3 className="h-4 w-4" />
+                <Grid3x3 className="h-4 w-4" />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'outline'}

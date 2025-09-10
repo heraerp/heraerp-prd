@@ -156,7 +156,7 @@ export function ActivityHistory({
   const getActivityIcon = (activity: ActivityEvent) => {
     switch (activity.action_type) {
       case 'create': return <Plus className="h-4 w-4" />
-      case 'update': return <Edit className="h-4 w-4" />
+      case 'update': return <Pencil className="h-4 w-4" />
       case 'delete': return <Trash2 className="h-4 w-4" />
       case 'view': return <Eye className="h-4 w-4" />
       case 'email': return <Mail className="h-4 w-4" />

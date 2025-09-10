@@ -433,7 +433,7 @@ export function RulesList({
                             onClick={() => onEditRule?.(rule)}
                             className="h-8 w-8 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
                           >
-                            <Edit className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                            <Pencil className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                           </Button>
                           <Button
                             variant="ghost"

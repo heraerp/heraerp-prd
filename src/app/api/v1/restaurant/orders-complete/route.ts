@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
 
         const transformedOrder = {
           id: order.id,
-          order_number: order.transaction_number,
+          order_number: order.transaction_code,
           transaction_date: order.transaction_date,
           status: order.status,
           total_amount: order.total_amount,
@@ -372,7 +372,7 @@ export async function POST(request: NextRequest) {
       .insert({
         organization_id,
         transaction_type: 'order',
-        transaction_number: orderNumber,
+        transaction_code: orderNumber,
         transaction_date: new Date().toISOString(),
         reference_entity_id: customerId,
         total_amount: totalAmount,

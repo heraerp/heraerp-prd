@@ -396,7 +396,7 @@ async function createReservation(body: any) {
       .insert({
         organization_id: MARIO_ORG_ID,
         transaction_type: 'reservation',
-        transaction_number: generateReservationNumber(),
+        transaction_code: generateReservationNumber(),
         transaction_date: date,
         source_entity_id: customerId,
         total_amount: 0, // No charge for reservation
@@ -423,7 +423,7 @@ async function createReservation(body: any) {
       success: true,
       data: {
         reservationId: reservation.id,
-        reservationNumber: reservation.transaction_number,
+        reservationNumber: reservation.transaction_code,
         customerName,
         date,
         time,

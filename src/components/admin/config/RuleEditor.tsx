@@ -259,7 +259,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
             <div>
               <CardTitle className="text-2xl !text-gray-900 dark:!text-gray-100 flex items-center gap-3">
                 {getTypeIcon(formData.type)}
-                {rule ? 'Edit Configuration Rule' : 'Create Configuration Rule'}
+                {rule ? 'Pencil Configuration Rule' : 'Create Configuration Rule'}
               </CardTitle>
               <CardDescription className="!text-gray-600 dark:!text-gray-300">
                 Define rules that control system behavior and business logic

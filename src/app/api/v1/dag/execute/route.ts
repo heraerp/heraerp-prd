@@ -577,7 +577,7 @@ class DAGExecutionEngine {
         .insert([{
           organization_id: request.organization_id,
           transaction_type: 'dag_execution',
-          transaction_number: executionId,
+          transaction_code: executionId,
           reference_number: request.dag_definition.dag_id,
           transaction_date: new Date().toISOString(),
           total_amount: totalTime, // Store execution time as amount for reporting

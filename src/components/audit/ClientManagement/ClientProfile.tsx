@@ -95,7 +95,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
               variant="outline"
               onClick={() => setEditMode(!editMode)}
             >
-              <Edit className="w-4 h-4 mr-2" />
+              <Pencil className="w-4 h-4 mr-2" />
               {editMode ? 'Cancel' : 'Edit'}
             </Button>
           )}

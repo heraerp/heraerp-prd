@@ -95,14 +95,14 @@ const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Entity Management
   { id: 'entities:read', name: 'View Entities', description: 'View all entity types (customers, products, etc.)', category: 'entities' },
   { id: 'entities:create', name: 'Create Entities', description: 'Create new entities', category: 'entities' },
-  { id: 'entities:update', name: 'Edit Entities', description: 'Modify existing entities', category: 'entities' },
+  { id: 'entities:update', name: 'Pencil Entities', description: 'Modify existing entities', category: 'entities' },
   { id: 'entities:delete', name: 'Delete Entities', description: 'Remove entities from system', category: 'entities' },
   { id: 'entities:*', name: 'Full Entity Access', description: 'Complete control over all entities', category: 'entities' },
   
   // Transaction Operations
   { id: 'transactions:read', name: 'View Transactions', description: 'View transaction records', category: 'transactions' },
   { id: 'transactions:create', name: 'Create Transactions', description: 'Create new transactions', category: 'transactions' },
-  { id: 'transactions:update', name: 'Edit Transactions', description: 'Modify transaction records', category: 'transactions' },
+  { id: 'transactions:update', name: 'Pencil Transactions', description: 'Modify transaction records', category: 'transactions' },
   { id: 'transactions:delete', name: 'Delete Transactions', description: 'Remove transaction records', category: 'transactions' },
   { id: 'transactions:approve', name: 'Approve Transactions', description: 'Approve pending transactions', category: 'transactions' },
   { id: 'transactions:*', name: 'Full Transaction Access', description: 'Complete transaction management', category: 'transactions' },
@@ -110,14 +110,14 @@ const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Relationship Management
   { id: 'relationships:read', name: 'View Relationships', description: 'View entity relationships', category: 'relationships' },
   { id: 'relationships:create', name: 'Create Relationships', description: 'Establish entity connections', category: 'relationships' },
-  { id: 'relationships:update', name: 'Edit Relationships', description: 'Modify relationships', category: 'relationships' },
+  { id: 'relationships:update', name: 'Pencil Relationships', description: 'Modify relationships', category: 'relationships' },
   { id: 'relationships:delete', name: 'Delete Relationships', description: 'Remove relationships', category: 'relationships' },
   { id: 'relationships:*', name: 'Full Relationship Access', description: 'Complete relationship management', category: 'relationships' },
   
   // User Administration
   { id: 'users:read', name: 'View Users', description: 'View user accounts', category: 'users' },
   { id: 'users:create', name: 'Create Users', description: 'Add new users to organization', category: 'users' },
-  { id: 'users:update', name: 'Edit Users', description: 'Modify user accounts', category: 'users' },
+  { id: 'users:update', name: 'Pencil Users', description: 'Modify user accounts', category: 'users' },
   { id: 'users:delete', name: 'Delete Users', description: 'Remove user accounts', category: 'users' },
   { id: 'users:manage', name: 'Full User Management', description: 'Complete user administration', category: 'users' },
   
@@ -643,7 +643,7 @@ export function UserManager() {
                         onClick={() => startEdit(userData)}
                         disabled={userData.metadata?.role === 'owner' && user?.role !== 'owner'}
                       >
-                        <Edit className="h-3 w-3" />
+                        <Pencil className="h-3 w-3" />
                       </Button>
                       <Button 
                         variant="outline" 
@@ -823,12 +823,12 @@ export function UserManager() {
         </TabsContent>
       </Tabs>
 
-      {/* Create/Edit User Form */}
+      {/* Create/Pencil User Form */}
       {showForm && (
         <Card>
           <CardHeader>
             <CardTitle>
-              {editingUser ? 'Edit User' : 'Add New User'}
+              {editingUser ? 'Pencil User' : 'Add New User'}
             </CardTitle>
             <CardDescription>
               {editingUser ? 'Update user information and permissions' : 'Create a new user account for your organization'}

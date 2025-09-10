@@ -539,7 +539,7 @@ export class SmartCodeEngine {
       id: uuidv4(),
       organization_id: execution.organizationId,
       transaction_type: definition.transactionType,
-      transaction_number: this.generateTransactionNumber(definition),
+      transaction_code: this.generateTransactionNumber(definition),
       transaction_date: new Date().toISOString().split('T')[0],
       source_entity_id: entityId,
       status: 'active',

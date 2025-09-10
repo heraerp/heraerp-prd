@@ -257,7 +257,7 @@ async function createDocumentationTransaction(params: {
   //   data: {
   //     organization_id: params.organizationId,
   //     transaction_type: params.transactionType,
-  //     transaction_number: params.referenceNumber,
+  //     transaction_code: params.referenceNumber,
   //     transaction_date: new Date().toISOString().split('T')[0],
   //     reference_number: params.referenceNumber,
   //     total_amount: 0.00,

@@ -272,7 +272,7 @@ export function TransactionHistory({
                                 className="h-7 w-7"
                                 onClick={() => onEditTransaction?.(transaction)}
                               >
-                                <Edit className="w-3 h-3" />
+                                <Pencil className="w-3 h-3" />
                               </Button>
                             )}
                             {(transaction.status === 'draft' || transaction.status === 'pending') && (

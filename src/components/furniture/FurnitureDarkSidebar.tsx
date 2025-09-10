@@ -18,7 +18,7 @@ import {
   FileText,
   Truck,
   Armchair,
-  Grid3X3,
+  Grid3x3,
   Wrench,
   Ruler,
   Calculator,
@@ -258,7 +258,7 @@ function FurnitureDarkSidebar() {
               "text-gray-400 hover:text-white hover:bg-gray-700/50"
             )}
           >
-            <Grid3X3 className="h-5 w-5 text-gray-400 group-hover:text-amber-400" />
+            <Grid3x3 className="h-5 w-5 text-gray-400 group-hover:text-amber-400" />
             <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-gray-500 group-hover:text-gray-300">
               More
             </span>

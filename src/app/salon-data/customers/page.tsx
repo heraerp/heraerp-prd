@@ -1007,8 +1007,8 @@ const CustomerDetailModal = ({ customer, onClose, onEdit, onDelete, organization
                   }
                 }}
               >
-                <Edit className="w-4 h-4 mr-1" />
-                Edit Profile
+                <Pencil className="w-4 h-4 mr-1" />
+                Pencil Profile
               </Button>
               <Button variant="outline" size="sm">
                 <Calendar className="w-4 h-4 mr-1" />
@@ -2120,8 +2120,8 @@ export default function SalonCustomersPage() {
                                   onClick={() => setEditingCustomer(customer)}
                                   className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                                 >
-                                  <Edit className="w-4 h-4 mr-2" />
-                                  Edit Customer
+                                  <Pencil className="w-4 h-4 mr-2" />
+                                  Pencil Customer
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
                                 <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
@@ -2197,7 +2197,7 @@ export default function SalonCustomersPage() {
         mode="create"
       />
       
-      {/* Edit Customer Modal */}
+      {/* Pencil Customer Modal */}
       {editingCustomer && (
         <CustomerFormModal
           isOpen={true}

@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
       .insert([{
         organization_id,
         transaction_type: 'pricing_calculation',
-        transaction_number: calculationId,
+        transaction_code: calculationId,
         reference_number: pricing_data.product_id,
         transaction_date: new Date().toISOString(),
         total_amount: calculationResult.final_price,

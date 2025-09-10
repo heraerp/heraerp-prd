@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
         current_orders: driverAssignments.length,
         assigned_orders: driverAssignments.map((order: any) => ({
           id: order.id,
-          order_number: order.transaction_number,
+          order_number: order.transaction_code,
           status: order.status,
           total_amount: order.total_amount || 0,
           customer_name: order.metadata?.customer_name || 'Customer',

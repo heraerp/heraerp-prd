@@ -120,7 +120,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
         <div className="bg-white p-6 overflow-y-auto max-h-[90vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 bg-white">
-            <h2 className="text-2xl font-bold text-gray-900">Edit Menu Item</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Pencil Menu Item</h2>
             <button
               type="button"
               onClick={onClose}

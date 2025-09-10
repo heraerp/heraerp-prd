@@ -23,7 +23,7 @@ import {
   User,
   UserPlus,
   PhoneCall,
-  Edit2,
+  Edit,
   Trash2,
   CheckCircle,
   XCircle,
@@ -31,7 +31,7 @@ import {
   Timer,
   Loader2,
   RefreshCw,
-  Grid3X3,
+  Grid3x3,
   Home,
   ChevronRight,
   MapPin,
@@ -1037,9 +1037,9 @@ export function TableManagement({
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => console.log('Edit reservation', reservation.id)}
+                            onClick={() => console.log('Pencil reservation', reservation.id)}
                           >
-                            <Edit2 className="h-3 w-3" />
+                            <Pencil className="h-3 w-3" />
                           </Button>
                           <Button
                             size="sm"

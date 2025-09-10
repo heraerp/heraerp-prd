@@ -40,8 +40,8 @@ export interface DynamicDataEntry {
 
 export interface EntityRelationship {
   relationship_id: string;
-  parent_entity_id: string;
-  child_entity_id: string;
+  from_entity_id: string;
+  to_entity_id: string;
   relationship_type: 'prerequisite' | 'related' | 'sequence' | 'contains' | 'enhances';
   relationship_strength: number; // 0-1
   metadata: RelationshipMetadata;
@@ -544,8 +544,8 @@ export class UniversalEntityCreator {
           if (prerequisiteEntity) {
             const relationship: EntityRelationship = {
               relationship_id: this.generateRelationshipId(),
-              parent_entity_id: prerequisiteEntity.entity_id,
-              child_entity_id: entity.entity_id,
+              from_entity_id: prerequisiteEntity.entity_id,
+              to_entity_id: entity.entity_id,
               relationship_type: 'prerequisite',
               relationship_strength: 0.8,
               metadata: {
@@ -569,8 +569,8 @@ export class UniversalEntityCreator {
           if (relatedEntity && relatedEntity.entity_id !== entity.entity_id) {
             const relationship: EntityRelationship = {
               relationship_id: this.generateRelationshipId(),
-              parent_entity_id: entity.entity_id,
-              child_entity_id: relatedEntity.entity_id,
+              from_entity_id: entity.entity_id,
+              to_entity_id: relatedEntity.entity_id,
               relationship_type: 'related',
               relationship_strength: 0.6,
               metadata: {
@@ -612,8 +612,8 @@ export class UniversalEntityCreator {
         for (const nextEntity of nextEntities.slice(0, 2)) {
           const relationship: EntityRelationship = {
             relationship_id: this.generateRelationshipId(),
-            parent_entity_id: currentEntity.entity_id,
-            child_entity_id: nextEntity.entity_id,
+            from_entity_id: currentEntity.entity_id,
+            to_entity_id: nextEntity.entity_id,
             relationship_type: 'sequence',
             relationship_strength: 0.7,
             metadata: {
@@ -641,8 +641,8 @@ export class UniversalEntityCreator {
         for (const targetEntity of targetEntities.slice(0, 2)) {
           const relationship: EntityRelationship = {
             relationship_id: this.generateRelationshipId(),
-            parent_entity_id: sourceEntity.entity_id,
-            child_entity_id: targetEntity.entity_id,
+            from_entity_id: sourceEntity.entity_id,
+            to_entity_id: targetEntity.entity_id,
             relationship_type: 'enhances',
             relationship_strength: insight.applicability,
             metadata: {

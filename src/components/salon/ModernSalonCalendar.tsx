@@ -20,7 +20,7 @@ import {
   MapPin,
   Star,
   Sparkles,
-  Grid3X3,
+  Grid3x3,
   List,
   CalendarDays,
   User,
@@ -142,7 +142,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                   Day
                 </TabsTrigger>
                 <TabsTrigger value="week" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
-                  <Grid3X3 className="w-4 h-4 mr-2" />
+                  <Grid3x3 className="w-4 h-4 mr-2" />
                   Week
                 </TabsTrigger>
                 <TabsTrigger value="month" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">

@@ -84,7 +84,7 @@ const INDUSTRY_CONFIG = {
 const STATUS_CONFIG = {
   [APPOINTMENT_WORKFLOW.DRAFT]: { 
     color: 'bg-gray-100 text-gray-800', 
-    icon: <Edit className="w-4 h-4" />,
+    icon: <Pencil className="w-4 h-4" />,
     label: 'Draft'
   },
   [APPOINTMENT_WORKFLOW.SCHEDULED]: { 
@@ -511,7 +511,7 @@ export function AppointmentDetailsModal({
               onClick={() => setIsEditing(!isEditing)}
               className={`bg-gradient-to-r ${config.gradient} text-white`}
             >
-              <Edit className="w-4 h-4 mr-1" />
+              <Pencil className="w-4 h-4 mr-1" />
               Edit
             </Button>
           </div>

@@ -277,7 +277,7 @@ export function DemoDashboard() {
                       </div>
                       <div>
                         <p className="text-sm font-medium">
-                          {transaction.transaction_number}
+                          {transaction.transaction_code}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(transaction.transaction_date).toLocaleString()}

@@ -40,7 +40,7 @@ import {
   Clock,
   DollarSign,
   Tag,
-  Grid3X3,
+  Grid3x3,
   List,
   Eye,
   Users,
@@ -508,7 +508,7 @@ export default function ServicesManagement() {
                   : 'hover:bg-gray-200 dark:hover:bg-gray-700'
               )}
             >
-              <Grid3X3 className="w-4 h-4 mr-2" />
+              <Grid3x3 className="w-4 h-4 mr-2" />
               Categories ({filteredCategories.length})
             </Button>
           </div>
@@ -570,7 +570,7 @@ export default function ServicesManagement() {
                           size="sm"
                           onClick={() => setViewMode('grid')}
                         >
-                          <Grid3X3 className="w-4 h-4" />
+                          <Grid3x3 className="w-4 h-4" />
                         </Button>
                         <Button
                           variant={viewMode === 'table' ? 'default' : 'ghost'}
@@ -736,7 +736,7 @@ export default function ServicesManagement() {
                                 onClick={() => handleServiceEdit(service)}
                                 className="flex-1"
                               >
-                                <Edit className="w-4 h-4 mr-2" />
+                                <Pencil className="w-4 h-4 mr-2" />
                                 Edit
                               </Button>
                               <Button
@@ -869,7 +869,7 @@ export default function ServicesManagement() {
                                     size="sm"
                                     onClick={() => handleServiceEdit(service)}
                                   >
-                                    <Edit className="w-4 h-4" />
+                                    <Pencil className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
@@ -1012,7 +1012,7 @@ export default function ServicesManagement() {
                             onClick={() => handleCategoryEdit(category)}
                             className="flex-1"
                           >
-                            <Edit className="w-4 h-4 mr-2" />
+                            <Pencil className="w-4 h-4 mr-2" />
                             Edit
                           </Button>
                           <Button
@@ -1031,7 +1031,7 @@ export default function ServicesManagement() {
                   {filteredCategories.length === 0 && (
                     <div className="text-center py-24">
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
-                        <Grid3X3 className="w-10 h-10 text-purple-600 dark:text-purple-400" />
+                        <Grid3x3 className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         No categories found
@@ -1061,7 +1061,7 @@ export default function ServicesManagement() {
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="border-b border-gray-200 dark:border-gray-700">
               <CardTitle className="flex items-center justify-between">
-                <span>{editingService ? 'Edit Service' : 'Create New Service'}</span>
+                <span>{editingService ? 'Pencil Service' : 'Create New Service'}</span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -1263,7 +1263,7 @@ export default function ServicesManagement() {
           <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="border-b border-gray-200 dark:border-gray-700">
               <CardTitle className="flex items-center justify-between">
-                <span>{editingCategory ? 'Edit Category' : 'Create New Category'}</span>
+                <span>{editingCategory ? 'Pencil Category' : 'Create New Category'}</span>
                 <Button
                   variant="ghost"
                   size="sm"

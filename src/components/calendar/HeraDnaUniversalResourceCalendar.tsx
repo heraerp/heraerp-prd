@@ -59,7 +59,7 @@ import {
   MapPin,
   Star,
   Sparkles,
-  Grid3X3,
+  Grid3x3,
   List,
   CalendarDays,
   User,
@@ -187,7 +187,7 @@ const BUSINESS_CONFIGS = {
       { id: 'production', name: 'Production Run', color: '#F97316', icon: <Wrench className="w-3 h-3" /> },
       { id: 'maintenance', name: 'Maintenance', color: '#EAB308', icon: <Settings className="w-3 h-3" /> },
       { id: 'quality', name: 'Quality Check', color: '#10B981', icon: <CheckSquare className="w-3 h-3" /> },
-      { id: 'setup', name: 'Setup/Changeover', color: '#6B7280', icon: <Grid3X3 className="w-3 h-3" /> },
+      { id: 'setup', name: 'Setup/Changeover', color: '#6B7280', icon: <Grid3x3 className="w-3 h-3" /> },
       { id: 'training', name: 'Training', color: '#8B5CF6', icon: <GraduationCap className="w-3 h-3" /> }
     ],
     leaveTypes: [
@@ -1072,7 +1072,7 @@ export function HeraDnaUniversalResourceCalendar({
                   onClick={() => setShowSidebar(true)}
                   className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 >
-                  <Grid3X3 className="w-5 h-5" />
+                  <Grid3x3 className="w-5 h-5" />
                 </Button>
               )}
               

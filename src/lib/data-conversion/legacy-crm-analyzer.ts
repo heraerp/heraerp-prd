@@ -437,8 +437,8 @@ export class HERALegacyCRMConverter {
       mapping.core_relationships.push({
         relationship_id: `${record.id}_project_rel`,
         organization_id: this.organizationId,
-        parent_entity_id: record.id,
-        child_entity_id: record.project_id,
+        from_entity_id: record.id,
+        to_entity_id: record.project_id,
         relationship_type: 'owns_project',
         relationship_strength: 1.0,
         created_at: new Date(record.created_at),
@@ -451,8 +451,8 @@ export class HERALegacyCRMConverter {
       mapping.core_relationships.push({
         relationship_id: `${record.id}_promoter1_rel`,
         organization_id: this.organizationId,
-        parent_entity_id: record.id,
-        child_entity_id: promoter1Id,
+        from_entity_id: record.id,
+        to_entity_id: promoter1Id,
         relationship_type: 'has_contact',
         relationship_strength: 0.9,
         created_at: new Date(record.created_at),
@@ -465,8 +465,8 @@ export class HERALegacyCRMConverter {
       mapping.core_relationships.push({
         relationship_id: `${record.id}_promoter2_rel`,
         organization_id: this.organizationId,
-        parent_entity_id: record.id,
-        child_entity_id: promoter2Id,
+        from_entity_id: record.id,
+        to_entity_id: promoter2Id,
         relationship_type: 'has_contact',
         relationship_strength: 0.8,
         created_at: new Date(record.created_at),
@@ -479,8 +479,8 @@ export class HERALegacyCRMConverter {
       mapping.core_relationships.push({
         relationship_id: `${record.project_id}_service_rel`,
         organization_id: this.organizationId,
-        parent_entity_id: record.project_id,
-        child_entity_id: serviceId,
+        from_entity_id: record.project_id,
+        to_entity_id: serviceId,
         relationship_type: 'requires_service',
         relationship_strength: 0.95,
         created_at: new Date(record.created_at),
@@ -499,8 +499,8 @@ export class HERALegacyCRMConverter {
           mapping.core_relationships.push({
             relationship_id: `ai_${record.id}_${aiRel.relationship_field}_rel`,
             organization_id: this.organizationId,
-            parent_entity_id: record.id, // Assuming parent is current record
-            child_entity_id: `ai_detected_${aiRel.child_entity}`, // AI-detected entity
+            from_entity_id: record.id, // Assuming parent is current record
+            to_entity_id: `ai_detected_${aiRel.child_entity}`, // AI-detected entity
             relationship_type: aiRel.relationship_type,
             relationship_strength: aiRel.confidence,
             created_at: new Date(record.created_at),
@@ -523,8 +523,8 @@ export class HERALegacyCRMConverter {
             mapping.core_relationships.push({
               relationship_id: `fk_${record.id}_${fkPattern.field_name}`,
               organization_id: this.organizationId,
-              parent_entity_id: record.id,
-              child_entity_id: String(fieldValue),
+              from_entity_id: record.id,
+              to_entity_id: String(fieldValue),
               relationship_type: 'references',
               relationship_strength: fkPattern.confidence,
               created_at: new Date(record.created_at),

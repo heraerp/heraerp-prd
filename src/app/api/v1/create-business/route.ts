@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
       .insert({
         organization_id: newOrg.id,
         transaction_type: 'user_registration',
-        transaction_number: `REG-${Date.now()}`,
+        transaction_code: `REG-${Date.now()}`,
         transaction_date: new Date().toISOString(),
         source_entity_id: newEntity.id,
         total_amount: 0,

@@ -48,7 +48,7 @@ const UNIVERSAL_SCHEMA = {
     optional_fields: [
       'entity_code', 'entity_category', 'entity_subcategory', 'description', 'tags',
       'status', 'effective_date', 'expiry_date', 'metadata', 'ai_confidence',
-      'ai_classification', 'ai_tags', 'parent_entity_id', 'hierarchy_level',
+      'ai_classification', 'ai_tags', 'from_entity_id', 'hierarchy_level',
       'sort_order', 'created_by', 'updated_by', 'version'
     ],
     auto_fields: ['created_at', 'updated_at'],

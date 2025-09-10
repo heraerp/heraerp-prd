@@ -491,7 +491,7 @@ export default function SalonPayrollSystem() {
                         size="sm"
                         onClick={() => setSelectedEmployee(employee)}
                       >
-                        <Edit className="w-4 h-4" />
+                        <Pencil className="w-4 h-4" />
                       </Button>
                     </td>
                   </tr>
@@ -688,7 +688,7 @@ export default function SalonPayrollSystem() {
                     </p>
                   </div>
                   <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4" />
+                    <Pencil className="w-4 h-4" />
                   </Button>
                 </div>
               ))}

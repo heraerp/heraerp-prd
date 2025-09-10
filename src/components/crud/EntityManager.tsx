@@ -330,7 +330,7 @@ export function EntityManager() {
                       size="sm" 
                       onClick={() => startEdit(entity)}
                     >
-                      <Edit className="h-3 w-3" />
+                      <Pencil className="h-3 w-3" />
                     </Button>
                     <Button 
                       variant="outline" 
@@ -348,12 +348,12 @@ export function EntityManager() {
         </CardContent>
       </Card>
 
-      {/* Create/Edit Form */}
+      {/* Create/Pencil Form */}
       {showForm && (
         <Card>
           <CardHeader>
             <CardTitle>
-              {editingEntity ? 'Edit Entity' : 'Create New Entity'}
+              {editingEntity ? 'Pencil Entity' : 'Create New Entity'}
             </CardTitle>
             <CardDescription>
               {editingEntity ? 'Update entity information' : 'Add a new entity to your organization'}

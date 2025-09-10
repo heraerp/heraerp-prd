@@ -392,10 +392,10 @@ export class UniversalLearningPathGenerator {
     
     relationships.forEach(rel => {
       if (rel.relationship_type === 'prerequisite') {
-        if (!prerequisiteMap.has(rel.child_entity_id)) {
-          prerequisiteMap.set(rel.child_entity_id, []);
+        if (!prerequisiteMap.has(rel.to_entity_id)) {
+          prerequisiteMap.set(rel.to_entity_id, []);
         }
-        prerequisiteMap.get(rel.child_entity_id)!.push(rel.parent_entity_id);
+        prerequisiteMap.get(rel.to_entity_id)!.push(rel.from_entity_id);
       }
     });
     

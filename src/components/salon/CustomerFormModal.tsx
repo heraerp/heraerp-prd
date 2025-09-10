@@ -205,7 +205,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {mode === 'create' ? 'Add New Customer' : 'Edit Customer'}
+                  {mode === 'create' ? 'Add New Customer' : 'Pencil Customer'}
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Fill in the customer information below

@@ -14,7 +14,7 @@ interface Transaction {
   id: string;
   organization_id: string;
   transaction_type: string;
-  transaction_number: string;
+  transaction_code: string;
   transaction_date: string;
   source_entity_id: string;
   target_entity_id: string;
@@ -163,7 +163,7 @@ class JournalRelevanceEngine {
     try {
       // For now, use rule-based fallback since we don't have OpenAI configured
       // In production, this would use OpenAI API for complex analysis
-      console.log(`🤖 AI analysis would be performed for transaction: ${transaction.transaction_number}`);
+      console.log(`🤖 AI analysis would be performed for transaction: ${transaction.transaction_code}`);
       
       // Intelligent fallback based on transaction patterns
       if (transaction.total_amount > 0 && 
@@ -237,8 +237,8 @@ class AutoJournalGenerator {
       return {
         transaction_id: transaction.id,
         journal_date: transaction.transaction_date,
-        description: `Sales Transaction - ${transaction.transaction_number}`,
-        reference: transaction.transaction_number,
+        description: `Sales Transaction - ${transaction.transaction_code}`,
+        reference: transaction.transaction_code,
         auto_generated: true,
         ai_confidence: 0.98,
         validation_status: 'validated',
@@ -268,8 +268,8 @@ class AutoJournalGenerator {
       return {
         transaction_id: transaction.id,
         journal_date: transaction.transaction_date,
-        description: `Purchase Transaction - ${transaction.transaction_number}`,
-        reference: transaction.transaction_number,
+        description: `Purchase Transaction - ${transaction.transaction_code}`,
+        reference: transaction.transaction_code,
         auto_generated: true,
         ai_confidence: 0.98,
         validation_status: 'validated',
@@ -299,8 +299,8 @@ class AutoJournalGenerator {
       return {
         transaction_id: transaction.id,
         journal_date: transaction.transaction_date,
-        description: `Payment Transaction - ${transaction.transaction_number}`,
-        reference: transaction.transaction_number,
+        description: `Payment Transaction - ${transaction.transaction_code}`,
+        reference: transaction.transaction_code,
         auto_generated: true,
         ai_confidence: 0.98,
         validation_status: 'validated',
@@ -330,8 +330,8 @@ class AutoJournalGenerator {
       return {
         transaction_id: transaction.id,
         journal_date: transaction.transaction_date,
-        description: `Receipt Transaction - ${transaction.transaction_number}`,
-        reference: transaction.transaction_number,
+        description: `Receipt Transaction - ${transaction.transaction_code}`,
+        reference: transaction.transaction_code,
         auto_generated: true,
         ai_confidence: 0.98,
         validation_status: 'validated',
@@ -361,7 +361,7 @@ class AutoJournalGenerator {
       transaction_id: transaction.id,
       journal_date: transaction.transaction_date,
       description: 'Complex transaction - AI analysis required',
-      reference: transaction.transaction_number,
+      reference: transaction.transaction_code,
       auto_generated: false,
       ai_confidence: 0.20,
       validation_status: 'requires_review',
@@ -374,7 +374,7 @@ class AutoJournalGenerator {
       // Load chart of accounts context
       const chartOfAccounts = await this.getChartOfAccounts(transaction.organization_id);
       
-      console.log(`🤖 AI journal generation would be performed for transaction: ${transaction.transaction_number}`);
+      console.log(`🤖 AI journal generation would be performed for transaction: ${transaction.transaction_code}`);
       
       // Intelligent fallback journal entry based on transaction type and amount
       const fallbackJournal = this.createIntelligentFallbackJournal(transaction, chartOfAccounts);
@@ -402,8 +402,8 @@ class AutoJournalGenerator {
       return {
         transaction_id: transaction.id,
         journal_date: transaction.transaction_date,
-        description: `Expense Transaction - ${transaction.transaction_number}`,
-        reference: transaction.transaction_number,
+        description: `Expense Transaction - ${transaction.transaction_code}`,
+        reference: transaction.transaction_code,
         auto_generated: true,
         ai_confidence: 0.75,
         validation_status: 'requires_review',
@@ -432,8 +432,8 @@ class AutoJournalGenerator {
     return {
       transaction_id: transaction.id,
       journal_date: transaction.transaction_date,
-      description: `General Transaction - ${transaction.transaction_number}`,
-      reference: transaction.transaction_number,
+      description: `General Transaction - ${transaction.transaction_code}`,
+      reference: transaction.transaction_code,
       auto_generated: true,
       ai_confidence: 0.60,
       validation_status: 'requires_review',
@@ -626,7 +626,7 @@ class BatchJournalProcessor {
     return {
       ...firstTxn,
       id: `batch_${Date.now()}`,
-      transaction_number: `BATCH-${new Date().toISOString().split('T')[0]}-${firstTxn.transaction_type}`,
+      transaction_code: `BATCH-${new Date().toISOString().split('T')[0]}-${firstTxn.transaction_type}`,
       total_amount: totalAmount,
       smart_code: `${firstTxn.smart_code}.BATCH`,
       metadata: {
@@ -686,7 +686,7 @@ class BatchJournalProcessor {
       .insert({
         organization_id: journalEntry.transaction_id.split('_')[0], // Extract org ID
         transaction_type: 'journal_entry',
-        transaction_number: `JE-${journalEntry.reference}`,
+        transaction_code: `JE-${journalEntry.reference}`,
         transaction_date: journalEntry.journal_date,
         reference_number: journalEntry.reference,
         total_amount: journalEntry.lines.reduce((sum, line) => sum + line.debit_amount, 0),
@@ -769,7 +769,7 @@ class RealTimeJournalProcessor {
     ai_used: boolean;
   }> {
     
-    console.log(`🔄 Processing transaction: ${transaction.transaction_number}`);
+    console.log(`🔄 Processing transaction: ${transaction.transaction_code}`);
 
     // ============================================================================
     // STEP 1: CHECK JOURNAL RELEVANCE
@@ -778,7 +778,7 @@ class RealTimeJournalProcessor {
     const relevanceCheck = await this.relevanceEngine.isJournalRelevant(transaction);
     
     if (!relevanceCheck.isRelevant) {
-      console.log(`⏭️  Transaction ${transaction.transaction_number} skipped - ${relevanceCheck.reason}`);
+      console.log(`⏭️  Transaction ${transaction.transaction_code} skipped - ${relevanceCheck.reason}`);
       return {
         journal_created: false,
         batched: false,
@@ -794,7 +794,7 @@ class RealTimeJournalProcessor {
     const processingMode = this.determineProcessingMode(transaction);
 
     if (processingMode === 'batched') {
-      console.log(`📦 Transaction ${transaction.transaction_number} queued for batch processing`);
+      console.log(`📦 Transaction ${transaction.transaction_code} queued for batch processing`);
       return {
         journal_created: false,
         batched: true,
@@ -810,7 +810,7 @@ class RealTimeJournalProcessor {
     const journalEntry = await this.journalGenerator.generateJournalEntry(transaction);
     const journalRecord = await this.saveJournalEntry(journalEntry);
 
-    console.log(`✅ Journal entry created: ${journalRecord?.transaction_number} (AI confidence: ${journalEntry.ai_confidence})`);
+    console.log(`✅ Journal entry created: ${journalRecord?.transaction_code} (AI confidence: ${journalEntry.ai_confidence})`);
 
     return {
       journal_created: true,
