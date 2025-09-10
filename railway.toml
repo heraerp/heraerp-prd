@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci --legacy-peer-deps && npm run build:railway"
+buildCommand = "./scripts/railway-build.sh"
 
 [build.environment]
 NODE_VERSION = "20.18.0"

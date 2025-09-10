@@ -1,12 +1,12 @@
-# Force Node.js detection and prevent Deno usage
-providers = ["node"]
-
-[variables]
-NODE_VERSION = "20.18.0"
-NODE_ENV = "production"
+[phases.setup]
+nixPkgs = ["nodejs-20_x", "bash"]
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm ci --legacy-peer-deps"]
 
 [phases.build]
-cmds = ["npm run build:railway"]
+cmds = ["chmod +x ./scripts/railway-build.sh", "./scripts/railway-build.sh"]
+
+[start]
+cmd = "chmod +x ./scripts/railway-start.sh && ./scripts/railway-start.sh"
+EOF < /dev/null
