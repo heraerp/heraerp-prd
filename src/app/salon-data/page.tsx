@@ -809,6 +809,7 @@ export default function SalonModernDashboard() {
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
+                </div>
               </div>
             )}
 
