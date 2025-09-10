@@ -483,7 +483,7 @@ npm run schema:validate      # Validate schema assumptions before build
 "Setup smart codes for manufacturing BOM system"              # Smart codes via MCP conversation
 "Generate APIs for customer relationship management"           # Universal APIs via MCP tools
 "Build a Steve Jobs-inspired UI for financial dashboard"      # UI generation via MCP
-"Create demo data for jewelry store operations"               # Demo data via MCP commands
+"Create demo data for retail operations"                      # Demo data via MCP commands
 "Enable intelligent auto-journal processing for transactions"  # AI-powered automatic GL posting
 "Setup batch journal automation for small transactions"       # Efficient batch processing system
 
@@ -2247,7 +2247,7 @@ cd mcp-server && npm start
 # Then in Claude Desktop use natural language:
 "Create a complete restaurant POS system with inventory"
 "Build a healthcare patient management module"
-"Setup authorization for multi-tenant jewelry store"
+"Setup authorization for multi-tenant retail system"
 "Generate APIs for manufacturing BOM management"
 "Create demo data for financial analytics dashboard"
 ```

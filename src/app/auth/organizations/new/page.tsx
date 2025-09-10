@@ -21,7 +21,6 @@ const BUSINESS_TYPES = [
   { value: 'icecream', label: 'Ice Cream Manufacturing', icon: Factory },
   { value: 'restaurant', label: 'Restaurant & Food Service', icon: Store },
   { value: 'healthcare', label: 'Healthcare & Medical', icon: Heart },
-  { value: 'jewelry', label: 'Jewelry Retail', icon: Sparkles },
   { value: 'general', label: 'Other / General Business', icon: Building2 }
 ]
 

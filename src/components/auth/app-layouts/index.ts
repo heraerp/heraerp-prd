@@ -1,6 +1,5 @@
 export { RestaurantAuthLayout } from './RestaurantAuthLayout'
 export { HealthcareAuthLayout } from './HealthcareAuthLayout'
-export { JewelryAuthLayout } from './JewelryAuthLayout'
 export { SalonAuthLayout } from './SalonAuthLayout'
 
 // Re-export the universal components for direct use
