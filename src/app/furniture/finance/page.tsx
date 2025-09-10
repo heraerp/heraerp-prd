@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
+// Removed LazyDataTable import - using inline table component
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -553,22 +553,68 @@ export default function FurnitureFinance() {
                 Details: {glAccounts.filter(a => a.metadata?.account_type === 'detail').length}
               </div>
               
-              <EnterpriseDataTable
-                columns={glAccountColumns}
-                data={filteredAccounts}
-                loading={loading}
-                searchable={false}
-                sortable
-                pageSize={50}
-                emptyState={{
-                  icon: FileText,
-                  title: "No GL accounts found",
-                  description: searchTerm 
-                    ? "Try adjusting your search or filters." 
-                    : "GL accounts will appear here when created."
-                }}
-                className="bg-gray-800/50 border-gray-700"
-              />
+              {loading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center space-y-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="text-sm text-gray-400">Loading GL accounts...</p>
+                  </div>
+                </div>
+              ) : filteredAccounts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center p-8 text-center">
+                  <FileText className="h-12 w-12 text-gray-500 mb-3" />
+                  <h3 className="text-lg font-medium text-gray-300">No GL accounts found</h3>
+                  <p className="text-sm text-gray-400 mt-1">
+                    {searchTerm 
+                      ? "Try adjusting your search or filters." 
+                      : "GL accounts will appear here when created."}
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-700">
+                    <thead className="bg-gray-800">
+                      <tr>
+                        {glAccountColumns.map((column) => (
+                          <th
+                            key={column.key}
+                            className={cn(
+                              "px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider",
+                              column.align === 'center' && "text-center",
+                              column.align === 'right' && "text-right",
+                              !column.align && "text-left"
+                            )}
+                            style={{ width: column.width }}
+                          >
+                            {column.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {filteredAccounts.map((account) => (
+                        <tr key={account.id} className="hover:bg-gray-800/50">
+                          {glAccountColumns.map((column) => (
+                            <td
+                              key={column.key}
+                              className={cn(
+                                "px-6 py-4 text-sm text-gray-300",
+                                column.align === 'center' && "text-center",
+                                column.align === 'right' && "text-right"
+                              )}
+                            >
+                              {column.render 
+                                ? column.render(account[column.key], account)
+                                : account[column.key]
+                              }
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </Card>
           </TabsContent>
 

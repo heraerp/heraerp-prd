@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   BarChart3,
@@ -16,14 +15,11 @@ import {
   Calendar
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Kochi Ice Cream Org ID
-const ORG_ID = '1471e87b-b27e-42ef-8192-343cc5e0d656'
+// Kochi Ice Cream Org ID (fallback)
+const DEFAULT_ORG_ID = '1471e87b-b27e-42ef-8192-343cc5e0d656'
 
 interface AnalyticsData {
   totalRevenue: number
@@ -37,6 +33,9 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
+  const { currentOrganization } = useMultiOrgAuth()
+  const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
+  
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<AnalyticsData>({
     totalRevenue: 0,
@@ -56,22 +55,21 @@ export default function AnalyticsPage() {
 
   async function fetchAnalyticsData() {
     try {
-      // Fetch sales transactions
-      const { data: sales } = await supabase
-        .from('universal_transactions')
-        .select(`
-          *,
-          universal_transaction_lines (*)
-        `)
-        .eq('organization_id', ORG_ID)
-        .eq('transaction_type', 'pos_sale')
-
-      // Fetch production data
-      const { data: production } = await supabase
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', ORG_ID)
-        .eq('transaction_type', 'production_batch')
+      // Set organization context
+      universalApi.setOrganizationId(organizationId)
+      
+      // Fetch all transactions
+      const allTransactions = await universalApi.getTransactions()
+      
+      // Filter sales transactions
+      const sales = allTransactions.filter(t => 
+        t.transaction_type === 'pos_sale' && t.organization_id === organizationId
+      )
+      
+      // Filter production data
+      const production = allTransactions.filter(t => 
+        t.transaction_type === 'production_batch' && t.organization_id === organizationId
+      )
 
       // Calculate analytics
       let totalRevenue = 0
@@ -85,13 +83,17 @@ export default function AnalyticsPage() {
       sales?.forEach(sale => {
         totalRevenue += sale.total_amount || 0
         
-        sale.universal_transaction_lines?.forEach((line: any) => {
-          const productName = line.metadata?.product_name || 'Unknown'
-          const existing = productSales.get(productName) || { name: productName, quantity: 0, revenue: 0 }
-          existing.quantity += Math.abs(line.quantity)
-          existing.revenue += line.line_amount || 0
-          productSales.set(productName, existing)
-        })
+        // Note: Transaction lines would need to be fetched separately if needed
+        // For now, we'll use metadata from the transaction
+        if (sale.metadata?.items) {
+          sale.metadata.items.forEach((line: any) => {
+            const productName = line.metadata?.product_name || 'Unknown'
+            const existing = productSales.get(productName) || { name: productName, quantity: 0, revenue: 0 }
+            existing.quantity += Math.abs(line.quantity)
+            existing.revenue += line.line_amount || 0
+            productSales.set(productName, existing)
+          })
+        }
       })
 
       // Production costs and volume
