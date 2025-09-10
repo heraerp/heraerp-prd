@@ -27,7 +27,8 @@ ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
 ENV SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
 
-RUN npm run build || echo "Build completed with warnings"
+# Build must succeed; fail the image build if it doesn't
+RUN npm run build
 
 # Set production environment
 ENV NODE_ENV=production

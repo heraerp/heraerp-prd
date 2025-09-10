@@ -27,6 +27,8 @@ try {
       SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || 'dummy-service-key'
     }
   });
+  // Verify build artifacts exist
+  execSync('node scripts/verify-next-build.js', { stdio: 'inherit', shell: true })
   console.log('✅ Build completed successfully');
 } catch (error) {
   console.error('❌ Build failed:', error.message);
