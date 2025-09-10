@@ -30,12 +30,6 @@
   }
 }
 
-/* FullCalendar styles */
-@import '@/styles/fullcalendar.css';
-
-/* Modern Salon Calendar styles */
-@import '@/styles/salon-calendar.css';
-
 /* Salon-specific animations */
 @keyframes fadeIn {
   from {

@@ -298,7 +298,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                   <div className="flex items-center gap-2">
                     {column.header}
                     {column.sortable && sortConfig?.column === column.id && (
-                      sortConfig.direction === 'asc' ? 
+                      sortConfig?.direction === 'asc' ? 
                         <ChevronUp className="w-3 h-3" /> : 
                         <ChevronDown className="w-3 h-3" />
                     )}

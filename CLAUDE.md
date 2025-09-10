@@ -101,6 +101,12 @@ node finance-dna-cli.js rules --org uuid              # View posting rules
 node finance-dna-cli.js test-posting --org uuid --event sample.json  # Test GL posting
 node finance-dna-cli.js coa --org uuid                # View Chart of Accounts
 
+# HERA DNA Document Numbering System (UNIVERSAL CROSS-INDUSTRY) 📄
+node hera-dna-document-numbering-cli.js industries    # List all supported industries
+node hera-dna-document-numbering-cli.js config --industry furniture  # Furniture configuration
+node hera-dna-document-numbering-cli.js generate --type sales_order --industry furniture  # Generate document number
+node hera-dna-document-numbering-cli.js test          # Test all industries and document types
+
 # HERA Enterprise Features (ENTERPRISE GA READY) 🔐
 node scripts/test-enterprise-features.js              # Test all enterprise capabilities
 # Access enterprise endpoints
@@ -2268,6 +2274,51 @@ HERA includes a revolutionary auto-documentation system that keeps documentation
 - `/docs/user` - User-friendly guides and tutorials  
 - `/docs/search` - Full-text search across all documentation
 - `/docs/analytics` - Documentation usage analytics and insights
+
+## 🧬 HERA DNA Patterns Library - Accelerated Development
+
+### **🚀 NEW DNA PATTERNS FROM PRODUCTION LEARNINGS**
+
+**Critical patterns discovered during furniture module development that accelerate future builds:**
+
+1. **Demo Organization Loading Pattern** (`/src/lib/dna/patterns/demo-org-pattern.ts`)
+   - Fixes infinite loading bug: `orgLoading = isAuthenticated ? isLoadingOrgs : false`
+   - Proper demo org loading without fallbacks (keeps debugging capability)
+   - Standard organization info display component
+
+2. **Dark Sidebar Layout Pattern** (`/src/lib/dna/patterns/dark-sidebar-layout-pattern.tsx`)
+   - 80px compact sidebar with icon navigation
+   - Industry-specific theme colors
+   - Mobile-responsive bottom navigation
+   - Tooltip support for better UX
+
+3. **Universal API Loading Pattern** (`/src/lib/dna/patterns/universal-api-loading-pattern.ts`)
+   - Handles Universal API read() method correctly (no filter parameter)
+   - JavaScript-based filtering and sorting
+   - Reusable data loading hook with proper error handling
+   - Common filters and sorters included
+
+4. **Industry Module Pattern** (`/src/lib/dna/patterns/industry-module-pattern.md`)
+   - Complete checklist for creating new industry modules
+   - Common gotchas and their solutions
+   - Seed data patterns
+   - Smart code conventions
+
+**Usage Example:**
+```typescript
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+
+// In your component
+const { organizationId, orgLoading } = useDemoOrganization()
+
+const { data: products } = useUniversalData({
+  table: 'core_entities',
+  filter: universalFilters.byEntityType('product'),
+  organizationId,
+  enabled: !!organizationId
+})
+```
 
 ## 🧬 HERA Progressive DNA System - Revolutionary Two-Tier Architecture
 

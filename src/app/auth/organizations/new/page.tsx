@@ -158,25 +158,40 @@ export default function CreateOrganizationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      
+      {/* Glassmorphic orbs for depth */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
+      <header className="relative z-10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link href="/auth/organizations">
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors"
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
-                  <Sparkles className="h-6 w-6 text-white" />
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-white/20">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                    <Sparkles className="h-6 w-6 text-white" />
+                  </div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900">Create Organization</h1>
-                  <p className="text-xs text-slate-600">Set up your new business</p>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">Create Organization</h1>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Set up your new business</p>
                 </div>
               </div>
             </div>
@@ -185,25 +200,25 @@ export default function CreateOrganizationPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Organization Details</CardTitle>
-            <CardDescription>
+      <main className="relative z-10 container mx-auto px-6 py-12 max-w-2xl">
+        <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-gray-700/50">
+          <CardHeader className="pb-6 pt-8">
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Organization Details</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400 mt-2">
               Create a new organization to manage your business. Each organization gets its own subdomain and isolated data.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="bg-red-50/80 dark:bg-red-900/30 backdrop-blur border-red-200/50 dark:border-red-800/50">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="organization_name">Organization Name</Label>
+                <Label htmlFor="organization_name" className="text-sm font-medium text-gray-700 dark:text-gray-300">Organization Name</Label>
                 <Input
                   id="organization_name"
                   type="text"
@@ -212,23 +227,24 @@ export default function CreateOrganizationPage() {
                   onChange={(e) => setFormData({...formData, organization_name: e.target.value})}
                   required
                   disabled={isLoading}
+                  className="h-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Your business or company name
                 </p>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="organization_type">Business Type</Label>
+                <Label htmlFor="organization_type" className="text-sm font-medium text-gray-700 dark:text-gray-300">Business Type</Label>
                 <Select
                   value={formData.organization_type}
                   onValueChange={(value) => setFormData({...formData, organization_type: value})}
                   disabled={true} // Disabled since only salon is available
                 >
-                  <SelectTrigger id="organization_type">
+                  <SelectTrigger id="organization_type" className="h-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all">
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border-white/20 dark:border-gray-700/50">
                     {BUSINESS_TYPES.map((type) => {
                       const Icon = type.icon
                       return (
@@ -242,13 +258,13 @@ export default function CreateOrganizationPage() {
                     })}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Currently, only Salon & Beauty businesses are supported. More industries coming soon!
                 </p>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="subdomain">Subdomain</Label>
+                <Label htmlFor="subdomain" className="text-sm font-medium text-gray-700 dark:text-gray-300">Subdomain</Label>
                 <div className="relative">
                   <Input
                     id="subdomain"
@@ -258,7 +274,7 @@ export default function CreateOrganizationPage() {
                     onChange={(e) => setFormData({...formData, subdomain: e.target.value.toLowerCase()})}
                     required
                     disabled={isLoading}
-                    className="pr-10"
+                    className="pr-10 h-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                     {isCheckingSubdomain && (
@@ -272,11 +288,11 @@ export default function CreateOrganizationPage() {
                     )}
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Your HERA URL will be: {formData.subdomain || 'subdomain'}.heraerp.com
                 </p>
                 {subdomainAvailable === false && (
-                  <p className="text-xs text-red-600">
+                  <p className="text-xs text-red-600 dark:text-red-400">
                     This subdomain is not available
                   </p>
                 )}
@@ -284,7 +300,7 @@ export default function CreateOrganizationPage() {
               
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 disabled={isLoading || !subdomainAvailable || isCheckingSubdomain}
               >
                 {isLoading ? (
@@ -306,29 +322,29 @@ export default function CreateOrganizationPage() {
         {/* Info Section */}
         <div className="mt-8 grid md:grid-cols-3 gap-4">
           <div className="text-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Globe className="h-5 w-5 text-blue-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-2 shadow-md">
+              <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-medium text-sm mb-1">Custom Domain</h3>
-            <p className="text-xs text-slate-600">
+            <h3 className="font-medium text-sm mb-1 text-gray-900 dark:text-white">Custom Domain</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               Access via subdomain.heraerp.com
             </p>
           </div>
           <div className="text-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Users className="h-5 w-5 text-purple-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-2 shadow-md">
+              <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-medium text-sm mb-1">Team Ready</h3>
-            <p className="text-xs text-slate-600">
+            <h3 className="font-medium text-sm mb-1 text-gray-900 dark:text-white">Team Ready</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               Invite team members later
             </p>
           </div>
           <div className="text-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-2 shadow-md">
+              <CheckCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-medium text-sm mb-1">Instant Setup</h3>
-            <p className="text-xs text-slate-600">
+            <h3 className="font-medium text-sm mb-1 text-gray-900 dark:text-white">Instant Setup</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               Start using immediately
             </p>
           </div>

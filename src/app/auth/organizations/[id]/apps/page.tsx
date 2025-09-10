@@ -259,31 +259,45 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
 
   if (isLoadingOrg || !organization) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading organization...</p>
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 animate-pulse">
+            <Loader2 className="w-10 h-10 text-blue-600 dark:text-blue-400 animate-spin" />
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 mt-4">Loading organization...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      
+      {/* Glassmorphic orbs for depth */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse animation-delay-4000" />
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
+      <header className="relative z-10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <Package className="h-6 w-6 text-white" />
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-white/20">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                  <Package className="h-6 w-6 text-white" />
+                </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">Select Apps</h1>
-                <p className="text-xs text-slate-600">{organization.name}</p>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">Select Apps</h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{organization.name}</p>
               </div>
             </div>
-            <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+            <Badge variant="secondary" className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50">
               {organization.subdomain}.heraerp.com
             </Badge>
           </div>
@@ -291,22 +305,22 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-6xl">
+      <main className="relative z-10 container mx-auto px-6 py-12 max-w-6xl">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100/80 to-emerald-100/80 dark:from-green-900/30 dark:to-emerald-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 rounded-full text-sm font-medium mb-4 shadow-md">
             <Sparkles className="w-4 h-4 mr-2" />
             Recommended apps pre-selected
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Choose Your Business Apps
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Select the apps you need for {organization.name}. You can always add or remove apps later.
           </p>
         </div>
 
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant="destructive" className="mb-6 bg-red-50/80 dark:bg-red-900/30 backdrop-blur border-red-200/50 dark:border-red-800/50">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -322,37 +336,37 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             return (
               <Card 
                 key={app.id}
-                className={`cursor-pointer transition-all ${
+                className={`bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${
                   isSelected 
-                    ? 'border-2 border-blue-500 shadow-lg' 
-                    : 'border-2 border-transparent hover:border-gray-300'
+                    ? 'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl' 
+                    : 'border border-white/20 dark:border-gray-700/50 hover:border-blue-300/50 dark:hover:border-blue-600/50 hover:shadow-xl'
                 }`}
                 onClick={() => toggleApp(app.id)}
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                       <Icon className="h-6 w-6" />
                     </div>
                     <div className="flex items-center gap-2">
                       {isRecommended && (
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
+                        <Badge variant="secondary" className="text-xs bg-green-100/80 dark:bg-green-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 border-green-200/50 dark:border-green-700/50">
                           Recommended
                         </Badge>
                       )}
                       {isSelected && (
-                        <CheckCircle className="h-5 w-5 text-blue-500" />
+                        <CheckCircle className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                       )}
                     </div>
                   </div>
-                  <CardTitle className="mt-4">{app.name}</CardTitle>
-                  <CardDescription>{app.description}</CardDescription>
+                  <CardTitle className="mt-4 text-gray-900 dark:text-white">{app.name}</CardTitle>
+                  <CardDescription className="text-gray-600 dark:text-gray-400">{app.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     {app.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
-                        <div className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+                      <div key={idx} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-600 rounded-full" />
                         {feature}
                       </div>
                     ))}
@@ -376,6 +390,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                 router.push('/auth/organizations')
               }
             }}
+            className="border-gray-300/50 dark:border-gray-600/50 hover:border-blue-500/50 dark:hover:border-blue-400/50 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all"
           >
             Skip for Now
           </Button>
@@ -383,7 +398,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             size="lg"
             onClick={handleInstallApps}
             disabled={isInstalling || selectedApps.length === 0}
-            className="min-w-[200px]"
+            className="min-w-[200px] bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
           >
             {isInstalling ? (
               <>
@@ -402,29 +417,29 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
         {/* Info Section */}
         <div className="mt-16 grid md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Zap className="h-6 w-6 text-blue-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Zap className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Instant Setup</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Instant Setup</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Apps are ready to use immediately after installation
             </p>
           </div>
           <div className="text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Shield className="h-6 w-6 text-purple-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Fully Integrated</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Fully Integrated</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               All apps work seamlessly together with shared data
             </p>
           </div>
           <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Settings className="h-6 w-6 text-green-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Settings className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Flexible</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Flexible</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Add, remove, or configure apps anytime from settings
             </p>
           </div>

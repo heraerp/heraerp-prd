@@ -57,37 +57,54 @@ export default function OrganizationSelectorPage() {
 
   if (isLoadingOrgs) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Building2 className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 animate-pulse">
+            <Building2 className="w-10 h-10 text-blue-600 dark:text-blue-400" />
           </div>
-          <p className="text-gray-600">Loading your organizations...</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-4">Loading your organizations...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      
+      {/* Glassmorphic orbs for depth */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse animation-delay-4000" />
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
+      <header className="relative z-10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-white/20">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                  <Building2 className="h-6 w-6 text-white" />
+                </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">HERA ERP</h1>
-                <p className="text-xs text-slate-600">Select Organization</p>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">HERA Enterprise</h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Select Organization</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {user?.email}
               </span>
-              <Button variant="ghost" size="sm" onClick={signOut}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={signOut}
+                className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors"
+              >
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
@@ -96,12 +113,12 @@ export default function OrganizationSelectorPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-6xl">
+      <main className="relative z-10 container mx-auto px-6 py-12 max-w-6xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Welcome back{user?.name ? `, ${user.name}` : ''}!
           </h2>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             Select an organization to continue or create a new one.
           </p>
         </div>
@@ -114,7 +131,7 @@ export default function OrganizationSelectorPage() {
             return (
               <Card 
                 key={org.id}
-                className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-blue-500 relative overflow-hidden"
+                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl hover:shadow-2xl transition-all cursor-pointer border border-white/20 dark:border-gray-700/50 hover:border-blue-500/50 dark:hover:border-blue-400/50 relative overflow-hidden transform hover:-translate-y-1 hover:scale-105 duration-200"
                 onClick={() => handleSelectOrganization(org.id, org.subdomain)}
               >
                 {/* Premium badge for paid plans */}
@@ -128,16 +145,16 @@ export default function OrganizationSelectorPage() {
                 
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       {org.name.substring(0, 2).toUpperCase()}
                     </div>
-                    <Badge variant="outline" className="flex items-center gap-1">
+                    <Badge variant="outline" className="flex items-center gap-1 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
                       <RoleIcon className="w-3 h-3" />
                       {org.role}
                     </Badge>
                   </div>
-                  <CardTitle className="mt-4">{org.name}</CardTitle>
-                  <CardDescription className="flex items-center gap-2 text-sm">
+                  <CardTitle className="mt-4 text-gray-900 dark:text-white">{org.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                     <Globe className="h-3 w-3" />
                     {org.subdomain}.heraerp.com
                   </CardDescription>
@@ -145,24 +162,24 @@ export default function OrganizationSelectorPage() {
                 <CardContent>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600">Type</span>
-                      <span className="font-medium">
+                      <span className="text-gray-600 dark:text-gray-400">Type</span>
+                      <span className="font-medium text-gray-900 dark:text-white">
                         {typeDescriptions[org.type as keyof typeof typeDescriptions] || 'General Business'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600 flex items-center gap-1">
+                      <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         Created
                       </span>
-                      <span className="font-medium">
+                      <span className="font-medium text-gray-900 dark:text-white">
                         {new Date(org.created_at).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
                   
                   <Button 
-                    className="w-full mt-4" 
+                    className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200" 
                     variant={switching === org.id ? "secondary" : "default"}
                     disabled={switching !== null}
                   >
@@ -185,18 +202,18 @@ export default function OrganizationSelectorPage() {
 
           {/* Create New Organization Card */}
           <Card 
-            className="hover:shadow-lg transition-all cursor-pointer border-2 border-dashed hover:border-purple-500 flex flex-col justify-center"
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl hover:shadow-2xl transition-all cursor-pointer border-2 border-dashed border-gray-300/50 dark:border-gray-600/50 hover:border-blue-500/50 dark:hover:border-blue-400/50 flex flex-col justify-center transform hover:-translate-y-1 hover:scale-105 duration-200"
             onClick={() => router.push('/auth/organizations/new')}
           >
             <CardContent className="text-center py-12">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Plus className="h-8 w-8 text-purple-600" />
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Plus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Create New Organization</h3>
-              <p className="text-sm text-slate-600 mb-4">
+              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Create New Organization</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Start a new business or project
               </p>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full border-blue-500/50 hover:border-blue-600 dark:border-blue-400/50 dark:hover:border-blue-500 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                 <Sparkles className="mr-2 h-4 w-4" />
                 New Organization
               </Button>
@@ -207,29 +224,29 @@ export default function OrganizationSelectorPage() {
         {/* Features Reminder */}
         <div className="mt-12 grid md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Shield className="h-6 w-6 text-blue-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Complete Isolation</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Complete Isolation</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Each organization has its own secure data space
             </p>
           </div>
           <div className="text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Globe className="h-6 w-6 text-purple-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Custom Subdomain</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Custom Subdomain</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Access each organization via its unique URL
             </p>
           </div>
           <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Users className="h-6 w-6 text-green-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1">Team Collaboration</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">Team Collaboration</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Invite team members to specific organizations
             </p>
           </div>

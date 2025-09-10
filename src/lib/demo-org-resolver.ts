@@ -20,6 +20,7 @@ const FALLBACK_MAPPINGS: Record<string, string> = {
   '/healthcare': 'a2e5f8d9-7b3c-4f6e-9d1a-8c7e5b4a2f9d', // Dr. Smith's Practice
   '/salon': 'c7d9e4f8-3b2a-4e6d-8f1c-9a7b5c3d2e8f', // Bella Beauty Salon
   '/retail': 'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d', // TechGear Electronics
+  '/furniture': 'f0af4ced-9d12-4a55-a649-b484368db249', // Kerala Furniture Works (Demo)
 }
 
 /**
@@ -116,6 +117,10 @@ export async function getDemoOrganizationInfo(pathname: string): Promise<{
     'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d': {
       name: 'TechGear Electronics Store',
       industry: 'retail'
+    },
+    'f0af4ced-9d12-4a55-a649-b484368db249': {
+      name: 'Kerala Furniture Works (Demo)',
+      industry: 'furniture'
     }
   }
 

@@ -18,7 +18,9 @@ const DEMO_ORG_IDS = [
   '8c4f6b2d-5a91-4e8c-b3d7-1f9e8a7c6d54', // Mario's Restaurant
   'a2e5f8d9-7b3c-4f6e-9d1a-8c7e5b4a2f9d', // Dr. Smith's Practice
   'c7d9e4f8-3b2a-4e6d-8f1c-9a7b5c3d2e8f', // Bella Beauty Salon
-  'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d'  // TechGear Electronics
+  '519d9c67-6fa4-4c73-9c56-6d132a6649c1', // Bella Beauty Salon (Demo)
+  'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d', // TechGear Electronics
+  'f0af4ced-9d12-4a55-a649-b484368db249'  // Kerala Furniture Works
 ]
 
 async function applyDemoRLSPolicies() {

@@ -1,0 +1,267 @@
+{
+  "posting_policies": {
+    "material_issue": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.MATREQ.v1",
+      "rules": [
+        {
+          "description": "Material Issue to Production",
+          "debit": {
+            "account_derivation": "WIP_ACCOUNT_BY_WORK_CENTER",
+            "default_account": "1450000",
+            "account_name": "Work In Progress - Production"
+          },
+          "credit": {
+            "account_derivation": "RM_INVENTORY_BY_MATERIAL_TYPE",
+            "default_account": "1330000",
+            "account_name": "Raw Material Inventory"
+          }
+        }
+      ]
+    },
+    "labor_absorption": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.v1",
+      "rules": [
+        {
+          "description": "Direct Labor Applied to WIP",
+          "debit": {
+            "account_derivation": "WIP_ACCOUNT_BY_WORK_CENTER",
+            "default_account": "1450000",
+            "account_name": "Work In Progress - Production"
+          },
+          "credit": {
+            "account_derivation": "LABOR_APPLIED_ACCOUNT",
+            "default_account": "5310000",
+            "account_name": "Direct Labor Applied"
+          }
+        }
+      ]
+    },
+    "overhead_absorption": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.v1",
+      "rules": [
+        {
+          "description": "Manufacturing Overhead Applied to WIP",
+          "debit": {
+            "account_derivation": "WIP_ACCOUNT_BY_WORK_CENTER",
+            "default_account": "1450000",
+            "account_name": "Work In Progress - Production"
+          },
+          "credit": {
+            "account_derivation": "OVERHEAD_APPLIED_ACCOUNT",
+            "default_account": "5320000",
+            "account_name": "Manufacturing Overhead Applied"
+          }
+        }
+      ]
+    },
+    "finished_goods_receipt": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.INVENTORY.FG_RECEIPT.v1",
+      "rules": [
+        {
+          "description": "Transfer from WIP to Finished Goods",
+          "debit": {
+            "account_derivation": "FG_INVENTORY_BY_PRODUCT_TYPE",
+            "default_account": "1360000",
+            "account_name": "Finished Goods Inventory"
+          },
+          "credit": {
+            "account_derivation": "WIP_ACCOUNT_BY_WORK_CENTER",
+            "default_account": "1450000",
+            "account_name": "Work In Progress - Production"
+          }
+        }
+      ]
+    },
+    "cogs_on_dispatch": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.DISPATCH.v1",
+      "rules": [
+        {
+          "description": "Cost of Goods Sold on Dispatch",
+          "debit": {
+            "account_derivation": "COGS_BY_PRODUCT_CATEGORY",
+            "default_account": "5110000",
+            "account_name": "Cost of Goods Sold - Furniture"
+          },
+          "credit": {
+            "account_derivation": "FG_INVENTORY_BY_PRODUCT_TYPE",
+            "default_account": "1360000",
+            "account_name": "Finished Goods Inventory"
+          }
+        }
+      ]
+    },
+    "gst_output": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.HEADER.v1",
+      "rules": [
+        {
+          "description": "GST Output Tax - CGST",
+          "debit": {
+            "account_derivation": "CUSTOMER_RECEIVABLE",
+            "default_account": "1210000",
+            "account_name": "Accounts Receivable"
+          },
+          "credit": {
+            "account_derivation": "GST_OUTPUT_CGST",
+            "default_account": "2251000",
+            "account_name": "GST Output - CGST"
+          },
+          "calculation": "line_amount * gst_rate / 2"
+        },
+        {
+          "description": "GST Output Tax - SGST",
+          "debit": {
+            "account_derivation": "CUSTOMER_RECEIVABLE",
+            "default_account": "1210000",
+            "account_name": "Accounts Receivable"
+          },
+          "credit": {
+            "account_derivation": "GST_OUTPUT_SGST",
+            "default_account": "2252000",
+            "account_name": "GST Output - SGST"
+          },
+          "calculation": "line_amount * gst_rate / 2"
+        }
+      ]
+    },
+    "customer_advance": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1",
+      "condition": "advance_amount > 0",
+      "rules": [
+        {
+          "description": "Customer Advance Receipt",
+          "debit": {
+            "account_derivation": "BANK_ACCOUNT",
+            "default_account": "1110000",
+            "account_name": "Bank Account - Current"
+          },
+          "credit": {
+            "account_derivation": "CUSTOMER_ADVANCE",
+            "default_account": "2300000",
+            "account_name": "Customer Advances"
+          }
+        }
+      ]
+    },
+    "payroll_salary": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.v1",
+      "rules": [
+        {
+          "description": "Salary Expense",
+          "debit": {
+            "account_derivation": "SALARY_EXPENSE_BY_DEPARTMENT",
+            "default_account": "5510000",
+            "account_name": "Salaries and Wages"
+          },
+          "credit": {
+            "account_derivation": "SALARY_PAYABLE",
+            "default_account": "2410000",
+            "account_name": "Salaries Payable"
+          }
+        }
+      ]
+    },
+    "pf_liability": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.GL.LINE.v1",
+      "rules": [
+        {
+          "description": "EPF Employee Contribution",
+          "debit": {
+            "account_derivation": "SALARY_PAYABLE",
+            "default_account": "2410000",
+            "account_name": "Salaries Payable"
+          },
+          "credit": {
+            "account_derivation": "PF_PAYABLE",
+            "default_account": "2420000",
+            "account_name": "EPF Payable"
+          }
+        },
+        {
+          "description": "EPF Employer Contribution",
+          "debit": {
+            "account_derivation": "PF_EMPLOYER_EXPENSE",
+            "default_account": "5520000",
+            "account_name": "Employer PF Contribution"
+          },
+          "credit": {
+            "account_derivation": "PF_PAYABLE",
+            "default_account": "2420000",
+            "account_name": "EPF Payable"
+          }
+        }
+      ]
+    },
+    "esi_liability": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.GL.LINE.v1",
+      "rules": [
+        {
+          "description": "ESI Employee Contribution",
+          "debit": {
+            "account_derivation": "SALARY_PAYABLE",
+            "default_account": "2410000",
+            "account_name": "Salaries Payable"
+          },
+          "credit": {
+            "account_derivation": "ESI_PAYABLE",
+            "default_account": "2430000",
+            "account_name": "ESI Payable"
+          }
+        },
+        {
+          "description": "ESI Employer Contribution",
+          "debit": {
+            "account_derivation": "ESI_EMPLOYER_EXPENSE",
+            "default_account": "5530000",
+            "account_name": "Employer ESI Contribution"
+          },
+          "credit": {
+            "account_derivation": "ESI_PAYABLE",
+            "default_account": "2430000",
+            "account_name": "ESI Payable"
+          }
+        }
+      ]
+    },
+    "pf_remittance": {
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.REMITTANCE.v1",
+      "rules": [
+        {
+          "description": "EPF Remittance Payment",
+          "debit": {
+            "account_derivation": "PF_PAYABLE",
+            "default_account": "2420000",
+            "account_name": "EPF Payable"
+          },
+          "credit": {
+            "account_derivation": "BANK_ACCOUNT",
+            "default_account": "1110000",
+            "account_name": "Bank Account - Current"
+          }
+        }
+      ]
+    }
+  },
+  "configuration": {
+    "fiscal_year": {
+      "start": "04-01",
+      "end": "03-31"
+    },
+    "gst_rates": {
+      "standard": 0.18,
+      "furniture_hsn_94": 0.18,
+      "wood_hsn_44": 0.12
+    },
+    "pf_rates": {
+      "employee": 0.12,
+      "employer": 0.12,
+      "admin_charges": 0.01,
+      "edli_charges": 0.005
+    },
+    "esi_rates": {
+      "employee": 0.0075,
+      "employer": 0.0325
+    },
+    "currency": "INR",
+    "balance_validation": true
+  }
+}

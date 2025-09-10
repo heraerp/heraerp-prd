@@ -1,0 +1,255 @@
+'use client';
+
+import React, { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  ShoppingCart, 
+  Package, 
+  Factory, 
+  TruckIcon,
+  BarChart,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  SalesOrderForm, 
+  PurchaseOrderForm, 
+  ManufacturingOrderDashboard, 
+  InventoryMovementTracker 
+} from './transactions';
+
+interface TransactionStats {
+  salesOrders: {
+    total: number;
+    pending: number;
+    value: number;
+  };
+  purchaseOrders: {
+    total: number;
+    pending: number;
+    value: number;
+  };
+  manufacturingOrders: {
+    total: number;
+    inProgress: number;
+    completed: number;
+  };
+  inventoryMovements: {
+    today: number;
+    week: number;
+    stockValue: number;
+  };
+}
+
+export function TransactionsDashboard() {
+  const [activeTab, setActiveTab] = useState('sales');
+  
+  // In a real implementation, these would be fetched from the API
+  const stats: TransactionStats = {
+    salesOrders: {
+      total: 24,
+      pending: 5,
+      value: 485000
+    },
+    purchaseOrders: {
+      total: 12,
+      pending: 3,
+      value: 125000
+    },
+    manufacturingOrders: {
+      total: 18,
+      inProgress: 7,
+      completed: 8
+    },
+    inventoryMovements: {
+      today: 15,
+      week: 67,
+      stockValue: 425000
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Universal Transactions</h2>
+        <p className="text-muted-foreground">
+          Manage all furniture business transactions with UCR integration
+        </p>
+      </div>
+      
+      {/* Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Sales Orders
+            </CardTitle>
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">AED {(stats.salesOrders.value / 1000).toFixed(0)}K</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline">{stats.salesOrders.total} Total</Badge>
+              <Badge variant="secondary">{stats.salesOrders.pending} Pending</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <TrendingUp className="inline w-3 h-3 mr-1 text-green-500" />
+              +12% from last month
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Purchase Orders
+            </CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">AED {(stats.purchaseOrders.value / 1000).toFixed(0)}K</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline">{stats.purchaseOrders.total} Total</Badge>
+              <Badge variant="secondary">{stats.purchaseOrders.pending} Pending</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <AlertCircle className="inline w-3 h-3 mr-1 text-orange-500" />
+              3 require approval
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Manufacturing
+            </CardTitle>
+            <Factory className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.manufacturingOrders.inProgress}</div>
+            <div className="text-sm text-muted-foreground">In Progress</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="success">{stats.manufacturingOrders.completed} Completed</Badge>
+              <Badge variant="outline">{stats.manufacturingOrders.total} Total</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <CheckCircle className="inline w-3 h-3 mr-1 text-green-500" />
+              On schedule: 85%
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Inventory Value
+            </CardTitle>
+            <BarChart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">AED {(stats.inventoryMovements.stockValue / 1000).toFixed(0)}K</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline">{stats.inventoryMovements.today} Today</Badge>
+              <Badge variant="outline">{stats.inventoryMovements.week} This Week</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <TruckIcon className="inline w-3 h-3 mr-1 text-blue-500" />
+              15 movements today
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Transaction Tabs */}
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle>Transaction Management</CardTitle>
+          <CardDescription>
+            Create and manage furniture business transactions with automatic UCR validation, pricing, and approvals
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="sales" className="flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                Sales Orders
+              </TabsTrigger>
+              <TabsTrigger value="purchase" className="flex items-center gap-2">
+                <Package className="w-4 h-4" />
+                Purchase Orders
+              </TabsTrigger>
+              <TabsTrigger value="manufacturing" className="flex items-center gap-2">
+                <Factory className="w-4 h-4" />
+                Manufacturing
+              </TabsTrigger>
+              <TabsTrigger value="inventory" className="flex items-center gap-2">
+                <TruckIcon className="w-4 h-4" />
+                Inventory
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="sales" className="mt-6">
+              <SalesOrderForm />
+            </TabsContent>
+            
+            <TabsContent value="purchase" className="mt-6">
+              <PurchaseOrderForm />
+            </TabsContent>
+            
+            <TabsContent value="manufacturing" className="mt-6">
+              <ManufacturingOrderDashboard />
+            </TabsContent>
+            
+            <TabsContent value="inventory" className="mt-6">
+              <InventoryMovementTracker />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+      
+      {/* UCR Integration Info */}
+      <Card className="bg-muted/50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-blue-500" />
+            UCR Integration Active
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-4 text-sm">
+            <div>
+              <h4 className="font-medium mb-1">Validation Rules</h4>
+              <ul className="text-muted-foreground space-y-1">
+                <li>• Minimum order value: AED 5,000</li>
+                <li>• Maximum quantity per item: 50</li>
+                <li>• Customer credit checks</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-1">Pricing Rules</h4>
+              <ul className="text-muted-foreground space-y-1">
+                <li>• Volume discounts: 5-15%</li>
+                <li>• Customer-specific pricing</li>
+                <li>• Seasonal promotions</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-1">Approval Rules</h4>
+              <ul className="text-muted-foreground space-y-1">
+                <li>• Orders &gt; AED 50K need approval</li>
+                <li>• High-value POs require manager</li>
+                <li>• Credit limit overrides</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

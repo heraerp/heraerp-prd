@@ -13,7 +13,8 @@ import {
   User,
   Menu,
   X,
-  CreditCard
+  CreditCard,
+  CircleDollarSign
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -31,6 +32,12 @@ const navigation: NavigationItem[] = [
     href: '/',
     icon: Home,
     description: 'Main dashboard'
+  },
+  {
+    name: 'Finance',
+    href: '/finance',
+    icon: CircleDollarSign,
+    description: 'Financial Management & Documents'
   },
   {
     name: 'POS',

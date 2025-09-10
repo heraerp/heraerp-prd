@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, LogIn, AlertCircle, Eye, EyeOff, Mail, Lock, Sparkles } from 'lucide-react'
+import { Loader2, LogIn, AlertCircle, Eye, EyeOff, Mail, Lock, Sparkles, Shield, Building2, ChevronRight } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 function LoginForm() {
@@ -67,45 +67,52 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Canva-style gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 animate-gradient-x" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       
-      {/* Overlay patterns for depth */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full filter blur-3xl animate-pulse animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-400 rounded-full filter blur-3xl animate-pulse animation-delay-4000" />
+      {/* Glassmorphic orbs for depth */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse animation-delay-4000" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md mx-auto px-4">
         {/* Logo and branding */}
-        <div className="text-center mb-8 animate-fadeInUp">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-lg rounded-3xl mb-6 shadow-2xl border border-white/20 transform hover:scale-105 transition-transform duration-300">
-            <Sparkles className="w-10 h-10 text-white drop-shadow-lg" />
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl mb-6 shadow-2xl border border-white/20 transform hover:scale-105 transition-transform duration-300">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center">
+              <Building2 className="w-10 h-10 text-white" />
+            </div>
           </div>
-          <h1 className="text-5xl font-bold text-white mb-3 drop-shadow-2xl">
-            HERA ERP
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text mb-2">
+            HERA Enterprise
           </h1>
-          <p className="text-lg text-white/90 font-light tracking-wide">
-            Enterprise Resource Planning Redefined
+          <p className="text-gray-600 dark:text-gray-400 font-light">
+            Universal Business Platform
           </p>
         </div>
 
-        <Card className="bg-white dark:bg-gray-900 shadow-2xl border-0 transition-all duration-300">
-          <CardHeader className="text-center pb-8 pt-8">
-            <CardTitle className="text-3xl font-bold text-gray-900 dark:text-white">
-              Welcome Back
+        {/* Glassmorphic login card */}
+        <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-gray-700/50">
+          <CardHeader className="text-center pb-6 pt-8">
+            <div className="flex items-center justify-center mb-4">
+              <Shield className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+              Secure Sign In
             </CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-400 mt-3 text-base">
-              Sign in to access your enterprise dashboard
+            <CardDescription className="text-gray-600 dark:text-gray-400 mt-2">
+              Access your enterprise dashboard
             </CardDescription>
           </CardHeader>
+          
           <CardContent className="pb-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                <Alert variant="destructive" className="bg-red-50/80 dark:bg-red-900/30 backdrop-blur border-red-200/50 dark:border-red-800/50">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -115,8 +122,8 @@ function LoginForm() {
                 <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Email Address
                 </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors group-focus-within:text-blue-600" />
                   <Input
                     id="email"
                     type="email"
@@ -126,7 +133,7 @@ function LoginForm() {
                     required
                     disabled={isLoading}
                     autoComplete="email"
-                    className="pl-10 h-12 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="pl-10 h-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
                   />
                 </div>
               </div>
@@ -138,13 +145,13 @@ function LoginForm() {
                   </Label>
                   <Link 
                     href="/auth/forgot-password" 
-                    className="text-sm font-medium bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-600 transition-all"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                   >
                     Forgot password?
                   </Link>
                 </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors group-focus-within:text-blue-600" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -154,7 +161,7 @@ function LoginForm() {
                     required
                     disabled={isLoading}
                     autoComplete="current-password"
-                    className="pl-10 pr-12 h-12 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="pl-10 pr-12 h-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
                   />
                   <button
                     type="button"
@@ -172,70 +179,90 @@ function LoginForm() {
               
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 hover:from-purple-700 hover:via-pink-600 hover:to-orange-500 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
                 disabled={isLoading || !email || !password}
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Signing in...
+                    Authenticating...
                   </>
                 ) : (
                   <>
-                    <LogIn className="mr-2 h-5 w-5" />
                     Sign In
+                    <ChevronRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
             </form>
             
-            <div className="mt-8 text-center">
+            <div className="mt-6 relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200/50 dark:border-gray-700/50" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-2 text-gray-500 dark:text-gray-400">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Don't have an account?{' '}
                 <Link 
                   href="/auth/signup" 
-                  className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-600 transition-all"
+                  className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
                   Create one
-                </Link>
-              </p>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                By signing in, you agree to our{' '}
-                <Link href="/terms" className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
-                  Privacy Policy
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Footer */}
-        <div className="mt-8 text-center space-y-4 animate-fadeIn">
-          <div className="flex items-center justify-center space-x-6">
-            <Link href="/about" className="text-sm text-white/80 hover:text-white transition-colors duration-200">
-              About
-            </Link>
-            <span className="text-white/40">•</span>
-            <Link href="/contact" className="text-sm text-white/80 hover:text-white transition-colors duration-200">
-              Contact
-            </Link>
-            <span className="text-white/40">•</span>
-            <Link href="/help" className="text-sm text-white/80 hover:text-white transition-colors duration-200">
-              Help Center
-            </Link>
+        {/* Enterprise features */}
+        <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-700/50">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
+              99.9%
+            </div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              Uptime SLA
+            </div>
           </div>
-          <p className="text-sm text-white/70 font-light">
-            © 2024 HERA ERP • Enterprise solutions for modern businesses
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-700/50">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
+              SOC 2
+            </div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              Certified
+            </div>
+          </div>
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg p-3 border border-white/20 dark:border-gray-700/50">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
+              24/7
+            </div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              Support
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center space-y-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            By signing in, you agree to our{' '}
+            <Link href="/terms" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+              Terms
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+              Privacy Policy
+            </Link>
           </p>
-          <p className="text-xs text-white/50">
-            Powered by Universal 6-Table Architecture™
+          <p className="text-xs text-gray-500 dark:text-gray-500">
+            © 2024 HERA ERP • Enterprise Edition v1.2.0
           </p>
         </div>
       </div>
@@ -246,10 +273,12 @@ function LoginForm() {
 export default function CentralLoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-white mx-auto mb-4" />
-          <p className="text-white/80">Loading...</p>
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl mb-4 shadow-2xl border border-white/20">
+            <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+          </div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     }>

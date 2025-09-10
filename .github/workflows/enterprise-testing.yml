@@ -1,0 +1,248 @@
+name: Enterprise Testing Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '18'
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run unit tests
+      run: npm run test:unit -- --coverage
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info
+        flags: unit
+        name: unit-coverage
+
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Setup test database
+      run: npm run db:test:setup
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+    
+    - name: Run API tests
+      run: npm run test:api:jest -- --coverage
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info
+        flags: api
+        name: api-coverage
+
+  e2e-tests:
+    name: E2E Tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps ${{ matrix.browser }}
+    
+    - name: Build application
+      run: npm run build
+      env:
+        SKIP_ENV_VALIDATION: true
+    
+    - name: Run E2E tests
+      run: npm run test:e2e:multi-tenant -- --project=${{ matrix.browser }}
+    
+    - name: Upload test artifacts
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: e2e-artifacts-${{ matrix.browser }}
+        path: |
+          tests/reports/
+          test-results/
+          playwright-report/
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Setup test database
+      run: npm run db:test:setup
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+    
+    - name: Run integration tests
+      run: npm run test:integration -- --coverage
+      env:
+        REDIS_URL: redis://localhost:6379
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info
+        flags: integration
+        name: integration-coverage
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup k6
+      run: |
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+        echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+        sudo apt-get update
+        sudo apt-get install k6
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build and start server
+      run: |
+        npm run build
+        npm run start &
+        npx wait-on http://localhost:3000
+      env:
+        NODE_ENV: production
+    
+    - name: Run performance tests
+      run: k6 run tests/performance/api-load.k6.js
+    
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-results
+        path: performance-results/
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, api-tests, e2e-tests, integration-tests]
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all coverage reports
+      uses: actions/download-artifact@v3
+    
+    - name: Generate summary report
+      run: |
+        echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "| Test Type | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| API Tests | ${{ needs.api-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY

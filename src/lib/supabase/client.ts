@@ -27,3 +27,6 @@ export const createClient = () => {
 
 // Legacy support - alias for createClient
 export const getSupabase = createClient
+
+// Direct export for files expecting 'supabase'
+export const supabase = createClient()

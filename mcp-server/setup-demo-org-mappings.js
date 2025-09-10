@@ -57,6 +57,12 @@ async function setupDemoOrgMappings() {
       orgId: 'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d',
       orgName: 'TechGear Electronics Store',
       industry: 'retail'
+    },
+    {
+      path: '/furniture',
+      orgId: 'f0af4ced-9d12-4a55-a649-b484368db249',
+      orgName: 'Kerala Furniture Works (Demo)',
+      industry: 'furniture'
     }
   ]
 

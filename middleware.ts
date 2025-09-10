@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { controlCenterMiddleware } from '@/lib/middleware/control-center-middleware'
+// Note: Database operations and Node.js modules cannot run in Edge Runtime
+// Using simplified tenant resolver for Edge Runtime compatibility
 
 // Reserved subdomains that should not be treated as organizations
 const RESERVED_SUBDOMAINS = [
@@ -28,13 +29,15 @@ const DEMO_ROUTES = [
   'salon-data',
   'icecream',
   'restaurant',
-  'healthcare'
+  'healthcare',
+  'furniture'
 ]
 
 export async function middleware(request: NextRequest) {
-  // Run Control Center middleware first for API routes
+  // Database operations cannot run in Edge Runtime
+  // Tenant resolution should be handled in individual API routes
   if (request.nextUrl.pathname.startsWith('/api')) {
-    return await controlCenterMiddleware(request)
+    return NextResponse.next()
   }
   
   // Get hostname (e.g., acme.heraerp.com, app.heraerp.com, localhost:3000)
