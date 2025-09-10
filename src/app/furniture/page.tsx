@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 // Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
-import { StatCardGrid, StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -137,14 +138,9 @@ function FurnitureDashboard() {
           <h2 className="text-xl font-semibold">Business Overview</h2>
           <StatCardGrid>
             {stats.map((stat) => (
-              <StatCardDNA 
+              <FurnitureStatCard 
                 key={stat.label} 
-                title={stat.label}
-                value={stat.value}
-                change={stat.change}
-                changeType={stat.trend === 'up' ? 'positive' : stat.trend === 'down' ? 'negative' : 'neutral'}
-                icon={stat.icon}
-                iconGradient={stat.gradient}
+                {...stat}
               />
             ))}
           </StatCardGrid>
