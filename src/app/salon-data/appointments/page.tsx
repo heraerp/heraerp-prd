@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useEffect, useState } from 'react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import type { Organization } from '@/types/salon.types'

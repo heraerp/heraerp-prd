@@ -6,6 +6,9 @@
  * Full-screen mobile-friendly modern salon interface
  */
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
