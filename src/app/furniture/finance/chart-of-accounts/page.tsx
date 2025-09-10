@@ -21,7 +21,8 @@ import {
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { ChartOfAccountsService, GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
+import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
+import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
 import { cn } from '@/lib/utils'
 
 // Remove old GLAccount interface as we're using GLAccountNode from the service
@@ -34,6 +35,21 @@ export default function ChartOfAccounts() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['1000000', '2000000', '3000000', '4000000', '5000000']))
+  const [reportEngine, setReportEngine] = useState<UniversalReportEngine | null>(null)
+  
+  // Debug: Log the organization details
+  // Initialize report engine when organization changes
+  useEffect(() => {
+    if (organizationId) {
+      const engine = new UniversalReportEngine({
+        organizationId,
+        smartCodePrefix: 'HERA.URP',
+        enableCaching: true,
+        cacheTTL: 300
+      })
+      setReportEngine(engine)
+    }
+  }, [organizationId])
   
   // Debug: Log the organization details
   useEffect(() => {
@@ -54,22 +70,50 @@ export default function ChartOfAccounts() {
       setLoading(true)
       setError(null)
       
-      // Use the ChartOfAccountsService
-      const result = await ChartOfAccountsService.loadChartOfAccounts(organizationId)
+      // Use the existing report engine instance
+      if (!reportEngine) {
+        setError('Report engine not initialized')
+        return
+      }
       
-      if (result.error) {
-        setError(result.error)
-        setAccounts([])
-      } else {
-        setAccounts(result.rootAccounts)
-        
-        // Debug output
-        if (result.totalAccounts > 0) {
-          console.log('Chart of Accounts loaded successfully:')
-          console.log(`- Total accounts: ${result.totalAccounts}`)
-          console.log(`- Root accounts: ${result.rootAccounts.length}`)
-          ChartOfAccountsService.printAccountHierarchy(result.rootAccounts)
+      // Execute Chart of Accounts recipe
+      const result = await reportEngine.executeRecipe(
+        'HERA.URP.RECIPE.FINANCE.COA.v1',
+        {
+          fiscalYear: new Date().getFullYear(),
+          includeInactive: false,
+          hierarchyDepth: 5
         }
+      )
+      
+      if (Array.isArray(result) && result.length > 0) {
+        // Transform URP result to GLAccountNode format recursively
+        const transformAccount = (account: any): GLAccountNode => ({
+          id: account.id,
+          entity_code: account.accountCode || account.entity_code,
+          entity_name: account.entity_name,
+          entity_type: 'gl_account',
+          metadata: {
+            account_type: account.accountType || 'detail',
+            account_level: account.indentLevel || account.level || 0
+          },
+          organization_id: organizationId,
+          children: account.children ? account.children.map(transformAccount) : [],
+          level: account.indentLevel || account.level || 0,
+          debit_total: account.balance > 0 ? account.balance : 0,
+          credit_total: account.balance < 0 ? Math.abs(account.balance) : 0,
+          current_balance: Math.abs(account.totalBalance || account.balance || 0),
+          balance_type: (account.normalBalance === 'credit' || account.balance < 0) ? 'Cr' : 'Dr'
+        })
+        
+        const transformedAccounts = result.map(transformAccount)
+        setAccounts(transformedAccounts)
+        
+        console.log('Chart of Accounts loaded successfully via URP:')
+        console.log(`- Total accounts: ${countAllAccounts(transformedAccounts)}`)
+      } else {
+        setError('No GL accounts found for this organization')
+        setAccounts([])
       }
       
     } catch (error) {
@@ -91,6 +135,41 @@ export default function ChartOfAccounts() {
       }
       return newSet
     })
+  }
+  
+  const handleExport = async (format: 'csv' | 'excel' = 'csv') => {
+    if (!reportEngine) {
+      alert('Report engine not initialized')
+      return
+    }
+    
+    try {
+      const result = await reportEngine.executeRecipe(
+        'HERA.URP.RECIPE.FINANCE.COA.v1',
+        {
+          fiscalYear: new Date().getFullYear(),
+          includeInactive: false,
+          hierarchyDepth: 5
+        },
+        {
+          format: format === 'csv' ? 'csv' : 'excel'
+        }
+      )
+      
+      // Create download
+      const blob = new Blob([result], { type: format === 'csv' ? 'text/csv' : 'application/vnd.ms-excel' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `chart-of-accounts-${organizationId}-${new Date().toISOString().split('T')[0]}.${format}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Export failed:', error)
+      alert('Failed to export Chart of Accounts')
+    }
   }
   
   const renderAccount = (account: GLAccountNode, level: number = 0): React.ReactNode => {
@@ -254,11 +333,16 @@ export default function ChartOfAccounts() {
           subtitle="Hierarchical view of general ledger accounts"
           actions={
             <>
-              <Button variant="outline" size="sm" onClick={loadChartOfAccounts}>
+              <Button variant="outline" size="sm" onClick={async () => {
+                if (reportEngine) {
+                  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.v1')
+                }
+                loadChartOfAccounts()
+              }}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => handleExport('csv')}>
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
