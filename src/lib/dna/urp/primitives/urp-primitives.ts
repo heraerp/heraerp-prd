@@ -85,15 +85,40 @@ export class EntityResolver {
   constructor(private context: URPContext) {}
 
   async resolve(options: EntityResolverOptions): Promise<CoreEntities[]> {
+    console.log('🔍 EntityResolver.resolve() called with options:', options)
+    console.log('🔧 Setting organization ID:', this.context.organizationId)
+    
     universalApi.setOrganizationId(this.context.organizationId)
+    
+    console.log('🚀 Fetching entities from core_entities table...')
     
     // Fetch entities using the read method
     const result = await universalApi.read({ table: 'core_entities' })
+    
+    console.log('📊 Universal API read result:')
+    console.log('- Data type:', typeof result?.data)
+    console.log('- Data is array:', Array.isArray(result?.data))
+    console.log('- Data length:', result?.data?.length || 'N/A')
+    console.log('- Error:', result?.error)
+    
     let entities = result?.data || []
+    console.log('🔢 Total entities retrieved:', entities.length)
     
     // Apply filters
     if (options.entityType) {
+      console.log('🔍 Filtering by entity type:', options.entityType)
+      const beforeCount = entities.length
       entities = entities.filter(e => e.entity_type === options.entityType)
+      console.log(`📊 Filtered from ${beforeCount} to ${entities.length} entities`)
+      
+      if (entities.length > 0) {
+        console.log('📋 Sample filtered entity:', {
+          id: entities[0].id,
+          entity_code: entities[0].entity_code,
+          entity_name: entities[0].entity_name,
+          entity_type: entities[0].entity_type
+        })
+      }
     }
     
     if (options.entityIds?.length) {

@@ -11,7 +11,7 @@
     "cc:deploy": "node mcp-server/hera-control-center.js deploy-check",
     "cc:guardrails": "node mcp-server/hera-control-center.js guardrails",
     "cc:setup": "node scripts/setup-control-center-hooks.js",
-    "build": "node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS='--max-old-space-size=8192' next build",
+    "build": "node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && NODE_OPTIONS=\"--max-old-space-size=8192\" next build",
     "build:analyze": "ANALYZE=true npm run build",
     "build:railway": "npm run schema:types && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && node scripts/build-without-env.js",
     "clean:build": "rm -rf .next || true",
@@ -20,7 +20,7 @@
     "start:custom": "node server-simple.js",
     "lint": "next lint",
     "build:check": "node scripts/build-check.js",
-    "predeploy": "node scripts/pre-deploy.js",
+    "predeploy": "node scripts/improved-pre-deploy.js",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:salon": "playwright test tests/e2e/salon/",
@@ -124,7 +124,8 @@
     "docs:validate": "node scripts/validate-docs.js",
     "docs:cleanup": "node scripts/cleanup-docs.js",
     "docs:full-maintenance": "npm run docs:cleanup && npm run docs:generate && npm run docs:sync && npm run docs:validate",
-    "docs:ai-generate": "node scripts/ai-generate-docs.js"
+    "docs:ai-generate": "node scripts/ai-generate-docs.js",
+    "build:production": "npm run predeploy && npm run build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",

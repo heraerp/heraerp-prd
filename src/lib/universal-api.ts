@@ -353,25 +353,266 @@ class UniversalAPIExtended {
       const tableName = typeof params === 'string' ? params : params.table
       const orgId = organizationId || this.organizationId
       
+      console.log('🔧 UniversalAPI.read() called:')
+      console.log('- Table:', tableName)
+      console.log('- Organization ID:', orgId)
+      console.log('- Current org ID:', this.organizationId)
+      
       if (!orgId) {
         throw new Error('Organization ID is required')
       }
+      
+      console.log('🚀 Querying Supabase:', `${tableName} WHERE organization_id = ${orgId}`)
       
       let query = supabase.from(tableName).select('*').eq('organization_id', orgId)
       
       const { data, error } = await query
       
+      console.log('📊 Supabase query result:')
+      console.log('- Data type:', typeof data)
+      console.log('- Data is array:', Array.isArray(data))
+      console.log('- Data length:', data?.length || 'N/A')
+      console.log('- Error:', error)
+      
       if (error) throw error
       
       return { data, error: null }
     } catch (error) {
-      console.error('Failed to read data:', error)
+      console.error('❌ Failed to read data:', error)
       return { data: null, error: error.message || 'Read operation failed' }
     }
   }
   
-  // Add existing universal API methods here...
-  // (This would extend the existing universal API class)
+  // Core entity management methods
+  async createEntity(entityData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Creating entity', entityData)
+      return { success: true, data: { id: crypto.randomUUID(), ...entityData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('core_entities')
+        .insert({
+          id: crypto.randomUUID(),
+          organization_id: entityData.organization_id || this.organizationId,
+          ...entityData,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to create entity:', error)
+      throw error
+    }
+  }
+
+  async createTransaction(transactionData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Creating transaction', transactionData)
+      return { success: true, data: { id: crypto.randomUUID(), ...transactionData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('universal_transactions')
+        .insert({
+          id: crypto.randomUUID(),
+          organization_id: transactionData.organization_id || this.organizationId,
+          ...transactionData,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to create transaction:', error)
+      throw error
+    }
+  }
+
+  async createTransactionLine(lineData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Creating transaction line', lineData)
+      return { success: true, data: { id: crypto.randomUUID(), ...lineData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('universal_transaction_lines')
+        .insert({
+          id: crypto.randomUUID(),
+          organization_id: lineData.organization_id || this.organizationId,
+          ...lineData,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to create transaction line:', error)
+      throw error
+    }
+  }
+
+  async updateTransaction(transactionId: string, updateData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Updating transaction', transactionId, updateData)
+      return { success: true, data: { id: transactionId, ...updateData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('universal_transactions')
+        .update(updateData)
+        .eq('id', transactionId)
+        .eq('organization_id', this.organizationId)
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to update transaction:', error)
+      throw error
+    }
+  }
+
+  async query(table: string, filters?: any) {
+    if (this.mockMode) {
+      console.log('Mock: Querying', table, filters)
+      return { data: [], error: null }
+    }
+
+    try {
+      let query = supabase.from(table).select('*')
+      
+      if (this.organizationId) {
+        query = query.eq('organization_id', this.organizationId)
+      }
+      
+      // Apply filters if provided
+      if (filters) {
+        Object.keys(filters).forEach(key => {
+          query = query.eq(key, filters[key])
+        })
+      }
+
+      const { data, error } = await query
+      if (error) throw error
+      return { data, error: null }
+    } catch (error) {
+      console.error('Failed to query:', error)
+      return { data: null, error: error.message || 'Query failed' }
+    }
+  }
+
+  async createRelationship(relationshipData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Creating relationship', relationshipData)
+      return { success: true, data: { id: crypto.randomUUID(), ...relationshipData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('core_relationships')
+        .insert({
+          id: crypto.randomUUID(),
+          organization_id: relationshipData.organization_id || this.organizationId,
+          ...relationshipData,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to create relationship:', error)
+      throw error
+    }
+  }
+
+  async updateRelationship(relationshipId: string, updateData: any) {
+    if (this.mockMode) {
+      console.log('Mock: Updating relationship', relationshipId, updateData)
+      return { success: true, data: { id: relationshipId, ...updateData } }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('core_relationships')
+        .update(updateData)
+        .eq('id', relationshipId)
+        .eq('organization_id', this.organizationId)
+        .select()
+        .single()
+
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Failed to update relationship:', error)
+      throw error
+    }
+  }
+
+  async getRelationships(filters?: any) {
+    return this.query('core_relationships', filters)
+  }
+
+  async getEntities(filters?: any) {
+    return this.query('core_entities', filters)
+  }
+
+  async getTransactionsByIds(transactionIds: string[]) {
+    if (this.mockMode) {
+      console.log('Mock: Getting transactions by IDs', transactionIds)
+      return { data: [], error: null }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('universal_transactions')
+        .select('*')
+        .in('id', transactionIds)
+        .eq('organization_id', this.organizationId)
+
+      if (error) throw error
+      return { data, error: null }
+    } catch (error) {
+      console.error('Failed to get transactions by IDs:', error)
+      return { data: null, error: error.message || 'Query failed' }
+    }
+  }
+
+  async getEntityBySmartCode(smartCode: string) {
+    if (this.mockMode) {
+      console.log('Mock: Getting entity by smart code', smartCode)
+      return { data: null, error: null }
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('smart_code', smartCode)
+        .eq('organization_id', this.organizationId)
+        .single()
+
+      if (error && error.code !== 'PGRST116') throw error // PGRST116 is "not found"
+      return { data: data || null, error: null }
+    } catch (error) {
+      console.error('Failed to get entity by smart code:', error)
+      return { data: null, error: error.message || 'Query failed' }
+    }
+  }
 }
 
 // Export singleton instance

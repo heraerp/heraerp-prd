@@ -5,7 +5,7 @@
  * Complete API contracts for calendar operations using Sacred Six Tables
  */
 
-import { Database } from './hera-database.types'
+// Types for HERA Calendar API - uses Sacred Six Tables
 
 // Base Calendar Types
 export interface CalendarEvent {

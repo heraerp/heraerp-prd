@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test GL Accounts</title>
+</head>
+<body>
+    <h1>Testing GL Accounts for Furniture Org</h1>
+    <div id="results"></div>
+    
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js';
+        
+        const supabase = createClient(
+            'https://uirruxpfideciqubwhmp.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcnJ1eHBmaWRlY2lxdWJ3aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4NDY1MjEsImV4cCI6MjA0NzQyMjUyMX0.LhBPAE9oBsjq80kBhOxHp7ByIy6vgQg4-3FPR5kRrLo'
+        );
+        
+        const FURNITURE_ORG_ID = 'f0af4ced-9d12-4a55-a649-b484368db249';
+        
+        async function testGLAccounts() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                console.log('🧪 Testing GL Accounts for organization:', FURNITURE_ORG_ID);
+                
+                // Test 1: Get all entities for the organization
+                const { data: allEntities, error: allError } = await supabase
+                    .from('core_entities')
+                    .select('*')
+                    .eq('organization_id', FURNITURE_ORG_ID);
+                
+                if (allError) throw allError;
+                
+                console.log('📊 All entities:', allEntities?.length || 0);
+                
+                // Test 2: Filter for GL accounts
+                const glAccounts = allEntities?.filter(e => e.entity_type === 'gl_account') || [];
+                console.log('🏦 GL accounts found:', glAccounts.length);
+                
+                // Display results
+                let html = `
+                    <h2>Test Results</h2>
+                    <p><strong>Organization ID:</strong> ${FURNITURE_ORG_ID}</p>
+                    <p><strong>Total entities:</strong> ${allEntities?.length || 0}</p>
+                    <p><strong>GL accounts:</strong> ${glAccounts.length}</p>
+                `;
+                
+                if (glAccounts.length > 0) {
+                    html += '<h3>Sample GL Accounts:</h3><ul>';
+                    glAccounts.slice(0, 10).forEach(account => {
+                        html += `<li>${account.entity_code}: ${account.entity_name}</li>`;
+                    });
+                    html += '</ul>';
+                    
+                    // Log detailed info
+                    console.log('📋 Sample GL account:', glAccounts[0]);
+                } else {
+                    html += '<p style="color: red;">❌ No GL accounts found!</p>';
+                }
+                
+                results.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ Test failed:', error);
+                results.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Run test
+        testGLAccounts();
+    </script>
+</body>
+</html>

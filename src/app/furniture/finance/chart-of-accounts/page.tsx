@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -58,23 +58,24 @@ export default function ChartOfAccounts() {
     console.log('Organization ID:', organizationId)
     console.log('Expected Furniture Org ID: f0af4ced-9d12-4a55-a649-b484368db249')
   }, [organizationId, organizationName])
-  
-  useEffect(() => {
-    if (organizationId && !orgLoading) {
-      loadChartOfAccounts()
-    }
-  }, [organizationId, orgLoading])
 
-  const loadChartOfAccounts = async () => {
+  const loadChartOfAccounts = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
       
+      console.log('🔍 Loading Chart of Accounts...')
+      console.log('Organization ID:', organizationId)
+      console.log('Report Engine:', reportEngine ? 'initialized' : 'not initialized')
+      
       // Use the existing report engine instance
       if (!reportEngine) {
         setError('Report engine not initialized')
+        console.error('❌ Report engine not initialized')
         return
       }
+      
+      console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.v1')
       
       // Execute Chart of Accounts recipe
       const result = await reportEngine.executeRecipe(
@@ -86,7 +87,16 @@ export default function ChartOfAccounts() {
         }
       )
       
+      console.log('📊 URP Recipe Result:')
+      console.log('Type:', typeof result)
+      console.log('Is Array:', Array.isArray(result))
+      console.log('Length:', Array.isArray(result) ? result.length : 'N/A')
+      console.log('Result:', result)
+      
       if (Array.isArray(result) && result.length > 0) {
+        console.log('✅ Got URP result, transforming accounts...')
+        console.log('Sample account from URP:', result[0])
+        
         // Transform URP result to GLAccountNode format recursively
         const transformAccount = (account: any): GLAccountNode => ({
           id: account.id,
@@ -109,22 +119,42 @@ export default function ChartOfAccounts() {
         const transformedAccounts = result.map(transformAccount)
         setAccounts(transformedAccounts)
         
-        console.log('Chart of Accounts loaded successfully via URP:')
+        console.log('✅ Chart of Accounts loaded successfully via URP:')
         console.log(`- Total accounts: ${countAllAccounts(transformedAccounts)}`)
+        console.log('- Sample transformed account:', transformedAccounts[0])
       } else {
+        console.log('❌ No GL accounts in URP result')
         setError('No GL accounts found for this organization')
         setAccounts([])
       }
       
     } catch (error) {
-      console.error('Failed to load chart of accounts:', error)
+      console.error('❌ Failed to load chart of accounts:', error)
+      console.error('Error details:', {
+        name: error?.name,
+        message: error?.message,
+        stack: error?.stack
+      })
       setError(error instanceof Error ? error.message : 'Unknown error occurred')
       setAccounts([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [reportEngine, organizationId])
   
+  useEffect(() => {
+    if (organizationId && !orgLoading && reportEngine) {
+      console.log('🎯 Triggering loadChartOfAccounts - all conditions met')
+      loadChartOfAccounts()
+    } else {
+      console.log('⏳ Waiting for conditions:', {
+        organizationId: !!organizationId,
+        orgLoading,
+        reportEngine: !!reportEngine
+      })
+    }
+  }, [organizationId, orgLoading, reportEngine, loadChartOfAccounts])
+
   const toggleExpand = (accountCode: string) => {
     setExpandedNodes(prev => {
       const newSet = new Set(prev)
