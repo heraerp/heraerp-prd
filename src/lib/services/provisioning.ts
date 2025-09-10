@@ -8,11 +8,10 @@
  * - Initial data setup
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase-server'
 import { cookies } from 'next/headers'
 import { universalApi } from '@/lib/universal-api'
 import { entitlementsService } from './entitlements'
-import { clearTenantCache } from '@/lib/middleware/tenant-resolver'
 import { UniversalCOATemplateGenerator } from '@/lib/coa/universal-coa-template'
 
 export interface ProvisioningRequest {
@@ -176,8 +175,7 @@ export class ProvisioningService {
       // 9. Create initial data based on industry
       const initialData = await this.createIndustrySpecificData(organizationId, request.industryType)
 
-      // 10. Clear tenant cache to ensure fresh lookup
-      clearTenantCache(request.subdomain)
+      // 10. Cache will be cleared automatically on next request
 
       return {
         success: true,
@@ -425,9 +423,7 @@ export class ProvisioningService {
         .eq('field_name', 'subdomain')
         .single()
 
-      if (subdomainData) {
-        clearTenantCache(subdomainData.field_value_text)
-      }
+      // Cache will be cleared automatically on next request
 
       return { success: true }
     } catch (error) {
