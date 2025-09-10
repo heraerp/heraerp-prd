@@ -18,12 +18,10 @@ import {
   Snowflake,
   Thermometer
 } from 'lucide-react'
-// Temporarily comment out problematic imports for build fix
-// import { GLModule } from '@/lib/dna/modules/financial/gl-module-dna'
-// import { APModule } from '@/lib/dna/modules/financial/ap-module-dna'
-// import { ARModule } from '@/lib/dna/modules/financial/ar-module-dna'
-// import { FAModule } from '@/lib/dna/modules/financial/fa-module-dna'
-// import { supabaseClient } from '@/lib/supabase-client'
+import { GLModule } from '@/lib/dna/modules/financial/gl-module-dna'
+import { APModule } from '@/lib/dna/modules/financial/ap-module-dna'
+import { ARModule } from '@/lib/dna/modules/financial/ar-module-dna'
+import { FAModule } from '@/lib/dna/modules/financial/fa-module-dna'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export default function IceCreamFinancialPage() {
@@ -386,78 +384,89 @@ export default function IceCreamFinancialPage() {
 
           {/* GL Module Tab */}
           <TabsContent value="gl">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <BookOpen className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">General Ledger Module</h3>
-                  <p className="text-gray-400">Complete GL functionality for ice cream manufacturing</p>
-                  <div className="mt-4 space-y-2 text-sm text-gray-500">
-                    <p>• Auto-journal posting with smart codes</p>
-                    <p>• Cold chain expense tracking</p>
-                    <p>• Batch-level cost allocation</p>
-                    <p>• Temperature variance journals</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <GLModule 
+              organizationId={organizationId} 
+              isDarkMode={isDarkMode}
+              features={{
+                multiCurrency: true,
+                autoJournal: true,
+                periodManagement: true,
+                consolidation: false,
+                auditTrail: true,
+                batchPosting: true
+              }}
+              industrySpecific={{
+                coldChainAccounts: true,
+                temperatureVariancePosting: true,
+                seasonalAnalysis: true
+              }}
+            />
           </TabsContent>
 
           {/* AP Module Tab */}
           <TabsContent value="ap">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <Receipt className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Accounts Payable Module</h3>
-                  <p className="text-gray-400">Vendor payment management for ice cream operations</p>
-                  <div className="mt-4 space-y-2 text-sm text-gray-500">
-                    <p>• Dairy supplier tracking</p>
-                    <p>• Cold chain vendor management</p>
-                    <p>• Quality certificate tracking</p>
-                    <p>• Seasonal pricing agreements</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <APModule 
+              organizationId={organizationId} 
+              isDarkMode={isDarkMode}
+              features={{
+                threeWayMatch: true,
+                approvalWorkflow: true,
+                multiCurrency: true,
+                earlyPaymentDiscounts: true,
+                recurringInvoices: true,
+                vendorPortal: false
+              }}
+              industrySpecific={{
+                qualityCertificates: true,
+                seasonalPricing: true,
+                coldChainTracking: true
+              }}
+            />
           </TabsContent>
 
           {/* AR Module Tab */}
           <TabsContent value="ar">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <Users className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Accounts Receivable Module</h3>
-                  <p className="text-gray-400">Customer billing for ice cream distribution</p>
-                  <div className="mt-4 space-y-2 text-sm text-gray-500">
-                    <p>• Multi-channel billing</p>
-                    <p>• Freezer deposit tracking</p>
-                    <p>• Seasonal credit terms</p>
-                    <p>• Return goods handling</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ARModule 
+              organizationId={organizationId} 
+              isDarkMode={isDarkMode}
+              features={{
+                creditManagement: true,
+                collectionWorkflow: true,
+                multiCurrency: true,
+                dunningLetters: true,
+                statementGeneration: true,
+                customerPortal: false
+              }}
+              industrySpecific={{
+                multiChannelBilling: true,
+                freezerDepositTracking: true,
+                seasonalTerms: true,
+                coldChainCompensation: true
+              }}
+            />
           </TabsContent>
 
           {/* FA Module Tab */}
           <TabsContent value="fa">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <FileText className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Fixed Assets Module</h3>
-                  <p className="text-gray-400">Cold chain equipment and asset management</p>
-                  <div className="mt-4 space-y-2 text-sm text-gray-500">
-                    <p>• Freezer asset tracking</p>
-                    <p>• Refrigerated vehicle management</p>
-                    <p>• Temperature monitoring equipment</p>
-                    <p>• Energy efficiency tracking</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <FAModule 
+              organizationId={organizationId} 
+              isDarkMode={isDarkMode}
+              features={{
+                depreciationAutomation: true,
+                maintenanceTracking: true,
+                revaluation: true,
+                disposalManagement: true,
+                barcodeIntegration: true,
+                insuranceTracking: true
+              }}
+              industrySpecific={{
+                freezerFleetManagement: true,
+                coldChainEquipment: true,
+                refrigeratedVehicles: true,
+                temperatureMonitoring: true,
+                energyEfficiencyTracking: true
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>

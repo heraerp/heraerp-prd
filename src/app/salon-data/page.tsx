@@ -783,114 +783,32 @@ export default function SalonModernDashboard() {
               ))}
             </div>
 
-            {/* UCR Configuration Display */}
+            {/* UCR Configuration Summary Card */}
             {!configLoading && salonConfig.rules_applied && (
-              <div className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/20 dark:border-gray-700 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold !text-gray-900 dark:!text-white flex items-center gap-2">
-                    <Scale className="w-5 h-5 text-blue-400" />
-                    Business Configuration Rules (UCR)
-                  </h2>
-                  <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    {salonConfig.rules_applied.booking_rules + salonConfig.rules_applied.pricing_rules + salonConfig.rules_applied.notification_rules} rules active
-                  </Badge>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Booking Configuration */}
-                  <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <CalendarCheck className="w-4 h-4 text-purple-400" />
-                      <h3 className="font-semibold !text-gray-900 dark:!text-white">Booking Rules</h3>
-                      <Badge variant="secondary" className="text-xs">
-                        {salonConfig.rules_applied.booking_rules} rules
-                      </Badge>
+              <div className="bg-gradient-to-br from-sage-500/10 to-champagne-500/10 backdrop-blur-xl border border-sage-200/20 dark:border-sage-700/30 rounded-xl p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-sage-500 to-champagne-500 flex items-center justify-center shadow-lg">
+                      <Settings className="w-7 h-7 text-white" />
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Advance booking:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{salonConfig.booking?.advance_booking_days || 30} days</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Min lead time:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{salonConfig.booking?.min_lead_minutes || 60} min</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Same day booking:</span>
-                        <span className={cn("font-medium", 
-                          salonConfig.booking?.allow_same_day ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-                        )}>
-                          {salonConfig.booking?.allow_same_day ? 'Allowed' : 'Disabled'}
-                        </span>
-                      </div>
+                    <div>
+                      <h3 className="text-lg font-bold !text-gray-900 dark:!text-white">
+                        Business Configuration Rules
+                      </h3>
+                      <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                        {salonConfig.rules_applied.booking_rules + salonConfig.rules_applied.pricing_rules + salonConfig.rules_applied.notification_rules} active rules
+                      </p>
                     </div>
                   </div>
-
-                  {/* Pricing Configuration */}
-                  <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="w-4 h-4 text-emerald-400" />
-                      <h3 className="font-semibold !text-gray-900 dark:!text-white">Pricing Rules</h3>
-                      <Badge variant="secondary" className="text-xs">
-                        {salonConfig.rules_applied.pricing_rules} rules
-                      </Badge>
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">VIP discount:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{salonConfig.pricing?.vip_discount || 10}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Peak surcharge:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{((salonConfig.pricing?.peak_surcharge || 1.2) - 1) * 100}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Cancellation fee:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{salonConfig.pricing?.cancellation_fee || 25}%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Notification Configuration */}
-                  <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <MessageCircle className="w-4 h-4 text-blue-400" />
-                      <h3 className="font-semibold !text-gray-900 dark:!text-white">Notification Rules</h3>
-                      <Badge variant="secondary" className="text-xs">
-                        {salonConfig.rules_applied.notification_rules} rules
-                      </Badge>
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Reminders:</span>
-                        <span className="!text-gray-900 dark:!text-white font-medium">{salonConfig.notifications?.reminder_hours?.join(', ') || '24, 2'}h before</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">SMS enabled:</span>
-                        <span className={cn("font-medium", 
-                          salonConfig.notifications?.sms_enabled ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-                        )}>
-                          {salonConfig.notifications?.sms_enabled ? 'Yes' : 'No'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="!text-gray-700 dark:!text-gray-300">Email enabled:</span>
-                        <span className={cn("font-medium", 
-                          salonConfig.notifications?.email_enabled ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-                        )}>
-                          {salonConfig.notifications?.email_enabled ? 'Yes' : 'No'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-50/10 dark:bg-blue-900/20 rounded-lg border border-blue-200/20 dark:border-blue-700/30">
-                  <p className="text-xs !text-gray-700 dark:!text-gray-300 flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-blue-400" />
-                    Configuration loaded via HERA Universal Configuration Rules (UCR) - Smart Codes: HERA.UNIV.CONFIG.*
-                  </p>
-                </div>
+                  <Link href="/salon-data/settings/ucr">
+                    <Button 
+                      size="sm"
+                      className="bg-gradient-to-r from-sage-500 to-champagne-500 hover:from-sage-600 hover:to-champagne-600 text-white"
+                    >
+                      Manage Settings
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </Link>
               </div>
             )}
 
@@ -904,11 +822,11 @@ export default function SalonModernDashboard() {
               </div>
             )}
 
-            {/* UCR Management Cards */}
+            {/* Quick Access Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* UCR Templates Quick Access */}
+              {/* Appointment Booking */}
               <Card 
-                className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-200/20 dark:border-purple-700/30 hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-500 cursor-pointer group"
+                className="bg-gradient-to-br from-sage-500/10 to-dusty-rose-500/10 border-sage-200/20 dark:border-sage-700/30 hover:from-sage-500/20 hover:to-dusty-rose-500/20 transition-all duration-500 cursor-pointer group"
                 style={{
                   backdropFilter: 'blur(20px) saturate(120%)',
                   WebkitBackdropFilter: 'blur(20px) saturate(120%)',
@@ -917,45 +835,33 @@ export default function SalonModernDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <FileText className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-sage-500 to-dusty-rose-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <Calendar className="w-7 h-7 text-white" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold !text-gray-900 dark:!text-white mb-1">
-                          Business Rule Templates
+                          Book Appointment
                         </h3>
                         <p className="text-sm !text-gray-600 dark:!text-gray-400">
-                          Ready-to-use configurations
+                          Schedule new client appointments
                         </p>
                       </div>
                     </div>
-                    <Link href="/salon-data/templates">
-                      <Button 
-                        size="sm"
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-                      >
-                        Browse
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="mt-4 flex gap-2 flex-wrap">
-                    <Badge variant="outline" className="text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300">
-                      Booking Rules
-                    </Badge>
-                    <Badge variant="outline" className="text-xs bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300">
-                      Pricing
-                    </Badge>
-                    <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">
-                      Notifications
-                    </Badge>
+                    <Button 
+                      size="sm"
+                      className="bg-gradient-to-r from-sage-500 to-dusty-rose-600 hover:from-sage-600 hover:to-dusty-rose-700 text-white"
+                      onClick={() => setIsBookingOpen(true)}
+                    >
+                      Book Now
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* UCR Dashboard Access */}
+              {/* Salon Settings */}
               <Card 
-                className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border-blue-200/20 dark:border-blue-700/30 hover:from-blue-500/20 hover:to-indigo-500/20 transition-all duration-500 cursor-pointer group"
+                className="bg-gradient-to-br from-champagne-500/10 to-sage-500/10 border-champagne-200/20 dark:border-champagne-700/30 hover:from-champagne-500/20 hover:to-sage-500/20 transition-all duration-500 cursor-pointer group"
                 style={{
                   backdropFilter: 'blur(20px) saturate(120%)',
                   WebkitBackdropFilter: 'blur(20px) saturate(120%)',
@@ -964,36 +870,27 @@ export default function SalonModernDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <MessageCircle className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-champagne-500 to-sage-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <Settings className="w-7 h-7 text-white" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold !text-gray-900 dark:!text-white mb-1">
-                          UCR Control Center
+                          Salon Settings
                         </h3>
                         <p className="text-sm !text-gray-600 dark:!text-gray-400">
-                          Chat & manage rules with AI
+                          Configure business rules & preferences
                         </p>
                       </div>
                     </div>
-                    <Link href="/salon-data/config">
+                    <Link href="/salon-data/settings">
                       <Button 
                         size="sm"
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                        className="bg-gradient-to-r from-champagne-500 to-sage-600 hover:from-champagne-600 hover:to-sage-700 text-white"
                       >
-                        Open
+                        Settings
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
                     </Link>
-                  </div>
-                  <div className="mt-4 flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="!text-gray-700 dark:!text-gray-300">AI Ready</span>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      MCP Orchestrator
-                    </Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -1146,105 +1043,6 @@ export default function SalonModernDashboard() {
               </div>
             </div>
 
-            {/* UCR Activity Summary */}
-            <div className="mb-6">
-              <Card
-                className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-200/20 dark:border-indigo-700/30"
-                style={{
-                  backdropFilter: 'blur(20px) saturate(120%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                }}
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-white">
-                      <Scale className="w-5 h-5 text-indigo-400" />
-                      UCR Activity
-                    </CardTitle>
-                    <Link href="/salon-data/config?tab=rules">
-                      <Button variant="ghost" size="sm" className="text-xs">
-                        View All
-                        <ChevronRight className="w-3 h-3 ml-1" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    {/* Active Rules */}
-                    <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
-                          <UserCheck className="w-4 h-4 text-green-400" />
-                        </div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Active Rules</span>
-                      </div>
-                      <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
-                        {salonConfig.rules_applied ? 
-                          salonConfig.rules_applied.booking_rules + 
-                          salonConfig.rules_applied.pricing_rules + 
-                          salonConfig.rules_applied.notification_rules : 0}
-                      </p>
-                    </div>
-
-                    {/* Draft Rules */}
-                    <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-                          <Clock className="w-4 h-4 text-yellow-400" />
-                        </div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Draft Rules</span>
-                      </div>
-                      <p className="text-2xl font-bold !text-gray-900 dark:!text-white">3</p>
-                    </div>
-
-                    {/* Tests Run */}
-                    <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                          <TestTube className="w-4 h-4 text-blue-400" />
-                        </div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Tests Run</span>
-                      </div>
-                      <p className="text-2xl font-bold !text-gray-900 dark:!text-white">24</p>
-                    </div>
-
-                    {/* Recent Deployments */}
-                    <div className="bg-white/5 dark:bg-gray-900/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                          <Rocket className="w-4 h-4 text-purple-400" />
-                        </div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Deployments</span>
-                      </div>
-                      <p className="text-2xl font-bold !text-gray-900 dark:!text-white">7</p>
-                    </div>
-                  </div>
-
-                  {/* Recent Activity Timeline */}
-                  <div className="mt-4 pt-4 border-t border-gray-700">
-                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-3">Recent Activity</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 text-xs">
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                        <span className="!text-gray-700 dark:!text-gray-300">Deployed "Salon Cancellation Policy" to production</span>
-                        <span className="text-gray-500 ml-auto">2h ago</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs">
-                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                        <span className="!text-gray-700 dark:!text-gray-300">Tested "VIP Discount Rules" - 100% pass rate</span>
-                        <span className="text-gray-500 ml-auto">5h ago</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs">
-                        <div className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
-                        <span className="!text-gray-700 dark:!text-gray-300">Created new rule from "Peak Hour Pricing" template</span>
-                        <span className="text-gray-500 ml-auto">1d ago</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
 
             {/* Recent Appointments */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
