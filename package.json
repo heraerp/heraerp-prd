@@ -2,6 +2,9 @@
   "name": "heraerp",
   "version": "1.2.1",
   "private": true,
+  "engines": {
+    "node": ">=18 <=22"
+  },
   "scripts": {
     "dev": "node scripts/startup-control-center.js && next dev --turbo",
     "dev:no-cc": "next dev --turbo",
@@ -16,7 +19,7 @@
     "build:railway": "npm run schema:types && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && node scripts/build-without-env.js",
     "clean:build": "rm -rf .next || true",
     "build:local": "npm run quality:pre-build && npm run dna:gate && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "start:custom": "node server-simple.js",
     "lint": "next lint",
     "build:check": "node scripts/build-check.js",
