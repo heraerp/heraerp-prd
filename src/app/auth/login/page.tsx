@@ -67,55 +67,43 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 dark:from-black dark:via-blue-950/50 dark:to-black flex items-center justify-center relative overflow-hidden">
-      {/* Premium mesh gradient background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 flex items-center justify-center relative overflow-hidden">
+      {/* Background Pattern - Same as homepage */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
+        <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
       </div>
-      
-      {/* Animated glassmorphic orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-float animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-float animation-delay-4000" />
-      </div>
-      
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" style={{
-        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`
-      }} />
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md mx-auto px-4">
         {/* Logo and branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-2xl rounded-2xl mb-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 transform hover:scale-105 transition-all duration-300 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.5)]">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-              <Building2 className="w-10 h-10 text-white drop-shadow-lg" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white dark:bg-slate-800/50 backdrop-blur-xl rounded-2xl mb-6 shadow-xl border border-slate-200 dark:border-slate-700 transform hover:scale-105 transition-all duration-300">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Building2 className="w-10 h-10 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent mb-2">
             HERA Enterprise
           </h1>
-          <p className="text-gray-300 font-light">
+          <p className="text-slate-600 dark:text-slate-400 font-light">
             Universal Business Platform
           </p>
         </div>
 
         {/* Glassmorphic login card */}
-        <Card className="bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden">
-          <CardHeader className="text-center pb-6 pt-8 bg-gradient-to-b from-white/5 to-transparent">
+        <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <CardHeader className="text-center pb-6 pt-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-blue-500/20 rounded-full backdrop-blur-xl">
-                <Shield className="w-8 h-8 text-blue-400 drop-shadow-lg" />
+              <div className="p-3 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full">
+                <Shield className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">
+            <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
               Secure Sign In
             </CardTitle>
-            <CardDescription className="text-gray-300 mt-2">
+            <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
               Access your enterprise dashboard
             </CardDescription>
           </CardHeader>
@@ -123,18 +111,18 @@ function LoginForm() {
           <CardContent className="pb-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <Alert variant="destructive" className="bg-red-500/10 backdrop-blur-xl border-red-500/30 text-red-200">
+                <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
                 </Alert>
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-200">
+                <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Email Address
                 </Label>
                 <div className="relative group">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors group-focus-within:text-blue-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400" />
                   <Input
                     id="email"
                     type="email"
@@ -144,25 +132,25 @@ function LoginForm() {
                     required
                     disabled={isLoading}
                     autoComplete="email"
-                    className="pl-10 h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="pl-10 h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-200">
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Password
                   </Label>
                   <Link 
                     href="/auth/forgot-password" 
-                    className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                   >
                     Forgot password?
                   </Link>
                 </div>
                 <div className="relative group">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors group-focus-within:text-blue-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -172,12 +160,12 @@ function LoginForm() {
                     required
                     disabled={isLoading}
                     autoComplete="current-password"
-                    className="pl-10 pr-12 h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="pl-10 pr-12 h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -190,7 +178,7 @@ function LoginForm() {
               
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold shadow-[0_5px_20px_0_rgba(59,130,246,0.5)] hover:shadow-[0_5px_20px_0_rgba(59,130,246,0.7)] transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
                 disabled={isLoading || !email || !password}
               >
                 {isLoading ? (
@@ -209,21 +197,21 @@ function LoginForm() {
             
             <div className="mt-6 relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/20" />
+                <div className="w-full border-t border-slate-200 dark:border-slate-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white/10 backdrop-blur-xl px-4 py-1 rounded-full text-gray-300">
+                <span className="bg-white dark:bg-slate-900 px-4 text-slate-500 dark:text-slate-400">
                   Or continue with
                 </span>
               </div>
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-300">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Don't have an account?{' '}
                 <Link 
                   href="/auth/signup" 
-                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
                   Create one
                 </Link>
@@ -234,27 +222,27 @@ function LoginForm() {
 
         {/* Enterprise features */}
         <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-          <div className="bg-white/10 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300">
-            <div className="text-blue-400 font-semibold text-sm">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
               99.9%
             </div>
-            <div className="text-xs text-gray-300 mt-1">
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
               Uptime SLA
             </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300">
-            <div className="text-blue-400 font-semibold text-sm">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
               SOC 2
             </div>
-            <div className="text-xs text-gray-300 mt-1">
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
               Certified
             </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300">
-            <div className="text-blue-400 font-semibold text-sm">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+            <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
               24/7
             </div>
-            <div className="text-xs text-gray-300 mt-1">
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
               Support
             </div>
           </div>
@@ -262,17 +250,17 @@ function LoginForm() {
 
         {/* Footer */}
         <div className="mt-8 text-center space-y-2">
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             By signing in, you agree to our{' '}
-            <Link href="/terms" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/terms" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
               Terms
             </Link>{' '}
             and{' '}
-            <Link href="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/privacy" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
               Privacy Policy
             </Link>
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-slate-500 dark:text-slate-500">
             © 2024 HERA ERP • Enterprise Edition v1.2.0
           </p>
         </div>
@@ -284,12 +272,12 @@ function LoginForm() {
 export default function CentralLoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-2xl rounded-2xl mb-4 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30">
-            <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white dark:bg-slate-800/50 backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-slate-200 dark:border-slate-700">
+            <Loader2 className="w-10 h-10 animate-spin text-blue-600 dark:text-blue-400" />
           </div>
-          <p className="text-gray-300">Loading...</p>
+          <p className="text-slate-600 dark:text-slate-400">Loading...</p>
         </div>
       </div>
     }>

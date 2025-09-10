@@ -105,42 +105,30 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 dark:from-black dark:via-blue-950/50 dark:to-black relative overflow-hidden">
-      {/* Premium mesh gradient background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 relative overflow-hidden">
+      {/* Background Pattern - Same as homepage */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
+        <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
       </div>
-      
-      {/* Animated glassmorphic orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-float animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-float animation-delay-4000" />
-      </div>
-      
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" style={{
-        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`
-      }} />
 
-      {/* Header with Logo */}
-      <header className="sticky top-0 z-50 backdrop-blur-2xl bg-black/20 border-b border-white/10">
+      {/* Header with Logo - Same as homepage */}
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 sm:space-x-4">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm sm:text-lg">H</span>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-white">HERA ERP</h1>
-                <p className="text-[10px] sm:text-xs text-gray-300 hidden sm:block">Universal Business Platform</p>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">HERA ERP</h1>
+                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">Universal Business Platform</p>
               </div>
             </Link>
             
             <Link href="/auth/login">
-              <Button variant="ghost" className="text-gray-300 hover:text-white border border-white/20 hover:bg-white/10">
+              <Button variant="outline" size="sm" className="!text-slate-700 dark:!text-slate-200">
                 Sign In
               </Button>
             </Link>
@@ -153,26 +141,26 @@ export default function SignUpPage() {
         {/* Progress indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-4">
-            <div className={`flex items-center ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>
+            <div className={`flex items-center ${step >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                step >= 1 ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white transform scale-110' : 'bg-white/10 backdrop-blur-xl border border-white/20'
+                step >= 1 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110' : 'bg-slate-200 dark:bg-slate-700'
               }`}>
                 <span className="font-semibold">1</span>
               </div>
               <span className="ml-2 hidden sm:inline font-medium">Account</span>
             </div>
-            <div className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-white/20'}`} />
-            <div className={`flex items-center ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>
+            <div className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`} />
+            <div className={`flex items-center ${step >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                step >= 2 ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white transform scale-110' : 'bg-white/10 backdrop-blur-xl border border-white/20'
+                step >= 2 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110' : 'bg-slate-200 dark:bg-slate-700'
               }`}>
                 <span className="font-semibold">2</span>
               </div>
               <span className="ml-2 hidden sm:inline font-medium">Profile</span>
             </div>
-            <div className={`w-16 h-1 rounded-full bg-white/20`} />
-            <div className="flex items-center text-gray-500">
-              <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-lg">
+            <div className={`w-16 h-1 rounded-full bg-slate-200 dark:bg-slate-700`} />
+            <div className="flex items-center text-slate-400 dark:text-slate-500">
+              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shadow-lg">
                 <span className="font-semibold">3</span>
               </div>
               <span className="ml-2 hidden sm:inline font-medium">Organization</span>
@@ -181,24 +169,24 @@ export default function SignUpPage() {
         </div>
 
         {step === 1 && (
-          <Card className="bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden">
-            <CardHeader className="text-center pb-6 pt-8 bg-gradient-to-b from-white/5 to-transparent">
-              <CardTitle className="text-2xl font-bold text-white">Create Your HERA Account</CardTitle>
-              <CardDescription className="text-gray-300 mt-2">
+          <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <CardHeader className="text-center pb-6 pt-8">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Create Your HERA Account</CardTitle>
+              <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
                 Start your journey to enterprise-grade ERP in minutes
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-8">
               <form onSubmit={handleStep1Submit} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive" className="bg-red-500/10 backdrop-blur-xl border-red-500/30 text-red-200">
+                  <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
                   </Alert>
                 )}
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-200">Email Address</Label>
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">Email Address</Label>
                   <Input
                     id="email"
                     type="email"
@@ -207,12 +195,12 @@ export default function SignUpPage() {
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     required
                     disabled={isLoading}
-                    className="h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-200">Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -222,15 +210,15 @@ export default function SignUpPage() {
                     required
                     disabled={isLoading}
                     minLength={8}
-                    className="h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
                     Must be at least 8 characters
                   </p>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-200">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300">Confirm Password</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -239,13 +227,13 @@ export default function SignUpPage() {
                     onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     required
                     disabled={isLoading}
-                    className="h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                 </div>
                 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold shadow-[0_5px_20px_0_rgba(59,130,246,0.5)] hover:shadow-[0_5px_20px_0_rgba(59,130,246,0.7)] transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -263,9 +251,9 @@ export default function SignUpPage() {
               </form>
               
               <div className="mt-6 text-center text-sm">
-                <span className="text-gray-300">Already have an account?</span>
+                <span className="text-slate-600 dark:text-slate-400">Already have an account?</span>
                 {' '}
-                <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium transition-all duration-200">
+                <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-all duration-200">
                   Sign in
                 </Link>
               </div>
@@ -274,23 +262,23 @@ export default function SignUpPage() {
         )}
 
         {step === 2 && (
-          <Card className="bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden">
-            <CardHeader className="text-center pb-6 pt-8 bg-gradient-to-b from-white/5 to-transparent">
-              <CardTitle className="text-2xl font-bold text-white">Complete Your Profile</CardTitle>
-              <CardDescription className="text-gray-300 mt-2">
+          <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <CardHeader className="text-center pb-6 pt-8">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Complete Your Profile</CardTitle>
+              <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
                 Tell us a bit about yourself (optional)
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-8">
               <form onSubmit={handleStep2Submit} className="space-y-4">
-                <div className="mb-4 p-4 bg-green-500/10 backdrop-blur-xl rounded-lg border border-green-500/30">
-                  <p className="text-sm text-green-300">
+                <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                  <p className="text-sm text-green-800 dark:text-green-200">
                     ✓ Account created successfully! Check your email to verify your address.
                   </p>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="full_name" className="text-sm font-medium text-gray-200">Full Name</Label>
+                  <Label htmlFor="full_name" className="text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</Label>
                   <Input
                     id="full_name"
                     type="text"
@@ -298,12 +286,12 @@ export default function SignUpPage() {
                     value={formData.full_name}
                     onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                     disabled={isLoading}
-                    className="h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium text-gray-200">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone Number</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -311,7 +299,7 @@ export default function SignUpPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     disabled={isLoading}
-                    className="h-12 bg-black/30 backdrop-blur-xl border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all hover:bg-black/40"
+                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                   />
                 </div>
                 
@@ -319,14 +307,14 @@ export default function SignUpPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1 h-12 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20"
+                    className="flex-1 h-12 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                     onClick={() => router.push('/auth/organizations/new')}
                   >
                     Skip
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold shadow-[0_5px_20px_0_rgba(59,130,246,0.5)] hover:shadow-[0_5px_20px_0_rgba(59,130,246,0.7)] transform hover:-translate-y-0.5 transition-all duration-200"
+                    className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     disabled={isLoading}
                   >
                     Continue

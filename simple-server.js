@@ -11,7 +11,7 @@ console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 // Start Next.js directly
 console.log('Starting Next.js application...');
 
-const next = spawn('npm', ['start'], {
+const next = spawn('npx', ['next', 'start', '-p', PORT, '-H', '0.0.0.0'], {
   env: {
     ...process.env,
     PORT: PORT,
