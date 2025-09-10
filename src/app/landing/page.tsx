@@ -107,17 +107,23 @@ export default function LandingPage() {
     <HeraGradientBackgroundDNA showBlobs={true} blobCount={3}>
       <div className="relative z-10 w-full">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-200">
+        <nav className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-50 border-b border-white/20 dark:border-gray-700/50 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
+            <div className="flex justify-between items-center h-18">
               <div className="flex items-center">
-                <img src="/logo.png" alt="HERA" className="h-10 w-auto" />
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mr-3">
+                  <Building className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">HERA</h1>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Enterprise Platform</p>
+                </div>
               </div>
               <div className="hidden md:flex items-center space-x-8">
-                <a href="#proof" className="text-gray-700 hover:text-violet-600 font-medium">The Proof</a>
-                <a href="#process" className="text-gray-700 hover:text-violet-600 font-medium">How It Works</a>
-                <a href="#industries" className="text-gray-700 hover:text-violet-600 font-medium">Industries</a>
-                <a href="#testimonials" className="text-gray-700 hover:text-violet-600 font-medium">Success Stories</a>
+                <a href="#proof" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">The Proof</a>
+                <a href="#process" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">How It Works</a>
+                <a href="#industries" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">Industries</a>
+                <a href="#testimonials" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">Success Stories</a>
                 <HeraButtonDNA size="sm">Book Your Week</HeraButtonDNA>
               </div>
             </div>
@@ -156,46 +162,42 @@ export default function LandingPage() {
 
             {/* Visual Comparison */}
             <div className="grid md:grid-cols-2 gap-8 mb-16">
-              <Card className="p-6 border-2 border-gray-200">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Traditional ERP Demos</h3>
-                <div className="bg-gray-100 rounded-lg p-4 mb-4">
-                  <img 
-                    src="/api/placeholder/400/300" 
-                    alt="Generic demo"
-                    className="rounded opacity-50"
-                  />
+              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Traditional ERP Demos</h3>
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4">
+                  <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded opacity-50 flex items-center justify-center">
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Generic Demo Interface</span>
+                  </div>
                 </div>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <span className="text-red-500">✗</span> Generic sandbox data
+                <ul className="space-y-3 text-gray-600 dark:text-gray-400">
+                  <li className="flex items-center gap-3 text-base">
+                    <span className="text-red-500 text-xl">✗</span> Generic sandbox data
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-red-500">✗</span> Template workflows
+                  <li className="flex items-center gap-3 text-base">
+                    <span className="text-red-500 text-xl">✗</span> Template workflows
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-red-500">✗</span> 18-24 month implementation
+                  <li className="flex items-center gap-3 text-base">
+                    <span className="text-red-500 text-xl">✗</span> 18-24 month implementation
                   </li>
                 </ul>
               </Card>
               
-              <Card className="p-6 border-2 border-violet-500 shadow-xl">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">HERA Live Preview</h3>
-                <div className="bg-gradient-to-br from-violet-50 to-cyan-50 rounded-lg p-4 mb-4">
-                  <img 
-                    src="/api/placeholder/400/300" 
-                    alt="Your actual business"
-                    className="rounded shadow-lg"
-                  />
+              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 transform hover:scale-105 transition-all duration-300">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">HERA Live Preview</h3>
+                <div className="bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg p-4 mb-4">
+                  <div className="h-48 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-800 dark:to-cyan-800 rounded shadow-lg flex items-center justify-center">
+                    <span className="text-blue-700 dark:text-blue-300 text-sm font-semibold">Your Actual Business Running</span>
+                  </div>
                 </div>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span> Your actual business data
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                  <li className="flex items-center gap-3 text-base font-medium">
+                    <span className="text-green-500 text-xl">✓</span> Your actual business data
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span> Your custom workflows
+                  <li className="flex items-center gap-3 text-base font-medium">
+                    <span className="text-green-500 text-xl">✓</span> Your custom workflows
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span> Working in 2 weeks
+                  <li className="flex items-center gap-3 text-base font-medium">
+                    <span className="text-green-500 text-xl">✓</span> Working in 2 weeks
                   </li>
                 </ul>
               </Card>
@@ -204,48 +206,50 @@ export default function LandingPage() {
         </section>
 
         {/* The Proof Section */}
-        <section id="proof" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section id="proof" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/40 backdrop-blur-xl">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-blue-700 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text mb-12">
               While Others Show Demos, We Show Your Reality
             </h2>
             
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="p-6 text-center">
-                <h3 className="font-bold text-xl mb-2">SAP</h3>
-                <p className="text-gray-600 mb-4">Generic sandbox</p>
+              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6 text-center">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">SAP</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Generic sandbox</p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-gray-400" />
-                <p className="text-red-600 font-semibold">18 months later</p>
+                <p className="text-red-600 dark:text-red-400 font-semibold">18 months later</p>
               </Card>
               
-              <Card className="p-6 text-center">
-                <h3 className="font-bold text-xl mb-2">Oracle</h3>
-                <p className="text-gray-600 mb-4">Template demo</p>
+              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6 text-center">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">Oracle</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Template demo</p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-gray-400" />
-                <p className="text-red-600 font-semibold">12 months later</p>
+                <p className="text-red-600 dark:text-red-400 font-semibold">12 months later</p>
               </Card>
               
-              <Card className="p-6 text-center border-2 border-violet-500">
-                <h3 className="font-bold text-xl mb-2">HERA</h3>
-                <p className="text-violet-600 font-medium mb-4">Your business working</p>
-                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-violet-600" />
-                <p className="text-green-600 font-semibold">2 weeks</p>
+              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 text-center transform hover:scale-105 transition-all duration-300">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">HERA</h3>
+                <p className="text-blue-600 dark:text-blue-400 font-medium mb-4">Your business working</p>
+                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-blue-600 dark:text-blue-400" />
+                <p className="text-green-600 dark:text-green-400 font-semibold">2 weeks</p>
               </Card>
             </div>
 
             {/* Video Testimonial */}
-            <Card className="p-8 bg-gradient-to-br from-violet-50 to-cyan-50">
+            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 p-8">
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  <div className="w-24 h-24 rounded-full bg-gray-300" />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900 dark:to-cyan-900 flex items-center justify-center">
+                    <Users className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                  </div>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-lg text-gray-800 font-medium italic mb-2">
+                  <p className="text-lg text-gray-800 dark:text-gray-200 font-medium italic mb-3 leading-relaxed">
                     "I saw my restaurant running perfectly on day 5. Menu management, 
                     inventory tracking, staff scheduling - everything was there and working 
                     exactly how we operate."
                   </p>
-                  <p className="text-gray-700 font-semibold">
+                  <p className="text-gray-700 dark:text-gray-300 font-semibold text-base">
                     Mario Rossi, Owner of Mario's Authentic Italian
                   </p>
                 </div>

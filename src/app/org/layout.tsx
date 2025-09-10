@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { headers } from 'next/headers'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -41,15 +40,34 @@ export default function OrganizationLayout({
   const [subdomain, setSubdomain] = useState<string | null>(null)
 
   useEffect(() => {
-    // In client component, we can't use headers() directly
-    // The subdomain will be set by the middleware
-    const pathParts = pathname.split('/')
-    if (pathParts[1] === 'org' || pathname.startsWith('/~')) {
-      // Extract subdomain from the path or header
-      const subdomainFromPath = pathname.startsWith('/~') ? pathname.split('/')[1].substring(1) : null
-      setSubdomain(subdomainFromPath)
+    // Extract subdomain from URL in client component
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      const pathname = window.location.pathname
+      
+      // Development: check for /~subdomain pattern on localhost
+      if (hostname === 'localhost' && pathname.startsWith('/~')) {
+        const match = pathname.match(/^\/~([^\/]+)/)
+        setSubdomain(match ? match[1] : null)
+      }
+      // Development: check for *.lvh.me domains
+      else if (hostname.endsWith('.lvh.me')) {
+        setSubdomain(hostname.split('.')[0])
+      }
+      // Development: check for *.localhost domains
+      else if (hostname.endsWith('.localhost')) {
+        setSubdomain(hostname.split('.')[0])
+      }
+      // Production: check for *.heraerp.com domains
+      else if (hostname.endsWith('.heraerp.com') && hostname !== 'app.heraerp.com') {
+        setSubdomain(hostname.split('.')[0])
+      }
+      // Fallback: extract from current organization if available
+      else if (currentOrganization?.subdomain) {
+        setSubdomain(currentOrganization.subdomain)
+      }
     }
-  }, [pathname])
+  }, [pathname, currentOrganization])
 
   // Redirect to appropriate app based on organization type
   useEffect(() => {

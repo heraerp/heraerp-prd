@@ -100,78 +100,87 @@ export default function OrganizationDashboard() {
   const subdomain = currentOrganization.subdomain
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <div className="p-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      
+      {/* Glassmorphic orbs for depth */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+      </div>
+
+      <div className="relative z-10 p-8 max-w-7xl mx-auto">
         {/* Welcome Section */}
-        <div className="mb-8">
+        <div className="mb-10">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-700 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text mb-3">
                 Welcome to {currentOrganization.name}
               </h1>
-              <p className="text-slate-600 text-lg">
+              <p className="text-gray-700 dark:text-gray-300 text-xl font-medium">
                 Manage your business applications and settings from one central dashboard.
               </p>
             </div>
-            <Badge variant="secondary" className="bg-purple-100 text-purple-700 px-4 py-2">
+            <Badge variant="secondary" className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50 px-6 py-3 text-lg font-semibold">
               {currentOrganization.subdomain}.heraerp.com
             </Badge>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700">Total Users</CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">Total Users</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-2xl font-bold text-blue-900">{stats.totalUsers}</p>
-                <div className="p-2 bg-blue-200 rounded-lg">
-                  <Users className="w-5 h-5 text-blue-700" />
+                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.totalUsers}</p>
+                <div className="p-3 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-xl shadow-lg">
+                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-purple-700">Active Apps</CardTitle>
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">Active Apps</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-2xl font-bold text-purple-900">{stats.activeApps}</p>
-                <div className="p-2 bg-purple-200 rounded-lg">
-                  <Package className="w-5 h-5 text-purple-700" />
+                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.activeApps}</p>
+                <div className="p-3 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-xl shadow-lg">
+                  <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-green-700">Monthly Spend</CardTitle>
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">Monthly Spend</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-2xl font-bold text-green-900">${stats.monthlySpend}</p>
-                <div className="p-2 bg-green-200 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-green-700" />
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">${stats.monthlySpend}</p>
+                <div className="p-3 bg-gradient-to-br from-green-100/80 to-emerald-100/80 dark:from-green-900/40 dark:to-emerald-900/40 backdrop-blur-sm rounded-xl shadow-lg">
+                  <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-orange-700">Data Usage</CardTitle>
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">Data Usage</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-2xl font-bold text-orange-900">{stats.dataUsage}</p>
-                <div className="p-2 bg-orange-200 rounded-lg">
-                  <Activity className="w-5 h-5 text-orange-700" />
+                <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{stats.dataUsage}</p>
+                <div className="p-3 bg-gradient-to-br from-orange-100/80 to-amber-100/80 dark:from-orange-900/40 dark:to-amber-900/40 backdrop-blur-sm rounded-xl shadow-lg">
+                  <Activity className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </CardContent>
@@ -179,66 +188,68 @@ export default function OrganizationDashboard() {
         </div>
 
       {/* Installed Apps */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Installed Applications</h2>
-          <Button variant="outline" size="sm" asChild>
+      <div className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Installed Applications</h2>
+          <Button variant="outline" size="lg" asChild className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30">
             <Link href={`/~${subdomain}/apps`}>
               View All Apps
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
           </Button>
         </div>
 
         {installedApps.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="py-12 text-center">
-              <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No apps installed yet</h3>
-              <p className="text-gray-600 mb-4">
-                Install your first app to start managing your business
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border-2 border-dashed border-gray-300/50 dark:border-gray-600/50">
+            <CardContent className="py-16 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Package className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">No apps installed yet</h3>
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                Install your first app to start managing your business operations
               </p>
-              <Button asChild>
+              <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <Link href={`/~${subdomain}/apps`}>
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="w-5 h-5 mr-2" />
                   Browse Apps
                 </Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {installedApps.map((app) => {
               const Icon = appIcons[app.id as keyof typeof appIcons] || Package
               
               return (
-                <Card key={app.id} className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-blue-500">
+                <Card key={app.id} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer">
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-white" />
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Icon className="w-8 h-8 text-white" />
                       </div>
                       <Badge 
                         variant={app.status === 'active' ? 'default' : 'secondary'}
-                        className={app.status === 'active' ? 'bg-green-100 text-green-700' : ''}
+                        className={app.status === 'active' ? 'bg-green-100/80 dark:bg-green-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 border-green-200/50 dark:border-green-700/50' : 'bg-gray-100/80 dark:bg-gray-800/50 backdrop-blur-sm'}
                       >
                         {app.status}
                       </Badge>
                     </div>
-                    <CardTitle className="mt-4">{app.name || app.id.toUpperCase()}</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="mt-4 text-xl text-gray-900 dark:text-white">{app.name || app.id.toUpperCase()}</CardTitle>
+                    <CardDescription className="text-gray-700 dark:text-gray-300 text-base">
                       {appDescriptions[app.id as keyof typeof appDescriptions] || 'Business application'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <div className="text-sm text-slate-600">
+                    <div className="space-y-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                         Installed {new Date(app.installed_at || Date.now()).toLocaleDateString()}
                       </div>
-                      <Button className="w-full" asChild>
+                      <Button className="w-full h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" asChild>
                         <Link href={`/~${subdomain}/${app.id}`}>
                           Open App
-                          <ArrowRight className="w-4 h-4 ml-2" />
+                          <ArrowRight className="w-5 h-5 ml-2" />
                         </Link>
                       </Button>
                     </div>
@@ -252,50 +263,50 @@ export default function OrganizationDashboard() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-blue-500 group" onClick={() => router.push(`/~${subdomain}/users`)}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                    <Users className="w-5 h-5 text-blue-600" />
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group" onClick={() => router.push(`/~${subdomain}/users`)}>
+              <CardHeader className="pb-6 pt-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div>
-                    <CardTitle className="text-base">Invite Team Members</CardTitle>
-                    <CardDescription>
-                      Add users and manage permissions
+                  <div className="flex-1">
+                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">Invite Team Members</CardTitle>
+                    <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+                      Add users and manage permissions for your organization
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
             </Card>
 
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-purple-500 group" onClick={() => router.push(`/~${subdomain}/settings`)}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                    <Settings className="w-5 h-5 text-purple-600" />
+            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group" onClick={() => router.push(`/~${subdomain}/settings`)}>
+              <CardHeader className="pb-6 pt-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-100/80 to-indigo-100/80 dark:from-purple-900/40 dark:to-indigo-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Settings className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <div>
-                    <CardTitle className="text-base">Organization Settings</CardTitle>
-                    <CardDescription>
-                      Configure organization preferences
+                  <div className="flex-1">
+                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">Organization Settings</CardTitle>
+                    <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+                      Configure organization preferences and security settings
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
             </Card>
 
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-green-500 group" onClick={() => router.push(`/~${subdomain}/billing`)}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group" onClick={() => router.push(`/~${subdomain}/billing`)}>
+              <CardHeader className="pb-6 pt-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-green-100/80 to-emerald-100/80 dark:from-green-900/40 dark:to-emerald-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
-                  <div>
-                    <CardTitle className="text-base">Billing & Subscription</CardTitle>
-                    <CardDescription>
-                      Manage your subscription plan
+                  <div className="flex-1">
+                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">Billing & Subscription</CardTitle>
+                    <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+                      Manage your subscription plan and billing information
                     </CardDescription>
                   </div>
                 </div>

@@ -158,13 +158,13 @@ className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:borde
 - [x] `/auth/login` - Updated to glassmorphic slate-blue theme
 - [x] `/auth/organizations` - Applied glassmorphic HERA theme
 - [x] `/auth/organizations/new` - Applied glassmorphic HERA theme
-- [ ] `/auth/organizations/[id]/apps` - Apply HERA theme
-- [ ] `/org` - Organization dashboard (HERA theme)
-- [ ] `/dashboard` - Main dashboard (HERA theme)
-- [ ] `/finance` - Finance module landing (HERA theme)
-- [ ] `/landing` - Marketing landing page (HERA theme)
-- [ ] `/corporate` - Corporate page (HERA theme)
-- [ ] `/pricing` - Pricing page (HERA theme)
+- [x] `/auth/organizations/[id]/apps` - Apply HERA theme ✅ **ALREADY COMPLETED**
+- [x] `/org` - Organization dashboard (HERA theme) ✅ **COMPLETED**
+- [x] `/dashboard` - Main dashboard (redirects to auth) - No update needed
+- [x] `/finance` - Finance module landing (HERA theme) ✅ **COMPLETED**
+- [x] `/landing` - Marketing landing page (HERA theme) ✅ **COMPLETED**
+- [ ] `/corporate` - Corporate page (HERA theme) - **PAGE DOES NOT EXIST YET**
+- [ ] `/pricing` - Pricing page (HERA theme) - **PAGE DOES NOT EXIST YET**
 
 ### Priority 2: Secondary HERA Pages
 - [ ] All remaining auth pages

@@ -1,6 +1,5 @@
 'use client'
 
-import { headers } from 'next/headers'
 import dynamic from 'next/dynamic'
 
 // Import the salon-data page dynamically to avoid SSR issues with headers
