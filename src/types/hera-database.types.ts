@@ -1,5 +1,5 @@
 // HERA Database Types - Auto-generated from actual schema
-// Generated: 2025-09-10T20:54:50.926Z
+// Generated: 2025-09-10T22:51:38.644Z
 // Run 'node mcp-server/schema-introspection.js' to update
 
 // Utility Types
