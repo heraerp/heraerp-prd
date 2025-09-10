@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "paths": {
+      // Existing paths
+      "@/*": ["./src/*"],
+      
+      // New module-based paths for enterprise structure
+      "@modules/*": ["./src/modules/*"],
+      "@furniture/*": ["./src/modules/furniture/*"],
+      "@salon/*": ["./src/modules/salon/*"],
+      "@restaurant/*": ["./src/modules/restaurant/*"],
+      "@audit/*": ["./src/modules/audit/*"],
+      "@shared/*": ["./src/modules/shared/*"],
+      
+      // Core library paths
+      "@core/*": ["./src/lib/core/*"],
+      "@core/api": ["./src/lib/universal-api"],
+      "@core/auth": ["./src/lib/auth/*"],
+      "@core/db": ["./src/lib/supabase"],
+      
+      // Feature paths
+      "@features/*": ["./src/lib/features/*"],
+      "@features/ai": ["./src/lib/ai/*"],
+      "@features/dna": ["./src/lib/dna/*"],
+      "@features/analytics": ["./src/lib/analytics/*"],
+      
+      // UI paths
+      "@ui/*": ["./src/components/ui/*"],
+      "@layouts/*": ["./src/components/layouts/*"],
+      "@shared-components/*": ["./src/components/shared/*"]
+    }
+  }
+}

@@ -11,7 +11,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const isCI = process.env.CI === 'true';
 
 const nextConfig = {
-  output: 'standalone', // Smaller, simpler runtime
   typescript: {
     // !! WARN !!
     // In CI, we want to catch type errors. In production, we prioritize uptime.
