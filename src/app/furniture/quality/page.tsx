@@ -286,16 +286,10 @@ export default function FurnitureQuality() {
       universalApi.setOrganizationId(organizationId)
       
       // Load all entities
-      const { data: allEntities } = await universalApi.read({
-        table: 'core_entities',
-        organizationId: organizationId
-      })
+      const { data: allEntities } = await universalApi.read({ table: 'core_entities' })
       
       // Load all transactions
-      const { data: allTransactions } = await universalApi.read({
-        table: 'universal_transactions',
-        organizationId: organizationId
-      })
+      const { data: allTransactions } = await universalApi.read({ table: 'universal_transactions' })
       
       // Filter for quality inspections
       const qualityInspections = allTransactions?.filter((t: any) => 

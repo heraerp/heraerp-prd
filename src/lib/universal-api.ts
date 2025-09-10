@@ -342,6 +342,34 @@ class UniversalAPIExtended {
     }
   }
 
+  // Add read method for compatibility
+  async read(params: { table: string } | string, filter?: any, organizationId?: string) {
+    if (this.mockMode) {
+      console.log('Mock: Reading data', params)
+      return { data: [], error: null }
+    }
+
+    try {
+      const tableName = typeof params === 'string' ? params : params.table
+      const orgId = organizationId || this.organizationId
+      
+      if (!orgId) {
+        throw new Error('Organization ID is required')
+      }
+      
+      let query = supabase.from(tableName).select('*').eq('organization_id', orgId)
+      
+      const { data, error } = await query
+      
+      if (error) throw error
+      
+      return { data, error: null }
+    } catch (error) {
+      console.error('Failed to read data:', error)
+      return { data: null, error: error.message || 'Read operation failed' }
+    }
+  }
+  
   // Add existing universal API methods here...
   // (This would extend the existing universal API class)
 }

@@ -279,9 +279,9 @@ export default function FurnitureHR() {
       universalApi.setOrganizationId(organizationId)
       
       // Load all entities and relationships
-      const { data: allEntities } = await universalApi.read('core_entities')
-      const { data: allTransactions } = await universalApi.read('universal_transactions')
-      const { data: allDynamicData } = await universalApi.read('core_dynamic_data')
+      const { data: allEntities } = await universalApi.read({ table: 'core_entities' })
+      const { data: allTransactions } = await universalApi.read({ table: 'universal_transactions' })
+      const { data: allDynamicData } = await universalApi.read({ table: 'core_dynamic_data' })
       
       // Filter employees
       const employeeEntities = allEntities?.filter((e: any) => 

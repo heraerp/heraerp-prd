@@ -87,8 +87,9 @@ export class EntityResolver {
   async resolve(options: EntityResolverOptions): Promise<CoreEntities[]> {
     universalApi.setOrganizationId(this.context.organizationId)
     
-    // Fetch entities
-    let entities = await universalApi.getEntities()
+    // Fetch entities using the read method
+    const result = await universalApi.read({ table: 'core_entities' })
+    let entities = result?.data || []
     
     // Apply filters
     if (options.entityType) {
@@ -110,7 +111,8 @@ export class EntityResolver {
     
     // Add dynamic data if requested
     if (options.includeDynamicData && entities.length > 0) {
-      const dynamicData = await universalApi.getDynamicData()
+      const dynamicDataResult = await universalApi.read({ table: 'core_dynamic_data' })
+      const dynamicData = dynamicDataResult?.data || []
       const entityIds = entities.map(e => e.id)
       const relevantData = dynamicData.filter(d => entityIds.includes(d.entity_id))
       
@@ -142,7 +144,8 @@ export class HierarchyBuilder {
   async build(options: HierarchyBuilderOptions): Promise<any> {
     universalApi.setOrganizationId(this.context.organizationId)
     
-    const relationships = await universalApi.getRelationships()
+    const relResult = await universalApi.read({ table: 'core_relationships' })
+    const relationships = relResult?.data || []
     const relevantRels = relationships.filter(r => 
       r.relationship_type === options.relationshipType &&
       r.organization_id === this.context.organizationId
@@ -223,7 +226,8 @@ export class TransactionFacts {
     universalApi.setOrganizationId(this.context.organizationId)
     
     // Fetch transactions
-    let transactions = await universalApi.getTransactions()
+    const txnResult = await universalApi.read({ table: 'universal_transactions' })
+    let transactions = txnResult?.data || []
     
     // Apply filters
     if (options.transactionType) {
@@ -324,7 +328,8 @@ export class TransactionFacts {
   }
   
   private async fetchLineItems(transactionIds: string[]): Promise<UniversalTransactionLines[]> {
-    const allLines = await universalApi.getTransactionLines()
+    const linesResult = await universalApi.read({ table: 'universal_transaction_lines' })
+    const allLines = linesResult?.data || []
     return allLines.filter(line => transactionIds.includes(line.transaction_id))
   }
 }
@@ -390,14 +395,8 @@ export class DynamicJoin {
   }
   
   private async fetchTableData(tableName: string): Promise<any[]> {
-    switch (tableName) {
-      case 'core_entities': return await universalApi.getEntities()
-      case 'core_dynamic_data': return await universalApi.getDynamicData()
-      case 'core_relationships': return await universalApi.getRelationships()
-      case 'universal_transactions': return await universalApi.getTransactions()
-      case 'universal_transaction_lines': return await universalApi.getTransactionLines()
-      default: throw new Error(`Unknown table: ${tableName}`)
-    }
+    const result = await universalApi.read({ table: tableName })
+    return result?.data || []
   }
   
   private getFieldValue(row: any, field: string): any {
