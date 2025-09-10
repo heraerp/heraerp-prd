@@ -614,7 +614,7 @@ I provide intelligent insights with enterprise-grade security and smart code val
               </tr>
             </thead>
             <tbody className="divide-y">
-              {data.data.slice(0, 10).map((row, idx) => (
+              {data.data.slice(0, 10).map((row: any, idx: number) => (
                 <tr key={idx}>
                   {Object.entries(row).filter(([key]) => !['metadata'].includes(key)).map(([key, val]: [string, any], i) => (
                     <td key={i} className="px-3 py-2 whitespace-nowrap">

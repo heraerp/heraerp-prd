@@ -581,7 +581,7 @@ export default function ProvisioningDashboard() {
                             <div>
                               <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Features:</p>
                               <div className="flex flex-wrap gap-1">
-                                {module.features.map((feature) => (
+                                {module.features.map((feature: any) => (
                                   <Badge key={feature} variant="outline" className="text-xs">
                                     {feature}
                                   </Badge>
