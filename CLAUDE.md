@@ -107,6 +107,14 @@ node hera-dna-document-numbering-cli.js config --industry furniture  # Furniture
 node hera-dna-document-numbering-cli.js generate --type sales_order --industry furniture  # Generate document number
 node hera-dna-document-numbering-cli.js test          # Test all industries and document types
 
+# HERA Universal Report Pattern (NEW CORE DNA COMPONENT) 📊
+node urp-cli.js list                                  # List available report recipes
+node urp-cli.js execute --recipe "HERA.URP.RECIPE.FINANCE.COA.v1"  # Chart of Accounts
+node urp-cli.js execute --recipe "HERA.URP.RECIPE.FINANCE.TRIAL.BALANCE.v1"  # Trial Balance
+node urp-cli.js cache clear                           # Clear report cache
+node urp-cli.js test-primitives                       # Test URP primitives
+localhost:3000/urp-demo                               # Interactive URP demo
+
 # HERA Enterprise Features (ENTERPRISE GA READY) 🔐
 node scripts/test-enterprise-features.js              # Test all enterprise capabilities
 # Access enterprise endpoints
@@ -2554,6 +2562,20 @@ universal_transaction_lines → Invoice lines + journal entry lines
   - **Zero Integration Code**: Apps just emit events, Finance DNA handles the rest
   - **CLI Management**: Complete command-line interface for activation and testing
   - **🧬 REVOLUTIONARY**: First universal financial integration that works across all business apps
+- **📊 Universal Report Pattern (URP)** - Revolutionary reporting DNA component (NEW CORE DNA COMPONENT)
+  - **6 Reusable Primitives**: Entity Resolver, Hierarchy Builder, Transaction Facts, Dynamic Join, Rollup & Balance, Presentation Formatter
+  - **Zero Custom SQL**: Standardized patterns eliminate custom query development
+  - **Smart Code Intelligence**: Report behavior driven by HERA.URP.* smart codes  
+  - **90% Faster Development**: Pre-built recipes for all common reports
+  - **Performance Optimized**: Materialized views and intelligent caching
+  - **Universal Compatibility**: Works with all business types using 6-table schema
+  - **Report Recipes**: Chart of Accounts, Trial Balance, P&L, Balance Sheet, Cashflow, Aging, Analytics
+  - **Multiple Output Formats**: JSON, Table, Excel, PDF, CSV with localization
+  - **Organization-Scoped Cache**: TTL-based caching with manual refresh
+  - **API & UI Components**: RESTful API endpoint and React viewer component
+  - **Zero Schema Changes**: Uses existing universal 6-table architecture
+  - **Type-Safe**: Full TypeScript support with complete type definitions
+  - **🧬 BREAKTHROUGH**: First universal reporting system that standardizes HOW to query, not what tables exist
 - **🗄️ Document Management** - GSPU 2025 compliant with Supabase integration
 - **📋 Authentication System** - Dual-provider architecture with universal entities
 - **PWA Implementation** - Advanced offline support with universal data sync

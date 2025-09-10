@@ -18,10 +18,14 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({ c
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
   
-  // Use authenticated org if available, otherwise use demo org, fallback to Kerala Furniture Works (Demo)
-  const organizationId = currentOrganization?.id || demoOrg?.id || 'f0af4ced-9d12-4a55-a649-b484368db249'
-  const organizationName = currentOrganization?.organization_name || demoOrg?.name || 'Kerala Furniture Works (Demo)'
-  const orgLoading = isAuthenticated ? isLoadingOrgs : false
+  // Always use the furniture organization when in furniture module
+  const FURNITURE_ORG_ID = 'f0af4ced-9d12-4a55-a649-b484368db249'
+  const FURNITURE_ORG_NAME = 'Kerala Furniture Works'
+  
+  // For furniture module, always use the furniture org regardless of authentication
+  const organizationId = FURNITURE_ORG_ID
+  const organizationName = FURNITURE_ORG_NAME
+  const orgLoading = false // Since we're using a fixed org, no loading needed
 
   // Load demo organization if not authenticated
   useEffect(() => {

@@ -28,6 +28,7 @@ import {
   Package,
   Sparkles,
   CalendarCheck,
+  Settings,
   UserCheck,
   TrendingUp,
   Plus,

@@ -24,8 +24,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Create hybrid DNA client for this organization
-    const salonClient = createHybridSalonDNAClient(organizationId);
+    // Create hybrid DNA client for this organization with proper baseUrl for server-side requests
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const host = request.headers.get('host') || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+    const salonClient = createHybridSalonDNAClient(organizationId, baseUrl);
 
     switch (action) {
       case 'dashboard':
@@ -111,8 +114,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create hybrid DNA client for this organization
-    const salonClient = createHybridSalonDNAClient(organizationId);
+    // Create hybrid DNA client for this organization with proper baseUrl for server-side requests
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const host = request.headers.get('host') || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+    const salonClient = createHybridSalonDNAClient(organizationId, baseUrl);
 
     switch (action) {
       case 'create-appointment':

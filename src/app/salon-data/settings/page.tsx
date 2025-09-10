@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 import { 
@@ -16,7 +16,9 @@ import {
   Sparkles,
   CreditCard,
   Calendar,
-  FileText
+  FileText,
+  ArrowLeft,
+  ChevronRight
 } from 'lucide-react'
 
 const settingSections = [
@@ -101,74 +103,191 @@ const settingSections = [
 ]
 
 export default function SalonDataSettingsPage() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        const x = ((e.clientX - rect.left) / rect.width) * 100
+        const y = ((e.clientY - rect.top) / rect.height) * 100
+        setMousePosition({ x, y })
+      }
+    }
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('mousemove', handleMouseMove)
+    }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('mousemove', handleMouseMove)
+      }
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 via-dusty-rose-50 to-champagne-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div 
+      ref={containerRef}
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: `
+          linear-gradient(135deg, 
+            rgba(0, 0, 0, 0.95) 0%, 
+            rgba(17, 24, 39, 0.95) 25%,
+            rgba(31, 41, 55, 0.9) 50%,
+            rgba(17, 24, 39, 0.95) 75%,
+            rgba(0, 0, 0, 0.95) 100%
+          ),
+          radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+            rgba(147, 51, 234, 0.08) 0%, 
+            rgba(59, 130, 246, 0.05) 25%,
+            rgba(16, 185, 129, 0.03) 50%,
+            transparent 70%
+          ),
+          #0a0a0a
+        `
+      }}
+    >
+      {/* Animated Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div 
+          className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
+          style={{
+            background: `radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%)`,
+            left: '10%',
+            top: '20%',
+            animation: 'float 10s ease-in-out infinite',
+            filter: 'blur(40px)'
+          }}
+        />
+        <div 
+          className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
+          style={{
+            background: `radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%)`,
+            right: '15%',
+            bottom: '30%',
+            animation: 'float 12s ease-in-out infinite reverse',
+            filter: 'blur(40px)'
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto p-6 space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-sage-700 via-dusty-rose-600 to-champagne-600 bg-clip-text text-transparent">
-            Salon Settings
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Configure your Hair Talkz salon settings and preferences
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <Link 
+              href="/salon-data" 
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
+            </Link>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              Salon Settings
+            </h1>
+            <p className="text-gray-400 mt-2">
+              Configure your Hair Talkz salon settings and preferences
+            </p>
+          </div>
         </div>
 
         {/* Setting Sections */}
         {settingSections.map((section) => (
           <div key={section.title} className="space-y-4">
-            <h2 className="text-xl font-semibold text-sage-800">{section.title}</h2>
+            <h2 className="text-xl font-semibold text-white/90">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {section.items.map((item) => (
-                <Link key={item.name} href={item.href}>
-                  <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/80 border-sage-200/50 backdrop-blur-sm h-full hover:shadow-lg">
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-lg bg-gradient-to-br from-white to-sage-50/50 ${item.color}`}>
-                        <item.icon className="h-6 w-6" />
+              {section.items.map((item) => {
+                const gradientColors = {
+                  'text-champagne-500': 'from-amber-400 to-orange-600',
+                  'text-sage-500': 'from-green-400 to-emerald-600',
+                  'text-dusty-rose-500': 'from-pink-400 to-rose-600',
+                  'text-sage-600': 'from-teal-400 to-cyan-600',
+                  'text-dusty-rose-600': 'from-rose-400 to-pink-600',
+                  'text-champagne-600': 'from-yellow-400 to-amber-600',
+                  'text-red-500': 'from-red-400 to-red-600',
+                  'text-yellow-500': 'from-yellow-400 to-yellow-600',
+                  'text-indigo-500': 'from-indigo-400 to-purple-600'
+                }
+                const gradient = gradientColors[item.color as keyof typeof gradientColors] || 'from-purple-400 to-pink-600'
+                
+                return (
+                  <Link key={item.name} href={item.href} className="group">
+                    <div className="relative h-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 
+                      hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl
+                      hover:border-white/20 cursor-pointer">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} 
+                          flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
+                          <item.icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white/90 mb-1 group-hover:text-white transition-colors">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-sage-900 mb-1">{item.name}</h3>
-                        <p className="text-sm text-sage-600">{item.description}</p>
-                      </div>
+                      <ChevronRight className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 
+                        opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                     </div>
-                  </Card>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
           </div>
         ))}
 
         {/* UCR Highlight Card */}
-        <Card className="p-6 bg-gradient-to-r from-champagne-100/80 to-sage-100/80 border-champagne-300/50 backdrop-blur-sm">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-gradient-to-br from-champagne-200 to-champagne-300">
-              <Code className="h-8 w-8 text-champagne-700" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-sage-900 mb-1">
-                Revolutionary: Universal Configuration Rules (UCR) for Salons
-              </h3>
-              <p className="text-sage-700 mb-3">
-                Change salon business logic without touching code. Configure service pricing, appointment rules, 
-                staff commissions, loyalty programs, and more through a visual interface tailored for beauty businesses.
-              </p>
-              <Link href="/salon-data/settings/ucr">
-                <span className="text-champagne-600 hover:text-champagne-700 font-medium">
-                  Manage Salon UCR Rules →
-                </span>
-              </Link>
+        <div className="relative mt-12">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 
+            rounded-2xl blur-xl" />
+          <div className="relative bg-gradient-to-r from-purple-900/50 via-pink-900/50 to-blue-900/50 
+            backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:border-white/30 transition-colors">
+            <div className="flex items-start gap-6">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-purple-400 to-pink-600 
+                flex items-center justify-center shadow-2xl">
+                <Code className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  Revolutionary: Universal Configuration Rules (UCR) for Salons
+                </h3>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  Change salon business logic without touching code. Configure service pricing, appointment rules, 
+                  staff commissions, loyalty programs, and more through a visual interface tailored for beauty businesses.
+                </p>
+                <Link 
+                  href="/salon-data/settings/ucr"
+                  className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 
+                    font-medium transition-colors group"
+                >
+                  Manage Salon UCR Rules
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </div>
           </div>
-        </Card>
-
-        {/* Back to Dashboard */}
-        <div className="flex justify-center pt-6">
-          <Link href="/salon-data">
-            <span className="text-sage-600 hover:text-sage-700 font-medium flex items-center gap-2">
-              ← Back to Salon Dashboard
-            </span>
-          </Link>
         </div>
+
+        {/* Add animation styles */}
+        <style jsx global>{`
+          @keyframes float {
+            0%, 100% {
+              transform: translateY(0) translateX(0);
+            }
+            33% {
+              transform: translateY(-20px) translateX(10px);
+            }
+            66% {
+              transform: translateY(10px) translateX(-10px);
+            }
+          }
+        `}</style>
       </div>
     </div>
   )

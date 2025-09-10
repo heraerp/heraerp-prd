@@ -18,38 +18,30 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { ChartOfAccountsService, GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
 import { cn } from '@/lib/utils'
 
-interface GLAccount {
-  id: string
-  entity_code: string
-  entity_name: string
-  metadata: {
-    account_type: 'header' | 'detail'
-    account_level: number
-    parent_account?: string
-    normal_balance?: 'debit' | 'credit'
-    ifrs_classification?: string
-  }
-  current_balance?: number
-  balance_type?: 'Dr' | 'Cr'
-  debit_total?: number
-  credit_total?: number
-  children?: GLAccount[]
-  isExpanded?: boolean
-}
+// Remove old GLAccount interface as we're using GLAccountNode from the service
 
 export default function ChartOfAccounts() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  const [accounts, setAccounts] = useState<GLAccount[]>([])
+  const [accounts, setAccounts] = useState<GLAccountNode[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['1000000', '2000000', '3000000', '4000000', '5000000']))
+  
+  // Debug: Log the organization details
+  useEffect(() => {
+    console.log('Furniture Finance - Chart of Accounts:')
+    console.log('Organization Name:', organizationName)
+    console.log('Organization ID:', organizationId)
+    console.log('Expected Furniture Org ID: f0af4ced-9d12-4a55-a649-b484368db249')
+  }, [organizationId, organizationName])
   
   useEffect(() => {
     if (organizationId && !orgLoading) {
@@ -60,108 +52,30 @@ export default function ChartOfAccounts() {
   const loadChartOfAccounts = async () => {
     try {
       setLoading(true)
-      universalApi.setOrganizationId(organizationId)
+      setError(null)
       
-      // Load GL accounts
-      const { data: allEntities } = await universalApi.read('core_entities')
+      // Use the ChartOfAccountsService
+      const result = await ChartOfAccountsService.loadChartOfAccounts(organizationId)
       
-      // Filter for GL accounts
-      const glAccounts = allEntities?.filter((e: any) => 
-        e.entity_type === 'gl_account'
-      ) || []
-      
-      // Load transaction lines for balances
-      const { data: transactionLines } = await universalApi.read('universal_transaction_lines')
-      
-      // Calculate balances
-      const balancesByAccount: Record<string, { debit: number, credit: number }> = {}
-      
-      if (transactionLines) {
-        transactionLines.forEach((line: any) => {
-          if (line.entity_id && line.line_data) {
-            if (!balancesByAccount[line.entity_id]) {
-              balancesByAccount[line.entity_id] = { debit: 0, credit: 0 }
-            }
-            balancesByAccount[line.entity_id].debit += line.line_data?.debit_amount || 0
-            balancesByAccount[line.entity_id].credit += line.line_data?.credit_amount || 0
-          }
-        })
-      }
-      
-      // Build hierarchical structure
-      const accountMap: Record<string, GLAccount> = {}
-      const rootAccounts: GLAccount[] = []
-      
-      // First pass: create all accounts with balance info
-      glAccounts.forEach((account: any) => {
-        const balance = balancesByAccount[account.id] || { debit: 0, credit: 0 }
-        const netBalance = balance.debit - balance.credit
+      if (result.error) {
+        setError(result.error)
+        setAccounts([])
+      } else {
+        setAccounts(result.rootAccounts)
         
-        accountMap[account.entity_code] = {
-          ...account,
-          current_balance: Math.abs(netBalance),
-          balance_type: netBalance >= 0 ? 'Dr' : 'Cr',
-          debit_total: balance.debit,
-          credit_total: balance.credit,
-          children: []
+        // Debug output
+        if (result.totalAccounts > 0) {
+          console.log('Chart of Accounts loaded successfully:')
+          console.log(`- Total accounts: ${result.totalAccounts}`)
+          console.log(`- Root accounts: ${result.rootAccounts.length}`)
+          ChartOfAccountsService.printAccountHierarchy(result.rootAccounts)
         }
-      })
-      
-      // Second pass: build hierarchy
-      Object.values(accountMap).forEach(account => {
-        const parentCode = account.metadata?.parent_account
-        if (parentCode && accountMap[parentCode]) {
-          accountMap[parentCode].children!.push(account)
-        } else if (account.metadata?.account_level === 1) {
-          rootAccounts.push(account)
-        }
-      })
-      
-      // Sort children at each level
-      const sortAccounts = (accounts: GLAccount[]) => {
-        accounts.sort((a, b) => a.entity_code.localeCompare(b.entity_code))
-        accounts.forEach(account => {
-          if (account.children && account.children.length > 0) {
-            sortAccounts(account.children)
-          }
-        })
       }
-      
-      sortAccounts(rootAccounts)
-      
-      // Calculate rollup balances for header accounts
-      const calculateRollupBalances = (account: GLAccount): { debit: number, credit: number } => {
-        if (account.metadata?.account_type === 'detail' || !account.children || account.children.length === 0) {
-          return {
-            debit: account.debit_total || 0,
-            credit: account.credit_total || 0
-          }
-        }
-        
-        let totalDebit = 0
-        let totalCredit = 0
-        
-        account.children.forEach(child => {
-          const childBalances = calculateRollupBalances(child)
-          totalDebit += childBalances.debit
-          totalCredit += childBalances.credit
-        })
-        
-        account.debit_total = totalDebit
-        account.credit_total = totalCredit
-        const netBalance = totalDebit - totalCredit
-        account.current_balance = Math.abs(netBalance)
-        account.balance_type = netBalance >= 0 ? 'Dr' : 'Cr'
-        
-        return { debit: totalDebit, credit: totalCredit }
-      }
-      
-      rootAccounts.forEach(calculateRollupBalances)
-      
-      setAccounts(rootAccounts)
       
     } catch (error) {
       console.error('Failed to load chart of accounts:', error)
+      setError(error instanceof Error ? error.message : 'Unknown error occurred')
+      setAccounts([])
     } finally {
       setLoading(false)
     }
@@ -179,7 +93,7 @@ export default function ChartOfAccounts() {
     })
   }
   
-  const renderAccount = (account: GLAccount, level: number = 0): React.ReactNode => {
+  const renderAccount = (account: GLAccountNode, level: number = 0): React.ReactNode => {
     const hasChildren = account.children && account.children.length > 0
     const isExpanded = expandedNodes.has(account.entity_code)
     const isHeader = account.metadata?.account_type === 'header'
@@ -192,6 +106,10 @@ export default function ChartOfAccounts() {
       
       if (!matchesSearch && !hasChildren) return null
     }
+    
+    // Handle cases where metadata might be null or undefined
+    const accountType = account.metadata?.account_type || 'detail'
+    const accountLevel = account.metadata?.account_level || 0
     
     return (
       <div key={account.entity_code}>
@@ -295,7 +213,15 @@ export default function ChartOfAccounts() {
     )
   }
   
-  // Calculate totals
+  // Calculate totals and count all accounts including children
+  const countAllAccounts = (accs: GLAccountNode[]): number => {
+    return accs.reduce((count, account) => {
+      return count + 1 + (account.children ? countAllAccounts(account.children) : 0)
+    }, 0)
+  }
+  
+  const totalAccountCount = countAllAccounts(accounts)
+  
   const totals = accounts.reduce((acc, account) => {
     acc.debit += account.debit_total || 0
     acc.credit += account.credit_total || 0
@@ -346,7 +272,7 @@ export default function ChartOfAccounts() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">Total Accounts</p>
-                <p className="text-2xl font-bold">160</p>
+                <p className="text-2xl font-bold">{totalAccountCount}</p>
               </div>
               <FileText className="h-8 w-8 text-gray-600" />
             </div>
@@ -390,6 +316,46 @@ export default function ChartOfAccounts() {
             </div>
           </Card>
         </div>
+
+        {/* Error or No Accounts Alert */}
+        {!loading && (error || accounts.length === 0) && (
+          <Alert className="bg-amber-900/20 border-amber-600/50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription>
+              <div className="flex items-center justify-between">
+                <div className="text-amber-200">
+                  {error ? (
+                    <>
+                      Error loading Chart of Accounts: {error}
+                      <br />
+                      Organization: {organizationName} (ID: {organizationId})
+                    </>
+                  ) : (
+                    <>
+                      No GL accounts found for organization: {organizationName} (ID: {organizationId}).
+                      <br />
+                      This might be because the Chart of Accounts hasn't been set up yet.
+                    </>
+                  )}
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="ml-4 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white"
+                  onClick={() => {
+                    if (error) {
+                      loadChartOfAccounts()
+                    } else {
+                      alert('Chart of Accounts setup would be triggered here. This typically involves running the COA setup for furniture manufacturing industry.')
+                    }
+                  }}
+                >
+                  {error ? 'Retry' : 'Setup Chart of Accounts'}
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Search Bar */}
         <Card className="p-4 bg-gray-800/50 border-gray-700">

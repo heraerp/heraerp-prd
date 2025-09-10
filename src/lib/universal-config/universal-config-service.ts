@@ -6,6 +6,7 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/lib/supabase'
 import type { 
   Entity,
   Transaction,
@@ -203,29 +204,39 @@ export class UniversalConfigService {
 
     // Fetch from database
     try {
-      // Query core_entities for rules using read method
-      const response = await universalApi.read('core_entities', undefined, orgId)
-      
-      if (!response.success || !response.data) {
-        console.error('Failed to fetch rule entities:', response.error)
+      // Query core_entities for rules using Supabase directly
+      if (!supabase) {
+        console.warn('No Supabase client available, returning empty rules')
         return []
       }
+
+      const { data: ruleEntities, error } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', orgId)
+        .eq('entity_type', 'universal_rule')
+        .ilike('smart_code', `${family}%`)
       
-      // Filter for universal_rule entities with matching smart code
-      const ruleEntities = response.data.filter(
-        (entity: any) => 
-          entity.entity_type === 'universal_rule' &&
-          entity.smart_code?.startsWith(family)
-      )
+      if (error || !ruleEntities) {
+        console.error('Failed to fetch rule entities:', error)
+        return []
+      }
 
       // Fetch dynamic data for each rule
       const rules: UniversalRule[] = await Promise.all(
         ruleEntities.map(async (entity: any) => {
           // Get rule data from dynamic fields
-          const dynamicResponse = await universalApi.getDynamicData(entity.id, orgId)
-          const dynamicData = dynamicResponse.success ? dynamicResponse.data : []
+          const { data: dynamicData, error: dynamicError } = await supabase
+            .from('core_dynamic_data')
+            .select('*')
+            .eq('entity_id', entity.id)
+            .eq('organization_id', orgId)
           
-          return this.entityToRule(entity, dynamicData)
+          if (dynamicError) {
+            console.error('Failed to fetch dynamic data for rule:', dynamicError)
+          }
+          
+          return this.entityToRule(entity, dynamicData || [])
         })
       )
 

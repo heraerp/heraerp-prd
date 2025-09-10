@@ -313,3 +313,5 @@ export function PaymentWhatsAppActions({
     </div>
   )
 }
+
+export { PaymentWhatsAppActions }
