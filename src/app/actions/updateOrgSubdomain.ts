@@ -89,7 +89,6 @@ export async function updateOrgSubdomainAction(input: unknown) {
     await universalApi.createTransaction({
       transaction_type: 'org_settings_update',
       reference_number: `SUBDOMAIN-${Date.now()}`,
-      organization_id: org.id,
       smart_code: 'HERA.IDENTITY.ORG.SETTINGS.SUBDOMAIN.UPDATE.v1',
       total_amount: 0,
       metadata: {
@@ -101,7 +100,7 @@ export async function updateOrgSubdomainAction(input: unknown) {
         updated_by: 'system', // In real implementation, get from auth context
         organization_id: org.id
       }
-    });
+    }, org.id);
 
     // 2) Apply: Update organization settings (JSONB merge-patch)
     const newSettings = {
