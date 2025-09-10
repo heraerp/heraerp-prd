@@ -15,14 +15,8 @@ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANO
 process.env.SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'dummy-service-key';
 
 try {
-  // Run the actual Next.js build with increased memory
-  execSync('NODE_OPTIONS="--max-old-space-size=4096" next build', { 
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      NODE_OPTIONS: '--max-old-space-size=4096'
-    }
-  });
+  // Run the actual Next.js build
+  execSync('next build', { stdio: 'inherit' });
   console.log('✅ Build completed successfully');
 } catch (error) {
   console.error('❌ Build failed:', error.message);
