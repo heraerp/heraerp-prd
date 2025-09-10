@@ -50,6 +50,9 @@ export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient>, {
   }
 })
 
+// Legacy export for compatibility
+export const createClient = getSupabaseAdmin
+
 // Helper to create a server client with user context
 export function createServerClient(accessToken?: string) {
   if (!accessToken) {

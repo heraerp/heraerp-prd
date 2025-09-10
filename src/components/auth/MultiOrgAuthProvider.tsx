@@ -468,7 +468,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     }
   }
 
-  const checkSubdomainAvailability = async (subdomain: string): Promise<boolean> => {
+  const checkSubdomainAvailability = useCallback(async (subdomain: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/v1/organizations/check-subdomain?subdomain=${encodeURIComponent(subdomain)}`, {
         method: 'GET'
@@ -484,7 +484,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       console.error('Error checking subdomain:', error)
       return false
     }
-  }
+  }, [])
 
   const getOrganizationBySubdomain = (subdomain: string): Organization | null => {
     return organizations.find(org => org.subdomain === subdomain) || null

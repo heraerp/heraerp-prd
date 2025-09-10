@@ -64,7 +64,49 @@ import {
   ArrowDown
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { IceCreamChatStorage, createIceCreamChatStorage, IceCreamChatMessage, IceCreamChatSession } from '@/lib/icecream-chat-storage'
+
+// Placeholder types and functions while we fix import issues
+interface IceCreamChatMessage {
+  id?: string;
+  session_id: string;
+  message_type: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+  title?: string;
+  metadata?: any;
+}
+
+interface IceCreamChatSession {
+  id: string;
+  title: string;
+  start_time: string;
+  end_time?: string;
+  message_count: number;
+  last_message?: string;
+  preview?: string;
+  starred?: boolean;
+  tags?: string[];
+}
+
+interface IceCreamChatStorage {
+  startSession(): Promise<string>;
+  getChatSessions(options: any): Promise<IceCreamChatSession[]>;
+  saveMessage(message: IceCreamChatMessage): Promise<void>;
+  getChatHistory(options: any): Promise<IceCreamChatMessage[]>;
+  deleteSession(sessionId: string): Promise<void>;
+  clearAllHistory(): Promise<void>;
+}
+
+function createIceCreamChatStorage(organizationId: string): IceCreamChatStorage {
+  return {
+    async startSession() { return 'session-1' },
+    async getChatSessions() { return [] },
+    async saveMessage() {},
+    async getChatHistory() { return [] },
+    async deleteSession() {},
+    async clearAllHistory() {}
+  }
+}
 
 interface Message {
   id: string

@@ -11,68 +11,113 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // HERA Universal Brand Colors
+      // HERA Universal Brand Colors - AI + ERP + Modern Fusion
       colors: {
+        // Primary Sage Green - Wellness & Growth
+        sage: {
+          50: '#f6f8f6',
+          100: '#e9f1ea',
+          200: '#d4e3d6',
+          300: '#b8cebb',
+          400: '#A8C3A3', // Primary Sage Green
+          500: '#8bb088',
+          600: '#6f936d',
+          700: '#5a7757',
+          800: '#4a5f47',
+          900: '#3d4e3b',
+          950: '#1f2720',
+        },
+        // Secondary Dusty Rose - Beauty & Elegance  
+        'dusty-rose': {
+          50: '#faf6f6',
+          100: '#f1e9e9',
+          200: '#e7d5d5',
+          300: '#D4A5A5', // Secondary Dusty Rose
+          400: '#c88a8a',
+          500: '#b76e6e',
+          600: '#a55656',
+          700: '#8a4646',
+          800: '#733d3d',
+          900: '#603636',
+          950: '#331a1a',
+        },
+        // Accent Champagne Gold - Luxury & Premium
+        champagne: {
+          50: '#fefdf9',
+          100: '#fdfaf0',
+          200: '#faf4db',
+          300: '#f5e9b8',
+          400: '#eed97f',
+          500: '#D4AF37', // Champagne Gold
+          600: '#c9a332',
+          700: '#a8842b',
+          800: '#896a29',
+          900: '#715626',
+          950: '#402d12',
+        },
+        // Legacy HERA colors for compatibility
         hera: {
-          // Primary brand colors
-          50: '#eff6ff',
-          100: '#dbeafe', 
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6', // Primary blue
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
+          50: '#f6f8f6',
+          100: '#e9f1ea', 
+          200: '#d4e3d6',
+          300: '#b8cebb',
+          400: '#A8C3A3',
+          500: '#8bb088', // Now maps to sage
+          600: '#6f936d',
+          700: '#5a7757',
+          800: '#4a5f47',
+          900: '#3d4e3b',
+          950: '#1f2720',
         },
         'hera-cyan': {
-          50: '#ecfeff',
-          100: '#cffafe',
-          200: '#a5f3fc',
-          300: '#67e8f9',
-          400: '#22d3ee',
-          500: '#06b6d4', // Secondary cyan
-          600: '#0891b2',
-          700: '#0e7490',
-          800: '#155e75',
-          900: '#164e63',
-          950: '#083344',
+          50: '#faf6f6',
+          100: '#f1e9e9',
+          200: '#e7d5d5',
+          300: '#D4A5A5',
+          400: '#c88a8a',
+          500: '#b76e6e', // Now maps to dusty-rose
+          600: '#a55656',
+          700: '#8a4646',
+          800: '#733d3d',
+          900: '#603636',
+          950: '#331a1a',
         },
         'hera-emerald': {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981', // Accent green
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
-          950: '#022c22',
+          50: '#f6f8f6',
+          100: '#e9f1ea',
+          200: '#d4e3d6',
+          300: '#b8cebb',
+          400: '#A8C3A3',
+          500: '#8bb088', // Sage green
+          600: '#6f936d',
+          700: '#5a7757',
+          800: '#4a5f47',
+          900: '#3d4e3b',
+          950: '#1f2720',
         },
         'hera-amber': {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24', // Gold
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
-          950: '#451a03',
+          50: '#fefdf9',
+          100: '#fdfaf0',
+          200: '#faf4db',
+          300: '#f5e9b8',
+          400: '#eed97f',
+          500: '#D4AF37', // Champagne gold
+          600: '#c9a332',
+          700: '#a8842b',
+          800: '#896a29',
+          900: '#715626',
+          950: '#402d12',
         }
       },
       
-      // HERA-specific gradients
+      // HERA-specific gradients with new AI + ERP + Modern fusion colors
       backgroundImage: {
-        'hera-gradient': 'linear-gradient(45deg, #3b82f6, #06b6d4, #10b981)',
-        'hera-gradient-dark': 'linear-gradient(45deg, #1e40af, #0891b2, #047857)',
-        'hera-mesh': 'radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.15) 1px, transparent 0)',
+        'hera-gradient': 'linear-gradient(45deg, #A8C3A3, #D4A5A5, #D4AF37)', // Sage → Dusty Rose → Champagne
+        'hera-gradient-dark': 'linear-gradient(45deg, #5a7757, #8a4646, #a8842b)', // Darker variants
+        'hera-mesh': 'radial-gradient(circle at 1px 1px, rgba(168, 195, 163, 0.15) 1px, transparent 0)', // Sage mesh
+        'salon-gradient': 'linear-gradient(135deg, #A8C3A3 0%, #D4A5A5 50%, #D4AF37 100%)', // Hair Talkz salon
+        'wellness-gradient': 'linear-gradient(90deg, #f6f8f6, #A8C3A3)', // Sage wellness gradient
+        'luxury-gradient': 'linear-gradient(90deg, #D4A5A5, #D4AF37)', // Rose to gold luxury
       },
       
       // Enhanced typography for business applications

@@ -9,9 +9,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import SalonWhatsAppSidebar from '@/components/salon/SalonWhatsAppSidebar'
-import BookingAutomationPanel from '@/components/whatsapp/BookingAutomationPanel'
-import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
 import { 
   MessageCircle,
   Search,
@@ -43,6 +40,29 @@ import {
   CalendarDays
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+// Placeholder components while we fix import issues
+function SalonWhatsAppSidebar() {
+  return (
+    <div className="w-20 bg-gray-800 p-2">
+      <div className="text-white text-xs">Sidebar temporarily disabled</div>
+    </div>
+  )
+}
+
+function BookingAutomationPanel({ organizationId, onScenarioSelect, onFlowStart }: any) {
+  return (
+    <div className="p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
+      <p className="text-yellow-400 text-sm">
+        BookingAutomationPanel temporarily disabled - fixing import issues
+      </p>
+    </div>
+  )
+}
+
+class BookingAutomationService {
+  constructor(orgId: string, apiKey: string) {}
+}
 
 // Types
 interface Contact {

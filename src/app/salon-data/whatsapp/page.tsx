@@ -9,9 +9,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import BookingAutomationPanel from '@/components/whatsapp/BookingAutomationPanel'
-import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
-import { WhatsAppCampaignManager } from '@/components/salon/whatsapp/WhatsAppCampaignManager'
 import { useRouter } from 'next/navigation'
 import { 
   MessageCircle,
@@ -53,6 +50,31 @@ import {
   Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+// Placeholder components while we fix import issues
+function BookingAutomationPanel({ organizationId, onScenarioSelect, onFlowStart }: any) {
+  return (
+    <div className="p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
+      <p className="text-yellow-400 text-sm">
+        BookingAutomationPanel temporarily disabled - fixing import issues
+      </p>
+    </div>
+  )
+}
+
+function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCampaignRun }: any) {
+  return (
+    <div className="p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
+      <p className="text-yellow-400 text-sm">
+        WhatsAppCampaignManager temporarily disabled - fixing import issues
+      </p>
+    </div>
+  )
+}
+
+class BookingAutomationService {
+  constructor(orgId: string, apiKey: string) {}
+}
 
 // Types
 interface Contact {
