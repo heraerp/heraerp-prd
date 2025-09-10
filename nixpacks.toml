@@ -5,8 +5,10 @@ nixPkgs = ["nodejs-20_x", "bash"]
 cmds = ["npm ci --legacy-peer-deps"]
 
 [phases.build]
-cmds = ["chmod +x ./scripts/railway-build.sh", "./scripts/railway-build.sh"]
+cmds = ["chmod +x ./scripts/railway-unified.sh", "./scripts/railway-unified.sh build"]
 
 [start]
-cmd = "chmod +x ./scripts/railway-start.sh && ./scripts/railway-start.sh"
-EOF < /dev/null
+cmd = "chmod +x ./scripts/railway-unified.sh && ./scripts/railway-unified.sh start"
+
+[build]
+onlyIncludeFiles = ["**/*"]
