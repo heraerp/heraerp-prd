@@ -37,16 +37,25 @@ const primaryNavItems: NavItem[] = [
     name: 'CRM',
     description: 'Customer relationship management',
     icon: Users,
-    href: '/crm-progressive',
+    href: '/crm',
     color: 'text-purple-600',
     bgColor: 'bg-purple-50'
   },
   {
-    id: 'deals',
+    id: 'leads',
+    name: 'Leads',
+    description: 'Sales leads and prospects',
+    icon: Star,
+    href: '/crm/leads',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50'
+  },
+  {
+    id: 'opportunities',
     name: 'Deals',
     description: 'Sales pipeline and deal management',
     icon: Target,
-    href: '/crm-progressive/deals',
+    href: '/crm/opportunities',
     color: 'text-green-600',
     bgColor: 'bg-green-50'
   },

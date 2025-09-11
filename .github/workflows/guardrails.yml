@@ -1,0 +1,89 @@
+name: HERA Guardrails
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      DEFAULT_ORGANIZATION_ID: ${{ secrets.DEFAULT_ORGANIZATION_ID }}
+      NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID: ${{ secrets.DEFAULT_ORGANIZATION_ID }}
+      NEXT_PUBLIC_MCP_API_URL: http://localhost:3005
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        working-directory: heraerp-prd
+        run: npm ci
+
+      - name: Start MCP server
+        working-directory: heraerp-prd
+        run: |
+          nohup node mcp-server/hera-mcp-server-api.js > mcp.log 2>&1 &
+          echo $! > mcp.pid
+
+      - name: Wait for MCP health
+        run: |
+          for i in {1..30}; do
+            curl -fsS http://localhost:3005/health && exit 0 || true
+            sleep 2
+          done
+          echo "MCP did not become healthy in time" >&2
+          exit 1
+
+      - name: Run CI smoke (furniture filters)
+        working-directory: heraerp-prd
+        run: |
+          node scripts/ci-smoke.mjs \
+            --mcp=http://localhost:3005 \
+            --org="${DEFAULT_ORGANIZATION_ID}" \
+            --tsmart=HERA.MANUFACTURING.FURNITURE. \
+            --lsmart='%.GL.LINE.%' \
+            --from=2025-01-01 --to=2025-12-31 \
+            --sample=20
+
+      - name: Run relationships guardrails
+        working-directory: heraerp-prd
+        run: |
+          node scripts/rel-guardrails.mjs \
+            --mcp=http://localhost:3005 \
+            --org="${DEFAULT_ORGANIZATION_ID}" \
+            --limit=2000
+
+      - name: Capture smoke JSON (always)
+        if: always()
+        working-directory: heraerp-prd
+        run: |
+          curl -fsS "http://localhost:3005/api/uat/smoke?organizationId=${DEFAULT_ORGANIZATION_ID}&elimit=20&tlimit=20&lsmart=%25.GL.LINE.%25&tsmart=HERA.MANUFACTURING.FURNITURE.&from=2025-01-01&to=2025-12-31" -o smoke.json || true
+
+      - name: Upload artifacts (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hera-guardrails-artifacts
+          path: |
+            heraerp-prd/mcp.log
+            heraerp-prd/smoke.json
+
+      - name: Stop MCP (always)
+        if: always()
+        working-directory: heraerp-prd
+        run: |
+          if [ -f mcp.pid ]; then kill $(cat mcp.pid) || true; fi
+

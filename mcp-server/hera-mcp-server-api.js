@@ -813,6 +813,54 @@ app.get('/api/uat/smoke', async (req, res) => {
   }
 })
 
+// Diagnose issues via AI (Claude) if available
+app.post('/api/uat/diagnose', async (req, res) => {
+  try {
+    const payload = req.body || {}
+    const context = {
+      time: new Date().toISOString(),
+      orgHint: payload?.organizationId || payload?.smoke?.organization?.id,
+    }
+
+    if (!anthropic) {
+      // Fallback heuristic suggestions
+      const suggestions = []
+      const smoke = payload.smoke
+      if (smoke?.glBalance?.summary?.unbalanced > 0) {
+        suggestions.push('Unbalanced GL detected: ensure GL lines use line_amount sign (debit > 0, credit < 0) and include all balancing entries.')
+        suggestions.push('Verify posting rules generate equal debit/credit for each header smart_code; re-check %.GL.LINE.% lines.')
+      }
+      const rel = payload.relationships
+      if (rel?.errors?.length) {
+        suggestions.push('Relationships errors present: confirm organization_id, from_entity_id, to_entity_id are set and smart_code matches HERA pattern.')
+      }
+      return res.json({ success: true, ai: false, suggestions, context })
+    }
+
+    const prompt = {
+      role: 'user',
+      content: [
+        { type: 'text', text: 'You are an expert HERA ERP engineer. Given the following validation outputs, produce concrete, minimal remediation steps. Prefer changes to posting rules, smart codes, or query filters over schema changes. Return a short numbered list.' },
+        { type: 'text', text: 'Input JSON:' },
+        { type: 'text', text: JSON.stringify(payload, null, 2) }
+      ]
+    }
+
+    const completion = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 600,
+      temperature: 0.2,
+      system: 'Be precise. Suggest only safe, read-only validations or small config/code changes. Never propose schema changes unless explicitly requested.',
+      messages: [prompt]
+    })
+    const text = completion?.content?.[0]?.text || 'No suggestions.'
+    res.json({ success: true, ai: true, suggestions: text, context })
+  } catch (error) {
+    console.error('Diagnose error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // UAT Scenario runner
 app.post('/api/uat/scenarios', async (req, res) => {
   try {

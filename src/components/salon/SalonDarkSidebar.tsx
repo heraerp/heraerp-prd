@@ -35,7 +35,13 @@ import {
   Coffee,
   Palette,
   Zap,
-  X
+  X,
+  CalendarCheck,
+  Scale,
+  TrendingDown,
+  BarChart3,
+  DollarSign,
+  Brain
 } from 'lucide-react'
 
 interface SidebarItem {
@@ -49,13 +55,13 @@ interface SidebarItem {
 // Main sidebar items (reduced for space)
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
-  { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar, badge: '12', badgeColor: 'bg-pink-500' },
-  { title: 'Appts', href: '/salon-data/appointments', icon: Clock, badge: '5', badgeColor: 'bg-yellow-500' },
-  { title: 'Clients', href: '/salon-data/customers', icon: Users, badge: '248', badgeColor: 'bg-purple-500' },
+  { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar },
+  { title: 'Clients', href: '/salon-data/customers', icon: Users },
   { title: 'Services', href: '/salon-data/services', icon: Scissors },
-  { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
-  { title: 'WhatsApp', href: '/salon-data/whatsapp', icon: MessageCircle, badge: 'New', badgeColor: 'bg-green-500' },
-  { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
+  { title: 'Inventory', href: '/salon-data/inventory', icon: Package },
+  { title: 'POS', href: '/salon-data/pos', icon: CreditCard },
+  { title: 'Leave', href: '/salon-data/leave', icon: CalendarCheck },
+  { title: 'Templates', href: '/salon-data/templates', icon: FileText, badge: 'New', badgeColor: 'bg-green-500' },
 ]
 
 // All apps for the modal
@@ -63,16 +69,25 @@ const allApps: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
   { title: 'Calendar', href: '/salon-data/calendar', icon: Calendar },
   { title: 'Appointments', href: '/salon-data/appointments', icon: Clock },
-  { title: 'Clients', href: '/salon-data/customers', icon: Users },
+  { title: 'Customers', href: '/salon-data/customers', icon: Users },
   { title: 'Services', href: '/salon-data/services', icon: Scissors },
-  { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
-  { title: 'Products', href: '/salon-data/products', icon: Package },
+  { title: 'Inventory', href: '/salon-data/inventory', icon: Package },
+  { title: 'POS', href: '/salon-data/pos', icon: CreditCard },
+  { title: 'Leave', href: '/salon-data/leave', icon: CalendarCheck },
+  { title: 'Templates', href: '/salon-data/templates', icon: FileText, badge: 'New', badgeColor: 'bg-green-500' },
+  { title: 'UCR Rules', href: '/salon-data/config', icon: Scale },
+  { title: 'Finance', href: '/salon-data/finance', icon: TrendingDown },
+  { title: 'P&L', href: '/salon-data/financials/p&l', icon: BarChart3 },
+  { title: 'Balance Sheet', href: '/salon-data/financials/bs', icon: Scale },
+  { title: 'Payroll', href: '/salon-data/payroll', icon: DollarSign },
   { title: 'WhatsApp', href: '/salon-data/whatsapp', icon: MessageCircle },
+  { title: 'Smart Accountant', href: '/salon-data/digital-accountant', icon: Brain, badge: 'AI', badgeColor: 'bg-purple-500' },
   { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
+  { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
+  { title: 'Products', href: '/salon-data/products', icon: ShoppingBag },
   { title: 'Payments', href: '/salon-data/payments', icon: CreditCard },
   { title: 'Promotions', href: '/salon-data/promotions', icon: Gift },
   { title: 'Reviews', href: '/salon-data/reviews', icon: Star },
-  { title: 'Inventory', href: '/salon-data/inventory', icon: ShoppingBag },
   { title: 'Marketing', href: '/salon-data/marketing', icon: Megaphone },
   { title: 'Invoices', href: '/salon-data/invoices', icon: Receipt },
   { title: 'Security', href: '/salon-data/security', icon: Shield },
@@ -80,7 +95,6 @@ const allApps: SidebarItem[] = [
   { title: 'Rewards', href: '/salon-data/rewards', icon: Award },
   { title: 'Training', href: '/salon-data/training', icon: BookOpen },
   { title: 'Gallery', href: '/salon-data/gallery', icon: Camera },
-  { title: 'Lounge', href: '/salon-data/lounge', icon: Coffee },
   { title: 'Themes', href: '/salon-data/themes', icon: Palette },
   { title: 'Automation', href: '/salon-data/automation', icon: Zap },
 ]

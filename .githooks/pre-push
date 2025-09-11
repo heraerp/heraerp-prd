@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# HERA pre-push guardrails: run smoke + relationship checks and AI diagnosis on failure
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+cd "$ROOT_DIR/heraerp-prd" || exit 1
+
+echo "🔒 HERA pre-push: running guardrails..."
+
+node scripts/prepush-check.mjs --mcp="${NEXT_PUBLIC_MCP_API_URL:-http://localhost:3005}" --org="${DEFAULT_ORGANIZATION_ID:-$NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID}"
+STATUS=$?
+
+if [ $STATUS -ne 0 ]; then
+  echo "❌ Pre-push checks failed. Aborting push."
+  echo "👉 Fix issues above, or override with: git push --no-verify (not recommended)"
+  exit $STATUS
+fi
+
+echo "✅ Pre-push checks passed. Proceeding with push."
+exit 0
+

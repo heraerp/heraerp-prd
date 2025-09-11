@@ -4,29 +4,30 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
+import dynamicImport from 'next/dynamic'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import type { Organization } from '@/types/salon.types'
 
-// Simple fallback component while we debug the import issue
-function SimpleAppointmentDashboard({ organizationId }: { organizationId: string }) {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-white mb-4">Appointment Management</h1>
-        <p className="text-gray-400">Organization ID: {organizationId}</p>
-        <div className="mt-4 p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
-          <p className="text-yellow-400 text-sm">
-            Component temporarily simplified to fix build errors.
-            Full appointment management dashboard will be restored once import issues are resolved.
-          </p>
+// Dynamically import the AppointmentManagementDashboard to avoid SSR issues
+const AppointmentManagementDashboard = dynamicImport(
+  () => import('@/components/salon/appointments/AppointmentManagementDashboard').then(mod => mod.AppointmentManagementDashboard),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="text-center">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 animate-pulse shadow-lg" />
+          </div>
+          <p className="text-gray-400 mt-4 font-medium">Loading appointments...</p>
         </div>
       </div>
-    </div>
-  )
-}
+    ),
+    ssr: false
+  }
+)
 
-// Default organization ID for salon - matches existing demo data
-const DEFAULT_SALON_ORG_ID = '550e8400-e29b-41d4-a716-446655440000'
+// Default organization ID for salon - Hair Talkz Park Regis
+const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 
 export default function SalonAppointmentsPage() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
@@ -85,6 +86,6 @@ export default function SalonAppointmentsPage() {
     )
   }
 
-  // Note: We don't need authentication check for demo purposes like other salon-data pages
-  return <SimpleAppointmentDashboard organizationId={organizationId} />
+  // Render the full appointment management dashboard
+  return <AppointmentManagementDashboard organizationId={organizationId} />
 }

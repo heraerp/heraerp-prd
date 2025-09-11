@@ -54,30 +54,36 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-// Placeholder components while we fix import issues
-function BookingAutomationPanel({ organizationId, onScenarioSelect, onFlowStart }: any) {
-  return (
-    <div className="p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
-      <p className="text-yellow-400 text-sm">
-        BookingAutomationPanel temporarily disabled - fixing import issues
-      </p>
-    </div>
-  )
-}
+// Import the actual components
+import dynamicImport from 'next/dynamic'
+import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
 
-function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCampaignRun }: any) {
-  return (
-    <div className="p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
-      <p className="text-yellow-400 text-sm">
-        WhatsAppCampaignManager temporarily disabled - fixing import issues
-      </p>
-    </div>
-  )
-}
+// Dynamically import components to avoid build issues
+const BookingAutomationPanel = dynamicImport(
+  () => import('@/components/whatsapp/BookingAutomationPanel').then(mod => mod.BookingAutomationPanel),
+  {
+    loading: () => (
+      <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg animate-pulse">
+        <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+      </div>
+    ),
+    ssr: false
+  }
+)
 
-class BookingAutomationService {
-  constructor(orgId: string, apiKey: string) {}
-}
+const WhatsAppCampaignManager = dynamicImport(
+  () => import('@/components/salon/whatsapp/WhatsAppCampaignManager').then(mod => mod.WhatsAppCampaignManager),
+  {
+    loading: () => (
+      <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg animate-pulse">
+        <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+      </div>
+    ),
+    ssr: false
+  }
+)
 
 // Types
 interface Contact {

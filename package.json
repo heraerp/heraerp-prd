@@ -64,6 +64,8 @@
     "test:unit:legacy": "node tests/legacy/restaurant-platform-comprehensive.test.js",
     "test:integration": "jest tests/integration",
     "test:api:jest": "jest tests/api",
+    "ci:smoke": "node scripts/ci-smoke.mjs",
+    "ci:relationships": "node scripts/rel-guardrails.mjs",
     "test:e2e:multi-tenant": "playwright test tests/e2e/multi-tenant",
     "test:enterprise": "./scripts/run-tests.sh",
     "test:enterprise:unit": "./scripts/run-tests.sh -t unit",

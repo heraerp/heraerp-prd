@@ -116,7 +116,7 @@ function FurnitureDashboard() {
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
-          title={organizationName}
+          title={organizationName || 'Kerala Furniture Works'}
           subtitle="Complete furniture business management"
           actions={
             <>
@@ -135,6 +135,13 @@ function FurnitureDashboard() {
             </>
           }
         />
+
+        {/* Debug info - temporary */}
+        <div className="bg-gray-800/50 rounded-lg p-4 text-sm text-gray-400">
+          <p>Organization ID: {organizationId || 'Not loaded'}</p>
+          <p>Organization Name: {organizationName || 'Not loaded'}</p>
+          <p>Loading: {orgLoading ? 'Yes' : 'No'}</p>
+        </div>
 
         {/* Key Metrics */}
         <div className="space-y-4">

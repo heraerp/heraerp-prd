@@ -17,7 +17,9 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { salonApiClient } from '@/lib/salon/salon-api-client'
-import { BookAppointmentModal } from '@/components/salon/BookAppointmentModal'
+// Import the glassmorphism modal with WSAG effects
+import { BookAppointmentModalGlass } from '@/components/salon/BookAppointmentModalGlass'
+import { SalonDarkSidebar } from '@/components/salon/SalonDarkSidebar'
 import type { DashboardData, Organization } from '@/types/salon.types'
 import { handleError, withErrorHandler } from '@/lib/salon/error-handler'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
@@ -66,7 +68,6 @@ const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 export default function SalonModernDashboard() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [refreshing, setRefreshing] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)
   const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(true)
@@ -452,23 +453,6 @@ export default function SalonModernDashboard() {
     }
   ]
 
-  const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <Sparkles className="w-5 h-5" />, href: '/salon-data' },
-    { id: 'calendar', label: 'Calendar', icon: <Calendar className="w-5 h-5" />, href: '/salon-data/calendar' },
-    { id: 'customers', label: 'Customers', icon: <Users className="w-5 h-5" />, href: '/salon-data/customers' },
-    { id: 'services', label: 'Services', icon: <Scissors className="w-5 h-5" />, href: '/salon-data/services' },
-    { id: 'inventory', label: 'Inventory', icon: <Package className="w-5 h-5" />, href: '/salon-data/inventory' },
-    { id: 'pos', label: 'POS', icon: <CreditCard className="w-5 h-5" />, href: '/salon-data/pos' },
-    { id: 'leave', label: 'Leave', icon: <CalendarCheck className="w-5 h-5" />, href: '/salon-data/leave' },
-    { id: 'templates', label: 'Templates', icon: <FileText className="w-5 h-5" />, href: '/salon-data/templates', badge: 'New' },
-    { id: 'config', label: 'UCR Rules', icon: <Scale className="w-5 h-5" />, href: '/salon-data/config' },
-    { id: 'finance', label: 'Finance', icon: <TrendingDown className="w-5 h-5" />, href: '/salon-data/finance' },
-    { id: 'pnl', label: 'P&L', icon: <BarChart3 className="w-5 h-5" />, href: '/salon-data/financials/p&l' },
-    { id: 'bs', label: 'Balance Sheet', icon: <Scale className="w-5 h-5" />, href: '/salon-data/financials/bs' },
-    { id: 'payroll', label: 'Payroll', icon: <DollarSign className="w-5 h-5" />, href: '/salon-data/payroll' },
-    { id: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-5 h-5" />, href: '/salon-data/whatsapp' },
-    { id: 'accountant', label: 'Smart Accountant', icon: <Brain className="w-5 h-5" />, href: '/salon-data/digital-accountant', badge: 'AI' }
-  ]
 
   return (
     <div 
@@ -493,6 +477,9 @@ export default function SalonModernDashboard() {
         `
       }}
     >
+      {/* Sidebar */}
+      <SalonDarkSidebar />
+
       {/* WSAG Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Primary Light Orb */}
@@ -547,10 +534,10 @@ export default function SalonModernDashboard() {
         />
       </div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10">
-      {/* Header with WSAG Glassmorphism */}
-      <header 
+      {/* Main Content Container with sidebar padding */}
+      <div className="relative z-10 pl-20">
+        {/* Header with WSAG Glassmorphism */}
+        <header 
         className="sticky top-0 z-50 border-b shadow-lg"
         style={{
           background: `
@@ -613,77 +600,17 @@ export default function SalonModernDashboard() {
               </div>
             </div>
 
-            {/* Desktop Navigation with WSAG Glassmorphism */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navigationItems.map(item => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-500 hover:scale-105",
-                    "!text-gray-700 dark:!text-gray-300 hover:!text-white"
-                  )}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)'
-                  }}
-                >
-                  {item.icon}
-                  {item.label}
-                  {item.badge && (
-                    <Badge variant="secondary" className="bg-blue-500 text-white text-xs px-1.5 py-0.5 ml-1">
-                      {item.badge}
-                    </Badge>
-                  )}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-800 bg-gray-900/95 backdrop-blur-xl">
-            <nav className="px-4 py-2 space-y-1">
-              {navigationItems.map(item => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all",
-                    "!text-gray-300 hover:bg-gray-800"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon}
-                  {item.label}
-                  {item.badge && (
-                    <Badge variant="secondary" className="bg-blue-500 text-white text-xs px-1.5 py-0.5 ml-1">
-                      {item.badge}
-                    </Badge>
-                  )}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 sm:px-6 lg:px-8 py-6">
-          <div className="space-y-6 animate-fadeIn">
-            {/* Quick Actions */}
-            <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+            {/* Right side actions */}
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={fetchDashboardData}
+                disabled={refreshing}
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
+              >
+                <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
+              </Button>
               <Button 
                 onClick={() => setIsBookingOpen(true)}
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
@@ -691,16 +618,15 @@ export default function SalonModernDashboard() {
                 <Plus className="w-4 h-4 mr-2" />
                 New Booking
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={fetchDashboardData}
-                disabled={refreshing}
-                className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                <RefreshCw className={cn("w-4 h-4 mr-2", refreshing && "animate-spin")} />
-                Refresh
-              </Button>
             </div>
+          </div>
+        </div>
+
+      </header>
+
+      {/* Main Content */}
+      <main className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="space-y-6 animate-fadeIn">
 
             {/* Stats Grid with WSAG Glassmorphism */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1244,17 +1170,20 @@ export default function SalonModernDashboard() {
         </div>
       </footer>
 
-      {/* Book Appointment Modal */}
-      <BookAppointmentModal 
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-        onBookingComplete={(booking) => {
-          // Booking completed successfully
-          setIsBookingOpen(false)
-          // Refresh dashboard data
-          fetchDashboardData()
-        }}
-      />
+      {/* Book Appointment Modal - GLASSMORPHISM VERSION WITH WSAG EFFECTS */}
+      {isBookingOpen && (
+        <BookAppointmentModalGlass 
+          isOpen={isBookingOpen}
+          onClose={() => setIsBookingOpen(false)}
+          onBookingComplete={(booking) => {
+            console.log('Booking completed:', booking)
+            // Booking completed successfully
+            setIsBookingOpen(false)
+            // Refresh dashboard data
+            fetchDashboardData()
+          }}
+        />
+      )}
       
       </div>
     </div>
