@@ -345,6 +345,160 @@ app.get('/api/uat/transactions', async (req, res) => {
   }
 })
 
+// Read-only: list transaction lines with filters
+app.get('/api/uat/transaction-lines', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const transactionId = req.query.transactionId || req.query.tid
+    const tcode = req.query.transactionCode || req.query.tcode
+    const tcodePrefix = req.query.transactionCodePrefix || req.query.tcodePrefix
+    const smartPrefix = req.query.smartCodePrefix || req.query.smart
+    const glType = req.query.glType // 'debit' | 'credit'
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 500)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+
+    // If transaction code filter provided, resolve transaction ids first
+    let txIds = []
+    if (!transactionId && (tcode || tcodePrefix)) {
+      let txQuery = supabase
+        .from('universal_transactions')
+        .select('id, transaction_code')
+        .eq('organization_id', organizationId)
+        .limit(500)
+      if (tcodePrefix) txQuery = txQuery.ilike('transaction_code', `${tcodePrefix}%`)
+      else if (tcode) txQuery = txQuery.ilike('transaction_code', `%${tcode}%`)
+
+      const { data: txList, error: txErr } = await txQuery
+      if (txErr) return res.status(500).json({ error: txErr.message })
+      txIds = (txList || []).map(t => t.id)
+      if (txIds.length === 0) return res.json({ success: true, count: 0, data: [] })
+    }
+
+    let lineQuery = supabase
+      .from('universal_transaction_lines')
+      .select('id, transaction_id, line_no, gl_type, amount, smart_code, entity_id, organization_id, metadata')
+      .eq('organization_id', organizationId)
+      .limit(limit)
+
+    if (transactionId) {
+      lineQuery = lineQuery.eq('transaction_id', transactionId)
+    } else if (txIds.length) {
+      lineQuery = lineQuery.in('transaction_id', txIds)
+    }
+    if (smartPrefix) {
+      lineQuery = lineQuery.ilike('smart_code', `${smartPrefix}%`)
+    }
+    if (glType) {
+      lineQuery = lineQuery.eq('gl_type', glType)
+    }
+
+    const { data, error } = await lineQuery
+    if (error) {
+      return res.status(500).json({ error: error.message })
+    }
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Transaction lines read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// Read-only: verify GL balance per transaction (debits == credits)
+app.get('/api/uat/gl-balance', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const transactionType = req.query.transactionType || req.query.type
+    const headerSmart = req.query.smartCodePrefix || req.query.smart // header smart_code prefix
+    const lineSmart = req.query.lineSmartCodePrefix || req.query.lsmart // line smart_code prefix
+    const from = req.query.from
+    const to = req.query.to
+    const txLimit = Math.min(parseInt(req.query.limit || '200', 10) || 200, 1000)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+
+    // 1) Fetch candidate transactions
+    let txQuery = supabase
+      .from('universal_transactions')
+      .select('id, transaction_code, transaction_type, transaction_date, smart_code')
+      .eq('organization_id', organizationId)
+      .limit(txLimit)
+
+    if (transactionType) txQuery = txQuery.eq('transaction_type', transactionType)
+    if (headerSmart) txQuery = txQuery.ilike('smart_code', `${headerSmart}%`)
+    if (from) txQuery = txQuery.gte('transaction_date', from)
+    if (to) {
+      const toWithTime = /T/.test(to) ? to : `${to}T23:59:59`
+      txQuery = txQuery.lte('transaction_date', toWithTime)
+    }
+
+    const { data: txs, error: txErr } = await txQuery
+    if (txErr) return res.status(500).json({ error: txErr.message })
+    const txIds = (txs || []).map(t => t.id)
+    if (txIds.length === 0) {
+      return res.json({ success: true, summary: { transactions: 0, checkedLines: 0, unbalanced: 0 }, unbalanced: [] })
+    }
+
+    // 2) Fetch lines for these transactions
+    let lnQuery = supabase
+      .from('universal_transaction_lines')
+      .select('transaction_id, gl_type, amount, smart_code')
+      .eq('organization_id', organizationId)
+      .in('transaction_id', txIds)
+      .limit(10000)
+
+    // Default to GL lines if not specified
+    if (lineSmart) lnQuery = lnQuery.ilike('smart_code', `${lineSmart}%`)
+    else lnQuery = lnQuery.ilike('smart_code', '%.GL.LINE.%')
+
+    const { data: lines, error: lnErr } = await lnQuery
+    if (lnErr) return res.status(500).json({ error: lnErr.message })
+
+    // 3) Compute balances
+    const byTx = new Map()
+    for (const l of lines || []) {
+      const agg = byTx.get(l.transaction_id) || { debit: 0, credit: 0, count: 0 }
+      if (l.gl_type === 'debit') agg.debit += Number(l.amount || 0)
+      else if (l.gl_type === 'credit') agg.credit += Number(l.amount || 0)
+      agg.count++
+      byTx.set(l.transaction_id, agg)
+    }
+
+    const unbalanced = []
+    for (const tx of txs) {
+      const agg = byTx.get(tx.id) || { debit: 0, credit: 0, count: 0 }
+      if (Math.round((agg.debit - agg.credit) * 100) !== 0) {
+        unbalanced.push({
+          transaction_id: tx.id,
+          transaction_code: tx.transaction_code,
+          transaction_type: tx.transaction_type,
+          transaction_date: tx.transaction_date,
+          header_smart_code: tx.smart_code,
+          total_debit: agg.debit,
+          total_credit: agg.credit,
+          diff: agg.debit - agg.credit,
+          line_count: agg.count,
+        })
+      }
+    }
+
+    const summary = {
+      transactions: txIds.length,
+      checkedLines: (lines || []).length,
+      unbalanced: unbalanced.length,
+    }
+
+    res.json({ success: true, summary, unbalanced })
+  } catch (error) {
+    console.error('GL balance check error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // UAT Scenario runner
 app.post('/api/uat/scenarios', async (req, res) => {
   try {

@@ -11,7 +11,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(kv => {
 const MCP_URL = args.mcp || process.env.NEXT_PUBLIC_MCP_API_URL || 'http://localhost:3005'
 const ORG_ID = args.org || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'f0af4ced-9d12-4a55-a649-b484368db249'
 const SAMPLE = Number.parseInt(args.sample || '20', 10) || 20
-const MODE = args.mode || '' // '', 'entities', 'transactions'
+const MODE = args.mode || '' // '', 'entities', 'transactions', 'lines', 'glbalance'
 const ENTITY_TYPE = args.type || ''
 const SMART_PREFIX = args.smart || ''
 const CODE = args.code || ''
@@ -25,6 +25,12 @@ const TCODE = args.tcode || ''
 const TCODE_PREFIX = args.tcodePrefix || ''
 const FROM = args.from || ''
 const TO = args.to || ''
+// Transaction line filters
+const LTID = args.tid || ''
+const LTCODE = args.ltcode || '' // alias for transactionCode substring
+const LTCODE_PREFIX = args.ltcodePrefix || ''
+const LSMART = args.lsmart || ''
+const LGLTYPE = args.gltype || '' // 'debit' | 'credit'
 
 async function main() {
   console.log('🧪 Furniture MCP read-only test')
@@ -61,8 +67,55 @@ async function main() {
         console.log(`   ${i + 1}. [${t.transaction_type}] ${t.transaction_code} — ${t.transaction_date}  amount=${t.total_amount ?? 'N/A'}  smart=${t.smart_code || 'N/A'}`)
       })
     }
+  } else if (MODE === 'glbalance') {
+    const params = new URLSearchParams({ organizationId: ORG_ID, limit: String(SAMPLE) })
+    if (TTYPE) params.set('type', TTYPE)
+    if (TSMART) params.set('smart', TSMART)
+    if (FROM) params.set('from', FROM)
+    if (TO) params.set('to', TO)
+    if (LSMART) params.set('lsmart', LSMART)
+
+    const glResp = await fetch(`${MCP_URL}/api/uat/gl-balance?${params.toString()}`)
+    if (!glResp.ok) {
+      const text = await glResp.text()
+      throw new Error(`MCP gl-balance query failed: ${glResp.status} ${text}`)
+    }
+    const gl = await glResp.json()
+    console.log(`\n🧮 GL Balance Summary: tx=${gl?.summary?.transactions || 0}, lines=${gl?.summary?.checkedLines || 0}, unbalanced=${gl?.summary?.unbalanced || 0}`)
+    const rows = gl?.unbalanced || []
+    if (rows.length) {
+      console.log(`\n🔎 First ${Math.min(SAMPLE, rows.length)} unbalanced transactions:`)
+      rows.slice(0, SAMPLE).forEach((r, i) => {
+        console.log(`   ${i + 1}. ${r.transaction_code} ${r.transaction_date} debit=${r.total_debit} credit=${r.total_credit} diff=${r.diff}`)
+      })
+    } else {
+      console.log('   ✅ All checked transactions balanced')
+    }
 
   // If entity filters provided, hit entities endpoint; else use inventory report
+  } else if (MODE === 'lines') {
+    const params = new URLSearchParams({ organizationId: ORG_ID, limit: String(SAMPLE) })
+    if (LTID) params.set('tid', LTID)
+    if (LTCODE) params.set('tcode', LTCODE)
+    if (LTCODE_PREFIX) params.set('tcodePrefix', LTCODE_PREFIX)
+    if (LSMART) params.set('smart', LSMART)
+    if (LGLTYPE) params.set('glType', LGLTYPE)
+
+    const lnResp = await fetch(`${MCP_URL}/api/uat/transaction-lines?${params.toString()}`)
+    if (!lnResp.ok) {
+      const text = await lnResp.text()
+      throw new Error(`MCP transaction-lines query failed: ${lnResp.status} ${text}`)
+    }
+    const ln = await lnResp.json()
+    const rows = ln?.data || []
+    console.log(`\n🧾 Transaction lines (count): ${rows.length}`)
+    if (rows.length) {
+      console.log(`\n🔎 First ${Math.min(SAMPLE, rows.length)} lines:`)
+      rows.slice(0, SAMPLE).forEach((l, i) => {
+        console.log(`   ${i + 1}. tx=${l.transaction_id} line=${l.line_no} gl=${l.gl_type || '-'} amount=${l.amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
+      })
+    }
+
   } else if (ENTITY_TYPE || SMART_PREFIX || CODE || CODE_PREFIX || NAME || NAME_PREFIX || MODE === 'entities') {
     const params = new URLSearchParams({
       organizationId: ORG_ID,
