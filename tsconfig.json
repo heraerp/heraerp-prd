@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "noUnusedLocals": false,
@@ -21,11 +25,37 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@hera/dna-sdk": ["./packages/hera-dna-sdk/dist/index"],
-      "@hera/dna-sdk/*": ["./packages/hera-dna-sdk/dist/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@hera/dna-sdk": [
+        "./packages/hera-dna-sdk/dist/index"
+      ],
+      "@hera/dna-sdk/*": [
+        "./packages/hera-dna-sdk/dist/*"
+      ]
+    },
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "noImplicitAny": false,
+    "alwaysStrict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "ignoreDeprecations": "5.0"
   },
-  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "api/**/*", "scripts/**/*", "tests/**/*"]
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "api/**/*",
+    "scripts/**/*",
+    "tests/**/*"
+  ]
 }

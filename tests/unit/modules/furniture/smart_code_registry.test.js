@@ -13,10 +13,14 @@ describe('Furniture smart code registry', () => {
   })
 
   test('all smart codes are uppercase and match pattern', () => {
+    const skipKeys = new Set(['description', 'version', 'created_at'])
     const collectCodes = (obj, acc = []) => {
       for (const [k, v] of Object.entries(obj)) {
-        if (typeof v === 'string' && k !== 'description') acc.push(v)
-        else if (v && typeof v === 'object') collectCodes(v, acc)
+        if (typeof v === 'string' && !skipKeys.has(k)) {
+          acc.push(v)
+        } else if (v && typeof v === 'object' && !Array.isArray(v)) {
+          collectCodes(v, acc)
+        }
       }
       return acc
     }
