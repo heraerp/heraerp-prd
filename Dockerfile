@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json package-lock.json* ./
-RUN npm ci || npm install
+RUN npm install --force
 
 # Rebuild the source code only when needed
 FROM base AS builder
