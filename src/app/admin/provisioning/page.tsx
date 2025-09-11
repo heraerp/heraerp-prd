@@ -293,16 +293,17 @@ export default function ProvisioningDashboard() {
         {/* Main Content */}
         <Card>
           <CardHeader>
+            <CardTitle>Tenant Management</CardTitle>
+            <CardDescription>Provision and manage HERA tenants</CardDescription>
+          </CardHeader>
+          
+          <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
                 <TabsTrigger value="tenants">Existing Tenants</TabsTrigger>
                 <TabsTrigger value="provision">Provision New</TabsTrigger>
                 <TabsTrigger value="modules">Module Catalog</TabsTrigger>
               </TabsList>
-            </Tabs>
-          </CardHeader>
-          
-          <CardContent>
             <TabsContent value="tenants" className="space-y-4">
               {/* Search */}
               <div className="relative">
@@ -615,6 +616,7 @@ export default function ProvisioningDashboard() {
                 </div>
               ))}
             </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
 
