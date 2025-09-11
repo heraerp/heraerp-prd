@@ -1,7 +1,9 @@
 'use client'
 
-// Force dynamic rendering
+// Force dynamic rendering - skip SSG for this route
 export const dynamic = 'force-dynamic'
+export const revalidate = 0              // no static cache
+export const fetchCache = 'force-no-store'
 /**
  * HERA Admin Provisioning Dashboard
  * Smart Code: HERA.ADMIN.PROVISIONING.v1
