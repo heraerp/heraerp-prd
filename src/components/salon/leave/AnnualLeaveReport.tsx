@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { useLeaveManagement } from '@/hooks/useLeaveManagement'
 
 interface ReportOptions {
@@ -305,7 +305,7 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
             <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/30">
               <p className="text-sm !text-gray-600 dark:!text-gray-400">Report Period</p>
               <p className="text-sm font-bold !text-gray-900 dark:!text-white">
-                {format(new Date(reportOptions.fiscalYearStart), 'MMM yyyy')} - {format(new Date(reportOptions.fiscalYearEnd), 'MMM yyyy')}
+                {formatDate(new Date(reportOptions.fiscalYearStart), 'MMM yyyy')} - {formatDate(new Date(reportOptions.fiscalYearEnd), 'MMM yyyy')}
               </p>
             </div>
           </div>
@@ -365,7 +365,7 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
           {/* Report Footer */}
           <div className="mt-6 pt-6 border-t border-gray-700">
             <p className="text-xs !text-gray-500 dark:!text-gray-400">
-              Report generated on {format(new Date(), 'MMMM d, yyyy \'at\' h:mm a')}
+              Report generated on {formatDate(new Date(), 'MMMM d, yyyy \'at\' h:mm a')}
               {' • '}
               HERA Leave Management System v1.0
             </p>

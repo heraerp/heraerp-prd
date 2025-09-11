@@ -6,7 +6,8 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
-import { format, addDays, differenceInDays } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { addDays, differenceInDays } from 'date-fns'
 
 // Smart Code definitions for WhatsApp campaigns
 export const WHATSAPP_CAMPAIGN_SMART_CODES = {
@@ -70,7 +71,7 @@ export class WhatsAppCampaignService {
             customer_name: customer.name,
             salon_name: 'Hair Talkz Salon',
             birthday_offer: '25% off any service',
-            valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy'),
+            valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy'),
             promo_code: `BDAY${customer.id.substr(-4).toUpperCase()}`
           }
         }
@@ -233,7 +234,7 @@ export class WhatsAppCampaignService {
             salon_name: 'Hair Talkz Salon',
             last_visit_days: lastVisitDays.toString(),
             special_offer: '30% off your comeback visit',
-            valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy'),
+            valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy'),
             favorite_service: customer.favoriteService || 'your favorite service'
           }
         }
@@ -296,7 +297,7 @@ export class WhatsAppCampaignService {
           transaction_id: payment.reference_number,
           salon_name: 'Hair Talkz Salon',
           services: payment.metadata.services_summary || 'Salon Services',
-          payment_date: format(new Date(payment.transaction_date), 'MMMM d, yyyy'),
+          payment_date: formatDate(new Date(payment.transaction_date), 'MMMM d, yyyy'),
           receipt_link: `https://salon.heraerp.com/receipt/${payment.id}`
         }
       }
@@ -326,7 +327,7 @@ export class WhatsAppCampaignService {
     try {
       // Get all appointments for the closure date
       const affectedAppointments = await this.getAppointmentsByDate(
-        format(closureDate, 'yyyy-MM-dd'),
+        formatDate(closureDate, 'yyyy-MM-dd'),
         organizationId
       )
 
@@ -342,7 +343,7 @@ export class WhatsAppCampaignService {
           parameters: {
             customer_name: appointment.metadata.customer_name,
             salon_name: 'Hair Talkz Salon',
-            closure_date: format(closureDate, 'EEEE, MMMM d, yyyy'),
+            closure_date: formatDate(closureDate, 'EEEE, MMMM d, yyyy'),
             closure_reason: reason,
             appointment_time: appointment.metadata.appointment_time,
             service_name: appointment.metadata.service_name,

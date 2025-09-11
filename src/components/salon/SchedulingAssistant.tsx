@@ -25,7 +25,8 @@ import {
   ZoomOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { format, addDays, startOfWeek, endOfWeek, isWithinInterval, addMinutes, parseISO, isSameDay } from 'date-fns'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
+import { addDays, startOfWeek, endOfWeek, isWithinInterval, parseISO, isSameDay } from 'date-fns'
 
 interface Service {
   id: string
@@ -136,20 +137,20 @@ export function SchedulingAssistant({
 
       const mockBusyBlocks: BusyBlock[] = [
         {
-          start: `${format(viewDate, 'yyyy-MM-dd')}T10:00:00Z`,
-          end: `${format(viewDate, 'yyyy-MM-dd')}T12:00:00Z`,
+          start: `${formatDate(viewDate, 'yyyy-MM-dd')}T10:00:00Z`,
+          end: `${formatDate(viewDate, 'yyyy-MM-dd')}T12:00:00Z`,
           reason: 'existing_appointment',
           source_transaction_id: 'apt-123'
         },
         {
-          start: `${format(viewDate, 'yyyy-MM-dd')}T14:30:00Z`,
-          end: `${format(viewDate, 'yyyy-MM-dd')}T16:00:00Z`,
+          start: `${formatDate(viewDate, 'yyyy-MM-dd')}T14:30:00Z`,
+          end: `${formatDate(viewDate, 'yyyy-MM-dd')}T16:00:00Z`,
           reason: 'existing_appointment',
           source_transaction_id: 'apt-124'
         },
         {
-          start: `${format(viewDate, 'yyyy-MM-dd')}T12:30:00Z`,
-          end: `${format(viewDate, 'yyyy-MM-dd')}T13:00:00Z`,
+          start: `${formatDate(viewDate, 'yyyy-MM-dd')}T12:30:00Z`,
+          end: `${formatDate(viewDate, 'yyyy-MM-dd')}T13:00:00Z`,
           reason: 'prayer_time'
         }
       ]
@@ -171,7 +172,7 @@ export function SchedulingAssistant({
         
         // Generate slots every 15 minutes
         while (currentTime < endTime) {
-          const slotEnd = addMinutes(currentTime, totalDuration)
+          const slotEnd = addMinutesSafe(currentTime, totalDuration)
           
           // Check if slot fits within working hours
           if (slotEnd <= endTime) {
@@ -225,7 +226,7 @@ export function SchedulingAssistant({
             }
           }
           
-          currentTime = addMinutes(currentTime, 15)
+          currentTime = addMinutesSafe(currentTime, 15)
         }
       }
 
@@ -300,14 +301,14 @@ export function SchedulingAssistant({
                 className="border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 font-medium pt-1 pr-2 text-right"
                 style={{ height: `${pixelsPerHour}px` }}
               >
-                {format(new Date().setHours(hour, 0), 'h:mm a')}
+                {formatDate(new Date().setHours(hour, 0), 'h:mm a')}
               </div>
               {showHalfHours && idx < hours.length - 1 && (
                 <div
                   className="text-xs text-gray-400 dark:text-gray-500 pr-2 text-right"
                   style={{ height: `${pixelsPerHour / 2}px`, marginTop: `-${pixelsPerHour / 2}px` }}
                 >
-                  {format(new Date().setHours(hour, 30), 'h:mm')}
+                  {formatDate(new Date().setHours(hour, 30), 'h:mm')}
                 </div>
               )}
             </div>
@@ -359,7 +360,7 @@ export function SchedulingAssistant({
                 <div className="w-3 h-3 bg-red-500 rounded-full" />
                 <div className="flex-1 h-0.5 bg-red-500" />
                 <span className="text-xs text-red-500 font-medium px-2 bg-white dark:bg-gray-900">
-                  {format(currentTime, 'h:mm a')}
+                  {formatDate(currentTime, 'h:mm a')}
                 </span>
               </div>
             </div>
@@ -392,7 +393,7 @@ export function SchedulingAssistant({
                 </p>
                 {timelineZoom === 'detailed' && (
                   <p className="text-gray-600 dark:text-gray-400">
-                    {format(blockStart, 'h:mm a')} - {format(blockEnd, 'h:mm a')}
+                    {formatDate(blockStart, 'h:mm a')} - {formatDate(blockEnd, 'h:mm a')}
                   </p>
                 )}
               </div>
@@ -421,7 +422,7 @@ export function SchedulingAssistant({
                   "absolute left-0 right-0 rounded-md p-2 text-xs cursor-pointer transition-all shadow-sm",
                   selectedSlot?.start === slot.start
                     ? "bg-purple-200 dark:bg-purple-800 border-2 border-purple-500 shadow-md"
-                    : preSelectedTime && format(slotStart, 'HH:mm') === preSelectedTime
+                    : preSelectedTime && formatDate(slotStart, 'HH:mm') === preSelectedTime
                     ? "bg-blue-200 dark:bg-blue-800 border-2 border-blue-500 shadow-md animate-pulse"
                     : "bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800/30 hover:shadow-md"
                 )}
@@ -430,7 +431,7 @@ export function SchedulingAssistant({
               >
                 <div className="flex items-center justify-between">
                   <p className="font-medium">
-                    {preSelectedTime && format(slotStart, 'HH:mm') === preSelectedTime 
+                    {preSelectedTime && formatDate(slotStart, 'HH:mm') === preSelectedTime 
                       ? '🎯 Requested Time' 
                       : idx === 0 
                       ? '⭐ Available' 
@@ -444,7 +445,7 @@ export function SchedulingAssistant({
                 </div>
                 {timelineZoom === 'detailed' && (
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    {format(slotStart, 'h:mm a')} - {format(slotEnd, 'h:mm a')}
+                    {formatDate(slotStart, 'h:mm a')} - {formatDate(slotEnd, 'h:mm a')}
                   </p>
                 )}
               </div>
@@ -465,7 +466,7 @@ export function SchedulingAssistant({
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <p className="text-sm font-medium">
-              {format(viewDate, 'MMM d, yyyy')}
+              {formatDate(viewDate, 'MMM d, yyyy')}
             </p>
             <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
               <ChevronRight className="w-4 h-4" />
@@ -493,7 +494,7 @@ export function SchedulingAssistant({
                     "cursor-pointer transition-all",
                     selectedSlot?.start === slot.start
                       ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
-                      : preSelectedTime && format(parseISO(slot.start), 'HH:mm') === preSelectedTime
+                      : preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
                       ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 animate-pulse"
                       : "hover:border-gray-300"
                   )}
@@ -503,17 +504,17 @@ export function SchedulingAssistant({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-sm">
-                          {format(parseISO(slot.start), 'h:mm a')} - {format(parseISO(slot.end), 'h:mm a')}
+                          {formatDate(parseISO(slot.start), 'h:mm a')} - {formatDate(parseISO(slot.end), 'h:mm a')}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          {format(parseISO(slot.start), 'EEEE, MMM d')}
+                          {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
                         </p>
                       </div>
                       <div className="text-right">
                         <Badge variant="outline" className="text-xs">
                           {Math.round(slot.confidence * 100)}%
                         </Badge>
-                        {preSelectedTime && format(parseISO(slot.start), 'HH:mm') === preSelectedTime ? (
+                        {preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime ? (
                           <p className="text-xs text-blue-600 mt-1">Requested time</p>
                         ) : idx === 0 && (
                           <p className="text-xs text-green-600 mt-1">Next available</p>
@@ -551,7 +552,7 @@ export function SchedulingAssistant({
           <Alert className="mb-4 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
             <Clock className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800 dark:text-blue-200">
-              <strong>Looking for availability around:</strong> {preSelectedTime} on {format(selectedDate, 'MMM d, yyyy')}
+              <strong>Looking for availability around:</strong> {preSelectedTime} on {formatDate(selectedDate, 'MMM d, yyyy')}
             </AlertDescription>
           </Alert>
         )}
@@ -592,8 +593,8 @@ export function SchedulingAssistant({
             </Button>
             <p className="text-sm font-medium min-w-[150px] text-center">
               {viewMode === 'week' 
-                ? `${format(startOfWeek(viewDate), 'MMM d')} - ${format(endOfWeek(viewDate), 'MMM d, yyyy')}`
-                : format(viewDate, 'EEEE, MMM d, yyyy')
+                ? `${formatDate(startOfWeek(viewDate), 'MMM d')} - ${formatDate(endOfWeek(viewDate), 'MMM d, yyyy')}`
+                : formatDate(viewDate, 'EEEE, MMM d, yyyy')
               }
             </p>
             <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
@@ -674,7 +675,7 @@ export function SchedulingAssistant({
                         "cursor-pointer transition-all bg-white dark:bg-gray-700",
                         selectedSlot?.start === slot.start
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                          : preSelectedTime && format(parseISO(slot.start), 'HH:mm') === preSelectedTime
+                          : preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
                           ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20 animate-pulse"
                           : "hover:border-gray-400 dark:hover:border-gray-500"
                       )}
@@ -684,10 +685,10 @@ export function SchedulingAssistant({
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {format(parseISO(slot.start), 'h:mm a')} - {format(parseISO(slot.end), 'h:mm a')}
+                              {formatDate(parseISO(slot.start), 'h:mm a')} - {formatDate(parseISO(slot.end), 'h:mm a')}
                             </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {format(parseISO(slot.start), 'EEEE, MMM d')}
+                              {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
                             </p>
                           </div>
                           <Badge

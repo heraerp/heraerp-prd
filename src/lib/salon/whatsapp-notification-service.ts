@@ -6,7 +6,7 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { formatWhatsAppTemplate, validateTemplateParameters } from './whatsapp-templates'
 
 // Smart Code definitions for WhatsApp notifications
@@ -43,7 +43,7 @@ export class WhatsAppNotificationService {
   ) {
     try {
       // Format appointment details
-      const appointmentDate = format(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const staffName = appointment.metadata.staff_name
@@ -134,7 +134,7 @@ export class WhatsAppNotificationService {
     hoursBeforeAppointment: number = 24
   ) {
     try {
-      const appointmentDate = format(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const staffName = appointment.metadata.staff_name
@@ -203,7 +203,7 @@ export class WhatsAppNotificationService {
     cancellationReason?: string
   ) {
     try {
-      const appointmentDate = format(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const salonName = 'Hair Talkz Salon'

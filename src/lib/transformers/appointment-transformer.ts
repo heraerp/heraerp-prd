@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UIAppointment {
   id: string
@@ -35,7 +35,7 @@ export function transformToUIAppointment(data: {
     notes: getField('notes'),
     status: getField('status'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

@@ -52,7 +52,8 @@ import {
   ArrowUpDown,
   ChevronRight
 } from 'lucide-react'
-import { format, formatDistanceToNow } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { formatDistanceToNow } from 'date-fns'
 
 interface OrderManagementProps {
   organizationId: string
@@ -600,7 +601,7 @@ export function OrderManagement({
   )
   const completedOrders = orders.filter(o => o.metadata?.status === 'completed')
   const todaysOrders = orders.filter(o => 
-    format(new Date(o.transaction_date), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+    formatDate(new Date(o.transaction_date), 'yyyy-MM-dd') === formatDate(new Date(), 'yyyy-MM-dd')
   )
   const todaysRevenue = todaysOrders.reduce((sum, o) => sum + o.total_amount, 0)
 
@@ -994,7 +995,7 @@ export function OrderManagement({
                   <p className="text-muted-foreground">Order Time</p>
                   <p className="font-medium">
                     {selectedOrder.metadata?.created_at 
-                      ? format(new Date(selectedOrder.metadata.created_at), 'MMM dd, HH:mm')
+                      ? formatDate(new Date(selectedOrder.metadata.created_at), 'MMM dd, HH:mm')
                       : 'Just now'
                     }
                   </p>

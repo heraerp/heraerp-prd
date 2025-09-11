@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { Check, X, Clock, User, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { useLeaveManagement } from '@/hooks/useLeaveManagement'
 
 interface PendingLeaveRequest {
@@ -107,7 +107,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-600 dark:text-gray-400">
-                      {format(request.startDate, 'MMM d')} - {format(request.endDate, 'MMM d, yyyy')}
+                      {formatDate(request.startDate, 'MMM d')} - {formatDate(request.endDate, 'MMM d, yyyy')}
                     </span>
                     <span className="font-medium text-gray-900 dark:text-white">
                       ({request.days} {request.days === 1 ? 'day' : 'days'})

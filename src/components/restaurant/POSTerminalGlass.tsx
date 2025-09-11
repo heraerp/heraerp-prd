@@ -62,7 +62,7 @@ import {
   ShoppingBag,
   CoffeeIcon
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import Link from 'next/link'
 
 interface POSTerminalProps {
@@ -615,7 +615,7 @@ export function POSTerminalGlass({
                 Point of Sale
               </h1>
               <Badge className="bg-white/20 text-white border-white/30">
-                {format(new Date(), 'MMM dd, yyyy HH:mm')}
+                {formatDate(new Date(), 'MMM dd, yyyy HH:mm')}
               </Badge>
             </div>
             <div className="flex items-center gap-2">

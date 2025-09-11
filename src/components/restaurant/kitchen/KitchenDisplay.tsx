@@ -49,7 +49,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 // Steve Jobs: "Innovation distinguishes between a leader and a follower"
 

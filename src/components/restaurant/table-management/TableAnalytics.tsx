@@ -39,7 +39,8 @@ import {
   Percent,
   Target
 } from 'lucide-react'
-import { format, subDays, startOfWeek, endOfWeek } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { subDays, startOfWeek, endOfWeek } from 'date-fns'
 
 interface TableAnalyticsProps {
   tables: any[]
@@ -58,7 +59,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
     for (let i = days - 1; i >= 0; i--) {
       const date = subDays(new Date(), i)
       data.push({
-        date: dateRange === 'today' ? format(date, 'HH:mm') : format(date, 'MMM dd'),
+        date: dateRange === 'today' ? formatDate(date, 'HH:mm') : formatDate(date, 'MMM dd'),
         occupancy: Math.floor(Math.random() * 30) + 60,
         revenue: Math.floor(Math.random() * 3000) + 5000,
         turnover: Math.floor(Math.random() * 20) + 40,
@@ -125,7 +126,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
     const dataStr = JSON.stringify(data, null, 2)
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
     
-    const exportFileDefaultName = `table-analytics_${format(new Date(), 'yyyy-MM-dd')}.json`
+    const exportFileDefaultName = `table-analytics_${formatDate(new Date(), 'yyyy-MM-dd')}.json`
     
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)

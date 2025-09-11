@@ -54,7 +54,7 @@ import {
   UserPlus,
   Table
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import Link from 'next/link'
 
 interface POSTerminalProps {
@@ -489,7 +489,7 @@ export function POSTerminal({
               </Link>
               <h1 className="text-2xl font-bold">POS Terminal</h1>
               <Badge variant="outline" className="text-sm">
-                {format(new Date(), 'MMM dd, yyyy HH:mm')}
+                {formatDate(new Date(), 'MMM dd, yyyy HH:mm')}
               </Badge>
             </div>
             <div className="flex items-center gap-2">

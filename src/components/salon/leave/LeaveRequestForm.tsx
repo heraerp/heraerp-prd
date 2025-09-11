@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { format, differenceInBusinessDays, addDays, isWeekend } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { differenceInBusinessDays, addDays, isWeekend } from 'date-fns'
 import { useLeaveManagement } from '@/hooks/useLeaveManagement'
 
 interface LeaveRequestFormProps {
@@ -197,8 +198,8 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                 You are requesting <strong>{calculateBusinessDays()}</strong> business days off
                 {formData.startDate && formData.endDate && (
                   <span className="block mt-1">
-                    From {format(new Date(formData.startDate), 'MMMM d, yyyy')} to{' '}
-                    {format(new Date(formData.endDate), 'MMMM d, yyyy')}
+                    From {formatDate(new Date(formData.startDate), 'MMMM d, yyyy')} to{' '}
+                    {formatDate(new Date(formData.endDate), 'MMMM d, yyyy')}
                   </span>
                 )}
               </p>

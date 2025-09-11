@@ -20,7 +20,7 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface RealTimeStatusProps {
   isConnected: boolean
@@ -107,7 +107,7 @@ export function RealTimeStatus({
               <div>
                 <p className="font-medium">Last Update</p>
                 <p className="text-xs">
-                  {format(new Date(lastUpdate.timestamp), 'HH:mm:ss')}
+                  {formatDate(new Date(lastUpdate.timestamp), 'HH:mm:ss')}
                 </p>
               </div>
             </div>
@@ -190,7 +190,7 @@ export function RealTimeStatus({
                 Table {lastUpdate.table_id} → {lastUpdate.new_status}
               </p>
               <p className="text-xs text-gray-500">
-                {format(new Date(lastUpdate.timestamp), 'MMM d, HH:mm:ss')}
+                {formatDate(new Date(lastUpdate.timestamp), 'MMM d, HH:mm:ss')}
               </p>
             </div>
             <CheckCircle className="w-4 h-4 text-green-500" />

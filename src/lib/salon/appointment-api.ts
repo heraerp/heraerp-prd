@@ -10,7 +10,8 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
-import { format, parseISO, addMinutes } from 'date-fns'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
+import { parseISO } from 'date-fns'
 import { whatsAppService } from './whatsapp-notification-service'
 
 // Smart Code definitions for Appointment Management
@@ -68,7 +69,7 @@ export class AppointmentApi {
 
     // Create appointment transaction
     const appointmentDateTime = `${data.appointmentDate}T${data.appointmentTime}`
-    const endTime = format(addMinutes(parseISO(appointmentDateTime), data.duration), 'HH:mm')
+    const endTime = formatDate(addMinutesSafe(parseISO(appointmentDateTime), data.duration), 'HH:mm')
 
     const appointment = await this.api.createTransaction({
       transaction_type: 'appointment',
@@ -277,8 +278,8 @@ export class AppointmentApi {
 
     // Calculate new end time
     const appointmentDateTime = `${newDate}T${newTime}`
-    const endTime = format(
-      addMinutes(parseISO(appointmentDateTime), appointment.metadata.duration || 60), 
+    const endTime = formatDate(
+      addMinutesSafe(parseISO(appointmentDateTime), appointment.metadata.duration || 60), 
       'HH:mm'
     )
 
@@ -326,7 +327,7 @@ export class AppointmentApi {
     let currentSlot = startTime
 
     while (currentSlot < endTime) {
-      const slotEnd = addMinutes(currentSlot, serviceDuration)
+      const slotEnd = addMinutesSafe(currentSlot, serviceDuration)
       
       // Check if slot conflicts with existing appointments
       const hasConflict = staffAppointments.some((apt: any) => {
@@ -342,12 +343,12 @@ export class AppointmentApi {
 
       if (!hasConflict && slotEnd <= endTime) {
         slots.push({
-          time: format(currentSlot, 'HH:mm'),
+          time: formatDate(currentSlot, 'HH:mm'),
           available: true
         })
       }
 
-      currentSlot = addMinutes(currentSlot, businessHours.slotDuration)
+      currentSlot = addMinutesSafe(currentSlot, businessHours.slotDuration)
     }
 
     return slots
@@ -359,8 +360,8 @@ export class AppointmentApi {
   async getAppointmentStats(organizationId: string) {
     const appointments = await this.getAppointments(organizationId)
     const now = new Date()
-    const today = format(now, 'yyyy-MM-dd')
-    const thisMonth = format(now, 'yyyy-MM')
+    const today = formatDate(now, 'yyyy-MM-dd')
+    const thisMonth = formatDate(now, 'yyyy-MM')
 
     const todayAppointments = appointments.filter((apt: any) => 
       apt.metadata?.appointment_date === today

@@ -30,7 +30,7 @@ import {
   Globe,
   Zap
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -413,7 +413,7 @@ export default function FINDashboard() {
                       <div className="text-right">
                         <p className="text-sm font-medium">${journal.total_amount.toLocaleString()}</p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(journal.transaction_date), 'MMM d')}
+                          {formatDate(new Date(journal.transaction_date), 'MMM d')}
                         </p>
                       </div>
                     </div>
@@ -625,7 +625,7 @@ export default function FINDashboard() {
                       )}>
                         <td className="p-3 text-sm font-medium">{journal.transaction_code}</td>
                         <td className="p-3 text-sm">
-                          {format(new Date(journal.transaction_date), 'MMM d, yyyy')}
+                          {formatDate(new Date(journal.transaction_date), 'MMM d, yyyy')}
                         </td>
                         <td className="p-3 text-sm">{journal.description}</td>
                         <td className="p-3 text-sm text-right font-medium">

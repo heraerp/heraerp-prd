@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Users, Calendar, TrendingUp, AlertCircle } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface TeamMemberLeave {
   id: string
@@ -192,7 +192,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
 
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {format(member.startDate, 'MMM d')} - {format(member.endDate, 'MMM d')}
+                  {formatDate(member.startDate, 'MMM d')} - {formatDate(member.endDate, 'MMM d')}
                 </span>
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-md border ${getStatusStyle(

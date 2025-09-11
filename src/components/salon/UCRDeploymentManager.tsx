@@ -49,7 +49,8 @@ import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { format, addDays, addMonths } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { addDays, addMonths } from 'date-fns'
 import {
   Dialog,
   DialogContent,
@@ -97,7 +98,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
     apps: ['salon'],
     locations: ['all']
   })
-  const [effectiveFrom, setEffectiveFrom] = useState(format(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))
+  const [effectiveFrom, setEffectiveFrom] = useState(formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))
   const [effectiveTo, setEffectiveTo] = useState('')
   const [deploymentNotes, setDeploymentNotes] = useState('')
   const [requiresApproval, setRequiresApproval] = useState(true)
@@ -484,7 +485,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                   value={effectiveFrom}
                   onChange={(e) => setEffectiveFrom(e.target.value)}
                   className="mt-2"
-                  min={format(new Date(), 'yyyy-MM-dd\'T\'HH:mm')}
+                  min={formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm')}
                 />
               </div>
               <div>
@@ -508,21 +509,21 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(format(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))}
+                onClick={() => setEffectiveFrom(formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))}
               >
                 Deploy Now
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(format(addDays(new Date(), 1), 'yyyy-MM-dd\'T\'09:00'))}
+                onClick={() => setEffectiveFrom(formatDate(addDays(new Date(), 1), 'yyyy-MM-dd\'T\'09:00'))}
               >
                 Tomorrow 9 AM
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(format(addDays(new Date(), 7), 'yyyy-MM-dd\'T\'09:00'))}
+                onClick={() => setEffectiveFrom(formatDate(addDays(new Date(), 7), 'yyyy-MM-dd\'T\'09:00'))}
               >
                 Next Week
               </Button>
@@ -622,7 +623,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Approved on {format(new Date(approval.approved_at), 'MMM dd, yyyy HH:mm')}
+                        Approved on {formatDate(new Date(approval.approved_at), 'MMM dd, yyyy HH:mm')}
                       </p>
                       {approval.notes && (
                         <p className="text-sm mt-1">{approval.notes}</p>
@@ -728,7 +729,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                         {event.metadata?.action || 'Deployment'}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {format(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
+                        {formatDate(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
                       </p>
                       {event.metadata?.notes && (
                         <p className="text-sm mt-1">{event.metadata.notes}</p>

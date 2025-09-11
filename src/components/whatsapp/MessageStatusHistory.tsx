@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Check, CheckCheck, Clock, AlertCircle, Send, Smartphone } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface StatusHistoryItem {
   status: string
@@ -68,7 +68,7 @@ export function MessageStatusHistory({
   
   const formatTimestamp = (timestamp: string) => {
     try {
-      return format(new Date(timestamp), 'dd MMM yyyy HH:mm:ss')
+      return formatDate(new Date(timestamp), 'dd MMM yyyy HH:mm:ss')
     } catch {
       return timestamp
     }

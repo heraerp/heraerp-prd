@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { useToast } from '@/components/ui/use-toast'
 import {
   Dialog,
@@ -258,7 +258,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                   <div className="text-xs text-gray-400 flex items-center gap-4 mt-2">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      Created {format(new Date(rule.created_at), 'MMM dd, yyyy')}
+                      Created {formatDate(new Date(rule.created_at), 'MMM dd, yyyy')}
                     </span>
                     {rule.metadata?.owner && (
                       <span>Owner: {rule.metadata.owner}</span>
@@ -389,7 +389,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{event.transaction_type}</span>
                     <span className="text-xs text-gray-500">
-                      {format(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
+                      {formatDate(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
                     </span>
                   </div>
                   {event.metadata && (

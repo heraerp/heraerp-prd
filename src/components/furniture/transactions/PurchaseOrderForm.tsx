@@ -11,7 +11,8 @@ import { Plus, Trash2, Package, AlertCircle, CheckCircle } from 'lucide-react';
 import { universalApi } from '@/lib/universal-api';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-utils'
+;
 
 interface PurchaseOrderLineItem {
   material_id: string;
@@ -398,7 +399,7 @@ export function PurchaseOrderForm() {
             <Alert className="border-blue-200 bg-blue-50">
               <Package className="h-4 w-4 text-blue-600" />
               <AlertDescription className="text-blue-800">
-                <strong>Expected Delivery:</strong> {format(expectedDelivery, 'PPP')}
+                <strong>Expected Delivery:</strong> {formatDate(expectedDelivery, 'PPP')}
                 <span className="text-sm ml-2">
                   (Based on maximum lead time of {Math.max(...lineItems.map(i => i.lead_time_days || 14))} days)
                 </span>

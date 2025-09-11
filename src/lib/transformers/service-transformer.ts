@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UIService {
   id: string
@@ -37,7 +37,7 @@ export function transformToUIService(data: {
     description: getField('description'),
     requires_license: getField('requires_license'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

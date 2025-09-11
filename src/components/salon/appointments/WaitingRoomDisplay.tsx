@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Clock, User, Scissors } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 // Lazy initialization to handle build-time issues
@@ -216,7 +216,7 @@ export function WaitingRoomDisplay() {
                     {apt.waitTime} min
                   </Badge>
                   <p className={`text-xs mt-1 ${getWaitTimeColor(apt.waitTime)}`}>
-                    Checked in {format(new Date(apt.checkedInAt), 'h:mm a')}
+                    Checked in {formatDate(new Date(apt.checkedInAt), 'h:mm a')}
                   </p>
                 </div>
               </div>

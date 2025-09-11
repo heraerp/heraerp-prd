@@ -4,7 +4,7 @@
 // Handles appointment creation/editing across all industries
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import {
   Dialog,
   DialogContent,
@@ -549,7 +549,7 @@ export function AppointmentModal({
                 <Input
                   id="start_time"
                   type="datetime-local"
-                  value={formData.start_time ? format(formData.start_time, "yyyy-MM-dd'T'HH:mm") : ''}
+                  value={formData.start_time ? formatDate(formData.start_time, "yyyy-MM-dd'T'HH:mm") : ''}
                   onChange={(e) => handleDateTimeChange('start_time', e.target.value)}
                   className={validationErrors.start_time ? 'border-red-500' : ''}
                 />
@@ -563,7 +563,7 @@ export function AppointmentModal({
                 <Input
                   id="end_time"
                   type="datetime-local"
-                  value={formData.end_time ? format(formData.end_time, "yyyy-MM-dd'T'HH:mm") : ''}
+                  value={formData.end_time ? formatDate(formData.end_time, "yyyy-MM-dd'T'HH:mm") : ''}
                   onChange={(e) => handleDateTimeChange('end_time', e.target.value)}
                   className={validationErrors.end_time ? 'border-red-500' : ''}
                 />

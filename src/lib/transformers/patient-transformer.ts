@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UIPatient {
   id: string
@@ -37,7 +37,7 @@ export function transformToUIPatient(data: {
     medications: getField('medications'),
     insurance_info: getField('insurance_info'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

@@ -4,7 +4,8 @@ import React from 'react'
 import { Calendar as CalendarIcon, Clock, User, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns'
+import { formatDate, isTodaySafe } from '@/lib/date-utils'
+import { startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns'
 import { cn } from '@/lib/utils'
 
 interface Appointment {
@@ -35,7 +36,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
   
   // Group appointments by date
   const appointmentsByDate = appointments.reduce((acc, apt) => {
-    const dateKey = format(apt.appointmentDate, 'yyyy-MM-dd')
+    const dateKey = formatDate(apt.appointmentDate, 'yyyy-MM-dd')
     if (!acc[dateKey]) acc[dateKey] = []
     acc[dateKey].push(apt)
     return acc
@@ -56,7 +57,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
   }
   
   const getDayAppointments = (date: Date) => {
-    const dateKey = format(date, 'yyyy-MM-dd')
+    const dateKey = formatDate(date, 'yyyy-MM-dd')
     return appointmentsByDate[dateKey] || []
   }
   
@@ -94,7 +95,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-white">
-            {format(currentMonth, 'MMMM yyyy')}
+            {formatDate(currentMonth, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
             <Button
@@ -141,7 +142,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
           {days.map((day) => {
             const dayAppointments = getDayAppointments(day)
             const isSelected = isSameDay(day, selectedDate)
-            const isCurrentDay = isToday(day)
+            const isCurrentDay = isTodaySafe(day)
             
             return (
               <button
@@ -166,7 +167,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
                     isCurrentDay ? "!text-blue-400" : "!text-gray-700 dark:!text-gray-300",
                     isSelected && "!text-purple-400"
                   )}>
-                    {format(day, 'd')}
+                    {formatDate(day, 'd')}
                   </p>
                   
                   {/* Appointment indicators */}
@@ -217,7 +218,7 @@ export function AppointmentCalendarView({ appointments, selectedDate, onDateSele
         {/* Selected day appointments */}
         <div className="mt-6 pt-6 border-t border-gray-800">
           <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-4">
-            Appointments on {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+            Appointments on {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
           </h3>
           
           {getDayAppointments(selectedDate).length === 0 ? (

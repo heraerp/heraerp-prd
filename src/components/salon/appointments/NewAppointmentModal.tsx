@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { format, addDays, parseISO } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { addDays, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { useAppointments } from '@/hooks/useAppointments'
 import { universalApi } from '@/lib/universal-api'
@@ -47,7 +48,7 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
   const [customerId, setCustomerId] = useState('')
   const [serviceId, setServiceId] = useState('')
   const [staffId, setStaffId] = useState('')
-  const [appointmentDate, setAppointmentDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [appointmentDate, setAppointmentDate] = useState(formatDate(new Date(), 'yyyy-MM-dd'))
   const [appointmentTime, setAppointmentTime] = useState('')
   const [notes, setNotes] = useState('')
   
@@ -309,8 +310,8 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
                 type="date"
                 value={appointmentDate}
                 onChange={(e) => setAppointmentDate(e.target.value)}
-                min={format(new Date(), 'yyyy-MM-dd')}
-                max={format(addDays(new Date(), 90), 'yyyy-MM-dd')}
+                min={formatDate(new Date(), 'yyyy-MM-dd')}
+                max={formatDate(addDays(new Date(), 90), 'yyyy-MM-dd')}
                 className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
                 disabled={formLoading}
               />
@@ -362,7 +363,7 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-purple-400" />
                   <span className="!text-gray-300">
-                    End: {appointmentTime && format(
+                    End: {appointmentTime && formatDate(
                       parseISO(`${appointmentDate}T${appointmentTime}`).getTime() + selectedService.duration * 60000,
                       'HH:mm'
                     )}

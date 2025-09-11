@@ -11,7 +11,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Sparkles, MessageCircle, Send, AlertCircle, CheckCircle2, Users, Gift, Rocket } from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
-import { format, addDays } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { addDays } from 'date-fns'
 import { cn } from '@/lib/utils'
 
 interface ServiceWhatsAppActionsProps {
@@ -36,7 +37,7 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
   // Campaign configuration
   const [campaignConfig, setCampaignConfig] = useState({
     launchOffer: '20% off for first 50 customers',
-    launchDate: format(addDays(new Date(), 7), 'MMMM d, yyyy'),
+    launchDate: formatDate(addDays(new Date(), 7), 'MMMM d, yyyy'),
     targetAudience: 'all' as 'all' | 'vip' | 'specific',
     estimatedRecipients: 324
   })

@@ -28,7 +28,7 @@ import {
   TrendingUp,
   Utensils
 } from 'lucide-react'
-import { format, differenceInMinutes } from 'date-fns'
+import { formatDate, differenceInMinutesSafe } from '@/lib/date-utils'
 
 interface KitchenDisplayProps {
   organizationId: string
@@ -163,7 +163,7 @@ export function KitchenDisplay({
         )
         .map(order => ({
           ...order,
-          prepTime: differenceInMinutes(new Date(), new Date(order.transaction_date))
+          prepTime: differenceInMinutesSafe(new Date(), new Date(order.transaction_date))
         }))
         .sort((a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime())
       

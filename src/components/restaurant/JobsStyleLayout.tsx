@@ -30,7 +30,7 @@ import {
   RefreshCw,
   Calendar
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 // Steve Jobs: "Simplicity is the ultimate sophistication"
 
@@ -191,7 +191,7 @@ export function JobsStyleLayout({
                     <p className={`text-sm ${
                       darkMode ? 'text-gray-400' : 'text-gray-500'
                     }`}>
-                      {organization?.organization_name} • {isClient ? format(currentTime, 'MMM d, h:mm a') : '...'}
+                      {organization?.organization_name} • {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
                     </p>
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export function JobsStyleLayout({
               <div className="flex items-center space-x-2">
                 <Clock className="w-3 h-3 text-purple-500" />
                 <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                  Last sync: {isClient ? format(currentTime, 'HH:mm:ss') : '--:--:--'}
+                  Last sync: {isClient ? formatDate(currentTime, 'HH:mm:ss') : '--:--:--'}
                 </span>
               </div>
             </div>

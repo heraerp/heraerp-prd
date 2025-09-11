@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UICampaign {
   id: string
@@ -39,7 +39,7 @@ export function transformToUICampaign(data: {
     status: getField('status'),
     channel: getField('channel'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

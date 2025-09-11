@@ -44,7 +44,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface JournalLine {
   id: string
@@ -86,7 +86,7 @@ const MOCK_GL_ACCOUNTS: GLAccount[] = [
 ]
 
 export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: JournalEntryFormProps) {
-  const [journalDate, setJournalDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [journalDate, setJournalDate] = useState(formatDate(new Date(), 'yyyy-MM-dd'))
   const [reference, setReference] = useState('')
   const [description, setDescription] = useState('')
   const [journalType, setJournalType] = useState<'standard' | 'adjusting' | 'closing' | 'reversing'>('standard')

@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { 
   BarChart3, 
   FileText, 
@@ -818,7 +821,7 @@ export default function ReadinessDashboardPage() {
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-800 dark:text-gray-100">
-                          {format(new Date(session.transaction_date), 'MMM d, yyyy')}
+                          {formatDate(new Date(session.transaction_date), 'MMM d, yyyy')}
                         </span>
                         {session.transaction_status === 'completed' && (
                           <span className="font-medium text-blue-400">
@@ -873,7 +876,7 @@ export default function ReadinessDashboardPage() {
                     <div>
                       <CardTitle className="text-xl !text-white mb-1">Assessment Details</CardTitle>
                       <CardDescription className="text-gray-800 dark:text-gray-100">
-                        {selectedSession.metadata.user_email} • {format(new Date(selectedSession.transaction_date), 'MMMM d, yyyy')}
+                        {selectedSession.metadata.user_email} • {formatDate(new Date(selectedSession.transaction_date), 'MMMM d, yyyy')}
                       </CardDescription>
                     </div>
                     <motion.button

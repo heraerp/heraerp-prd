@@ -48,7 +48,7 @@ import {
   Zap,
   Receipt
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 // Steve Jobs: "Focus is about saying no to the hundred other good ideas"
 

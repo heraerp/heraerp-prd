@@ -35,7 +35,7 @@ import {
   Target,
   Star
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { 
   StatusIndicator, 
   PulseIndicator, 
@@ -226,7 +226,7 @@ export function UnifiedRestaurantInterface() {
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  {isClient ? format(currentTime, 'EEEE, MMM d · h:mm a') : 'Loading...'}
+                  {isClient ? formatDate(currentTime, 'EEEE, MMM d · h:mm a') : 'Loading...'}
                 </p>
               </div>
             </div>

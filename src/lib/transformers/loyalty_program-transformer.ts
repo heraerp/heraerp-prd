@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UILoyalty_program {
   id: string
@@ -35,7 +35,7 @@ export function transformToUILoyalty_program(data: {
     tier_name: getField('tier_name'),
     minimum_spend: getField('minimum_spend'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UIEmployee {
   id: string
@@ -37,7 +37,7 @@ export function transformToUIEmployee(data: {
     hourly_rate: getField('hourly_rate'),
     commission_rate: getField('commission_rate'),
     status: entity.status,
-    createdAt: format(new Date(entity.created_at), 'MMM d, yyyy'),
+    createdAt: formatDate(new Date(entity.created_at), 'MMM d, yyyy'),
     relationships
   }
 }

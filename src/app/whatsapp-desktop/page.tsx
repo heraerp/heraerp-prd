@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -52,7 +55,7 @@ import {
 } from '@/components/ui/context-menu'
 import { Badge } from '@/components/ui/badge'
 import { useTheme } from 'next-themes'
-import { format, isToday, isYesterday, differenceInMinutes } from 'date-fns'
+import { formatDate, isTodaySafe, isYesterdaySafe, differenceInMinutesSafe } from '@/lib/date-utils'
 
 interface Message {
   id: string
@@ -225,21 +228,21 @@ export default function WhatsAppDesktop() {
   // Format timestamps
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp)
-    if (isToday(date)) return format(date, 'HH:mm')
-    if (isYesterday(date)) return 'Yesterday'
-    return format(date, 'dd/MM/yyyy')
+    if (isTodaySafe(date)) return formatDate(date, 'HH:mm')
+    if (isYesterdaySafe(date)) return 'Yesterday'
+    return formatDate(date, 'dd/MM/yyyy')
   }
 
   const formatMessageTime = (timestamp: string) => {
     const date = new Date(timestamp)
-    return format(date, 'HH:mm')
+    return formatDate(date, 'HH:mm')
   }
 
   const formatDateSeparator = (timestamp: string) => {
     const date = new Date(timestamp)
-    if (isToday(date)) return 'Today'
-    if (isYesterday(date)) return 'Yesterday'
-    return format(date, 'MMMM d, yyyy')
+    if (isTodaySafe(date)) return 'Today'
+    if (isYesterdaySafe(date)) return 'Yesterday'
+    return formatDate(date, 'MMMM d, yyyy')
   }
 
   // Group messages by date
@@ -247,7 +250,7 @@ export default function WhatsAppDesktop() {
     const groups: { [key: string]: Message[] } = {}
     
     messages.forEach(msg => {
-      const date = format(new Date(msg.created_at), 'yyyy-MM-dd')
+      const date = formatDate(new Date(msg.created_at), 'yyyy-MM-dd')
       if (!groups[date]) groups[date] = []
       groups[date].push(msg)
     })

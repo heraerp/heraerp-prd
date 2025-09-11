@@ -41,7 +41,8 @@ import {
   UserCheck,
   History
 } from 'lucide-react'
-import { format, addDays, startOfWeek, endOfWeek, isToday, isSameDay, parseISO } from 'date-fns'
+import { formatDate, isTodaySafe } from '@/lib/date-utils'
+import { addDays, startOfWeek, endOfWeek, isSameDay, parseISO } from 'date-fns'
 
 interface Reservation {
   id: string
@@ -89,7 +90,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
     customer_phone: '',
     customer_email: '',
     party_size: 2,
-    reservation_date: format(new Date(), 'yyyy-MM-dd'),
+    reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
     reservation_time: '19:00',
     duration_minutes: 120,
     special_requests: '',
@@ -125,8 +126,8 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
     const matchesStatus = filterStatus === 'all' || reservation.status === filterStatus
     const matchesTable = filterTable === 'all' || reservation.table_id === filterTable
     const matchesDate = viewMode === 'day' ? isSameDay(parseISO(reservation.reservation_date), selectedDate) :
-                       viewMode === 'week' ? reservation.reservation_date >= format(startOfWeek(selectedDate), 'yyyy-MM-dd') &&
-                                            reservation.reservation_date <= format(endOfWeek(selectedDate), 'yyyy-MM-dd') :
+                       viewMode === 'week' ? reservation.reservation_date >= formatDate(startOfWeek(selectedDate), 'yyyy-MM-dd') &&
+                                            reservation.reservation_date <= formatDate(endOfWeek(selectedDate), 'yyyy-MM-dd') :
                        true // For month view, show all
     
     return matchesSearch && matchesStatus && matchesTable && matchesDate
@@ -209,7 +210,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       customer_phone: '',
       customer_email: '',
       party_size: 2,
-      reservation_date: format(new Date(), 'yyyy-MM-dd'),
+      reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
       reservation_time: '19:00',
       duration_minutes: 120,
       special_requests: '',
@@ -486,7 +487,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <div className="text-lg font-medium">
-              {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+              {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
             </div>
             <Button
               variant="outline"
@@ -495,7 +496,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
-            {!isToday(selectedDate) && (
+            {!isTodaySafe(selectedDate) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -542,7 +543,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
             <DialogHeader>
               <DialogTitle>Reservation Details</DialogTitle>
               <DialogDescription>
-                Table {selectedReservation.table_number} • {format(parseISO(selectedReservation.reservation_date), 'MMM d, yyyy')} at {selectedReservation.reservation_time}
+                Table {selectedReservation.table_number} • {formatDate(parseISO(selectedReservation.reservation_date), 'MMM d, yyyy')} at {selectedReservation.reservation_time}
               </DialogDescription>
             </DialogHeader>
             

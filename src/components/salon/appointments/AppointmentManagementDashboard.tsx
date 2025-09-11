@@ -11,7 +11,7 @@ import { AppointmentList } from './AppointmentList'
 import { AppointmentCalendarView } from './AppointmentCalendarView'
 import { NewAppointmentModal } from './NewAppointmentModal'
 import { AppointmentStats } from './AppointmentStats'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface AppointmentManagementDashboardProps {
   organizationId?: string
@@ -311,7 +311,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
           >
             <div className="p-6">
               <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white mb-4">
-                Day View - {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                Day View - {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
               </h3>
               {/* Day view implementation would go here */}
               <div className="text-center py-12">

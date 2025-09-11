@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, getDay, addMonths, subMonths } from 'date-fns'
+import { formatDate, isTodaySafe } from '@/lib/date-utils'
+import { startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay, addMonths, subMonths } from 'date-fns'
 
 interface LeaveEvent {
   id: string
@@ -106,7 +107,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {format(currentDate, 'MMMM yyyy')}
+            {formatDate(currentDate, 'MMMM yyyy')}
           </h2>
           <Button
             variant="outline"
@@ -170,7 +171,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
         {allDays.map((day, index) => {
           const dayEvents = getEventsForDay(day)
           const isCurrentMonth = isSameMonth(day, currentDate)
-          const isCurrentDay = isToday(day)
+          const isCurrentDay = isTodaySafe(day)
           
           return (
             <div
@@ -187,7 +188,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                     ? 'text-indigo-600 dark:text-indigo-400' 
                     : 'text-gray-900 dark:text-white'
                 }`}>
-                  {format(day, 'd')}
+                  {formatDate(day, 'd')}
                 </span>
                 {dayEvents.length > 0 && (
                   <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">

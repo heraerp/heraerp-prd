@@ -10,7 +10,7 @@ const STORAGE_BUCKET = 'furniture-documents'
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const documentId = params.id

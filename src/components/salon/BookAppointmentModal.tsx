@@ -37,7 +37,8 @@ import {
   X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { format, addMinutes, parseISO, isWithinInterval } from 'date-fns'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
+import { parseISO, isWithinInterval } from 'date-fns'
 import { SchedulingAssistant } from './SchedulingAssistant'
 import { useToast } from '@/hooks/use-toast'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
@@ -266,9 +267,9 @@ export function BookAppointmentModal({
     sum + service.duration + service.buffer_before + service.buffer_after, 0
   )
   const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0)
-  const endTime = startTime ? format(
-    addMinutes(
-      parseISO(`${format(selectedDate, 'yyyy-MM-dd')}T${startTime}`),
+  const endTime = startTime ? formatDate(
+    addMinutesSafe(
+      parseISO(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}`),
       totalDuration
     ),
     'HH:mm'
@@ -393,10 +394,10 @@ export function BookAppointmentModal({
         customer_segments: selectedCustomer.vip_level ? [`vip_${selectedCustomer.vip_level}`] : ['regular'],
         specialist_id: selectedStylist.id,
         service_ids: selectedServices.map(s => s.id),
-        appointment_time: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
+        appointment_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
         appointment_value: totalPrice,
         now: new Date(),
-        lead_minutes: (new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`).getTime() - new Date().getTime()) / (1000 * 60)
+        lead_minutes: (new Date(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`).getTime() - new Date().getTime()) / (1000 * 60)
       }
 
       // Check booking availability rules
@@ -442,14 +443,14 @@ export function BookAppointmentModal({
       const appointmentData = {
         organization_id: organizationId,
         transaction_type: 'appointment',
-        transaction_date: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
+        transaction_date: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
         source_entity_id: selectedCustomer.id,
         target_entity_id: selectedStylist.id,
         total_amount: finalPrice,
         transaction_status: isHold ? 'hold' : 'confirmed',
         smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
         business_context: {
-          end_time: `${format(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
+          end_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
           hold: isHold,
           private: isPrivate
         },
@@ -465,14 +466,14 @@ export function BookAppointmentModal({
       const response = await universalApi.createTransaction({
         organization_id: organizationId,
         transaction_type: 'appointment',
-        transaction_date: `${format(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
+        transaction_date: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
         source_entity_id: selectedCustomer.id,
         target_entity_id: selectedStylist.id,
         total_amount: finalPrice,
         transaction_status: isHold ? 'hold' : 'confirmed',
         smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
         business_context: {
-          end_time: `${format(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
+          end_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
           hold: isHold,
           private: isPrivate,
           // Add salon-specific fields
@@ -532,7 +533,7 @@ export function BookAppointmentModal({
 
       toast({
         title: 'Appointment Booked',
-        description: `${title} on ${format(selectedDate, 'MMM d')} at ${startTime}${discountApplied > 0 ? ` - Final price: AED ${finalPrice.toFixed(0)} (${discountApplied.toFixed(0)} discount applied)` : ` - Total: AED ${finalPrice.toFixed(0)}`}`,
+        description: `${title} on ${formatDate(selectedDate, 'MMM d')} at ${startTime}${discountApplied > 0 ? ` - Final price: AED ${finalPrice.toFixed(0)} (${discountApplied.toFixed(0)} discount applied)` : ` - Total: AED ${finalPrice.toFixed(0)}`}`,
       })
 
       onBookingComplete?.({
@@ -561,7 +562,7 @@ export function BookAppointmentModal({
   const handleSlotSelect = (slot: { start: string; end: string }) => {
     const startDate = parseISO(slot.start)
     setSelectedDate(startDate)
-    setStartTime(format(startDate, 'HH:mm'))
+    setStartTime(formatDate(startDate, 'HH:mm'))
     setActiveTab('event')
   }
 
@@ -754,7 +755,7 @@ export function BookAppointmentModal({
                         <div className="flex items-center gap-4 flex-1">
                           <Input
                             type="date"
-                            value={format(selectedDate, 'yyyy-MM-dd')}
+                            value={formatDate(selectedDate, 'yyyy-MM-dd')}
                             onChange={(e) => setSelectedDate(new Date(e.target.value))}
                             className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
                           />
@@ -826,7 +827,7 @@ export function BookAppointmentModal({
                   <div className="p-4 h-full flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-sm font-normal text-[#e1e1e1]">
-                        {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                        {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
                       </h3>
                       <div className="flex gap-2">
                         <Button 
@@ -899,7 +900,7 @@ export function BookAppointmentModal({
                 <Alert className="mb-4 border-purple-500 bg-purple-500/20">
                   <AlertCircle className="h-4 w-4 text-purple-400" />
                   <AlertDescription className="text-purple-200">
-                    <strong>Selected time slot:</strong> {preSelectedTime} on {format(selectedDate, 'MMM d, yyyy')}
+                    <strong>Selected time slot:</strong> {preSelectedTime} on {formatDate(selectedDate, 'MMM d, yyyy')}
                     <br />
                     Please select a stylist and services to check availability for this time.
                   </AlertDescription>

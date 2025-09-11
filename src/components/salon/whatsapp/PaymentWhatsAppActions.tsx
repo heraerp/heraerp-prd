@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Receipt, CreditCard, MessageCircle, Send, AlertCircle, CheckCircle2, Clock, DollarSign } from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
 
 interface PaymentWhatsAppActionsProps {
@@ -59,7 +59,7 @@ export function PaymentWhatsAppActions({
           payment_method: payment.payment_method,
           transaction_id: payment.transaction_id,
           services: payment.services || 'Salon Services',
-          payment_date: format(new Date(payment.date), 'MMMM d, yyyy'),
+          payment_date: formatDate(new Date(payment.date), 'MMMM d, yyyy'),
           receipt_link: `https://salon.heraerp.com/receipt/${payment.id}`,
           salon_name: 'Hair Talkz Salon'
         }
@@ -102,7 +102,7 @@ export function PaymentWhatsAppActions({
         parameters: {
           customer_name: payment.customer_name,
           amount_due: `AED ${payment.amount.toFixed(2)}`,
-          service_date: format(new Date(payment.date), 'MMMM d, yyyy'),
+          service_date: formatDate(new Date(payment.date), 'MMMM d, yyyy'),
           services: payment.services || 'Salon Services',
           payment_link: `https://salon.heraerp.com/pay/${payment.id}`,
           salon_phone: '+971-4-123-4567',
@@ -136,7 +136,7 @@ export function PaymentWhatsAppActions({
       payment_method: payment.payment_method,
       transaction_id: payment.transaction_id,
       services: payment.services || 'Salon Services',
-      payment_date: format(new Date(payment.date), 'MMMM d, yyyy'),
+      payment_date: formatDate(new Date(payment.date), 'MMMM d, yyyy'),
       receipt_link: `https://salon.heraerp.com/receipt/${payment.id}`,
       salon_name: 'Hair Talkz Salon'
     })
@@ -146,7 +146,7 @@ export function PaymentWhatsAppActions({
     return formatWhatsAppTemplate('payment_reminder', {
       customer_name: payment.customer_name,
       amount_due: `AED ${payment.amount.toFixed(2)}`,
-      service_date: format(new Date(payment.date), 'MMMM d, yyyy'),
+      service_date: formatDate(new Date(payment.date), 'MMMM d, yyyy'),
       services: payment.services || 'Salon Services',
       payment_link: `https://salon.heraerp.com/pay/${payment.id}`,
       salon_phone: '+971-4-123-4567',

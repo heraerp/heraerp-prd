@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrency } from '@/lib/universal-helpers'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { 
   Clock, 
   DollarSign, 
@@ -147,7 +147,7 @@ export function TransactionList({
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {format(new Date(transaction.transaction_date), 'MMM d, h:mm a')}
+                          {formatDate(new Date(transaction.transaction_date), 'MMM d, h:mm a')}
                         </span>
                         {showSmartCode && transaction.smart_code && (
                           <span className="text-xs font-mono">

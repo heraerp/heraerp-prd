@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface Campaign {
   id: string
@@ -275,7 +275,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gray-400" />
                           <span className="!text-gray-700 dark:!text-gray-300">
-                            Scheduled: {format(campaign.scheduled, 'MMM d, yyyy')}
+                            Scheduled: {formatDate(campaign.scheduled, 'MMM d, yyyy')}
                           </span>
                         </div>
                       )}
@@ -284,7 +284,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gray-400" />
                           <span className="!text-gray-700 dark:!text-gray-300">
-                            Last run: {format(campaign.lastRun, 'MMM d, h:mm a')}
+                            Last run: {formatDate(campaign.lastRun, 'MMM d, h:mm a')}
                           </span>
                         </div>
                       )}

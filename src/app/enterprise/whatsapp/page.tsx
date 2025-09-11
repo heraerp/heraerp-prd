@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -27,7 +30,7 @@ import {
   MessageSquare,
   RefreshCw
 } from 'lucide-react'
-import { format, isToday, isYesterday, differenceInHours } from 'date-fns'
+import { formatDate, isTodaySafe, isYesterdaySafe, differenceInHoursSafe } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
 import { MessageStatusHistory } from '@/components/whatsapp/MessageStatusHistory'
 
@@ -164,7 +167,7 @@ export default function EnterpriseWhatsApp() {
         .sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime())[0]
       
       const hoursSinceLastInbound = lastInboundMessage 
-        ? differenceInHours(new Date(), new Date(lastInboundMessage.occurred_at))
+        ? differenceInHoursSafe(new Date(), new Date(lastInboundMessage.occurred_at))
         : 25
       
       if (hoursSinceLastInbound > 24) {
@@ -319,23 +322,23 @@ export default function EnterpriseWhatsApp() {
   // Format timestamp
   const formatMessageTime = (timestamp: string) => {
     const date = new Date(timestamp)
-    if (isToday(date)) {
-      return format(date, 'HH:mm')
-    } else if (isYesterday(date)) {
-      return 'Yesterday ' + format(date, 'HH:mm')
+    if (isTodaySafe(date)) {
+      return formatDate(date, 'HH:mm')
+    } else if (isYesterdaySafe(date)) {
+      return 'Yesterday ' + formatDate(date, 'HH:mm')
     }
-    return format(date, 'dd/MM/yyyy HH:mm')
+    return formatDate(date, 'dd/MM/yyyy HH:mm')
   }
   
   // Format last seen
   const formatLastSeen = (timestamp: string) => {
     const date = new Date(timestamp)
-    if (isToday(date)) {
-      return format(date, "'Today at' HH:mm")
-    } else if (isYesterday(date)) {
-      return format(date, "'Yesterday at' HH:mm")
+    if (isTodaySafe(date)) {
+      return formatDate(date, "'Today at' HH:mm")
+    } else if (isYesterdaySafe(date)) {
+      return formatDate(date, "'Yesterday at' HH:mm")
     }
-    return format(date, 'dd MMM yyyy')
+    return formatDate(date, 'dd MMM yyyy')
   }
   
   // Message status icon
@@ -656,7 +659,7 @@ export default function EnterpriseWhatsApp() {
                 .sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime())[0]
               
               const hours = lastInbound 
-                ? differenceInHours(new Date(), new Date(lastInbound.occurred_at))
+                ? differenceInHoursSafe(new Date(), new Date(lastInbound.occurred_at))
                 : 25
                 
               return hours > 20 && hours < 24 ? (

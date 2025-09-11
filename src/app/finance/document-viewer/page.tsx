@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
 /**
  * HERA Financial Document Viewer (Similar to SAP FB03)
  * Smart Code: HERA.FIN.DOC.VIEWER.v1
@@ -44,7 +47,7 @@ import {
   MoreHorizontal
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { format, parse } from 'date-fns'
+import { formatDate, parseDateSafe } from '@/lib/date-utils'
 import {
   Table,
   TableBody,
@@ -536,7 +539,7 @@ export default function FinancialDocumentViewer() {
                         <div className="space-y-1 text-sm">
                           <p className="text-gray-600 dark:text-gray-400">
                             <CalendarDays className="w-3 h-3 inline mr-1" />
-                            {format(new Date(doc.transaction_date), 'dd MMM yyyy')}
+                            {formatDate(new Date(doc.transaction_date), 'dd MMM yyyy')}
                           </p>
                           <p className="font-medium text-gray-900 dark:text-white">
                             {formatCurrency(doc.total_amount, doc.currency)}
@@ -599,15 +602,15 @@ export default function FinancialDocumentViewer() {
                           <div>
                             <Label className="text-xs text-gray-500">Transaction Date</Label>
                             <p className="font-medium">
-                              {format(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')}
+                              {formatDate(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')}
                             </p>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Posting Date</Label>
                             <p className="font-medium">
                               {selectedDocument.posting_date 
-                                ? format(new Date(selectedDocument.posting_date), 'dd MMM yyyy')
-                                : format(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')
+                                ? formatDate(new Date(selectedDocument.posting_date), 'dd MMM yyyy')
+                                : formatDate(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')
                               }
                             </p>
                           </div>
@@ -631,7 +634,7 @@ export default function FinancialDocumentViewer() {
                             <Label className="text-xs text-gray-500">Fiscal Period</Label>
                             <p className="font-medium">
                               {selectedDocument.fiscal_year || new Date(selectedDocument.transaction_date).getFullYear()} / 
-                              {selectedDocument.fiscal_period || format(new Date(selectedDocument.transaction_date), 'MM')}
+                              {selectedDocument.fiscal_period || formatDate(new Date(selectedDocument.transaction_date), 'MM')}
                             </p>
                           </div>
                         </div>
@@ -651,7 +654,7 @@ export default function FinancialDocumentViewer() {
                           <div>
                             <Label className="text-xs text-gray-500">Created At</Label>
                             <p className="font-medium">
-                              {format(new Date(selectedDocument.created_at), 'dd MMM yyyy HH:mm')}
+                              {formatDate(new Date(selectedDocument.created_at), 'dd MMM yyyy HH:mm')}
                             </p>
                           </div>
                         </div>

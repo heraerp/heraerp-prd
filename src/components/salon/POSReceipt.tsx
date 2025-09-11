@@ -1,5 +1,5 @@
 import React from 'react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface ReceiptProps {
   transaction: any
@@ -47,7 +47,7 @@ export const POSReceipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
       {/* Transaction Info */}
       <div className="mb-3">
         <p>Receipt No: {transaction.transactionCode}</p>
-        <p>Date: {format(new Date(transaction.date), 'dd/MM/yyyy HH:mm')}</p>
+        <p>Date: {formatDate(new Date(transaction.date), 'dd/MM/yyyy HH:mm')}</p>
         {customer && <p>Customer: {customer.name}</p>}
       </div>
 

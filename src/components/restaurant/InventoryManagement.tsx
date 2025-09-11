@@ -34,7 +34,7 @@ import {
   ShoppingCart,
   Warehouse
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface InventoryManagementProps {
   organizationId: string
@@ -580,7 +580,7 @@ export function InventoryManagement({
                           {movement.transaction_type.replace(/_/g, ' ').toUpperCase()}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {format(new Date(movement.transaction_date), 'MMM d, yyyy h:mm a')}
+                          {formatDate(new Date(movement.transaction_date), 'MMM d, yyyy h:mm a')}
                         </p>
                         {movement.metadata?.reason && (
                           <p className="text-sm mt-1">Reason: {movement.metadata.reason}</p>

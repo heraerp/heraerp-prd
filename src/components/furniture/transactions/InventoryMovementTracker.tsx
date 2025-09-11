@@ -24,7 +24,8 @@ import {
 import { universalApi } from '@/lib/universal-api';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-utils'
+;
 
 interface InventoryLevel {
   item_id: string;
@@ -344,7 +345,7 @@ export function InventoryMovementTracker() {
           <CardContent>
             <div className="text-2xl font-bold">
               {movementHistory.filter(m => 
-                format(new Date(m.created_at), 'PP') === format(new Date(), 'PP')
+                formatDate(new Date(m.created_at), 'PP') === formatDate(new Date(), 'PP')
               ).length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Inventory transactions</p>
@@ -445,7 +446,7 @@ export function InventoryMovementTracker() {
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {format(new Date(level.last_updated), 'PP')}
+                            {formatDate(new Date(level.last_updated), 'PP')}
                           </TableCell>
                         </TableRow>
                       );
@@ -509,7 +510,7 @@ export function InventoryMovementTracker() {
                           {movement.reason}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {format(new Date(movement.created_at), 'PP')}
+                          {formatDate(new Date(movement.created_at), 'PP')}
                         </TableCell>
                       </TableRow>
                     ))}

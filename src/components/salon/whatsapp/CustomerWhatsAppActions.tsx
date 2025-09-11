@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Gift, MessageCircle, Users, Send, Calendar, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
 import { whatsAppCampaignService } from '@/lib/salon/whatsapp-campaign-service'
-import { format, differenceInDays, addDays } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { differenceInDays, addDays } from 'date-fns'
 import { cn } from '@/lib/utils'
 
 interface CustomerWhatsAppActionsProps {
@@ -63,7 +64,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
           salon_name: 'Hair Talkz Salon',
           birthday_offer: '25% off any service',
           promo_code: `BDAY${customer.id.substr(-4).toUpperCase()}`,
-          valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy')
+          valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
         }
       }
 
@@ -98,7 +99,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
           salon_name: 'Hair Talkz Salon',
           special_offer: '30% off your comeback visit',
           favorite_service: customer.metadata?.favorite_service || 'your favorite service',
-          valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy')
+          valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
         }
       }
 
@@ -126,7 +127,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
       salon_name: 'Hair Talkz Salon',
       birthday_offer: '25% off any service',
       promo_code: `BDAY${customer.id.substr(-4).toUpperCase()}`,
-      valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy')
+      valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
     })
   }
 
@@ -137,7 +138,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
       salon_name: 'Hair Talkz Salon',
       special_offer: '30% off your comeback visit',
       favorite_service: customer.metadata?.favorite_service || 'your favorite service',
-      valid_until: format(addDays(new Date(), 30), 'MMMM d, yyyy')
+      valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
     })
   }
 
@@ -175,7 +176,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
                   Birthday Special
                 </h4>
                 <p className="text-xs !text-gray-600 dark:!text-gray-400">
-                  Birthday: {format(new Date(customer.metadata.birthday), 'MMMM d')}
+                  Birthday: {formatDate(new Date(customer.metadata.birthday), 'MMMM d')}
                 </p>
                 {isBirthdayNear && (
                   <Badge className="mt-2 bg-pink-100 text-pink-700 dark:bg-pink-800/30 dark:text-pink-300">

@@ -12,7 +12,8 @@ import { Plus, Trash2, Calculator, CheckCircle, AlertCircle } from 'lucide-react
 import { universalApi } from '@/lib/universal-api';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-utils'
+;
 
 interface SalesOrderLineItem {
   entity_id: string;
@@ -571,7 +572,7 @@ export function SalesOrderForm() {
             <Alert className="border-blue-200 bg-blue-50">
               <CheckCircle className="h-4 w-4 text-blue-600" />
               <AlertDescription className="text-blue-800">
-                <strong>Promised Delivery Date:</strong> {format(promisedDeliveryDate, 'PPP')}
+                <strong>Promised Delivery Date:</strong> {formatDate(promisedDeliveryDate, 'PPP')}
               </AlertDescription>
             </Alert>
           )}

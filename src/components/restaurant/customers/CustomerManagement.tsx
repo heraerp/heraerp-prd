@@ -50,7 +50,8 @@ import {
   CreditCard,
   Cake
 } from 'lucide-react'
-import { format, parseISO } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { parseISO } from 'date-fns'
 
 // Steve Jobs: "People don't know what they want until you show it to them"
 

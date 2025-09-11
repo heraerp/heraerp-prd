@@ -10,7 +10,8 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
-import { format, eachDayOfInterval, isWeekend, isWithinInterval, differenceInDays, isSameDay } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { eachDayOfInterval, isWeekend, isWithinInterval, differenceInDays, isSameDay } from 'date-fns'
 
 // Smart Code definitions for Leave Management
 export const LEAVE_SMART_CODES = {
@@ -508,12 +509,12 @@ export class LeaveManagementApi {
     const lines = await Promise.all(
       days.map(async (day, index) => {
         const isPartial = partialDays?.type === 'half' || 
-                         partialDays?.dates?.[format(day, 'yyyy-MM-dd')]
+                         partialDays?.dates?.[formatDate(day, 'yyyy-MM-dd')]
 
         return this.api.createTransactionLine({
           transaction_id: transactionId,
           line_number: index + 1,
-          line_date: format(day, 'yyyy-MM-dd'),
+          line_date: formatDate(day, 'yyyy-MM-dd'),
           quantity: isPartial ? 0.5 : 1,
           unit_price: 1, // 1 day
           line_amount: isPartial ? 0.5 : 1,

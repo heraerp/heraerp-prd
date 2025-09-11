@@ -41,9 +41,10 @@ import {
   X,
   Plus,
   Settings,
-  Activity
+  Activity,
+  Pencil
 } from 'lucide-react'
-import { format, addMinutes } from 'date-fns'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
 
 interface TableManagementProps {
   organizationId: string
@@ -143,7 +144,7 @@ export function TableManagement({
     customer_name: '',
     phone: '',
     party_size: '',
-    reservation_date: format(new Date(), 'yyyy-MM-dd'),
+    reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
     reservation_time: '',
     duration_minutes: '90',
     special_requests: ''
@@ -197,7 +198,7 @@ export function TableManagement({
             },
             server_name: status === 'occupied' ? ['Sarah', 'John', 'Maria', 'Mike'][i % 4] : undefined,
             occupied_since: status === 'occupied' ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
-            estimated_clear_time: status === 'occupied' ? addMinutes(new Date(), Math.floor(Math.random() * 60) + 15).toISOString() : undefined
+            estimated_clear_time: status === 'occupied' ? addMinutesSafe(new Date(), Math.floor(Math.random() * 60) + 15).toISOString() : undefined
           }
         })
       }
@@ -214,7 +215,7 @@ export function TableManagement({
             customer_name: 'John Smith',
             phone: '+1-555-0123',
             party_size: 4,
-            reservation_date: format(new Date(), 'yyyy-MM-dd'),
+            reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
             reservation_time: '19:00',
             duration_minutes: 120,
             special_requests: 'Anniversary dinner, window seat preferred',
@@ -232,7 +233,7 @@ export function TableManagement({
             customer_name: 'Emily Johnson',
             phone: '+1-555-0124',
             party_size: 6,
-            reservation_date: format(new Date(), 'yyyy-MM-dd'),
+            reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
             reservation_time: '20:00',
             duration_minutes: 90,
             special_requests: 'Birthday celebration',
@@ -344,7 +345,7 @@ export function TableManagement({
       ...table.metadata,
       status: newStatus,
       occupied_since: newStatus === 'occupied' ? new Date().toISOString() : undefined,
-      estimated_clear_time: newStatus === 'occupied' ? addMinutes(new Date(), 90).toISOString() : undefined,
+      estimated_clear_time: newStatus === 'occupied' ? addMinutesSafe(new Date(), 90).toISOString() : undefined,
       server_name: newStatus === 'occupied' ? 'Current Server' : undefined
     }
 
@@ -407,7 +408,7 @@ export function TableManagement({
       const result = await universalApi.createEntity({
         entity_type: 'reservation',
         entity_name: `${reservationForm.customer_name} Party`,
-        entity_code: `RES-${format(new Date(), 'yyyy-MM-dd')}-${Date.now().toString().slice(-4)}`,
+        entity_code: `RES-${formatDate(new Date(), 'yyyy-MM-dd')}-${Date.now().toString().slice(-4)}`,
         smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.v1',
         metadata: {
           table_id: reservationForm.table_id,
@@ -428,7 +429,7 @@ export function TableManagement({
         setReservations(prev => [...prev, result.data as Reservation])
         
         // Update table status to reserved if reservation is today
-        if (reservationForm.reservation_date === format(new Date(), 'yyyy-MM-dd')) {
+        if (reservationForm.reservation_date === formatDate(new Date(), 'yyyy-MM-dd')) {
           await updateTableStatus(reservationForm.table_id, 'reserved')
         }
         
@@ -438,7 +439,7 @@ export function TableManagement({
           customer_name: '',
           phone: '',
           party_size: '',
-          reservation_date: format(new Date(), 'yyyy-MM-dd'),
+          reservation_date: formatDate(new Date(), 'yyyy-MM-dd'),
           reservation_time: '',
           duration_minutes: '90',
           special_requests: ''
@@ -485,7 +486,7 @@ export function TableManagement({
     {
       title: 'Reservations Today',
       value: reservations.filter(r => 
-        r.metadata?.reservation_date === format(new Date(), 'yyyy-MM-dd') &&
+        r.metadata?.reservation_date === formatDate(new Date(), 'yyyy-MM-dd') &&
         r.metadata?.status === 'confirmed'
       ).length.toString(),
       icon: Calendar
@@ -754,7 +755,7 @@ export function TableManagement({
                       {selectedTable.metadata?.occupied_since && (
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Since:</span>
-                          <span>{format(new Date(selectedTable.metadata.occupied_since), 'HH:mm')}</span>
+                          <span>{formatDate(new Date(selectedTable.metadata.occupied_since), 'HH:mm')}</span>
                         </div>
                       )}
                     </div>
@@ -840,7 +841,7 @@ export function TableManagement({
                       <TableCell>{table.metadata?.server_name || '-'}</TableCell>
                       <TableCell>
                         {table.metadata?.occupied_since 
-                          ? format(new Date(table.metadata.occupied_since), 'HH:mm')
+                          ? formatDate(new Date(table.metadata.occupied_since), 'HH:mm')
                           : '-'
                         }
                       </TableCell>
@@ -1005,7 +1006,7 @@ export function TableManagement({
                       </TableCell>
                       <TableCell>
                         {reservation.metadata?.reservation_date 
-                          ? format(new Date(reservation.metadata.reservation_date), 'MMM dd')
+                          ? formatDate(new Date(reservation.metadata.reservation_date), 'MMM dd')
                           : '-'
                         }
                       </TableCell>

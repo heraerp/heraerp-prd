@@ -43,7 +43,7 @@ import {
   Users,
   RefreshCw
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface SuppliersManagementProps {
   organizationId: string
@@ -725,11 +725,11 @@ export function SuppliersManagement({
                         <TableCell className="font-mono">{po.transaction_code}</TableCell>
                         <TableCell>{po.metadata?.supplier_name || 'Unknown'}</TableCell>
                         <TableCell>
-                          {format(new Date(po.transaction_date), 'MMM d, yyyy')}
+                          {formatDate(new Date(po.transaction_date), 'MMM d, yyyy')}
                         </TableCell>
                         <TableCell>
                           {po.metadata?.delivery_date 
-                            ? format(new Date(po.metadata.delivery_date), 'MMM d, yyyy')
+                            ? formatDate(new Date(po.metadata.delivery_date), 'MMM d, yyyy')
                             : 'Not set'
                           }
                         </TableCell>

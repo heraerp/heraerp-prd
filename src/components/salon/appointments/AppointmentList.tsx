@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Calendar, Clock, User, DollarSign, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
 import { WhatsAppNotificationBadge, WhatsAppNotificationHistory } from './WhatsAppNotificationBadge'
 
@@ -138,7 +138,7 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-gray-400" />
                     <span className="text-sm !text-gray-700 dark:!text-gray-300">
-                      {format(appointment.appointmentDate, 'MMMM d, yyyy')}
+                      {formatDate(appointment.appointmentDate, 'MMMM d, yyyy')}
                     </span>
                   </div>
 

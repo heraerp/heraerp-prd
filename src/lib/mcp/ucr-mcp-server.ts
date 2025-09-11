@@ -23,7 +23,8 @@ import { z } from 'zod'
 import { universalApi } from '@/lib/universal-api'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import { v4 as uuidv4 } from 'uuid'
-import { format, parseISO, isAfter, isBefore } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
+import { parseISO, isAfter, isBefore } from 'date-fns'
 
 // Tool parameter schemas
 const ListTemplatesSchema = z.object({

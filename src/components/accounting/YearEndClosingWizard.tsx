@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { createFiscalYearManager, type ClosingResult, type FiscalPeriod } from '@/lib/dna/fiscal-year/universal-fiscal-year'
 import { createFiscalCloseEngine, type FiscalCloseResult } from '@/lib/dna/fiscal-year/fiscal-close-engine'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface YearEndClosingWizardProps {
   className?: string
@@ -460,7 +460,7 @@ export function YearEndClosingWizard({
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">Closing Date</span>
                           <span className="font-medium">
-                            {format(new Date(closingResult.closingDate), 'MMM dd, yyyy')}
+                            {formatDate(new Date(closingResult.closingDate), 'MMM dd, yyyy')}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">

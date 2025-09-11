@@ -24,7 +24,7 @@ import {
   Calculator,
   Loader2
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { formatDate } from '@/lib/date-utils'
 
 interface PaymentProcessingProps {
   organizationId: string
@@ -523,7 +523,7 @@ export function PaymentProcessing({
                             {payment.transaction_code}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {format(new Date(payment.transaction_date), 'MMM d, h:mm a')}
+                            {formatDate(new Date(payment.transaction_date), 'MMM d, h:mm a')}
                           </p>
                         </div>
                       </div>

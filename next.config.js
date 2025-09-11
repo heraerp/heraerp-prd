@@ -56,8 +56,6 @@ const nextConfig = {
       // Reduce bundle size
       config.resolve.alias = {
         ...config.resolve.alias,
-        // Replace date-fns with dayjs for smaller bundle
-        'date-fns': 'dayjs',
         // Optimize lucide imports
         'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react/dist/esm/icons'),
       };

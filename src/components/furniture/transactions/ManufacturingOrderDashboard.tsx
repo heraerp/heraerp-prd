@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { universalApi } from '@/lib/universal-api';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-utils'
+;
 
 interface ManufacturingOrder {
   id: string;
@@ -305,7 +306,7 @@ export function ManufacturingOrderDashboard() {
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4 text-muted-foreground" />
                             <span className="text-sm">
-                              {format(new Date(order.target_completion_date), 'PP')}
+                              {formatDate(new Date(order.target_completion_date), 'PP')}
                             </span>
                           </div>
                         </TableCell>
@@ -396,7 +397,7 @@ export function ManufacturingOrderDashboard() {
               <div>
                 <p className="text-sm text-muted-foreground">Target Completion</p>
                 <p className="font-medium">
-                  {format(new Date(selectedOrder.target_completion_date), 'PPP')}
+                  {formatDate(new Date(selectedOrder.target_completion_date), 'PPP')}
                 </p>
               </div>
               <div>

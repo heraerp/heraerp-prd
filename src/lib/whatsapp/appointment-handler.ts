@@ -4,7 +4,8 @@
  */
 
 import { universalApi } from '@/lib/universal-api'
-import { format, addDays, parse, isValid } from 'date-fns'
+import { formatDate, parseDateSafe } from '@/lib/date-utils'
+import { addDays, isValid } from 'date-fns'
 
 export interface WhatsAppMessage {
   from: string
@@ -126,7 +127,7 @@ export async function handleIncomingMessage(
         // Generate next 7 days
         const dates = Array.from({ length: 7 }, (_, i) => {
           const date = addDays(new Date(), i)
-          return `${i + 1}. ${format(date, 'EEEE, MMM dd')}`
+          return `${i + 1}. ${formatDate(date, 'EEEE, MMM dd')}`
         })
         
         await sendReply(phone,
@@ -144,11 +145,11 @@ export async function handleIncomingMessage(
       const dateNum = parseInt(text)
       if (dateNum >= 1 && dateNum <= 7) {
         const selectedDate = addDays(new Date(), dateNum - 1)
-        session.data.date = format(selectedDate, 'yyyy-MM-dd')
+        session.data.date = formatDate(selectedDate, 'yyyy-MM-dd')
         session.step = 'time'
         
         await sendReply(phone,
-          `Great! Booking for ${format(selectedDate, 'EEEE, MMM dd')}.\n\n` +
+          `Great! Booking for ${formatDate(selectedDate, 'EEEE, MMM dd')}.\n\n` +
           "Available time slots:\n" +
           TIME_SLOTS.map((t, i) => `${i + 1}. ${t}`).join('\n') +
           "\n\nReply with the number."
@@ -170,7 +171,7 @@ export async function handleIncomingMessage(
           "📅 *Booking Summary*\n\n" +
           `Service: ${session.data.service}\n` +
           `Stylist: ${session.data.staff}\n` +
-          `Date: ${format(new Date(session.data.date!), 'EEEE, MMM dd')}\n` +
+          `Date: ${formatDate(new Date(session.data.date!), 'EEEE, MMM dd')}\n` +
           `Time: ${session.data.time}\n` +
           `Duration: ${service?.duration} minutes\n` +
           `Price: AED ${service?.price}\n\n` +
@@ -192,7 +193,7 @@ export async function handleIncomingMessage(
           await sendReply(phone,
             "✅ *Appointment Confirmed!*\n\n" +
             `Your appointment for ${session.data.service} with ${session.data.staff} ` +
-            `on ${format(new Date(session.data.date!), 'EEEE, MMM dd')} at ${session.data.time} has been booked.\n\n` +
+            `on ${formatDate(new Date(session.data.date!), 'EEEE, MMM dd')} at ${session.data.time} has been booked.\n\n` +
             "You'll receive a reminder 24 hours before your appointment.\n\n" +
             "Thank you for choosing Hair Talkz! 💇‍♀️\n\n" +
             "To manage your booking, reply 'manage'."
