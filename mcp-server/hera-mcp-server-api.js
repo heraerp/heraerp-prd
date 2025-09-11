@@ -499,6 +499,77 @@ app.get('/api/uat/gl-balance', async (req, res) => {
   }
 })
 
+// Read-only: transaction detail (header + lines)
+app.get('/api/uat/transaction-detail', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const transactionId = req.query.transactionId || req.query.tid
+    const transactionCode = req.query.transactionCode || req.query.tcode
+    const lineSmart = req.query.lineSmartCodePrefix || req.query.lsmart
+    const glType = req.query.glType || req.query.gltype
+    const maxLines = Math.min(parseInt(req.query.limit || '500', 10) || 500, 2000)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+    if (!transactionId && !transactionCode) {
+      return res.status(400).json({ error: 'transactionId or transactionCode is required' })
+    }
+
+    // Resolve header
+    let header
+    if (transactionId) {
+      const { data, error } = await supabase
+        .from('universal_transactions')
+        .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id, metadata')
+        .eq('organization_id', organizationId)
+        .eq('id', transactionId)
+        .single()
+      if (error) return res.status(404).json({ error: `Transaction not found: ${error.message}` })
+      header = data
+    } else {
+      const { data, error } = await supabase
+        .from('universal_transactions')
+        .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id, metadata')
+        .eq('organization_id', organizationId)
+        .eq('transaction_code', transactionCode)
+        .limit(1)
+      if (error || !data || !data.length) return res.status(404).json({ error: 'Transaction not found for given code' })
+      header = data[0]
+    }
+
+    // Fetch lines for the header
+    let lnQuery = supabase
+      .from('universal_transaction_lines')
+      .select('id, transaction_id, line_no, gl_type, amount, smart_code, entity_id, organization_id, metadata')
+      .eq('organization_id', organizationId)
+      .eq('transaction_id', header.id)
+      .limit(maxLines)
+    if (lineSmart) lnQuery = lnQuery.ilike('smart_code', `${lineSmart}%`)
+    if (glType) lnQuery = lnQuery.eq('gl_type', glType)
+    const { data: lines, error: lnErr } = await lnQuery
+    if (lnErr) return res.status(500).json({ error: lnErr.message })
+
+    // Compute GL totals if GL lines
+    let totalDebit = 0, totalCredit = 0
+    for (const l of lines || []) {
+      if (l.gl_type === 'debit') totalDebit += Number(l.amount || 0)
+      if (l.gl_type === 'credit') totalCredit += Number(l.amount || 0)
+    }
+    const summary = {
+      line_count: (lines || []).length,
+      total_debit: totalDebit,
+      total_credit: totalCredit,
+      diff: totalDebit - totalCredit
+    }
+
+    res.json({ success: true, header, lines, summary })
+  } catch (error) {
+    console.error('Transaction detail error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // UAT Scenario runner
 app.post('/api/uat/scenarios', async (req, res) => {
   try {

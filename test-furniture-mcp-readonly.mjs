@@ -11,7 +11,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(kv => {
 const MCP_URL = args.mcp || process.env.NEXT_PUBLIC_MCP_API_URL || 'http://localhost:3005'
 const ORG_ID = args.org || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'f0af4ced-9d12-4a55-a649-b484368db249'
 const SAMPLE = Number.parseInt(args.sample || '20', 10) || 20
-const MODE = args.mode || '' // '', 'entities', 'transactions', 'lines', 'glbalance'
+const MODE = args.mode || '' // '', 'entities', 'transactions', 'lines', 'glbalance', 'txdetail'
 const ENTITY_TYPE = args.type || ''
 const SMART_PREFIX = args.smart || ''
 const CODE = args.code || ''
@@ -31,6 +31,11 @@ const LTCODE = args.ltcode || '' // alias for transactionCode substring
 const LTCODE_PREFIX = args.ltcodePrefix || ''
 const LSMART = args.lsmart || ''
 const LGLTYPE = args.gltype || '' // 'debit' | 'credit'
+// Transaction detail filters
+const DTID = args.txid || ''
+const DTCODE = args.txcode || ''
+const DLSMART = args.dlsmart || ''
+const DGLTYPE = args.dgltype || ''
 
 async function main() {
   console.log('🧪 Furniture MCP read-only test')
@@ -174,3 +179,27 @@ main().catch(err => {
   console.error('❌ MCP test failed:', err?.message || err)
   process.exit(1)
 })
+  } else if (MODE === 'txdetail') {
+    const params = new URLSearchParams({ organizationId: ORG_ID, limit: String(SAMPLE) })
+    if (DTID) params.set('tid', DTID)
+    if (DTCODE) params.set('tcode', DTCODE)
+    if (DLSMART) params.set('lsmart', DLSMART)
+    if (DGLTYPE) params.set('glType', DGLTYPE)
+
+    const tdResp = await fetch(`${MCP_URL}/api/uat/transaction-detail?${params.toString()}`)
+    if (!tdResp.ok) {
+      const text = await tdResp.text()
+      throw new Error(`MCP transaction-detail failed: ${tdResp.status} ${text}`)
+    }
+    const td = await tdResp.json()
+    const header = td?.header
+    const lines = td?.lines || []
+    console.log(`\n🧾 Transaction: ${header?.transaction_code} (${header?.transaction_type}) ${header?.transaction_date}`)
+    console.log(`   Smart: ${header?.smart_code || 'N/A'}  Total amount: ${header?.total_amount ?? 'N/A'}`)
+    console.log(`   Lines: ${lines.length} | GL totals: debit=${td?.summary?.total_debit || 0} credit=${td?.summary?.total_credit || 0} diff=${td?.summary?.diff || 0}`)
+    if (lines.length) {
+      console.log(`\n🔎 First ${Math.min(SAMPLE, lines.length)} lines:`)
+      lines.slice(0, SAMPLE).forEach((l, i) => {
+        console.log(`   ${i + 1}. line=${l.line_no} gl=${l.gl_type || '-'} amount=${l.amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
+      })
+    }
