@@ -292,6 +292,100 @@ app.get('/api/uat/entities', async (req, res) => {
   }
 })
 
+// Read-only: list organizations (basic info)
+app.get('/api/uat/organizations', async (req, res) => {
+  try {
+    const id = req.query.id
+    const name = req.query.name
+    const namePrefix = req.query.namePrefix
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200)
+
+    let q = supabase
+      .from('core_organizations')
+      .select('id, organization_name')
+      .limit(limit)
+
+    if (id) q = q.eq('id', id)
+    if (namePrefix) q = q.ilike('organization_name', `${namePrefix}%`)
+    else if (name) q = q.ilike('organization_name', `%${name}%`)
+
+    const { data, error } = await q
+    if (error) return res.status(500).json({ error: error.message })
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Organizations read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// Read-only: dynamic data (custom fields)
+app.get('/api/uat/dynamic-data', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const entityId = req.query.entityId || req.query.eid
+    const fieldName = req.query.fieldName || req.query.field
+    const fieldPrefix = req.query.fieldPrefix
+    const smartPrefix = req.query.smartCodePrefix || req.query.smart
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200)
+
+    if (!organizationId && !entityId) {
+      return res.status(400).json({ error: 'organizationId or entityId is required' })
+    }
+
+    let q = supabase
+      .from('core_dynamic_data')
+      .select('id, organization_id, entity_id, field_name, field_value_text, field_value_number, field_value_json, smart_code, created_at')
+      .limit(limit)
+
+    if (organizationId) q = q.eq('organization_id', organizationId)
+    if (entityId) q = q.eq('entity_id', entityId)
+    if (fieldPrefix) q = q.ilike('field_name', `${fieldPrefix}%`)
+    else if (fieldName) q = q.ilike('field_name', `%${fieldName}%`)
+    if (smartPrefix) q = q.ilike('smart_code', `${smartPrefix}%`)
+
+    const { data, error } = await q
+    if (error) return res.status(500).json({ error: error.message })
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Dynamic data read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// Read-only: relationships (links, workflows, hierarchies)
+app.get('/api/uat/relationships', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const fromId = req.query.from || req.query.from_entity_id
+    const toId = req.query.to || req.query.to_entity_id
+    const type = req.query.relationshipType || req.query.type
+    const smartPrefix = req.query.smartCodePrefix || req.query.smart
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+
+    let q = supabase
+      .from('core_relationships')
+      .select('id, organization_id, from_entity_id, to_entity_id, relationship_type, smart_code, metadata, created_at')
+      .eq('organization_id', organizationId)
+      .limit(limit)
+
+    if (fromId) q = q.eq('from_entity_id', fromId)
+    if (toId) q = q.eq('to_entity_id', toId)
+    if (type) q = q.eq('relationship_type', type)
+    if (smartPrefix) q = q.ilike('smart_code', `${smartPrefix}%`)
+
+    const { data, error } = await q
+    if (error) return res.status(500).json({ error: error.message })
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Relationships read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // Read-only: list transactions with filters
 app.get('/api/uat/transactions', async (req, res) => {
   try {
@@ -310,7 +404,7 @@ app.get('/api/uat/transactions', async (req, res) => {
 
     let query = supabase
       .from('universal_transactions')
-      .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id')
+      .select('*')
       .eq('organization_id', organizationId)
       .limit(limit)
 
@@ -379,7 +473,7 @@ app.get('/api/uat/transaction-lines', async (req, res) => {
 
     let lineQuery = supabase
       .from('universal_transaction_lines')
-      .select('id, transaction_id, line_no, gl_type, amount, smart_code, entity_id, organization_id, metadata')
+      .select('id, transaction_id, line_number, line_amount, smart_code, line_entity_id, organization_id, metadata')
       .eq('organization_id', organizationId)
       .limit(limit)
 
@@ -391,8 +485,10 @@ app.get('/api/uat/transaction-lines', async (req, res) => {
     if (smartPrefix) {
       lineQuery = lineQuery.ilike('smart_code', `${smartPrefix}%`)
     }
-    if (glType) {
-      lineQuery = lineQuery.eq('gl_type', glType)
+    if (glType === 'debit') {
+      lineQuery = lineQuery.gt('line_amount', 0)
+    } else if (glType === 'credit') {
+      lineQuery = lineQuery.lt('line_amount', 0)
     }
 
     const { data, error } = await lineQuery
@@ -424,7 +520,7 @@ app.get('/api/uat/gl-balance', async (req, res) => {
     // 1) Fetch candidate transactions
     let txQuery = supabase
       .from('universal_transactions')
-      .select('id, transaction_code, transaction_type, transaction_date, smart_code')
+      .select('*')
       .eq('organization_id', organizationId)
       .limit(txLimit)
 
@@ -446,7 +542,7 @@ app.get('/api/uat/gl-balance', async (req, res) => {
     // 2) Fetch lines for these transactions
     let lnQuery = supabase
       .from('universal_transaction_lines')
-      .select('transaction_id, gl_type, amount, smart_code')
+      .select('transaction_id, line_amount, smart_code')
       .eq('organization_id', organizationId)
       .in('transaction_id', txIds)
       .limit(10000)
@@ -462,8 +558,9 @@ app.get('/api/uat/gl-balance', async (req, res) => {
     const byTx = new Map()
     for (const l of lines || []) {
       const agg = byTx.get(l.transaction_id) || { debit: 0, credit: 0, count: 0 }
-      if (l.gl_type === 'debit') agg.debit += Number(l.amount || 0)
-      else if (l.gl_type === 'credit') agg.credit += Number(l.amount || 0)
+      const amt = Number(l.line_amount || 0)
+      if (amt >= 0) agg.debit += amt
+      else agg.credit += -amt
       agg.count++
       byTx.set(l.transaction_id, agg)
     }
@@ -521,7 +618,7 @@ app.get('/api/uat/transaction-detail', async (req, res) => {
     if (transactionId) {
       const { data, error } = await supabase
         .from('universal_transactions')
-        .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id, metadata')
+        .select('*')
         .eq('organization_id', organizationId)
         .eq('id', transactionId)
         .single()
@@ -530,7 +627,7 @@ app.get('/api/uat/transaction-detail', async (req, res) => {
     } else {
       const { data, error } = await supabase
         .from('universal_transactions')
-        .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id, metadata')
+        .select('*')
         .eq('organization_id', organizationId)
         .eq('transaction_code', transactionCode)
         .limit(1)
@@ -541,20 +638,22 @@ app.get('/api/uat/transaction-detail', async (req, res) => {
     // Fetch lines for the header
     let lnQuery = supabase
       .from('universal_transaction_lines')
-      .select('id, transaction_id, line_no, gl_type, amount, smart_code, entity_id, organization_id, metadata')
+      .select('id, transaction_id, line_number, line_amount, smart_code, line_entity_id, organization_id, metadata')
       .eq('organization_id', organizationId)
       .eq('transaction_id', header.id)
       .limit(maxLines)
     if (lineSmart) lnQuery = lnQuery.ilike('smart_code', `${lineSmart}%`)
-    if (glType) lnQuery = lnQuery.eq('gl_type', glType)
+    if (glType === 'debit') lnQuery = lnQuery.gt('line_amount', 0)
+    else if (glType === 'credit') lnQuery = lnQuery.lt('line_amount', 0)
     const { data: lines, error: lnErr } = await lnQuery
     if (lnErr) return res.status(500).json({ error: lnErr.message })
 
     // Compute GL totals if GL lines
     let totalDebit = 0, totalCredit = 0
     for (const l of lines || []) {
-      if (l.gl_type === 'debit') totalDebit += Number(l.amount || 0)
-      if (l.gl_type === 'credit') totalCredit += Number(l.amount || 0)
+      const amt = Number(l.line_amount || 0)
+      if (amt >= 0) totalDebit += amt
+      else totalCredit += -amt
     }
     const summary = {
       line_count: (lines || []).length,
@@ -566,6 +665,150 @@ app.get('/api/uat/transaction-detail', async (req, res) => {
     res.json({ success: true, header, lines, summary })
   } catch (error) {
     console.error('Transaction detail error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// Read-only: one-shot smoke test across the 6 tables
+app.get('/api/uat/smoke', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    if (!organizationId) return res.status(400).json({ error: 'organizationId is required' })
+
+    // Optional filters
+    const esmart = req.query.esmart || req.query.entitySmart || req.query.entitySmartPrefix
+    const tsmart = req.query.tsmart || req.query.txSmart || req.query.smart
+    const lsmart = req.query.lsmart || req.query.lineSmart || req.query.lineSmartPrefix
+    const from = req.query.from
+    const to = req.query.to
+
+    const elimit = Math.min(parseInt(req.query.elimit || '10', 10) || 10, 50)
+    const tlimit = Math.min(parseInt(req.query.tlimit || '10', 10) || 10, 50)
+    const llimit = Math.min(parseInt(req.query.llimit || '1000', 10) || 1000, 5000)
+
+    // 1) Organizations quick check
+    const { data: orgs } = await supabase
+      .from('core_organizations')
+      .select('id, organization_name')
+      .eq('id', organizationId)
+      .limit(1)
+
+    // 2) Entities: count + sample
+    let entCount = 0
+    try {
+      const { count } = await supabase
+        .from('core_entities')
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', organizationId)
+        .ilike(esmart ? 'smart_code' : 'entity_type', esmart ? `${esmart}%` : '%')
+      entCount = count || 0
+    } catch {}
+
+    let entQuery = supabase
+      .from('core_entities')
+      .select('id, entity_type, entity_code, entity_name, smart_code')
+      .eq('organization_id', organizationId)
+      .limit(elimit)
+    if (esmart) entQuery = entQuery.ilike('smart_code', `${esmart}%`)
+    const { data: entSample } = await entQuery
+
+    // 3) Transactions: count + recent sample
+    let txCount = 0
+    try {
+      let cQ = supabase
+        .from('universal_transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', organizationId)
+      if (tsmart) cQ = cQ.ilike('smart_code', `${tsmart}%`)
+      if (from) cQ = cQ.gte('transaction_date', from)
+      if (to) {
+        const toWithTime = /T/.test(to) ? to : `${to}T23:59:59`
+        cQ = cQ.lte('transaction_date', toWithTime)
+      }
+      const { count } = await cQ
+      txCount = count || 0
+    } catch {}
+
+    let txQ = supabase
+      .from('universal_transactions')
+      .select('*')
+      .eq('organization_id', organizationId)
+      .order('transaction_date', { ascending: false })
+      .limit(tlimit)
+    if (tsmart) txQ = txQ.ilike('smart_code', `${tsmart}%`)
+    if (from) txQ = txQ.gte('transaction_date', from)
+    if (to) {
+      const toWithTime = /T/.test(to) ? to : `${to}T23:59:59`
+      txQ = txQ.lte('transaction_date', toWithTime)
+    }
+    const { data: txSample } = await txQ
+
+    // 4) GL balance quick summary over limited tx set
+    const txIds = (txSample || []).map(t => t.id)
+    let glSummary = { transactions: txIds.length, checkedLines: 0, unbalanced: 0 }
+    let unbalanced = []
+    if (txIds.length) {
+      let lnQ = supabase
+        .from('universal_transaction_lines')
+        .select('transaction_id, line_amount, smart_code')
+        .eq('organization_id', organizationId)
+        .in('transaction_id', txIds)
+        .limit(llimit)
+      if (lsmart) lnQ = lnQ.ilike('smart_code', `${lsmart}%`)
+      else lnQ = lnQ.ilike('smart_code', '%.GL.LINE.%')
+      const { data: lines } = await lnQ
+      glSummary.checkedLines = (lines || []).length
+
+      const byTx = new Map()
+      for (const l of lines || []) {
+        const agg = byTx.get(l.transaction_id) || { debit: 0, credit: 0 }
+        const amt = Number(l.line_amount || 0)
+        if (amt >= 0) agg.debit += amt
+        else agg.credit += -amt
+        byTx.set(l.transaction_id, agg)
+      }
+      for (const t of txSample || []) {
+        const agg = byTx.get(t.id) || { debit: 0, credit: 0 }
+        if (Math.round((agg.debit - agg.credit) * 100) !== 0) {
+          unbalanced.push({
+            transaction_code: t.transaction_code || t.transaction_number || t.id,
+            transaction_date: t.transaction_date,
+            diff: agg.debit - agg.credit
+          })
+        }
+      }
+      glSummary.unbalanced = unbalanced.length
+    }
+
+    res.json({
+      success: true,
+      organization: orgs && orgs[0] ? orgs[0] : { id: organizationId },
+      entities: {
+        count: entCount,
+        sample: (entSample || []).map(e => ({
+          code: e.entity_code,
+          name: e.entity_name,
+          type: e.entity_type,
+          smart: e.smart_code
+        }))
+      },
+      transactions: {
+        count: txCount,
+        recent: (txSample || []).map(t => ({
+          code: t.transaction_code || t.transaction_number || t.id,
+          type: t.transaction_type,
+          date: t.transaction_date,
+          smart: t.smart_code,
+          amount: t.total_amount
+        }))
+      },
+      glBalance: {
+        summary: glSummary,
+        unbalanced: unbalanced.slice(0, 10)
+      }
+    })
+  } catch (error) {
+    console.error('Smoke test error:', error)
     res.status(500).json({ error: error.message })
   }
 })

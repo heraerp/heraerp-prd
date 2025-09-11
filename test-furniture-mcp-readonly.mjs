@@ -11,7 +11,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(kv => {
 const MCP_URL = args.mcp || process.env.NEXT_PUBLIC_MCP_API_URL || 'http://localhost:3005'
 const ORG_ID = args.org || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'f0af4ced-9d12-4a55-a649-b484368db249'
 const SAMPLE = Number.parseInt(args.sample || '20', 10) || 20
-const MODE = args.mode || '' // '', 'entities', 'transactions', 'lines', 'glbalance', 'txdetail'
+const MODE = args.mode || '' // '', 'entities', 'transactions', 'lines', 'glbalance', 'txdetail', 'smoke'
 const ENTITY_TYPE = args.type || ''
 const SMART_PREFIX = args.smart || ''
 const CODE = args.code || ''
@@ -112,13 +112,13 @@ async function main() {
     const td = await tdResp.json()
     const header = td?.header
     const lines = td?.lines || []
-    console.log(`\n🧾 Transaction: ${header?.transaction_code} (${header?.transaction_type}) ${header?.transaction_date}`)
+    console.log(`\n🧾 Transaction: ${header?.transaction_code || header?.transaction_number} (${header?.transaction_type}) ${header?.transaction_date}`)
     console.log(`   Smart: ${header?.smart_code || 'N/A'}  Total amount: ${header?.total_amount ?? 'N/A'}`)
     console.log(`   Lines: ${lines.length} | GL totals: debit=${td?.summary?.total_debit || 0} credit=${td?.summary?.total_credit || 0} diff=${td?.summary?.diff || 0}`)
     if (lines.length) {
       console.log(`\n🔎 First ${Math.min(SAMPLE, lines.length)} lines:`)
       lines.slice(0, SAMPLE).forEach((l, i) => {
-        console.log(`   ${i + 1}. line=${l.line_no} gl=${l.gl_type || '-'} amount=${l.amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
+        console.log(`   ${i + 1}. line=${l.line_number} amount=${l.line_amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
       })
     }
 
@@ -142,7 +142,7 @@ async function main() {
     if (rows.length) {
       console.log(`\n🔎 First ${Math.min(SAMPLE, rows.length)} lines:`)
       rows.slice(0, SAMPLE).forEach((l, i) => {
-        console.log(`   ${i + 1}. tx=${l.transaction_id} line=${l.line_no} gl=${l.gl_type || '-'} amount=${l.amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
+        console.log(`   ${i + 1}. tx=${l.transaction_id} line=${l.line_number} amount=${l.line_amount ?? '-'} smart=${l.smart_code || 'N/A'}`)
       })
     }
 
@@ -204,3 +204,39 @@ main().catch(err => {
   console.error('❌ MCP test failed:', err?.message || err)
   process.exit(1)
 })
+  } else if (MODE === 'smoke') {
+    const params = new URLSearchParams({ organizationId: ORG_ID, elimit: String(SAMPLE), tlimit: String(SAMPLE) })
+    if (TSMART) params.set('tsmart', TSMART)
+    if (LSMART) params.set('lsmart', LSMART)
+    if (FROM) params.set('from', FROM)
+    if (TO) params.set('to', TO)
+    if (SMART_PREFIX) params.set('esmart', SMART_PREFIX)
+
+    const smResp = await fetch(`${MCP_URL}/api/uat/smoke?${params.toString()}`)
+    if (!smResp.ok) {
+      const text = await smResp.text()
+      throw new Error(`MCP smoke query failed: ${smResp.status} ${text}`)
+    }
+    const sm = await smResp.json()
+    console.log(`\n🏢 Organization: ${sm?.organization?.organization_name || sm?.organization?.id}`)
+    console.log(`📄 Entities: ${sm?.entities?.count || 0}`)
+    if (sm?.entities?.sample?.length) {
+      console.log(`   Sample:`)
+      sm.entities.sample.slice(0, SAMPLE).forEach((e, i) => {
+        console.log(`   ${i + 1}. [${e.type}] ${e.code} — ${e.name} (${e.smart})`)
+      })
+    }
+    console.log(`\n🧾 Transactions: ${sm?.transactions?.count || 0}`)
+    if (sm?.transactions?.recent?.length) {
+      console.log(`   Recent:`)
+      sm.transactions.recent.slice(0, SAMPLE).forEach((t, i) => {
+        console.log(`   ${i + 1}. [${t.type}] ${t.code} — ${t.date} amount=${t.amount ?? 'N/A'} (${t.smart || 'N/A'})`)
+      })
+    }
+    console.log(`\n🧮 GL Balance Summary: tx=${sm?.glBalance?.summary?.transactions || 0}, lines=${sm?.glBalance?.summary?.checkedLines || 0}, unbalanced=${sm?.glBalance?.summary?.unbalanced || 0}`)
+    if (sm?.glBalance?.unbalanced?.length) {
+      console.log('   Unbalanced sample:')
+      sm.glBalance.unbalanced.slice(0, SAMPLE).forEach((r, i) => {
+        console.log(`   ${i + 1}. ${r.code || r.transaction_code || ''} ${r.date || r.transaction_date || ''} diff=${r.diff}`)
+      })
+    }

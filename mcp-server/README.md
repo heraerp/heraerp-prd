@@ -147,6 +147,66 @@ Configure Claude Desktop:
 }
 ```
 
+### MCP REST Examples (cURL)
+
+Assumes MCP is running locally on `http://localhost:3005` and you’re using org `f0af4ced-9d12-4a55-a649-b484368db249`.
+
+```bash
+# 1) Organizations (core_organizations)
+curl "http://localhost:3005/api/uat/organizations?limit=5"
+
+# 2) Entities (core_entities)
+curl "http://localhost:3005/api/uat/entities?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&smart=HERA.MANUFACTURING.FURNITURE.&limit=10"
+
+# 3) Dynamic Data (core_dynamic_data)
+curl "http://localhost:3005/api/uat/dynamic-data?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&fieldPrefix=stock_&limit=10"
+
+# 4) Relationships (core_relationships)
+curl "http://localhost:3005/api/uat/relationships?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&relationshipType=has_status&limit=10"
+
+# 5) Transactions (universal_transactions)
+curl "http://localhost:3005/api/uat/transactions?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&smart=HERA.MANUFACTURING.FURNITURE.&from=2025-01-01&to=2025-12-31&limit=10"
+
+# 6) Transaction Lines (universal_transaction_lines)
+curl "http://localhost:3005/api/uat/transaction-lines?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&smart=%.GL.LINE.%&limit=10"
+
+# Bonus A) GL Balance per transaction (debits == credits)
+curl "http://localhost:3005/api/uat/gl-balance?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&smart=HERA.MANUFACTURING.FURNITURE.&from=2025-01-01&to=2025-12-31"
+
+# Bonus B) Transaction Detail (header + lines)
+curl "http://localhost:3005/api/uat/transaction-detail?organizationId=f0af4ced-9d12-4a55-a649-b484368db249&tcode=FRN-1757481909371&limit=100"
+```
+
+### Common Filters Cheat Sheet
+
+- Entities (`/api/uat/entities`)
+  - By type: `...&type=gl_account`
+  - Smart-code prefix: `...&smart=HERA.MANUFACTURING.FURNITURE.`
+  - Code starts with: `...&codePrefix=16`
+  - Name contains: `...&name=desk`
+
+- Transactions (`/api/uat/transactions`)
+  - By type: `...&type=sale`
+  - Date range: `...&from=2025-01-01&to=2025-12-31`
+  - Smart-code prefix: `...&smart=HERA.MANUFACTURING.FURNITURE.`
+  - Code contains: `...&code=SO-2025`
+
+- Transaction Lines (`/api/uat/transaction-lines`)
+  - For a transaction code: `...&tcode=FRN-1757481909371`
+  - GL lines only: `...&smart=%.GL.LINE.%`
+  - Debits only: `...&glType=debit` (amount > 0)
+  - Credits only: `...&glType=credit` (amount < 0)
+
+- Dynamic Data (`/api/uat/dynamic-data`)
+  - For an entity: `...&eid=<entity_uuid>`
+  - Field starts with: `...&fieldPrefix=stock_`
+  - Smart-code prefix: `...&smart=HERA.MANUFACTURING.FURNITURE.`
+
+- Relationships (`/api/uat/relationships`)
+  - Status/workflow: `...&relationshipType=has_status`
+  - From entity: `...&from=<entity_uuid>`
+  - To entity: `...&to=<entity_uuid>`
+
 ## 🐛 Troubleshooting
 
 ### Organization ID Error

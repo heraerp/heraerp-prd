@@ -171,14 +171,19 @@ SELECT COUNT(*) FROM core_entities WHERE organization_id IS NULL; -- Must be 0
 
 ### GL Balance Check
 ```bash
-# For each transaction with GL lines
-SELECT transaction_id, SUM(CASE WHEN gl_type = 'debit' THEN amount ELSE 0 END) as debits,
-       SUM(CASE WHEN gl_type = 'credit' THEN amount ELSE 0 END) as credits
+# For each transaction with GL lines (debit positive, credit negative)
+SELECT transaction_id,
+       SUM(CASE WHEN line_amount >= 0 THEN line_amount ELSE 0 END) AS debits,
+       SUM(CASE WHEN line_amount < 0 THEN -line_amount ELSE 0 END) AS credits
 FROM universal_transaction_lines
 WHERE smart_code LIKE '%.GL.LINE.%'
 GROUP BY transaction_id
 HAVING debits != credits; -- Must return 0 rows
 ```
+
+### Schema naming note (live vs docs)
+- Live environments often use `transaction_code` for the transaction header identifier; some documentation references `transaction_number`. Prefer `transaction_code` in queries and UIs; ensure compatibility by selecting all columns when in doubt.
+- For lines, use `line_number` and `line_amount` (there is no `gl_type`/`amount`). Determine debit/credit using the sign of `line_amount`.
 
 ## Deployment Steps
 

@@ -13,6 +13,11 @@
 6. universal_transaction_lines → DETAILS of what happened (items, amounts, quantities)
 ```
 
+> Schema naming compatibility note
+> - In some live environments, the transaction header identifier is stored as `transaction_code`. Some documentation and example schemas may reference `transaction_number`.
+> - To avoid breakage across environments, prefer selecting all header columns (e.g., `select('*')`) and, in code/printing, use `transaction_code || transaction_number`.
+> - For line items, use `line_number` and `line_amount` to represent sequence and value. There is no `gl_type` column; determine Debit/Credit via the sign of `line_amount` (positive = debit, negative = credit).
+
 ## 🎯 Real Examples: How Different Business Needs Use Same Tables
 
 ### Example 1: Salon Appointment Booking
