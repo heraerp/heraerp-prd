@@ -39,8 +39,12 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+# Copy server files
+COPY --from=builder /app/server.js ./server.js
+COPY --from=builder /app/emergency-server.js ./emergency-server.js
 
 USER nextjs
 
@@ -48,5 +52,5 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-# Use the standalone server
-CMD ["node", "server.js"]
+# Start Next.js
+CMD ["npm", "start"]
