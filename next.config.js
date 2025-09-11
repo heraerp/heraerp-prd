@@ -25,7 +25,7 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
-  output: 'standalone', // For Railway deployment
+  // output: 'standalone' // Disabled for Railway, // For Railway deployment
   poweredByHeader: false,
   compress: true,
   generateEtags: false,

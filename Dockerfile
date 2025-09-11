@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json package-lock.json* ./
-RUN npm install --force
+RUN npm ci || npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -17,40 +17,35 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Disable telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
+# Set environment variables
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
-# Force production build to succeed
-ENV SKIP_ENV_VALIDATION 1
-ENV NEXT_PUBLIC_SKIP_VALIDATION 1
-
-# Build with force flag
-RUN npm run build || echo "Build completed with warnings"
+# Build the application
+RUN npm run build:railway || npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy built application
+# Copy all necessary files
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
-# Copy server files
-COPY --from=builder /app/server.js ./server.js
-COPY --from=builder /app/emergency-server.js ./emergency-server.js
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next.config.js ./next.config.js
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-# Start Next.js
 CMD ["npm", "start"]

@@ -242,6 +242,109 @@ app.post('/api/uat/reports', async (req, res) => {
   }
 });
 
+// Read-only: list entities with filters
+app.get('/api/uat/entities', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const entityType = req.query.entityType || req.query.type
+    const smartPrefix = req.query.smartCodePrefix || req.query.smart
+    const code = req.query.code
+    const codePrefix = req.query.codePrefix
+    const name = req.query.name
+    const namePrefix = req.query.namePrefix
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+
+    let query = supabase
+      .from('core_entities')
+      .select('id, entity_type, entity_code, entity_name, smart_code')
+      .eq('organization_id', organizationId)
+      .limit(limit)
+
+    if (entityType) {
+      query = query.eq('entity_type', entityType)
+    }
+    if (smartPrefix) {
+      query = query.ilike('smart_code', `${smartPrefix}%`)
+    }
+    if (codePrefix) {
+      query = query.ilike('entity_code', `${codePrefix}%`)
+    } else if (code) {
+      query = query.ilike('entity_code', `%${code}%`)
+    }
+    if (namePrefix) {
+      query = query.ilike('entity_name', `${namePrefix}%`)
+    } else if (name) {
+      query = query.ilike('entity_name', `%${name}%`)
+    }
+
+    const { data, error } = await query
+    if (error) {
+      return res.status(500).json({ error: error.message })
+    }
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Entities read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// Read-only: list transactions with filters
+app.get('/api/uat/transactions', async (req, res) => {
+  try {
+    const organizationId = req.query.organizationId || req.query.org
+    const transactionType = req.query.transactionType || req.query.type
+    const smartPrefix = req.query.smartCodePrefix || req.query.smart
+    const code = req.query.code
+    const codePrefix = req.query.codePrefix
+    const from = req.query.from // ISO date (inclusive)
+    const to = req.query.to     // ISO date (inclusive)
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200)
+
+    if (!organizationId) {
+      return res.status(400).json({ error: 'organizationId is required' })
+    }
+
+    let query = supabase
+      .from('universal_transactions')
+      .select('id, transaction_type, transaction_code, transaction_date, smart_code, total_amount, reference_entity_id')
+      .eq('organization_id', organizationId)
+      .limit(limit)
+
+    if (transactionType) {
+      query = query.eq('transaction_type', transactionType)
+    }
+    if (smartPrefix) {
+      query = query.ilike('smart_code', `${smartPrefix}%`)
+    }
+    if (codePrefix) {
+      query = query.ilike('transaction_code', `${codePrefix}%`)
+    } else if (code) {
+      query = query.ilike('transaction_code', `%${code}%`)
+    }
+    if (from) {
+      query = query.gte('transaction_date', from)
+    }
+    if (to) {
+      // include full day if only date provided
+      const toWithTime = /T/.test(to) ? to : `${to}T23:59:59`
+      query = query.lte('transaction_date', toWithTime)
+    }
+
+    const { data, error } = await query
+    if (error) {
+      return res.status(500).json({ error: error.message })
+    }
+    res.json({ success: true, count: data?.length || 0, data })
+  } catch (error) {
+    console.error('Transactions read error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // UAT Scenario runner
 app.post('/api/uat/scenarios', async (req, res) => {
   try {
