@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 /**
  * HERA Control Center Dashboard
  * Smart Code: HERA.UI.CONTROL.CENTER.DASHBOARD.v1

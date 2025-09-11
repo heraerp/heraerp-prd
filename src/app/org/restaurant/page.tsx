@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 /**
  * HERA Authenticated Restaurant Dashboard
  * Smart Code: HERA.RESTAURANT.DASHBOARD.AUTH.v1

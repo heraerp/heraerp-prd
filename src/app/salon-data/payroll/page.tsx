@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Payroll Processing System
  * Smart Code: HERA.SALON.PAYROLL.MODULE.v1

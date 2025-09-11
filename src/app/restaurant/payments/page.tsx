@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { PaymentProcessing } from '@/components/restaurant/PaymentProcessing'
 

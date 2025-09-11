@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Profit & Loss Statement (Dubai/UAE)
  * Smart Code: HERA.FINANCE.PNL.REPORT.v1

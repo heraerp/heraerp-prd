@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { HairTalkzOrgProvider, HairTalkzOrgLoading, useHairTalkzOrg } from '@/components/wizard/HairTalkzOrgContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

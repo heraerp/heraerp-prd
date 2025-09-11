@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 /**
  * HERA Validate Page - Test if HERA fits your business
  * Smart Code: HERA.UI.JOURNEY.VALIDATE.PAGE.v1

@@ -1,3 +1,6 @@
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'

@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Furniture Digital Accountant Integration
  * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.v1

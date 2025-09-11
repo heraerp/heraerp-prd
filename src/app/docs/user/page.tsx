@@ -1,3 +1,6 @@
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Play, LayoutDashboard, Star, User, Database, HelpCircle, MessageSquare, Smartphone } from 'lucide-react'

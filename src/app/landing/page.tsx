@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { HeraGradientBackgroundDNA } from '@/lib/dna/components/ui/hera-gradient-background-dna'
 import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'

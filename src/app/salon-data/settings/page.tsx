@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useRef, useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'

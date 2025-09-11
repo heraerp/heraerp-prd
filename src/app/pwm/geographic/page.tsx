@@ -1,4 +1,7 @@
-'use client';
+'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 import React from 'react';
 import { GeographicMap } from '@/components/pwm/GeographicMap';

@@ -1,3 +1,6 @@
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import { Suspense } from 'react'
 import { searchDocs } from '@/lib/hera-docs'
 import { Search, FileText, Hash, Filter } from 'lucide-react'

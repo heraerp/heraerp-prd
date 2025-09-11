@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * POS Test Page - Quick Payment Test
  * Smart Code: HERA.RETAIL.POS.TEST.v1

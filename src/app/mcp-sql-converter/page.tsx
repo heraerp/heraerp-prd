@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 // ================================================================================
 // MCP SQL CONVERTER - Progressive to Production Database Converter
 // Analyzes progressive pages and generates SQL/MCP commands for database setup

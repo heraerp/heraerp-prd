@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Daily Cash Close Page
  * Smart Code: HERA.SALON.FINANCE.DAILY.CLOSE.PAGE.v1

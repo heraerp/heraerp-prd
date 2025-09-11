@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { InventoryManagement } from '@/components/restaurant/InventoryManagement'
 

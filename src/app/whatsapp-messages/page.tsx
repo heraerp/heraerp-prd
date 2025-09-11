@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 /**
  * WhatsApp Messages Viewer with MCP Integration
  * Display all WhatsApp conversations and messages with analytics

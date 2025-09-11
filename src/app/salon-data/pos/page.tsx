@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA ERP - Dubai POS (SoftPOS + Omnichannel)
  * Smart Code: HERA.RETAIL.POS.MODULE.DUBAI.v1

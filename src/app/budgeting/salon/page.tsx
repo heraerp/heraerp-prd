@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'

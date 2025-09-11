@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useRef, useEffect } from 'react'
 import './digital-accountant.css'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'

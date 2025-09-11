@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import dynamic from 'next/dynamic'
 
 // Import the salon-data page dynamically to avoid SSR issues with headers

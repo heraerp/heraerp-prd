@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Inventory Management
  * Smart Code: HERA.SALON.INVENTORY.MODULE.v1

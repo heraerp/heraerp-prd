@@ -1,3 +1,6 @@
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 // HERA Universal Learning Platform - Main Page
 // Complete Universal Learning System for ANY educational domain
 

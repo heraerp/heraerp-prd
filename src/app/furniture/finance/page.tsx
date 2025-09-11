@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 // Removed LazyDataTable import - using inline table component
 import { Card } from '@/components/ui/card'

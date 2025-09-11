@@ -1,3 +1,6 @@
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import FINDashboard from '@/components/fin/FINDashboard'
 
 export const metadata = {

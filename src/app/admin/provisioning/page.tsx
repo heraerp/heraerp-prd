@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Admin Provisioning Dashboard
  * Smart Code: HERA.ADMIN.PROVISIONING.v1

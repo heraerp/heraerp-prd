@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Supabase SQL Editor
  * Smart Code: HERA.TOOLS.SQL.EDITOR.v1

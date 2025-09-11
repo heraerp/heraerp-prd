@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Digital Accountant Integration
  * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.v1

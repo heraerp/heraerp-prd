@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Customer Master & CRM
  * Smart Code: HERA.SALON.CRM.CUSTOMER.PROFILE.v1

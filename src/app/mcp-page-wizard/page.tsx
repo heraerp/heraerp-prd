@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 // ================================================================================
 // MCP PAGE PRODUCTION WIZARD - Convert Progressive Pages to Production
 // Removes hardcoding and connects to Universal API

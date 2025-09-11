@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
 import { Card } from '@/components/ui/card'

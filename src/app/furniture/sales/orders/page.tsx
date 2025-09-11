@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 // Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
 import { Card } from '@/components/ui/card'

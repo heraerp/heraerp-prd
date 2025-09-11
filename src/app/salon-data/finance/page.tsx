@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Finance Dashboard
  * Smart Code: HERA.SALON.FINANCE.DASHBOARD.v1

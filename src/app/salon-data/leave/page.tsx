@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React, { useEffect, useState } from 'react'
 import { LeaveManagementDashboard } from '@/components/salon/leave/LeaveManagementDashboard'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'

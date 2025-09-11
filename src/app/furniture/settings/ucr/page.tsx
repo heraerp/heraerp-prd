@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { UCRRuleManager } from '@/components/furniture/UCRRuleManager'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'

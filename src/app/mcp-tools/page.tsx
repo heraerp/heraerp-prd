@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 // ================================================================================
 // MCP TOOLS DASHBOARD - Progressive to Production Conversion Suite
 // Central hub for all MCP-powered conversion tools

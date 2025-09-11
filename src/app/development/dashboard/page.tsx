@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import { HERADevelopmentDashboard } from '@/components/development/HERADevelopmentDashboard'
 export default function DevelopmentDashboardPage() {
   return (

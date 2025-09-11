@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 /**
  * HERA Authenticated Salon Dashboard
  * Smart Code: HERA.SALON.DASHBOARD.AUTH.v1

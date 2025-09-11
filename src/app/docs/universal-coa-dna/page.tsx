@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Globe, Building2, Factory, Heart, ShoppingBag, Briefcase, TrendingUp, Cpu, Dna, Sparkles } from 'lucide-react'

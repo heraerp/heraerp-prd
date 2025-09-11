@@ -1,4 +1,7 @@
 'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Balance Sheet (Classified & Comparative)
  * Smart Code: HERA.FINANCE.BS.REPORT.v1

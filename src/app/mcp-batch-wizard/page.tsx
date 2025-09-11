@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 // ================================================================================
 // MCP BATCH PRODUCTION WIZARD - Convert All Progressive Pages at Once
 // Batch converts entire progressive apps to production

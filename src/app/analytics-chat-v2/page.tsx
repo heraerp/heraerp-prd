@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 export default function AnalyticsChatV2Page() {
   return (
     <div className="min-h-screen p-8">
