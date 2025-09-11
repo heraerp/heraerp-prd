@@ -1,17 +1,17 @@
 # nixpacks.toml
 
 [phases.setup]
-nixPkgs = ['nodejs_20', 'npm-9_x']
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ["npm ci"]
 
 [phases.build]
-cmds = ['npm run build']
+cmds = ["npm run build"]
 
 [start]
-cmd = 'npm run start'
+cmd = "npm run start"
 
 [variables]
-NODE_ENV = 'production'
-PORT = '8080'
+NODE_ENV = "production"
+# Do NOT set PORT here - Railway injects it
