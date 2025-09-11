@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   GitBranch, 
-  GitCommit, 
+  GitPullRequest, 
   Clock, 
   Code2, 
   CheckCircle2,
@@ -265,7 +265,7 @@ export function HERADevelopmentDashboard() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'commit': return <GitCommit className="w-4 h-4" />
+      case 'commit': return <GitPullRequest className="w-4 h-4" />
       case 'pr': return <GitBranch className="w-4 h-4" />
       case 'issue': return <Bug className="w-4 h-4" />
       case 'merge': return <CheckCircle2 className="w-4 h-4" />

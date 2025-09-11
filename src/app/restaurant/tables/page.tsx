@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build issues
+export const dynamic = 'force-dynamic'
+
 import React from 'react'
 import { TableManagement } from '@/components/restaurant/TableManagement'
 
