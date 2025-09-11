@@ -492,9 +492,9 @@ export class WhatsAppDNA {
   async sendSalonBookingReminder(appointmentId: string): Promise<any> {
     // Fetch appointment details
     const appointment = await universalApi.getTransaction(appointmentId)
-    const customerPhone = appointment.metadata?.customer_phone
-    const services = appointment.metadata?.services || []
-    const stylist = appointment.metadata?.stylist_name
+    const customerPhone = (appointment.metadata as any)?.customer_phone
+    const services = (appointment.metadata as any)?.services || []
+    const stylist = (appointment.metadata as any)?.stylist_name
     const appointmentTime = new Date(appointment.transaction_date)
 
     return this.sendTemplateMessage(
@@ -502,7 +502,7 @@ export class WhatsAppDNA {
       'appointment_reminder',
       'en',
       {
-        '1': appointment.metadata?.customer_name,
+        '1': (appointment.metadata as any)?.customer_name,
         '2': services.map((s: any) => s.name).join(', '),
         '3': appointmentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
         '4': stylist

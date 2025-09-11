@@ -126,10 +126,10 @@ export async function GET(request: NextRequest) {
 
     // Calculate department distribution
     filteredUsers.forEach(user => {
-      const dept = user.metadata?.department || 'Unassigned'
+      const dept = (user.metadata as any)?.department || 'Unassigned'
       stats.by_department[dept] = (stats.by_department[dept] || 0) + 1
       
-      const userRole = user.metadata?.role || 'user'
+      const userRole = (user.metadata as any)?.role || 'user'
       stats.by_role[userRole] = (stats.by_role[userRole] || 0) + 1
     })
 
@@ -369,7 +369,7 @@ export async function PUT(request: NextRequest) {
 
     // Prevent users from editing their own role/permissions unless they're owner
     if (existingUser.id === currentUser.id && currentUser.role !== 'owner') {
-      if (role !== existingUser.metadata?.role || JSON.stringify(permissions) !== JSON.stringify(existingUser.metadata?.permissions)) {
+      if (role !== (existingUser.metadata as any)?.role || JSON.stringify(permissions) !== JSON.stringify((existingUser.metadata as any)?.permissions)) {
         return NextResponse.json(
           { success: false, message: 'You cannot modify your own role or permissions' },
           { status: 403 }
@@ -393,7 +393,7 @@ export async function PUT(request: NextRequest) {
     
     if (email !== undefined) {
       // Check if new email already exists
-      if (email !== existingUser.metadata?.email) {
+      if (email !== (existingUser.metadata as any)?.email) {
         const { data: emailExists } = await supabaseAdmin
           .from('core_entities')
           .select('id')
@@ -526,7 +526,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Prevent deletion of owner accounts
-    if (user.metadata?.role === 'owner') {
+    if ((user.metadata as any)?.role === 'owner') {
       return NextResponse.json(
         { success: false, message: 'Owner accounts cannot be deleted' },
         { status: 403 }

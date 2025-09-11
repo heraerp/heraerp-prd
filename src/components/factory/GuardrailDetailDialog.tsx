@@ -84,7 +84,7 @@ export function GuardrailDetailDialog({
 
     transactions.forEach(txn => {
       // Mock data - in real implementation, this would come from transaction lines
-      const violations = txn.metadata?.violations || [];
+      const violations = (txn.metadata as any)?.violations || [];
       violations.forEach((v: any) => {
         if (!policies.has(v.policy)) {
           policies.set(v.policy, {
@@ -105,7 +105,7 @@ export function GuardrailDetailDialog({
       });
 
       // Coverage data
-      if (txn.metadata?.coverage) {
+      if ((txn.metadata as any)?.coverage) {
         stats.coverageAvg += txn.metadata.coverage;
         stats.coverageCount++;
       }

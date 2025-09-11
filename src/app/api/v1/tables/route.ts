@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
 
       // Find current order for this table
       const currentOrder = currentOrders.find((order: any) => 
-        order.metadata?.table_id === table.id
+        (order.metadata as any)?.table_id === table.id
       )
 
       const tableData = {

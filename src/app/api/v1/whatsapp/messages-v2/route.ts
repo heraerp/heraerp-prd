@@ -105,28 +105,28 @@ export async function GET(request: NextRequest) {
       const conversation = conversations?.find(c => c.id === conversationId)
       
       // Determine direction from smart code or metadata
-      const direction = txn.smart_code?.includes('RECEIVED') || txn.metadata?.direction === 'inbound' ? 'inbound' : 'outbound'
+      const direction = txn.smart_code?.includes('RECEIVED') || (txn.metadata as any)?.direction === 'inbound' ? 'inbound' : 'outbound'
       
       // Get text from metadata or dynamic fields
-      const messageText = txn.metadata?.text || dynamicFields.text || ''
+      const messageText = (txn.metadata as any)?.text || dynamicFields.text || ''
       
       // Get wa_id from metadata
-      const waId = txn.metadata?.wa_id || dynamicFields.wa_id || ''
+      const waId = (txn.metadata as any)?.wa_id || dynamicFields.wa_id || ''
       
       // For now, we'll use the wa_id to find the conversation
-      const matchingConv = conversations?.find(c => c.metadata?.wa_id === waId)
-      const matchingCustomer = customers?.find(c => c.metadata?.wa_id === waId)
+      const matchingConv = conversations?.find(c => (c.metadata as any)?.wa_id === waId)
+      const matchingCustomer = customers?.find(c => (c.metadata as any)?.wa_id === waId)
       
       return {
         id: txn.id,
         text: messageText,
         direction,
         wa_id: waId,
-        phone: matchingCustomer?.metadata?.phone || txn.metadata?.phone || '',
+        phone: matchingCustomer?.metadata?.phone || (txn.metadata as any)?.phone || '',
         customerName: matchingCustomer?.entity_name || 'Unknown',
         conversationId: matchingConv?.id || conversationId,
         conversationName: matchingConv?.entity_name || '',
-        waba_message_id: txn.metadata?.waba_message_id || dynamicFields.waba_message_id || txn.external_id,
+        waba_message_id: (txn.metadata as any)?.waba_message_id || dynamicFields.waba_message_id || txn.external_id,
         created_at: txn.created_at,
         occurred_at: txn.transaction_date,
         smart_code: txn.smart_code,

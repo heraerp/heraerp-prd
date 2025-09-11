@@ -52,8 +52,8 @@ export class HybridSalonDNAClient {
 
       // Calculate today's revenue from appointments with completed/in_progress status
       const todayRevenue = appointmentsData
-        .filter(apt => apt.metadata?.status === 'completed' || apt.metadata?.status === 'in_progress')
-        .reduce((sum, apt) => sum + (apt.metadata?.price || 0), 0);
+        .filter(apt => (apt.metadata as any)?.status === 'completed' || (apt.metadata as any)?.status === 'in_progress')
+        .reduce((sum, apt) => sum + ((apt.metadata as any)?.price || 0), 0);
 
       return {
         appointments: appointmentsData.length,
@@ -157,7 +157,7 @@ export class HybridSalonDNAClient {
       // Filter for appointments with today's date
       const appointments = (result.data || []).filter((entity: any) => {
         return entity.entity_type === 'appointment' && 
-               entity.metadata?.appointment_date === today;
+               (entity.metadata as any)?.appointment_date === today;
       });
 
       console.log('Found appointments for today:', appointments.length);
@@ -193,7 +193,7 @@ export class HybridSalonDNAClient {
       return staff.map((member: any) => ({
         ...member,
         rating: 4.5,
-        specialties: member.metadata?.specialization ? [member.metadata.specialization] : ['General'],
+        specialties: (member.metadata as any)?.specialization ? [member.metadata.specialization] : ['General'],
         available: true
       }));
     } catch (error) {
@@ -226,9 +226,9 @@ export class HybridSalonDNAClient {
       // Add enrichment from metadata
       return services.map((service: any) => ({
         ...service,
-        price: service.metadata?.price || 100,
-        duration: service.metadata?.duration ? `${service.metadata.duration} minutes` : '60 minutes',
-        category: service.metadata?.category || 'General'
+        price: (service.metadata as any)?.price || 100,
+        duration: (service.metadata as any)?.duration ? `${service.metadata.duration} minutes` : '60 minutes',
+        category: (service.metadata as any)?.category || 'General'
       }));
     } catch (error) {
       console.error('Error fetching services:', error);

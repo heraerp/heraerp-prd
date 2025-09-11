@@ -402,7 +402,7 @@ export class LeadConversionPipeline {
 
       const totalLeads = leads.length
       const qualifiedLeads = leads.filter(l => 
-        parseInt(l.metadata?.lead_score || '0') >= 60
+        parseInt((l.metadata as any)?.lead_score || '0') >= 60
       ).length
       
       const opportunitiesCreated = opportunities.length

@@ -348,10 +348,10 @@ export class IceCreamCOAGenerator {
 
   private async createAccountHierarchy(accounts: any[]) {
     // Create parent-child relationships between accounts
-    const accountMap = new Map(accounts.map(acc => [acc.metadata?.account_code, acc]))
+    const accountMap = new Map(accounts.map(acc => [(acc.metadata as any)?.account_code, acc]))
     
     for (const account of accounts) {
-      if (account.metadata?.parent_account) {
+      if ((account.metadata as any)?.parent_account) {
         const parent = accountMap.get(account.metadata.parent_account)
         if (parent) {
           await universalApi.createRelationship({

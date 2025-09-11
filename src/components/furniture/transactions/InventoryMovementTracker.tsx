@@ -193,14 +193,14 @@ export function InventoryMovementTracker() {
           history.push({
             id: movement.id,
             transaction_code: movement.transaction_code,
-            movement_type: movement.metadata?.movement_type || 'transfer',
+            movement_type: (movement.metadata as any)?.movement_type || 'transfer',
             from_location: fromLocation || '',
             to_location: toLocation || '',
             item_name: item?.entity_name || 'Unknown Item',
             quantity: line.quantity,
-            reason: movement.metadata?.reason || '',
+            reason: (movement.metadata as any)?.reason || '',
             created_at: movement.created_at,
-            status: movement.metadata?.status || 'completed'
+            status: (movement.metadata as any)?.status || 'completed'
           });
         }
       }

@@ -360,15 +360,15 @@ export function UserManager() {
       entity_code: userData.entity_code || '',
       description: userData.description || '',
       status: userData.status,
-      email: userData.metadata?.email || '',
-      phone: userData.metadata?.phone || '',
-      department: userData.metadata?.department || '',
-      job_title: userData.metadata?.job_title || '',
-      hire_date: userData.metadata?.hire_date || '',
-      manager_id: userData.metadata?.manager_id || '',
-      location: userData.metadata?.location || '',
-      role: userData.metadata?.role || 'user',
-      permissions: userData.metadata?.permissions || [],
+      email: (userData.metadata as any)?.email || '',
+      phone: (userData.metadata as any)?.phone || '',
+      department: (userData.metadata as any)?.department || '',
+      job_title: (userData.metadata as any)?.job_title || '',
+      hire_date: (userData.metadata as any)?.hire_date || '',
+      manager_id: (userData.metadata as any)?.manager_id || '',
+      location: (userData.metadata as any)?.location || '',
+      role: (userData.metadata as any)?.role || 'user',
+      permissions: (userData.metadata as any)?.permissions || [],
       password: '',
       send_welcome_email: false
     })
@@ -436,8 +436,8 @@ export function UserManager() {
 
   // Filter users
   const filteredUsers = users.filter(user => {
-    const matchesDepartment = selectedDepartment === 'all' || user.metadata?.department === selectedDepartment
-    const matchesRole = selectedRole === 'all' || user.metadata?.role === selectedRole
+    const matchesDepartment = selectedDepartment === 'all' || (user.metadata as any)?.department === selectedDepartment
+    const matchesRole = selectedRole === 'all' || (user.metadata as any)?.role === selectedRole
     const matchesStatus = selectedStatus === 'all' || user.status === selectedStatus
     
     return matchesDepartment && matchesRole && matchesStatus
@@ -587,9 +587,9 @@ export function UserManager() {
                         <div>
                           <CardTitle className="text-lg">{userData.entity_name}</CardTitle>
                           <CardDescription className="flex items-center gap-2">
-                            <Badge variant={userData.metadata?.role === 'owner' ? 'default' : userData.metadata?.role === 'admin' ? 'secondary' : 'outline'} className="text-xs">
-                              {userData.metadata?.role === 'owner' && <Crown className="h-3 w-3 mr-1" />}
-                              {USER_ROLES.find(r => r.value === userData.metadata?.role)?.label || 'User'}
+                            <Badge variant={(userData.metadata as any)?.role === 'owner' ? 'default' : (userData.metadata as any)?.role === 'admin' ? 'secondary' : 'outline'} className="text-xs">
+                              {(userData.metadata as any)?.role === 'owner' && <Crown className="h-3 w-3 mr-1" />}
+                              {USER_ROLES.find(r => r.value === (userData.metadata as any)?.role)?.label || 'User'}
                             </Badge>
                           </CardDescription>
                         </div>
@@ -600,31 +600,31 @@ export function UserManager() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0 space-y-3">
-                    {userData.metadata?.email && (
+                    {(userData.metadata as any)?.email && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Mail className="h-4 w-4" />
                         {userData.metadata.email}
                       </div>
                     )}
-                    {userData.metadata?.phone && (
+                    {(userData.metadata as any)?.phone && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Phone className="h-4 w-4" />
                         {userData.metadata.phone}
                       </div>
                     )}
-                    {userData.metadata?.department && (
+                    {(userData.metadata as any)?.department && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Briefcase className="h-4 w-4" />
                         {userData.metadata.department}
                       </div>
                     )}
-                    {userData.metadata?.job_title && (
+                    {(userData.metadata as any)?.job_title && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Settings className="h-4 w-4" />
                         {userData.metadata.job_title}
                       </div>
                     )}
-                    {userData.metadata?.location && (
+                    {(userData.metadata as any)?.location && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <MapPin className="h-4 w-4" />
                         {userData.metadata.location}
@@ -641,7 +641,7 @@ export function UserManager() {
                         variant="outline" 
                         size="sm" 
                         onClick={() => startEdit(userData)}
-                        disabled={userData.metadata?.role === 'owner' && user?.role !== 'owner'}
+                        disabled={(userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'}
                       >
                         <Pencil className="h-3 w-3" />
                       </Button>
@@ -649,7 +649,7 @@ export function UserManager() {
                         variant="outline" 
                         size="sm" 
                         onClick={() => toggleUserStatus(userData.id, userData.status)}
-                        disabled={userData.metadata?.role === 'owner' && user?.role !== 'owner'}
+                        disabled={(userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'}
                       >
                         {userData.status === 'active' ? <UserX className="h-3 w-3" /> : <UserCheck className="h-3 w-3" />}
                       </Button>
@@ -658,7 +658,7 @@ export function UserManager() {
                         size="sm" 
                         onClick={() => deleteUser(userData.id)}
                         className="text-red-600 hover:text-red-700"
-                        disabled={userData.metadata?.role === 'owner' || userData.id === user?.id}
+                        disabled={(userData.metadata as any)?.role === 'owner' || userData.id === user?.id}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -773,7 +773,7 @@ export function UserManager() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-blue-600">
-                  {users.filter(u => ['owner', 'admin'].includes(u.metadata?.role || '')).length}
+                  {users.filter(u => ['owner', 'admin'].includes((u.metadata as any)?.role || '')).length}
                 </div>
                 <p className="text-xs text-gray-500">Admin level access</p>
               </CardContent>
@@ -785,7 +785,7 @@ export function UserManager() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-purple-600">
-                  {new Set(users.map(u => u.metadata?.department).filter(Boolean)).size}
+                  {new Set(users.map(u => (u.metadata as any)?.department).filter(Boolean)).size}
                 </div>
                 <p className="text-xs text-gray-500">Active departments</p>
               </CardContent>
@@ -800,7 +800,7 @@ export function UserManager() {
             <CardContent>
               <div className="space-y-3">
                 {DEPARTMENTS.map(dept => {
-                  const count = users.filter(u => u.metadata?.department === dept).length
+                  const count = users.filter(u => (u.metadata as any)?.department === dept).length
                   const percentage = users.length > 0 ? (count / users.length) * 100 : 0
                   return (
                     <div key={dept} className="flex items-center justify-between">

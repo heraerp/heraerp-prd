@@ -88,8 +88,8 @@ export async function GET(request: NextRequest) {
           messages: bookMessages?.map(m => ({
             id: m.id,
             created_at: m.created_at,
-            text: m.metadata?.text,
-            from: m.metadata?.wa_id
+            text: (m.metadata as any)?.text,
+            from: (m.metadata as any)?.wa_id
           })) || []
         }
       }

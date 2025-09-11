@@ -12,8 +12,8 @@ export function summarize(lines: UniversalTransactionLine[]): GuardrailResult[] 
   lines.forEach(line => {
     // Check compliance lines
     if (line.line_type?.startsWith('STEP.COMPLIANCE') || line.line_type === 'STEP.SECURITY') {
-      const status = line.metadata?.status || line.line_data?.status;
-      const violations = line.metadata?.violations || line.line_data?.violations || [];
+      const status = (line.metadata as any)?.status || line.line_data?.status;
+      const violations = (line.metadata as any)?.violations || line.line_data?.violations || [];
       
       if (status === 'FAILED' || status === 'BLOCKED') {
         violations.forEach((violation: any) => {
@@ -36,8 +36,8 @@ export function summarize(lines: UniversalTransactionLine[]): GuardrailResult[] 
 
     // Check test coverage thresholds
     if (line.line_type === 'STEP.UNIT' || line.line_type === 'STEP.E2E') {
-      const coverage = line.metadata?.coverage || line.line_data?.coverage || 0;
-      const threshold = line.metadata?.threshold || 0.8;
+      const coverage = (line.metadata as any)?.coverage || line.line_data?.coverage || 0;
+      const threshold = (line.metadata as any)?.threshold || 0.8;
       
       if (coverage < threshold) {
         results.push({
@@ -51,7 +51,7 @@ export function summarize(lines: UniversalTransactionLine[]): GuardrailResult[] 
 
     // Check security vulnerabilities
     if (line.line_type === 'STEP.SECURITY') {
-      const vulns = line.metadata?.vulnerabilities || line.line_data?.vulnerabilities || {};
+      const vulns = (line.metadata as any)?.vulnerabilities || line.line_data?.vulnerabilities || {};
       
       if (vulns.critical > 0) {
         results.push({
@@ -74,8 +74,8 @@ export function summarize(lines: UniversalTransactionLine[]): GuardrailResult[] 
   // Check for waivers
   const waiverLines = lines.filter(l => l.line_type === 'WAIVER');
   waiverLines.forEach(waiver => {
-    const waivedPolicy = waiver.metadata?.policy || waiver.line_data?.policy;
-    const waiverReason = waiver.metadata?.reason || waiver.line_data?.reason;
+    const waivedPolicy = (waiver.metadata as any)?.policy || waiver.line_data?.policy;
+    const waiverReason = (waiver.metadata as any)?.reason || waiver.line_data?.reason;
     
     // Mark waived violations
     results.forEach(result => {

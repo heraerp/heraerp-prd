@@ -290,7 +290,7 @@ export class SAPIntegrationService {
       return { status: 'not_found' }
     }
     
-    if (data.metadata?.sap_document_number) {
+    if ((data.metadata as any)?.sap_document_number) {
       return {
         status: 'posted',
         sapDocumentNumber: data.metadata.sap_document_number

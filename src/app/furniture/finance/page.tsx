@@ -55,7 +55,7 @@ const glAccountColumns = [
     render: (value: string, row: any) => {
       const depth = row.depth || 0
       const indent = depth * 24
-      const isHeader = row.metadata?.account_type === 'header'
+      const isHeader = (row.metadata as any)?.account_type === 'header'
       const hasChildren = row.children && row.children.length > 0
       
       return (
@@ -71,7 +71,7 @@ const glAccountColumns = [
             )}>
               {value}
             </p>
-            {row.metadata?.ifrs_classification && (
+            {(row.metadata as any)?.ifrs_classification && (
               <p className="text-xs text-gray-500">IFRS: {row.metadata.ifrs_classification}</p>
             )}
           </div>
@@ -84,7 +84,7 @@ const glAccountColumns = [
     label: 'Type',
     sortable: true,
     render: (_: any, row: any) => {
-      const type = row.metadata?.account_type || 'detail'
+      const type = (row.metadata as any)?.account_type || 'detail'
       const colors = {
         'header': 'bg-blue-500/20 text-blue-600',
         'detail': 'bg-gray-500/20 text-gray-600'
@@ -102,7 +102,7 @@ const glAccountColumns = [
     sortable: true,
     align: 'center' as const,
     render: (_: any, row: any) => {
-      const balance = row.metadata?.normal_balance || 'debit'
+      const balance = (row.metadata as any)?.normal_balance || 'debit'
       return (
         <span className={cn(
           "font-medium",
@@ -292,10 +292,10 @@ export default function FurnitureFinance() {
     
     // Build the tree
     glAccounts.forEach(account => {
-      const parentCode = account.metadata?.parent_account
+      const parentCode = (account.metadata as any)?.parent_account
       if (parentCode && accountMap[parentCode]) {
         accountMap[parentCode].children.push(accountMap[account.entity_code])
-      } else if (account.metadata?.account_level === 1) {
+      } else if ((account.metadata as any)?.account_level === 1) {
         // Top level accounts
         hierarchy.push(accountMap[account.entity_code])
       }
@@ -329,10 +329,10 @@ export default function FurnitureFinance() {
       account.entity_code.includes(searchTerm)
     
     const matchesType = selectedType === 'all' || 
-      account.metadata?.account_type === selectedType
+      (account.metadata as any)?.account_type === selectedType
     
     const matchesLevel = selectedLevel === 'all' || 
-      account.metadata?.account_level?.toString() === selectedLevel
+      (account.metadata as any)?.account_level?.toString() === selectedLevel
     
     return matchesSearch && matchesType && matchesLevel
   })
@@ -552,8 +552,8 @@ export default function FurnitureFinance() {
               
               <div className="text-sm text-gray-400 mb-4">
                 Total Accounts: {glAccounts.length} | 
-                Headers: {glAccounts.filter(a => a.metadata?.account_type === 'header').length} | 
-                Details: {glAccounts.filter(a => a.metadata?.account_type === 'detail').length}
+                Headers: {glAccounts.filter(a => (a.metadata as any)?.account_type === 'header').length} | 
+                Details: {glAccounts.filter(a => (a.metadata as any)?.account_type === 'detail').length}
               </div>
               
               {loading ? (

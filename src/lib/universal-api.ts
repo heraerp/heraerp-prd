@@ -29,7 +29,15 @@ class UniversalAPIExtended {
   private mockMode = false
 
   constructor() {
-    this.mockMode = !supabase
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    
+    // Check if Supabase is properly configured
+    this.mockMode = !supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')
+    
+    if (this.mockMode) {
+      console.log('⚠️ Universal API running in mock mode - Supabase not configured')
+    }
   }
 
   setOrganizationId(orgId: string) {
@@ -345,8 +353,8 @@ class UniversalAPIExtended {
   // Add read method for compatibility
   async read(params: { table: string } | string, filter?: any, organizationId?: string) {
     if (this.mockMode) {
-      console.log('Mock: Reading data', params)
-      return { data: [], error: null }
+      console.log('⚠️ Universal API is in mock mode - please configure Supabase environment variables')
+      throw new Error('Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env file')
     }
 
     try {
@@ -412,8 +420,8 @@ class UniversalAPIExtended {
 
   async createTransaction(transactionData: any) {
     if (this.mockMode) {
-      console.log('Mock: Creating transaction', transactionData)
-      return { success: true, data: { id: crypto.randomUUID(), ...transactionData } }
+      console.log('⚠️ Universal API is in mock mode - please configure Supabase environment variables')
+      throw new Error('Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env file')
     }
 
     try {

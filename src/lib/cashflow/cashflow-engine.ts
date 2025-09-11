@@ -406,7 +406,7 @@ export class DirectMethodCashflowGenerator {
     const cashAccountPatterns = ['1000', '1001', '1002', '1010'] // Common cash account codes
     
     // Check main transaction
-    if (transaction.metadata?.gl_account_code) {
+    if ((transaction.metadata as any)?.gl_account_code) {
       const accountCode = transaction.metadata.gl_account_code
       if (cashAccountPatterns.some(pattern => accountCode.startsWith(pattern))) {
         return true
@@ -416,7 +416,7 @@ export class DirectMethodCashflowGenerator {
     // Check transaction lines
     if (transaction.lines) {
       return transaction.lines.some((line: any) => {
-        const lineAccountCode = line.metadata?.account_code
+        const lineAccountCode = (line.metadata as any)?.account_code
         return lineAccountCode && cashAccountPatterns.some(pattern => lineAccountCode.startsWith(pattern))
       })
     }
@@ -455,7 +455,7 @@ export class DirectMethodCashflowGenerator {
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
         amount: amount,
-        account_code: txn.metadata?.gl_account_code || 'N/A',
+        account_code: (txn.metadata as any)?.gl_account_code || 'N/A',
         transaction_count: 1
       })
     })
@@ -486,7 +486,7 @@ export class DirectMethodCashflowGenerator {
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
         amount: amount,
-        account_code: txn.metadata?.gl_account_code || 'N/A',
+        account_code: (txn.metadata as any)?.gl_account_code || 'N/A',
         transaction_count: 1
       })
     })
@@ -517,7 +517,7 @@ export class DirectMethodCashflowGenerator {
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
         amount: amount,
-        account_code: txn.metadata?.gl_account_code || 'N/A',
+        account_code: (txn.metadata as any)?.gl_account_code || 'N/A',
         transaction_count: 1
       })
     })
@@ -555,7 +555,7 @@ export class DirectMethodCashflowGenerator {
     }
 
     // Default based on GL account type
-    const glAccountCode = transaction.metadata?.gl_account_code
+    const glAccountCode = (transaction.metadata as any)?.gl_account_code
     if (glAccountCode && glAccountCode.startsWith('4')) {
       return Math.abs(transaction.total_amount) // Revenue = cash inflow
     }
@@ -727,7 +727,7 @@ export class IndirectMethodCashflowGenerator {
 
     if (data) {
       data.forEach(txn => {
-        const glAccountCode = txn.metadata?.gl_account_code
+        const glAccountCode = (txn.metadata as any)?.gl_account_code
         
         if (glAccountCode) {
           // Revenue accounts (4xxx)

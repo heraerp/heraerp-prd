@@ -1,4 +1,16 @@
-# HERA Demo Organization System
+# ⚠️ DEPRECATED: HERA Demo Organization System
+
+**⚠️ THIS DOCUMENTATION IS OUTDATED AND DEPRECATED**
+
+**Current System**: Please refer to `/docs/UNIFIED-DEMO-MODULE-SELECTOR.md` for the current demo implementation.
+
+**Why Deprecated**: This document describes a path-based organization assignment system that has been replaced with a unified tile-based demo selector with proper authentication.
+
+**Migration Date**: 2025-01-11
+
+---
+
+# HERA Demo Organization System (DEPRECATED)
 
 ## Overview
 

@@ -155,7 +155,7 @@ export function UniversalWorkflowTracker({
         {currentStatus && (
           <>
             <Badge 
-              style={{ backgroundColor: currentStatus.metadata?.color || '#6B7280' }}
+              style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
               className="text-white"
             >
               {getStatusIcon(currentStatus.entity_code)}
@@ -215,13 +215,13 @@ export function UniversalWorkflowTracker({
               {currentStatus ? (
                 <div className="flex items-center gap-2">
                   <Badge 
-                    style={{ backgroundColor: currentStatus.metadata?.color || '#6B7280' }}
+                    style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
                     className="text-white"
                   >
                     {getStatusIcon(currentStatus.entity_code)}
                     <span className="ml-1">{currentStatus.entity_name}</span>
                   </Badge>
-                  {currentStatus.metadata?.is_final && (
+                  {(currentStatus.metadata as any)?.is_final && (
                     <Badge variant="outline" className="text-xs">Final</Badge>
                   )}
                 </div>
@@ -252,7 +252,7 @@ export function UniversalWorkflowTracker({
                     >
                       <div className="flex items-center justify-between w-full">
                         <span>{transition.name}</span>
-                        {transition.metadata?.transition?.requiresApproval && (
+                        {(transition.metadata as any)?.transition?.requiresApproval && (
                           <Badge variant="outline" className="text-xs ml-2">
                             Approval
                           </Badge>
@@ -279,7 +279,7 @@ export function UniversalWorkflowTracker({
                   >
                     <div 
                       className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                      style={{ backgroundColor: item.metadata?.color || '#6B7280' }}
+                      style={{ backgroundColor: (item.metadata as any)?.color || '#6B7280' }}
                     />
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center justify-between">

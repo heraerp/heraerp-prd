@@ -271,7 +271,7 @@ export class LeaveManagementApi {
        LEAVE_SMART_CODES.LEAVE_ADJUSTMENT, 
        LEAVE_SMART_CODES.LEAVE_CANCELLATION].includes(txn.smart_code) &&
       txn.from_entity_id === employeeId &&
-      txn.metadata?.leave_type === leaveType
+      (txn.metadata as any)?.leave_type === leaveType
     )
 
     // Get policy settings - for now use defaults
@@ -366,12 +366,12 @@ export class LeaveManagementApi {
     const allTransactions = transactionsResponse.success ? transactionsResponse.data || [] : []
     
     const teamLeave = allTransactions.filter(txn => {
-      const startDateCheck = txn.metadata?.start_date >= startDate
-      const endDateCheck = txn.metadata?.end_date <= endDate
+      const startDateCheck = (txn.metadata as any)?.start_date >= startDate
+      const endDateCheck = (txn.metadata as any)?.end_date <= endDate
       return (
         txn.smart_code === LEAVE_SMART_CODES.LEAVE_REQUEST &&
         teamIds.includes(txn.from_entity_id) &&
-        ['approved', 'pending'].includes(txn.metadata?.approval_status) &&
+        ['approved', 'pending'].includes((txn.metadata as any)?.approval_status) &&
         startDateCheck && endDateCheck
       )
     })
@@ -476,7 +476,7 @@ export class LeaveManagementApi {
     const existingLeave = allTransactions.filter(txn => 
       txn.smart_code === LEAVE_SMART_CODES.LEAVE_REQUEST &&
       txn.from_entity_id === employeeId &&
-      ['pending', 'approved'].includes(txn.metadata?.approval_status)
+      ['pending', 'approved'].includes((txn.metadata as any)?.approval_status)
     )
 
     return existingLeave.some(leave => {

@@ -203,14 +203,14 @@ async function getExistingReservations(date: string): Promise<Reservation[]> {
     const reservations: Reservation[] = transactions?.map(txn => ({
       id: txn.id,
       customerName: txn.customer?.entity_name || 'Unknown',
-      customerPhone: txn.metadata?.phone || '',
-      customerEmail: txn.metadata?.email || '',
+      customerPhone: (txn.metadata as any)?.phone || '',
+      customerEmail: (txn.metadata as any)?.email || '',
       date: txn.transaction_date,
-      time: txn.metadata?.time || '00:00',
-      partySize: txn.metadata?.partySize || 2,
-      tableId: txn.metadata?.tableId,
+      time: (txn.metadata as any)?.time || '00:00',
+      partySize: (txn.metadata as any)?.partySize || 2,
+      tableId: (txn.metadata as any)?.tableId,
       status: txn.status as any,
-      specialRequests: txn.metadata?.specialRequests,
+      specialRequests: (txn.metadata as any)?.specialRequests,
       createdAt: txn.created_at
     })) || []
 

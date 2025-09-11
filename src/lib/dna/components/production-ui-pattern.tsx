@@ -183,13 +183,13 @@ export function ProductionOrderCard({
           <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              Start: {new Date(order.metadata?.planned_start || order.transaction_date).toLocaleDateString()}
+              Start: {new Date((order.metadata as any)?.planned_start || order.transaction_date).toLocaleDateString()}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              Due: {new Date(order.metadata?.planned_end || order.transaction_date).toLocaleDateString()}
+              Due: {new Date((order.metadata as any)?.planned_end || order.transaction_date).toLocaleDateString()}
             </span>
-            {order.metadata?.batch_number && (
+            {(order.metadata as any)?.batch_number && (
               <span className="flex items-center gap-1">
                 <Package className="h-3 w-3" />
                 Batch: {order.metadata.batch_number}
@@ -198,7 +198,7 @@ export function ProductionOrderCard({
           </div>
 
           {/* Industry-specific details */}
-          {industryConfig?.showExpiryDate && order.metadata?.expiry_date && (
+          {industryConfig?.showExpiryDate && (order.metadata as any)?.expiry_date && (
             <div className="text-xs text-amber-400 mt-2">
               Expires: {new Date(order.metadata.expiry_date).toLocaleDateString()}
             </div>
@@ -206,7 +206,7 @@ export function ProductionOrderCard({
 
           {progress.activeOperation && (
             <div className="text-xs text-blue-400 mt-2">
-              Current: {progress.activeOperation.metadata?.operation || 'Processing'}
+              Current: {(progress.activeOperation.metadata as any)?.operation || 'Processing'}
             </div>
           )}
         </div>
@@ -258,11 +258,11 @@ export function WorkCenterGrid({
               <div>
                 <h3 className="font-semibold text-white">{center.entity_name}</h3>
                 <p className="text-sm text-gray-400">
-                  {center.metadata?.location || 'Shop Floor'}
+                  {(center.metadata as any)?.location || 'Shop Floor'}
                 </p>
                 
                 {/* Industry-specific work center info */}
-                {industryConfig?.showTemperature && center.metadata?.temperature && (
+                {industryConfig?.showTemperature && (center.metadata as any)?.temperature && (
                   <p className="text-xs text-blue-400 mt-1">
                     Temp: {center.metadata.temperature}°C
                   </p>

@@ -12,21 +12,6 @@ export default function RefreshPage() {
     // Clear all caches and reload
     const clearAndReload = async () => {
       try {
-        // Clear service worker caches
-        if ('serviceWorker' in navigator) {
-          const registrations = await navigator.serviceWorker.getRegistrations()
-          for (const registration of registrations) {
-            await registration.unregister()
-          }
-        }
-
-        // Clear all caches
-        if ('caches' in window) {
-          const cacheNames = await caches.keys()
-          await Promise.all(
-            cacheNames.map(cacheName => caches.delete(cacheName))
-          )
-        }
 
         // Clear local storage
         localStorage.clear()
@@ -60,10 +45,6 @@ export default function RefreshPage() {
             <div className="flex items-center gap-2 text-green-600">
               <CheckCircle className="w-5 h-5" />
               <span>Clearing browser cache...</span>
-            </div>
-            <div className="flex items-center gap-2 text-green-600">
-              <CheckCircle className="w-5 h-5" />
-              <span>Unregistering service workers...</span>
             </div>
             <div className="flex items-center gap-2 text-green-600">
               <CheckCircle className="w-5 h-5" />

@@ -150,9 +150,9 @@ function SalonInventoryContent() {
       stock: stock,
       reorderPoint: reorderPoint,
       status: status,
-      category: product.metadata?.category || 'Uncategorized',
+      category: (product.metadata as any)?.category || 'Uncategorized',
       price: product.price || 0,
-      sku: product.metadata?.sku || product.entity_code || 'N/A'
+      sku: (product.metadata as any)?.sku || product.entity_code || 'N/A'
     }
   })
 

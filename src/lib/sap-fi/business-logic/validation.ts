@@ -159,7 +159,7 @@ export class SAPValidationService {
     }
     
     const allowedTypes = smartCodeToDocType[transaction.smart_code]
-    if (allowedTypes && transaction.metadata?.document_type) {
+    if (allowedTypes && (transaction.metadata as any)?.document_type) {
       if (!allowedTypes.includes(transaction.metadata.document_type)) {
         errors.push({
           field: 'document_type',
@@ -186,7 +186,7 @@ export class SAPValidationService {
     }
     
     // Invoice number recommended
-    if (!transaction.metadata?.invoice_number) {
+    if (!(transaction.metadata as any)?.invoice_number) {
       warnings.push({
         field: 'invoice_number',
         message: 'Invoice number is recommended',
@@ -195,7 +195,7 @@ export class SAPValidationService {
     }
     
     // Due date validation
-    if (transaction.metadata?.due_date) {
+    if ((transaction.metadata as any)?.due_date) {
       const dueDate = new Date(transaction.metadata.due_date)
       const invoiceDate = new Date(transaction.transaction_date)
       
@@ -225,7 +225,7 @@ export class SAPValidationService {
     }
     
     // Payment terms validation
-    if (!transaction.metadata?.payment_terms) {
+    if (!(transaction.metadata as any)?.payment_terms) {
       warnings.push({
         field: 'payment_terms',
         message: 'Payment terms are recommended',
@@ -260,8 +260,8 @@ export class SAPValidationService {
       }
       
       // Same invoice number
-      if (existing.metadata?.invoice_number === transaction.metadata?.invoice_number &&
-          transaction.metadata?.invoice_number) {
+      if ((existing.metadata as any)?.invoice_number === (transaction.metadata as any)?.invoice_number &&
+          (transaction.metadata as any)?.invoice_number) {
         confidence += 0.4
       }
       

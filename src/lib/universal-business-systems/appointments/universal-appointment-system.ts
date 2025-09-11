@@ -698,11 +698,11 @@ export class UniversalAppointmentSystem {
       target_entity_id: params.serviceId,
       transaction_type: 'appointment',
       transaction_date: params.appointmentDate,
-      total_amount: service.metadata?.price || 0,
+      total_amount: (service.metadata as any)?.price || 0,
       status: APPOINTMENT_WORKFLOW.DRAFT,
       metadata: {
         start_time: params.startTime,
-        duration: params.duration || service.metadata?.duration || 60,
+        duration: params.duration || (service.metadata as any)?.duration || 60,
         special_requests: params.specialRequests || '',
         custom_fields: params.customFields || {},
         staff_preferences: params.staffPreferences || [],
@@ -865,7 +865,7 @@ export class UniversalAppointmentSystem {
     
     // Calculate confidence based on data completeness
     let confidence = 0.8
-    const contactInfo = customer.metadata?.contact_info || {}
+    const contactInfo = (customer.metadata as any)?.contact_info || {}
     if (contactInfo.email) confidence += 0.1
     if (contactInfo.phone) confidence += 0.1
     
@@ -1012,7 +1012,7 @@ export class UniversalAppointmentSystem {
         suggestion: 'Consider scheduling during peak business hours for better service quality'
       }
     }
-    return { optimal_time: appointment.metadata?.start_time }
+    return { optimal_time: (appointment.metadata as any)?.start_time }
   }
   
   private optimizeUniversalResources(appointment: UniversalTransaction): { required?: string[]; suggestion?: string } {

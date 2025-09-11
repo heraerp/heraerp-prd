@@ -159,7 +159,7 @@ export function useTodayStats(
       const revenue = sales.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const paymentTotal = payments.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const refundTotal = refunds.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-      const tipTotal = payments.reduce((sum, t) => sum + ((t.metadata?.tip_amount as number) || 0), 0)
+      const tipTotal = payments.reduce((sum, t) => sum + (((t.metadata as any)?.tip_amount as number) || 0), 0)
       
       setStats({
         revenue,

@@ -56,9 +56,9 @@ export async function GET(request: NextRequest) {
     // Calculate analytics
     const analytics = {
       total_staff: enrichedStaff.length,
-      full_time: enrichedStaff.filter(s => s.metadata?.employment_type === 'full_time').length,
-      part_time: enrichedStaff.filter(s => s.metadata?.employment_type === 'part_time').length,
-      contractors: enrichedStaff.filter(s => s.metadata?.employment_type === 'contractor').length,
+      full_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'full_time').length,
+      part_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'part_time').length,
+      contractors: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'contractor').length,
       by_role: {} as Record<string, number>
     }
 

@@ -176,11 +176,11 @@ export function KitchenDisplay({
       setOrders(todayOrders)
       
       // Calculate stats
-      const newOrders = todayOrders.filter(o => !o.metadata?.status || o.metadata.status === 'new').length
-      const inProgress = todayOrders.filter(o => o.metadata?.status === 'in_progress').length
-      const ready = todayOrders.filter(o => o.metadata?.status === 'ready').length
+      const newOrders = todayOrders.filter(o => !(o.metadata as any)?.status || o.metadata.status === 'new').length
+      const inProgress = todayOrders.filter(o => (o.metadata as any)?.status === 'in_progress').length
+      const ready = todayOrders.filter(o => (o.metadata as any)?.status === 'ready').length
       const avgPrepTime = todayOrders
-        .filter(o => o.metadata?.status === 'ready' || o.metadata?.status === 'served')
+        .filter(o => (o.metadata as any)?.status === 'ready' || (o.metadata as any)?.status === 'served')
         .reduce((sum, o) => sum + (o.prepTime || 0), 0) / (ready || 1)
       
       setStats({ newOrders, inProgress, ready, avgPrepTime })
@@ -215,7 +215,7 @@ export function KitchenDisplay({
         const newStats = { ...prevStats }
         
         // Decrease count from previous status
-        const prevStatus = orderToUpdate.metadata?.status || 'new'
+        const prevStatus = (orderToUpdate.metadata as any)?.status || 'new'
         if (prevStatus === 'new') newStats.newOrders--
         else if (prevStatus === 'in_progress') newStats.inProgress--
         else if (prevStatus === 'ready') newStats.ready--
@@ -323,7 +323,7 @@ export function KitchenDisplay({
     
     return orders.filter(order => 
       order.items?.some(item => 
-        item.metadata?.station === station
+        (item.metadata as any)?.station === station
       )
     )
   }
@@ -335,12 +335,12 @@ export function KitchenDisplay({
           <div>
             <CardTitle className="text-lg flex items-center gap-2">
               Order #{order.transaction_code.split('-')[1]}
-              {getPriorityBadge(order.metadata?.priority)}
+              {getPriorityBadge((order.metadata as any)?.priority)}
             </CardTitle>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
               <span className="flex items-center gap-1">
                 <Users className="h-3 w-3" />
-                Table {order.metadata?.table_number || 'N/A'}
+                Table {(order.metadata as any)?.table_number || 'N/A'}
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
@@ -348,8 +348,8 @@ export function KitchenDisplay({
               </span>
             </div>
           </div>
-          <Badge variant={getStatusColor(order.metadata?.status)}>
-            {order.metadata?.status || 'new'}
+          <Badge variant={getStatusColor((order.metadata as any)?.status)}>
+            {(order.metadata as any)?.status || 'new'}
           </Badge>
         </div>
       </CardHeader>
@@ -359,26 +359,26 @@ export function KitchenDisplay({
             <div key={item.id} className="flex justify-between items-start text-sm">
               <div>
                 <span className="font-medium">{item.quantity}x</span>{' '}
-                {item.metadata?.item_name || 'Item'}
-                {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
+                {(item.metadata as any)?.item_name || 'Item'}
+                {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
                   <div className="text-xs text-muted-foreground ml-4">
                     {item.metadata.modifiers.join(', ')}
                   </div>
                 )}
-                {item.metadata?.special_requests && (
+                {(item.metadata as any)?.special_requests && (
                   <div className="text-xs text-orange-600 dark:text-orange-400 ml-4">
                     Note: {item.metadata.special_requests}
                   </div>
                 )}
               </div>
               <Badge variant="outline" className="text-xs">
-                {item.metadata?.station || 'General'}
+                {(item.metadata as any)?.station || 'General'}
               </Badge>
             </div>
           ))}
         </div>
         
-        {order.metadata?.special_instructions && (
+        {(order.metadata as any)?.special_instructions && (
           <Alert className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
@@ -388,7 +388,7 @@ export function KitchenDisplay({
         )}
         
         <div className="flex gap-2">
-          {(!order.metadata?.status || order.metadata.status === 'new') && (
+          {(!(order.metadata as any)?.status || order.metadata.status === 'new') && (
             <Button 
               size="sm" 
               className="flex-1"
@@ -402,7 +402,7 @@ export function KitchenDisplay({
               )}
             </Button>
           )}
-          {order.metadata?.status === 'in_progress' && (
+          {(order.metadata as any)?.status === 'in_progress' && (
             <Button 
               size="sm" 
               className="flex-1 bg-green-600 hover:bg-green-700 text-white"
@@ -416,7 +416,7 @@ export function KitchenDisplay({
               )}
             </Button>
           )}
-          {order.metadata?.status === 'ready' && (
+          {(order.metadata as any)?.status === 'ready' && (
             <Button 
               size="sm" 
               className="flex-1" 
@@ -477,7 +477,7 @@ export function KitchenDisplay({
             return (
               <TabsTrigger key={station.id} value={station.entity_code}>
                 <span className="flex items-center gap-1">
-                  {getStationIcon(station.metadata?.icon)}
+                  {getStationIcon((station.metadata as any)?.icon)}
                   {station.entity_name} ({stationOrders.length})
                 </span>
               </TabsTrigger>
@@ -493,7 +493,7 @@ export function KitchenDisplay({
               <ScrollArea className="h-[600px]">
                 <div className="space-y-2">
                   {filterOrdersByStation(orders, activeStation)
-                    .filter(o => !o.metadata?.status || o.metadata.status === 'new')
+                    .filter(o => !(o.metadata as any)?.status || o.metadata.status === 'new')
                     .map(order => <OrderCard key={order.id} order={order} />)}
                 </div>
               </ScrollArea>
@@ -505,7 +505,7 @@ export function KitchenDisplay({
               <ScrollArea className="h-[600px]">
                 <div className="space-y-2">
                   {filterOrdersByStation(orders, activeStation)
-                    .filter(o => o.metadata?.status === 'in_progress')
+                    .filter(o => (o.metadata as any)?.status === 'in_progress')
                     .map(order => <OrderCard key={order.id} order={order} />)}
                 </div>
               </ScrollArea>
@@ -517,7 +517,7 @@ export function KitchenDisplay({
               <ScrollArea className="h-[600px]">
                 <div className="space-y-2">
                   {filterOrdersByStation(orders, activeStation)
-                    .filter(o => o.metadata?.status === 'ready')
+                    .filter(o => (o.metadata as any)?.status === 'ready')
                     .map(order => <OrderCard key={order.id} order={order} />)}
                 </div>
               </ScrollArea>
@@ -529,7 +529,7 @@ export function KitchenDisplay({
               <ScrollArea className="h-[600px]">
                 <div className="space-y-2">
                   {filterOrdersByStation(orders, activeStation)
-                    .filter(o => o.metadata?.status === 'served')
+                    .filter(o => (o.metadata as any)?.status === 'served')
                     .slice(0, 5)
                     .map(order => <OrderCard key={order.id} order={order} />)}
                 </div>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase Configuration Check</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #111;
+            color: #fff;
+        }
+        h1 { color: #f97316; }
+        .check { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #064e3b; border: 1px solid #10b981; }
+        .error { background: #7f1d1d; border: 1px solid #ef4444; }
+        .info { background: #1e3a8a; border: 1px solid #3b82f6; }
+        pre { 
+            background: #1a1a1a; 
+            padding: 10px; 
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .fix {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1f2937;
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Supabase Configuration Diagnostic</h1>
+    
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        async function checkConfig() {
+            // Get env vars
+            const url = process.env.NEXT_PUBLIC_SUPABASE_URL || window.NEXT_PUBLIC_SUPABASE_URL || '';
+            const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || window.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+            
+            // Extract project ID from URL
+            const projectIdMatch = url.match(/https:\/\/([^.]+)\.supabase\.co/);
+            const projectId = projectIdMatch ? projectIdMatch[1] : 'unknown';
+            
+            // Decode JWT to check project ID
+            let keyProjectId = 'unknown';
+            if (key && key !== 'YOUR_ACTUAL_ANON_KEY_HERE') {
+                try {
+                    const payload = JSON.parse(atob(key.split('.')[1]));
+                    keyProjectId = payload.ref || 'unknown';
+                } catch (e) {
+                    keyProjectId = 'invalid-jwt';
+                }
+            }
+            
+            let html = '';
+            
+            // Show current config
+            html += '<div class="check info">';
+            html += '<h3>Current Configuration:</h3>';
+            html += `<pre>URL Project ID: ${projectId}
+Key Project ID: ${keyProjectId}
+URL: ${url || 'NOT SET'}
+Key: ${key ? key.substring(0, 50) + '...' : 'NOT SET'}</pre>`;
+            html += '</div>';
+            
+            // Check if they match
+            if (projectId !== keyProjectId) {
+                html += '<div class="check error">';
+                html += '<h3>❌ MISMATCH DETECTED!</h3>';
+                html += `<p>Your URL points to project <strong>${projectId}</strong> but your anon key is for project <strong>${keyProjectId}</strong></p>`;
+                html += '<p>This is why you\'re getting connection errors!</p>';
+                html += '</div>';
+            }
+            
+            // Test connectivity
+            html += '<div class="check info">';
+            html += '<h3>Testing Connectivity:</h3>';
+            html += '<pre id="connectivity">Checking...</pre>';
+            html += '</div>';
+            
+            results.innerHTML = html;
+            
+            // Test each project
+            const connectivityDiv = document.getElementById('connectivity');
+            let connectivityResults = '';
+            
+            // Test URL project
+            try {
+                const resp1 = await fetch(url, { method: 'HEAD' });
+                connectivityResults += `${projectId}.supabase.co: ${resp1.ok ? '✅ Reachable' : '❌ Not reachable (404)'}\n`;
+            } catch (e) {
+                connectivityResults += `${projectId}.supabase.co: ❌ Cannot resolve (DNS error)\n`;
+            }
+            
+            // Test key project if different
+            if (projectId !== keyProjectId && keyProjectId !== 'unknown') {
+                try {
+                    const resp2 = await fetch(`https://${keyProjectId}.supabase.co`, { method: 'HEAD' });
+                    connectivityResults += `${keyProjectId}.supabase.co: ${resp2.ok ? '✅ Reachable' : '❌ Not reachable (404)'}\n`;
+                } catch (e) {
+                    connectivityResults += `${keyProjectId}.supabase.co: ❌ Cannot resolve (DNS error)\n`;
+                }
+            }
+            
+            connectivityDiv.textContent = connectivityResults;
+            
+            // Add fix instructions
+            results.innerHTML += `
+                <div class="fix">
+                    <h3>🔧 How to Fix:</h3>
+                    <ol>
+                        <li>Go to <a href="https://app.supabase.com" target="_blank" style="color: #3b82f6;">Supabase Dashboard</a></li>
+                        <li>Find your active project (check if ${projectId} or ${keyProjectId} exists)</li>
+                        <li>Go to Settings → API</li>
+                        <li>Copy BOTH the URL and anon key from the SAME project</li>
+                        <li>Update your <code>.env.local</code> file with matching credentials</li>
+                        <li>Restart your development server</li>
+                    </ol>
+                    
+                    <h4>Common Issues:</h4>
+                    <ul>
+                        <li><strong>Project deleted/paused:</strong> Create a new Supabase project</li>
+                        <li><strong>Mismatched credentials:</strong> Ensure URL and key are from same project</li>
+                        <li><strong>Free tier limit:</strong> Check if you've exceeded free tier limits</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        // Run check
+        checkConfig();
+    </script>
+</body>
+</html>

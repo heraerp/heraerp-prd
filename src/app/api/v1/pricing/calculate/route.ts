@@ -133,8 +133,8 @@ async function calculateStandardPricing(pricingData: any, organizationId: string
     const baseCost = bomResult.total_cost || 0
 
     // Extract pricing rules from template metadata
-    const pricingRules = pricingTemplate.metadata?.pricing_rules || []
-    const targetMargin = pricingTemplate.metadata?.target_margin_percent || 25
+    const pricingRules = (pricingTemplate.metadata as any)?.pricing_rules || []
+    const targetMargin = (pricingTemplate.metadata as any)?.target_margin_percent || 25
 
     // Initialize pricing components
     let costBasis = baseCost
@@ -205,7 +205,7 @@ async function calculateStandardPricing(pricingData: any, organizationId: string
     const grossMargin = finalPrice - costBasis
     const grossMarginPercent = costBasis > 0 ? (grossMargin / finalPrice) * 100 : 0
     const contributionMargin = grossMargin // Simplified - would include variable costs
-    const breakEvenQuantity = costBasis > 0 ? Math.ceil((pricingTemplate.metadata?.fixed_costs || 1000) / (finalPrice - costBasis)) : 0
+    const breakEvenQuantity = costBasis > 0 ? Math.ceil(((pricingTemplate.metadata as any)?.fixed_costs || 1000) / (finalPrice - costBasis)) : 0
 
     return {
       base_price: basePrice,

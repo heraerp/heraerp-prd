@@ -219,7 +219,7 @@ export default function ProductionPlanning() {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <p className="font-medium text-white">{center.entity_name}</p>
-                          <p className="text-sm text-gray-400">{center.metadata?.location || 'Shop Floor'}</p>
+                          <p className="text-sm text-gray-400">{(center.metadata as any)?.location || 'Shop Floor'}</p>
                         </div>
                         <Factory className="h-5 w-5 text-gray-400" />
                       </div>
@@ -261,7 +261,7 @@ export default function ProductionPlanning() {
                           <p className="text-lg font-semibold text-white">
                             {material.entity_code?.includes('TEAK') ? '250' : 
                              material.entity_code?.includes('LEATHER') ? '150' : '5000'} 
-                            {' '}{material.metadata?.unit || 'units'}
+                            {' '}{(material.metadata as any)?.unit || 'units'}
                           </p>
                         </div>
                       </div>

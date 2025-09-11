@@ -144,7 +144,7 @@ export class SimpleSalonDNAClient {
       
       // Filter for today's appointments
       const appointments = (data || []).filter((apt: any) => {
-        if (!apt.metadata?.appointment_date) return false;
+        if (!(apt.metadata as any)?.appointment_date) return false;
         const aptDate = new Date(apt.metadata.appointment_date);
         aptDate.setHours(0, 0, 0, 0);
         return aptDate.getTime() === today.getTime();
@@ -155,9 +155,9 @@ export class SimpleSalonDNAClient {
       // Enrich appointments with customer, service, and staff details
       const enrichedAppointments = await Promise.all(appointments.map(async (apt: any) => {
         const [customer, service, staff] = await Promise.all([
-          apt.metadata?.customer_id ? this.getEntityById(apt.metadata.customer_id) : null,
-          apt.metadata?.service_id ? this.getEntityById(apt.metadata.service_id) : null,
-          apt.metadata?.stylist_id ? this.getEntityById(apt.metadata.stylist_id) : null
+          (apt.metadata as any)?.customer_id ? this.getEntityById(apt.metadata.customer_id) : null,
+          (apt.metadata as any)?.service_id ? this.getEntityById(apt.metadata.service_id) : null,
+          (apt.metadata as any)?.stylist_id ? this.getEntityById(apt.metadata.stylist_id) : null
         ]);
 
         return {
@@ -165,8 +165,8 @@ export class SimpleSalonDNAClient {
           customer,
           service,
           staff,
-          time: apt.metadata?.appointment_time || 'Not set',
-          status: apt.metadata?.status || 'scheduled'
+          time: (apt.metadata as any)?.appointment_time || 'Not set',
+          status: (apt.metadata as any)?.status || 'scheduled'
         };
       }));
 

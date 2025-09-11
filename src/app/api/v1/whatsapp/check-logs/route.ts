@@ -38,9 +38,9 @@ export async function GET(request: NextRequest) {
         logs.recentActivity.last5Minutes = recent5.map(m => ({
           id: m.id,
           created_at: m.created_at,
-          text: m.metadata?.text || m.metadata?.content || 'No text',
-          from: m.metadata?.wa_id || 'Unknown',
-          has_book: (m.metadata?.text || '').toUpperCase().includes('BOOK')
+          text: (m.metadata as any)?.text || (m.metadata as any)?.content || 'No text',
+          from: (m.metadata as any)?.wa_id || 'Unknown',
+          has_book: ((m.metadata as any)?.text || '').toUpperCase().includes('BOOK')
         }))
       }
 
@@ -57,10 +57,10 @@ export async function GET(request: NextRequest) {
         logs.recentActivity.last30Minutes = recent30.map(m => ({
           id: m.id,
           created_at: m.created_at,
-          text: m.metadata?.text || m.metadata?.content || 'No text',
-          from: m.metadata?.wa_id || 'Unknown',
+          text: (m.metadata as any)?.text || (m.metadata as any)?.content || 'No text',
+          from: (m.metadata as any)?.wa_id || 'Unknown',
           org_id: m.organization_id,
-          has_book: (m.metadata?.text || '').toUpperCase().includes('BOOK')
+          has_book: ((m.metadata as any)?.text || '').toUpperCase().includes('BOOK')
         }))
 
         // Get unique organization IDs

@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Format messages
     const formattedMessages = messages?.map(msg => ({
       id: msg.id,
-      text: msg.metadata?.text || '',
+      text: (msg.metadata as any)?.text || '',
       direction: msg.source_entity_id ? 'inbound' : 'outbound',
       phone: msg.source_entity?.metadata?.phone || msg.source_entity?.entity_code?.replace('WA-', '') || 'Unknown',
       created_at: msg.created_at,

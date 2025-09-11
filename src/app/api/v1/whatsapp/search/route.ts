@@ -99,18 +99,18 @@ export async function GET(request: NextRequest) {
       
       return {
         id: msg.id,
-        text: msg.metadata?.text,
+        text: (msg.metadata as any)?.text,
         direction: msg.source_entity_id === conversation?.id ? 'inbound' : 'outbound',
         created_at: msg.created_at,
         conversation: conversation ? {
           id: conversation.id,
           name: conversation.entity_name,
-          phone: conversation.metadata?.phone
+          phone: (conversation.metadata as any)?.phone
         } : null,
         isStarred: starredMessageIds.includes(msg.id),
-        messageType: msg.metadata?.message_type,
-        mediaUrl: msg.metadata?.media_url,
-        status: msg.metadata?.status
+        messageType: (msg.metadata as any)?.message_type,
+        mediaUrl: (msg.metadata as any)?.media_url,
+        status: (msg.metadata as any)?.status
       }
     })
     

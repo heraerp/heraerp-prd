@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
 
       // Find current assignments for this driver
       const driverAssignments = currentAssignments.filter((order: any) => 
-        order.metadata?.driver_id === driver.id
+        (order.metadata as any)?.driver_id === driver.id
       )
 
       const driverData = {
@@ -134,9 +134,9 @@ export async function GET(request: NextRequest) {
           order_number: order.transaction_code,
           status: order.status,
           total_amount: order.total_amount || 0,
-          customer_name: order.metadata?.customer_name || 'Customer',
-          delivery_address: order.metadata?.delivery_address || '',
-          estimated_delivery_time: order.metadata?.estimated_delivery_time,
+          customer_name: (order.metadata as any)?.customer_name || 'Customer',
+          delivery_address: (order.metadata as any)?.delivery_address || '',
+          estimated_delivery_time: (order.metadata as any)?.estimated_delivery_time,
           items_count: order.lines?.length || 0
         })),
         

@@ -236,7 +236,7 @@ export function POSTerminal({
         const result = await universalApi.createEntity({
           entity_type: 'table',
           entity_name: table.entity_name,
-          entity_code: `TBL-${table.metadata?.table_number?.toString().padStart(3, '0')}`,
+          entity_code: `TBL-${(table.metadata as any)?.table_number?.toString().padStart(3, '0')}`,
           smart_code: smartCodes.TABLE,
           metadata: table.metadata
         })
@@ -313,7 +313,7 @@ export function POSTerminal({
         menuItem: item,
         quantity: 1,
         modifiers: [],
-        lineTotal: item.metadata?.price || 0
+        lineTotal: (item.metadata as any)?.price || 0
       }])
     }
   }
@@ -327,7 +327,7 @@ export function POSTerminal({
     
     setCart(cart.map(item => 
       item.menuItem.id === itemId 
-        ? { ...item, quantity, lineTotal: quantity * (item.menuItem.metadata?.price || 0) }
+        ? { ...item, quantity, lineTotal: quantity * ((item.menuItem.metadata as any)?.price || 0) }
         : item
     ))
   }
@@ -360,16 +360,16 @@ export function POSTerminal({
 
   // Filter menu items
   const filteredItems = menuItems.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || item.metadata?.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
     const matchesSearch = searchTerm === '' || 
       item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.metadata?.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.metadata as any)?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    return matchesCategory && matchesSearch && item.metadata?.available !== false
+    return matchesCategory && matchesSearch && (item.metadata as any)?.available !== false
   })
 
   // Get categories
-  const categories = ['all', ...Array.from(new Set(menuItems.map(item => item.metadata?.category).filter(Boolean)))]
+  const categories = ['all', ...Array.from(new Set(menuItems.map(item => (item.metadata as any)?.category).filter(Boolean)))]
 
   // Process order
   const processOrder = async () => {
@@ -429,13 +429,13 @@ export function POSTerminal({
           line_number: index + 1,
           line_entity_id: item.menuItem.id,
           quantity: item.quantity,
-          unit_price: item.menuItem.metadata?.price || 0,
+          unit_price: (item.menuItem.metadata as any)?.price || 0,
           line_amount: item.lineTotal,
           smart_code: smartCodes.ORDER_LINE,
           metadata: {
             item_name: item.menuItem.entity_name,
             item_code: item.menuItem.entity_code,
-            category: item.menuItem.metadata?.category,
+            category: (item.menuItem.metadata as any)?.category,
             modifiers: item.modifiers,
             special_requests: item.specialInstructions
           }
@@ -541,7 +541,7 @@ export function POSTerminal({
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredItems.map(item => {
-                const Icon = CATEGORY_ICONS[item.metadata?.category || ''] || Coffee
+                const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
                   <Card 
                     key={item.id}
@@ -552,14 +552,14 @@ export function POSTerminal({
                       <div className="flex items-start justify-between mb-2">
                         <Icon className="h-8 w-8 text-muted-foreground" />
                         <span className="text-lg font-bold">
-                          {formatCurrency(item.metadata?.price || 0)}
+                          {formatCurrency((item.metadata as any)?.price || 0)}
                         </span>
                       </div>
                       <h3 className="font-semibold mb-1">{item.entity_name}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {item.metadata?.description}
+                        {(item.metadata as any)?.description}
                       </p>
-                      {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
+                      {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
                         <Badge variant="outline" className="mt-2 text-xs">
                           Customizable
                         </Badge>
@@ -572,7 +572,7 @@ export function POSTerminal({
           ) : (
             <div className="space-y-2">
               {filteredItems.map(item => {
-                const Icon = CATEGORY_ICONS[item.metadata?.category || ''] || Coffee
+                const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
                   <Card 
                     key={item.id}
@@ -585,11 +585,11 @@ export function POSTerminal({
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold">{item.entity_name}</h3>
                           <span className="font-bold">
-                            {formatCurrency(item.metadata?.price || 0)}
+                            {formatCurrency((item.metadata as any)?.price || 0)}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {item.metadata?.description}
+                          {(item.metadata as any)?.description}
                         </p>
                       </div>
                       <Button size="sm">
@@ -647,10 +647,10 @@ export function POSTerminal({
               </SelectTrigger>
               <SelectContent>
                 {tables
-                  .filter(table => table.metadata?.status === 'available')
+                  .filter(table => (table.metadata as any)?.status === 'available')
                   .map(table => (
                     <SelectItem key={table.id} value={table.id}>
-                      {table.entity_name} - {table.metadata?.section}
+                      {table.entity_name} - {(table.metadata as any)?.section}
                     </SelectItem>
                   ))
                 }
@@ -707,7 +707,7 @@ export function POSTerminal({
                     <div className="flex-1">
                       <h4 className="font-medium">{item.menuItem.entity_name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {formatCurrency(item.menuItem.metadata?.price || 0)} each
+                        {formatCurrency((item.menuItem.metadata as any)?.price || 0)} each
                       </p>
                     </div>
                     <Button

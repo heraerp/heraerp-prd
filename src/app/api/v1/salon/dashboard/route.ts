@@ -70,11 +70,11 @@ export async function GET(request: NextRequest) {
     const dashboardData = {
       todayAppointments: appointments?.map(apt => ({
         id: apt.id,
-        client: apt.metadata?.customer_name || 'Unknown Client',
-        service: apt.metadata?.service_name || 'Service',
-        time: apt.metadata?.appointment_time || '10:00 AM',
-        stylist: apt.metadata?.stylist_name || 'Staff Member',
-        duration: apt.metadata?.duration || '60 min',
+        client: (apt.metadata as any)?.customer_name || 'Unknown Client',
+        service: (apt.metadata as any)?.service_name || 'Service',
+        time: (apt.metadata as any)?.appointment_time || '10:00 AM',
+        stylist: (apt.metadata as any)?.stylist_name || 'Staff Member',
+        duration: (apt.metadata as any)?.duration || '60 min',
         price: apt.total_amount || 0
       })) || [],
       
@@ -93,9 +93,9 @@ export async function GET(request: NextRequest) {
         lastVisit: customer.updated_at ? 
           new Date(customer.updated_at).toLocaleDateString() : 
           'Recently',
-        totalSpent: customer.metadata?.total_spent || 0,
-        visits: customer.metadata?.visit_count || 0,
-        favorite: customer.metadata?.favorite_service || 'Haircut & Style'
+        totalSpent: (customer.metadata as any)?.total_spent || 0,
+        visits: (customer.metadata as any)?.visit_count || 0,
+        favorite: (customer.metadata as any)?.favorite_service || 'Haircut & Style'
       })) || [],
       
       staff: staff || [],

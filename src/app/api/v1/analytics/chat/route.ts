@@ -565,7 +565,7 @@ function groupByService(transactions: any[]) {
   const serviceGroups: Record<string, { count: number; total: number; service: string }> = {}
   
   transactions.forEach(t => {
-    const serviceName = t.metadata?.service_name || 'Uncategorized'
+    const serviceName = (t.metadata as any)?.service_name || 'Uncategorized'
     if (!serviceGroups[serviceName]) {
       serviceGroups[serviceName] = { count: 0, total: 0, service: serviceName }
     }

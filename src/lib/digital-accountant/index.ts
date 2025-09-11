@@ -109,8 +109,8 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         smart_code: entry.smart_code || ACCOUNTANT_SMART_CODES.JOURNAL_MANUAL,
         metadata: {
           ...entry.metadata,
-          status: entry.metadata?.status || 'draft',
-          auto_generated: entry.metadata?.auto_generated || false,
+          status: (entry.metadata as any)?.status || 'draft',
+          auto_generated: (entry.metadata as any)?.auto_generated || false,
           validation_status: 'pending',
           created_by: this.userId,
           created_at: new Date().toISOString()
@@ -134,9 +134,9 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         .insert({
           organization_id: this.organizationId,
           transaction_type: 'journal_entry',
-          transaction_date: journalData.metadata?.journal_date || new Date().toISOString(),
+          transaction_date: (journalData.metadata as any)?.journal_date || new Date().toISOString(),
           transaction_code: journal.entity_name,
-          total_amount: journalData.metadata?.total_debits || 0,
+          total_amount: (journalData.metadata as any)?.total_debits || 0,
           smart_code: journal.smart_code,
           metadata: {
             journal_id: journal.id,
@@ -198,7 +198,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
       }
 
       // Check approval requirements
-      if (journal.metadata?.status === 'draft' || journal.metadata?.status === 'pending_approval') {
+      if ((journal.metadata as any)?.status === 'draft' || (journal.metadata as any)?.status === 'pending_approval') {
         // Initialize approval workflow
         const workflow = await this.approvalService.initializeWorkflow({
           entity_type: 'journal_entry',
@@ -271,7 +271,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         .from('universal_transaction_lines')
         .select('*')
         .eq('organization_id', this.organizationId)
-        .eq('transaction_id', original.metadata?.transaction_id);
+        .eq('transaction_id', (original.metadata as any)?.transaction_id);
 
       if (linesError || !originalLines) {
         throw new Error('Original journal lines not found');
@@ -284,31 +284,31 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         metadata: {
           journal_date: new Date().toISOString().split('T')[0],
           description: `Reversal of ${original.entity_name}: ${reason}`,
-          reference_number: original.metadata?.reference_number,
+          reference_number: (original.metadata as any)?.reference_number,
           original_journal_id: journalId,
           reversal_reason: reason,
           auto_generated: false,
-          total_debits: original.metadata?.total_credits || 0,
-          total_credits: original.metadata?.total_debits || 0
+          total_debits: (original.metadata as any)?.total_credits || 0,
+          total_credits: (original.metadata as any)?.total_debits || 0
         }
       });
 
       // Create reversal lines (swap debits and credits)
       const reversalLines = originalLines.map(line => ({
         organization_id: this.organizationId,
-        transaction_id: reversalEntry.metadata?.transaction_id,
+        transaction_id: (reversalEntry.metadata as any)?.transaction_id,
         line_number: line.line_number,
         line_entity_id: line.line_entity_id,
         line_description: `Reversal: ${line.line_description}`,
         quantity: 1,
-        unit_price: line.metadata?.credit_amount || line.metadata?.debit_amount || 0,
-        line_amount: line.metadata?.credit_amount || line.metadata?.debit_amount || 0,
+        unit_price: (line.metadata as any)?.credit_amount || (line.metadata as any)?.debit_amount || 0,
+        line_amount: (line.metadata as any)?.credit_amount || (line.metadata as any)?.debit_amount || 0,
         smart_code: ACCOUNTANT_SMART_CODES.JOURNAL_REVERSAL + '.LINE',
         metadata: {
-          gl_account_id: line.metadata?.gl_account_id,
-          gl_account_code: line.metadata?.gl_account_code,
-          debit_amount: line.metadata?.credit_amount || 0,
-          credit_amount: line.metadata?.debit_amount || 0
+          gl_account_id: (line.metadata as any)?.gl_account_id,
+          gl_account_code: (line.metadata as any)?.gl_account_code,
+          debit_amount: (line.metadata as any)?.credit_amount || 0,
+          credit_amount: (line.metadata as any)?.debit_amount || 0
         }
       }));
 
@@ -331,7 +331,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         .eq('id', journalId);
 
       // Auto-post reversal if original was posted
-      if (original.metadata?.status === 'posted') {
+      if ((original.metadata as any)?.status === 'posted') {
         await this.postJournal(reversalEntry.id, { auto_approve: true });
       }
 
@@ -413,7 +413,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
       // Create journal lines
       const lineData = journalLines.map((line, index) => ({
         organization_id: this.organizationId,
-        transaction_id: journal.metadata?.transaction_id,
+        transaction_id: (journal.metadata as any)?.transaction_id,
         line_number: index + 1,
         line_entity_id: line.gl_account_id,
         line_description: line.description,
@@ -429,7 +429,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         .insert(lineData);
 
       // Auto-post if configured
-      if (transaction.metadata?.auto_post_journal) {
+      if ((transaction.metadata as any)?.auto_post_journal) {
         await this.postJournal(journal.id, { auto_approve: true });
       }
 
@@ -904,7 +904,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
     await this.updateJournalStatus(journal.id, 'posted');
 
     // Update transaction status
-    if (journal.metadata?.transaction_id) {
+    if ((journal.metadata as any)?.transaction_id) {
       await supabase
         .from('universal_transactions')
         .update({
@@ -919,7 +919,7 @@ export class DigitalAccountantService implements IDigitalAccountantService {
       'journal_entry',
       journal.id,
       'post',
-      { status: journal.metadata?.status },
+      { status: (journal.metadata as any)?.status },
       { status: 'posted' }
     );
   }

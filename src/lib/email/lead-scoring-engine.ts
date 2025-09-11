@@ -164,8 +164,8 @@ export class LeadScoringEngine {
         event_type: tx.transaction_type.replace('email_', ''),
         timestamp: tx.created_at,
         score_value: tx.total_amount,
-        campaign_id: tx.metadata?.campaign_id,
-        message_id: tx.metadata?.message_id,
+        campaign_id: (tx.metadata as any)?.campaign_id,
+        message_id: (tx.metadata as any)?.message_id,
         metadata: tx.metadata
       }))
       

@@ -9,7 +9,7 @@ import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     
     // Get current user session
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     
     // Get current user session
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()

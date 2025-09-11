@@ -996,13 +996,13 @@ export default function ReadinessDashboardPage() {
                             Assessment In Progress
                           </h3>
                           <p className="text-gray-500 dark:text-gray-300 mb-6">
-                            This assessment is {selectedSession.metadata?.completionRate || 0}% complete
+                            This assessment is {(selectedSession.metadata as any)?.completionRate || 0}% complete
                           </p>
                           <div className="max-w-xs mx-auto mb-6">
                             <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
                               <motion.div
                                 initial={{ width: 0 }}
-                                animate={{ width: `${selectedSession.metadata?.completionRate || 0}%` }}
+                                animate={{ width: `${(selectedSession.metadata as any)?.completionRate || 0}%` }}
                                 transition={{ duration: 0.8 }}
                                 className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500"
                               />
@@ -1110,7 +1110,7 @@ export default function ReadinessDashboardPage() {
 
                     <TabsContent value="categories">
                       <div className="space-y-4">
-                        {selectedSession.metadata?.categoryScores && Object.keys(selectedSession.metadata.categoryScores).length > 0 ? (
+                        {(selectedSession.metadata as any)?.categoryScores && Object.keys(selectedSession.metadata.categoryScores).length > 0 ? (
                           Object.entries(selectedSession.metadata.categoryScores).map(([category, data], index) => (
                           <motion.div 
                             key={category}

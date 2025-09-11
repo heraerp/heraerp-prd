@@ -165,7 +165,7 @@ export function TransactionList({
                       <DollarSign className="h-4 w-4" />
                       {formatCurrency(transaction.total_amount)}
                     </p>
-                    {transaction.metadata?.tip_amount && transaction.metadata.tip_amount > 0 && (
+                    {(transaction.metadata as any)?.tip_amount && transaction.metadata.tip_amount > 0 && (
                       <p className="text-sm text-green-600 dark:text-green-400">
                         +{formatCurrency(transaction.metadata.tip_amount)} tip
                       </p>

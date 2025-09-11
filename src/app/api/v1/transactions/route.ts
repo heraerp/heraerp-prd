@@ -95,8 +95,8 @@ export async function GET(request: NextRequest) {
             discount_amount: line.discount_amount || 0,
             tax_amount: line.tax_amount || 0,
             line_data: line.metadata || {},
-            special_instructions: line.metadata?.special_instructions || null,
-            modifications: line.metadata?.modifications || []
+            special_instructions: (line.metadata as any)?.special_instructions || null,
+            modifications: (line.metadata as any)?.modifications || []
           }))
         }
       })

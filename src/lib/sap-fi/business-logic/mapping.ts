@@ -68,7 +68,7 @@ export class SAPMappingService {
       Reference: transaction.transaction_code,
       HeaderText: transaction.description || '',
       DocumentCurrency: transaction.currency || 'USD',
-      ExchangeRate: transaction.metadata?.exchange_rate,
+      ExchangeRate: (transaction.metadata as any)?.exchange_rate,
       TransactionType: transaction.transaction_type
     }
   }
@@ -110,8 +110,8 @@ export class SAPMappingService {
       Amount: vendorTotal,
       DebitCreditCode: 'H', // Credit
       ItemText: transaction.description || 'Vendor invoice',
-      DueDate: transaction.metadata?.due_date,
-      PaymentTerms: transaction.metadata?.payment_terms
+      DueDate: (transaction.metadata as any)?.due_date,
+      PaymentTerms: (transaction.metadata as any)?.payment_terms
     })
     
     // GL lines (debit)
@@ -147,8 +147,8 @@ export class SAPMappingService {
       Amount: customerTotal,
       DebitCreditCode: 'S', // Debit
       ItemText: transaction.description || 'Customer invoice',
-      DueDate: transaction.metadata?.due_date,
-      PaymentTerms: transaction.metadata?.payment_terms
+      DueDate: (transaction.metadata as any)?.due_date,
+      PaymentTerms: (transaction.metadata as any)?.payment_terms
     })
     
     // GL lines (credit)

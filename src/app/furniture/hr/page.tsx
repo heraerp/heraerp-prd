@@ -68,7 +68,7 @@ const employeeColumns = [
         </div>
         <div>
           <p className="font-medium">{value}</p>
-          <p className="text-xs text-gray-500">{row.metadata?.position || 'Employee'}</p>
+          <p className="text-xs text-gray-500">{(row.metadata as any)?.position || 'Employee'}</p>
         </div>
       </div>
     )
@@ -78,10 +78,10 @@ const employeeColumns = [
     key: 'department',
     header: 'Department',
     label: 'Department',
-    accessor: (row: any) => row.metadata?.department || 'General',
+    accessor: (row: any) => (row.metadata as any)?.department || 'General',
     sortable: true,
     render: (_: any, row: any) => {
-      const dept = row.metadata?.department || 'General'
+      const dept = (row.metadata as any)?.department || 'General'
       const deptColors: Record<string, string> = {
         'Management': 'bg-purple-500/20 text-purple-400',
         'Production': 'bg-blue-500/20 text-blue-400',
@@ -101,10 +101,10 @@ const employeeColumns = [
     key: 'employee_type',
     header: 'Type',
     label: 'Type',
-    accessor: (row: any) => row.metadata?.employee_type || 'permanent',
+    accessor: (row: any) => (row.metadata as any)?.employee_type || 'permanent',
     sortable: true,
     render: (_: any, row: any) => {
-      const type = row.metadata?.employee_type || 'permanent'
+      const type = (row.metadata as any)?.employee_type || 'permanent'
       return (
         <Badge variant="outline" className={cn(
           "border-0",
@@ -120,11 +120,11 @@ const employeeColumns = [
     key: 'grade',
     header: 'Grade',
     label: 'Grade',
-    accessor: (row: any) => row.metadata?.grade || '-',
+    accessor: (row: any) => (row.metadata as any)?.grade || '-',
     sortable: true,
     align: 'center' as const,
     render: (_: any, row: any) => (
-      <span className="font-mono text-sm">{row.metadata?.grade || '-'}</span>
+      <span className="font-mono text-sm">{(row.metadata as any)?.grade || '-'}</span>
     )
   },
   {
@@ -197,7 +197,7 @@ const attendanceColumns = [
     accessor: 'transaction_code',
     sortable: true,
     render: (value: string, row: any) => {
-      const date = row.metadata?.attendance_date || row.transaction_date
+      const date = (row.metadata as any)?.attendance_date || row.transaction_date
       return (
         <div>
           <p className="font-medium">{new Date(date).toLocaleDateString('en-IN', { 
@@ -215,10 +215,10 @@ const attendanceColumns = [
     key: 'present',
     header: 'Present',
     label: 'Present',
-    accessor: (row: any) => row.metadata?.total_present || 0,
+    accessor: (row: any) => (row.metadata as any)?.total_present || 0,
     align: 'center' as const,
     render: (_: any, row: any) => (
-      <span className="font-mono text-green-400">{row.metadata?.total_present || 0}</span>
+      <span className="font-mono text-green-400">{(row.metadata as any)?.total_present || 0}</span>
     )
   },
   {
@@ -226,10 +226,10 @@ const attendanceColumns = [
     key: 'absent',
     header: 'Absent',
     label: 'Absent',
-    accessor: (row: any) => row.metadata?.total_absent || 0,
+    accessor: (row: any) => (row.metadata as any)?.total_absent || 0,
     align: 'center' as const,
     render: (_: any, row: any) => (
-      <span className="font-mono text-red-400">{row.metadata?.total_absent || 0}</span>
+      <span className="font-mono text-red-400">{(row.metadata as any)?.total_absent || 0}</span>
     )
   },
   {
@@ -237,10 +237,10 @@ const attendanceColumns = [
     key: 'leave',
     header: 'On Leave',
     label: 'On Leave',
-    accessor: (row: any) => row.metadata?.total_leave || 0,
+    accessor: (row: any) => (row.metadata as any)?.total_leave || 0,
     align: 'center' as const,
     render: (_: any, row: any) => (
-      <span className="font-mono text-amber-400">{row.metadata?.total_leave || 0}</span>
+      <span className="font-mono text-amber-400">{(row.metadata as any)?.total_leave || 0}</span>
     )
   }
 ]
@@ -319,13 +319,13 @@ export default function FurnitureHR() {
       // Calculate metrics
       const departmentEntities = allEntities?.filter((e: any) => e.entity_type === 'department') || []
       const activeEmp = employeeEntities.filter((e: any) => e.status === 'active')
-      const contractEmp = employeeEntities.filter((e: any) => e.metadata?.employee_type === 'contract')
-      const pendingLeaves = leaves.filter((l: any) => l.metadata?.status === 'pending')
+      const contractEmp = employeeEntities.filter((e: any) => (e.metadata as any)?.employee_type === 'contract')
+      const pendingLeaves = leaves.filter((l: any) => (l.metadata as any)?.status === 'pending')
       
       // Calculate average attendance
       const avgAttendance = attendance.length > 0
         ? Math.round(attendance.reduce((sum: number, a: any) => 
-            sum + (a.metadata?.total_present || 0), 0) / attendance.length)
+            sum + ((a.metadata as any)?.total_present || 0), 0) / attendance.length)
         : 0
       
       // Get payroll data
@@ -337,10 +337,10 @@ export default function FurnitureHR() {
       
       // Get pending approvals
       const pendingOT = allTransactions?.filter((t: any) => 
-        t.transaction_type === 'overtime_approval' && t.metadata?.status === 'pending'
+        t.transaction_type === 'overtime_approval' && (t.metadata as any)?.status === 'pending'
       ) || []
       const pendingBonus = allTransactions?.filter((t: any) => 
-        t.transaction_type === 'bonus_approval' && t.metadata?.status === 'pending'
+        t.transaction_type === 'bonus_approval' && (t.metadata as any)?.status === 'pending'
       ) || []
       const pendingApprovals = pendingOT.length + pendingBonus.length
       
@@ -350,10 +350,10 @@ export default function FurnitureHR() {
       ) || []
       setTrainingRecords(training)
       const totalTrainingHours = training.reduce((sum: number, t: any) => {
-        const hours = t.metadata?.duration_hours || 0
+        const hours = (t.metadata as any)?.duration_hours || 0
         // Approximate participants based on department
-        const participants = t.metadata?.department === 'All' ? employeeEntities.length :
-                           t.metadata?.department === 'Production' ? 5 : 1
+        const participants = (t.metadata as any)?.department === 'All' ? employeeEntities.length :
+                           (t.metadata as any)?.department === 'Production' ? 5 : 1
         return sum + (hours * participants)
       }, 0)
       
@@ -383,13 +383,13 @@ export default function FurnitureHR() {
       emp.entity_code.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesDepartment = selectedDepartment === 'all' || 
-      emp.metadata?.department === selectedDepartment
+      (emp.metadata as any)?.department === selectedDepartment
     
     return matchesSearch && matchesDepartment
   })
 
   // Get unique departments
-  const departments = [...new Set(employees.map(e => e.metadata?.department).filter(Boolean))]
+  const departments = [...new Set(employees.map(e => (e.metadata as any)?.department).filter(Boolean))]
 
   // Show loading state
   if (orgLoading) {
@@ -639,18 +639,18 @@ export default function FurnitureHR() {
                           <div>
                             <p className="font-medium">{employee?.entity_name || 'Employee'}</p>
                             <p className="text-sm text-gray-400">
-                              {leave.metadata?.leave_type} Leave • {leave.metadata?.days} days • 
-                              {leave.metadata?.start_date} to {leave.metadata?.end_date}
+                              {(leave.metadata as any)?.leave_type} Leave • {(leave.metadata as any)?.days} days • 
+                              {(leave.metadata as any)?.start_date} to {(leave.metadata as any)?.end_date}
                             </p>
                           </div>
                         </div>
                         <Badge variant="outline" className={cn(
                           "border-0",
-                          leave.metadata?.status === 'approved' ? "bg-green-500/20 text-green-400" :
-                          leave.metadata?.status === 'pending' ? "bg-amber-500/20 text-amber-400" :
+                          (leave.metadata as any)?.status === 'approved' ? "bg-green-500/20 text-green-400" :
+                          (leave.metadata as any)?.status === 'pending' ? "bg-amber-500/20 text-amber-400" :
                           "bg-red-500/20 text-red-400"
                         )}>
-                          {leave.metadata?.status || 'pending'}
+                          {(leave.metadata as any)?.status || 'pending'}
                         </Badge>
                       </div>
                     )

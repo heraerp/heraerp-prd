@@ -156,7 +156,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <div className="space-y-2">
                   <Label htmlFor="client_type">Client Type *</Label>
                   <Select
-                    value={client.metadata?.client_type}
+                    value={(client.metadata as any)?.client_type}
                     onValueChange={(value) => setClient({
                       ...client,
                       metadata: { ...client.metadata!, client_type: value as any }
@@ -179,7 +179,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Label htmlFor="industry_code">Industry</Label>
                   <Input
                     id="industry_code"
-                    value={client.metadata?.industry_code}
+                    value={(client.metadata as any)?.industry_code}
                     onChange={(e) => setClient({
                       ...client,
                       metadata: { ...client.metadata!, industry_code: e.target.value }
@@ -196,7 +196,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     <Input
                       id="annual_revenue"
                       type="number"
-                      value={client.metadata?.annual_revenue}
+                      value={(client.metadata as any)?.annual_revenue}
                       onChange={(e) => setClient({
                         ...client,
                         metadata: { ...client.metadata!, annual_revenue: parseFloat(e.target.value) }
@@ -215,7 +215,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     <Input
                       id="total_assets"
                       type="number"
-                      value={client.metadata?.total_assets}
+                      value={(client.metadata as any)?.total_assets}
                       onChange={(e) => setClient({
                         ...client,
                         metadata: { ...client.metadata!, total_assets: parseFloat(e.target.value) }
@@ -232,7 +232,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={client.metadata?.public_interest_entity}
+                    checked={(client.metadata as any)?.public_interest_entity}
                     onChange={(e) => setClient({
                       ...client,
                       metadata: { ...client.metadata!, public_interest_entity: e.target.checked }
@@ -261,7 +261,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <div className="space-y-2">
                   <Label htmlFor="risk_rating">Overall Risk Rating</Label>
                   <Select
-                    value={client.metadata?.risk_rating}
+                    value={(client.metadata as any)?.risk_rating}
                     onValueChange={(value) => setClient({
                       ...client,
                       metadata: { ...client.metadata!, risk_rating: value as any }
@@ -316,7 +316,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Label htmlFor="previous_auditor">Previous Auditor</Label>
                   <Input
                     id="previous_auditor"
-                    value={client.metadata?.previous_auditor}
+                    value={(client.metadata as any)?.previous_auditor}
                     onChange={(e) => setClient({
                       ...client,
                       metadata: { ...client.metadata!, previous_auditor: e.target.value }
@@ -339,7 +339,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
 
               {/* Risk Indicators */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <Card className={client.metadata?.risk_rating === 'high' || client.metadata?.risk_rating === 'very_high' 
+                <Card className={(client.metadata as any)?.risk_rating === 'high' || (client.metadata as any)?.risk_rating === 'very_high' 
                   ? "border-red-200 bg-red-50" 
                   : "border-green-200 bg-green-50"
                 }>
@@ -351,9 +351,9 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                           Based on risk assessment and PIE status
                         </p>
                       </div>
-                      {(client.metadata?.risk_rating === 'high' || 
-                        client.metadata?.risk_rating === 'very_high' || 
-                        client.metadata?.public_interest_entity) ? (
+                      {((client.metadata as any)?.risk_rating === 'high' || 
+                        (client.metadata as any)?.risk_rating === 'very_high' || 
+                        (client.metadata as any)?.public_interest_entity) ? (
                         <AlertCircle className="w-6 h-6 text-red-500" />
                       ) : (
                         <CheckCircle2 className="w-6 h-6 text-green-500" />
@@ -518,7 +518,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {client.metadata?.audit_history?.length === 0 ? (
+              {(client.metadata as any)?.audit_history?.length === 0 ? (
                 <div className="text-center py-8">
                   <Calendar className="w-12 h-12 mx-auto text-gray-600 mb-4" />
                   <p className="text-gray-600">No audit history recorded</p>
@@ -572,7 +572,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
 
                 <div className="space-y-2">
                   <Label>EQCR Partner</Label>
-                  <Select disabled={!editMode || (!client.metadata?.public_interest_entity && client.metadata?.risk_rating !== 'high' && client.metadata?.risk_rating !== 'very_high')}>
+                  <Select disabled={!editMode || (!(client.metadata as any)?.public_interest_entity && (client.metadata as any)?.risk_rating !== 'high' && (client.metadata as any)?.risk_rating !== 'very_high')}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select EQCR partner" />
                     </SelectTrigger>

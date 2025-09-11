@@ -37,12 +37,12 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
   const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   // Calculate days since last visit
-  const daysSinceLastVisit = customer.metadata?.last_visit
+  const daysSinceLastVisit = (customer.metadata as any)?.last_visit
     ? differenceInDays(new Date(), new Date(customer.metadata.last_visit))
     : null
 
   // Check if birthday is within 30 days
-  const isBirthdayNear = customer.metadata?.birthday
+  const isBirthdayNear = (customer.metadata as any)?.birthday
     ? (() => {
         const today = new Date()
         const birthday = new Date(customer.metadata.birthday)
@@ -98,7 +98,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
           last_visit_days: daysSinceLastVisit?.toString() || '90',
           salon_name: 'Hair Talkz Salon',
           special_offer: '30% off your comeback visit',
-          favorite_service: customer.metadata?.favorite_service || 'your favorite service',
+          favorite_service: (customer.metadata as any)?.favorite_service || 'your favorite service',
           valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
         }
       }
@@ -137,7 +137,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
       last_visit_days: daysSinceLastVisit?.toString() || '90',
       salon_name: 'Hair Talkz Salon',
       special_offer: '30% off your comeback visit',
-      favorite_service: customer.metadata?.favorite_service || 'your favorite service',
+      favorite_service: (customer.metadata as any)?.favorite_service || 'your favorite service',
       valid_until: formatDate(addDays(new Date(), 30), 'MMMM d, yyyy')
     })
   }
@@ -166,7 +166,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
       )}
 
       {/* Birthday Campaign */}
-      {customer.metadata?.birthday && (
+      {(customer.metadata as any)?.birthday && (
         <Card className="p-4 bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">

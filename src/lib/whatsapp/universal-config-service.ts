@@ -412,7 +412,7 @@ export class UniversalConfigService {
         })
         
         totalCost = todayTransactions.reduce((sum, tx) => {
-          return sum + (tx.metadata?.cost_usd || 0)
+          return sum + ((tx.metadata as any)?.cost_usd || 0)
         }, 0)
       }
 

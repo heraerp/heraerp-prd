@@ -239,20 +239,20 @@ export function InventoryManagement({
   const calculateStats = (items: InventoryItem[], movements: StockMovement[]) => {
     const totalItems = items.length
     const lowStockItems = items.filter(item => {
-      const current = item.metadata?.current_stock || 0
-      const min = item.metadata?.min_stock || 0
+      const current = (item.metadata as any)?.current_stock || 0
+      const min = (item.metadata as any)?.min_stock || 0
       return current <= min
     }).length
     
     const totalValue = items.reduce((sum, item) => {
-      const stock = item.metadata?.current_stock || 0
-      const cost = item.metadata?.unit_cost || 0
+      const stock = (item.metadata as any)?.current_stock || 0
+      const cost = (item.metadata as any)?.unit_cost || 0
       return sum + (stock * cost)
     }, 0)
     
     const pendingOrders = movements.filter(m => 
       m.transaction_type === 'purchase_order' && 
-      m.metadata?.status === 'pending'
+      (m.metadata as any)?.status === 'pending'
     ).length
     
     setStats({ totalItems, lowStockItems, totalValue, pendingOrders })
@@ -302,7 +302,7 @@ export function InventoryManagement({
       const item = inventoryItems.find(i => i.id === adjustment.item_id)
       if (!item) return
       
-      const currentStock = item.metadata?.current_stock || 0
+      const currentStock = (item.metadata as any)?.current_stock || 0
       const adjustmentQty = adjustment.adjustment_type === 'add' 
         ? adjustment.quantity 
         : -adjustment.quantity
@@ -352,9 +352,9 @@ export function InventoryManagement({
   }
   
   const getStockStatus = (item: InventoryItem) => {
-    const current = item.metadata?.current_stock || 0
-    const min = item.metadata?.min_stock || 0
-    const reorder = item.metadata?.reorder_point || 0
+    const current = (item.metadata as any)?.current_stock || 0
+    const min = (item.metadata as any)?.min_stock || 0
+    const reorder = (item.metadata as any)?.reorder_point || 0
     
     if (current === 0) return { color: 'destructive', text: 'Out of Stock' }
     if (current <= min) return { color: 'destructive', text: 'Low Stock' }
@@ -365,7 +365,7 @@ export function InventoryManagement({
   const filteredItems = inventoryItems.filter(item => {
     const matchesSearch = item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.entity_code.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || item.metadata?.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
     return matchesSearch && matchesCategory
   })
   
@@ -505,8 +505,8 @@ export function InventoryManagement({
                 <TableBody>
                   {filteredItems.map((item) => {
                     const status = getStockStatus(item)
-                    const currentStock = item.metadata?.current_stock || 0
-                    const unitCost = item.metadata?.unit_cost || 0
+                    const currentStock = (item.metadata as any)?.current_stock || 0
+                    const unitCost = (item.metadata as any)?.unit_cost || 0
                     const totalValue = currentStock * unitCost
                     
                     return (
@@ -515,14 +515,14 @@ export function InventoryManagement({
                         <TableCell className="font-medium">{item.entity_name}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {item.metadata?.category || 'uncategorized'}
+                            {(item.metadata as any)?.category || 'uncategorized'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          {currentStock} {item.metadata?.unit}
+                          {currentStock} {(item.metadata as any)?.unit}
                         </TableCell>
                         <TableCell className="text-right">
-                          {item.metadata?.min_stock || 0} {item.metadata?.unit}
+                          {(item.metadata as any)?.min_stock || 0} {(item.metadata as any)?.unit}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatCurrency(unitCost)}
@@ -544,7 +544,7 @@ export function InventoryManagement({
                               setAdjustment({
                                 ...adjustment,
                                 item_id: item.id,
-                                unit_cost: item.metadata?.unit_cost || 0
+                                unit_cost: (item.metadata as any)?.unit_cost || 0
                               })
                               setShowAdjustment(true)
                             }}
@@ -582,14 +582,14 @@ export function InventoryManagement({
                         <p className="text-sm text-muted-foreground">
                           {formatDate(new Date(movement.transaction_date), 'MMM d, yyyy h:mm a')}
                         </p>
-                        {movement.metadata?.reason && (
+                        {(movement.metadata as any)?.reason && (
                           <p className="text-sm mt-1">Reason: {movement.metadata.reason}</p>
                         )}
                       </div>
                       <div className="text-right">
                         <p className="font-medium">
-                          {movement.metadata?.movement_type === 'add' ? '+' : '-'}
-                          {movement.metadata?.quantity} units
+                          {(movement.metadata as any)?.movement_type === 'add' ? '+' : '-'}
+                          {(movement.metadata as any)?.quantity} units
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Value: {formatCurrency(movement.total_amount)}
@@ -626,10 +626,10 @@ export function InventoryManagement({
                       <TableCell className="font-medium">{supplier.entity_name}</TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {supplier.metadata?.category || 'general'}
+                          {(supplier.metadata as any)?.category || 'general'}
                         </Badge>
                       </TableCell>
-                      <TableCell>{supplier.metadata?.payment_terms || 'N/A'}</TableCell>
+                      <TableCell>{(supplier.metadata as any)?.payment_terms || 'N/A'}</TableCell>
                       <TableCell>
                         <Button size="sm" variant="outline">
                           Create PO
@@ -658,10 +658,10 @@ export function InventoryManagement({
                         <span className="font-medium">{item.entity_name}</span>
                         <div className="text-right">
                           <p className="text-sm">
-                            {item.metadata?.current_stock || 0} / {item.metadata?.min_stock || 0} {item.metadata?.unit}
+                            {(item.metadata as any)?.current_stock || 0} / {(item.metadata as any)?.min_stock || 0} {(item.metadata as any)?.unit}
                           </p>
                           <Badge variant="destructive" className="text-xs">
-                            {((item.metadata?.current_stock || 0) / (item.metadata?.min_stock || 1) * 100).toFixed(0)}% of min
+                            {(((item.metadata as any)?.current_stock || 0) / ((item.metadata as any)?.min_stock || 1) * 100).toFixed(0)}% of min
                           </Badge>
                         </div>
                       </div>
@@ -678,13 +678,13 @@ export function InventoryManagement({
                 <div className="space-y-2">
                   {inventoryItems
                     .sort((a, b) => {
-                      const aValue = (a.metadata?.current_stock || 0) * (a.metadata?.unit_cost || 0)
-                      const bValue = (b.metadata?.current_stock || 0) * (b.metadata?.unit_cost || 0)
+                      const aValue = ((a.metadata as any)?.current_stock || 0) * ((a.metadata as any)?.unit_cost || 0)
+                      const bValue = ((b.metadata as any)?.current_stock || 0) * ((b.metadata as any)?.unit_cost || 0)
                       return bValue - aValue
                     })
                     .slice(0, 5)
                     .map(item => {
-                      const value = (item.metadata?.current_stock || 0) * (item.metadata?.unit_cost || 0)
+                      const value = ((item.metadata as any)?.current_stock || 0) * ((item.metadata as any)?.unit_cost || 0)
                       return (
                         <div key={item.id} className="flex justify-between items-center p-2 border rounded">
                           <span className="font-medium">{item.entity_name}</span>
@@ -829,7 +829,7 @@ export function InventoryManagement({
               <div className="p-3 bg-muted rounded-lg">
                 <p className="font-medium">{selectedItem.entity_name}</p>
                 <p className="text-sm text-muted-foreground">
-                  Current Stock: {selectedItem.metadata?.current_stock || 0} {selectedItem.metadata?.unit}
+                  Current Stock: {(selectedItem.metadata as any)?.current_stock || 0} {(selectedItem.metadata as any)?.unit}
                 </p>
               </div>
               <div>

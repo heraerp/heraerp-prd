@@ -73,7 +73,7 @@ export async function GET(
       notes: dynamicData.find(d => d.field_name === 'notes')?.field_value_text || '',
       allergies: dynamicData.find(d => d.field_name === 'allergies')?.field_value_text || '',
       preferences: dynamicData.find(d => d.field_name === 'preferences')?.field_value_text || '',
-      emergencyContact: client.metadata?.emergency_contact || '',
+      emergencyContact: (client.metadata as any)?.emergency_contact || '',
       totalSpent: dynamicData.find(d => d.field_name === 'total_spent')?.field_value_number || 0,
       visitCount: dynamicData.find(d => d.field_name === 'visit_count')?.field_value_number || 0,
       status: client.status || 'active',
@@ -81,8 +81,8 @@ export async function GET(
       appointmentHistory: appointments.map(apt => ({
         id: apt.id,
         date: apt.transaction_date,
-        service: apt.metadata?.service_name || 'Service',
-        stylist: apt.metadata?.stylist_name || 'Staff',
+        service: (apt.metadata as any)?.service_name || 'Service',
+        stylist: (apt.metadata as any)?.stylist_name || 'Staff',
         amount: apt.total_amount,
         status: apt.transaction_status
       }))

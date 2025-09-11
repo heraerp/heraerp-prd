@@ -217,10 +217,10 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
         smart_code: currentRule.smart_code,
         title: currentRule.title,
         status: 'active',
-        tags: currentRule.metadata?.tags || [],
-        owner: currentRule.metadata?.owner || currentOrganization.name,
-        version: currentRule.metadata?.rule_version || 1,
-        schema_version: currentRule.metadata?.schema_version || 1,
+        tags: (currentRule.metadata as any)?.tags || [],
+        owner: (currentRule.metadata as any)?.owner || currentOrganization.name,
+        version: (currentRule.metadata as any)?.rule_version || 1,
+        schema_version: (currentRule.metadata as any)?.schema_version || 1,
         rule_payload: currentRule.rule_payload
       })
 
@@ -300,7 +300,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <div>
                 <Label className="text-sm text-gray-600">Version</Label>
                 <Badge variant="outline">
-                  v{currentRule.metadata?.rule_version || 1}
+                  v{(currentRule.metadata as any)?.rule_version || 1}
                 </Badge>
               </div>
             </div>
@@ -726,16 +726,16 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">
-                        {event.metadata?.action || 'Deployment'}
+                        {(event.metadata as any)?.action || 'Deployment'}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         {formatDate(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
                       </p>
-                      {event.metadata?.notes && (
+                      {(event.metadata as any)?.notes && (
                         <p className="text-sm mt-1">{event.metadata.notes}</p>
                       )}
                       <div className="mt-2 flex gap-2">
-                        {event.metadata?.scope?.apps?.map((app: string) => (
+                        {(event.metadata as any)?.scope?.apps?.map((app: string) => (
                           <Badge key={app} variant="outline" className="text-xs">
                             {app}
                           </Badge>

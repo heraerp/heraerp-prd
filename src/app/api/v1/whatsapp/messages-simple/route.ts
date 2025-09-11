@@ -38,14 +38,14 @@ export async function GET(request: NextRequest) {
       
       return {
         id: msg.id,
-        text: msg.metadata?.text || '',
+        text: (msg.metadata as any)?.text || '',
         direction,
-        wa_id: msg.metadata?.wa_id || conversation?.metadata?.phone || '',
+        wa_id: (msg.metadata as any)?.wa_id || conversation?.metadata?.phone || '',
         phone: conversation?.metadata?.phone || '',
         customerName: conversation?.entity_name || 'Unknown Customer',
         conversationId,
         conversationName: conversation?.entity_name || 'Unknown',
-        waba_message_id: msg.metadata?.message_id || msg.external_reference || '',
+        waba_message_id: (msg.metadata as any)?.message_id || msg.external_reference || '',
         created_at: msg.created_at,
         occurred_at: msg.transaction_date || msg.created_at, // Use transaction_date as occurred_at
         smart_code: msg.smart_code,

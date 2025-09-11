@@ -139,13 +139,13 @@ export function StaffStatusDisplay() {
         // Find current appointment if busy
         const currentAppointment = member.current_appointments?.find(
           apt => apt.transaction_type === 'appointment' && 
-                 apt.metadata?.status === 'checked_in'
+                 (apt.metadata as any)?.status === 'checked_in'
         )
         
         return {
           id: member.id,
           name: member.entity_name,
-          role: member.metadata?.role || 'Stylist',
+          role: (member.metadata as any)?.role || 'Stylist',
           status: statusConfig.label,
           statusCode,
           statusColor: statusConfig.color,

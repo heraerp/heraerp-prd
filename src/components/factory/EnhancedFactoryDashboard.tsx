@@ -144,7 +144,7 @@ export default function EnhancedFactoryDashboard() {
       // Extract metrics
       const lines = transactionLines.get(txn.id) || [];
       lines.forEach(line => {
-        if (line.metadata?.coverage) {
+        if ((line.metadata as any)?.coverage) {
           module.coverage.push(line.metadata.coverage * 100);
         }
       });

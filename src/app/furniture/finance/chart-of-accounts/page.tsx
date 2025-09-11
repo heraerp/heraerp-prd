@@ -208,7 +208,7 @@ export default function ChartOfAccounts() {
   const renderAccount = (account: GLAccountNode, level: number = 0): React.ReactNode => {
     const hasChildren = account.children && account.children.length > 0
     const isExpanded = expandedNodes.has(account.entity_code)
-    const isHeader = account.metadata?.account_type === 'header'
+    const isHeader = (account.metadata as any)?.account_type === 'header'
     
     // Filter by search term
     if (searchTerm) {
@@ -220,8 +220,8 @@ export default function ChartOfAccounts() {
     }
     
     // Handle cases where metadata might be null or undefined
-    const accountType = account.metadata?.account_type || 'detail'
-    const accountLevel = account.metadata?.account_level || 0
+    const accountType = (account.metadata as any)?.account_type || 'detail'
+    const accountLevel = (account.metadata as any)?.account_level || 0
     
     return (
       <div key={account.entity_code}>

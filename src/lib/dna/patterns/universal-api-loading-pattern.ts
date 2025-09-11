@@ -95,7 +95,7 @@ export const universalFilters = {
     item.smart_code?.startsWith(prefix),
   
   byStatus: (status: string) => (item: any) => 
-    item.status === status || item.metadata?.status === status,
+    item.status === status || (item.metadata as any)?.status === status,
   
   byDateRange: (start: Date, end: Date) => (item: any) => {
     const itemDate = new Date(item.created_at || item.transaction_date)

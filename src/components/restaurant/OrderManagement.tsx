@@ -577,7 +577,7 @@ export function OrderManagement({
       const updatedMetadata = {
         ...order.metadata,
         payment_status: paymentStatus,
-        payment_method: paymentMethod || order.metadata?.payment_method,
+        payment_method: paymentMethod || (order.metadata as any)?.payment_method,
         updated_at: new Date().toISOString()
       }
 
@@ -597,9 +597,9 @@ export function OrderManagement({
 
   // Calculate statistics
   const activeOrders = orders.filter(o => 
-    ['new', 'confirmed', 'preparing', 'ready'].includes(o.metadata?.status || '')
+    ['new', 'confirmed', 'preparing', 'ready'].includes((o.metadata as any)?.status || '')
   )
-  const completedOrders = orders.filter(o => o.metadata?.status === 'completed')
+  const completedOrders = orders.filter(o => (o.metadata as any)?.status === 'completed')
   const todaysOrders = orders.filter(o => 
     formatDate(new Date(o.transaction_date), 'yyyy-MM-dd') === formatDate(new Date(), 'yyyy-MM-dd')
   )
@@ -634,12 +634,12 @@ export function OrderManagement({
     },
     {
       title: 'Dine-in',
-      value: orders.filter(o => o.metadata?.order_type === 'dine-in').length.toString(),
+      value: orders.filter(o => (o.metadata as any)?.order_type === 'dine-in').length.toString(),
       icon: Utensils
     },
     {
       title: 'Delivery/Takeout',
-      value: orders.filter(o => ['delivery', 'takeout', 'pickup'].includes(o.metadata?.order_type || '')).length.toString(),
+      value: orders.filter(o => ['delivery', 'takeout', 'pickup'].includes((o.metadata as any)?.order_type || '')).length.toString(),
       icon: Package
     }
   ]
@@ -648,14 +648,14 @@ export function OrderManagement({
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === '' || 
       order.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.metadata?.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.metadata?.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.metadata?.customer_phone?.includes(searchTerm)
+      (order.metadata as any)?.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.metadata as any)?.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.metadata as any)?.customer_phone?.includes(searchTerm)
 
-    const matchesType = filterType === 'all' || order.metadata?.order_type === filterType
-    const matchesStatus = filterStatus === 'all' || order.metadata?.status === filterStatus
+    const matchesType = filterType === 'all' || (order.metadata as any)?.order_type === filterType
+    const matchesStatus = filterStatus === 'all' || (order.metadata as any)?.status === filterStatus
 
-    const isActive = ['new', 'confirmed', 'preparing', 'ready'].includes(order.metadata?.status || '')
+    const isActive = ['new', 'confirmed', 'preparing', 'ready'].includes((order.metadata as any)?.status || '')
     const matchesTab = 
       (activeTab === 'active' && isActive) ||
       (activeTab === 'completed' && !isActive) ||
@@ -770,12 +770,12 @@ export function OrderManagement({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-lg">
-                          Order #{order.metadata?.order_number || order.transaction_code}
+                          Order #{(order.metadata as any)?.order_number || order.transaction_code}
                         </h3>
-                        <Badge variant="secondary" className={STATUS_COLORS[order.metadata?.status || 'new']}>
-                          {order.metadata?.status || 'new'}
+                        <Badge variant="secondary" className={STATUS_COLORS[(order.metadata as any)?.status || 'new']}>
+                          {(order.metadata as any)?.status || 'new'}
                         </Badge>
-                        {order.metadata?.kitchen_status && (
+                        {(order.metadata as any)?.kitchen_status && (
                           <Badge variant="outline">
                             <ChefHat className="h-3 w-3 mr-1" />
                             {order.metadata.kitchen_status}
@@ -784,22 +784,22 @@ export function OrderManagement({
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          {getOrderTypeIcon(order.metadata?.order_type || 'dine-in')}
-                          <span className="capitalize">{order.metadata?.order_type || 'dine-in'}</span>
+                          {getOrderTypeIcon((order.metadata as any)?.order_type || 'dine-in')}
+                          <span className="capitalize">{(order.metadata as any)?.order_type || 'dine-in'}</span>
                         </div>
-                        {order.metadata?.table_number && (
+                        {(order.metadata as any)?.table_number && (
                           <div className="flex items-center gap-1">
                             <Hash className="h-3 w-3" />
                             {order.metadata.table_name || `Table ${order.metadata.table_number}`}
                           </div>
                         )}
-                        {order.metadata?.customer_name && (
+                        {(order.metadata as any)?.customer_name && (
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
                             {order.metadata.customer_name}
                           </div>
                         )}
-                        {order.metadata?.customer_phone && (
+                        {(order.metadata as any)?.customer_phone && (
                           <div className="flex items-center gap-1">
                             <Phone className="h-3 w-3" />
                             {order.metadata.customer_phone}
@@ -807,7 +807,7 @@ export function OrderManagement({
                         )}
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {order.metadata?.created_at ? getTimeSinceOrder(order.metadata.created_at) : 'Just now'}
+                          {(order.metadata as any)?.created_at ? getTimeSinceOrder(order.metadata.created_at) : 'Just now'}
                         </div>
                       </div>
                     </div>
@@ -816,10 +816,10 @@ export function OrderManagement({
                         <p className="text-2xl font-bold">{formatCurrency(order.total_amount)}</p>
                         <Badge 
                           variant="secondary" 
-                          className={PAYMENT_STATUS_COLORS[order.metadata?.payment_status || 'pending']}
+                          className={PAYMENT_STATUS_COLORS[(order.metadata as any)?.payment_status || 'pending']}
                         >
                           <CreditCard className="h-3 w-3 mr-1" />
-                          {order.metadata?.payment_status || 'pending'}
+                          {(order.metadata as any)?.payment_status || 'pending'}
                         </Badge>
                       </div>
                       <Button
@@ -842,8 +842,8 @@ export function OrderManagement({
                       <div key={item.id} className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">
                           <span className="text-muted-foreground">{item.quantity}x</span>
-                          <span>{item.metadata?.item_name}</span>
-                          {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
+                          <span>{(item.metadata as any)?.item_name}</span>
+                          {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
                             <span className="text-xs text-muted-foreground">
                               ({item.metadata.modifiers.join(', ')})
                             </span>
@@ -860,14 +860,14 @@ export function OrderManagement({
                   </div>
 
                   {/* Special Instructions */}
-                  {order.metadata?.special_instructions && (
+                  {(order.metadata as any)?.special_instructions && (
                     <div className="mb-3 p-2 bg-amber-50 dark:bg-amber-900/20 rounded text-sm">
                       <span className="font-medium">Note:</span> {order.metadata.special_instructions}
                     </div>
                   )}
 
                   {/* Delivery Address */}
-                  {order.metadata?.delivery_address && (
+                  {(order.metadata as any)?.delivery_address && (
                     <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4" />
                       {order.metadata.delivery_address}
@@ -877,7 +877,7 @@ export function OrderManagement({
                   {/* Action Buttons */}
                   <div className="flex items-center justify-between pt-3 border-t">
                     <div className="flex gap-2">
-                      {order.metadata?.status === 'new' && (
+                      {(order.metadata as any)?.status === 'new' && (
                         <Button
                           size="sm"
                           onClick={() => updateOrderStatus(order.id, 'confirmed')}
@@ -890,7 +890,7 @@ export function OrderManagement({
                           )}
                         </Button>
                       )}
-                      {order.metadata?.status === 'confirmed' && (
+                      {(order.metadata as any)?.status === 'confirmed' && (
                         <Button
                           size="sm"
                           onClick={() => updateOrderStatus(order.id, 'preparing')}
@@ -899,7 +899,7 @@ export function OrderManagement({
                           Start Preparing
                         </Button>
                       )}
-                      {order.metadata?.status === 'preparing' && (
+                      {(order.metadata as any)?.status === 'preparing' && (
                         <Button
                           size="sm"
                           onClick={() => updateOrderStatus(order.id, 'ready')}
@@ -909,7 +909,7 @@ export function OrderManagement({
                           Mark Ready
                         </Button>
                       )}
-                      {order.metadata?.status === 'ready' && (
+                      {(order.metadata as any)?.status === 'ready' && (
                         <Button
                           size="sm"
                           onClick={() => updateOrderStatus(order.id, 'completed')}
@@ -918,7 +918,7 @@ export function OrderManagement({
                           Complete Order
                         </Button>
                       )}
-                      {order.metadata?.payment_status === 'pending' && (
+                      {(order.metadata as any)?.payment_status === 'pending' && (
                         <Button
                           size="sm"
                           variant="outline"
@@ -966,26 +966,26 @@ export function OrderManagement({
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Order Type</p>
-                  <p className="font-medium capitalize">{selectedOrder.metadata?.order_type || 'dine-in'}</p>
+                  <p className="font-medium capitalize">{(selectedOrder.metadata as any)?.order_type || 'dine-in'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Status</p>
-                  <Badge variant="secondary" className={STATUS_COLORS[selectedOrder.metadata?.status || 'new']}>
-                    {selectedOrder.metadata?.status || 'new'}
+                  <Badge variant="secondary" className={STATUS_COLORS[(selectedOrder.metadata as any)?.status || 'new']}>
+                    {(selectedOrder.metadata as any)?.status || 'new'}
                   </Badge>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Customer</p>
-                  <p className="font-medium">{selectedOrder.metadata?.customer_name || 'Walk-in'}</p>
-                  {selectedOrder.metadata?.customer_phone && (
+                  <p className="font-medium">{(selectedOrder.metadata as any)?.customer_name || 'Walk-in'}</p>
+                  {(selectedOrder.metadata as any)?.customer_phone && (
                     <p className="text-xs">{selectedOrder.metadata.customer_phone}</p>
                   )}
                 </div>
                 <div>
                   <p className="text-muted-foreground">Server</p>
-                  <p className="font-medium">{selectedOrder.metadata?.server_name || 'Not assigned'}</p>
+                  <p className="font-medium">{(selectedOrder.metadata as any)?.server_name || 'Not assigned'}</p>
                 </div>
-                {selectedOrder.metadata?.table_number && (
+                {(selectedOrder.metadata as any)?.table_number && (
                   <div>
                     <p className="text-muted-foreground">Table</p>
                     <p className="font-medium">{selectedOrder.metadata.table_name || `Table ${selectedOrder.metadata.table_number}`}</p>
@@ -994,7 +994,7 @@ export function OrderManagement({
                 <div>
                   <p className="text-muted-foreground">Order Time</p>
                   <p className="font-medium">
-                    {selectedOrder.metadata?.created_at 
+                    {(selectedOrder.metadata as any)?.created_at 
                       ? formatDate(new Date(selectedOrder.metadata.created_at), 'MMM dd, HH:mm')
                       : 'Just now'
                     }
@@ -1014,14 +1014,14 @@ export function OrderManagement({
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{item.quantity}x</span>
-                            <span>{item.metadata?.item_name}</span>
+                            <span>{(item.metadata as any)?.item_name}</span>
                           </div>
-                          {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
+                          {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
                             <p className="text-xs text-muted-foreground ml-6">
                               {item.metadata.modifiers.join(', ')}
                             </p>
                           )}
-                          {item.metadata?.special_requests && (
+                          {(item.metadata as any)?.special_requests && (
                             <p className="text-xs text-muted-foreground ml-6">
                               Note: {item.metadata.special_requests}
                             </p>
@@ -1060,9 +1060,9 @@ export function OrderManagement({
                 </div>
                 <Badge 
                   variant="secondary" 
-                  className={PAYMENT_STATUS_COLORS[selectedOrder.metadata?.payment_status || 'pending']}
+                  className={PAYMENT_STATUS_COLORS[(selectedOrder.metadata as any)?.payment_status || 'pending']}
                 >
-                  {selectedOrder.metadata?.payment_status || 'pending'}
+                  {(selectedOrder.metadata as any)?.payment_status || 'pending'}
                 </Badge>
               </div>
             </div>

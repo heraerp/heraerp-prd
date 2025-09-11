@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, LogIn, AlertCircle, Eye, EyeOff, Mail, Lock, Sparkles, Shield, Building2, ChevronRight } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 
 function LoginForm() {
   const router = useRouter()
@@ -32,6 +33,16 @@ function LoginForm() {
   useEffect(() => {
     if (isAuthenticated && organizations !== null) {
       const redirectUrl = localStorage.getItem('redirectAfterLogin')
+      const isDemoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
+      
+      // Check if this is a demo login
+      if (isDemoLogin) {
+        const demoModule = sessionStorage.getItem('demoModule') || 'furniture'
+        sessionStorage.removeItem('isDemoLogin')
+        sessionStorage.removeItem('demoModule')
+        router.push(`/${demoModule}`)
+        return
+      }
       
       // Check if user has any organizations
       if (organizations.length === 0) {
@@ -207,6 +218,11 @@ function LoginForm() {
                   Or continue with
                 </span>
               </div>
+            </div>
+
+            {/* Demo Module Selector */}
+            <div className="mt-6">
+              <DemoModuleSelector />
             </div>
 
             <div className="mt-6 text-center">

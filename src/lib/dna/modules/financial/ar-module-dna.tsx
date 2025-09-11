@@ -210,11 +210,11 @@ export function ARModule({
           id: customer.id,
           customerCode: customer.entity_code,
           customerName: customer.entity_name,
-          customerType: customer.metadata?.customer_type || 'retail',
+          customerType: (customer.metadata as any)?.customer_type || 'retail',
           status: customer.status || 'active',
-          creditLimit: customer.metadata?.credit_limit || 0,
-          currentBalance: customer.metadata?.current_balance || 0,
-          paymentTerms: customer.metadata?.payment_terms || 'NET30',
+          creditLimit: (customer.metadata as any)?.credit_limit || 0,
+          currentBalance: (customer.metadata as any)?.current_balance || 0,
+          paymentTerms: (customer.metadata as any)?.payment_terms || 'NET30',
           metadata: customer.metadata
         })))
       }
@@ -519,7 +519,7 @@ export function ARModule({
                                 Wholesale
                               </Badge>
                             )}
-                            {customer.metadata?.temperatureCompliant && (
+                            {(customer.metadata as any)?.temperatureCompliant && (
                               <Badge className="bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">
                                 <ThermometerSnowflake className="h-3 w-3 mr-1" />
                                 Temp OK
@@ -540,7 +540,7 @@ export function ARModule({
                               <span className="text-gray-500">Available:</span> ₹{(customer.creditLimit - customer.currentBalance).toLocaleString()}
                             </div>
                           </div>
-                          {industrySpecific.freezerDepositTracking && customer.metadata?.freezerDeposit && (
+                          {industrySpecific.freezerDepositTracking && (customer.metadata as any)?.freezerDeposit && (
                             <div className="mt-2">
                               <Badge variant="outline" className="text-xs">
                                 <Snowflake className="h-3 w-3 mr-1" />

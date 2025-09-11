@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
         status,
         activeChats: parseInt(activeChats),
         avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${agent.entity_name}`,
-        skills: agent.metadata?.skills || [],
-        languages: agent.metadata?.languages || ['en'],
-        maxChats: agent.metadata?.max_concurrent_chats || 10
+        skills: (agent.metadata as any)?.skills || [],
+        languages: (agent.metadata as any)?.languages || ['en'],
+        maxChats: (agent.metadata as any)?.max_concurrent_chats || 10
       }
     }) || []
     

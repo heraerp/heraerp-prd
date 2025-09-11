@@ -584,7 +584,7 @@ export class ConfigurationFactory {
     const baseAnalytics = {
       [`total_${config.pluralName.toLowerCase().replace(/ /g, '_')}`]: items.length,
       [`active_${config.pluralName.toLowerCase().replace(/ /g, '_')}`]: items.filter(i => 
-        i.metadata?.is_active !== false && i.is_active !== false
+        (i.metadata as any)?.is_active !== false && i.is_active !== false
       ).length
     }
 

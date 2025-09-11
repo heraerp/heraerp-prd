@@ -470,7 +470,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                       {message.type === 'template' && (
                         <div className="flex items-center gap-1 mb-1 text-xs opacity-75">
                           <Zap className="w-3 h-3" />
-                          Template: {message.metadata?.templateName}
+                          Template: {(message.metadata as any)?.templateName}
                         </div>
                       )}
                       <p className="text-sm">{message.content}</p>

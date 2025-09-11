@@ -358,7 +358,7 @@ class MCPCommandExecutor {
       entities_migrated: entities.length > 0,
       security_configured: org.multi_tenant_enabled,
       pos_deployed: entities.some(e => e.entity_type === 'pos_configuration'),
-      payments_setup: !!org.metadata?.payment_config,
+      payments_setup: !!(org.metadata as any)?.payment_config,
       production_deployed: !!org.production_url
     }
 

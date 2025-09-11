@@ -264,32 +264,32 @@ async function getLoyaltyProgram(organizationId: string): Promise<LoyaltyProgram
   return {
     id: program.id,
     name: program.entity_name,
-    description: program.metadata?.description || '',
-    points_per_currency: program.metadata?.points_per_currency || 1,
-    currency_per_point: program.metadata?.currency_per_point || 0.01,
-    signup_bonus: program.metadata?.signup_bonus || 100,
-    referral_bonus: program.metadata?.referral_bonus || 500,
-    birthday_bonus: program.metadata?.birthday_bonus || 200,
+    description: (program.metadata as any)?.description || '',
+    points_per_currency: (program.metadata as any)?.points_per_currency || 1,
+    currency_per_point: (program.metadata as any)?.currency_per_point || 0.01,
+    signup_bonus: (program.metadata as any)?.signup_bonus || 100,
+    referral_bonus: (program.metadata as any)?.referral_bonus || 500,
+    birthday_bonus: (program.metadata as any)?.birthday_bonus || 200,
     tiers: tiers?.map(t => ({
       id: t.id,
       name: t.entity_name,
-      min_points: t.metadata?.min_points || 0,
-      benefits: t.metadata?.benefits || [],
-      discount_percentage: t.metadata?.discount_percentage || 0,
-      points_multiplier: t.metadata?.points_multiplier || 1,
-      color: t.metadata?.color || '#gray'
+      min_points: (t.metadata as any)?.min_points || 0,
+      benefits: (t.metadata as any)?.benefits || [],
+      discount_percentage: (t.metadata as any)?.discount_percentage || 0,
+      points_multiplier: (t.metadata as any)?.points_multiplier || 1,
+      color: (t.metadata as any)?.color || '#gray'
     })) || [],
     rewards: rewards?.map(r => ({
       id: r.id,
       name: r.entity_name,
-      description: r.metadata?.description || '',
-      points_required: r.metadata?.points_required || 0,
-      reward_type: r.metadata?.reward_type || 'discount',
-      reward_value: r.metadata?.reward_value || 0,
-      reward_details: r.metadata?.reward_details,
+      description: (r.metadata as any)?.description || '',
+      points_required: (r.metadata as any)?.points_required || 0,
+      reward_type: (r.metadata as any)?.reward_type || 'discount',
+      reward_value: (r.metadata as any)?.reward_value || 0,
+      reward_details: (r.metadata as any)?.reward_details,
       active: r.status === 'active',
-      stock: r.metadata?.stock,
-      expires_in_days: r.metadata?.expires_in_days
+      stock: (r.metadata as any)?.stock,
+      expires_in_days: (r.metadata as any)?.expires_in_days
     })) || [],
     active: program.status === 'active'
   }
@@ -467,11 +467,11 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
   let totalRedemptions = 0
 
   transactions?.forEach(txn => {
-    const points = txn.metadata?.points || 0
-    if (txn.metadata?.transaction_type === 'earned' || txn.metadata?.transaction_type === 'bonus') {
+    const points = (txn.metadata as any)?.points || 0
+    if ((txn.metadata as any)?.transaction_type === 'earned' || (txn.metadata as any)?.transaction_type === 'bonus') {
       lifetimePoints += points
       pointsBalance += points
-    } else if (txn.metadata?.transaction_type === 'redeemed') {
+    } else if ((txn.metadata as any)?.transaction_type === 'redeemed') {
       pointsBalance -= Math.abs(points)
       totalRedemptions += 1
     }
@@ -498,13 +498,13 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
   return {
     customer_id: customer.id,
     customer_name: customer.entity_name,
-    customer_email: customer.metadata?.email,
-    customer_phone: customer.metadata?.phone,
+    customer_email: (customer.metadata as any)?.email,
+    customer_phone: (customer.metadata as any)?.phone,
     points_balance: pointsBalance,
     lifetime_points: lifetimePoints,
     current_tier: currentTier?.name || 'Bronze',
     tier_progress: nextTier ? ((lifetimePoints - currentTier!.min_points) / (nextTier.min_points - currentTier!.min_points)) * 100 : 100,
-    join_date: customer.metadata?.loyalty_join_date || customer.created_at,
+    join_date: (customer.metadata as any)?.loyalty_join_date || customer.created_at,
     last_activity: transactions?.[0]?.created_at || customer.created_at,
     total_redemptions: totalRedemptions,
     available_rewards: availableRewards,
@@ -512,12 +512,12 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
       id: t.id,
       customer_id: customerId,
       customer_name: customer.entity_name,
-      transaction_type: t.metadata?.transaction_type || 'earned',
-      points: t.metadata?.points || 0,
-      balance_after: t.metadata?.balance_after || 0,
-      description: t.metadata?.description || '',
-      reference_id: t.metadata?.reference_id,
-      reference_type: t.metadata?.reference_type,
+      transaction_type: (t.metadata as any)?.transaction_type || 'earned',
+      points: (t.metadata as any)?.points || 0,
+      balance_after: (t.metadata as any)?.balance_after || 0,
+      description: (t.metadata as any)?.description || '',
+      reference_id: (t.metadata as any)?.reference_id,
+      reference_type: (t.metadata as any)?.reference_type,
       created_at: t.created_at,
       metadata: t.metadata
     })) || []
@@ -539,19 +539,19 @@ async function getLoyaltyTransactions(organizationId: string) {
     const { data: customer } = await supabase
       .from('core_entities')
       .select('entity_name')
-      .eq('id', txn.metadata?.customer_id)
+      .eq('id', (txn.metadata as any)?.customer_id)
       .single()
 
     enrichedTransactions.push({
       id: txn.id,
-      customer_id: txn.metadata?.customer_id,
+      customer_id: (txn.metadata as any)?.customer_id,
       customer_name: customer?.entity_name || 'Unknown',
-      transaction_type: txn.metadata?.transaction_type || 'earned',
-      points: txn.metadata?.points || 0,
-      balance_after: txn.metadata?.balance_after || 0,
-      description: txn.metadata?.description || '',
-      reference_id: txn.metadata?.reference_id,
-      reference_type: txn.metadata?.reference_type,
+      transaction_type: (txn.metadata as any)?.transaction_type || 'earned',
+      points: (txn.metadata as any)?.points || 0,
+      balance_after: (txn.metadata as any)?.balance_after || 0,
+      description: (txn.metadata as any)?.description || '',
+      reference_id: (txn.metadata as any)?.reference_id,
+      reference_type: (txn.metadata as any)?.reference_type,
       created_at: txn.created_at
     })
   }
@@ -570,15 +570,15 @@ async function getActiveRewards(organizationId: string) {
   return rewards?.map(r => ({
     id: r.id,
     name: r.entity_name,
-    description: r.metadata?.description || '',
-    points_required: r.metadata?.points_required || 0,
-    reward_type: r.metadata?.reward_type || 'discount',
-    reward_value: r.metadata?.reward_value || 0,
-    reward_details: r.metadata?.reward_details,
+    description: (r.metadata as any)?.description || '',
+    points_required: (r.metadata as any)?.points_required || 0,
+    reward_type: (r.metadata as any)?.reward_type || 'discount',
+    reward_value: (r.metadata as any)?.reward_value || 0,
+    reward_details: (r.metadata as any)?.reward_details,
     active: true,
-    stock: r.metadata?.stock,
-    expires_in_days: r.metadata?.expires_in_days,
-    redemption_count: r.metadata?.redemption_count || 0
+    stock: (r.metadata as any)?.stock,
+    expires_in_days: (r.metadata as any)?.expires_in_days,
+    redemption_count: (r.metadata as any)?.redemption_count || 0
   })) || []
 }
 
@@ -599,7 +599,7 @@ async function getLoyaltyAnalytics(organizationId: string) {
   const activeMembers = customers.filter(c => c.points_balance > 0).length
   const totalPointsIssued = customers.reduce((sum, c) => sum + c.lifetime_points, 0)
   const totalPointsBalance = customers.reduce((sum, c) => sum + c.points_balance, 0)
-  const totalRedemptions = recentTransactions?.filter(t => t.metadata?.transaction_type === 'redeemed').length || 0
+  const totalRedemptions = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length || 0
   
   // Tier distribution
   const tierDistribution: { [key: string]: number } = {}
@@ -608,8 +608,8 @@ async function getLoyaltyAnalytics(organizationId: string) {
   })
 
   // Recent activity
-  const recentEarned = recentTransactions?.filter(t => t.metadata?.transaction_type === 'earned').length || 0
-  const recentRedeemed = recentTransactions?.filter(t => t.metadata?.transaction_type === 'redeemed').length || 0
+  const recentEarned = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'earned').length || 0
+  const recentRedeemed = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length || 0
 
   return {
     totalMembers,
@@ -689,7 +689,7 @@ async function redeemReward(organizationId: string, data: any) {
     )
   }
 
-  const pointsRequired = reward.metadata?.points_required || 0
+  const pointsRequired = (reward.metadata as any)?.points_required || 0
 
   // Check customer balance
   const customerLoyalty = await getCustomerLoyaltyData(organizationId, customerId)
@@ -720,8 +720,8 @@ async function redeemReward(organizationId: string, data: any) {
         description: `Redeemed: ${reward.entity_name}`,
         reward_id: rewardId,
         reward_name: reward.entity_name,
-        reward_type: reward.metadata?.reward_type,
-        reward_value: reward.metadata?.reward_value
+        reward_type: (reward.metadata as any)?.reward_type,
+        reward_value: (reward.metadata as any)?.reward_value
       }
     })
     .select()
@@ -735,8 +735,8 @@ async function redeemReward(organizationId: string, data: any) {
     .update({
       metadata: {
         ...reward.metadata,
-        redemption_count: (reward.metadata?.redemption_count || 0) + 1,
-        stock: reward.metadata?.stock ? reward.metadata.stock - 1 : undefined
+        redemption_count: ((reward.metadata as any)?.redemption_count || 0) + 1,
+        stock: (reward.metadata as any)?.stock ? reward.metadata.stock - 1 : undefined
       }
     })
     .eq('id', rewardId)
@@ -748,8 +748,8 @@ async function redeemReward(organizationId: string, data: any) {
     reward: {
       id: reward.id,
       name: reward.entity_name,
-      type: reward.metadata?.reward_type,
-      value: reward.metadata?.reward_value
+      type: (reward.metadata as any)?.reward_type,
+      value: (reward.metadata as any)?.reward_value
     }
   })
 }

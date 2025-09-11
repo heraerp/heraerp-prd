@@ -336,17 +336,17 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
         
         // Separate pending and all requests
         const pending = leaveRequests.filter(r => 
-          r.metadata?.approval_status === 'pending'
+          (r.metadata as any)?.approval_status === 'pending'
         ).map(r => ({
           id: r.id,
-          employeeName: r.metadata?.employee_name || 'Unknown Employee',
-          employeeRole: r.metadata?.employee_role || 'Staff',
-          leaveType: r.metadata?.leave_type || 'annual',
-          startDate: new Date(r.metadata?.start_date || new Date()),
-          endDate: new Date(r.metadata?.end_date || new Date()),
+          employeeName: (r.metadata as any)?.employee_name || 'Unknown Employee',
+          employeeRole: (r.metadata as any)?.employee_role || 'Staff',
+          leaveType: (r.metadata as any)?.leave_type || 'annual',
+          startDate: new Date((r.metadata as any)?.start_date || new Date()),
+          endDate: new Date((r.metadata as any)?.end_date || new Date()),
           days: r.total_amount || 1,
-          reason: r.metadata?.reason || 'No reason provided',
-          status: r.metadata?.approval_status || 'pending'
+          reason: (r.metadata as any)?.reason || 'No reason provided',
+          status: (r.metadata as any)?.approval_status || 'pending'
         }))
         
         setPendingApprovals(pending)

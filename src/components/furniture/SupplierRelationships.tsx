@@ -102,7 +102,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
               unitPrice: rel.relationship_data?.unit_price || 0,
               priceUnit: rel.relationship_data?.price_unit || 'EA',
               minOrderQty: rel.relationship_data?.minimum_order_quantity || 1,
-              qualityRating: supplier.metadata?.quality_rating
+              qualityRating: (supplier.metadata as any)?.quality_rating
             })
           }
         }
@@ -115,7 +115,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
             products,
             totalProducts: products.length,
             avgLeadTime: Math.round(totalLeadTime / products.length),
-            paymentTerms: supplier.metadata?.payment_terms || 'NET30'
+            paymentTerms: (supplier.metadata as any)?.payment_terms || 'NET30'
           })
         }
       }

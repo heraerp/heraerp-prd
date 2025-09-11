@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { ServiceWorkerProvider } from "@/components/pwa/ServiceWorkerProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
@@ -79,17 +78,15 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <HeraThemeProvider defaultTheme="dark">
-          <ServiceWorkerProvider>
-            <QueryProvider>
-              <MultiOrgAuthProvider>
-                <DemoAuthHandler>
-                  <ToastProvider>
-                    {children}
-                  </ToastProvider>
-                </DemoAuthHandler>
-              </MultiOrgAuthProvider>
-            </QueryProvider>
-          </ServiceWorkerProvider>
+          <QueryProvider>
+            <MultiOrgAuthProvider>
+              <DemoAuthHandler>
+                <ToastProvider>
+                  {children}
+                </ToastProvider>
+              </DemoAuthHandler>
+            </MultiOrgAuthProvider>
+          </QueryProvider>
         </HeraThemeProvider>
       </body>
     </html>

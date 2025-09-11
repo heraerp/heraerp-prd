@@ -126,10 +126,10 @@ export function useProductionData(organizationId: string): ProductionData {
   const getOrderProgress = (orderId: string, orderAmount: number): ProductionProgress => {
     const orderLines = transactionLines.filter(l => l.transaction_id === orderId)
     const completedQty = orderLines.reduce((sum, line) => 
-      sum + (line.metadata?.completed_quantity || 0), 0
+      sum + ((line.metadata as any)?.completed_quantity || 0), 0
     )
     const progress = orderAmount ? (completedQty / orderAmount) * 100 : 0
-    const activeOperation = orderLines.find(l => l.metadata?.status === 'in_progress')
+    const activeOperation = orderLines.find(l => (l.metadata as any)?.status === 'in_progress')
 
     return {
       completedQty,
@@ -164,7 +164,7 @@ export function useProductionData(organizationId: string): ProductionData {
     ),
     
     completedToday: productionOrders.filter(o => {
-      const completedDate = new Date(o.metadata?.completed_date || '')
+      const completedDate = new Date((o.metadata as any)?.completed_date || '')
       const today = new Date()
       return completedDate.toDateString() === today.toDateString()
     }).length,

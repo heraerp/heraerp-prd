@@ -959,13 +959,13 @@ export default function SalonWhatsAppPage() {
                           Template: {message.templateUsed}
                         </div>
                       )}
-                      {message.metadata?.automated && (
+                      {(message.metadata as any)?.automated && (
                         <div className="flex items-center gap-1 mb-1 text-xs opacity-75 text-[#00a884]">
                           <Bot className="w-3 h-3" />
                           Automated Response
                         </div>
                       )}
-                      {message.metadata?.hasAttachment && message.metadata?.attachmentType === 'calendar' && (
+                      {(message.metadata as any)?.hasAttachment && (message.metadata as any)?.attachmentType === 'calendar' && (
                         <div className="flex items-center gap-2 mb-2 p-2 bg-[#005c4b] rounded-lg">
                           <CalendarDays className="w-5 h-5 text-[#e9edef]" />
                           <div className="flex-1">

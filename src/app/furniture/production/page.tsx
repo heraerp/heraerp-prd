@@ -96,7 +96,7 @@ export default function FurnitureProduction() {
     ),
     
     completedToday: productionOrders.filter(o => {
-      const completedDate = new Date(o.metadata?.completed_date || '')
+      const completedDate = new Date((o.metadata as any)?.completed_date || '')
       const today = new Date()
       return completedDate.toDateString() === today.toDateString()
     }).length,
@@ -235,7 +235,7 @@ export default function FurnitureProduction() {
                       
                       // Calculate progress
                       const completedQty = orderLines.reduce((sum, line) => 
-                        sum + (line.metadata?.completed_quantity || 0), 0
+                        sum + ((line.metadata as any)?.completed_quantity || 0), 0
                       )
                       const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0
 
@@ -279,15 +279,15 @@ export default function FurnitureProduction() {
                               <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
-                                  Start: {new Date(order.metadata?.planned_start || order.transaction_date).toLocaleDateString()}
+                                  Start: {new Date((order.metadata as any)?.planned_start || order.transaction_date).toLocaleDateString()}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
-                                  Due: {new Date(order.metadata?.planned_end || order.transaction_date).toLocaleDateString()}
+                                  Due: {new Date((order.metadata as any)?.planned_end || order.transaction_date).toLocaleDateString()}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Package className="h-3 w-3" />
-                                  Batch: {order.metadata?.batch_number || 'N/A'}
+                                  Batch: {(order.metadata as any)?.batch_number || 'N/A'}
                                 </span>
                               </div>
                             </div>
@@ -338,7 +338,7 @@ export default function FurnitureProduction() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-400">Location</span>
-                          <span className="text-sm font-medium text-white">{center.metadata?.location || 'Shop Floor'}</span>
+                          <span className="text-sm font-medium text-white">{(center.metadata as any)?.location || 'Shop Floor'}</span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-400">Status</span>

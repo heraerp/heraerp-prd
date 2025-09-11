@@ -49,7 +49,7 @@ export function coverageAvg(lines: UniversalTransactionLine[]): number {
   if (coverageLines.length === 0) return 0;
 
   const totalCoverage = coverageLines.reduce((sum, line) => {
-    const coverage = line.metadata?.coverage || line.line_data?.coverage;
+    const coverage = (line.metadata as any)?.coverage || line.line_data?.coverage;
     return sum + (typeof coverage === 'number' ? coverage : 0);
   }, 0);
 
@@ -68,7 +68,7 @@ export function guardrailPassRate(lines: UniversalTransactionLine[]): number {
   if (guardrailLines.length === 0) return 100;
 
   const passedLines = guardrailLines.filter(line => {
-    const status = line.metadata?.status || line.line_data?.status;
+    const status = (line.metadata as any)?.status || line.line_data?.status;
     return status === 'PASSED' || status === 'WAIVED';
   });
 
@@ -83,7 +83,7 @@ export function auditReady(lines: UniversalTransactionLine[]): boolean {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
   const hasRecentSBOM = lines.some(line => {
-    const artifacts = line.metadata?.artifacts || line.line_data?.artifacts;
+    const artifacts = (line.metadata as any)?.artifacts || line.line_data?.artifacts;
     const createdAt = new Date(line.created_at || '');
     return artifacts?.sbom && createdAt > thirtyDaysAgo;
   });
@@ -102,8 +102,8 @@ export function fiscalAligned(periods: FiscalPeriod[]): boolean {
 
   // Check if there's an open or current fiscal period
   const hasOpenPeriod = periods.some(period => 
-    period.metadata?.status === 'open' || 
-    period.metadata?.status === 'current'
+    (period.metadata as any)?.status === 'open' || 
+    (period.metadata as any)?.status === 'current'
   );
 
   return hasOpenPeriod;

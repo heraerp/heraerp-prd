@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       transaction_date: tx.transaction_date,
       total_amount: tx.total_amount,
       currency: tx.transaction_currency_code || 'AED',
-      status: tx.metadata?.status || 'draft',
+      status: (tx.metadata as any)?.status || 'draft',
       description: tx.description,
       reference_number: tx.reference_number,
       smart_code: tx.smart_code,
@@ -116,21 +116,21 @@ export async function GET(request: NextRequest) {
       created_at: tx.created_at,
       fiscal_year: tx.fiscal_year || new Date(tx.transaction_date).getFullYear(),
       fiscal_period: tx.fiscal_period,
-      posting_date: tx.metadata?.posted_at || tx.transaction_date,
+      posting_date: (tx.metadata as any)?.posted_at || tx.transaction_date,
       metadata: tx.metadata,
       lines: tx.universal_transaction_lines?.map((line: any, index: number) => ({
         id: line.id,
         line_number: line.line_number || index + 1,
-        account_code: line.metadata?.account_code || line.entity_id,
-        account_name: line.metadata?.account_name || line.description,
+        account_code: (line.metadata as any)?.account_code || line.entity_id,
+        account_name: (line.metadata as any)?.account_name || line.description,
         description: line.description,
-        debit_amount: line.metadata?.debit || (line.line_amount > 0 ? line.line_amount : 0),
-        credit_amount: line.metadata?.credit || (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
+        debit_amount: (line.metadata as any)?.debit || (line.line_amount > 0 ? line.line_amount : 0),
+        credit_amount: (line.metadata as any)?.credit || (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
         quantity: line.quantity,
         unit_amount: line.unit_amount,
         line_amount: line.line_amount,
-        cost_center: line.metadata?.cost_center,
-        profit_center: line.metadata?.profit_center
+        cost_center: (line.metadata as any)?.cost_center,
+        profit_center: (line.metadata as any)?.profit_center
       }))
     })) || []
     

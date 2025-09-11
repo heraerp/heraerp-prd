@@ -45,12 +45,12 @@ export async function GET(request: NextRequest) {
       
       const formattedConv = {
         id: conv.id,
-        phone: conv.metadata?.phone || conv.entity_code.replace('WA-', ''),
-        name: conv.metadata?.sender_name || conv.entity_name.replace('WhatsApp: ', ''),
+        phone: (conv.metadata as any)?.phone || conv.entity_code.replace('WA-', ''),
+        name: (conv.metadata as any)?.sender_name || conv.entity_name.replace('WhatsApp: ', ''),
         lastMessage: lastMsg?.metadata?.text || 'No messages',
         lastMessageTime: lastMsg?.created_at || conv.created_at,
-        unreadCount: conv.metadata?.unread_count || 0,
-        customerType: conv.metadata?.customer_type || 'new',
+        unreadCount: (conv.metadata as any)?.unread_count || 0,
+        customerType: (conv.metadata as any)?.customer_type || 'new',
         hasLastMessage: !!lastMsg,
         messageError: msgError
       }

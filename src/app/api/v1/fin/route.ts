@@ -65,7 +65,7 @@ const FinancialReportSchema = z.object({
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
 
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
     const { action, data, organizationId: orgId } = body
 
@@ -733,9 +733,9 @@ async function getConsolidationStructure(supabase: any, organizationId: string, 
       id: sub.to_entity_id,
       name: sub.subsidiary.entity_name,
       code: sub.subsidiary.entity_code,
-      ownership_percent: sub.metadata?.ownership_percent || 100,
-      consolidation_method: sub.metadata?.consolidation_method || 'full',
-      currency: sub.subsidiary.metadata?.currency || 'USD'
+      ownership_percent: (sub.metadata as any)?.ownership_percent || 100,
+      consolidation_method: (sub.metadata as any)?.consolidation_method || 'full',
+      currency: (sub.subsidiary.metadata as any)?.currency || 'USD'
     })) || []
   }
 

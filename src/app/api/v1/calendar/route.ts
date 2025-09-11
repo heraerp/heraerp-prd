@@ -24,7 +24,7 @@ import {
 // GET /api/v1/calendar - Fetch events and resources
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     
     const params: CalendarQueryParams = {
@@ -222,7 +222,7 @@ export async function GET(request: NextRequest) {
 // POST /api/v1/calendar - Create event or resource
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
 
     // Determine if creating event or resource based on request structure
@@ -250,7 +250,7 @@ export async function POST(request: NextRequest) {
 // PUT /api/v1/calendar - Update event or resource
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
 
     if (!body.id) {
@@ -286,7 +286,7 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/v1/calendar - Delete event or resource
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     
     const id = searchParams.get('id')
@@ -401,15 +401,15 @@ async function createResource(supabase: any, resourceData: CreateResourceRequest
 
 // Additional helper functions for data transformation and business logic
 function extractEventTitle(event: any): string {
-  return event.metadata?.title || event.notes || `${event.transaction_type} - ${event.transaction_date}`
+  return (event.metadata as any)?.title || event.notes || `${event.transaction_type} - ${event.transaction_date}`
 }
 
 function calculateEventEnd(event: any): string | undefined {
-  return event.metadata?.end || undefined
+  return (event.metadata as any)?.end || undefined
 }
 
 function isAllDayEvent(event: any): boolean {
-  return event.metadata?.allDay || false
+  return (event.metadata as any)?.allDay || false
 }
 
 function mapEventType(transactionType: string): 'appointment' | 'block' | 'holiday' | 'shift' | 'maintenance' {
@@ -425,7 +425,7 @@ function mapEventType(transactionType: string): 'appointment' | 'block' | 'holid
 }
 
 function extractServiceId(event: any): string | undefined {
-  return event.metadata?.service_id || undefined
+  return (event.metadata as any)?.service_id || undefined
 }
 
 function getEventColor(smartCode: string, status?: string): string {
@@ -453,15 +453,15 @@ function extractResourceType(smartCode: string): 'staff' | 'room' | 'equipment' 
 }
 
 function extractCapacity(resource: any): number | undefined {
-  return resource.metadata?.capacity || resource.core_dynamic_data?.find((d: any) => d.field_name === 'capacity')?.field_value_number
+  return (resource.metadata as any)?.capacity || resource.core_dynamic_data?.find((d: any) => d.field_name === 'capacity')?.field_value_number
 }
 
 function extractSkills(resource: any): string[] {
-  return resource.metadata?.skills || []
+  return (resource.metadata as any)?.skills || []
 }
 
 function extractAvailability(resource: any): any[] {
-  return resource.metadata?.availability || []
+  return (resource.metadata as any)?.availability || []
 }
 
 function getResourceEventColor(smartCode: string): string {

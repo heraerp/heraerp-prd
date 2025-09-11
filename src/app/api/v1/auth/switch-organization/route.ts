@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
           user_entity_id: userEntity.id,
           previous_organization_id: user.user_metadata?.organization_id,
           target_organization_id,
-          user_role: membership.metadata?.role,
+          user_role: (membership.metadata as any)?.role,
           switch_timestamp: new Date().toISOString(),
           user_agent: request.headers.get('user-agent'),
           ip_address: request.headers.get('x-forwarded-for') || 'unknown'
@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user's role and permissions in the target organization
-    const userRole = membership.metadata?.role || 'member'
-    const userPermissions = membership.metadata?.permissions || ['basic_access']
+    const userRole = (membership.metadata as any)?.role || 'member'
+    const userPermissions = (membership.metadata as any)?.permissions || ['basic_access']
 
     // Create enhanced user context for the new organization
     const newContext = {
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         membership_id: membership.id,
         role: userRole,
         permissions: userPermissions,
-        is_primary: membership.metadata?.is_primary || false
+        is_primary: (membership.metadata as any)?.is_primary || false
       },
       switched_at: new Date().toISOString()
     }

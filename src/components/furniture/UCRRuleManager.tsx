@@ -112,7 +112,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
         return {
           id: rule.id,
           name: rule.entity_name,
-          type: rule.metadata?.rule_type || 'unknown',
+          type: (rule.metadata as any)?.rule_type || 'unknown',
           smartCode: rule.smart_code,
           status: rule.status,
           priority: parseField('rule_priority') || 100,

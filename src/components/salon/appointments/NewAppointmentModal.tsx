@@ -79,8 +79,8 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
           setCustomers(customersResp.data.map((c: any) => ({
             id: c.id,
             name: c.entity_name,
-            phone: c.metadata?.phone,
-            email: c.metadata?.email
+            phone: (c.metadata as any)?.phone,
+            email: (c.metadata as any)?.email
           })))
         }
         
@@ -89,19 +89,19 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
           setServices(servicesResp.data.map((s: any) => ({
             id: s.id,
             name: s.entity_name,
-            duration: s.metadata?.duration || 60,
-            price: s.metadata?.price || 0
+            duration: (s.metadata as any)?.duration || 60,
+            price: (s.metadata as any)?.price || 0
           })))
         }
         
         // Transform staff
         if (staffResp.success && staffResp.data) {
           setStaff(staffResp.data
-            .filter((e: any) => e.metadata?.role === 'stylist' || e.metadata?.department === 'salon')
+            .filter((e: any) => (e.metadata as any)?.role === 'stylist' || (e.metadata as any)?.department === 'salon')
             .map((s: any) => ({
               id: s.id,
               name: s.entity_name,
-              specializations: s.metadata?.specializations
+              specializations: (s.metadata as any)?.specializations
             }))
           )
         }

@@ -307,12 +307,12 @@ async function calculatePaymentAnalytics(organizationId: string, startDate: stri
     if (txn.transaction_type === 'refund') {
       totalRefunds += txn.total_amount || 0
       refundCount += 1
-    } else if (txn.metadata?.payment_status === 'cancelled') {
+    } else if ((txn.metadata as any)?.payment_status === 'cancelled') {
       totalCancellations += txn.total_amount || 0
       cancellationCount += 1
-    } else if (txn.metadata?.payment_status !== 'refunded') {
+    } else if ((txn.metadata as any)?.payment_status !== 'refunded') {
       totalRevenue += txn.total_amount || 0
-      totalTips += txn.metadata?.tips_amount || 0
+      totalTips += (txn.metadata as any)?.tips_amount || 0
       transactionCount += 1
     }
   })
@@ -365,7 +365,7 @@ async function getPaymentMethodsSummary(organizationId: string, startDate: strin
   let totalAmount = 0
 
   transactions?.forEach(txn => {
-    const method = txn.metadata?.payment_method || 'cash'
+    const method = (txn.metadata as any)?.payment_method || 'cash'
     if (!methodsSummary[method]) {
       methodsSummary[method] = { count: 0, amount: 0 }
     }
@@ -405,12 +405,12 @@ async function getDailyReconciliation(organizationId: string, date: string) {
   transactions?.forEach(txn => {
     if (txn.transaction_type === 'refund') {
       refundsIssued += txn.total_amount || 0
-    } else if (txn.metadata?.payment_status !== 'cancelled') {
+    } else if ((txn.metadata as any)?.payment_status !== 'cancelled') {
       const amount = txn.total_amount || 0
-      const tips = txn.metadata?.tips_amount || 0
+      const tips = (txn.metadata as any)?.tips_amount || 0
       tipsCollected += tips
 
-      switch (txn.metadata?.payment_method) {
+      switch ((txn.metadata as any)?.payment_method) {
         case 'cash':
           cashReceived += amount
           break

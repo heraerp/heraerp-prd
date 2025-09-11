@@ -275,8 +275,8 @@ export class WhatsAppDNAClient {
       
       return {
         id: thread.id,
-        entity_name: thread.metadata?.display_name || thread.metadata?.phone_number || 'Unknown',
-        entity_code: thread.metadata?.phone_number || '',
+        entity_name: (thread.metadata as any)?.display_name || (thread.metadata as any)?.phone_number || 'Unknown',
+        entity_code: (thread.metadata as any)?.phone_number || '',
         metadata: thread.metadata,
         lastMessage: lastMessage || null,
         messages,
@@ -284,9 +284,9 @@ export class WhatsAppDNAClient {
           m.lineData?.direction === 'inbound' && 
           m.lineData?.status !== 'read'
         ).length,
-        isPinned: thread.metadata?.is_pinned || false,
-        isArchived: thread.metadata?.is_archived || false,
-        updated_at: thread.metadata?.last_message_at || thread.createdAt
+        isPinned: (thread.metadata as any)?.is_pinned || false,
+        isArchived: (thread.metadata as any)?.is_archived || false,
+        updated_at: (thread.metadata as any)?.last_message_at || thread.createdAt
       };
     });
   }

@@ -393,11 +393,11 @@ export default function SalonModernDashboard() {
   // Use staff members from API data, or fallback to sample data
   const team = data.staffMembers.length > 0 ? data.staffMembers.map((staff, index) => ({
     name: staff.entity_name,
-    title: staff.metadata?.title || 'Hair Stylist',
+    title: (staff.metadata as any)?.title || 'Hair Stylist',
     specialties: staff.specialties || [],
     rating: staff.rating || 4.5,
     reviews: Math.floor(Math.random() * 250) + 50,
-    instagram: staff.metadata?.instagram || `@${staff.entity_name.toLowerCase().replace(' ', '_')}`,
+    instagram: (staff.metadata as any)?.instagram || `@${staff.entity_name.toLowerCase().replace(' ', '_')}`,
     avatar: staff.entity_name.charAt(0).toUpperCase(),
     gradient: [
       'from-purple-400 to-pink-600',
@@ -1095,10 +1095,10 @@ export default function SalonModernDashboard() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium !text-gray-900 dark:!text-white">
-                              {service.metadata?.booking_count || 0} bookings
+                              {(service.metadata as any)?.booking_count || 0} bookings
                             </p>
                             <p className="text-xs !text-gray-600 dark:!text-gray-400">
-                              {service.metadata?.percentage || 0}% of total
+                              {(service.metadata as any)?.percentage || 0}% of total
                             </p>
                           </div>
                         </div>

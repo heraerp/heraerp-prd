@@ -69,7 +69,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
         edgeList.push({
           from: rel.from_entity_id,
           to: rel.to_entity_id,
-          constraint: rel.metadata?.version_constraint as string,
+          constraint: (rel.metadata as any)?.version_constraint as string,
         });
       }
     });

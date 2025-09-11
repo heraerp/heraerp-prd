@@ -65,7 +65,7 @@ export function transformToUICustomer(customerData: CustomerData): UICustomer {
   // Get favorite services from relationships
   const favoriteServices = relationships
     .filter(r => r.relationship_type === 'favorite_service')
-    .map(r => r.relationship_metadata?.service_name || r.metadata?.service_name)
+    .map(r => r.relationship_metadata?.service_name || (r.metadata as any)?.service_name)
     .filter(Boolean)
   
   // Format dates

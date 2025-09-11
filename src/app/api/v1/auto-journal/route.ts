@@ -267,13 +267,13 @@ async function getAutoJournalStatistics(organizationId: string, days: number) {
 
   const totalJournals = autoJournals?.length || 0;
   const totalProcessed = processingResults?.length || 0;
-  const batchJournals = autoJournals?.filter(j => j.metadata?.batch_journal)?.length || 0;
+  const batchJournals = autoJournals?.filter(j => (j.metadata as any)?.batch_journal)?.length || 0;
   const immediateJournals = totalJournals - batchJournals;
   
   const processingModes = processingResults?.reduce((acc, result) => {
-    const mode = result.field_value_json?.processing_mode;
+    const mode = (result.field_value_json as any)?.processing_mode;
     if (mode) {
-      acc[mode] = (acc[mode] || 0) + 1;
+      acc[mode as string] = (acc[mode as string] || 0) + 1;
     }
     return acc;
   }, {} as Record<string, number>) || {};
@@ -305,7 +305,7 @@ async function getPendingBatchTransactions(organizationId: string) {
 
   // Group by transaction type
   const grouped = (data || []).reduce((acc, txn) => {
-    const type = txn.transaction_type;
+    const type = txn.transaction_type as string;
     if (!acc[type]) {
       acc[type] = {
         transaction_type: type,
@@ -358,7 +358,7 @@ async function getTransactionJournalStatus(transactionId: string) {
     journal_entry: journalEntry,
     processing_log: processingLog,
     status: journalEntry ? 'journal_created' : 
-            transaction.metadata?.batch_journal_id ? 'batched' :
+            (transaction.metadata as any)?.batch_journal_id ? 'batched' :
             processingLog?.field_name === 'journal_processing_error' ? 'error' :
             'pending'
   };

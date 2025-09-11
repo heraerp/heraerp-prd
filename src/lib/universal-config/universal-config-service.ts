@@ -729,8 +729,8 @@ export class UniversalConfigService {
         { field_name: 'conditions', field_value_text: JSON.stringify(rule.conditions || {}) },
         { field_name: 'priority', field_value_number: rule.priority || 0 },
         { field_name: 'payload', field_value_text: JSON.stringify(rule.payload || {}) },
-        { field_name: 'rollout', field_value_text: JSON.stringify(rule.metadata?.rollout || null) },
-        { field_name: 'version', field_value_number: rule.metadata?.version || 1 }
+        { field_name: 'rollout', field_value_text: JSON.stringify((rule.metadata as any)?.rollout || null) },
+        { field_name: 'version', field_value_number: (rule.metadata as any)?.version || 1 }
       ]
 
       for (const field of fieldsToSave) {

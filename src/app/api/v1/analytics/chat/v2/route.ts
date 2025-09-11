@@ -363,7 +363,7 @@ async function generateAdvancedForecast(
   const startDate = new Date()
   startDate.setMonth(startDate.getMonth() - lookbackMonths)
   
-  const { data: historicalData } = await getSupabase()?.from
+  const { data: historicalData } = await getSupabase()!
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -436,7 +436,7 @@ async function analyzeTrends(
   context: AnalyticsContext
 ): Promise<any> {
   // Sophisticated trend analysis with anomaly detection
-  const { data } = await getSupabase()?.from
+  const { data } = await getSupabase()!
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -465,7 +465,7 @@ async function analyzeSegments(
   dimensions: string[]
 ): Promise<any> {
   // Customer segmentation analysis
-  const { data: customers } = await getSupabase()?.from
+  const { data: customers } = await getSupabase()!
     .from('core_entities')
     .select('*, core_dynamic_data(*)')
     .eq('organization_id', organizationId)
@@ -521,7 +521,7 @@ async function getMetricsForPeriod(
   const startDate = new Date(endDate)
   startDate.setDate(startDate.getDate() - days)
   
-  const { data } = await getSupabase()?.from
+  const { data } = await getSupabase()!
     .from('universal_transactions')
     .select('*')
     .eq('organization_id', organizationId)
@@ -619,12 +619,12 @@ function formatTrendData(data: any[]): any {
 function performSegmentation(customers: any[], dimensions: string[]): any[] {
   // Simple segmentation by value
   const segments = {
-    high: customers.filter(c => c.metadata?.lifetime_value > 1000),
+    high: customers.filter(c => (c.metadata as any)?.lifetime_value > 1000),
     medium: customers.filter(c => 
-      c.metadata?.lifetime_value > 500 && c.metadata?.lifetime_value <= 1000
+      (c.metadata as any)?.lifetime_value > 500 && (c.metadata as any)?.lifetime_value <= 1000
     ),
     low: customers.filter(c => 
-      !c.metadata?.lifetime_value || c.metadata?.lifetime_value <= 500
+      !(c.metadata as any)?.lifetime_value || (c.metadata as any)?.lifetime_value <= 500
     )
   }
   

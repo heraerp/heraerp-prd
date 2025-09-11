@@ -35,13 +35,13 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
         await api.setDynamicField(
           service.entity_code,
           'price',
-          service.metadata?.price || 0,
+          (service.metadata as any)?.price || 0,
           'HERA.SALON.SERVICE.PRICE.v1'
         )
         await api.setDynamicField(
           service.entity_code,
           'duration',
-          service.metadata?.duration || 60,
+          (service.metadata as any)?.duration || 60,
           'HERA.SALON.SERVICE.DURATION.v1'
         )
       }

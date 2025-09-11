@@ -80,7 +80,7 @@ export function RestaurantDashboard({
       const orders = todaySales.length
       const avgOrder = orders > 0 ? revenue / orders : 0
       const paymentTotal = todayPayments.reduce((sum, p) => sum + (p.total_amount || 0), 0)
-      const tipTotal = todayPayments.reduce((sum, p) => sum + ((p.metadata?.tip_amount as number) || 0), 0)
+      const tipTotal = todayPayments.reduce((sum, p) => sum + (((p.metadata as any)?.tip_amount as number) || 0), 0)
       
       setStats({
         revenue,

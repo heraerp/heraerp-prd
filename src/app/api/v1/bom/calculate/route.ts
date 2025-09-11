@@ -109,8 +109,8 @@ async function calculateStandardCost(bomData: any, organizationId: string): Prom
     }
 
     // Extract BOM structure from metadata
-    const bomStructure = bomTemplate.metadata?.required_components || []
-    const calculationRules = bomTemplate.metadata?.calculation_rules || []
+    const bomStructure = (bomTemplate.metadata as any)?.required_components || []
+    const calculationRules = (bomTemplate.metadata as any)?.calculation_rules || []
 
     // Initialize cost components
     let materialCost = 0

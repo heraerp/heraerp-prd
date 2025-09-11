@@ -212,9 +212,7 @@ export default function ProvisioningDashboard() {
   )
 
   const getModuleInfo = (smartCode: string) => {
-    return Object.values(MODULE_REGISTRY)
-      .flatMap(category => Object.values(category))
-      .find(module => module.smartCode === smartCode)
+    return MODULE_REGISTRY.get(smartCode)
   }
 
   return (
@@ -490,14 +488,16 @@ export default function ProvisioningDashboard() {
                 <div className="space-y-4">
                   <h3 className="font-semibold text-lg">Select Modules</h3>
                   
-                  {Object.entries(MODULE_REGISTRY).map(([category, modules]) => (
-                    <div key={category} className="space-y-2">
-                      <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase">
-                        {category}
-                      </h4>
-                      
-                      <div className="space-y-2">
-                        {Object.values(modules).map((module) => (
+                  {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map((category) => {
+                    const modules = Array.from(MODULE_REGISTRY.values()).filter(m => m.category === category)
+                    return modules.length > 0 ? (
+                      <div key={category} className="space-y-2">
+                        <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase">
+                          {category}
+                        </h4>
+                        
+                        <div className="space-y-2">
+                          {modules.map((module) => (
                           <div key={module.smartCode} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800">
                             <Checkbox
                               checked={newTenant.modules.includes(module.smartCode)}
@@ -530,7 +530,8 @@ export default function ProvisioningDashboard() {
                         ))}
                       </div>
                     </div>
-                  ))}
+                  ) : null
+                })}
                 </div>
               </div>
 
@@ -558,12 +559,14 @@ export default function ProvisioningDashboard() {
             </TabsContent>
 
             <TabsContent value="modules" className="space-y-6">
-              {Object.entries(MODULE_REGISTRY).map(([category, modules]) => (
-                <div key={category} className="space-y-4">
-                  <h3 className="text-lg font-semibold capitalize">{category} Modules</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.values(modules).map((module) => (
+              {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map((category) => {
+                const modules = Array.from(MODULE_REGISTRY.values()).filter(m => m.category === category)
+                return modules.length > 0 ? (
+                  <div key={category} className="space-y-4">
+                    <h3 className="text-lg font-semibold capitalize">{category} Modules</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {modules.map((module) => (
                       <Card key={module.smartCode}>
                         <CardHeader>
                           <div className="flex items-start justify-between">
@@ -616,7 +619,8 @@ export default function ProvisioningDashboard() {
                     ))}
                   </div>
                 </div>
-              ))}
+              ) : null
+            })}
             </TabsContent>
             </Tabs>
           </CardContent>

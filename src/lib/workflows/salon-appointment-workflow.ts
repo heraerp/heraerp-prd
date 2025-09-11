@@ -69,7 +69,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
     staff_id: { type: 'string', required: true },
     appointment_time: { type: 'datetime', required: true },
     duration_minutes: { type: 'number', required: true },
-    payment_status: { type: 'string', default: 'pending' },
+    payment_status: { type: 'string', default: 'pending', required: false },
     cancellation_reason: { type: 'string', required: false }
   },
   
@@ -82,7 +82,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       condition: 'first_run_only',
       actions: [
         {
-          type: 'create_entities',
+          type: 'create_entity',
           entities: [
             { entity_type: 'appointment_status', entity_name: 'Schedule Requested', smart_code: APPOINTMENT_SMART_CODES.STATUS_REQUESTED },
             { entity_type: 'appointment_status', entity_name: 'Scheduled', smart_code: APPOINTMENT_SMART_CODES.STATUS_SCHEDULED },
@@ -128,7 +128,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       id: 'wait-for-appointment-time',
       name: 'Wait Until Appointment Time',
       type: 'wait',
-      wait_until: '${appointment_time}',
+      delay: '${appointment_time}',
       timeout: {
         duration: '15m',
         before: true,
@@ -216,7 +216,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
           target_entity_id: '${appointment_id}'
         },
         {
-          type: 'notify_staff',
+          type: 'send_notification',
           staff_id: '${staff_id}',
           message: 'Client ready for service'
         }
@@ -284,7 +284,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
           new_status: APPOINTMENT_SMART_CODES.STATUS_CLOSED
         },
         {
-          type: 'archive_appointment'
+          type: 'update_entity' // Archive appointment
         }
       ]
     }
@@ -302,11 +302,11 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
           new_status: APPOINTMENT_SMART_CODES.STATUS_CANCELLED_CLIENT
         },
         {
-          type: 'process_cancellation_fee',
+          type: 'process_payment', // Process cancellation fee
           fee_percentage: 20
         },
         {
-          type: 'notify_staff',
+          type: 'send_notification',
           message: 'Appointment cancelled by client'
         }
       ]
@@ -317,10 +317,10 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       trigger: 'payment.declined',
       actions: [
         {
-          type: 'block_service_start'
+          type: 'update_status' // Block service start
         },
         {
-          type: 'request_alternative_payment',
+          type: 'send_notification', // Request alternative payment
           timeout: '10m'
         }
       ]
@@ -336,11 +336,11 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
           new_status: APPOINTMENT_SMART_CODES.STATUS_DISPUTED
         },
         {
-          type: 'notify_manager',
+          type: 'send_notification', // Notify manager
           priority: 'high'
         },
         {
-          type: 'freeze_payment',
+          type: 'void_payment', // Freeze payment
           payment_txn_id: '${payment_txn_id}'
         }
       ]
@@ -354,7 +354,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       description: 'Block service start without approved payment',
       condition: 'status_transition FROM "checked_in" TO "in_progress"',
       rule: 'EXISTS approved_payment LINKED_TO appointment',
-      action: 'block_transition',
+      action: 'block',
       error_message: 'Cannot start service without approved payment'
     },
     
@@ -363,6 +363,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       description: 'Prevent backdating transactions',
       condition: 'transaction_date < fiscal_period_start',
       rule: 'block_transaction',
+      action: 'block',
       error_message: 'Cannot post to closed fiscal period'
     },
     
@@ -371,6 +372,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       description: 'Refunds must reference original payment',
       condition: 'transaction_type == "PAYMENT.REFUND"',
       rule: 'MUST_HAVE reference_transaction_id',
+      action: 'block',
       error_message: 'Refund must reference original payment transaction'
     }
   ]

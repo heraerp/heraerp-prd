@@ -105,7 +105,7 @@ export class KMSProvider {
     // Get DEK (potentially older version for rotation support)
     const dek = await this.getDataEncryptionKey(
       organizationId,
-      encryptedData.metadata?.purpose || 'general',
+      (encryptedData.metadata as any)?.purpose || 'general',
       encryptedData.key_version
     )
 
@@ -173,7 +173,7 @@ export class KMSProvider {
 
       // Generate new version
       const newKey = await this.generateDataEncryptionKey()
-      const newVersion = (keyEntity.metadata?.version || 1) + 1
+      const newVersion = ((keyEntity.metadata as any)?.version || 1) + 1
 
       // Store new key version
       const { data: newKeyEntity } = await supabase
@@ -188,7 +188,7 @@ export class KMSProvider {
           metadata: {
             version: newVersion,
             status: 'active',
-            purpose: keyEntity.metadata?.purpose,
+            purpose: (keyEntity.metadata as any)?.purpose,
             algorithm: 'aes-256-gcm',
             rotated_from: keyEntity.id
           }
@@ -287,7 +287,7 @@ export class KMSProvider {
       return {
         key: dek,
         key_id: keyEntity.id,
-        version: keyEntity.metadata?.version || 1
+        version: (keyEntity.metadata as any)?.version || 1
       }
     }
 

@@ -153,7 +153,7 @@ export function TransactionsTable({
                 // Extract artifacts from lines
                 const artifacts: any = {};
                 lines.forEach(line => {
-                  const lineArtifacts = line.metadata?.artifacts || line.line_data?.artifacts;
+                  const lineArtifacts = (line.metadata as any)?.artifacts || line.line_data?.artifacts;
                   if (lineArtifacts) {
                     Object.assign(artifacts, lineArtifacts);
                   }
@@ -253,14 +253,14 @@ export function TransactionsTable({
                                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                                         {line.line_type}
                                       </p>
-                                      {line.metadata?.status && (
+                                      {(line.metadata as any)?.status && (
                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                           Status: {line.metadata.status}
                                           {line.metadata.coverage && ` • Coverage: ${(line.metadata.coverage * 100).toFixed(1)}%`}
                                           {line.metadata.duration_ms && ` • Duration: ${line.metadata.duration_ms}ms`}
                                         </p>
                                       )}
-                                      {line.metadata?.violations && line.metadata.violations.length > 0 && (
+                                      {(line.metadata as any)?.violations && line.metadata.violations.length > 0 && (
                                         <div className="mt-2 space-y-1">
                                           {(line.metadata.violations as any[]).map((v, vIdx) => (
                                             <div key={vIdx} className="text-xs text-red-600 dark:text-red-400">
@@ -286,7 +286,7 @@ export function TransactionsTable({
                                       )}
                                     </div>
                                     <div className="ml-4">
-                                      <ArtifactLinks artifacts={line.metadata?.artifacts} />
+                                      <ArtifactLinks artifacts={(line.metadata as any)?.artifacts} />
                                     </div>
                                   </div>
                                 ))}

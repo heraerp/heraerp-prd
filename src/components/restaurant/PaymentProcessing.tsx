@@ -184,8 +184,8 @@ export function PaymentProcessing({
     
     payments.forEach(payment => {
       const amount = payment.total_amount || 0
-      const method = payment.metadata?.payment_method || 'cash'
-      const tip = payment.metadata?.tip_amount || 0
+      const method = (payment.metadata as any)?.payment_method || 'cash'
+      const tip = (payment.metadata as any)?.tip_amount || 0
       
       if (payment.transaction_type === 'refund') {
         stats.refunds += amount
@@ -455,7 +455,7 @@ export function PaymentProcessing({
                       onClick={() => setSelectedMethod(method.entity_code)}
                       className="flex items-center gap-2"
                     >
-                      {getMethodIcon(method.metadata?.type || 'cash')}
+                      {getMethodIcon((method.metadata as any)?.type || 'cash')}
                       {method.entity_name}
                     </Button>
                   ))}
@@ -517,7 +517,7 @@ export function PaymentProcessing({
                       className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <div className="flex items-center gap-3">
-                        {getMethodIcon(payment.metadata?.payment_method || 'cash')}
+                        {getMethodIcon((payment.metadata as any)?.payment_method || 'cash')}
                         <div>
                           <p className="font-medium">
                             {payment.transaction_code}
@@ -531,7 +531,7 @@ export function PaymentProcessing({
                         <p className="font-bold">
                           ${payment.total_amount.toFixed(2)}
                         </p>
-                        {payment.metadata?.tip_amount && payment.metadata.tip_amount > 0 && (
+                        {(payment.metadata as any)?.tip_amount && payment.metadata.tip_amount > 0 && (
                           <p className="text-sm text-green-600">
                             +${payment.metadata.tip_amount.toFixed(2)} tip
                           </p>
@@ -565,7 +565,7 @@ export function PaymentProcessing({
                     className="flex items-center justify-between p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      {getMethodIcon(method.metadata?.type || 'cash')}
+                      {getMethodIcon((method.metadata as any)?.type || 'cash')}
                       <div>
                         <p className="font-medium">{method.entity_name}</p>
                         <p className="text-sm text-muted-foreground">
@@ -574,13 +574,13 @@ export function PaymentProcessing({
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      {method.metadata?.fees !== undefined && method.metadata.fees > 0 && (
+                      {(method.metadata as any)?.fees !== undefined && method.metadata.fees > 0 && (
                         <Badge variant="outline">
                           {method.metadata.fees}% fee
                         </Badge>
                       )}
-                      <Badge variant={method.metadata?.enabled ? "default" : "secondary"}>
-                        {method.metadata?.enabled ? "Active" : "Inactive"}
+                      <Badge variant={(method.metadata as any)?.enabled ? "default" : "secondary"}>
+                        {(method.metadata as any)?.enabled ? "Active" : "Inactive"}
                       </Badge>
                     </div>
                   </div>

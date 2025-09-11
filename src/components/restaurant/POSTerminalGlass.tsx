@@ -349,7 +349,7 @@ export function POSTerminalGlass({
         const result = await universalApi.createEntity({
           entity_type: 'table',
           entity_name: table.entity_name,
-          entity_code: `TBL-${table.metadata?.table_number?.toString().padStart(3, '0')}`,
+          entity_code: `TBL-${(table.metadata as any)?.table_number?.toString().padStart(3, '0')}`,
           smart_code: smartCodes.TABLE,
           metadata: table.metadata
         })
@@ -426,7 +426,7 @@ export function POSTerminalGlass({
         menuItem: item,
         quantity: 1,
         modifiers: [],
-        lineTotal: item.metadata?.price || 0
+        lineTotal: (item.metadata as any)?.price || 0
       }])
     }
   }
@@ -440,7 +440,7 @@ export function POSTerminalGlass({
     
     setCart(cart.map(item => 
       item.menuItem.id === itemId 
-        ? { ...item, quantity, lineTotal: quantity * (item.menuItem.metadata?.price || 0) }
+        ? { ...item, quantity, lineTotal: quantity * ((item.menuItem.metadata as any)?.price || 0) }
         : item
     ))
   }
@@ -472,16 +472,16 @@ export function POSTerminalGlass({
 
   // Filter menu items
   const filteredItems = menuItems.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || item.metadata?.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
     const matchesSearch = searchTerm === '' || 
       item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.metadata?.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.metadata as any)?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    return matchesCategory && matchesSearch && item.metadata?.available
+    return matchesCategory && matchesSearch && (item.metadata as any)?.available
   })
 
   // Get categories
-  const categories = ['all', ...Array.from(new Set(menuItems.map(item => item.metadata?.category).filter(Boolean)))]
+  const categories = ['all', ...Array.from(new Set(menuItems.map(item => (item.metadata as any)?.category).filter(Boolean)))]
 
   // Process order
   const processOrder = async () => {
@@ -544,7 +544,7 @@ export function POSTerminalGlass({
             line_number: index + 1,
             line_entity_id: item.menuItem.id,
             quantity: item.quantity,
-            unit_price: item.menuItem.metadata?.price || 0,
+            unit_price: (item.menuItem.metadata as any)?.price || 0,
             line_amount: item.lineTotal,
             smart_code: smartCodes.ORDER_LINE,
             metadata: {
@@ -675,7 +675,7 @@ export function POSTerminalGlass({
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredItems.map(item => {
-                const Icon = CATEGORY_ICONS[item.metadata?.category || ''] || Coffee
+                const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
                   <div
                     key={item.id}
@@ -684,7 +684,7 @@ export function POSTerminalGlass({
                   >
                     {/* Image */}
                     <div className="relative h-48 w-full overflow-hidden">
-                      {item.metadata?.image_url ? (
+                      {(item.metadata as any)?.image_url ? (
                         <Image
                           src={item.metadata.image_url}
                           alt={item.entity_name}
@@ -693,13 +693,13 @@ export function POSTerminalGlass({
                           unoptimized
                         />
                       ) : (
-                        <div className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[item.metadata?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}>
+                        <div className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}>
                           <Icon className="h-16 w-16 text-white/30" />
                         </div>
                       )}
                       
                       {/* Popular badge */}
-                      {item.metadata?.popular && (
+                      {(item.metadata as any)?.popular && (
                         <Badge className="absolute top-2 right-2 bg-yellow-500 text-black">
                           <Star className="h-3 w-3 mr-1" />
                           Popular
@@ -709,7 +709,7 @@ export function POSTerminalGlass({
                       {/* Price overlay */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                         <p className="text-white text-xl font-bold">
-                          {formatCurrency(item.metadata?.price || 0)}
+                          {formatCurrency((item.metadata as any)?.price || 0)}
                         </p>
                       </div>
                     </div>
@@ -718,12 +718,12 @@ export function POSTerminalGlass({
                     <div className="p-4">
                       <h3 className="font-semibold text-white mb-1">{item.entity_name}</h3>
                       <p className="text-xs text-white/70 line-clamp-2 mb-2">
-                        {item.metadata?.description}
+                        {(item.metadata as any)?.description}
                       </p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
-                          {item.metadata?.rating && (
+                          {(item.metadata as any)?.rating && (
                             <>
                               <Star className="h-3 w-3 text-yellow-400 fill-current" />
                               <span className="text-xs text-white/70">{item.metadata.rating}</span>
@@ -732,14 +732,14 @@ export function POSTerminalGlass({
                         </div>
                         
                         <div className="flex items-center gap-2">
-                          {item.metadata?.preparation_time && (
+                          {(item.metadata as any)?.preparation_time && (
                             <div className="flex items-center gap-1 text-xs text-white/50">
                               <Clock className="h-3 w-3" />
                               {item.metadata.preparation_time}m
                             </div>
                           )}
                           
-                          {item.metadata?.modifiers && item.metadata.modifiers.length > 0 && (
+                          {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
                             <Badge variant="outline" className="text-xs border-white/30 text-white/70">
                               <Pencil className="h-3 w-3 mr-1" />
                               Custom
@@ -763,7 +763,7 @@ export function POSTerminalGlass({
           ) : (
             <div className="space-y-2">
               {filteredItems.map(item => {
-                const Icon = CATEGORY_ICONS[item.metadata?.category || ''] || Coffee
+                const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
                   <div 
                     key={item.id}
@@ -773,7 +773,7 @@ export function POSTerminalGlass({
                     <div className="flex items-center gap-4">
                       {/* Image */}
                       <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
-                        {item.metadata?.image_url ? (
+                        {(item.metadata as any)?.image_url ? (
                           <Image
                             src={item.metadata.image_url}
                             alt={item.entity_name}
@@ -782,7 +782,7 @@ export function POSTerminalGlass({
                             unoptimized
                           />
                         ) : (
-                          <div className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[item.metadata?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}>
+                          <div className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}>
                             <Icon className="h-8 w-8 text-white/30" />
                           </div>
                         )}
@@ -794,7 +794,7 @@ export function POSTerminalGlass({
                           <div>
                             <h3 className="font-semibold text-white flex items-center gap-2">
                               {item.entity_name}
-                              {item.metadata?.popular && (
+                              {(item.metadata as any)?.popular && (
                                 <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
                                   <Star className="h-3 w-3 mr-1" />
                                   Popular
@@ -802,16 +802,16 @@ export function POSTerminalGlass({
                               )}
                             </h3>
                             <p className="text-sm text-white/70">
-                              {item.metadata?.description}
+                              {(item.metadata as any)?.description}
                             </p>
                             <div className="flex items-center gap-3 mt-1">
-                              {item.metadata?.rating && (
+                              {(item.metadata as any)?.rating && (
                                 <div className="flex items-center gap-1">
                                   <Star className="h-3 w-3 text-yellow-400 fill-current" />
                                   <span className="text-xs text-white/70">{item.metadata.rating}</span>
                                 </div>
                               )}
-                              {item.metadata?.preparation_time && (
+                              {(item.metadata as any)?.preparation_time && (
                                 <div className="flex items-center gap-1 text-xs text-white/50">
                                   <Clock className="h-3 w-3" />
                                   {item.metadata.preparation_time}m
@@ -820,7 +820,7 @@ export function POSTerminalGlass({
                             </div>
                           </div>
                           <span className="font-bold text-white text-lg">
-                            {formatCurrency(item.metadata?.price || 0)}
+                            {formatCurrency((item.metadata as any)?.price || 0)}
                           </span>
                         </div>
                       </div>
@@ -890,12 +890,12 @@ export function POSTerminalGlass({
               </SelectTrigger>
               <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20">
                 {tables
-                  .filter(table => table.metadata?.status === 'available')
+                  .filter(table => (table.metadata as any)?.status === 'available')
                   .map(table => (
                     <SelectItem key={table.id} value={table.id} className="text-white hover:bg-white/10">
                       <div className="flex items-center gap-2">
                         <Table className="h-4 w-4" />
-                        {table.entity_name} - {table.metadata?.section}
+                        {table.entity_name} - {(table.metadata as any)?.section}
                       </div>
                     </SelectItem>
                   ))
@@ -960,7 +960,7 @@ export function POSTerminalGlass({
                     <div className="flex-1">
                       <h4 className="font-medium text-white">{item.menuItem.entity_name}</h4>
                       <p className="text-sm text-white/60">
-                        {formatCurrency(item.menuItem.metadata?.price || 0)} each
+                        {formatCurrency((item.menuItem.metadata as any)?.price || 0)} each
                       </p>
                     </div>
                     <Button

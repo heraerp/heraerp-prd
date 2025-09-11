@@ -224,7 +224,7 @@ export class RateLimiter {
       .limit(1)
       .single()
 
-    if (existing && existing.metadata?.response) {
+    if (existing && (existing.metadata as any)?.response) {
       // Check if expired
       const expiresAt = new Date(existing.metadata.expires_at)
       if (expiresAt > new Date()) {

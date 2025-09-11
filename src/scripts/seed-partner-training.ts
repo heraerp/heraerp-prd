@@ -431,7 +431,7 @@ export async function seedPartnerTrainingSystem() {
 
     // 3. Create Prerequisite Relationships
     for (const module of createdModules) {
-      const prerequisites = module.metadata?.prerequisites || []
+      const prerequisites = (module.metadata as any)?.prerequisites || []
       for (const prereqCode of prerequisites) {
         const prereqModule = createdModules.find(m => m.entity_code === prereqCode)
         if (prereqModule) {

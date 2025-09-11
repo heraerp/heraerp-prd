@@ -38,9 +38,9 @@ export async function GET(request: NextRequest) {
     const summary = {
       total_organizations: organizations?.length || 0,
       by_tier: {
-        enterprise: organizations?.filter(o => o.metadata?.tier === 'enterprise').length || 0,
-        professional: organizations?.filter(o => o.metadata?.tier === 'professional').length || 0,
-        free: organizations?.filter(o => o.metadata?.tier === 'free').length || 0
+        enterprise: organizations?.filter(o => (o.metadata as any)?.tier === 'enterprise').length || 0,
+        professional: organizations?.filter(o => (o.metadata as any)?.tier === 'professional').length || 0,
+        free: organizations?.filter(o => (o.metadata as any)?.tier === 'free').length || 0
       }
     }
 

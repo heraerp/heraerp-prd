@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     // Extract organization ID from metadata or use default
-    const organizationId = body.metadata?.organization_id || process.env.DEFAULT_ORGANIZATION_ID!
+    const organizationId = (body.metadata as any)?.organization_id || process.env.DEFAULT_ORGANIZATION_ID!
     
     // Initialize booking service
     const bookingService = new WhatsAppBookingService(organizationId)

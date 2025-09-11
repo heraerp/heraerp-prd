@@ -156,7 +156,7 @@ export class AppointmentApi {
     const appointments = await this.getAppointments(organizationId)
     
     return appointments.filter((apt: any) => 
-      apt.metadata?.appointment_date === date
+      (apt.metadata as any)?.appointment_date === date
     )
   }
 
@@ -167,7 +167,7 @@ export class AppointmentApi {
     const appointments = await this.getAppointments(organizationId)
     
     return appointments.filter((apt: any) => 
-      apt.to_entity_id === staffId || apt.metadata?.staff_id === staffId
+      apt.to_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
     )
   }
 
@@ -178,7 +178,7 @@ export class AppointmentApi {
     const appointments = await this.getAppointments(organizationId)
     
     return appointments.filter((apt: any) => 
-      apt.from_entity_id === customerId || apt.metadata?.customer_id === customerId
+      apt.from_entity_id === customerId || (apt.metadata as any)?.customer_id === customerId
     )
   }
 
@@ -310,7 +310,7 @@ export class AppointmentApi {
     // Get all appointments for the staff on that date
     const appointments = await this.getAppointmentsByDate(date, organizationId)
     const staffAppointments = appointments.filter((apt: any) => 
-      apt.to_entity_id === staffId || apt.metadata?.staff_id === staffId
+      apt.to_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
     )
 
     // Define business hours (this could come from configuration)
@@ -364,21 +364,21 @@ export class AppointmentApi {
     const thisMonth = formatDate(now, 'yyyy-MM')
 
     const todayAppointments = appointments.filter((apt: any) => 
-      apt.metadata?.appointment_date === today
+      (apt.metadata as any)?.appointment_date === today
     )
 
     const monthAppointments = appointments.filter((apt: any) => 
-      apt.metadata?.appointment_date?.startsWith(thisMonth)
+      (apt.metadata as any)?.appointment_date?.startsWith(thisMonth)
     )
 
     return {
       totalAppointments: appointments.length,
       todayAppointments: todayAppointments.length,
       monthAppointments: monthAppointments.length,
-      pendingCount: appointments.filter((apt: any) => apt.metadata?.status === 'pending').length,
-      confirmedCount: appointments.filter((apt: any) => apt.metadata?.status === 'confirmed').length,
-      cancelledCount: appointments.filter((apt: any) => apt.metadata?.status === 'cancelled').length,
-      completedCount: appointments.filter((apt: any) => apt.metadata?.status === 'completed').length,
+      pendingCount: appointments.filter((apt: any) => (apt.metadata as any)?.status === 'pending').length,
+      confirmedCount: appointments.filter((apt: any) => (apt.metadata as any)?.status === 'confirmed').length,
+      cancelledCount: appointments.filter((apt: any) => (apt.metadata as any)?.status === 'cancelled').length,
+      completedCount: appointments.filter((apt: any) => (apt.metadata as any)?.status === 'completed').length,
       revenueToday: todayAppointments.reduce((sum: number, apt: any) => sum + (apt.total_amount || 0), 0),
       revenueMonth: monthAppointments.reduce((sum: number, apt: any) => sum + (apt.total_amount || 0), 0)
     }

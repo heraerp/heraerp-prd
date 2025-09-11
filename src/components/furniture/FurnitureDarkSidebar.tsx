@@ -48,6 +48,7 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-amber-500' },
   { title: 'Production', href: '/furniture/production', icon: Factory, badge: '23', badgeColor: 'bg-purple-500' },
   { title: 'Products', href: '/furniture/products', icon: Package },
+  { title: 'Tender', href: '/furniture/tender', icon: FileText, badge: '12', badgeColor: 'bg-blue-500' },
   { title: 'Inventory', href: '/furniture/inventory', icon: Truck, badge: '5', badgeColor: 'bg-red-500' },
   { title: 'Quality', href: '/furniture/quality', icon: CheckCircle },
   { title: 'Finance', href: '/furniture/finance', icon: DollarSign },
@@ -63,6 +64,12 @@ const allApps: SidebarItem[] = [
   { title: 'BOM', href: '/furniture/products/bom', icon: ClipboardList },
   { title: 'Routing', href: '/furniture/products/routing', icon: Ruler },
   { title: 'Costing', href: '/furniture/products/costing', icon: Calculator },
+  { title: 'Tender Watch', href: '/furniture/tender', icon: FileText },
+  { title: 'Tender Dashboard', href: '/furniture/tender/dashboard', icon: BarChart3 },
+  { title: 'Active Bids', href: '/furniture/tender/bids', icon: Target },
+  { title: 'Competitors', href: '/furniture/tender/competitors', icon: Shield },
+  { title: 'EMD Tracking', href: '/furniture/tender/emd', icon: DollarSign },
+  { title: 'Transit Pass', href: '/furniture/tender/transit', icon: Truck },
   { title: 'Inventory', href: '/furniture/inventory/stock', icon: Truck },
   { title: 'Materials', href: '/furniture/inventory/materials', icon: Box },
   { title: 'Quality', href: '/furniture/quality/inspection', icon: CheckCircle },
@@ -79,10 +86,13 @@ const allApps: SidebarItem[] = [
   { title: 'Dispatch', href: '/furniture/sales/dispatch', icon: Truck },
   { title: 'Proforma', href: '/furniture/sales/proforma', icon: FileText },
   { title: 'Analytics', href: '/furniture/analytics', icon: BarChart3 },
+  { title: 'AI Manager', href: '/furniture/ai-manager', icon: Brain },
+  { title: 'Digital Accountant', href: '/furniture/digital-accountant', icon: Calculator },
 ]
 
 const bottomItems: SidebarItem[] = [
-  { title: 'Digital Accountant', href: '/furniture/digital-accountant', icon: Brain },
+  { title: 'AI Manager', href: '/furniture/ai-manager', icon: Brain },
+  { title: 'Digital Accountant', href: '/furniture/digital-accountant', icon: Calculator },
   { title: 'Settings', href: '/furniture/settings', icon: Settings },
 ]
 

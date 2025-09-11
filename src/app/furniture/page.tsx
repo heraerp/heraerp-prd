@@ -22,7 +22,10 @@ import {
   DollarSign,
   Truck,
   BarChart3,
-  Settings
+  Settings,
+  FileText,
+  Brain,
+  Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
@@ -154,6 +157,34 @@ function FurnitureDashboard() {
               />
             ))}
           </StatCardGrid>
+        </div>
+
+        {/* AI Manager Card */}
+        <div className="mt-6">
+          <Link href="/furniture/ai-manager">
+            <Card className="p-6 bg-gradient-to-br from-purple-600/10 to-blue-600/10 border-purple-500/20 hover:from-purple-600/20 hover:to-blue-600/20 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                    <Brain className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      AI Business Manager
+                      <Sparkles className="h-4 w-4 text-purple-400" />
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Get instant insights, recommendations, and strategic analysis for your furniture business
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-sm font-medium text-purple-400">Ask anything</span>
+                  <span className="text-xs text-muted-foreground">Powered by AI</span>
+                </div>
+              </div>
+            </Card>
+          </Link>
         </div>
 
         {/* Main Content Tabs */}
@@ -364,6 +395,7 @@ function FurnitureDashboard() {
             <ModuleLink href="/furniture/production" icon={Factory} label="Production" />
             <ModuleLink href="/furniture/inventory" icon={Package} label="Inventory" />
             <ModuleLink href="/furniture/products" icon={BarChart3} label="Products & BOM" />
+            <ModuleLink href="/furniture/tender" icon={FileText} label="Tender Mgmt" />
             <ModuleLink href="/furniture/finance" icon={DollarSign} label="Finance" />
             <ModuleLink href="/furniture/hr" icon={Users} label="HR & Payroll" />
             <ModuleLink href="/furniture/quality" icon={CheckCircle} label="Quality" />

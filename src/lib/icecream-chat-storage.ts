@@ -125,12 +125,12 @@ export class IceCreamChatStorage {
 
       return transactions.map(tx => ({
         id: tx.id,
-        session_id: tx.metadata?.session_id || '',
+        session_id: (tx.metadata as any)?.session_id || '',
         message_type: tx.smart_code === ICECREAM_CHAT_SMART_CODES.USER_QUERY ? 'user' : 
                       tx.smart_code === ICECREAM_CHAT_SMART_CODES.AI_RESPONSE ? 'assistant' : 'system',
-        content: tx.metadata?.content || '',
+        content: (tx.metadata as any)?.content || '',
         timestamp: tx.transaction_date,
-        title: tx.metadata?.title,
+        title: (tx.metadata as any)?.title,
         metadata: tx.metadata
       }));
     } catch (error) {
@@ -170,8 +170,8 @@ export class IceCreamChatStorage {
             message_count: 1,
             last_message: msg.content.substring(0, 100) + (msg.content.length > 100 ? '...' : ''),
             preview: firstUserMessage.substring(0, 150) + (firstUserMessage.length > 150 ? '...' : ''),
-            starred: msg.metadata?.starred || false,
-            tags: msg.metadata?.tags || []
+            starred: (msg.metadata as any)?.starred || false,
+            tags: (msg.metadata as any)?.tags || []
           });
         } else {
           const session = sessionMap.get(msg.session_id)!;
@@ -349,9 +349,9 @@ export class IceCreamChatStorage {
       const searchLower = searchTerm.toLowerCase();
       return allMessages.filter(msg => 
         msg.content.toLowerCase().includes(searchLower) ||
-        msg.metadata?.user_query?.toLowerCase().includes(searchLower) ||
-        msg.metadata?.temperature_data?.toString().toLowerCase().includes(searchLower) ||
-        msg.metadata?.production_data?.toString().toLowerCase().includes(searchLower)
+        (msg.metadata as any)?.user_query?.toLowerCase().includes(searchLower) ||
+        (msg.metadata as any)?.temperature_data?.toString().toLowerCase().includes(searchLower) ||
+        (msg.metadata as any)?.production_data?.toString().toLowerCase().includes(searchLower)
       );
     } catch (error) {
       console.error('Failed to search chat history:', error);

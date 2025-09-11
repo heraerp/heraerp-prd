@@ -198,7 +198,7 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
 
     // Regulatory requirement check
     if (target.type === 'transaction' && data.transaction_type === 'healthcare_billing') {
-      if (!data.metadata?.procedure_codes) {
+      if (!(data.metadata as any)?.procedure_codes) {
         warnings.push('Healthcare billing transactions should include procedure codes')
       }
     }

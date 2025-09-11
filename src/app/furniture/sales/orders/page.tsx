@@ -74,7 +74,7 @@ export default function FurnitureSalesOrders() {
           return {
             id: product.id,
             name: product.entity_name,
-            category: product.metadata?.category || 'General',
+            category: (product.metadata as any)?.category || 'General',
             price: price,
             image: '/api/placeholder/100/100',
             sku: product.entity_code

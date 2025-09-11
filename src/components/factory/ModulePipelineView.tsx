@@ -112,10 +112,10 @@ export function ModulePipelineView({
           stageTxns.forEach(txn => {
             const lines = transactionLines.get(txn.id) || [];
             lines.forEach(line => {
-              if (line.metadata?.duration_ms) {
+              if ((line.metadata as any)?.duration_ms) {
                 totalDuration += line.metadata.duration_ms;
               }
-              if (line.metadata?.coverage) {
+              if ((line.metadata as any)?.coverage) {
                 totalCoverage += line.metadata.coverage;
                 coverageCount++;
               }

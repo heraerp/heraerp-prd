@@ -160,7 +160,7 @@ export default function WhatsAppMessagesPage() {
         conv.entity_name.toLowerCase().includes(query) ||
         conv.entity_code.toLowerCase().includes(query) ||
         conv.messages.some(m => 
-          m.metadata?.text?.toLowerCase().includes(query)
+          (m.metadata as any)?.text?.toLowerCase().includes(query)
         )
       )
     }
@@ -186,7 +186,7 @@ export default function WhatsAppMessagesPage() {
   }
 
   const getMessageStatusIcon = (message: Message) => {
-    const status = message.metadata?.latest_status
+    const status = (message.metadata as any)?.latest_status
     
     if (status === 'read') {
       return <CheckCheck className="w-4 h-4 text-blue-500" />
@@ -400,9 +400,9 @@ export default function WhatsAppMessagesPage() {
                                   getMessageStatusIcon(conversation.lastMessage)
                                 }
                                 <p className="text-sm !text-gray-400 truncate">
-                                  {conversation.lastMessage.metadata?.text || 
-                                   conversation.lastMessage.metadata?.caption || 
-                                   `[${conversation.lastMessage.metadata?.type || 'message'}]`}
+                                  {(conversation.lastMessage.metadata as any)?.text || 
+                                   (conversation.lastMessage.metadata as any)?.caption || 
+                                   `[${(conversation.lastMessage.metadata as any)?.type || 'message'}]`}
                                 </p>
                               </div>
                             )}
@@ -410,7 +410,7 @@ export default function WhatsAppMessagesPage() {
                             <div className="flex items-center justify-between mt-2">
                               <div className="flex items-center gap-2">
                                 {conversation.isPinned && <Pin className="w-3 h-3 text-violet-400" />}
-                                {conversation.metadata?.is_online && (
+                                {(conversation.metadata as any)?.is_online && (
                                   <Badge variant="outline" className="text-xs border-green-500 text-green-500">Online</Badge>
                                 )}
                               </div>
@@ -444,7 +444,7 @@ export default function WhatsAppMessagesPage() {
                             <h3 className="font-semibold !text-white">{selectedConversation.entity_name}</h3>
                             <p className="text-sm !text-gray-400">
                               {selectedConversation.entity_code}
-                              {selectedConversation.metadata?.is_online && (
+                              {(selectedConversation.metadata as any)?.is_online && (
                                 <span className="text-green-500 ml-2">● Online</span>
                               )}
                             </p>
@@ -498,9 +498,9 @@ export default function WhatsAppMessagesPage() {
                                   )}
                                   
                                   <p className="text-sm">
-                                    {message.metadata?.text || 
-                                     message.metadata?.caption || 
-                                     `[${message.metadata?.type || 'message'}]`}
+                                    {(message.metadata as any)?.text || 
+                                     (message.metadata as any)?.caption || 
+                                     `[${(message.metadata as any)?.type || 'message'}]`}
                                   </p>
                                   
                                   <div className="flex items-center justify-end gap-1 mt-1">

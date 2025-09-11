@@ -36,7 +36,7 @@ export function validateGLBalance(
 
   // Calculate totals
   lines.forEach((line, index) => {
-    if (!line.line_amount || !line.metadata?.posting_type) {
+    if (!line.line_amount || !(line.metadata as any)?.posting_type) {
       result.errors.push(`Line ${index + 1}: Missing amount or posting type`)
       return
     }
@@ -95,11 +95,11 @@ export function validateGLAccountEntity(entity: {
   }
 
   // Check required metadata
-  if (!entity.metadata?.ledger_type) {
+  if (!(entity.metadata as any)?.ledger_type) {
     errors.push("GL accounts must have metadata.ledger_type")
   }
 
-  if (!entity.metadata?.account_category) {
+  if (!(entity.metadata as any)?.account_category) {
     errors.push("GL accounts must have metadata.account_category")
   }
 

@@ -390,7 +390,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({
         isEmpty = currentValue.length === 0;
       } else if (typeof currentValue === 'string') {
         isEmpty = currentValue.trim() === '';
-      } else if (currentValue === undefined || currentValue === null || currentValue === '') {
+      } else if (currentValue === undefined || currentValue === null) {
         isEmpty = true;
       }
       

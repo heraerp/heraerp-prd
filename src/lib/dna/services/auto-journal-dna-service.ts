@@ -304,7 +304,7 @@ export class AutoJournalDNAService {
 
     const totalTransactions = transactions?.length || 0;
     const journalsCreated = journals?.length || 0;
-    const batchJournals = journals?.filter(j => j.metadata?.batch_journal)?.length || 0;
+    const batchJournals = journals?.filter(j => (j.metadata as any)?.batch_journal)?.length || 0;
     const immediateJournals = journalsCreated - batchJournals;
 
     // Calculate metrics

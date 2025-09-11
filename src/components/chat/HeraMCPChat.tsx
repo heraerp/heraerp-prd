@@ -190,7 +190,7 @@ export function HeraMCPChat({
         className={cn(
           "flex gap-3 p-4 rounded-lg mx-2 my-2",
           isUser ? "bg-blue-50 dark:bg-blue-950/30" : "bg-gray-50 dark:bg-gray-900/50",
-          message.metadata?.error && "bg-red-50 dark:bg-red-950/30",
+          (message.metadata as any)?.error && "bg-red-50 dark:bg-red-950/30",
           "border",
           isUser ? "border-blue-200 dark:border-blue-800" : "border-gray-200 dark:border-gray-800"
         )}
@@ -209,12 +209,12 @@ export function HeraMCPChat({
             </div>
             
             <div className="flex items-center gap-1 shrink-0">
-              {message.metadata?.confidence && (
+              {(message.metadata as any)?.confidence && (
                 <Badge variant="secondary" className="text-xs">
                   {Math.round(message.metadata.confidence * 100)}%
                 </Badge>
               )}
-              {message.metadata?.processingTime && (
+              {(message.metadata as any)?.processingTime && (
                 <Badge variant="outline" className="text-xs">
                   {message.metadata.processingTime}ms
                 </Badge>
@@ -269,7 +269,7 @@ export function HeraMCPChat({
 
           <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
             <span>{message.timestamp.toLocaleTimeString()}</span>
-            {message.metadata?.organizationId && mode === 'internal' && (
+            {(message.metadata as any)?.organizationId && mode === 'internal' && (
               <span>Org: {message.metadata.organizationId.slice(0, 8)}...</span>
             )}
           </div>

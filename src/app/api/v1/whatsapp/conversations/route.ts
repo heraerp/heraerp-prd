@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       // Get unread count (inbound messages without read status)
       const unreadCount = convMessages.filter(msg => 
         msg.source_entity_id === conv.id && // inbound
-        (!msg.metadata?.status || msg.metadata.status !== 'read')
+        (!(msg.metadata as any)?.status || msg.metadata.status !== 'read')
       ).length
       
       // Get conversation states
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
           ...conv.metadata,
           is_online: Math.random() > 0.7, // Mock online status
           last_seen: new Date(Date.now() - Math.random() * 86400000).toISOString(),
-          about: conv.metadata?.about || 'Hey there! I am using WhatsApp.'
+          about: (conv.metadata as any)?.about || 'Hey there! I am using WhatsApp.'
         },
         lastMessage: messagesWithStars[0] || null,
         messages: messagesWithStars,

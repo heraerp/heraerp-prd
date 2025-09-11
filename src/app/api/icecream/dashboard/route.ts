@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     // Calculate efficiency from production transactions
     let totalEfficiency = 0
     productionTxns.forEach(txn => {
-      if (txn.metadata?.yield_variance_percent) {
+      if ((txn.metadata as any)?.yield_variance_percent) {
         totalEfficiency += (100 + parseFloat(txn.metadata.yield_variance_percent))
       }
     })

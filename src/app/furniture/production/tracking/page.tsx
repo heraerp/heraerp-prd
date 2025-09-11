@@ -172,8 +172,8 @@ export default function ProductionTracking() {
               const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
               const orderLines = activeOrder ? transactionLines.filter(l => l.transaction_id === activeOrder.id) : []
               
-              const currentOperation = orderLines.find(l => l.metadata?.status === 'in_progress')
-              const completedOperations = orderLines.filter(l => l.metadata?.status === 'completed').length
+              const currentOperation = orderLines.find(l => (l.metadata as any)?.status === 'in_progress')
+              const completedOperations = orderLines.filter(l => (l.metadata as any)?.status === 'completed').length
               const totalOperations = orderLines.length || 1
               const progress = (completedOperations / totalOperations) * 100
 
@@ -182,7 +182,7 @@ export default function ProductionTracking() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="font-semibold text-white">{center.entity_name}</h3>
-                      <p className="text-sm text-gray-400">{center.metadata?.location || 'Shop Floor'}</p>
+                      <p className="text-sm text-gray-400">{(center.metadata as any)?.location || 'Shop Floor'}</p>
                     </div>
                     <Badge className={activeOrder ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}>
                       {activeOrder ? 'Running' : 'Idle'}
@@ -259,7 +259,7 @@ export default function ProductionTracking() {
                     const orderLines = transactionLines.filter(l => l.transaction_id === order.id)
                     
                     const completedQty = orderLines.reduce((sum, line) => 
-                      sum + (line.metadata?.completed_quantity || 0), 0
+                      sum + ((line.metadata as any)?.completed_quantity || 0), 0
                     )
                     const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0
 

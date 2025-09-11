@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     const requestedOrgId = request.nextUrl.searchParams.get('organization_id')
     
     let currentOrganizationId = requestedOrgId || 
-                               userEntity.metadata?.current_organization_id ||
+                               (userEntity.metadata as any)?.current_organization_id ||
                                user.user_metadata?.organization_id
 
     // If no current org specified, get user's primary organization
@@ -142,8 +142,8 @@ export async function GET(request: NextRequest) {
         membership_id: userMembership.id,
         role: userRole,
         permissions: userPermissions,
-        is_primary: userMembership.metadata?.is_primary || false,
-        joined_at: userMembership.metadata?.joined_at || userMembership.created_at,
+        is_primary: (userMembership.metadata as any)?.is_primary || false,
+        joined_at: (userMembership.metadata as any)?.joined_at || userMembership.created_at,
         relationship_strength: userMembership.relationship_strength
       } : null,
       permissions: userPermissions,

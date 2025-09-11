@@ -85,10 +85,10 @@ export async function GET(request: NextRequest) {
         created_at: membership.core_organizations.created_at
       },
       membership: {
-        role: membership.metadata?.role || 'member',
-        is_primary: membership.metadata?.is_primary || false,
-        permissions: membership.metadata?.permissions || [],
-        joined_at: membership.metadata?.joined_at || membership.created_at,
+        role: (membership.metadata as any)?.role || 'member',
+        is_primary: (membership.metadata as any)?.is_primary || false,
+        permissions: (membership.metadata as any)?.permissions || [],
+        joined_at: (membership.metadata as any)?.joined_at || membership.created_at,
         relationship_strength: membership.relationship_strength
       }
     })) || []

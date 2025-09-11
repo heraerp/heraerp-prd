@@ -195,13 +195,13 @@ export function FAModule({
           id: asset.id,
           assetCode: asset.entity_code,
           assetName: asset.entity_name,
-          assetType: asset.metadata?.asset_type || 'equipment',
-          status: asset.metadata?.status || 'active',
-          acquisitionDate: new Date(asset.metadata?.acquisition_date || Date.now()),
-          acquisitionCost: asset.metadata?.acquisition_cost || 0,
-          currentValue: asset.metadata?.current_value || 0,
-          accumulatedDepreciation: asset.metadata?.accumulated_depreciation || 0,
-          location: asset.metadata?.location,
+          assetType: (asset.metadata as any)?.asset_type || 'equipment',
+          status: (asset.metadata as any)?.status || 'active',
+          acquisitionDate: new Date((asset.metadata as any)?.acquisition_date || Date.now()),
+          acquisitionCost: (asset.metadata as any)?.acquisition_cost || 0,
+          currentValue: (asset.metadata as any)?.current_value || 0,
+          accumulatedDepreciation: (asset.metadata as any)?.accumulated_depreciation || 0,
+          location: (asset.metadata as any)?.location,
           metadata: asset.metadata
         })))
       }
@@ -242,7 +242,7 @@ export function FAModule({
       })
 
       // If it's a freezer placed at customer, create relationship
-      if (assetForm.assetType === 'freezer' && assetForm.metadata?.placedAtCustomer) {
+      if (assetForm.assetType === 'freezer' && (assetForm.metadata as any)?.placedAtCustomer) {
         await universalApi.createRelationship({
           from_entity_id: asset.id,
           to_entity_id: assetForm.metadata.placedAtCustomer,
@@ -347,16 +347,16 @@ export function FAModule({
       totalValue: assets.reduce((sum, asset) => sum + asset.currentValue, 0),
       freezerCount: assets.filter(a => a.assetType === 'freezer').length,
       vehicleCount: assets.filter(a => a.assetType === 'vehicle').length,
-      maintenanceDue: assets.filter(a => a.metadata?.nextMaintenance && 
+      maintenanceDue: assets.filter(a => (a.metadata as any)?.nextMaintenance && 
         new Date(a.metadata.nextMaintenance) <= new Date()).length,
       avgEnergyRating: 0
     }
     
     // Calculate average energy rating for freezers
-    const freezers = assets.filter(a => a.assetType === 'freezer' && a.metadata?.energyRating)
+    const freezers = assets.filter(a => a.assetType === 'freezer' && (a.metadata as any)?.energyRating)
     if (freezers.length > 0) {
       const ratings = freezers.map(f => {
-        const rating = f.metadata?.energyRating || 'D'
+        const rating = (f.metadata as any)?.energyRating || 'D'
         return rating === 'A++' ? 7 : rating === 'A+' ? 6 : rating === 'A' ? 5 :
                rating === 'B' ? 4 : rating === 'C' ? 3 : rating === 'D' ? 2 : 1
       })
@@ -708,7 +708,7 @@ export function FAModule({
                                 Freezer
                               </Badge>
                             )}
-                            {asset.metadata?.energyRating && (
+                            {(asset.metadata as any)?.energyRating && (
                               <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                 <Zap className="h-3 w-3 mr-1" />
                                 {asset.metadata.energyRating}
@@ -731,7 +731,7 @@ export function FAModule({
                               <span className="text-gray-500">Depreciation:</span> ₹{asset.accumulatedDepreciation.toLocaleString()}
                             </div>
                           </div>
-                          {asset.metadata?.nextMaintenance && (
+                          {(asset.metadata as any)?.nextMaintenance && (
                             <div className="mt-2">
                               <Alert className={cn(
                                 "py-2",
@@ -919,7 +919,7 @@ export function FAModule({
                   
                   <div className="space-y-3">
                     {assets
-                      .filter(asset => asset.metadata?.nextMaintenance && 
+                      .filter(asset => (asset.metadata as any)?.nextMaintenance && 
                         new Date(asset.metadata.nextMaintenance) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))
                       .map(asset => (
                         <div key={asset.id} className="p-4 border rounded-lg">
@@ -927,13 +927,13 @@ export function FAModule({
                             <div>
                               <h4 className="font-medium">{asset.assetName}</h4>
                               <p className="text-sm text-gray-500">
-                                Due: {asset.metadata?.nextMaintenance && 
+                                Due: {(asset.metadata as any)?.nextMaintenance && 
                                   new Date(asset.metadata.nextMaintenance).toLocaleDateString()}
                               </p>
                             </div>
-                            <Badge variant={new Date(asset.metadata?.nextMaintenance!) <= new Date() ? 
+                            <Badge variant={new Date((asset.metadata as any)?.nextMaintenance!) <= new Date() ? 
                               'destructive' : 'secondary'}>
-                              {new Date(asset.metadata?.nextMaintenance!) <= new Date() ? 
+                              {new Date((asset.metadata as any)?.nextMaintenance!) <= new Date() ? 
                                 'Overdue' : 'Scheduled'}
                             </Badge>
                           </div>
@@ -1031,7 +1031,7 @@ export function FAModule({
                       <h3 className="font-medium mb-3">Customer Placed Freezers</h3>
                       <div className="space-y-2">
                         {assets
-                          .filter(asset => asset.assetType === 'freezer' && asset.metadata?.placedAtCustomer)
+                          .filter(asset => asset.assetType === 'freezer' && (asset.metadata as any)?.placedAtCustomer)
                           .map(asset => (
                             <div key={asset.id} className="p-3 border rounded-lg">
                               <div className="flex items-center justify-between">

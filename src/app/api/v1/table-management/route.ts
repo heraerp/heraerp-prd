@@ -136,12 +136,12 @@ export async function GET(request: NextRequest) {
       // Update availability status for each table
       filteredTables.forEach(table => {
         const tableReservations = reservations?.filter(res => 
-          res.metadata?.table_id === table.id
+          (res.metadata as any)?.table_id === table.id
         ) || [];
 
         (table as any).current_reservation = tableReservations.find(res => {
-          const startTime = res.metadata?.start_time;
-          const endTime = res.metadata?.end_time;
+          const startTime = (res.metadata as any)?.start_time;
+          const endTime = (res.metadata as any)?.end_time;
           const now = new Date();
           const currentTime = now.getHours() * 60 + now.getMinutes();
           
@@ -155,12 +155,12 @@ export async function GET(request: NextRequest) {
 
         (table as any).next_reservation = tableReservations
           .filter(res => {
-            const startTime = res.metadata?.start_time;
+            const startTime = (res.metadata as any)?.start_time;
             const now = new Date();
             const currentTime = now.getHours() * 60 + now.getMinutes();
             return startTime && parseInt(startTime) > currentTime;
           })
-          .sort((a, b) => parseInt(a.metadata?.start_time || '0') - parseInt(b.metadata?.start_time || '0'))[0] || null;
+          .sort((a, b) => parseInt((a.metadata as any)?.start_time || '0') - parseInt((b.metadata as any)?.start_time || '0'))[0] || null;
 
         (table as any).availability_status = (table as any).current_reservation ? 'occupied' : 'available';
         (table as any).reservations_today = tableReservations.length;

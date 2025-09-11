@@ -662,7 +662,7 @@ export async function POST(request: NextRequest) {
           }
           
           const commissionTx = recentCommissions.data[0]
-          const staffName = commissionTx.metadata?.staff_name || 'Staff'
+          const staffName = (commissionTx.metadata as any)?.staff_name || 'Staff'
           const amount = commissionTx.total_amount
           
           // Update the commission transaction to paid status
@@ -730,15 +730,15 @@ export async function POST(request: NextRequest) {
           todayTransactions?.forEach(tx => {
             if (tx.transaction_type === 'sale') {
               totalRevenue += tx.total_amount
-              if (tx.metadata?.client_name) {
+              if ((tx.metadata as any)?.client_name) {
                 clientCount.add(tx.metadata.client_name)
               }
               // Track services (simplified for demo)
-              const serviceName = tx.metadata?.service_type || 'General Service'
+              const serviceName = (tx.metadata as any)?.service_type || 'General Service'
               services[serviceName] = (services[serviceName] || 0) + 1
             } else if (tx.transaction_type === 'expense') {
               totalExpenses += tx.total_amount
-            } else if (tx.transaction_type === 'payment' && tx.metadata?.payment_type === 'commission') {
+            } else if (tx.transaction_type === 'payment' && (tx.metadata as any)?.payment_type === 'commission') {
               totalCommissions += tx.total_amount
             }
           })
@@ -1118,7 +1118,7 @@ export async function POST(request: NextRequest) {
           }
           
           // Check if already posted
-          if (transactions.metadata?.status === 'posted') {
+          if ((transactions.metadata as any)?.status === 'posted') {
             return NextResponse.json({
               success: true,
               message: `Transaction ${transactionId} is already posted.\n\nPosted on: ${new Date(transactions.metadata.posted_at).toLocaleDateString()}\nPosted by: ${transactions.metadata.posted_by || 'System'}`,

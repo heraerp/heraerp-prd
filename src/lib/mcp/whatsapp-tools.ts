@@ -71,10 +71,10 @@ export async function getWhatsAppAnalytics(
       sum + (conv.universal_transaction_lines?.length || 0), 0) || 0;
     
     const bookingConversions = conversations?.filter(c => 
-      c.metadata?.conversion_type === 'booking').length || 0;
+      (c.metadata as any)?.conversion_type === 'booking').length || 0;
     
     const responseRates = conversations?.filter(c => 
-      c.metadata?.customer_responded === true).length || 0;
+      (c.metadata as any)?.customer_responded === true).length || 0;
 
     const summary = {
       total_conversations: totalConversations,
@@ -87,7 +87,7 @@ export async function getWhatsAppAnalytics(
 
     // Message type breakdown
     const messageTypes = conversations?.reduce((acc, conv) => {
-      const type = conv.metadata?.message_type || 'text';
+      const type = (conv.metadata as any)?.message_type || 'text';
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>) || {};
@@ -297,14 +297,14 @@ export async function getCustomerJourneyAnalytics(
       const firstTouch = journey[0];
       const lastTouch = journey[journey.length - 1];
       const duration = new Date(lastTouch.created_at).getTime() - new Date(firstTouch.created_at).getTime();
-      const hasConversion = journey.some(t => t.metadata?.conversion_type === 'booking');
+      const hasConversion = journey.some(t => (t.metadata as any)?.conversion_type === 'booking');
 
       return {
         customer_id: custId,
         touchpoint_count: journey.length,
         journey_duration_hours: duration / (1000 * 60 * 60),
         has_conversion: hasConversion,
-        journey_type: firstTouch.metadata?.journey_type || 'unknown'
+        journey_type: (firstTouch.metadata as any)?.journey_type || 'unknown'
       };
     });
 

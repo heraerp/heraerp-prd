@@ -4,8 +4,8 @@
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://uirruxpfideciqubwhmp.supabase.co';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcnJ1eHBmaWRlY2lxdWJ3aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4NDY1MjEsImV4cCI6MjA0NzQyMjUyMX0.LhBPAE9oBsjq80kBhOxHp7ByIy6vgQg4-3FPR5kRrLo';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://awfcrncxngqwbhqapffb.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3ZmNybmN4bmdxd2JocWFwZmZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MDk2MTUsImV4cCI6MjA3MDM4NTYxNX0.h1b7-Blk9gFCpBsYhJb0D7gV5V8LXmQoG3XvKPwCnqU';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

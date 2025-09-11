@@ -203,7 +203,7 @@ async function getServicePerformanceReport(organizationId: string, startDate: st
   let totalRevenue = 0
 
   appointments?.forEach(apt => {
-    const serviceName = apt.metadata?.service_name || 'Unknown Service'
+    const serviceName = (apt.metadata as any)?.service_name || 'Unknown Service'
     if (!serviceStats[serviceName]) {
       serviceStats[serviceName] = {
         service_name: serviceName,
@@ -270,7 +270,7 @@ async function getStaffPerformanceReport(organizationId: string, startDate: stri
   const commissionRate = settings?.metadata?.staff_settings?.default_commission_rate || 40
 
   appointments?.forEach(apt => {
-    const staffName = apt.metadata?.stylist_name || 'Unknown Staff'
+    const staffName = (apt.metadata as any)?.stylist_name || 'Unknown Staff'
     if (!staffStats[staffName]) {
       staffStats[staffName] = {
         staff_name: staffName,
@@ -335,7 +335,7 @@ async function getClientAnalyticsReport(organizationId: string, startDate: strin
   const clientSpending: { [key: string]: { name: string, spent: number, visits: number } } = {}
   
   transactions?.forEach(txn => {
-    const clientName = txn.metadata?.customer_name || 'Unknown Client'
+    const clientName = (txn.metadata as any)?.customer_name || 'Unknown Client'
     if (!clientSpending[clientName]) {
       clientSpending[clientName] = { name: clientName, spent: 0, visits: 0 }
     }
@@ -392,10 +392,10 @@ async function getInventoryReport(organizationId: string) {
   const productStats: Array<any> = []
 
   products?.forEach(product => {
-    const stock = product.metadata?.current_stock || 0
-    const minStock = product.metadata?.min_stock || 10
-    const price = product.metadata?.retail_price || 0
-    const cost = product.metadata?.cost || 0
+    const stock = (product.metadata as any)?.current_stock || 0
+    const minStock = (product.metadata as any)?.min_stock || 10
+    const price = (product.metadata as any)?.retail_price || 0
+    const cost = (product.metadata as any)?.cost || 0
     
     totalValue += stock * cost
     
@@ -481,7 +481,7 @@ async function getFinancialSummaryReport(organizationId: string, startDate: stri
       revenueByType[txn.transaction_type] = (revenueByType[txn.transaction_type] || 0) + (txn.total_amount || 0)
       
       // Track payment methods
-      const method = txn.metadata?.payment_method || 'cash'
+      const method = (txn.metadata as any)?.payment_method || 'cash'
       paymentMethods[method] = (paymentMethods[method] || 0) + (txn.total_amount || 0)
       
       // Calculate tax (5% UAE VAT)

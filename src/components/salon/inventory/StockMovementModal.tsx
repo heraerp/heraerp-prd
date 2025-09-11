@@ -54,12 +54,12 @@ export function StockMovementModal({
     if (movement) {
       setFormData({
         productId: movement.reference_entity_id || '',
-        movementType: movement.metadata?.movement_type || 'in',
-        quantity: movement.metadata?.quantity?.toString() || '',
-        unitCost: movement.metadata?.unit_cost?.toString() || '',
-        reason: movement.metadata?.reason || '',
-        notes: movement.metadata?.notes || '',
-        location: movement.metadata?.location || 'main'
+        movementType: (movement.metadata as any)?.movement_type || 'in',
+        quantity: (movement.metadata as any)?.quantity?.toString() || '',
+        unitCost: (movement.metadata as any)?.unit_cost?.toString() || '',
+        reason: (movement.metadata as any)?.reason || '',
+        notes: (movement.metadata as any)?.notes || '',
+        location: (movement.metadata as any)?.location || 'main'
       })
     } else {
       setFormData({

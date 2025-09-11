@@ -176,23 +176,23 @@ export function O2CDashboard() {
     return {
       orders: {
         total: orders.length,
-        pending: orders.filter(o => o.metadata?.status === 'pending').length,
-        approved: orders.filter(o => o.metadata?.status === 'approved').length,
-        shipped: orders.filter(o => o.metadata?.fulfillment_status === 'shipped').length,
-        delivered: orders.filter(o => o.metadata?.fulfillment_status === 'delivered').length,
+        pending: orders.filter(o => (o.metadata as any)?.status === 'pending').length,
+        approved: orders.filter(o => (o.metadata as any)?.status === 'approved').length,
+        shipped: orders.filter(o => (o.metadata as any)?.fulfillment_status === 'shipped').length,
+        delivered: orders.filter(o => (o.metadata as any)?.fulfillment_status === 'delivered').length,
         total_value: orders.reduce((sum, o) => sum + (o.total_amount || 0), 0)
       },
       invoices: {
         total: invoices.length,
-        pending: invoices.filter(i => i.metadata?.status === 'pending').length,
-        paid: invoices.filter(i => i.metadata?.status === 'paid').length,
+        pending: invoices.filter(i => (i.metadata as any)?.status === 'pending').length,
+        paid: invoices.filter(i => (i.metadata as any)?.status === 'paid').length,
         overdue: invoices.filter(i => 
-          i.metadata?.status === 'pending' && 
-          new Date(i.metadata?.due_date) < new Date()
+          (i.metadata as any)?.status === 'pending' && 
+          new Date((i.metadata as any)?.due_date) < new Date()
         ).length,
         total_value: invoices.reduce((sum, i) => sum + (i.total_amount || 0), 0),
         paid_value: invoices
-          .filter(i => i.metadata?.status === 'paid')
+          .filter(i => (i.metadata as any)?.status === 'paid')
           .reduce((sum, i) => sum + (i.total_amount || 0), 0)
       },
       payments: {
@@ -204,7 +204,7 @@ export function O2CDashboard() {
       customers: {
         total: new Set(transactions.map(t => t.from_entity_id)).size,
         with_outstanding: invoices
-          .filter(i => i.metadata?.status === 'pending')
+          .filter(i => (i.metadata as any)?.status === 'pending')
           .map(i => i.from_entity_id)
           .filter((v, i, a) => a.indexOf(v) === i).length,
         credit_blocked: 0, // Would get from customer entities
@@ -213,7 +213,7 @@ export function O2CDashboard() {
       analytics: {
         dso: 32, // Would calculate actual DSO
         collection_rate: invoices.length > 0 ? 
-          (invoices.filter(i => i.metadata?.status === 'paid').length / invoices.length * 100) : 0,
+          (invoices.filter(i => (i.metadata as any)?.status === 'paid').length / invoices.length * 100) : 0,
         revenue_mtd: invoices
           .filter(i => new Date(i.transaction_date).getMonth() === new Date().getMonth())
           .reduce((sum, i) => sum + (i.total_amount || 0), 0),
@@ -247,12 +247,12 @@ export function O2CDashboard() {
     return transactions
       .filter(t => 
         t.transaction_type === 'customer_invoice' &&
-        t.metadata?.status === 'pending' &&
-        new Date(t.metadata?.due_date) < new Date()
+        (t.metadata as any)?.status === 'pending' &&
+        new Date((t.metadata as any)?.due_date) < new Date()
       )
       .sort((a, b) => 
-        new Date(a.metadata?.due_date).getTime() - 
-        new Date(b.metadata?.due_date).getTime()
+        new Date((a.metadata as any)?.due_date).getTime() - 
+        new Date((b.metadata as any)?.due_date).getTime()
       )
       .slice(0, 5)
   }
@@ -494,7 +494,7 @@ export function O2CDashboard() {
                           </p>
                         </div>
                         <Badge variant="destructive">
-                          {Math.floor((Date.now() - new Date(invoice.metadata?.due_date).getTime()) / (1000 * 60 * 60 * 24))} days overdue
+                          {Math.floor((Date.now() - new Date((invoice.metadata as any)?.due_date).getTime()) / (1000 * 60 * 60 * 24))} days overdue
                         </Badge>
                       </div>
                       <div className="text-right">
@@ -535,7 +535,7 @@ export function O2CDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="font-bold">{formatCurrency(transaction.total_amount)}</p>
-                      {getStatusBadge(transaction.metadata?.status || 'pending')}
+                      {getStatusBadge((transaction.metadata as any)?.status || 'pending')}
                     </div>
                   </div>
                 ))}
@@ -592,7 +592,7 @@ export function O2CDashboard() {
                           <td className="p-3">{order.customer?.entity_name}</td>
                           <td className="p-3">{new Date(order.transaction_date).toLocaleDateString()}</td>
                           <td className="p-3 font-bold">{formatCurrency(order.total_amount)}</td>
-                          <td className="p-3">{getStatusBadge(order.metadata?.status)}</td>
+                          <td className="p-3">{getStatusBadge((order.metadata as any)?.status)}</td>
                           <td className="p-3">
                             <Button size="sm" variant="ghost">
                               <ChevronRight className="h-4 w-4" />
@@ -658,12 +658,12 @@ export function O2CDashboard() {
                           <td className="p-3 font-medium">{invoice.transaction_code}</td>
                           <td className="p-3">{invoice.customer?.entity_name}</td>
                           <td className="p-3">{new Date(invoice.transaction_date).toLocaleDateString()}</td>
-                          <td className="p-3">{new Date(invoice.metadata?.due_date).toLocaleDateString()}</td>
+                          <td className="p-3">{new Date((invoice.metadata as any)?.due_date).toLocaleDateString()}</td>
                           <td className="p-3 font-bold">{formatCurrency(invoice.total_amount)}</td>
                           <td className="p-3">
-                            {new Date(invoice.metadata?.due_date) < new Date() && invoice.metadata?.status === 'pending'
+                            {new Date((invoice.metadata as any)?.due_date) < new Date() && (invoice.metadata as any)?.status === 'pending'
                               ? getStatusBadge('overdue')
-                              : getStatusBadge(invoice.metadata?.status)
+                              : getStatusBadge((invoice.metadata as any)?.status)
                             }
                           </td>
                           <td className="p-3">
@@ -730,12 +730,12 @@ export function O2CDashboard() {
                           <td className="p-3">
                             <Badge variant="outline">
                               <CreditCard className="h-3 w-3 mr-1" />
-                              {payment.metadata?.payment_method}
+                              {(payment.metadata as any)?.payment_method}
                             </Badge>
                           </td>
                           <td className="p-3 font-bold">{formatCurrency(payment.total_amount)}</td>
                           <td className="p-3">
-                            {payment.metadata?.unapplied_amount > 0 ? (
+                            {(payment.metadata as any)?.unapplied_amount > 0 ? (
                               <Badge variant="secondary">
                                 {formatCurrency(payment.total_amount - payment.metadata.unapplied_amount)} applied
                               </Badge>

@@ -75,10 +75,10 @@ export class WhatsAppClient {
         return {
           id: entity.id,
           organization_id: entity.organization_id,
-          phone_number: entity.metadata?.whatsapp_number || '',
-          business_id: entity.metadata?.business_id || '',
+          phone_number: (entity.metadata as any)?.whatsapp_number || '',
+          business_id: (entity.metadata as any)?.business_id || '',
           display_name: entity.entity_name,
-          verified: entity.metadata?.verified || false
+          verified: (entity.metadata as any)?.verified || false
         };
       }
       return null;
@@ -142,9 +142,9 @@ export class WhatsAppClient {
         return response.data.map(entity => ({
           id: entity.id,
           name: entity.entity_name,
-          type: entity.metadata?.flow_type || 'custom',
-          steps: entity.metadata?.steps || [],
-          conversion_rate: entity.metadata?.conversion_rate
+          type: (entity.metadata as any)?.flow_type || 'custom',
+          steps: (entity.metadata as any)?.steps || [],
+          conversion_rate: (entity.metadata as any)?.conversion_rate
         }));
       }
       return [];
@@ -168,10 +168,10 @@ export class WhatsAppClient {
         return response.data.map(entity => ({
           id: entity.id,
           name: entity.entity_name,
-          category: entity.metadata?.category || 'utility',
-          language: entity.metadata?.language || 'en',
-          status: entity.metadata?.status || 'pending',
-          components: entity.metadata?.components || []
+          category: (entity.metadata as any)?.category || 'utility',
+          language: (entity.metadata as any)?.language || 'en',
+          status: (entity.metadata as any)?.status || 'pending',
+          components: (entity.metadata as any)?.components || []
         }));
       }
       return [];

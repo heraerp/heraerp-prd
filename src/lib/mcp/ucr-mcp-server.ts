@@ -601,11 +601,11 @@ class UCRMCPServer {
       smart_code: entity.smart_code,
       title: entity.entity_name,
       status: entity.status,
-      tags: entity.metadata?.tags || [],
-      owner: entity.metadata?.owner || 'system',
+      tags: (entity.metadata as any)?.tags || [],
+      owner: (entity.metadata as any)?.owner || 'system',
       created_by: entity.created_by,
-      version: entity.metadata?.rule_version || 1,
-      schema_version: entity.metadata?.schema_version || 1,
+      version: (entity.metadata as any)?.rule_version || 1,
+      schema_version: (entity.metadata as any)?.schema_version || 1,
       rule_payload: rulePayload ? JSON.parse(rulePayload.field_value_text) : {},
     }
 
@@ -648,7 +648,7 @@ class UCRMCPServer {
     
     if (existing.data && existing.data.length > 0) {
       const activeRule = existing.data.find((r: any) => r.status === 'active')
-      if (activeRule && activeRule.metadata?.rule_version >= draft_rule.version) {
+      if (activeRule && (activeRule.metadata as any)?.rule_version >= draft_rule.version) {
         errors.push(`Version ${draft_rule.version} already exists or is lower than current active version`)
       }
     }

@@ -7,7 +7,7 @@ import { headers } from 'next/headers'
 // Rename from /sap-fi to /financial-integration for vendor-agnostic naming
 export async function POST(request: NextRequest) {
   try {
-    const headersList = headers()
+    const headersList = await headers()
     const authorization = headersList.get('authorization')
     
     if (!authorization?.startsWith('Bearer ')) {

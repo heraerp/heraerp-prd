@@ -106,7 +106,7 @@ export default function EnterpriseWhatsApp() {
           const conv = item.conversation
           // Calculate unread count and last activity
           const unreadCount = item.messages.filter((m: Message) => 
-            m.direction === 'inbound' && m.metadata?.status !== 'read'
+            m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
           ).length
           
           conv.metadata = {
@@ -225,7 +225,7 @@ export default function EnterpriseWhatsApp() {
             convResult.data.conversationsWithMessages.forEach((item: any) => {
               const conv = item.conversation
               const unreadCount = item.messages.filter((m: Message) => 
-                m.direction === 'inbound' && m.metadata?.status !== 'read'
+                m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
               ).length
               
               conv.metadata = {
@@ -603,7 +603,7 @@ export default function EnterpriseWhatsApp() {
                         </span>
                         {message.direction === 'outbound' && (
                           <MessageStatus 
-                            status={message.metadata?.status}
+                            status={(message.metadata as any)?.status}
                             onClick={() => {
                               setSelectedMessageForStatus(message)
                               setStatusHistoryOpen(true)

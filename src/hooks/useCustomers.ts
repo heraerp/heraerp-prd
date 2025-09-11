@@ -66,7 +66,7 @@ export function useCustomers(organizationId?: string) {
             const customerTransactions = transRes.data?.filter(t => 
               t.source_entity_id === entity.id || 
               t.target_entity_id === entity.id ||
-              t.metadata?.customer_id === entity.id
+              (t.metadata as any)?.customer_id === entity.id
             ) || []
             
             // Get relationships (loyalty tier, favorite services)
@@ -128,7 +128,7 @@ export function useCustomers(organizationId?: string) {
     const vipCount = customersData.filter(customer => {
       const loyaltyRel = customer.relationships.find(r => 
         r.relationship_type === 'has_status' && 
-        r.metadata?.status_name === 'Platinum'
+        (r.metadata as any)?.status_name === 'Platinum'
       )
       return !!loyaltyRel
     }).length

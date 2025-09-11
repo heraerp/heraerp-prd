@@ -63,7 +63,7 @@ export default function CRMDashboard() {
         totalContacts: contacts.length,
         totalActivities: activities.length,
         pipelineValue: totalPipelineValue,
-        conversionRate: opportunities.length > 0 ? ((opportunities.filter((o: any) => o.metadata?.stage === 'closed_won').length / opportunities.length) * 100).toFixed(1) : '0'
+        conversionRate: opportunities.length > 0 ? ((opportunities.filter((o: any) => (o.metadata as any)?.stage === 'closed_won').length / opportunities.length) * 100).toFixed(1) : '0'
       })
       
       // Get recent activities (last 5)
@@ -72,26 +72,26 @@ export default function CRMDashboard() {
         .slice(0, 5)
         .map((activity: any) => ({
           id: activity.id,
-          type: activity.metadata?.activity_type || 'activity',
+          type: (activity.metadata as any)?.activity_type || 'activity',
           subject: activity.entity_name,
           date: new Date(activity.created_at).toLocaleDateString(),
-          assignedTo: activity.metadata?.assigned_to || 'Unassigned'
+          assignedTo: (activity.metadata as any)?.assigned_to || 'Unassigned'
         }))
       
       setRecentActivities(recentActivitiesData)
       
       // Get top opportunities
       const topOpps = opportunities
-        .filter((o: any) => o.metadata?.amount > 0)
-        .sort((a: any, b: any) => (b.metadata?.amount || 0) - (a.metadata?.amount || 0))
+        .filter((o: any) => (o.metadata as any)?.amount > 0)
+        .sort((a: any, b: any) => ((b.metadata as any)?.amount || 0) - ((a.metadata as any)?.amount || 0))
         .slice(0, 5)
         .map((opp: any) => ({
           id: opp.id,
           name: opp.entity_name,
-          amount: opp.metadata?.amount || 0,
-          stage: opp.metadata?.stage || 'qualification',
-          probability: opp.metadata?.probability || 0,
-          closeDate: opp.metadata?.close_date ? new Date(opp.metadata.close_date).toLocaleDateString() : 'TBD'
+          amount: (opp.metadata as any)?.amount || 0,
+          stage: (opp.metadata as any)?.stage || 'qualification',
+          probability: (opp.metadata as any)?.probability || 0,
+          closeDate: (opp.metadata as any)?.close_date ? new Date(opp.metadata.close_date).toLocaleDateString() : 'TBD'
         }))
       
       setTopOpportunities(topOpps)

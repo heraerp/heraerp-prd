@@ -322,7 +322,7 @@ export class WhatsAppNotificationService {
     if (response.success && response.data) {
       const notifications = response.data.filter((txn: any) => 
         txn.transaction_type === 'whatsapp_notification' &&
-        txn.metadata?.appointment_id === appointmentId
+        (txn.metadata as any)?.appointment_id === appointmentId
       )
       return notifications
     }
@@ -340,7 +340,7 @@ export class WhatsAppNotificationService {
       const customer = customerResponse.data.find((c: any) => c.id === customerId)
       if (customer) {
         // Check metadata for phone
-        const phone = customer.metadata?.phone || customer.metadata?.mobile
+        const phone = (customer.metadata as any)?.phone || (customer.metadata as any)?.mobile
         
         // If not in metadata, check dynamic fields
         if (!phone) {

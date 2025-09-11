@@ -152,9 +152,9 @@ export function BookAppointmentModal({
             entity_code: staff.entity_code || staff.id,
             smart_code: staff.smart_code || 'HERA.SALON.STAFF.v1',
             avatar: staff.entity_name?.charAt(0) || 'S',
-            skills: staff.metadata?.skills || [],
-            level: staff.metadata?.level || 'senior',
-            allow_double_book: staff.metadata?.allow_double_book || false
+            skills: (staff.metadata as any)?.skills || [],
+            level: (staff.metadata as any)?.level || 'senior',
+            allow_double_book: (staff.metadata as any)?.allow_double_book || false
           }))
           setStylists(formattedStylists)
         }
@@ -171,12 +171,12 @@ export function BookAppointmentModal({
             entity_name: service.entity_name,
             entity_code: service.entity_code || service.id,
             smart_code: service.smart_code || 'HERA.SALON.SERVICE.v1',
-            duration: service.metadata?.duration || 60,
-            price: service.metadata?.price || 0,
-            buffer_before: service.metadata?.buffer_before || 5,
-            buffer_after: service.metadata?.buffer_after || 10,
-            category: service.metadata?.category || 'General',
-            skills_required: service.metadata?.skills_required || []
+            duration: (service.metadata as any)?.duration || 60,
+            price: (service.metadata as any)?.price || 0,
+            buffer_before: (service.metadata as any)?.buffer_before || 5,
+            buffer_after: (service.metadata as any)?.buffer_after || 10,
+            category: (service.metadata as any)?.category || 'General',
+            skills_required: (service.metadata as any)?.skills_required || []
           }))
           setServices(formattedServices)
         }
@@ -194,10 +194,10 @@ export function BookAppointmentModal({
             entity_name: customer.entity_name,
             entity_code: customer.entity_code || customer.id,
             smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
-            phone: customer.metadata?.phone || '',
-            email: customer.metadata?.email || '',
-            vip_level: customer.metadata?.vip_level || null,
-            preferences: customer.metadata?.preferences || {}
+            phone: (customer.metadata as any)?.phone || '',
+            email: (customer.metadata as any)?.email || '',
+            vip_level: (customer.metadata as any)?.vip_level || null,
+            preferences: (customer.metadata as any)?.preferences || {}
           }))
           setCustomers(formattedCustomers)
         }
@@ -334,10 +334,10 @@ export function BookAppointmentModal({
           entity_name: customer.entity_name,
           entity_code: customer.entity_code || customer.id,
           smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
-          phone: customer.metadata?.phone || '',
-          email: customer.metadata?.email || '',
-          vip_level: customer.metadata?.vip_level || null,
-          preferences: customer.metadata?.preferences || {}
+          phone: (customer.metadata as any)?.phone || '',
+          email: (customer.metadata as any)?.email || '',
+          vip_level: (customer.metadata as any)?.vip_level || null,
+          preferences: (customer.metadata as any)?.preferences || {}
         }))
         setCustomers(searchResults)
       }

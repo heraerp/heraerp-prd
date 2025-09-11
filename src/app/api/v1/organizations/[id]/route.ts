@@ -15,7 +15,7 @@ export async function GET(
   const { id } = await params
   try {
     // Get auth token from headers
-    const headersList = headers()
+    const headersList = await headers()
     const authorization = headersList.get('authorization')
     
     if (!authorization?.startsWith('Bearer ')) {
@@ -98,17 +98,17 @@ export async function GET(
         settings: orgEntity?.metadata?.settings
       },
       membership: {
-        role: membership.metadata?.role,
-        permissions: membership.metadata?.permissions,
-        joined_at: membership.metadata?.joined_at
+        role: (membership.metadata as any)?.role,
+        permissions: (membership.metadata as any)?.permissions,
+        joined_at: (membership.metadata as any)?.joined_at
       },
       installed_apps: apps?.map(app => ({
         id: app.to_entity_id,
         name: app.app?.entity_name,
         code: app.app?.entity_code,
-        status: app.metadata?.status,
-        installed_at: app.metadata?.installed_at,
-        config: app.metadata?.config
+        status: (app.metadata as any)?.status,
+        installed_at: (app.metadata as any)?.installed_at,
+        config: (app.metadata as any)?.config
       })) || []
     })
 
@@ -128,7 +128,7 @@ export async function PUT(
   const { id } = await params
   try {
     // Get auth token from headers
-    const headersList = headers()
+    const headersList = await headers()
     const authorization = headersList.get('authorization')
     
     if (!authorization?.startsWith('Bearer ')) {

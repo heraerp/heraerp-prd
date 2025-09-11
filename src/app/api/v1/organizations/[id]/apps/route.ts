@@ -132,10 +132,10 @@ export async function GET(
     const installed = installedApps?.map(rel => ({
       id: rel.app?.entity_code?.toLowerCase() || rel.to_entity_id,
       name: rel.app?.entity_name,
-      status: rel.metadata?.status || 'active',
-      installed_at: rel.metadata?.installed_at || rel.created_at,
-      config: rel.metadata?.config || {},
-      subscription: rel.metadata?.subscription || { plan: 'trial' }
+      status: (rel.metadata as any)?.status || 'active',
+      installed_at: (rel.metadata as any)?.installed_at || rel.created_at,
+      config: (rel.metadata as any)?.config || {},
+      subscription: (rel.metadata as any)?.subscription || { plan: 'trial' }
     })) || []
 
     // Get available apps (not installed)

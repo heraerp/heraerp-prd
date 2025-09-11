@@ -340,8 +340,8 @@ async function evaluateCurrentRules(
     
     // Sort by priority and evaluate
     const sortedRules = relevantRules.sort((a, b) => {
-      const aPriority = a.metadata?.priority || 0
-      const bPriority = b.metadata?.priority || 0
+      const aPriority = (a.metadata as any)?.priority || 0
+      const bPriority = (b.metadata as any)?.priority || 0
       return bPriority - aPriority
     })
     

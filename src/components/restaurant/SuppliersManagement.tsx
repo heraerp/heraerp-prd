@@ -296,7 +296,7 @@ export function SuppliersManagement({
   
   const calculateStats = (suppliers: Supplier[], orders: PurchaseOrder[]) => {
     const totalSuppliers = suppliers.length
-    const activeSuppliers = suppliers.filter(s => s.metadata?.status === 'active').length
+    const activeSuppliers = suppliers.filter(s => (s.metadata as any)?.status === 'active').length
     
     // Get this month's orders
     const now = new Date()
@@ -304,7 +304,7 @@ export function SuppliersManagement({
     const monthOrders = orders.filter(o => new Date(o.transaction_date) >= monthStart)
     
     const pendingOrders = orders.filter(o => 
-      ['draft', 'sent', 'confirmed'].includes(o.metadata?.status || '')
+      ['draft', 'sent', 'confirmed'].includes((o.metadata as any)?.status || '')
     ).length
     
     const monthlySpend = monthOrders.reduce((sum, o) => sum + o.total_amount, 0)
@@ -314,7 +314,7 @@ export function SuppliersManagement({
     
     // Mock overdue payments (would calculate from payment terms)
     const overduePayments = orders.filter(o => 
-      o.metadata?.status === 'received' && 
+      (o.metadata as any)?.status === 'received' && 
       new Date(o.transaction_date) < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
     ).length
     
@@ -468,10 +468,10 @@ export function SuppliersManagement({
     const matchesSearch = 
       supplier.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.metadata?.contact_person?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.metadata?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      (supplier.metadata as any)?.contact_person?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (supplier.metadata as any)?.email?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesCategory = selectedCategory === 'all' || supplier.metadata?.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || (supplier.metadata as any)?.category === selectedCategory
     
     return matchesSearch && matchesCategory
   })
@@ -621,31 +621,31 @@ export function SuppliersManagement({
                       <CardTitle className="text-lg">{supplier.entity_name}</CardTitle>
                       <p className="text-sm text-muted-foreground">{supplier.entity_code}</p>
                     </div>
-                    {getStatusBadge(supplier.metadata?.status)}
+                    {getStatusBadge((supplier.metadata as any)?.status)}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2">
-                    {getRatingStars(supplier.metadata?.rating || 0)}
+                    {getRatingStars((supplier.metadata as any)?.rating || 0)}
                     <span className="text-sm text-muted-foreground">
-                      ({supplier.metadata?.rating || 0}/5)
+                      ({(supplier.metadata as any)?.rating || 0}/5)
                     </span>
                   </div>
                   
                   <div className="space-y-2 text-sm">
-                    {supplier.metadata?.contact_person && (
+                    {(supplier.metadata as any)?.contact_person && (
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4 text-muted-foreground" />
                         <span>{supplier.metadata.contact_person}</span>
                       </div>
                     )}
-                    {supplier.metadata?.phone && (
+                    {(supplier.metadata as any)?.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
                         <span>{supplier.metadata.phone}</span>
                       </div>
                     )}
-                    {supplier.metadata?.email && (
+                    {(supplier.metadata as any)?.email && (
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
                         <span className="truncate">{supplier.metadata.email}</span>
@@ -656,11 +656,11 @@ export function SuppliersManagement({
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t">
                     <div>
                       <p className="text-xs text-muted-foreground">Payment Terms</p>
-                      <p className="font-medium">{supplier.metadata?.payment_terms || 'N/A'}</p>
+                      <p className="font-medium">{(supplier.metadata as any)?.payment_terms || 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Credit Limit</p>
-                      <p className="font-medium">{formatCurrency(supplier.metadata?.credit_limit || 0)}</p>
+                      <p className="font-medium">{formatCurrency((supplier.metadata as any)?.credit_limit || 0)}</p>
                     </div>
                   </div>
                   
@@ -723,12 +723,12 @@ export function SuppliersManagement({
                     {purchaseOrders.map((po) => (
                       <TableRow key={po.id}>
                         <TableCell className="font-mono">{po.transaction_code}</TableCell>
-                        <TableCell>{po.metadata?.supplier_name || 'Unknown'}</TableCell>
+                        <TableCell>{(po.metadata as any)?.supplier_name || 'Unknown'}</TableCell>
                         <TableCell>
                           {formatDate(new Date(po.transaction_date), 'MMM d, yyyy')}
                         </TableCell>
                         <TableCell>
-                          {po.metadata?.delivery_date 
+                          {(po.metadata as any)?.delivery_date 
                             ? formatDate(new Date(po.metadata.delivery_date), 'MMM d, yyyy')
                             : 'Not set'
                           }
@@ -738,12 +738,12 @@ export function SuppliersManagement({
                         </TableCell>
                         <TableCell>
                           <Badge variant={
-                            po.metadata?.status === 'received' ? 'success' :
-                            po.metadata?.status === 'sent' ? 'default' :
-                            po.metadata?.status === 'cancelled' ? 'destructive' :
+                            (po.metadata as any)?.status === 'received' ? 'success' :
+                            (po.metadata as any)?.status === 'sent' ? 'default' :
+                            (po.metadata as any)?.status === 'cancelled' ? 'destructive' :
                             'secondary'
                           }>
-                            {po.metadata?.status || 'draft'}
+                            {(po.metadata as any)?.status || 'draft'}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -770,10 +770,10 @@ export function SuppliersManagement({
                 <div className="space-y-3">
                   {suppliers.slice(0, 5).map((supplier) => {
                     const orderCount = purchaseOrders.filter(
-                      po => po.metadata?.supplier_id === supplier.id
+                      po => (po.metadata as any)?.supplier_id === supplier.id
                     ).length
                     const totalSpend = purchaseOrders
-                      .filter(po => po.metadata?.supplier_id === supplier.id)
+                      .filter(po => (po.metadata as any)?.supplier_id === supplier.id)
                       .reduce((sum, po) => sum + po.total_amount, 0)
                     
                     return (
@@ -787,7 +787,7 @@ export function SuppliersManagement({
                         <div className="text-right">
                           <p className="font-bold">{formatCurrency(totalSpend)}</p>
                           <div className="flex items-center gap-1">
-                            {getRatingStars(supplier.metadata?.rating || 0)}
+                            {getRatingStars((supplier.metadata as any)?.rating || 0)}
                           </div>
                         </div>
                       </div>
@@ -804,7 +804,7 @@ export function SuppliersManagement({
               <CardContent>
                 <div className="space-y-3">
                   {suppliers
-                    .filter(s => s.metadata?.status === 'active')
+                    .filter(s => (s.metadata as any)?.status === 'active')
                     .slice(0, 5)
                     .map((supplier) => {
                       // Mock delivery performance data
@@ -853,10 +853,10 @@ export function SuppliersManagement({
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {['produce', 'proteins', 'beverages', 'specialty', 'equipment', 'other'].map((category) => {
-                  const categorySuppliers = suppliers.filter(s => s.metadata?.category === category)
+                  const categorySuppliers = suppliers.filter(s => (s.metadata as any)?.category === category)
                   const categorySpend = purchaseOrders
                     .filter(po => {
-                      const supplier = suppliers.find(s => s.id === po.metadata?.supplier_id)
+                      const supplier = suppliers.find(s => s.id === (po.metadata as any)?.supplier_id)
                       return supplier?.metadata?.category === category
                     })
                     .reduce((sum, po) => sum + po.total_amount, 0)
@@ -916,7 +916,7 @@ export function SuppliersManagement({
               <div>
                 <Label htmlFor="category">Category</Label>
                 <Select
-                  value={supplierForm.metadata?.category}
+                  value={(supplierForm.metadata as any)?.category}
                   onValueChange={(value) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, category: value }
@@ -939,7 +939,7 @@ export function SuppliersManagement({
                 <Label htmlFor="contact">Contact Person</Label>
                 <Input
                   id="contact"
-                  value={supplierForm.metadata?.contact_person}
+                  value={(supplierForm.metadata as any)?.contact_person}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, contact_person: e.target.value }
@@ -950,7 +950,7 @@ export function SuppliersManagement({
                 <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
-                  value={supplierForm.metadata?.phone}
+                  value={(supplierForm.metadata as any)?.phone}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, phone: e.target.value }
@@ -962,7 +962,7 @@ export function SuppliersManagement({
                 <Input
                   id="email"
                   type="email"
-                  value={supplierForm.metadata?.email}
+                  value={(supplierForm.metadata as any)?.email}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, email: e.target.value }
@@ -976,7 +976,7 @@ export function SuppliersManagement({
                 <Label htmlFor="address">Address</Label>
                 <Textarea
                   id="address"
-                  value={supplierForm.metadata?.address}
+                  value={(supplierForm.metadata as any)?.address}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, address: e.target.value }
@@ -987,7 +987,7 @@ export function SuppliersManagement({
               <div>
                 <Label htmlFor="payment">Payment Terms</Label>
                 <Select
-                  value={supplierForm.metadata?.payment_terms}
+                  value={(supplierForm.metadata as any)?.payment_terms}
                   onValueChange={(value) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, payment_terms: value }
@@ -1010,7 +1010,7 @@ export function SuppliersManagement({
                 <Input
                   id="credit"
                   type="number"
-                  value={supplierForm.metadata?.credit_limit}
+                  value={(supplierForm.metadata as any)?.credit_limit}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, credit_limit: parseFloat(e.target.value) || 0 }
@@ -1022,7 +1022,7 @@ export function SuppliersManagement({
                 <Input
                   id="minorder"
                   type="number"
-                  value={supplierForm.metadata?.minimum_order}
+                  value={(supplierForm.metadata as any)?.minimum_order}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, minimum_order: parseFloat(e.target.value) || 0 }
@@ -1034,7 +1034,7 @@ export function SuppliersManagement({
                 <Input
                   id="leadtime"
                   type="number"
-                  value={supplierForm.metadata?.lead_time_days}
+                  value={(supplierForm.metadata as any)?.lead_time_days}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, lead_time_days: parseInt(e.target.value) || 0 }
@@ -1045,7 +1045,7 @@ export function SuppliersManagement({
                 <Label htmlFor="tax">Tax ID</Label>
                 <Input
                   id="tax"
-                  value={supplierForm.metadata?.tax_id}
+                  value={(supplierForm.metadata as any)?.tax_id}
                   onChange={(e) => setSupplierForm({
                     ...supplierForm,
                     metadata: { ...supplierForm.metadata, tax_id: e.target.value }
@@ -1110,7 +1110,7 @@ export function SuppliersManagement({
                 </SelectTrigger>
                 <SelectContent>
                   {suppliers
-                    .filter(s => s.metadata?.status === 'active')
+                    .filter(s => (s.metadata as any)?.status === 'active')
                     .map(supplier => (
                       <SelectItem key={supplier.id} value={supplier.id}>
                         {supplier.entity_name}

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { ServiceWorkerProvider } from "@/components/pwa/ServiceWorkerProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
 import { ThemeProviderDNA } from "@/lib/dna/theme/theme-provider-dna";
@@ -52,17 +51,15 @@ export default function RootLayout({
         <HeraThemeProvider defaultTheme="light">
           {/* Add DNA theme provider as inner wrapper during migration */}
           <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
-            <ServiceWorkerProvider>
-              <QueryProvider>
-                <MultiOrgAuthProvider>
-                  <DemoAuthHandler>
-                    <ToastProvider>
-                      {children}
-                    </ToastProvider>
-                  </DemoAuthHandler>
-                </MultiOrgAuthProvider>
-              </QueryProvider>
-            </ServiceWorkerProvider>
+            <QueryProvider>
+              <MultiOrgAuthProvider>
+                <DemoAuthHandler>
+                  <ToastProvider>
+                    {children}
+                  </ToastProvider>
+                </DemoAuthHandler>
+              </MultiOrgAuthProvider>
+            </QueryProvider>
           </ThemeProviderDNA>
         </HeraThemeProvider>
       </body>

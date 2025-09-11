@@ -75,7 +75,7 @@ export async function GET(
     
     // Get GL account details for line items
     const accountIds = transaction.universal_transaction_lines
-      ?.map((line: any) => line.entity_id || line.metadata?.account_id)
+      ?.map((line: any) => line.entity_id || (line.metadata as any)?.account_id)
       .filter(Boolean) || []
     
     let accounts: any[] = []
@@ -106,7 +106,7 @@ export async function GET(
       transaction_date: transaction.transaction_date,
       total_amount: transaction.total_amount,
       currency: transaction.transaction_currency_code || 'AED',
-      status: transaction.metadata?.status || 'draft',
+      status: (transaction.metadata as any)?.status || 'draft',
       description: transaction.description,
       reference_number: transaction.reference_number,
       smart_code: transaction.smart_code,
@@ -115,25 +115,25 @@ export async function GET(
       updated_at: transaction.updated_at,
       fiscal_year: transaction.fiscal_year || new Date(transaction.transaction_date).getFullYear(),
       fiscal_period: transaction.fiscal_period,
-      posting_date: transaction.metadata?.posted_at || transaction.transaction_date,
+      posting_date: (transaction.metadata as any)?.posted_at || transaction.transaction_date,
       source_entity: transaction.source_entity,
       target_entity: transaction.target_entity,
       metadata: transaction.metadata,
       lines: transaction.universal_transaction_lines?.map((line: any, index: number) => {
-        const account = accounts.find(a => a.id === (line.entity_id || line.metadata?.account_id))
+        const account = accounts.find(a => a.id === (line.entity_id || (line.metadata as any)?.account_id))
         return {
           id: line.id,
           line_number: line.line_number || index + 1,
-          account_code: account?.entity_code || line.metadata?.account_code || line.entity_id,
-          account_name: account?.entity_name || line.metadata?.account_name || line.description,
+          account_code: account?.entity_code || (line.metadata as any)?.account_code || line.entity_id,
+          account_name: account?.entity_name || (line.metadata as any)?.account_name || line.description,
           description: line.description,
-          debit_amount: line.metadata?.debit || (line.line_amount > 0 ? line.line_amount : 0),
-          credit_amount: line.metadata?.credit || (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
+          debit_amount: (line.metadata as any)?.debit || (line.line_amount > 0 ? line.line_amount : 0),
+          credit_amount: (line.metadata as any)?.credit || (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
           quantity: line.quantity,
           unit_amount: line.unit_amount,
           line_amount: line.line_amount,
-          cost_center: line.metadata?.cost_center,
-          profit_center: line.metadata?.profit_center,
+          cost_center: (line.metadata as any)?.cost_center,
+          profit_center: (line.metadata as any)?.profit_center,
           smart_code: line.smart_code,
           created_at: line.created_at,
           updated_at: line.updated_at
@@ -141,10 +141,10 @@ export async function GET(
       }),
       audit_trail: auditTrail?.map(audit => ({
         id: audit.id,
-        action: audit.metadata?.action || 'updated',
+        action: (audit.metadata as any)?.action || 'updated',
         timestamp: audit.created_at,
-        user: audit.metadata?.user || 'System',
-        changes: audit.metadata?.changes
+        user: (audit.metadata as any)?.user || 'System',
+        changes: (audit.metadata as any)?.changes
       })) || []
     }
     

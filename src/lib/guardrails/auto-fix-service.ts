@@ -196,8 +196,8 @@ export class GuardrailAutoFixService {
       if (pattern) {
         // Determine subtype based on metadata or name
         let subtype = 'STANDARD'
-        if (payload.metadata?.vip_level) subtype = 'VIP'
-        if (payload.metadata?.category) subtype = payload.metadata.category.toUpperCase()
+        if ((payload.metadata as any)?.vip_level) subtype = 'VIP'
+        if ((payload.metadata as any)?.category) subtype = payload.metadata.category.toUpperCase()
         
         return pattern.replace('[SUBTYPE]', subtype)
       }
@@ -207,7 +207,7 @@ export class GuardrailAutoFixService {
       const pattern = patterns.universal_transactions[payload.transaction_type]
       if (pattern) {
         let subtype = 'STANDARD'
-        if (payload.metadata?.channel) subtype = payload.metadata.channel.toUpperCase()
+        if ((payload.metadata as any)?.channel) subtype = payload.metadata.channel.toUpperCase()
         
         return pattern.replace('[SUBTYPE]', subtype)
       }

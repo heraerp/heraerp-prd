@@ -503,12 +503,12 @@ export class BYOCService {
           redundancy: 'standard'
         },
         metadata: {
-          createdAt: config.metadata?.createdAt || new Date().toISOString(),
+          createdAt: (config.metadata as any)?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          createdBy: config.metadata?.createdBy || userId,
-          isActive: config.metadata?.isActive || false,
+          createdBy: (config.metadata as any)?.createdBy || userId,
+          isActive: (config.metadata as any)?.isActive || false,
           isHealthy: false, // Will be updated after health check
-          tags: config.metadata?.tags || [],
+          tags: (config.metadata as any)?.tags || [],
           version: '1.0.0'
         },
         audit: {

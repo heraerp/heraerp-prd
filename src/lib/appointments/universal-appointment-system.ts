@@ -485,11 +485,11 @@ export class UniversalAppointmentSystem {
       target_entity_id: params.serviceId,
       transaction_type: 'appointment',
       transaction_date: params.appointmentDate,
-      total_amount: service.metadata?.price || 0,
+      total_amount: (service.metadata as any)?.price || 0,
       status: APPOINTMENT_WORKFLOW.DRAFT,
       metadata: {
         start_time: params.startTime,
-        duration: params.duration || service.metadata?.duration || 60,
+        duration: params.duration || (service.metadata as any)?.duration || 60,
         special_requests: params.specialRequests || '',
         custom_fields: params.customFields || {},
         staff_preferences: params.staffPreferences || [],
@@ -662,7 +662,7 @@ export class UniversalAppointmentSystem {
     
     // Calculate confidence based on data completeness
     let confidence = 0.8
-    const contactInfo = customer.metadata?.contact_info || {}
+    const contactInfo = (customer.metadata as any)?.contact_info || {}
     if (contactInfo.email) confidence += 0.1
     if (contactInfo.phone) confidence += 0.1
     
@@ -765,7 +765,7 @@ export class UniversalAppointmentSystem {
   // AI Analysis Helper Functions
   private determineCustomerSegment(customer: CoreEntity): string {
     // Simplified segmentation logic
-    const industry = customer.metadata?.industry
+    const industry = (customer.metadata as any)?.industry
     const segments = {
       jewelry: ['luxury', 'bridal', 'collector', 'casual'],
       healthcare: ['preventive', 'chronic', 'emergency', 'wellness'],
@@ -784,7 +784,7 @@ export class UniversalAppointmentSystem {
   }
   
   private suggestServices(customer: CoreEntity): string[] {
-    const industry = customer.metadata?.industry
+    const industry = (customer.metadata as any)?.industry
     const serviceMap = {
       jewelry: ['Design Consultation', 'Jewelry Appraisal', 'Custom Design'],
       healthcare: ['General Checkup', 'Specialist Consultation', 'Follow-up Visit'],
@@ -812,7 +812,7 @@ export class UniversalAppointmentSystem {
         suggestion: 'Consider scheduling after 10 AM for better customer attendance'
       }
     }
-    return { optimal_time: appointment.metadata?.start_time }
+    return { optimal_time: (appointment.metadata as any)?.start_time }
   }
   
   private optimizeResources(appointment: UniversalTransaction): { required?: string[]; suggestion?: string } {

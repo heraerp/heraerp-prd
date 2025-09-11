@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clear Service Worker Cache</title>
+    <title>Clear Browser Cache</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -41,11 +41,11 @@
     </style>
 </head>
 <body>
-    <h1>HERA Service Worker Cache Manager</h1>
-    <p>Use this page to clear service worker cache when experiencing issues.</p>
+    <h1>HERA Browser Cache Manager</h1>
+    <p>Use this page to clear browser cache when experiencing issues.</p>
     
     <button onclick="clearAllCaches()">Clear All Caches</button>
-    <button onclick="unregisterServiceWorkers()">Unregister Service Workers</button>
+    <button onclick="clearLocalStorage()">Clear Local Storage</button>
     <button onclick="fullReset()">Full Reset (Both)</button>
     
     <div id="status"></div>
@@ -79,25 +79,23 @@
             }
         }
         
-        async function unregisterServiceWorkers() {
+        async function clearLocalStorage() {
             try {
-                statusDiv.innerHTML = '<p>Unregistering service workers...</p>';
+                statusDiv.innerHTML = '<p>Clearing local storage...</p>';
                 
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                const results = await Promise.all(
-                    registrations.map(registration => registration.unregister())
-                );
+                localStorage.clear();
+                sessionStorage.clear();
                 
                 statusDiv.innerHTML = `
                     <div class="success">
-                        <h3>✅ Service Workers Unregistered!</h3>
-                        <p>Unregistered ${registrations.length} service worker(s)</p>
+                        <h3>✅ Local Storage Cleared!</h3>
+                        <p>Cleared all local and session storage</p>
                     </div>
                 `;
             } catch (error) {
                 statusDiv.innerHTML = `
                     <div class="error">
-                        <h3>❌ Error unregistering service workers</h3>
+                        <h3>❌ Error clearing local storage</h3>
                         <pre>${error.message}</pre>
                     </div>
                 `;
@@ -112,15 +110,15 @@
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
                 
-                // Unregister service workers
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                await Promise.all(registrations.map(registration => registration.unregister()));
+                // Clear local storage
+                localStorage.clear();
+                sessionStorage.clear();
                 
                 statusDiv.innerHTML = `
                     <div class="success">
                         <h3>✅ Full Reset Complete!</h3>
                         <p>• Cleared ${cacheNames.length} cache(s)</p>
-                        <p>• Unregistered ${registrations.length} service worker(s)</p>
+                        <p>• Cleared all local storage</p>
                         <br>
                         <p><strong>Now refresh your app to continue!</strong></p>
                     </div>

@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
 
       // Count services in this category
       const serviceCount = services?.filter(s => 
-        s.metadata?.category === category.entity_code ||
+        (s.metadata as any)?.category === category.entity_code ||
         dynamicData?.find(d => d.entity_id === s.id && d.field_name === 'category' && d.field_value_text === category.entity_code)
       ).length || 0
       
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
     // Calculate analytics
     const totalCategories = enrichedCategories.length
     const activeCategories = enrichedCategories.filter(c => 
-      c.metadata?.is_active !== false && c.is_active !== false
+      (c.metadata as any)?.is_active !== false && c.is_active !== false
     ).length
     const totalServices = services?.length || 0
 

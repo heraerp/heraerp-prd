@@ -339,7 +339,7 @@ export default function FurnitureQuality() {
           inspector_name: inspector?.entity_name || `Inspector ${index + 1}`,
           inspection_date: inspection.transaction_date || new Date().toISOString(),
           pass_rate: passRate,
-          status: inspection.metadata?.status || status,
+          status: (inspection.metadata as any)?.status || status,
           samples_tested: Math.floor(Math.random() * 20) + 5,
           defects_found: Math.floor((100 - passRate) / 10)
         }

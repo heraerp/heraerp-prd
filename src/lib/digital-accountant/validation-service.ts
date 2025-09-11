@@ -78,7 +78,7 @@ const BUSINESS_RULES: BusinessRule[] = [
     id: 'large_amount_approval',
     name: 'Large Amount Approval',
     condition: (entry) => {
-      const totalAmount = entry.metadata?.total_debits || 0;
+      const totalAmount = (entry.metadata as any)?.total_debits || 0;
       return totalAmount > 10000;
     },
     message: 'Journal entries over $10,000 require approval',
@@ -134,7 +134,7 @@ export class ValidationService implements IValidationService {
     const info: ValidationInfo[] = [];
 
     // Basic validation
-    if (!entry.metadata?.journal_date) {
+    if (!(entry.metadata as any)?.journal_date) {
       errors.push({
         code: 'JOURNAL_DATE_MISSING',
         message: VALIDATION_RULES.JOURNAL_DATE_REQUIRED,
@@ -143,7 +143,7 @@ export class ValidationService implements IValidationService {
       });
     }
 
-    if (!entry.metadata?.description || entry.metadata.description.trim() === '') {
+    if (!(entry.metadata as any)?.description || entry.metadata.description.trim() === '') {
       errors.push({
         code: 'JOURNAL_DESC_MISSING',
         message: VALIDATION_RULES.JOURNAL_DESCRIPTION_REQUIRED,
@@ -174,14 +174,14 @@ export class ValidationService implements IValidationService {
       // Validate GL accounts
       for (const line of lines) {
         const accountValidation = await this.validateGLAccount(
-          line.metadata?.gl_account_id || '',
+          (line.metadata as any)?.gl_account_id || '',
           this.organizationId
         );
         
         if (!accountValidation) {
           errors.push({
             code: 'GL_ACCOUNT_INVALID',
-            message: `${VALIDATION_RULES.GL_ACCOUNT_EXISTS}: ${line.metadata?.gl_account_code}`,
+            message: `${VALIDATION_RULES.GL_ACCOUNT_EXISTS}: ${(line.metadata as any)?.gl_account_code}`,
             severity: 'error',
             field: `line_${line.line_number}`
           });
@@ -191,7 +191,7 @@ export class ValidationService implements IValidationService {
       // Check for duplicate accounts
       const accountUsage = new Map<string, number>();
       lines.forEach(line => {
-        const key = `${line.metadata?.gl_account_code}_${line.metadata?.debit_amount > 0 ? 'D' : 'C'}`;
+        const key = `${(line.metadata as any)?.gl_account_code}_${(line.metadata as any)?.debit_amount > 0 ? 'D' : 'C'}`;
         accountUsage.set(key, (accountUsage.get(key) || 0) + 1);
       });
 
@@ -207,7 +207,7 @@ export class ValidationService implements IValidationService {
     }
 
     // Validate posting period
-    if (entry.metadata?.journal_date) {
+    if ((entry.metadata as any)?.journal_date) {
       const periodValidation = await this.validatePostingDate(
         entry.metadata.journal_date,
         this.organizationId
@@ -250,8 +250,8 @@ export class ValidationService implements IValidationService {
     let totalCredits = 0;
 
     lines.forEach(line => {
-      const debit = line.metadata?.debit_amount || line.debit_amount || 0;
-      const credit = line.metadata?.credit_amount || line.credit_amount || 0;
+      const debit = (line.metadata as any)?.debit_amount || line.debit_amount || 0;
+      const credit = (line.metadata as any)?.credit_amount || line.credit_amount || 0;
 
       // Validate amounts
       if (debit < 0 || credit < 0) {
@@ -379,7 +379,7 @@ export class ValidationService implements IValidationService {
     }
 
     // Check if postable (not a header account)
-    if (account.metadata?.is_header_account === true) {
+    if ((account.metadata as any)?.is_header_account === true) {
       return false;
     }
 
@@ -460,7 +460,7 @@ export class ValidationService implements IValidationService {
       }
     } else {
       // Check period status
-      const status = period.metadata?.status as PeriodStatus;
+      const status = (period.metadata as any)?.status as PeriodStatus;
       
       switch (status) {
         case 'hard_closed':

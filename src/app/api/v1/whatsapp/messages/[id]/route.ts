@@ -60,7 +60,7 @@ export async function PATCH(
                 status: 'read',
                 read_at: new Date().toISOString(),
                 status_history: [
-                  ...(message.metadata?.status_history || []),
+                  ...((message.metadata as any)?.status_history || []),
                   {
                     status: 'read',
                     timestamp: new Date().toISOString()

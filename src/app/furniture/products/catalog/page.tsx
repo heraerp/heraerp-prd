@@ -247,8 +247,8 @@ export default function FurnitureProductCatalog() {
         return {
           ...product,
           ...dynamicFields,
-          category: dynamicFields.category || product.metadata?.category || 'uncategorized',
-          sub_category: dynamicFields.sub_category || product.metadata?.sub_category
+          category: dynamicFields.category || (product.metadata as any)?.category || 'uncategorized',
+          sub_category: dynamicFields.sub_category || (product.metadata as any)?.sub_category
         }
       })
 

@@ -544,14 +544,14 @@ export async function GET(
         orderAnalysis.orders_by_status[order.status as keyof typeof orderAnalysis.orders_by_status]++
 
         // Check sync status
-        const syncStatus = order.metadata?.platform_sync_status
-        const lastSync = order.metadata?.last_platform_sync
+        const syncStatus = (order.metadata as any)?.platform_sync_status
+        const lastSync = (order.metadata as any)?.last_platform_sync
         
         if (!syncStatus || syncStatus === 'pending') {
           orderAnalysis.pending_sync++
           ordersNeedingSync.push({
             id: order.id,
-            platform_order_id: order.metadata?.platform_order_id,
+            platform_order_id: (order.metadata as any)?.platform_order_id,
             status: order.status,
             created_at: order.created_at,
             sync_needed: 'initial_sync'
@@ -560,7 +560,7 @@ export async function GET(
           orderAnalysis.failed_sync++
           ordersNeedingSync.push({
             id: order.id,
-            platform_order_id: order.metadata?.platform_order_id,
+            platform_order_id: (order.metadata as any)?.platform_order_id,
             status: order.status,
             created_at: order.created_at,
             sync_needed: 'retry_failed'
@@ -573,7 +573,7 @@ export async function GET(
             orderAnalysis.pending_sync++
             ordersNeedingSync.push({
               id: order.id,
-              platform_order_id: order.metadata?.platform_order_id,
+              platform_order_id: (order.metadata as any)?.platform_order_id,
               status: order.status,
               created_at: order.created_at,
               sync_needed: 'status_update'
@@ -593,13 +593,13 @@ export async function GET(
         ...(includeOrders && {
           recent_orders: platformOrders?.map(order => ({
             id: order.id,
-            platform_order_id: order.metadata?.platform_order_id,
+            platform_order_id: (order.metadata as any)?.platform_order_id,
             transaction_code: order.transaction_code,
             status: order.status,
             total_amount: order.total_amount,
             created_at: order.created_at,
-            sync_status: order.metadata?.platform_sync_status || 'unknown',
-            last_sync: order.metadata?.last_platform_sync || null
+            sync_status: (order.metadata as any)?.platform_sync_status || 'unknown',
+            last_sync: (order.metadata as any)?.last_platform_sync || null
           }))
         }),
         recommendations: [

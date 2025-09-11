@@ -154,17 +154,17 @@ export default function FurnitureSales() {
       const startOfWeek = new Date(now.setDate(now.getDate() - 7))
 
       const activeOrders = salesOrders.filter((o: any) => {
-        const status = o.metadata?.status || 'pending_approval'
+        const status = (o.metadata as any)?.status || 'pending_approval'
         return ['pending_approval', 'confirmed', 'in_production'].includes(status)
       }).length
 
       const pendingQuotes = proformaInvoices.filter((p: any) => {
-        const status = p.metadata?.status || 'pending'
+        const status = (p.metadata as any)?.status || 'pending'
         return status === 'pending'
       }).length
 
       const readyToDispatch = salesOrders.filter((o: any) => {
-        const status = o.metadata?.status || ''
+        const status = (o.metadata as any)?.status || ''
         return status === 'ready_for_delivery'
       }).length
 
@@ -259,7 +259,7 @@ export default function FurnitureSales() {
             line.transaction_id === order.id
           ) || []
 
-          const deliveryDateStr = order.metadata?.delivery_date || 
+          const deliveryDateStr = (order.metadata as any)?.delivery_date || 
             new Date(new Date(order.transaction_date).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
           return {
@@ -268,7 +268,7 @@ export default function FurnitureSales() {
             customerName,
             orderDate: new Date(order.transaction_date).toLocaleDateString('en-IN'),
             amount: order.total_amount || 0,
-            status: order.metadata?.status || 'pending_approval',
+            status: (order.metadata as any)?.status || 'pending_approval',
             items: orderLines.length,
             deliveryDate: new Date(deliveryDateStr).toLocaleDateString('en-IN')
           }
@@ -298,7 +298,7 @@ export default function FurnitureSales() {
               if (!productSales[product.id]) {
                 productSales[product.id] = {
                   name: product.entity_name,
-                  category: product.metadata?.category || 'General',
+                  category: (product.metadata as any)?.category || 'General',
                   units: 0,
                   revenue: 0
                 }

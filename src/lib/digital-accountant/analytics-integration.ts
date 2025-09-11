@@ -267,7 +267,7 @@ export class AccountingAnalyticsIntegration {
 
 **Account:** ${accountCode} - ${account.entity_name}
 **Current Balance:** ${this.formatCurrency(balance)}
-**Account Type:** ${account.metadata?.account_type || 'General'}
+**Account Type:** ${(account.metadata as any)?.account_type || 'General'}
 
 Would you like to see recent transactions for this account?`;
     } else {
@@ -312,7 +312,7 @@ Would you like to see recent transactions for this account?`;
    Type: ${tx.transaction_type}
    Amount: ${this.formatCurrency(tx.total_amount)}
    Status: ${tx.transaction_status}
-   ${tx.metadata?.description || ''}\n\n`;
+   ${(tx.metadata as any)?.description || ''}\n\n`;
     });
 
     return response;
@@ -614,7 +614,7 @@ Try asking a specific question about your accounting data!`;
 
     let balance = 0;
     lines.forEach(line => {
-      balance += (line.metadata?.debit_amount || 0) - (line.metadata?.credit_amount || 0);
+      balance += ((line.metadata as any)?.debit_amount || 0) - ((line.metadata as any)?.credit_amount || 0);
     });
 
     return balance;

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Clear Service Workers - HERA</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .status {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .success {
+            background: #10b981;
+            color: #fff;
+        }
+        .error {
+            background: #ef4444;
+            color: #fff;
+        }
+        .info {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .warning {
+            background: #f59e0b;
+            color: #000;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+        .steps {
+            background: #374151;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .steps h2 {
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+        .steps ol {
+            margin-left: 20px;
+        }
+        .steps li {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        .code {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #4b5563;
+        }
+        .results {
+            background: #374151;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .results ul {
+            list-style: none;
+            padding: 0;
+        }
+        .results li {
+            padding: 8px 0;
+            border-bottom: 1px solid #4b5563;
+        }
+        .results li:last-child {
+            border: none;
+        }
+        .highlight {
+            background: #fbbf24;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Force Clear All Service Workers & Cache</h1>
+        
+        <div id="status" class="status warning">
+            ⚠️ Service worker interference detected! Click the button below to force clear everything.
+        </div>
+
+        <button id="clearBtn" onclick="forceClearEverything()">
+            🧹 FORCE CLEAR EVERYTHING NOW
+        </button>
+
+        <div class="steps">
+            <h2>What this will do:</h2>
+            <ol>
+                <li>🛑 <strong>Unregister ALL service workers</strong> - Including cached ones</li>
+                <li>🗑️ <strong>Delete ALL caches</strong> - Remove all cached data</li>
+                <li>🧹 <strong>Clear ALL storage</strong> - LocalStorage, SessionStorage, IndexedDB</li>
+                <li>🍪 <strong>Clear cookies</strong> - Remove all localhost cookies</li>
+                <li>🔄 <strong>Hard reload</strong> - Force fresh page load</li>
+            </ol>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+            <h3>Cleanup Results:</h3>
+            <ul id="resultsList"></ul>
+        </div>
+
+        <div class="steps" style="background: #7c3aed; color: #fff;">
+            <h2 style="color: #fff;">⚡ After clearing, do this:</h2>
+            <ol>
+                <li>Close this tab</li>
+                <li>Open a new incognito/private window</li>
+                <li>Navigate to <span class="highlight">http://localhost:3000</span></li>
+                <li>The app should load without service worker errors</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let clearCount = 0;
+
+        async function forceClearEverything() {
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            const resultsList = document.getElementById('resultsList');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            clearBtn.disabled = true;
+            clearBtn.textContent = '⏳ Clearing... Please wait...';
+            
+            status.className = 'status info';
+            status.textContent = '🔄 Force clearing all browser data...';
+            resultsList.innerHTML = '';
+            results.style.display = 'block';
+
+            try {
+                // 1. Unregister ALL service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    addResult(`Found ${registrations.length} service worker(s)`);
+                    
+                    for (const registration of registrations) {
+                        try {
+                            await registration.unregister();
+                            addResult(`✅ Unregistered: ${registration.scope}`);
+                            
+                            // Try to claim and skip waiting
+                            if (registration.active) {
+                                registration.active.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        } catch (e) {
+                            addResult(`⚠️ Failed to unregister: ${registration.scope}`);
+                        }
+                    }
+                    
+                    // Clear service worker controller
+                    if (navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({ type: 'CLAIM' });
+                    }
+                }
+
+                // 2. Clear ALL caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    addResult(`Found ${cacheNames.length} cache(s)`);
+                    
+                    for (const cacheName of cacheNames) {
+                        try {
+                            await caches.delete(cacheName);
+                            addResult(`✅ Deleted cache: ${cacheName}`);
+                        } catch (e) {
+                            addResult(`⚠️ Failed to delete cache: ${cacheName}`);
+                        }
+                    }
+                }
+
+                // 3. Clear localStorage
+                const localStorageKeys = Object.keys(localStorage);
+                addResult(`Clearing ${localStorageKeys.length} localStorage items`);
+                localStorage.clear();
+                addResult('✅ LocalStorage cleared');
+
+                // 4. Clear sessionStorage
+                const sessionStorageKeys = Object.keys(sessionStorage);
+                addResult(`Clearing ${sessionStorageKeys.length} sessionStorage items`);
+                sessionStorage.clear();
+                addResult('✅ SessionStorage cleared');
+
+                // 5. Clear IndexedDB
+                if ('indexedDB' in window) {
+                    try {
+                        const databases = await indexedDB.databases();
+                        addResult(`Found ${databases.length} IndexedDB database(s)`);
+                        
+                        for (const db of databases) {
+                            if (db.name) {
+                                indexedDB.deleteDatabase(db.name);
+                                addResult(`✅ Deleted IndexedDB: ${db.name}`);
+                            }
+                        }
+                    } catch (e) {
+                        addResult('⚠️ Could not enumerate IndexedDB databases');
+                    }
+                }
+
+                // 6. Clear cookies
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                addResult('✅ Cookies cleared');
+
+                // 7. Try to stop any active service workers
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'STOP_ALL' });
+                }
+
+                clearCount++;
+                
+                status.className = 'status success';
+                status.innerHTML = `
+                    ✅ <strong>Force clear completed!</strong><br>
+                    Service workers and all caches have been removed.<br>
+                    <strong>Reloading in 3 seconds...</strong>
+                `;
+
+                // Force reload after delay
+                setTimeout(() => {
+                    // Use multiple methods to ensure reload
+                    window.location.href = 'http://localhost:3000';
+                    window.location.reload(true);
+                    window.location.replace('http://localhost:3000');
+                }, 3000);
+
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Error during cleanup: ${error.message}`;
+                addResult(`❌ Error: ${error.message}`);
+                clearBtn.disabled = false;
+                clearBtn.textContent = '🔄 Try Again';
+            }
+        }
+
+        function addResult(message) {
+            const resultsList = document.getElementById('resultsList');
+            const li = document.createElement('li');
+            li.textContent = message;
+            resultsList.appendChild(li);
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', async () => {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                if (registrations.length > 0) {
+                    document.getElementById('status').innerHTML = `
+                        🚨 <strong>WARNING:</strong> Found ${registrations.length} active service worker(s)!<br>
+                        These are interfering with your application. Click below to remove them.
+                    `;
+                }
+            }
+        });
+
+        // Prevent service worker from controlling this page
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.active?.postMessage({ type: 'SKIP_THIS_PAGE' });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -101,7 +101,7 @@ export function HCMDashboard() {
       })
 
       const activeEmployees = employees.data?.filter(e => 
-        e.metadata?.status === 'active'
+        (e.metadata as any)?.status === 'active'
       ) || []
 
       // Calculate metrics
@@ -112,7 +112,7 @@ export function HCMDashboard() {
       const thirtyDaysAgo = new Date()
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
       const newHires = activeEmployees.filter(e => 
-        new Date(e.metadata?.hire_date || e.created_at) > thirtyDaysAgo
+        new Date((e.metadata as any)?.hire_date || e.created_at) > thirtyDaysAgo
       ).length
 
       // Get terminations
@@ -126,7 +126,7 @@ export function HCMDashboard() {
 
       // Calculate payroll cost
       const totalPayrollCost = activeEmployees.reduce((sum, emp) => 
-        sum + parseFloat(emp.metadata?.base_salary || 0), 0
+        sum + parseFloat((emp.metadata as any)?.base_salary || 0), 0
       )
 
       // Get leave requests
@@ -141,7 +141,7 @@ export function HCMDashboard() {
       // Calculate department stats
       const deptMap = new Map<string, DepartmentStats>()
       activeEmployees.forEach(emp => {
-        const dept = emp.metadata?.department || 'Unknown'
+        const dept = (emp.metadata as any)?.department || 'Unknown'
         const current = deptMap.get(dept) || { 
           name: dept, 
           headcount: 0, 
@@ -149,7 +149,7 @@ export function HCMDashboard() {
           turnoverRate: 0 
         }
         current.headcount++
-        current.payrollCost += parseFloat(emp.metadata?.base_salary || 0)
+        current.payrollCost += parseFloat((emp.metadata as any)?.base_salary || 0)
         deptMap.set(dept, current)
       })
 
@@ -161,7 +161,7 @@ export function HCMDashboard() {
       // Calculate diversity index (simplified Shannon index)
       const genderMap = new Map()
       activeEmployees.forEach(emp => {
-        const gender = emp.metadata?.gender || 'Unknown'
+        const gender = (emp.metadata as any)?.gender || 'Unknown'
         genderMap.set(gender, (genderMap.get(gender) || 0) + 1)
       })
       

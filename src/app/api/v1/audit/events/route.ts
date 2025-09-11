@@ -72,14 +72,14 @@ export async function GET(request: NextRequest) {
       id: event.id,
       timestamp: event.transaction_date,
       event_type: getEventType(event.smart_code),
-      user_id: event.metadata?.user_id || 'system',
-      user_name: event.metadata?.user_name || 'System',
-      action: event.metadata?.action || event.transaction_type,
-      resource: event.metadata?.resource || 'unknown',
-      result: event.metadata?.decision === 'DENY' || event.metadata?.result === 'failure' ? 'failure' : 'success',
-      ip_address: event.metadata?.ip_address || 'unknown',
+      user_id: (event.metadata as any)?.user_id || 'system',
+      user_name: (event.metadata as any)?.user_name || 'System',
+      action: (event.metadata as any)?.action || event.transaction_type,
+      resource: (event.metadata as any)?.resource || 'unknown',
+      result: (event.metadata as any)?.decision === 'DENY' || (event.metadata as any)?.result === 'failure' ? 'failure' : 'success',
+      ip_address: (event.metadata as any)?.ip_address || 'unknown',
       smart_code: event.smart_code,
-      details: event.metadata?.details || {}
+      details: (event.metadata as any)?.details || {}
     }))
 
     // Apply result filter

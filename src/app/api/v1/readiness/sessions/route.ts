@@ -81,8 +81,8 @@ export async function GET(request: NextRequest) {
           ...session,
           answers: answers || [],
           insights,
-          completionRate: session.metadata?.completionRate || 0,
-          totalQuestions: session.metadata?.totalQuestions || 0
+          completionRate: (session.metadata as any)?.completionRate || 0,
+          totalQuestions: (session.metadata as any)?.totalQuestions || 0
         }
         
         console.log(`📊 Session ${session.id} summary:`, {

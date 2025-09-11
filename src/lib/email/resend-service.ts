@@ -161,7 +161,7 @@ export async function createResendService(organizationId: string, accountId?: st
   } else {
     // Get default account
     const accounts = await universalApi.getEntities('email_account', { status: 'active' })
-    const defaultAccount = accounts.find(account => account.metadata?.is_default) || accounts[0]
+    const defaultAccount = accounts.find(account => (account.metadata as any)?.is_default) || accounts[0]
     
     if (!defaultAccount) {
       throw new Error('No email account configured. Please set up an email account first.')
@@ -334,7 +334,7 @@ export class EmailAnalytics {
     const uniqueRecipients = new Set()
     
     filteredTransactions.forEach(t => {
-      if (t.metadata?.to_count) {
+      if ((t.metadata as any)?.to_count) {
         for (let i = 0; i < t.metadata.to_count; i++) {
           uniqueRecipients.add(`${t.related_entity_id}-${i}`)
         }

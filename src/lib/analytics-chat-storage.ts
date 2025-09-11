@@ -106,9 +106,9 @@ export class AnalyticsChatStorage {
 
       return transactions.map(tx => ({
         id: tx.id,
-        session_id: tx.metadata?.session_id || '',
+        session_id: (tx.metadata as any)?.session_id || '',
         message_type: tx.smart_code === CHAT_SMART_CODES.USER_QUERY ? 'user' : 'assistant',
-        content: tx.metadata?.content || '',
+        content: (tx.metadata as any)?.content || '',
         timestamp: tx.transaction_date,
         metadata: tx.metadata
       }));
@@ -228,7 +228,7 @@ export class AnalyticsChatStorage {
       const searchLower = searchTerm.toLowerCase();
       return allMessages.filter(msg => 
         msg.content.toLowerCase().includes(searchLower) ||
-        msg.metadata?.user_query?.toLowerCase().includes(searchLower)
+        (msg.metadata as any)?.user_query?.toLowerCase().includes(searchLower)
       );
     } catch (error) {
       console.error('Failed to search chat history:', error);

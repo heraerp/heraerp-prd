@@ -134,7 +134,7 @@ export class SalonManagerService implements ISalonManagerService {
         unitCost,
         totalValue: currentStock * unitCost,
         isLow: currentStock <= minStock,
-        category: product.metadata?.category || 'general'
+        category: (product.metadata as any)?.category || 'general'
       };
     }) || [];
 
@@ -178,11 +178,11 @@ export class SalonManagerService implements ISalonManagerService {
 
     transactions?.forEach(txn => {
       txn.universal_transaction_lines?.forEach(line => {
-        if (line.metadata?.service_type) {
+        if ((line.metadata as any)?.service_type) {
           const current = serviceRevenue.get(line.metadata.service_type) || 0;
           serviceRevenue.set(line.metadata.service_type, current + line.line_amount);
           totalServices += line.line_amount;
-        } else if (line.metadata?.product_category) {
+        } else if ((line.metadata as any)?.product_category) {
           const current = productRevenue.get(line.metadata.product_category) || 0;
           productRevenue.set(line.metadata.product_category, current + line.line_amount);
           totalProducts += line.line_amount;
@@ -258,10 +258,10 @@ export class SalonManagerService implements ISalonManagerService {
         
         txn.universal_transaction_lines?.forEach(line => {
           serviceCount++;
-          const commissionRate = line.metadata?.commission_rate || 0.30;
+          const commissionRate = (line.metadata as any)?.commission_rate || 0.30;
           commission += line.line_amount * commissionRate;
           
-          const serviceName = line.metadata?.service_name || 'Other';
+          const serviceName = (line.metadata as any)?.service_name || 'Other';
           services.set(serviceName, (services.get(serviceName) || 0) + 1);
         });
       });
@@ -325,12 +325,12 @@ export class SalonManagerService implements ISalonManagerService {
         // Check if slot is taken (exclude cancelled appointments)
         const isTaken = appointments?.some(apt => {
           // Skip cancelled appointments
-          if (apt.metadata?.status === 'cancelled') {
+          if ((apt.metadata as any)?.status === 'cancelled') {
             return false;
           }
           
           const aptTime = new Date(apt.transaction_date);
-          const duration = apt.metadata?.duration_minutes || 60;
+          const duration = (apt.metadata as any)?.duration_minutes || 60;
           const aptEnd = new Date(aptTime.getTime() + duration * 60000);
           
           return slotTime >= aptTime && slotTime < aptEnd;
@@ -430,10 +430,10 @@ export class SalonManagerService implements ISalonManagerService {
         date: new Date(apt.transaction_date),
         clientName: apt.from_entity?.entity_name,
         stylistName: apt.to_entity?.entity_name,
-        serviceName: apt.metadata?.service_name,
+        serviceName: (apt.metadata as any)?.service_name,
         amount: apt.total_amount,
-        status: apt.metadata?.status || 'scheduled',
-        duration: apt.metadata?.duration_minutes || 60
+        status: (apt.metadata as any)?.status || 'scheduled',
+        duration: (apt.metadata as any)?.duration_minutes || 60
       }));
 
       return {
@@ -490,7 +490,7 @@ export class SalonManagerService implements ISalonManagerService {
         // Service popularity
         const serviceCounts = new Map<string, number>();
         recentBookings.forEach(booking => {
-          const service = booking.metadata?.service_name;
+          const service = (booking.metadata as any)?.service_name;
           if (service) {
             serviceCounts.set(service, (serviceCounts.get(service) || 0) + 1);
           }
@@ -670,7 +670,7 @@ export class SalonManagerService implements ISalonManagerService {
     return {
       id: service.id,
       name: service.entity_name,
-      category: service.metadata?.category || 'general',
+      category: (service.metadata as any)?.category || 'general',
       price: priceField?.field_value_number || 0,
       duration: durationField?.field_value_number || 60
     };

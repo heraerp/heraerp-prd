@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
           required: true,
           journal_entry_created: !!journalEntry,
           journal_reference: journalEntry?.reference_number || null,
-          auto_posted: transaction.metadata?.gl_posting_required === 'true'
+          auto_posted: (transaction.metadata as any)?.gl_posting_required === 'true'
         },
         items_count: items.length,
         order_type: order_type || 'dine_in'

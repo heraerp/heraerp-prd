@@ -831,7 +831,7 @@ class RealTimeJournalProcessor {
         transaction.transaction_type.includes('payment') ||
         transaction.transaction_type.includes('receipt') ||
         transaction.smart_code.includes('.CRITICAL.') ||
-        transaction.metadata?.immediate_posting === true) {
+        (transaction.metadata as any)?.immediate_posting === true) {
       return 'immediate';
     }
 

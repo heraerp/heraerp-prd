@@ -131,9 +131,9 @@ export class FactoryDashboardClient {
     );
 
     return response.data.filter(e => 
-      e.metadata?.status === 'open' || 
-      e.metadata?.status === 'current' || 
-      e.metadata?.status === 'closed'
+      (e.metadata as any)?.status === 'open' || 
+      (e.metadata as any)?.status === 'current' || 
+      (e.metadata as any)?.status === 'closed'
     );
   }
 

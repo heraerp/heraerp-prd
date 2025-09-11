@@ -5,7 +5,6 @@ export const APP_VERSION = {
   releaseDate: '2025-09-11',
   features: [
     'Universal 6-table architecture',
-    'PWA support with offline capability',
     'Multi-tenant security',
     'AI-native fields',
     'Real-time data sync',
@@ -24,14 +23,12 @@ export const VERSION_HISTORY = [
     date: '2025-08-10',
     changes: [
       '🚀 HERA Profitability & Cost Accounting Module - Complete implementation with progressive authentication',
-      '✨ Enhanced PWA Update System - Automatic update detection every 30 seconds with visual notifications',
       '🔄 Network-First Strategy - App routes now use network-first caching for immediate updates',
       '🔧 Fixed duplicate loadData function declarations across all financial modules (AP, AR, GL, Banks, Budgets, Fixed Assets)',
       '📦 Production Bundle - Successfully compiled and optimized 1.9GB bundle in 4.1 minutes',
       '🎯 Smart Code Integration - 40+ profitability analysis patterns with BOM integration',
       '💰 Activity-Based Costing - Multiple allocation methods with profit center management',
       '📊 Progressive Data Persistence - Local storage for anonymous users with seamless upgrades',
-      '🔔 UpdateNotification Component - Active version checking with forced cache clearing',
       '🛠️ Version API Enhancement - No-cache headers to ensure fresh version checks'
     ]
   },
@@ -107,8 +104,6 @@ export const VERSION_HISTORY = [
     changes: [
       'Initial release',
       'Core 6-table architecture',
-      'PWA implementation',
-      'Service worker for offline support',
       'Version tracking system'
     ]
   }

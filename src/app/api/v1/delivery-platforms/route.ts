@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
       // Calculate stats per platform
       platformStats = (todayOrders || []).reduce((stats: any, order: any) => {
-        const platformId = order.metadata?.delivery_platform_id
+        const platformId = (order.metadata as any)?.delivery_platform_id
         if (platformId) {
           if (!stats[platformId]) {
             stats[platformId] = {

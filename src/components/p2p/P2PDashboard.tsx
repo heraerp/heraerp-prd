@@ -105,19 +105,19 @@ export function P2PDashboard() {
 
       // Calculate metrics
       const activeSuppliers = suppliers.data?.filter(s => 
-        s.metadata?.status === 'active'
+        (s.metadata as any)?.status === 'active'
       ).length || 0
 
       const pendingPRs = prs.data?.filter(pr => 
-        pr.metadata?.status === 'pending_approval'
+        (pr.metadata as any)?.status === 'pending_approval'
       ).length || 0
 
       const openPOs = pos.data?.filter(po => 
-        ['draft', 'sent', 'partial'].includes(po.metadata?.status)
+        ['draft', 'sent', 'partial'].includes((po.metadata as any)?.status)
       ).length || 0
 
       const pendingInvoices = invoices.data?.filter(inv => 
-        inv.metadata?.status === 'pending_approval'
+        (inv.metadata as any)?.status === 'pending_approval'
       ).length || 0
 
       const totalSpend = pos.data?.reduce((sum, po) => 

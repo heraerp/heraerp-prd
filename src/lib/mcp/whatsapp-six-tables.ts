@@ -724,8 +724,8 @@ export async function getConversations(
 
       return {
         id: thread.id,
-        entity_name: thread.metadata?.display_name || thread.metadata?.phone_number || 'Unknown',
-        entity_code: thread.metadata?.phone_number || '',
+        entity_name: (thread.metadata as any)?.display_name || (thread.metadata as any)?.phone_number || 'Unknown',
+        entity_code: (thread.metadata as any)?.phone_number || '',
         metadata: thread.metadata,
         lastMessage: lastMessage ? {
           id: lastMessage.id,
@@ -750,8 +750,8 @@ export async function getConversations(
           target_entity_id: m.line_data?.direction === 'outbound' ? thread.source_entity_id : null
         })),
         unreadCount,
-        isPinned: thread.metadata?.is_pinned || false,
-        isArchived: thread.metadata?.is_archived || false,
+        isPinned: (thread.metadata as any)?.is_pinned || false,
+        isArchived: (thread.metadata as any)?.is_archived || false,
         updated_at: lastMessage?.created_at || thread.created_at
       };
     }) || [];

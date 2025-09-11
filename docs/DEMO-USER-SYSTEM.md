@@ -1,4 +1,16 @@
-# HERA Demo User System
+# ⚠️ PARTIALLY OUTDATED: HERA Demo User System
+
+**⚠️ THIS DOCUMENTATION NEEDS UPDATES**
+
+**Current System**: Please refer to `/docs/UNIFIED-DEMO-MODULE-SELECTOR.md` for the current demo implementation.
+
+**What Changed**: The auto-login approach described here has been replaced with a tile-based selector at `/auth/login`. Demo users now access modules by clicking tiles rather than visiting direct URLs.
+
+**Migration Date**: 2025-01-11
+
+---
+
+# HERA Demo User System (NEEDS UPDATE)
 
 ## Overview
 

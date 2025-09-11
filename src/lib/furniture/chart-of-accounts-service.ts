@@ -229,7 +229,7 @@ export class ChartOfAccountsService {
    */
   private static calculateRollupBalances(account: GLAccountNode): { debit: number; credit: number } {
     // If it's a detail account or has no children, return its own balances
-    if (account.metadata?.account_type === 'detail' || account.children.length === 0) {
+    if ((account.metadata as any)?.account_type === 'detail' || account.children.length === 0) {
       return {
         debit: account.debit_total,
         credit: account.credit_total

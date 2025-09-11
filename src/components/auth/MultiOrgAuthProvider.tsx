@@ -149,7 +149,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
             // Check settings.subdomain first, then fallback to metadata.subdomain for backwards compatibility
             const org = orgs.find((o: Organization) => 
               o.settings?.subdomain === subdomain || 
-              o.metadata?.subdomain === subdomain ||
+              (o.metadata as any)?.subdomain === subdomain ||
               o.subdomain === subdomain
             )
             if (org) {

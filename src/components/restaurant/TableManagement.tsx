@@ -412,7 +412,7 @@ export function TableManagement({
         smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.v1',
         metadata: {
           table_id: reservationForm.table_id,
-          table_number: selectedTable.metadata?.table_number,
+          table_number: (selectedTable.metadata as any)?.table_number,
           customer_name: reservationForm.customer_name,
           phone: reservationForm.phone,
           party_size: parseInt(reservationForm.party_size),
@@ -462,32 +462,32 @@ export function TableManagement({
     },
     {
       title: 'Available',
-      value: tables.filter(t => t.metadata?.status === 'available').length.toString(),
+      value: tables.filter(t => (t.metadata as any)?.status === 'available').length.toString(),
       icon: CheckCircle,
       className: 'text-emerald-600'
     },
     {
       title: 'Occupied',
-      value: tables.filter(t => t.metadata?.status === 'occupied').length.toString(),
+      value: tables.filter(t => (t.metadata as any)?.status === 'occupied').length.toString(),
       icon: Users,
       className: 'text-rose-600'
     },
     {
       title: 'Reserved',
-      value: tables.filter(t => t.metadata?.status === 'reserved').length.toString(),
+      value: tables.filter(t => (t.metadata as any)?.status === 'reserved').length.toString(),
       icon: Clock,
       className: 'text-amber-600'
     },
     {
       title: 'Total Seats',
-      value: tables.reduce((sum, t) => sum + (t.metadata?.capacity || 0), 0).toString(),
+      value: tables.reduce((sum, t) => sum + ((t.metadata as any)?.capacity || 0), 0).toString(),
       icon: User
     },
     {
       title: 'Reservations Today',
       value: reservations.filter(r => 
-        r.metadata?.reservation_date === formatDate(new Date(), 'yyyy-MM-dd') &&
-        r.metadata?.status === 'confirmed'
+        (r.metadata as any)?.reservation_date === formatDate(new Date(), 'yyyy-MM-dd') &&
+        (r.metadata as any)?.status === 'confirmed'
       ).length.toString(),
       icon: Calendar
     }
@@ -495,17 +495,17 @@ export function TableManagement({
 
   // Filter tables
   const filteredTables = tables.filter(table => {
-    const matchesSection = selectedSection === 'all' || table.metadata?.section === selectedSection
+    const matchesSection = selectedSection === 'all' || (table.metadata as any)?.section === selectedSection
     const matchesSearch = searchTerm === '' || 
       table.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       table.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      table.metadata?.server_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      (table.metadata as any)?.server_name?.toLowerCase().includes(searchTerm.toLowerCase())
     
     return matchesSection && matchesSearch
   })
 
   // Get unique sections
-  const sections = Array.from(new Set(tables.map(t => t.metadata?.section).filter(Boolean)))
+  const sections = Array.from(new Set(tables.map(t => (t.metadata as any)?.section).filter(Boolean)))
 
   if (loading) {
     return (
@@ -683,10 +683,10 @@ export function TableManagement({
                 {/* Tables visualization */}
                 <div className="relative">
                   {filteredTables.map(table => {
-                    const status = table.metadata?.status || 'available'
+                    const status = (table.metadata as any)?.status || 'available'
                     const Icon = STATUS_ICONS[status]
-                    const position = table.metadata?.position || { x: 50, y: 50 }
-                    const shape = table.metadata?.shape || 'square'
+                    const position = (table.metadata as any)?.position || { x: 50, y: 50 }
+                    const shape = (table.metadata as any)?.shape || 'square'
                     
                     return (
                       <div
@@ -705,9 +705,9 @@ export function TableManagement({
                           <Icon className="h-5 w-5 mb-1" />
                           <div className="font-semibold text-sm">{table.entity_name}</div>
                           <div className="text-xs">
-                            {table.metadata?.capacity} seats
+                            {(table.metadata as any)?.capacity} seats
                           </div>
-                          {table.metadata?.server_name && (
+                          {(table.metadata as any)?.server_name && (
                             <div className="text-xs mt-1">
                               {table.metadata.server_name}
                             </div>
@@ -734,25 +734,25 @@ export function TableManagement({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Status:</span>
-                        <Badge variant="secondary" className={STATUS_COLORS[selectedTable.metadata?.status || 'available']}>
-                          {selectedTable.metadata?.status || 'available'}
+                        <Badge variant="secondary" className={STATUS_COLORS[(selectedTable.metadata as any)?.status || 'available']}>
+                          {(selectedTable.metadata as any)?.status || 'available'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Section:</span>
-                        <span>{selectedTable.metadata?.section}</span>
+                        <span>{(selectedTable.metadata as any)?.section}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Capacity:</span>
-                        <span>{selectedTable.metadata?.capacity} seats</span>
+                        <span>{(selectedTable.metadata as any)?.capacity} seats</span>
                       </div>
-                      {selectedTable.metadata?.server_name && (
+                      {(selectedTable.metadata as any)?.server_name && (
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Server:</span>
                           <span>{selectedTable.metadata.server_name}</span>
                         </div>
                       )}
-                      {selectedTable.metadata?.occupied_since && (
+                      {(selectedTable.metadata as any)?.occupied_since && (
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Since:</span>
                           <span>{formatDate(new Date(selectedTable.metadata.occupied_since), 'HH:mm')}</span>
@@ -764,10 +764,10 @@ export function TableManagement({
                         size="sm"
                         variant="outline"
                         onClick={() => updateTableStatus(selectedTable.id, 
-                          selectedTable.metadata?.status === 'occupied' ? 'cleaning' : 'occupied'
+                          (selectedTable.metadata as any)?.status === 'occupied' ? 'cleaning' : 'occupied'
                         )}
                       >
-                        {selectedTable.metadata?.status === 'occupied' ? 'Clear' : 'Assign'}
+                        {(selectedTable.metadata as any)?.status === 'occupied' ? 'Clear' : 'Assign'}
                       </Button>
                       <Button
                         size="sm"
@@ -831,16 +831,16 @@ export function TableManagement({
                   {filteredTables.map((table) => (
                     <TableRow key={table.id}>
                       <TableCell className="font-medium">{table.entity_name}</TableCell>
-                      <TableCell>{table.metadata?.section}</TableCell>
-                      <TableCell>{table.metadata?.capacity} seats</TableCell>
+                      <TableCell>{(table.metadata as any)?.section}</TableCell>
+                      <TableCell>{(table.metadata as any)?.capacity} seats</TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className={STATUS_COLORS[table.metadata?.status || 'available']}>
-                          {table.metadata?.status || 'available'}
+                        <Badge variant="secondary" className={STATUS_COLORS[(table.metadata as any)?.status || 'available']}>
+                          {(table.metadata as any)?.status || 'available'}
                         </Badge>
                       </TableCell>
-                      <TableCell>{table.metadata?.server_name || '-'}</TableCell>
+                      <TableCell>{(table.metadata as any)?.server_name || '-'}</TableCell>
                       <TableCell>
-                        {table.metadata?.occupied_since 
+                        {(table.metadata as any)?.occupied_since 
                           ? formatDate(new Date(table.metadata.occupied_since), 'HH:mm')
                           : '-'
                         }
@@ -851,10 +851,10 @@ export function TableManagement({
                             size="sm"
                             variant="ghost"
                             onClick={() => updateTableStatus(table.id, 
-                              table.metadata?.status === 'occupied' ? 'available' : 'occupied'
+                              (table.metadata as any)?.status === 'occupied' ? 'available' : 'occupied'
                             )}
                           >
-                            {table.metadata?.status === 'occupied' ? 'Clear' : 'Assign'}
+                            {(table.metadata as any)?.status === 'occupied' ? 'Clear' : 'Assign'}
                           </Button>
                           <Button
                             size="sm"
@@ -931,9 +931,9 @@ export function TableManagement({
                               <SelectValue placeholder="Select table" />
                             </SelectTrigger>
                             <SelectContent>
-                              {tables.filter(t => t.metadata?.status !== 'maintenance').map(table => (
+                              {tables.filter(t => (t.metadata as any)?.status !== 'maintenance').map(table => (
                                 <SelectItem key={table.id} value={table.id}>
-                                  {table.entity_name} ({table.metadata?.section}, {table.metadata?.capacity} seats)
+                                  {table.entity_name} ({(table.metadata as any)?.section}, {(table.metadata as any)?.capacity} seats)
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -999,38 +999,38 @@ export function TableManagement({
                   {reservations.map((reservation) => (
                     <TableRow key={reservation.id}>
                       <TableCell className="font-medium">
-                        {reservation.metadata?.customer_name}
+                        {(reservation.metadata as any)?.customer_name}
                       </TableCell>
                       <TableCell>
-                        Table {reservation.metadata?.table_number}
+                        Table {(reservation.metadata as any)?.table_number}
                       </TableCell>
                       <TableCell>
-                        {reservation.metadata?.reservation_date 
+                        {(reservation.metadata as any)?.reservation_date 
                           ? formatDate(new Date(reservation.metadata.reservation_date), 'MMM dd')
                           : '-'
                         }
                       </TableCell>
                       <TableCell>
-                        {reservation.metadata?.reservation_time || '-'}
+                        {(reservation.metadata as any)?.reservation_time || '-'}
                       </TableCell>
                       <TableCell>
-                        {reservation.metadata?.party_size} guests
+                        {(reservation.metadata as any)?.party_size} guests
                       </TableCell>
                       <TableCell>
-                        {reservation.metadata?.phone || '-'}
+                        {(reservation.metadata as any)?.phone || '-'}
                       </TableCell>
                       <TableCell>
                         <Badge variant={
-                          reservation.metadata?.status === 'confirmed' ? 'default' :
-                          reservation.metadata?.status === 'cancelled' ? 'destructive' :
+                          (reservation.metadata as any)?.status === 'confirmed' ? 'default' :
+                          (reservation.metadata as any)?.status === 'cancelled' ? 'destructive' :
                           'secondary'
                         }>
-                          {reservation.metadata?.status || 'pending'}
+                          {(reservation.metadata as any)?.status || 'pending'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <code className="text-xs">
-                          {reservation.metadata?.confirmation_code}
+                          {(reservation.metadata as any)?.confirmation_code}
                         </code>
                       </TableCell>
                       <TableCell className="text-right">

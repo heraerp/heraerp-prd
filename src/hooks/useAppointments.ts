@@ -220,18 +220,18 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
       // Transform the data to our Appointment interface
       const transformedAppointments = appointmentsData.map((apt: any) => ({
         id: apt.id,
-        customerName: apt.metadata?.customer_name || 'Unknown Customer',
+        customerName: (apt.metadata as any)?.customer_name || 'Unknown Customer',
         customerId: apt.from_entity_id || '',
-        serviceName: apt.metadata?.service_name || 'Unknown Service',
-        serviceId: apt.metadata?.service_id || '',
-        staffName: apt.metadata?.staff_name || 'Any Staff',
-        staffId: apt.metadata?.staff_id || '',
-        appointmentDate: new Date(apt.metadata?.appointment_date || apt.transaction_date),
-        appointmentTime: apt.metadata?.appointment_time || '00:00',
-        duration: apt.metadata?.duration || 60,
-        status: apt.metadata?.status || 'pending',
+        serviceName: (apt.metadata as any)?.service_name || 'Unknown Service',
+        serviceId: (apt.metadata as any)?.service_id || '',
+        staffName: (apt.metadata as any)?.staff_name || 'Any Staff',
+        staffId: (apt.metadata as any)?.staff_id || '',
+        appointmentDate: new Date((apt.metadata as any)?.appointment_date || apt.transaction_date),
+        appointmentTime: (apt.metadata as any)?.appointment_time || '00:00',
+        duration: (apt.metadata as any)?.duration || 60,
+        status: (apt.metadata as any)?.status || 'pending',
         price: apt.total_amount || 0,
-        notes: apt.metadata?.notes,
+        notes: (apt.metadata as any)?.notes,
         createdAt: new Date(apt.created_at)
       }))
 

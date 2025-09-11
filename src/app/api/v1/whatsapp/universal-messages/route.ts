@@ -111,16 +111,16 @@ export async function GET(request: NextRequest) {
     // Format messages for frontend
     const messages = allWhatsAppTxns.map(txn => ({
       id: txn.id,
-      text: txn.metadata?.text || txn.metadata?.message || txn.metadata?.body || '',
-      direction: txn.metadata?.direction || (txn.transaction_type.includes('inbound') ? 'inbound' : 'outbound'),
-      wa_id: txn.metadata?.from || txn.metadata?.wa_id || txn.metadata?.contact_id || '',
-      phone: txn.metadata?.phone || '',
+      text: (txn.metadata as any)?.text || (txn.metadata as any)?.message || (txn.metadata as any)?.body || '',
+      direction: (txn.metadata as any)?.direction || (txn.transaction_type.includes('inbound') ? 'inbound' : 'outbound'),
+      wa_id: (txn.metadata as any)?.from || (txn.metadata as any)?.wa_id || (txn.metadata as any)?.contact_id || '',
+      phone: (txn.metadata as any)?.phone || '',
       timestamp: txn.created_at,
       occurred_at: txn.transaction_date,
       status: txn.transaction_status,
       smart_code: txn.smart_code,
-      cost: txn.metadata?.cost_usd || 0,
-      provider: txn.metadata?.provider_selected || 'unknown',
+      cost: (txn.metadata as any)?.cost_usd || 0,
+      provider: (txn.metadata as any)?.provider_selected || 'unknown',
       metadata: txn.metadata,
       transaction_type: txn.transaction_type,
       is_recent: new Date(txn.created_at) > new Date(oneDayAgo)
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
     // Create maps for quick lookup
     const customerMap = new Map()
     customerEntities?.forEach(cust => {
-      const waId = cust.metadata?.wa_id || cust.metadata?.phone
+      const waId = (cust.metadata as any)?.wa_id || (cust.metadata as any)?.phone
       if (waId) {
         customerMap.set(waId, cust)
       }
@@ -165,8 +165,8 @@ export async function GET(request: NextRequest) {
 
     // First, create conversation entries from actual conversation entities
     conversationEntities?.forEach(conv => {
-      const waId = conv.metadata?.wa_id || conv.metadata?.phone || ''
-      const customerId = conv.metadata?.customer_id
+      const waId = (conv.metadata as any)?.wa_id || (conv.metadata as any)?.phone || ''
+      const customerId = (conv.metadata as any)?.customer_id
       const customer = customerMap.get(waId)
       
       conversationMap.set(conv.id, {
@@ -176,9 +176,9 @@ export async function GET(request: NextRequest) {
         phone: waId,
         messages: [],
         lastMessage: null,
-        lastMessageTime: conv.metadata?.last_message_at || conv.created_at,
+        lastMessageTime: (conv.metadata as any)?.last_message_at || conv.created_at,
         unreadCount: 0,
-        windowState: conv.metadata?.window_state || 'open',
+        windowState: (conv.metadata as any)?.window_state || 'open',
         conversationCost: 0,
         tags: [],
         customerId: customerId,
@@ -205,7 +205,7 @@ export async function GET(request: NextRequest) {
         convEntry = {
           id: syntheticId,
           waContactId: waId,
-          name: msg.metadata?.customer_name || `Contact ${waId}`,
+          name: (msg.metadata as any)?.customer_name || `Contact ${waId}`,
           phone: msg.phone,
           messages: [],
           lastMessage: null,

@@ -85,14 +85,14 @@ export default function UniversalBudgetDashboard({
         const budgetSummaries = budgetEntitiesResponse.data.map((budget: any) => ({
           budget_id: budget.id,
           budget_name: budget.entity_name,
-          budget_type: budget.metadata?.budget_type || 'operating',
-          fiscal_year: budget.metadata?.fiscal_year || new Date().getFullYear(),
+          budget_type: (budget.metadata as any)?.budget_type || 'operating',
+          fiscal_year: (budget.metadata as any)?.fiscal_year || new Date().getFullYear(),
           status: budget.status,
           total_budget: 120000, // Mock data - would be calculated from budget lines
           total_actual: 89500, // Mock data - would be calculated from actuals
           variance_amount: -30500,
           variance_percent: -25.4,
-          approval_status: budget.metadata?.approval_status || 'draft'
+          approval_status: (budget.metadata as any)?.approval_status || 'draft'
         }))
         
         setBudgets(budgetSummaries)

@@ -139,7 +139,7 @@ export default function FactoryDashboard() {
         </motion.div>
 
         {/* Fiscal Period Warning */}
-        {fiscalPeriods.some(p => p.metadata?.status === 'closed') && (
+        {fiscalPeriods.some(p => (p.metadata as any)?.status === 'closed') && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

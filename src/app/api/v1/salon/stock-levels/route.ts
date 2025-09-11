@@ -51,8 +51,8 @@ export async function GET(request: NextRequest) {
       const productId = movement.reference_entity_id
       if (!productId) return
 
-      const quantity = movement.metadata?.quantity || 0
-      const movementType = movement.metadata?.movement_type
+      const quantity = (movement.metadata as any)?.quantity || 0
+      const movementType = (movement.metadata as any)?.movement_type
 
       if (movementType === 'in') {
         stockLevels[productId] = (stockLevels[productId] || 0) + quantity

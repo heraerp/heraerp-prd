@@ -48,19 +48,19 @@ export async function GET(request: NextRequest) {
       return {
         id: apt.id,
         clientId: apt.client?.id,
-        clientName: apt.client?.entity_name || apt.metadata?.customer_name || 'Unknown Client',
-        clientPhone: apt.metadata?.customer_phone || '',
-        clientEmail: apt.metadata?.customer_email || '',
-        service: apt.metadata?.service_name || 'Service',
+        clientName: apt.client?.entity_name || (apt.metadata as any)?.customer_name || 'Unknown Client',
+        clientPhone: (apt.metadata as any)?.customer_phone || '',
+        clientEmail: (apt.metadata as any)?.customer_email || '',
+        service: (apt.metadata as any)?.service_name || 'Service',
         stylistId: apt.stylist?.id,
-        stylist: apt.stylist?.entity_name || apt.metadata?.stylist_name || 'Staff',
+        stylist: apt.stylist?.entity_name || (apt.metadata as any)?.stylist_name || 'Staff',
         date: apt.transaction_date,
-        time: apt.metadata?.appointment_time || '10:00 AM',
-        duration: apt.metadata?.duration || '60 min',
+        time: (apt.metadata as any)?.appointment_time || '10:00 AM',
+        duration: (apt.metadata as any)?.duration || '60 min',
         price: apt.total_amount || 0,
-        status: currentStatus?.entity_name || apt.metadata?.status || 'confirmed',
+        status: currentStatus?.entity_name || (apt.metadata as any)?.status || 'confirmed',
         statusCode: currentStatus?.entity_code || '',
-        notes: apt.metadata?.notes || ''
+        notes: (apt.metadata as any)?.notes || ''
       }
     }) || []
 

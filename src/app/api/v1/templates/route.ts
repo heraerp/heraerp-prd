@@ -428,7 +428,7 @@ async function customizeTemplate(request: TemplateCustomizeRequest) {
         ...template.metadata,
         ...customizations.metadata_updates,
         customization_history: [
-          ...(template.metadata?.customization_history || []),
+          ...((template.metadata as any)?.customization_history || []),
           {
             timestamp: new Date().toISOString(),
             changes: Object.keys(customizations.metadata_updates)

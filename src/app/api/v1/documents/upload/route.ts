@@ -247,9 +247,9 @@ export async function GET(request: NextRequest) {
       data: {
         documentId: document.id,
         fileName: document.entity_name,
-        fileType: document.metadata?.file_type,
-        fileSize: document.metadata?.file_size,
-        publicUrl: document.metadata?.public_url,
+        fileType: (document.metadata as any)?.file_type,
+        fileSize: (document.metadata as any)?.file_size,
+        publicUrl: (document.metadata as any)?.public_url,
         uploadedAt: document.created_at
       }
     })

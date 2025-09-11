@@ -528,7 +528,7 @@ async function refundPayment(data: any, organizationId: string) {
       metadata: {
         original_payment: originalPayment.transaction_code,
         refund_reason: reason,
-        refund_method: refund_method || originalPayment.metadata?.payment_method,
+        refund_method: refund_method || (originalPayment.metadata as any)?.payment_method,
         refund_date: new Date().toISOString(),
         status: 'processed'
       }
@@ -573,7 +573,7 @@ async function checkCredit(customerId: string, data: any, organizationId: string
     (sum, inv) => sum + (inv.total_amount || 0), 0
   ) || 0
 
-  const creditLimit = customer.metadata?.credit_limit || 0
+  const creditLimit = (customer.metadata as any)?.credit_limit || 0
   const availableCredit = Math.max(creditLimit - outstandingAmount, 0)
 
   // Call edge function for detailed evaluation if needed
@@ -603,9 +603,9 @@ async function checkCredit(customerId: string, data: any, organizationId: string
       credit_limit: creditLimit,
       outstanding_amount: outstandingAmount,
       available_credit: availableCredit,
-      credit_score: customer.metadata?.credit_score,
-      risk_rating: customer.metadata?.risk_rating,
-      credit_status: customer.metadata?.credit_status || 'active'
+      credit_score: (customer.metadata as any)?.credit_score,
+      risk_rating: (customer.metadata as any)?.risk_rating,
+      credit_status: (customer.metadata as any)?.credit_status || 'active'
     }
   })
 }
@@ -623,7 +623,7 @@ async function updateCreditLimit(customerId: string, data: any, organizationId: 
 
   if (!customer) throw new Error('Customer not found')
 
-  const oldLimit = customer.metadata?.credit_limit || 0
+  const oldLimit = (customer.metadata as any)?.credit_limit || 0
 
   // Update credit limit
   const { data: updated, error } = await supabase
@@ -633,7 +633,7 @@ async function updateCreditLimit(customerId: string, data: any, organizationId: 
         ...customer.metadata,
         credit_limit: new_limit,
         credit_limit_history: [
-          ...(customer.metadata?.credit_limit_history || []),
+          ...((customer.metadata as any)?.credit_limit_history || []),
           {
             date: new Date().toISOString(),
             old_limit: oldLimit,

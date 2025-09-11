@@ -108,7 +108,7 @@ export function WaitingRoomDisplay() {
       
       // Transform and calculate wait times
       const transformed = checkedIn.map(apt => {
-        const checkedInAt = apt.metadata?.checked_in_at || 
+        const checkedInAt = (apt.metadata as any)?.checked_in_at || 
                            apt.status_relationships?.[0]?.relationship_data?.checked_in_at ||
                            new Date().toISOString()
         
@@ -118,10 +118,10 @@ export function WaitingRoomDisplay() {
         
         return {
           id: apt.id,
-          clientName: apt.client?.entity_name || apt.metadata?.customer_name || 'Unknown',
-          stylistName: apt.stylist?.entity_name || apt.metadata?.stylist_name || 'Any Available',
-          serviceName: apt.metadata?.service_name || 'Service',
-          appointmentTime: apt.metadata?.appointment_time || '10:00',
+          clientName: apt.client?.entity_name || (apt.metadata as any)?.customer_name || 'Unknown',
+          stylistName: apt.stylist?.entity_name || (apt.metadata as any)?.stylist_name || 'Any Available',
+          serviceName: (apt.metadata as any)?.service_name || 'Service',
+          appointmentTime: (apt.metadata as any)?.appointment_time || '10:00',
           checkedInAt,
           waitTime
         }

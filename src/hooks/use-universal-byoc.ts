@@ -205,8 +205,8 @@ export function useUniversalBYOC({
           testType: 'performance',
           success: result.success,
           results: { performance: result.data },
-          timestamp: result.data.metadata?.timestamp || new Date().toISOString(),
-          duration: result.data.metadata?.duration || 0
+          timestamp: (result.data.metadata as any)?.timestamp || new Date().toISOString(),
+          duration: (result.data.metadata as any)?.duration || 0
         }
         
         setTestResults(prev => ({ ...prev, [`${configId}_performance`]: testResult }))
@@ -243,8 +243,8 @@ export function useUniversalBYOC({
           testType: 'security',
           success: result.success,
           results: { security: result.data },
-          timestamp: result.data.metadata?.timestamp || new Date().toISOString(),
-          duration: result.data.metadata?.duration || 0
+          timestamp: (result.data.metadata as any)?.timestamp || new Date().toISOString(),
+          duration: (result.data.metadata as any)?.duration || 0
         }
         
         setTestResults(prev => ({ ...prev, [`${configId}_security`]: testResult }))
@@ -281,8 +281,8 @@ export function useUniversalBYOC({
           testType: 'full',
           success: result.success,
           results: result.data,
-          timestamp: result.data.metadata?.timestamp || new Date().toISOString(),
-          duration: result.data.metadata?.duration || 0
+          timestamp: (result.data.metadata as any)?.timestamp || new Date().toISOString(),
+          duration: (result.data.metadata as any)?.duration || 0
         }
         
         setTestResults(prev => ({ ...prev, [`${configId}_full`]: testResult }))

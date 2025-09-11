@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
       const conversationMessages = messages?.filter(msg => {
         const metadata = msg.metadata || {}
         return metadata.conversation_id === conv.id || 
-               metadata.phone_number === conv.metadata?.phone_number ||
+               metadata.phone_number === (conv.metadata as any)?.phone_number ||
                msg.source_entity_id === conv.id || 
                msg.target_entity_id === conv.id
       }) || []
@@ -94,26 +94,26 @@ export async function GET(request: NextRequest) {
       
       return {
         id: conv.id,
-        waContactId: conv.metadata?.wa_id || conv.entity_code,
-        name: conv.entity_name || conv.metadata?.profile_name || 'Unknown',
-        phone: conv.metadata?.phone_number || '',
+        waContactId: (conv.metadata as any)?.wa_id || conv.entity_code,
+        name: conv.entity_name || (conv.metadata as any)?.profile_name || 'Unknown',
+        phone: (conv.metadata as any)?.phone_number || '',
         lastMessage: lastMessageMetadata.text || lastMessageMetadata.caption || '',
         lastMessageTime: lastMessage?.occurred_at || conv.updated_at,
-        unreadCount: conv.metadata?.unread_count || 0,
-        windowState: conv.metadata?.window_state || 'closed',
-        windowExpiresAt: conv.metadata?.window_expires_at,
-        tags: conv.metadata?.tags || [],
-        conversationCost: conv.metadata?.conversation_cost || 0,
+        unreadCount: (conv.metadata as any)?.unread_count || 0,
+        windowState: (conv.metadata as any)?.window_state || 'closed',
+        windowExpiresAt: (conv.metadata as any)?.window_expires_at,
+        tags: (conv.metadata as any)?.tags || [],
+        conversationCost: (conv.metadata as any)?.conversation_cost || 0,
         messages: conversationMessages.map(msg => ({
           id: msg.id,
-          content: msg.metadata?.text || msg.metadata?.caption || '',
-          type: msg.metadata?.type || 'text',
-          direction: msg.metadata?.direction || 'inbound',
+          content: (msg.metadata as any)?.text || (msg.metadata as any)?.caption || '',
+          type: (msg.metadata as any)?.type || 'text',
+          direction: (msg.metadata as any)?.direction || 'inbound',
           timestamp: msg.occurred_at,
-          status: msg.metadata?.status,
-          cost: msg.metadata?.cost || 0,
-          mediaUrl: msg.metadata?.media_url,
-          mimeType: msg.metadata?.mime_type
+          status: (msg.metadata as any)?.status,
+          cost: (msg.metadata as any)?.cost || 0,
+          mediaUrl: (msg.metadata as any)?.media_url,
+          mimeType: (msg.metadata as any)?.mime_type
         }))
       }
     })

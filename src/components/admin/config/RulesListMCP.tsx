@@ -235,7 +235,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-semibold">{rule.entity_name}</h3>
                     {getStatusBadge(rule.status)}
-                    {rule.metadata?.rule_version && (
+                    {(rule.metadata as any)?.rule_version && (
                       <Badge variant="outline">
                         v{rule.metadata.rule_version}
                       </Badge>
@@ -246,7 +246,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       {rule.smart_code}
                     </code>
                   </div>
-                  {rule.metadata?.tags && (
+                  {(rule.metadata as any)?.tags && (
                     <div className="flex gap-2 mt-2">
                       {rule.metadata.tags.map((tag: string) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
@@ -260,7 +260,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       <Clock className="w-3 h-3" />
                       Created {formatDate(new Date(rule.created_at), 'MMM dd, yyyy')}
                     </span>
-                    {rule.metadata?.owner && (
+                    {(rule.metadata as any)?.owner && (
                       <span>Owner: {rule.metadata.owner}</span>
                     )}
                   </div>

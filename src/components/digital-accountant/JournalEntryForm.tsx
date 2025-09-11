@@ -116,8 +116,8 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
             id: entity.id,
             accountCode: entity.entity_code,
             accountName: entity.entity_name,
-            accountType: entity.metadata?.account_type || 'Asset',
-            normalBalance: entity.metadata?.normal_balance || 'debit'
+            accountType: (entity.metadata as any)?.account_type || 'Asset',
+            normalBalance: (entity.metadata as any)?.normal_balance || 'debit'
           }))
           setGlAccounts(accounts.sort((a, b) => a.accountCode.localeCompare(b.accountCode)))
         }

@@ -421,7 +421,7 @@ export default function FurnitureInventory() {
           in_transit: inTransit,
           reorder_point: dynamicFields.reorder_point || 20,
           location: dynamicFields.location || 'Main Warehouse',
-          category: dynamicFields.category || product.metadata?.category || 'uncategorized'
+          category: dynamicFields.category || (product.metadata as any)?.category || 'uncategorized'
         }
       })
       console.log('[FurnitureInventory] Stock overview built:', {

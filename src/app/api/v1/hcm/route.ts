@@ -229,8 +229,8 @@ async function runPayroll(employeeIds: string[], data: any, organizationId: stri
   const payrollResults = []
 
   for (const employee of employees) {
-    const baseSalary = parseFloat(employee.metadata?.base_salary || 0)
-    const country = employee.metadata?.country || 'US'
+    const baseSalary = parseFloat((employee.metadata as any)?.base_salary || 0)
+    const country = (employee.metadata as any)?.country || 'US'
     const taxRate = getTaxRate(country)
     
     const gross = baseSalary / 12 // Monthly
@@ -454,11 +454,11 @@ async function getWorkforceAnalytics(organizationId: string, filters: any = {}) 
 
   // Process employee data
   employees?.forEach(emp => {
-    const dept = emp.metadata?.department || 'Unknown'
-    const country = emp.metadata?.country || 'Unknown'
-    const status = emp.metadata?.status || 'Unknown'
-    const gender = emp.metadata?.gender || 'Unknown'
-    const salary = parseFloat(emp.metadata?.base_salary || 0)
+    const dept = (emp.metadata as any)?.department || 'Unknown'
+    const country = (emp.metadata as any)?.country || 'Unknown'
+    const status = (emp.metadata as any)?.status || 'Unknown'
+    const gender = (emp.metadata as any)?.gender || 'Unknown'
+    const salary = parseFloat((emp.metadata as any)?.base_salary || 0)
 
     // Headcount
     analytics.headcount.by_department[dept] = (analytics.headcount.by_department[dept] || 0) + 1

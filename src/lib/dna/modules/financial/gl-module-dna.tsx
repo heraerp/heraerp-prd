@@ -145,10 +145,10 @@ export function GLModule({
           id: acc.id,
           accountCode: acc.entity_code,
           accountName: acc.entity_name,
-          accountType: acc.metadata?.account_type || 'asset',
-          normalBalance: acc.metadata?.normal_balance || 'debit',
-          balance: acc.metadata?.current_balance || 0,
-          parentAccount: acc.metadata?.parent_account,
+          accountType: (acc.metadata as any)?.account_type || 'asset',
+          normalBalance: (acc.metadata as any)?.normal_balance || 'debit',
+          balance: (acc.metadata as any)?.current_balance || 0,
+          parentAccount: (acc.metadata as any)?.parent_account,
           isActive: acc.status !== 'inactive'
         })))
       }

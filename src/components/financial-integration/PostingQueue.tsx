@@ -420,7 +420,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                       <TableCell>
                         <div className="space-y-1">
                           {getStatusBadge(transaction.transaction_status)}
-                          {transaction.transaction_status === 'error' && transaction.metadata?.error_message && (
+                          {transaction.transaction_status === 'error' && (transaction.metadata as any)?.error_message && (
                             <p className="text-xs text-red-600">
                               {transaction.metadata.error_message}
                             </p>
@@ -428,7 +428,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                         </div>
                       </TableCell>
                       <TableCell>
-                        {transaction.metadata?.sap_document_number ? (
+                        {(transaction.metadata as any)?.sap_document_number ? (
                           <div className="text-sm">
                             <p className="font-medium">{transaction.metadata.sap_document_number}</p>
                             <p className="text-muted-foreground">FY {transaction.metadata.sap_fiscal_year}</p>

@@ -349,8 +349,8 @@ export class SelfGoverningIntegration {
       business_rule_overrides: this.getDynamicValue(dynamicData, 'business_rule_overrides', {}),
       feature_flags: this.getDynamicValue(dynamicData, 'feature_flags', {}),
       theme_configuration: this.getDynamicValue(dynamicData, 'theme_configuration', {}),
-      configured_by: configEntity.metadata?.configured_by || userId,
-      configuration_version: configEntity.metadata?.configuration_version || 1
+      configured_by: (configEntity.metadata as any)?.configured_by || userId,
+      configuration_version: (configEntity.metadata as any)?.configuration_version || 1
     }
   }
 
@@ -387,8 +387,8 @@ export class SelfGoverningIntegration {
       business_rule_overrides: this.getDynamicValue(dynamicData, 'business_rule_overrides', {}),
       feature_flags: this.getDynamicValue(dynamicData, 'feature_flags', {}),
       theme_configuration: this.getDynamicValue(dynamicData, 'theme_configuration', {}),
-      configured_by: configEntity.metadata?.configured_by || '',
-      configuration_version: configEntity.metadata?.configuration_version || 1
+      configured_by: (configEntity.metadata as any)?.configured_by || '',
+      configuration_version: (configEntity.metadata as any)?.configuration_version || 1
     }
   }
 

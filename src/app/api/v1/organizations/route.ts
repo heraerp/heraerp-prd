@@ -44,6 +44,53 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Special handling for demo users
+    const demoUsers: Record<string, any> = {
+      'demo@keralafurniture.com': {
+        id: 'f0af4ced-9d12-4a55-a649-b484368db249',
+        name: 'Kerala Furniture Works',
+        settings: {
+          subdomain: 'furniture',
+          industry: 'furniture',
+          country: 'AE'
+        }
+      },
+      'demo@hairtalkz.com': {
+        id: 'c2f7b7a3-7e3d-4c47-9f2e-d3f8a9c2e5f6',
+        name: 'Hair Talkz Salon & Spa',
+        settings: {
+          subdomain: 'salon',
+          industry: 'salon',
+          country: 'AE'
+        }
+      },
+      'demo@mariosrestaurant.com': {
+        id: 'a5d9c8f7-8f5e-4b7c-9e3f-f2d8a7c9e4b5',
+        name: 'Mario\'s Authentic Italian',
+        settings: {
+          subdomain: 'restaurant',
+          industry: 'restaurant',
+          country: 'AE'
+        }
+      },
+      'demo@techvantage.com': {
+        id: 'e7f9a5c3-5d8e-4f9c-8b3e-d5f7a9c8e2f4',
+        name: 'TechVantage Solutions',
+        settings: {
+          subdomain: 'crm',
+          industry: 'crm',
+          country: 'AE'
+        }
+      }
+    }
+    
+    if (user.email && demoUsers[user.email]) {
+      return NextResponse.json({
+        success: true,
+        organizations: [demoUsers[user.email]]
+      })
+    }
+
     // Get user's organizations
     const { data, error } = await supabase.rpc('get_user_organizations', {
       p_user_id: user.id

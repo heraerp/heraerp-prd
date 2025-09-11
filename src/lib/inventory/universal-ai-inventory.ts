@@ -426,7 +426,7 @@ export class UniversalAIInventory {
     const multiplier = basePriceMultipliers[itemType as keyof typeof basePriceMultipliers] || 2.5
     
     // Simulate cost-based pricing
-    const estimatedCost = entity.metadata?.estimated_cost || 1000
+    const estimatedCost = (entity.metadata as any)?.estimated_cost || 1000
     return Math.round(estimatedCost * multiplier)
   }
   

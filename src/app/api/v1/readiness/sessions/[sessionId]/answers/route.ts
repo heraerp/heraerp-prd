@@ -91,8 +91,8 @@ export async function POST(
       .single()
 
     if (session) {
-      const currentProgress = session.metadata?.completionRate || 0
-      const totalQuestions = session.metadata?.totalQuestions || 100
+      const currentProgress = (session.metadata as any)?.completionRate || 0
+      const totalQuestions = (session.metadata as any)?.totalQuestions || 100
       const newProgress = Math.min(100, currentProgress + (100 / totalQuestions))
       
       await supabase

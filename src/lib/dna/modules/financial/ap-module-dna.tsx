@@ -169,11 +169,11 @@ export function APModule({
           id: vendor.id,
           vendorCode: vendor.entity_code,
           vendorName: vendor.entity_name,
-          vendorType: vendor.metadata?.vendor_type || 'general',
+          vendorType: (vendor.metadata as any)?.vendor_type || 'general',
           status: vendor.status || 'active',
-          creditLimit: vendor.metadata?.credit_limit || 0,
-          currentBalance: vendor.metadata?.current_balance || 0,
-          paymentTerms: vendor.metadata?.payment_terms || 'NET30',
+          creditLimit: (vendor.metadata as any)?.credit_limit || 0,
+          currentBalance: (vendor.metadata as any)?.current_balance || 0,
+          paymentTerms: (vendor.metadata as any)?.payment_terms || 'NET30',
           metadata: vendor.metadata
         })))
       }
@@ -421,13 +421,13 @@ export function APModule({
                             <Badge variant={vendor.status === 'active' ? 'default' : 'secondary'}>
                               {vendor.status}
                             </Badge>
-                            {vendor.metadata?.isDairySupplier && (
+                            {(vendor.metadata as any)?.isDairySupplier && (
                               <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                 <Package className="h-3 w-3 mr-1" />
                                 Dairy
                               </Badge>
                             )}
-                            {vendor.metadata?.isColdChainVendor && (
+                            {(vendor.metadata as any)?.isColdChainVendor && (
                               <Badge className="bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">
                                 <Snowflake className="h-3 w-3 mr-1" />
                                 Cold Chain
@@ -445,7 +445,7 @@ export function APModule({
                               <span className="text-gray-500">Credit Limit:</span> ${vendor.creditLimit.toLocaleString()}
                             </div>
                           </div>
-                          {industrySpecific.qualityCertificateTracking && vendor.metadata?.qualityCertificates && (
+                          {industrySpecific.qualityCertificateTracking && (vendor.metadata as any)?.qualityCertificates && (
                             <div className="mt-2 flex gap-2">
                               {vendor.metadata.qualityCertificates.map((cert, idx) => (
                                 <Badge key={idx} variant="outline" className="text-xs">
