@@ -4,7 +4,8 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci"]
+# Install all dependencies including devDependencies for build
+cmds = ["npm ci --include=dev"]
 
 [phases.build]
 cmds = ["npm run build"]
@@ -13,5 +14,6 @@ cmds = ["npm run build"]
 cmd = "npm run start"
 
 [variables]
+# Set NODE_ENV after build to ensure devDependencies are available during build
 NODE_ENV = "production"
 # Do NOT set PORT here - Railway injects it
