@@ -149,10 +149,10 @@ export default function AppointmentsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'bg-[#8FBC8F]/20 text-[#8FBC8F] border-[#8FBC8F]/30'
-      case 'completed': return 'bg-[#D2B48C]/20 text-[#D2B48C] border-[#D2B48C]/30'
-      case 'cancelled': return 'bg-[#DC143C]/20 text-[#DC143C] border-[#DC143C]/30'
-      default: return 'bg-[#9370DB]/20 text-[#9370DB] border-[#9370DB]/30'
+      case 'confirmed': return 'bg-green-400/20 text-green-400 border-green-400/30'
+      case 'completed': return 'bg-[#CE8A73]/20 text-[#CE8A73] border-[#CE8A73]/30'
+      case 'cancelled': return 'bg-red-400/20 text-red-400 border-red-400/30'
+      default: return 'bg-[#DD97E2]/20 text-[#DD97E2] border-[#DD97E2]/30'
     }
   }
 
@@ -169,7 +169,7 @@ export default function AppointmentsPage() {
     return (
       <div className="flex items-center justify-center min-h-[600px]">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-[#DC143C] mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#DD97E2] mx-auto mb-4" />
           <p className="text-white/60">Loading appointments...</p>
         </div>
       </div>
@@ -186,42 +186,38 @@ export default function AppointmentsPage() {
           </h1>
           <p className="text-white/60 mt-1">Manage your salon appointments and schedule</p>
         </div>
-        <GlassmorphicButton theme={theme} variant="primary" className="ml-auto">
-          <Plus className="w-4 h-4 mr-2" />
+        <button className="flex items-center gap-2 px-4 py-2 bg-[#DD97E2] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#DD97E2]/40 transition-all duration-300 ml-auto">
+          <Plus className="w-4 h-4" />
           <span>New Appointment</span>
-        </GlassmorphicButton>
+        </button>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GlassmorphicStatCard
+        <SalonStatCard
           label="Today's Appointments"
           value={stats.total}
           icon={Calendar}
-          theme={theme}
         />
-        <GlassmorphicStatCard
+        <SalonStatCard
           label="Confirmed"
           value={stats.confirmed}
           icon={CheckCircle}
-          theme={theme}
         />
-        <GlassmorphicStatCard
+        <SalonStatCard
           label="Completed"
           value={stats.completed}
           icon={Heart}
-          theme={theme}
         />
-        <GlassmorphicStatCard
+        <SalonStatCard
           label="Today's Revenue"
           value={`₹${stats.revenue.toLocaleString()}`}
           icon={DollarSign}
-          theme={theme}
         />
       </div>
 
       {/* Calendar Controls */}
-      <GlassmorphicCard theme={theme}>
+      <SalonCard>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <button
@@ -252,7 +248,7 @@ export default function AppointmentsPage() {
               className={cn(
                 "px-3 py-1 rounded-lg text-sm font-medium transition-all",
                 view === 'day' 
-                  ? "bg-gradient-to-r from-[#DC143C] to-[#9370DB] text-white" 
+                  ? "bg-[#DD97E2] text-white" 
                   : "bg-white/10 text-white/60 hover:text-white"
               )}
             >
@@ -263,7 +259,7 @@ export default function AppointmentsPage() {
               className={cn(
                 "px-3 py-1 rounded-lg text-sm font-medium transition-all",
                 view === 'week' 
-                  ? "bg-gradient-to-r from-[#DC143C] to-[#9370DB] text-white" 
+                  ? "bg-[#DD97E2] text-white" 
                   : "bg-white/10 text-white/60 hover:text-white"
               )}
             >
@@ -292,7 +288,7 @@ export default function AppointmentsPage() {
                           className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg bg-gradient-to-br from-[#DC143C] to-[#9370DB]">
+                            <div className="p-2 rounded-lg bg-[#DD97E2]">
                               <Scissors className="w-4 h-4 text-white" />
                             </div>
                             <div>
@@ -309,7 +305,7 @@ export default function AppointmentsPage() {
                               {React.createElement(getStatusIcon(apt.status), { className: 'w-3 h-3' })}
                               {apt.status}
                             </span>
-                            <span className="text-sm font-medium text-[#FFE4B5]">₹{apt.amount}</span>
+                            <span className="text-sm font-medium text-[#DD97E2]">₹{apt.amount}</span>
                           </div>
                         </div>
                       ))}
@@ -324,7 +320,7 @@ export default function AppointmentsPage() {
             )
           })}
         </div>
-      </GlassmorphicCard>
+      </SalonCard>
     </div>
   )
 }

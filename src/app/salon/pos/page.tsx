@@ -15,6 +15,7 @@ import {
   Search
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SalonCard } from '@/components/salon/SalonCard'
 
 const SALON_ORG_ID = '84a3654b-907b-472a-ac8f-a1ffb6fb711b'
 
@@ -249,7 +250,7 @@ export default function POSCheckoutPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DD97E2]"></div>
       </div>
     )
   }
@@ -259,7 +260,7 @@ export default function POSCheckoutPage() {
       {/* Left Panel - Services & Products */}
       <div className="lg:col-span-2 space-y-6 overflow-auto">
         {/* Search */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+        <SalonCard>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
             <input
@@ -267,13 +268,13 @@ export default function POSCheckoutPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search services or products..."
-              className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-purple-500"
+              className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#DD97E2]"
             />
           </div>
-        </div>
+        </SalonCard>
 
         {/* Services */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+        <SalonCard>
           <h2 className="text-xl font-bold text-white mb-4">Services</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {filteredServices.map((service) => (
@@ -283,14 +284,14 @@ export default function POSCheckoutPage() {
                 className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg p-4 transition-all text-left"
               >
                 <p className="text-white font-medium text-sm">{service.entity_name}</p>
-                <p className="text-white/60 text-xs mt-1">AED {priceData[service.id] || 0}</p>
+                <p className="text-[#DD97E2] text-xs mt-1">AED {priceData[service.id] || 0}</p>
               </button>
             ))}
           </div>
-        </div>
+        </SalonCard>
 
         {/* Products */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+        <SalonCard>
           <h2 className="text-xl font-bold text-white mb-4">Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {filteredProducts.map((product) => (
@@ -300,15 +301,15 @@ export default function POSCheckoutPage() {
                 className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg p-4 transition-all text-left"
               >
                 <p className="text-white font-medium text-sm">{product.entity_name}</p>
-                <p className="text-white/60 text-xs mt-1">AED {priceData[product.id] || 0}</p>
+                <p className="text-[#DD97E2] text-xs mt-1">AED {priceData[product.id] || 0}</p>
               </button>
             ))}
           </div>
-        </div>
+        </SalonCard>
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col h-full">
+      <SalonCard className="flex flex-col h-full p-0">
         {/* Cart Header */}
         <div className="p-6 border-b border-white/10">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -323,7 +324,7 @@ export default function POSCheckoutPage() {
           <select
             value={selectedCustomer}
             onChange={(e) => setSelectedCustomer(e.target.value)}
-            className="w-full bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+            className="w-full bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#DD97E2]"
           >
             <option value="">Select Customer</option>
             {customers.map((customer) => (
@@ -390,7 +391,7 @@ export default function POSCheckoutPage() {
           </div>
           <div className="flex items-center justify-between text-lg font-bold">
             <span className="text-white">Total</span>
-            <span className="text-white">AED {calculateTotal().toFixed(2)}</span>
+            <span className="text-[#DD97E2]">AED {calculateTotal().toFixed(2)}</span>
           </div>
 
           {/* Payment Method */}
@@ -400,7 +401,7 @@ export default function POSCheckoutPage() {
               className={cn(
                 "flex-1 py-2 rounded-lg border transition-all flex items-center justify-center gap-2",
                 paymentMethod === 'cash'
-                  ? "bg-purple-500/20 border-purple-500 text-white"
+                  ? "bg-[#DD97E2]/20 border-[#DD97E2] text-white"
                   : "bg-white/5 border-white/10 text-white/60"
               )}
             >
@@ -412,7 +413,7 @@ export default function POSCheckoutPage() {
               className={cn(
                 "flex-1 py-2 rounded-lg border transition-all flex items-center justify-center gap-2",
                 paymentMethod === 'card'
-                  ? "bg-purple-500/20 border-purple-500 text-white"
+                  ? "bg-[#DD97E2]/20 border-[#DD97E2] text-white"
                   : "bg-white/5 border-white/10 text-white/60"
               )}
             >
@@ -425,13 +426,13 @@ export default function POSCheckoutPage() {
           <button
             onClick={handleCheckout}
             disabled={cart.length === 0 || !selectedCustomer}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg py-3 font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-[#DD97E2] text-white rounded-lg py-3 font-medium hover:shadow-lg hover:shadow-[#DD97E2]/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Receipt className="w-5 h-5" />
             Checkout
           </button>
         </div>
-      </div>
+      </SalonCard>
     </div>
   )
 }

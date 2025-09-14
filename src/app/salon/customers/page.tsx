@@ -5,6 +5,7 @@ import { universalApi } from '@/lib/universal-api'
 import { Search, Plus, User, Phone, Mail, Star, Calendar, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { SalonCard, SalonStatCard } from '@/components/salon/SalonCard'
 
 const SALON_ORG_ID = '84a3654b-907b-472a-ac8f-a1ffb6fb711b'
 
@@ -106,10 +107,10 @@ export default function CustomersPage() {
 
   const getTierColor = (tier?: string) => {
     switch (tier) {
-      case 'gold': return 'bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-700 border-amber-300'
-      case 'silver': return 'bg-gradient-to-r from-gray-100 to-slate-100 text-slate-700 border-slate-300'
-      case 'bronze': return 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-300'
-      default: return 'bg-gray-100 text-gray-600 border-gray-300'
+      case 'gold': return 'bg-yellow-400/20 text-yellow-400 border-yellow-400/30'
+      case 'silver': return 'bg-gray-400/20 text-gray-300 border-gray-400/30'
+      case 'bronze': return 'bg-orange-400/20 text-orange-400 border-orange-400/30'
+      default: return 'bg-white/10 text-white/60 border-white/20'
     }
   }
 
@@ -127,7 +128,7 @@ export default function CustomersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DD97E2]"></div>
       </div>
     )
   }
@@ -137,28 +138,28 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">Customers</h1>
-          <p className="text-gray-700 mt-2 font-medium">Manage your customer relationships</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">Customers</h1>
+          <p className="text-white/60 mt-1">Manage your customer relationships</p>
         </div>
-        <button className="bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] flex items-center gap-2">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center gap-2 px-4 py-2 bg-[#DD97E2] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#DD97E2]/40 transition-all duration-300">
+          <Plus className="w-4 h-4" />
           Add Customer
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
+      <SalonCard>
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by name, phone, or email..."
-                className="w-full bg-white/50 border border-white/20 rounded-lg pl-10 pr-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:bg-white/70 transition-all"
+                className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#DD97E2] transition-all"
               />
             </div>
           </div>
@@ -172,8 +173,8 @@ export default function CustomersPage() {
                 className={cn(
                   "px-4 py-2 rounded-lg border transition-all capitalize font-medium",
                   selectedTier === tier
-                    ? "bg-violet-600 border-violet-600 text-white shadow-lg"
-                    : "bg-white/50 border-white/20 text-gray-700 hover:bg-white/70 hover:text-violet-600"
+                    ? "bg-[#DD97E2] border-[#DD97E2] text-white"
+                    : "bg-white/10 border-white/10 text-white/60 hover:text-white"
                 )}
               >
                 {tier === 'all' ? 'All Tiers' : tier}
@@ -181,78 +182,76 @@ export default function CustomersPage() {
             ))}
           </div>
         </div>
-      </div>
+      </SalonCard>
 
       {/* Customer Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white/70 backdrop-blur-xl rounded-xl p-4 shadow-lg border border-white/20 hover:bg-white/80 transition-all">
-          <p className="text-gray-600 text-sm font-medium">Total Customers</p>
-          <p className="text-gray-900 text-2xl font-bold mt-1">{customers.length}</p>
-        </div>
-        <div className="bg-white/70 backdrop-blur-xl rounded-xl p-4 shadow-lg border border-white/20 hover:bg-white/80 transition-all">
-          <p className="text-gray-600 text-sm font-medium">Gold Members</p>
-          <p className="text-gray-900 text-2xl font-bold mt-1">
-            {customers.filter(c => c.loyalty_tier === 'gold').length}
-          </p>
-        </div>
-        <div className="bg-white/70 backdrop-blur-xl rounded-xl p-4 shadow-lg border border-white/20 hover:bg-white/80 transition-all">
-          <p className="text-gray-600 text-sm font-medium">New This Month</p>
-          <p className="text-gray-900 text-2xl font-bold mt-1">
-            {customers.filter(c => {
-              const created = new Date(c.created_at)
-              const now = new Date()
-              return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()
-            }).length}
-          </p>
-        </div>
-        <div className="bg-white/70 backdrop-blur-xl rounded-xl p-4 shadow-lg border border-white/20 hover:bg-white/80 transition-all">
-          <p className="text-gray-600 text-sm font-medium">Total Revenue</p>
-          <p className="text-gray-900 text-2xl font-bold mt-1">
-            AED {customers.reduce((sum, c) => sum + (c.total_spent || 0), 0).toFixed(0)}
-          </p>
-        </div>
+        <SalonStatCard
+          label="Total Customers"
+          value={customers.length}
+          icon={User}
+        />
+        <SalonStatCard
+          label="Gold Members"
+          value={customers.filter(c => c.loyalty_tier === 'gold').length}
+          icon={Star}
+        />
+        <SalonStatCard
+          label="New This Month"
+          value={customers.filter(c => {
+            const created = new Date(c.created_at)
+            const now = new Date()
+            return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()
+          }).length}
+          icon={Calendar}
+        />
+        <SalonStatCard
+          label="Total Revenue"
+          value={`AED ${customers.reduce((sum, c) => sum + (c.total_spent || 0), 0).toFixed(0)}`}
+          icon={DollarSign}
+        />
       </div>
 
       {/* Customer List */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+      <SalonCard className="p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/20">
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Customer</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Contact</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Loyalty Tier</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Visits</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Total Spent</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Last Visit</th>
-                <th className="text-left p-6 text-gray-700 font-semibold uppercase tracking-wider text-sm">Actions</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Customer</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Contact</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Loyalty Tier</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Visits</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Total Spent</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Last Visit</th>
+                <th className="text-left p-6 text-white/60 font-semibold uppercase tracking-wider text-sm">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredCustomers.map((customer) => (
-                <tr key={customer.id} className="border-b border-white/10 hover:bg-white/50 transition-all">
+                <tr key={customer.id} className="border-b border-white/10 hover:bg-white/5 transition-all">
                   <td className="p-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
+                      <div className="w-10 h-10 bg-[#DD97E2] rounded-full flex items-center justify-center">
                         <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <p className="text-gray-900 font-semibold">{customer.entity_name}</p>
-                        <p className="text-gray-600 text-sm">{customer.entity_code}</p>
+                        <p className="text-white font-semibold">{customer.entity_name}</p>
+                        <p className="text-white/60 text-sm">{customer.entity_code}</p>
                       </div>
                     </div>
                   </td>
                   <td className="p-6">
                     <div className="space-y-1">
                       {customer.phone && (
-                        <div className="flex items-center gap-2 text-gray-700 text-sm">
-                          <Phone className="w-4 h-4 text-gray-500" />
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <Phone className="w-4 h-4 text-white/40" />
                           {customer.phone}
                         </div>
                       )}
                       {customer.email && (
-                        <div className="flex items-center gap-2 text-gray-700 text-sm">
-                          <Mail className="w-4 h-4 text-gray-500" />
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <Mail className="w-4 h-4 text-white/40" />
                           {customer.email}
                         </div>
                       )}
@@ -269,25 +268,25 @@ export default function CustomersPage() {
                     )}
                   </td>
                   <td className="p-6">
-                    <div className="flex items-center gap-2 text-gray-700">
-                      <Calendar className="w-4 h-4 text-gray-500" />
+                    <div className="flex items-center gap-2 text-white/80">
+                      <Calendar className="w-4 h-4 text-white/40" />
                       {customer.total_visits || 0}
                     </div>
                   </td>
                   <td className="p-6">
-                    <div className="flex items-center gap-2 text-gray-700">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
+                    <div className="flex items-center gap-2 text-[#DD97E2]">
+                      <DollarSign className="w-4 h-4 text-[#DD97E2]/60" />
                       AED {(customer.total_spent || 0).toFixed(2)}
                     </div>
                   </td>
                   <td className="p-6">
-                    <p className="text-gray-700 text-sm">{formatDate(customer.last_visit)}</p>
+                    <p className="text-white/60 text-sm">{formatDate(customer.last_visit)}</p>
                   </td>
                   <td className="p-6">
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/salon/customers/${customer.id}`}
-                        className="text-violet-600 hover:text-violet-700 text-sm font-semibold hover:underline"
+                        className="text-[#DD97E2] hover:text-[#DD97E2]/80 text-sm font-semibold hover:underline"
                       >
                         View Profile
                       </Link>
@@ -301,10 +300,10 @@ export default function CustomersPage() {
 
         {filteredCustomers.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-gray-600">No customers found matching your criteria</p>
+            <p className="text-white/60">No customers found matching your criteria</p>
           </div>
         )}
-      </div>
+      </SalonCard>
     </div>
   )
 }
