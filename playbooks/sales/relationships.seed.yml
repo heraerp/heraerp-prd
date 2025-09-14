@@ -1,0 +1,19 @@
+smart_code: HERA.SALES.RELATIONSHIPS.SEED.v1
+rows:
+  # Price list contents
+  - from_slug: price_list:STANDARD
+    to_slug:   product:SKU-001
+    relationship_type: ITEM_IN_PRICE_LIST
+    relationship_data: { list_price: 100.00, currency_code: "GBP" }
+
+  - from_slug: price_list:STANDARD
+    to_slug:   product:SKU-002
+    relationship_type: ITEM_IN_PRICE_LIST
+    relationship_data: { list_price: 15.00, currency_code: "GBP" }
+
+  # Customer default price list
+  - from_slug: customer:ALICE
+    to_slug:   price_list:STANDARD
+    relationship_type: CUSTOMER_PRICE_LIST
+    relationship_data: {}
+

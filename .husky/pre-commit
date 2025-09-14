@@ -22,3 +22,23 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "✅ All checks passed!"
+
+# Schema compat guard (fail if rewrites needed)
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\\.ya?ml$' || true)
+if [ -n "$FILES" ]; then
+  echo "🧭 Checking HERA bundle schema (compat guard)..."
+  npm run schema:precommit
+  if [ $? -ne 0 ]; then
+    echo "❌ Legacy bundle fields detected that require compat rewrite."
+    echo "💡 Run 'npm run schema:compat:write -- .' to persist rewrites, then re-commit."
+    exit 1
+  fi
+fi
+
+# Rebuild DAG graph for changed bundles (optional)
+if command -v dot >/dev/null 2>&1; then
+  npm run schema:graph -- . >/dev/null 2>&1 || true
+  if git ls-files --error-unmatch .hera/graph.dot >/dev/null 2>&1; then
+    git add .hera/graph.dot .hera/graph.svg 2>/dev/null || true
+  fi
+fi

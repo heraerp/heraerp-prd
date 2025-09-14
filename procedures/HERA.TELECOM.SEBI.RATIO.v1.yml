@@ -1,0 +1,102 @@
+# /procedures/HERA.TELECOM.SEBI.RATIO.v1.yml
+smart_code: HERA.TELECOM.SEBI.RATIO.v1
+intent: >
+  Calculate and monitor SEBI IPO readiness ratios for telecom companies with automated compliance tracking.
+scope:
+  in_scope: 
+    - Six key SEBI ratios calculation for IPO readiness
+    - Historical ratio tracking and trend analysis
+    - Automated compliance alerts and threshold monitoring
+    - Industry benchmarking against telecom sector averages
+    - IPO readiness dashboard data preparation
+  out_of_scope: 
+    - SEBI filing document preparation (separate procedures)
+    - Legal compliance validation (separate procedures)
+    - Market timing recommendations (separate procedures)
+preconditions:
+  - Financial statements available for calculation period
+  - Chart of Accounts setup with IFRS-compliant mapping
+  - Historical data available for trend analysis (min 3 periods)
+  - permissions: [sebi_ratio_calculate, compliance_read]
+invariants:
+  - ratio calculations use audited financial data only
+  - all calculations include organization_id isolation
+  - benchmark data updated quarterly from industry sources
+  - compliance status tracked with effective dates
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: core_organizations
+    - name: calculation_date
+      type: date
+      where: payload
+    - name: financial_period
+      type: string
+      where: payload
+  optional:
+    - name: benchmark_industry
+      type: string
+      where: payload
+    - name: include_subsidiaries
+      type: boolean
+      where: payload
+    - name: ratio_types
+      type: string[]
+      where: payload
+outputs:
+  entities_created:
+    - sebi_ratio_calculation: core_entities with calculation results
+    - compliance_status: core_entities with pass/fail status
+  transactions_emitted:
+    - slug: SEBI_RATIO_CALCULATION
+      header_rules: calculation_date, financial_period, organization
+      line_rules: ratio_name, calculated_value, benchmark_value, compliance_status
+    - slug: COMPLIANCE_MONITORING
+      header_rules: compliance_date, overall_status, next_review_date
+      line_rules: individual_ratio_status, improvement_recommendations
+happy_path:
+  - step: Extract financial data from Chart of Accounts for period
+  - step: Calculate six key SEBI ratios using standardized formulas
+  - step: Compare against SEBI minimum requirements and industry benchmarks
+  - step: Determine overall IPO readiness status and individual ratio compliance
+  - step: Generate trend analysis comparing to historical calculations
+  - step: Create ratio calculation entity with detailed breakdown
+  - step: Create compliance monitoring transaction with status updates
+  - step: Generate alerts for ratios below compliance thresholds
+  - step: Return comprehensive ratio analysis with recommendations
+errors:
+  - code: FINANCIAL_DATA_INCOMPLETE
+    when: required GL account balances not available
+    action: identify missing accounts and suggest data completion
+  - code: CALCULATION_PERIOD_INVALID
+    when: financial_period does not match available data
+    action: list available periods and suggest valid alternatives
+  - code: BENCHMARK_DATA_MISSING
+    when: industry benchmark data not available
+    action: use fallback benchmarks and flag for manual update
+  - code: HISTORICAL_DATA_INSUFFICIENT
+    when: less than 3 periods available for trend analysis
+    action: calculate available trends and note data limitations
+  - code: SUBSIDIARY_CONSOLIDATION_ERROR
+    when: subsidiary financial data cannot be consolidated
+    action: calculate parent-only ratios and flag consolidation issues
+observability:
+  logs: [procedure_started, financial_data_extracted, ratios_calculated, compliance_determined]
+  audit_json: true
+  metrics: [calculation_time_ms, ratios_compliant_count, overall_ipo_readiness_score]
+example_payload:
+  organization_id: "a1b2c3d4-5678-90ab-cdef-000000000001"
+  calculation_date: "2025-03-31"
+  financial_period: "FY2024-25"
+  benchmark_industry: "telecom_broadband"
+  include_subsidiaries: true
+  ratio_types: ["debt_equity", "return_networth", "net_profit_margin", "current_ratio", "asset_turnover", "interest_coverage"]
+checks:
+  - description: All six SEBI ratios calculated with accurate financial data
+  - description: Compliance status determined for each ratio against SEBI requirements
+  - description: Industry benchmarking completed with current sector data
+  - description: Historical trend analysis provided for available periods
+  - description: Overall IPO readiness score calculated and documented
+  - description: Automated alerts generated for non-compliant ratios
+  - description: Recommendations provided for ratio improvement where needed

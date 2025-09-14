@@ -1,0 +1,25 @@
+smart_code: HERA.CRM.DYNAMIC_KEYS.CORE.v1
+items:
+  # Account
+  - { slug: account.industry,       entity_type: ENTITY, name: "Industry",       metadata: { type: "text" } }
+  - { slug: account.segment,        entity_type: ENTITY, name: "Segment",        metadata: { type: "text" } }
+  - { slug: account.website,        entity_type: ENTITY, name: "Website",        metadata: { type: "text" } }
+
+  # Contact
+  - { slug: contact.email,          entity_type: ENTITY, name: "Email",          metadata: { type: "text" } }
+  - { slug: contact.phone,          entity_type: ENTITY, name: "Phone",          metadata: { type: "text" } }
+  - { slug: contact.title,          entity_type: ENTITY, name: "Title",          metadata: { type: "text" } }
+
+  # Lead
+  - { slug: lead.source,            entity_type: ENTITY, name: "Source",         metadata: { type: "text" } }
+  - { slug: lead.status,            entity_type: ENTITY, name: "Status",         metadata: { type: "text", allowed: ["new","qualified","unqualified","converted"] } }
+
+  # Opportunity
+  - { slug: opportunity.stage,      entity_type: ENTITY, name: "Stage",          metadata: { type: "text", allowed: ["prospecting","qualification","proposal","negotiation","won","lost"] } }
+  - { slug: opportunity.amount,     entity_type: ENTITY, name: "Amount",         metadata: { type: "number" } }
+  - { slug: opportunity.close_date, entity_type: ENTITY, name: "Close Date",     metadata: { type: "date" } }
+
+  # Activity
+  - { slug: activity.type,          entity_type: ENTITY, name: "Activity Type",  metadata: { type: "text", allowed: ["call","email","meeting","task"] } }
+  - { slug: activity.subject,       entity_type: ENTITY, name: "Subject",        metadata: { type: "text" } }
+

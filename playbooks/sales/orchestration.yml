@@ -1,0 +1,12 @@
+smart_code: HERA.SYSTEM.PLAYBOOK.SALES_SEED.v1
+
+contracts:
+  - entities.core.yml
+  - entities.keydefs.yml
+  - dynamic_data.seed.yml
+  - relationships.seed.yml
+  - reports.yml
+  - tests.uat.yml
+
+vars:
+  default_currency: GBP

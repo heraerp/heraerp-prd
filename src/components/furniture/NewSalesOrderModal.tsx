@@ -66,14 +66,23 @@ interface OrderLineItem {
 interface NewSalesOrderModalProps {
   trigger?: React.ReactNode
   onOrderCreated?: (orderId: string) => void
+  organizationId?: string
+  organizationName?: string
 }
 
-export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSalesOrderModalProps) {
-  const { organizationId } = useDemoOrganization()
+export default function NewSalesOrderModal({ trigger, onOrderCreated, organizationId: propOrgId, organizationName }: NewSalesOrderModalProps) {
+  const { organizationId: hookOrgId, orgLoading, hasOrganization } = useDemoOrganization()
   const { toast } = useToast()
   
-  // 🧬 HERA DNA: Document Numbering Hook
-  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } = useHeraDocumentNumbering(organizationId, 'furniture')
+  // Use prop organizationId if provided, otherwise use hook
+  const organizationId = propOrgId || hookOrgId
+  const hasValidOrganization = !!organizationId
+  
+  // 🧬 HERA DNA: Document Numbering Hook - only initialize if we have an organization
+  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } = useHeraDocumentNumbering(
+    hasValidOrganization ? organizationId : null, 
+    'furniture'
+  )
   
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -110,10 +119,10 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSales
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
   useEffect(() => {
-    if (isOpen && organizationId) {
+    if (isOpen && hasValidOrganization && organizationId) {
       loadData()
     }
-  }, [isOpen, organizationId])
+  }, [isOpen, organizationId, hasValidOrganization])
 
   useEffect(() => {
     if (customerSearchTerm) {
@@ -141,6 +150,11 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSales
 
   const loadData = async () => {
     try {
+      if (!organizationId || !hasValidOrganization) {
+        console.error('No organization ID available')
+        return
+      }
+      
       universalApi.setOrganizationId(organizationId)
       
       // Load customers
@@ -266,6 +280,16 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSales
 
   const handleCreateCustomer = async () => {
     if (!customerFormData.name.trim()) return
+    
+    // Check if we have a valid organization ID
+    if (!hasValidOrganization || !organizationId) {
+      toast({
+        title: "Error",
+        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
+        variant: "destructive"
+      })
+      return
+    }
 
     try {
       setIsSubmitting(true)
@@ -319,6 +343,16 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSales
 
   const handleSubmitOrder = async () => {
     if (!selectedCustomer || lineItems.length === 0) return
+    
+    // Check if we have a valid organization ID
+    if (!hasValidOrganization || !organizationId) {
+      toast({
+        title: "Error",
+        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
+        variant: "destructive"
+      })
+      return
+    }
 
     try {
       setIsSubmitting(true)
@@ -536,14 +570,45 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated }: NewSales
   }
 
   const totals = calculateTotals()
+  
+  // Debug logging
+  console.log('NewSalesOrderModal render state:', {
+    organizationId,
+    hasValidOrganization,
+    orgLoading,
+    isOpen,
+    propOrgId
+  })
+
+  const handleOpenChange = (open: boolean) => {
+    console.log('NewSalesOrderModal handleOpenChange:', { 
+      open, 
+      hasValidOrganization, 
+      organizationId, 
+      orgLoading 
+    })
+    
+    if (open && (!hasValidOrganization || !organizationId)) {
+      toast({
+        title: "No Organization Context",
+        description: "Please log in or wait for demo organization to load.",
+        variant: "destructive"
+      })
+      return
+    }
+    setIsOpen(open)
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+          <Button 
+            className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            disabled={orgLoading}
+          >
             <Plus className="h-4 w-4" />
-            New Sales Order
+            {orgLoading ? 'Loading...' : 'New Sales Order'}
           </Button>
         )}
       </DialogTrigger>

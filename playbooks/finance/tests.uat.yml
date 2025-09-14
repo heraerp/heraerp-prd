@@ -1,0 +1,28 @@
+smart_code: HERA.TEST.SCOPE.FINANCE_MINI.v1
+setup: []
+teardown: []
+
+cases:
+  - name: "POS order posts to GL"
+    execute:
+      procedure_code: HERA.FINANCE.PROCEDURE.POST.POS_ORDER_TO_GL.v1
+      inputs:
+        source_transaction_id: "{{ created_pos_order_id }}"
+    arrange:
+      # Create a POS order via your tx-create flow first (header+lines below)
+      create_transaction_from_file: tests/payloads/pos_order.json
+      assign_output_to: created_pos_order_id
+
+    expect:
+      transactions:
+        headers:
+          - { transaction_type: "journal_entry", status: "posted" }
+        lines:
+          - { line_type: "gl_debit_line" }
+          - { line_type: "gl_credit_line" }
+      gl_diff:
+        debit_eq_credit: true
+        currency_code: GBP
+
+strict: true
+

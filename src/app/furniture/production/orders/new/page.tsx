@@ -1,0 +1,434 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft, Plus, Trash2, Calendar, Package, User, FileText, AlertCircle } from 'lucide-react'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import { universalApi } from '@/lib/universal-api'
+import { formatCurrency } from '@/lib/utils'
+import { format } from 'date-fns'
+
+interface OrderLine {
+  productId: string
+  quantity: number
+  unitPrice: number
+  totalPrice: number
+}
+
+export default function NewProductionOrderPage() {
+  const router = useRouter()
+  const { organizationId, orgLoading } = useDemoOrganization()
+  
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({
+    customerId: '',
+    deliveryDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), // 7 days from now
+    priority: 'normal',
+    notes: ''
+  })
+  const [orderLines, setOrderLines] = useState<OrderLine[]>([])
+
+  // Load customers
+  const { data: customers } = useUniversalData({
+    table: 'core_entities',
+    filter: (item) => 
+      item.entity_type === 'customer' && 
+      item.organization_id === organizationId,
+    organizationId,
+    enabled: !!organizationId
+  })
+
+  // Load products
+  const { data: products } = useUniversalData({
+    table: 'core_entities',
+    filter: (item) => 
+      item.entity_type === 'product' && 
+      item.organization_id === organizationId,
+    organizationId,
+    enabled: !!organizationId
+  })
+
+  // Load product prices from dynamic data
+  const { data: dynamicData } = useUniversalData({
+    table: 'core_dynamic_data',
+    filter: (item) => 
+      item.organization_id === organizationId &&
+      item.field_name === 'sale_price',
+    organizationId,
+    enabled: !!organizationId
+  })
+
+  const getProductPrice = (productId: string): number => {
+    const priceData = dynamicData?.find(d => d.entity_id === productId)
+    return priceData?.field_value_number || 0
+  }
+
+  const addOrderLine = () => {
+    setOrderLines([...orderLines, {
+      productId: '',
+      quantity: 1,
+      unitPrice: 0,
+      totalPrice: 0
+    }])
+  }
+
+  const removeOrderLine = (index: number) => {
+    setOrderLines(orderLines.filter((_, i) => i !== index))
+  }
+
+  const updateOrderLine = (index: number, field: keyof OrderLine, value: any) => {
+    const updatedLines = [...orderLines]
+    updatedLines[index] = { ...updatedLines[index], [field]: value }
+    
+    // Auto-calculate when product is selected
+    if (field === 'productId' && value) {
+      const price = getProductPrice(value)
+      updatedLines[index].unitPrice = price
+      updatedLines[index].totalPrice = price * updatedLines[index].quantity
+    }
+    
+    // Recalculate total when quantity changes
+    if (field === 'quantity') {
+      updatedLines[index].totalPrice = updatedLines[index].unitPrice * value
+    }
+    
+    setOrderLines(updatedLines)
+  }
+
+  const calculateTotal = () => {
+    return orderLines.reduce((sum, line) => sum + line.totalPrice, 0)
+  }
+
+  const generateOrderCode = () => {
+    const timestamp = Date.now().toString(36).toUpperCase()
+    return `PO-${timestamp}`
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    
+    if (!formData.customerId) {
+      setError('Please select a customer')
+      return
+    }
+    
+    if (orderLines.length === 0 || orderLines.some(line => !line.productId)) {
+      setError('Please add at least one product to the order')
+      return
+    }
+    
+    setLoading(true)
+    
+    try {
+      // Set organization context
+      universalApi.setOrganizationId(organizationId!)
+      
+      // Create the production order transaction
+      const orderData = {
+        organization_id: organizationId!,
+        transaction_type: 'production_order' as const,
+        transaction_code: generateOrderCode(),
+        transaction_date: new Date().toISOString(),
+        from_entity_id: formData.customerId,
+        total_amount: calculateTotal(),
+        description: `Production order for ${customers?.find(c => c.id === formData.customerId)?.entity_name}`,
+        smart_code: 'HERA.FURNITURE.PROD.ORDER.v1',
+        metadata: {
+          delivery_date: formData.deliveryDate,
+          priority: formData.priority,
+          notes: formData.notes,
+          status: 'pending',
+          created_at: new Date().toISOString()
+        }
+      }
+      
+      // Create order with line items
+      const result = await universalApi.createTransaction({
+        ...orderData,
+        line_items: orderLines.map((line, index) => ({
+          organization_id: organizationId!,
+          line_number: index + 1,
+          entity_id: line.productId,  // Changed from line_entity_id to entity_id
+          quantity: line.quantity.toString(),  // Convert to string as per schema
+          unit_price: line.unitPrice,
+          line_amount: line.totalPrice,
+          description: products?.find(p => p.id === line.productId)?.entity_name || '',
+          smart_code: 'HERA.FURNITURE.PROD.ORDER.LINE.v1',
+          metadata: {
+            product_name: products?.find(p => p.id === line.productId)?.entity_name
+          }
+        }))
+      })
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create production order')
+      }
+      
+      // Navigate to the orders list
+      router.push('/furniture/production/orders')
+    } catch (err) {
+      console.error('Error creating production order:', err)
+      setError('Failed to create production order. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (orgLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/furniture/production/orders"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">New Production Order</h1>
+            <p className="text-gray-600 dark:text-gray-400">Create a new manufacturing order</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Alert */}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4">
+          <div className="flex">
+            <AlertCircle className="h-5 w-5 text-red-400" />
+            <div className="ml-3">
+              <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Order Details Card */}
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Order Details</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Customer Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <User className="inline h-4 w-4 mr-1" />
+                Customer
+              </label>
+              <select
+                value={formData.customerId}
+                onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
+                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                required
+              >
+                <option value="">Select a customer</option>
+                {customers?.map((customer) => (
+                  <option key={customer.id} value={customer.id}>
+                    {customer.entity_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Delivery Date */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Calendar className="inline h-4 w-4 mr-1" />
+                Delivery Date
+              </label>
+              <input
+                type="date"
+                value={formData.deliveryDate}
+                onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
+                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
+
+            {/* Priority */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Priority
+              </label>
+              <select
+                value={formData.priority}
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+              >
+                <option value="low">Low</option>
+                <option value="normal">Normal</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <FileText className="inline h-4 w-4 mr-1" />
+                Notes
+              </label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                rows={3}
+                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                placeholder="Special instructions or notes..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Order Items Card */}
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Order Items</h2>
+            <button
+              type="button"
+              onClick={addOrderLine}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Item
+            </button>
+          </div>
+
+          {orderLines.length === 0 ? (
+            <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+              <Package className="mx-auto h-12 w-12 text-gray-400" />
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">No items added yet</p>
+              <button
+                type="button"
+                onClick={addOrderLine}
+                className="mt-3 text-sm text-amber-600 hover:text-amber-500"
+              >
+                Add your first item
+              </button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead>
+                  <tr>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Product
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Quantity
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Unit Price
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Total
+                    </th>
+                    <th className="px-3 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {orderLines.map((line, index) => (
+                    <tr key={index}>
+                      <td className="px-3 py-4">
+                        <select
+                          value={line.productId}
+                          onChange={(e) => updateOrderLine(index, 'productId', e.target.value)}
+                          className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
+                          required
+                        >
+                          <option value="">Select product</option>
+                          {products?.map((product) => (
+                            <option key={product.id} value={product.id}>
+                              {product.entity_name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-3 py-4">
+                        <input
+                          type="number"
+                          min="1"
+                          value={line.quantity}
+                          onChange={(e) => updateOrderLine(index, 'quantity', parseInt(e.target.value) || 1)}
+                          className="block w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
+                          required
+                        />
+                      </td>
+                      <td className="px-3 py-4">
+                        <div className="text-sm text-gray-900 dark:text-white">
+                          {formatCurrency(line.unitPrice)}
+                        </div>
+                      </td>
+                      <td className="px-3 py-4">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          {formatCurrency(line.totalPrice)}
+                        </div>
+                      </td>
+                      <td className="px-3 py-4">
+                        <button
+                          type="button"
+                          onClick={() => removeOrderLine(index)}
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan={3} className="px-3 py-4 text-right text-sm font-medium text-gray-900 dark:text-white">
+                      Total
+                    </td>
+                    <td className="px-3 py-4 text-lg font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(calculateTotal())}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end space-x-4">
+          <Link
+            href="/furniture/production/orders"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={loading}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Creating...
+              </>
+            ) : (
+              'Create Production Order'
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}

@@ -228,6 +228,9 @@ async function startServer() {
   const masterVerificationTools = getMasterVerificationTools();
   const masterVerificationHandlers = getMasterVerificationHandlers(supabase);
 
+  // Bundle/Data read tools (universal, read-only)
+  const { handleMCPRequest: handleDataTools } = require('./mcp-data-tools');
+
   /**
    * HERA MCP Server with SACRED Rules Enforcement
    */
@@ -255,6 +258,52 @@ async function startServer() {
       this.server.setRequestHandler("tools/list", async () => {
         return {
           tools: [
+            {
+              name: "hera.select",
+              description: "Read-only, org-scoped, parameterized SELECT against Sacred Six.",
+              inputSchema: {
+                type: "object",
+                required: ["table"],
+                properties: {
+                  table: { type: "string", enum: [
+                    "core_entities",
+                    "core_relationships",
+                    "core_dynamic_data",
+                    "universal_transactions",
+                    "universal_transaction_lines"
+                  ]},
+                  columns: { type: "array", items: { type: "string" } },
+                  filters: { type: "object" },
+                  order_by: { type: "array", items: { type: "object", properties: { column: { type: "string" }, direction: { type: "string", enum: ["asc","desc"] } }, required: ["column"] } },
+                  limit: { type: "number", minimum: 1, maximum: 1000, default: 50 },
+                  offset: { type: "number", minimum: 0, default: 0 },
+                  embed: { type: "object", properties: { lines_for_transactions: { type: "boolean" }, entity_dynamic_data: { type: "boolean" } } }
+                }
+              }
+            },
+            {
+              name: "hera.report.run",
+              description: "Run a pre-registered read-only report by smart_code.",
+              inputSchema: {
+                type: "object",
+                required: ["report_code"],
+                properties: {
+                  report_code: { type: "string" },
+                  params: { type: "object" },
+                  format: { type: "string", enum: ["json","csv"], default: "json" }
+                }
+              }
+            },
+            {
+              name: "hera.labels.get",
+              description: "Get per-type display labels (singular/plural) grouped by locale.",
+              inputSchema: {
+                type: "object",
+                properties: {
+                  locale: { type: "string", description: "Optional locale filter, e.g., en-GB" }
+                }
+              }
+            },
             {
               name: "create-entity",
               description: "Create a universal business entity with SACRED rules enforcement",
@@ -439,6 +488,38 @@ async function startServer() {
                 }, null, 2)
               }]
             };
+          }
+
+          // Universal read tools (org-scoped; server injects org)
+          if (name === 'hera.select') {
+            const prev = process.env.HERA_ORG_ID
+            try {
+              process.env.HERA_ORG_ID = orgId
+              const out = await handleDataTools('hera.select', args || {})
+              return { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] }
+            } finally {
+              if (prev != null) process.env.HERA_ORG_ID = prev; else delete process.env.HERA_ORG_ID
+            }
+          }
+          if (name === 'hera.report.run') {
+            const prev = process.env.HERA_ORG_ID
+            try {
+              process.env.HERA_ORG_ID = orgId
+              const out = await handleDataTools('hera.report.run', args || {})
+              return { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] }
+            } finally {
+              if (prev != null) process.env.HERA_ORG_ID = prev; else delete process.env.HERA_ORG_ID
+            }
+          }
+          if (name === 'hera.labels.get') {
+            const prev = process.env.HERA_ORG_ID
+            try {
+              process.env.HERA_ORG_ID = orgId
+              const out = await handleDataTools('hera.labels.get', args || {})
+              return { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] }
+            } finally {
+              if (prev != null) process.env.HERA_ORG_ID = prev; else delete process.env.HERA_ORG_ID
+            }
           }
 
           if (name === "create-entity") {

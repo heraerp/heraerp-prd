@@ -1,0 +1,12 @@
+smart_code: HERA.SYSTEM.SMART_CODE.REGISTRY_OVERLAY.v1
+allocations:
+  - code: HERA.FINANCE.ENTITY_CATALOG.CORE.v1
+    status: active
+    owner: finance-core@yourco
+  - code: HERA.FINANCE.PROCEDURES.CORE.v1
+    status: active
+    owner: finance-engineering@yourco
+  - code: HERA.FINANCE.REPORT.REVENUE_BY_DAY.v1
+    status: proposed
+    owner: analytics@yourco
+

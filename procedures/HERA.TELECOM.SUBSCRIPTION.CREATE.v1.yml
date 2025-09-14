@@ -1,0 +1,114 @@
+# /procedures/HERA.TELECOM.SUBSCRIPTION.CREATE.v1.yml
+smart_code: HERA.TELECOM.SUBSCRIPTION.CREATE.v1
+intent: >
+  Create new customer subscription for telecom services with agent commission tracking and revenue recognition.
+scope:
+  in_scope: 
+    - Customer subscription creation and activation
+    - Service plan assignment and pricing
+    - Agent commission calculation and tracking
+    - Revenue recognition setup for recurring billing
+    - Customer-agent relationship establishment
+  out_of_scope: 
+    - Physical installation scheduling (separate procedure)
+    - Payment processing (separate procedure)
+    - Service activation/provisioning (separate procedure)
+preconditions:
+  - customer entity exists in core_entities
+  - service plan entity exists with pricing information
+  - agent entity exists and is active
+  - permissions: [subscription_create, revenue_write]
+invariants:
+  - all writes include organization_id
+  - subscription relationships created between customer, service, and agent
+  - commission amount calculated based on agent rate
+  - recurring billing setup for monthly revenue recognition
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: core_entities
+    - name: customer_id
+      type: uuid
+      where: core_entities
+    - name: service_plan_id
+      type: uuid
+      where: core_entities
+    - name: agent_id
+      type: uuid
+      where: core_entities
+    - name: monthly_amount
+      type: decimal
+      where: payload
+  optional: 
+    - name: activation_fee
+      type: decimal
+      where: payload
+    - name: contract_months
+      type: integer
+      where: payload
+    - name: discount_percent
+      type: decimal
+      where: payload
+    - name: promo_code
+      type: string
+      where: payload
+outputs:
+  entities_created:
+    - subscription_entity: core_entities with subscription details
+    - customer_subscription_relationship: core_relationships
+    - agent_customer_relationship: core_relationships
+  transactions_emitted:
+    - slug: SUBSCRIPTION_CREATION
+      header_rules: customer_id, service_plan_id, agent_id, amounts
+      line_rules: service_line, activation_line, commission_line, tax_line
+    - slug: AGENT_COMMISSION_SETUP
+      header_rules: agent_id, commission_rate, subscription_value
+      line_rules: commission_amount, commission_period
+happy_path:
+  - step: Validate customer, service plan, and agent entities exist
+  - step: Calculate subscription pricing with discounts and taxes
+  - step: Create subscription entity in core_entities
+  - step: Create customer-subscription relationship
+  - step: Create agent-customer relationship for commission tracking  
+  - step: Generate subscription creation transaction
+  - step: Setup agent commission calculation transaction
+  - step: Configure recurring billing parameters
+  - step: Return complete subscription details with relationships
+errors:
+  - code: CUSTOMER_NOT_FOUND
+    when: customer_id does not exist in organization
+    action: validate customer entity and suggest creation
+  - code: SERVICE_PLAN_INACTIVE
+    when: service_plan_id is not active or available
+    action: list available service plans for customer segment
+  - code: AGENT_NOT_AUTHORIZED
+    when: agent does not have territory/customer access
+    action: check agent territory assignments and permissions
+  - code: PRICING_CALCULATION_ERROR
+    when: discount or tax calculation fails
+    action: validate pricing rules and retry calculation
+  - code: DUPLICATE_SUBSCRIPTION
+    when: customer already has active subscription for service
+    action: suggest subscription modification procedure instead
+observability:
+  logs: [procedure_started, pricing_calculated, relationships_created, commission_setup]
+  audit_json: true
+  metrics: [subscription_value, commission_amount, processing_time_ms]
+example_payload:
+  organization_id: "a1b2c3d4-5678-90ab-cdef-000000000001"
+  customer_id: "customer-enterprise-uuid"
+  service_plan_id: "broadband-100mbps-uuid"
+  agent_id: "agent-kochi-uuid"
+  monthly_amount: 1499.00
+  activation_fee: 1000.00
+  contract_months: 12
+  discount_percent: 10.0
+  promo_code: "NEW2025"
+checks:
+  - description: Subscription entity created with active status relationship
+  - description: Customer-subscription relationship established
+  - description: Agent-customer relationship created for commission tracking
+  - description: Subscription transaction created with correct line items
+  - description: Agent commission transaction setup for recurring calculation
+  - description: Monthly recurring revenue recognition configured

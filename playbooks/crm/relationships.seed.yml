@@ -1,0 +1,32 @@
+smart_code: HERA.CRM.RELATIONSHIPS.SEED.v1
+rows:
+  - from_slug: account:ACME
+    to_slug:   contact:JANE_DOE
+    relationship_type: ACCOUNT_HAS_CONTACT
+    relationship_data: { primary: true }
+
+  - from_slug: account:ACME
+    to_slug:   opportunity:ACME-O-001
+    relationship_type: ACCOUNT_HAS_OPPORTUNITY
+    relationship_data: {}
+
+  - from_slug: opportunity:ACME-O-001
+    to_slug:   contact:JANE_DOE
+    relationship_type: OPPORTUNITY_CONTACT
+    relationship_data: {}
+
+  - from_slug: campaign:SPRING24
+    to_slug:   account:ACME
+    relationship_type: CAMPAIGN_TARGETS_ACCOUNT
+    relationship_data: {}
+
+  - from_slug: campaign:SPRING24
+    to_slug:   contact:JANE_DOE
+    relationship_type: CAMPAIGN_TARGETS_CONTACT
+    relationship_data: {}
+
+  - from_slug: case:CASE-001
+    to_slug:   account:ACME
+    relationship_type: CASE_FOR_ACCOUNT
+    relationship_data: { priority: "high" }
+

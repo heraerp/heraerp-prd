@@ -1,0 +1,25 @@
+{
+  "header": {
+    "transaction_type": "crm_oppty_event",
+    "transaction_number": "OPP-STAGE-ACME-O-001-2025-09-13T10:00:00Z",
+    "transaction_date": "2025-09-13T10:00:00Z",
+    "currency_code": "GBP",
+    "total_amount": 0,
+    "status": "posted",
+    "smart_code": "HERA.CRM.DEAL.STAGE_CHANGE.v1",
+    "metadata": { "from_stage": "prospecting", "to_stage": "qualification", "reference_entity_code": "opportunity:ACME-O-001" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "activity_line",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 0,
+      "line_amount": 0,
+      "smart_code": "HERA.CRM.DEAL.STAGE_CHANGE.LINE.v1",
+      "metadata": { "change": "stage", "from": "prospecting", "to": "qualification" }
+    }
+  ]
+}
+

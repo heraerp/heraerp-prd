@@ -1,0 +1,181 @@
+name: hera-bundles
+
+on:
+  workflow_call:
+    inputs:
+      roots:
+        description: "Roots to scan for bundles"
+        required: false
+        type: string
+        default: '[".","playbooks"]'
+      baseline_names:
+        description: "Baseline file names to auto-detect"
+        required: false
+        type: string
+        default: '["baseline_catalog.json","baseline.json"]'
+      run_only_changed:
+        description: "If true, only analyze bundles touched by this PR"
+        required: false
+        type: boolean
+        default: true
+      override_label:
+        description: "PR label that forces full run"
+        required: false
+        type: string
+        default: "full-bundle-check"
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.out.outputs.matrix }}
+      run_only_changed_effective: ${{ steps.eff.outputs.run_only_changed_effective }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compute effective run_only_changed
+        id: eff
+        run: |
+          RUN_ONLY="${{ inputs.run_only_changed }}"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            HAS_LABEL=$(jq -r --arg L "${{ inputs.override_label }}" '.pull_request.labels | map(.name) | index($L)' "$GITHUB_EVENT_PATH")
+            if [ "$HAS_LABEL" != "null" ] && [ "$HAS_LABEL" != "" ]; then
+              RUN_ONLY="false"
+              echo "Label override '${{ inputs.override_label }}' detected → running ALL bundles."
+            fi
+          fi
+          echo "run_only_changed_effective=$RUN_ONLY" >> "$GITHUB_OUTPUT"
+
+      - name: Gather changed files (PR only)
+        id: changed
+        if: ${{ steps.eff.outputs.run_only_changed_effective == 'true' && github.event_name == 'pull_request' }}
+        uses: tj-actions/changed-files@v45
+        with:
+          json: 'true'
+
+      - name: Generate matrix
+        id: out
+        run: |
+          node mcp-server/scripts/gen-matrix.js \
+            --roots $(jq -cr '.[]' <<< '${{ inputs.roots }}') \
+            --baseline-names '${{ inputs.baseline_names }}' \
+            --changed '${{ steps.changed.outputs.all_changed_files || '[]' }}' > .hera.matrix.json
+          echo "matrix=$(cat .hera.matrix.json)" >> $GITHUB_OUTPUT
+
+  run-bundles:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Install graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      - name: Check bundle exists
+        id: exists
+        run: |
+          B="${{ matrix.bundle }}"
+          if [ ! -d "$B" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -f "$B/orchestration.yml" ] || [ -f "$B/orchestration.yaml" ] || [ -f "$B/universal_orchestration.yaml" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip note
+        if: steps.exists.outputs.present != 'true'
+        run: echo "⏭️ Skipping bundle '${{ matrix.name }}' (no orchestration found)."
+
+      - name: Lint (strict compat)
+        if: steps.exists.outputs.present == 'true'
+        run: npm run schema:lint:bundle -- ${{ matrix.bundle }} --compat --strict-compat
+
+      - name: Plan
+        if: steps.exists.outputs.present == 'true'
+        run: |
+          BASE=""
+          if [ -n "${{ matrix.baseline }}" ] && [ -f "${{ matrix.baseline }}" ]; then BASE="--baseline ${{ matrix.baseline }}"; fi
+          npm run schema:plan -- ${{ matrix.bundle }} $BASE
+
+      - name: Graph drift check
+        if: steps.exists.outputs.present == 'true'
+        run: |
+          BASE=""
+          if [ -n "${{ matrix.baseline }}" ] && [ -f "${{ matrix.baseline }}" ]; then BASE="--baseline ${{ matrix.baseline }}"; fi
+          npm run schema:graph:check -- ${{ matrix.bundle }} $BASE
+
+      - name: Upload graph
+        if: always() && steps.exists.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hera-graph-${{ matrix.name }}
+          path: ${{ matrix.bundle }}/.hera/graph.svg
+          if-no-files-found: ignore
+
+  comment:
+    needs: [discover]
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare comment body
+        id: body
+        env:
+          MATRIX: ${{ needs.discover.outputs.matrix }}
+          EFFECTIVE: ${{ needs.discover.outputs.run_only_changed_effective }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          OVERRIDE_LABEL: ${{ inputs.override_label || 'full-bundle-check' }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const m = JSON.parse(process.env.MATRIX || '{\"include\":[]}');
+          const eff = String(process.env.EFFECTIVE).trim() === 'true';
+          let hasOverride = false;
+          try {
+            const ev = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');
+            const label = process.env.OVERRIDE_LABEL || 'full-bundle-check';
+            hasOverride = ev.includes(label);
+          } catch {}
+          const rows = (m.include||[]).map(it => `| ${it.name} | \`${it.bundle}\` | ${it.baseline ? '\`'+it.baseline+'\`' : '—'} |`).join('\n');
+          const hdr = eff ? 'Changed bundles only' : (hasOverride ? 'Full run (label override)' : 'Full run (manual or default)');
+          const marker = '<!-- hera-bundles-report -->';
+          const md = [
+            marker,
+            `**HERA bundles selected:** _${hdr}_`,
+            '',
+            '| Name | Bundle | Baseline |',
+            '|------|--------|----------|',
+            rows || '| _none_ | — | — |',
+            '',
+            `_Add the \`${process.env.OVERRIDE_LABEL || 'full-bundle-check'}\` label to force a full run on PRs._`,
+            marker
+          ].join('\n');
+          fs.writeFileSync('.hera.pr_comment.md', md);
+          "
+
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: ./.hera.pr_comment.md
+          edit-mode: replace

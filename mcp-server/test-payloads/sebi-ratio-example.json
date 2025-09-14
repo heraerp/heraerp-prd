@@ -1,0 +1,24 @@
+{
+  "organization_id": "a1b2c3d4-5678-90ab-cdef-000000000001",
+  "calculation_date": "2025-03-31",
+  "financial_period": "FY2024-25",
+  "benchmark_industry": "telecom_broadband",
+  "include_subsidiaries": true,
+  "ratio_types": [
+    "debt_equity",
+    "return_networth", 
+    "net_profit_margin",
+    "current_ratio",
+    "asset_turnover",
+    "interest_coverage"
+  ],
+  "metadata": {
+    "calculation_purpose": "ipo_readiness_assessment",
+    "target_ipo_year": 2028,
+    "regulatory_framework": "SEBI",
+    "audited_financials": true,
+    "consolidation_method": "full_consolidation",
+    "currency": "INR",
+    "reporting_standard": "IndAS"
+  }
+}

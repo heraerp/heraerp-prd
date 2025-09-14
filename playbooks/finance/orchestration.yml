@@ -1,0 +1,14 @@
+smart_code: HERA.SYSTEM.PLAYBOOK.FINANCE_SEED.v1
+
+contracts:
+  - entities.core.yml
+  - entities.keydefs.yml
+  - dynamic_data.seed.yml
+  - relationships.seed.yml
+  - procedures.yml
+  - reports.yml
+  - read_models.yml
+  - tests.uat.yml
+
+vars:
+  default_currency: GBP

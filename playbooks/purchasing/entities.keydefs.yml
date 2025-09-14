@@ -1,0 +1,8 @@
+smart_code: HERA.PURCH.DYNAMIC_KEYS.CORE.v1
+items:
+  - { slug: product.sku,             entity_type: ENTITY, name: "SKU",            metadata: { type: "text" } }
+  - { slug: product.buy_category,    entity_type: ENTITY, name: "Buy Category",   metadata: { type: "text" } }
+  - { slug: location.location_code,  entity_type: ENTITY, name: "Location Code",  metadata: { type: "text" } }
+  - { slug: payment_terms.net_days,  entity_type: ENTITY, name: "Net Days",       metadata: { type: "number" } }
+  - { slug: vendor.lead_time_days,   entity_type: ENTITY, name: "Lead Time Days", metadata: { type: "number" } }
+  - { slug: vendor.primary_contact,  entity_type: ENTITY, name: "Primary Contact",metadata: { type: "text" } }

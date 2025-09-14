@@ -1,0 +1,22 @@
+smart_code: HERA.FINANCE.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.FINANCE.REPORT.REVENUE_BY_DAY.v1
+    description: "Daily revenue by currency"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT transaction_date::date AS day,
+               currency_code,
+               SUM(total_amount)      AS gmv
+        FROM universal_transactions
+        WHERE organization_id = $org
+          AND transaction_type = $txn_type
+          AND status = 'posted'
+          AND transaction_date BETWEEN $from AND $to
+        GROUP BY 1,2
+        ORDER BY 1
+      bindings:
+        txn_type: "pos_order"
+

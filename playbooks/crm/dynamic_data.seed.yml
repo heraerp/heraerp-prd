@@ -1,0 +1,25 @@
+smart_code: HERA.CRM.DYNAMIC_DATA.SEED.v1
+rows:
+  # Account
+  - { entity_slug: account:ACME, key_slug: account.industry, value: "software", value_type: text }
+  - { entity_slug: account:ACME, key_slug: account.segment,  value: "enterprise", value_type: text }
+  - { entity_slug: account:ACME, key_slug: account.website,  value: "https://acme.example", value_type: text }
+
+  # Contact
+  - { entity_slug: contact:JANE_DOE, key_slug: contact.email, value: "jane.doe@acme.example", value_type: text }
+  - { entity_slug: contact:JANE_DOE, key_slug: contact.phone, value: "+44 20 7946 0000", value_type: text }
+  - { entity_slug: contact:JANE_DOE, key_slug: contact.title, value: "Procurement Manager", value_type: text }
+
+  # Lead
+  - { entity_slug: lead:LEAD-001, key_slug: lead.source, value: "website", value_type: text }
+  - { entity_slug: lead:LEAD-001, key_slug: lead.status, value: "new",     value_type: text }
+
+  # Opportunity
+  - { entity_slug: opportunity:ACME-O-001, key_slug: opportunity.stage,      value: "prospecting", value_type: text }
+  - { entity_slug: opportunity:ACME-O-001, key_slug: opportunity.amount,     value: 25000, value_type: number }
+  - { entity_slug: opportunity:ACME-O-001, key_slug: opportunity.close_date, value: "2025-10-15", value_type: date }
+
+  # Activity
+  - { entity_slug: activity:CALL_GENERIC, key_slug: activity.type,    value: "call", value_type: text }
+  - { entity_slug: activity:CALL_GENERIC, key_slug: activity.subject, value: "Initial discovery", value_type: text }
+

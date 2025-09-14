@@ -25,19 +25,19 @@ The HERA multi-tenant subdomain routing system has been successfully implemented
 
 ### Development (Local)
 ```
-http://mario.lvh.me:3000/org/salon
-http://hair-talkz-karama.lvh.me:3000/org/salon
+http://mario.lvh.me:3000/org/salon-data
+http://hair-talkz-karama.lvh.me:3000/org/salon-data
 ```
 
 ### Production
 ```
-https://mario.heraerp.com/org/salon
-https://hair-talkz-karama.heraerp.com/org/salon
+https://mario.heraerp.com/org/salon-data
+https://hair-talkz-karama.heraerp.com/org/salon-data
 ```
 
 ### Path-Based Fallback (Development)
 ```
-http://localhost:3000/~mario/org/salon
+http://localhost:3000/~mario/org/salon-data
 ```
 
 ## 🔧 Key Implementation Details

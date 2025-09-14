@@ -1,0 +1,27 @@
+{
+  "organization_id": "a1b2c3d4-5678-90ab-cdef-000000000001",
+  "entity_type": "customer",
+  "entity_name": "Kerala IT Solutions Pvt Ltd",
+  "entity_code": "CUST-KIT-001",
+  "smart_code": "HERA.TELECOM.CUSTOMER.ENTERPRISE.v1",
+  "metadata": {
+    "industry": "information_technology",
+    "credit_limit": 500000,
+    "payment_terms": "NET30",
+    "gst_number": "32AALCK2342L1ZS",
+    "contact_person": "Rajesh Kumar",
+    "phone": "+91-484-2345678",
+    "email": "rajesh@keralait.com",
+    "address": {
+      "street": "Info Park Campus",
+      "city": "Kochi",
+      "state": "Kerala",
+      "pincode": "682030",
+      "country": "India"
+    }
+  },
+  "normalization_options": {
+    "similarity_threshold": 0.85,
+    "auto_resolve": false
+  }
+}

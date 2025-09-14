@@ -1,0 +1,39 @@
+smart_code: HERA.CRM.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: account,           entity_type: ENTITY_TYPE,      name: "Account" }
+  - { slug: contact,           entity_type: ENTITY_TYPE,      name: "Contact" }
+  - { slug: opportunity,       entity_type: ENTITY_TYPE,      name: "Opportunity" }
+  - { slug: lead,              entity_type: ENTITY_TYPE,      name: "Lead" }
+  - { slug: campaign,          entity_type: ENTITY_TYPE,      name: "Campaign" }
+  - { slug: case,              entity_type: ENTITY_TYPE,      name: "Case" }
+  - { slug: activity,          entity_type: ENTITY_TYPE,      name: "Activity" }
+
+  - { slug: crm_activity,      entity_type: TRANSACTION_TYPE, name: "CRM Activity" }
+  - { slug: crm_case_event,    entity_type: TRANSACTION_TYPE, name: "Case Event" }
+  - { slug: crm_oppty_event,   entity_type: TRANSACTION_TYPE, name: "Opportunity Event" }
+  - { slug: crm_campaign_resp, entity_type: TRANSACTION_TYPE, name: "Campaign Response" }
+
+  - { slug: activity_line,     entity_type: LINE_TYPE,        name: "Activity Line" }
+  - { slug: note_line,         entity_type: LINE_TYPE,        name: "Note Line" }
+
+  - { slug: ACCOUNT_HAS_CONTACT,      entity_type: REL_TYPE,  name: "Account has Contact" }
+  - { slug: ACCOUNT_HAS_OPPORTUNITY,  entity_type: REL_TYPE,  name: "Account has Opportunity" }
+  - { slug: OPPORTUNITY_CONTACT,      entity_type: REL_TYPE,  name: "Opportunity Contact" }
+  - { slug: LEAD_CONVERTED_TO_ACCOUNT,entity_type: REL_TYPE,  name: "Lead Converted to Account" }
+  - { slug: CAMPAIGN_TARGETS_CONTACT, entity_type: REL_TYPE,  name: "Campaign targets Contact" }
+  - { slug: CAMPAIGN_TARGETS_ACCOUNT, entity_type: REL_TYPE,  name: "Campaign targets Account" }
+  - { slug: CAMPAIGN_RESPONSE,        entity_type: REL_TYPE,  name: "Campaign Response" }
+  - { slug: CASE_FOR_ACCOUNT,         entity_type: REL_TYPE,  name: "Case for Account" }
+  - { slug: CASE_FOR_CONTACT,         entity_type: REL_TYPE,  name: "Case for Contact" }
+  - { slug: ASSIGNED_OWNER,           entity_type: REL_TYPE,  name: "Assigned Owner" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: account:ACME,           entity_type: ENTITY, name: "ACME Corp",       metadata: { entity_type: "account" } }
+  - { slug: contact:JANE_DOE,       entity_type: ENTITY, name: "Jane Doe",        metadata: { entity_type: "contact" } }
+  - { slug: opportunity:ACME-O-001, entity_type: ENTITY, name: "ACME Opportunity", metadata: { entity_type: "opportunity" } }
+  - { slug: lead:LEAD-001,          entity_type: ENTITY, name: "Lead One",        metadata: { entity_type: "lead" } }
+  - { slug: campaign:SPRING24,      entity_type: ENTITY, name: "Spring 2024",     metadata: { entity_type: "campaign" } }
+  - { slug: case:CASE-001,          entity_type: ENTITY, name: "Support Case 001", metadata: { entity_type: "case" } }
+  - { slug: activity:CALL_GENERIC,  entity_type: ENTITY, name: "Call",             metadata: { entity_type: "activity" } }
+

@@ -1,0 +1,85 @@
+{
+  "smart_code": "HERA.RESTAURANT.BUNDLE.ORDER.v1",
+  "test_cases": [
+    {
+      "name": "Happy path - Veg Thali with substitution",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "bundle_code": "veg_thali",
+        "items_selected": [
+          { "component": "curry", "choice": "paneer_curry" },
+          { "component": "bread", "choice": "naan" },
+          { "component": "rice", "choice": "basmati_rice" },
+          { "component": "dessert", "choice": "gulab_jamun" }
+        ]
+      },
+      "expected_outputs": {
+        "transaction_header": {
+          "transaction_type": "pos_order",
+          "smart_code": "HERA.REST.POS.TXN.ORDER.v1",
+          "total_amount": 15.99
+        },
+        "transaction_lines": [
+          {
+            "line_type": "sales_line",
+            "smart_code": "HERA.REST.POS.LINE.ITEM.v1",
+            "line_entity_id": "bundle_veg_thali_id",
+            "line_amount": 15.99
+          },
+          {
+            "line_type": "inventory_move_line",
+            "smart_code": "HERA.INV.MOVE.LINE.CONSUME.v1",
+            "quantity": -1
+          }
+        ]
+      }
+    },
+    {
+      "name": "Error - Invalid substitution",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "bundle_code": "veg_thali",
+        "items_selected": [
+          { "component": "curry", "choice": "chicken_curry" }
+        ]
+      },
+      "expected_error": {
+        "code": "INVALID_SUBSTITUTION",
+        "message": "chicken_curry not allowed for component curry in veg_thali"
+      }
+    },
+    {
+      "name": "Error - Unknown bundle",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "bundle_code": "mystery_bundle",
+        "items_selected": []
+      },
+      "expected_error": {
+        "code": "UNKNOWN_BUNDLE",
+        "message": "Bundle mystery_bundle not found"
+      }
+    },
+    {
+      "name": "Happy path - Fixed price bundle",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "bundle_code": "lunch_special",
+        "items_selected": [
+          { "component": "main", "choice": "pasta_alfredo" },
+          { "component": "drink", "choice": "iced_tea" }
+        ]
+      },
+      "expected_outputs": {
+        "transaction_header": {
+          "transaction_type": "pos_order",
+          "smart_code": "HERA.REST.POS.TXN.ORDER.v1",
+          "total_amount": 9.99,
+          "metadata": {
+            "pricing_strategy": "FIXED"
+          }
+        }
+      }
+    }
+  ]
+}

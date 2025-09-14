@@ -1,0 +1,41 @@
+smart_code: HERA.MFG.RELATIONSHIPS.SEED.v1
+rows:
+  # Product master data
+  - from_slug: product:FG-001
+    to_slug:   bom:BOM-FG001
+    relationship_type: PRODUCT_HAS_BOM
+    relationship_data: { version: "v1" }
+
+  - from_slug: product:FG-001
+    to_slug:   routing:ROUTE-FG001
+    relationship_type: PRODUCT_HAS_ROUTING
+    relationship_data: { version: "v1" }
+
+  # BOM components
+  - from_slug: bom:BOM-FG001
+    to_slug:   component:RM-001
+    relationship_type: BOM_HAS_COMPONENT
+    relationship_data: { quantity: 2, uom: "EA" }
+
+  - from_slug: bom:BOM-FG001
+    to_slug:   component:RM-002
+    relationship_type: BOM_HAS_COMPONENT
+    relationship_data: { quantity: 1, uom: "EA" }
+
+  # Routing operations
+  - from_slug: routing:ROUTE-FG001
+    to_slug:   operation:OP-ASSY
+    relationship_type: ROUTING_HAS_OPERATION
+    relationship_data: { sequence: 10 }
+
+  # Work center assignment
+  - from_slug: operation:OP-ASSY
+    to_slug:   work_center:WC-ASSY
+    relationship_type: OPERATION_AT_WORK_CENTER
+    relationship_data: {}
+
+  - from_slug: work_center:WC-ASSY
+    to_slug:   plant:PLANT-01
+    relationship_type: WORK_CENTER_IN_PLANT
+    relationship_data: {}
+

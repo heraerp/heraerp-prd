@@ -20,7 +20,9 @@ test.describe('Salon Calendar Booking (/salon-data/calendar)', () => {
 
     // Open booking modal
     await page.getByRole('button', { name: 'New Appointment' }).click()
-    await expect(page.getByRole('dialog').getByText('New Appointment')).toBeVisible({ timeout: 10000 })
+    // Modal opens with title "New event"
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByRole('dialog').getByText(/New event/i)).toBeVisible({ timeout: 10000 })
 
     // Select stylist (fallback demo data provides one stylist)
     const stylistTrigger = page.getByRole('combobox').or(page.getByText('Select a stylist'))
@@ -121,13 +123,40 @@ Console Errors (if any captured):\n${consoleErrors.join('\n') || 'None captured 
     // If enabled, complete the booking
     await saveButton.click()
 
-    // Expect the modal to close after booking and a new appointment to appear eventually
-    await expect(page.getByRole('dialog').getByText('New Appointment')).toBeHidden({ timeout: 10000 })
+    const dialog = page.getByRole('dialog')
+    const result = await Promise.race([
+      dialog.waitFor({ state: 'hidden', timeout: 10000 }).then(() => 'closed').catch(() => 'visible'),
+      page.waitForSelector('text=Booking Failed', { timeout: 10000 }).then(() => 'failed').catch(() => 'none')
+    ])
 
-    // Write success report
-    const success = `SUCCESS: Appointment booking flow passed on /salon-data/calendar`;
+    if (result !== 'closed') {
+      const consoleErrors: string[] = []
+      page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()) })
+      await page.waitForTimeout(500)
+
+      const errorReport = `CLAUDE_PROMPT: Fix booking save flow
+
+Context:
+- After clicking Save in BookAppointmentModal, the modal did not close.
+- Result: ${result}
+
+Likely Root Cause:
+- Backend writes require Supabase config. In src/lib/universal-api.ts, createTransaction throws when mock mode is on or Supabase is not configured, which prevents booking completion in dev/e2e without env.
+
+Suggested Fixes:
+1) Allow a mock/offline mode for createTransaction/createTransactionLine/setDynamicField when Supabase env vars are missing (return success objects).
+2) Alternatively, set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY for E2E.
+
+Console Errors:\n${consoleErrors.join('\n') || 'None captured.'}
+`
+      const out = await writeReport('calendar-booking-error.md', errorReport)
+      test.info().annotations.push({ type: 'diagnostic-report', description: `Written to ${out}` })
+      test.fail(true, 'Booking did not complete; modal stayed open or error toast appeared.')
+      return
+    }
+
+    const success = `SUCCESS: Appointment booking flow passed on /salon-data/calendar`
     const out = await writeReport('calendar-booking-success.md', success)
     test.info().annotations.push({ type: 'report', description: `Written to ${out}` })
   })
 })
-

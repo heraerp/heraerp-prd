@@ -4,6 +4,164 @@
 
 **HERA MCP Server provides 16 production-ready tools for comprehensive ERP development through natural language commands in Claude Desktop.**
 
+> New: Universal Data Tools (Option A)
+
+Two safe, universal read tools expose the Sacred Six with strict org scoping and guardrails:
+
+- `hera.select` — Read-only, parameterized SELECT over the Sacred Six, with per-table column/filter whitelists and optional embeds
+- `hera.report.run` — Pre-registered, parameterized, SELECT-only reports by `report_code` (smart code)
+ - `hera.labels.get` — Return per-type display labels (singular/plural) grouped by locale
+
+These tools are exported in `mcp-server/mcp-data-tools.js` and can be registered with your MCP transport.
+
+## hera.select
+
+Description: Read-only, org-scoped, parameterized SELECT against Sacred Six. Server injects `organization_id` (never from the model), enforces column/filter whitelists, statement timeout, and result limits.
+
+Input (JSON):
+
+```
+{
+  "table": "core_entities|core_relationships|core_dynamic_data|universal_transactions|universal_transaction_lines",
+  "columns": ["..."],
+  "filters": { "column": { "eq|in|like|gte|lte|between|is_null": value } },
+  "order_by": [{ "column": "...", "direction": "asc|desc" }],
+  "limit": 1..1000 (default 50),
+  "offset": 0..N,
+  "embed": {
+    "lines_for_transactions": true,
+    "entity_dynamic_data": true,
+    "display_labels": true
+  }
+}
+```
+
+Allowed filters per table (subset):
+
+- `core_entities`: entity_type (eq,in), entity_code (eq,in,like), entity_name (eq,like), smart_code (eq,in,like), status (eq,in), created_at (eq,gte,lte,between)
+- `core_relationships`: relationship_type (eq,in), from_entity_id→parent_entity_id (eq,in), to_entity_id→child_entity_id (eq,in), status→is_active (eq)
+- `core_dynamic_data`: entity_id (eq,in), key (eq,in,like), value_type (eq,in)
+- `universal_transactions`: transaction_type (eq,in), transaction_number (eq,in,like), transaction_date (eq,gte,lte,between), status (eq,in), currency_code (eq,in), smart_code (eq,in,like), total_amount (eq,gte,lte,between)
+- `universal_transaction_lines`: transaction_id (eq,in), line_type (eq,in), entity_id→line_entity_id (eq,in), unit_of_measure (eq,in)
+
+Embeds:
+
+- `lines_for_transactions`: Attaches `rows[i].lines` by fetching matching `universal_transaction_lines`
+- `entity_dynamic_data`: Attaches `rows[i].dynamic_data` map by fetching matching `core_dynamic_data` and typing values
+- `display_labels`: Returns per-type labels (singular/plural) by locale in `meta.display_labels`, from DISPLAY_LABEL_FOR_TYPE
+
+Returns:
+
+```
+{
+  "rows": [...],
+  "meta": {
+    "count": N,
+    "limit": ..., "offset": ..., "duration_ms": ..., "sql": "SELECT ...",
+    "allowed_columns": [ ... ], "allowed_filters": [ ... ],
+    "lines": { "count": ... }, "dynamic_data": { "count": ... },
+    "display_labels": { "ENTITY_TYPE_CODE": { "locale": { "singular": "...", "plural": "..." } } }
+  }
+}
+```
+
+Examples:
+
+```json
+{
+  "tool_name": "hera.select",
+  "arguments": {
+    "table": "universal_transactions",
+    "columns": ["transaction_number","transaction_type","transaction_date","status","total_amount","currency_code"],
+    "filters": {
+      "transaction_type": { "in": ["pos_order","sale"] },
+      "status": { "eq": "posted" },
+      "transaction_date": { "between": ["2025-09-01","2025-09-13"] }
+    },
+    "order_by": [{ "column": "transaction_date", "direction": "desc" }],
+    "limit": 20
+  }
+}
+```
+
+```json
+{
+  "tool_name": "hera.select",
+  "arguments": {
+    "table": "core_entities",
+    "columns": ["id","entity_name","entity_type"],
+    "filters": { "entity_type": { "eq": "customer" }, "entity_name": { "like": "%salon%" } },
+    "embed": { "entity_dynamic_data": true },
+    "limit": 10
+  }
+}
+```
+
+## hera.report.run
+
+Description: Execute a pre-registered, SELECT-only report by smart code. Parameters are validated and bound via placeholders. SQL must include `organization_id = $1`.
+
+Input (JSON):
+
+```
+{
+  "report_code": "HERA.REPORT.SALES.DAILY.v1",
+  "params": { "from": "2025-09-01", "to": "2025-09-13" },
+  "format": "json|csv",
+  "display_labels": true
+}
+```
+
+Returns:
+
+```
+{
+  "format": "json|csv",
+  "data": [... or CSV string ...],
+  "meta": { "rows": N, "display_labels": { ... } },
+  "explain": { "sql": "SELECT ...", "params": [ ... ] }
+}
+```
+
+Seeds to consider:
+
+- HERA.REPORT.SALES.DAILY.v1(from,to) — posted totals by day/currency
+- HERA.SALON.REPORT.REVENUE_BY_STYLIST.v1(from,to) — orders→lines→stylist
+- HERA.REPORT.AR_AGING.v1(as_of) — buckets via CASE
+- HERA.REPORT.INVENTORY_ON_HAND.v1(as_of) — receipts–issues by item
+- HERA.REPORT.TOP_ITEMS.v1(from,to,limit)
+- HERA.REPORT.TAX_SUMMARY.v1(from,to)
+
+---
+
+## hera.labels.get
+
+Description: Return per-type display labels (singular/plural) grouped by locale, derived from DISPLAY_LABEL_FOR_TYPE relationships.
+
+Input (JSON):
+
+```
+{ "locale": "en-GB" }
+```
+
+Returns:
+
+```
+{
+  "exit_code": 0,
+  "labels": {
+    "customer": { "en-GB": { "singular": "Client", "plural": "Clients" }, "es": { "singular": "Cliente", "plural": "Clientes" } },
+    "product":  { "en-GB": { "singular": "Item",   "plural": "Items"   } }
+  }
+}
+```
+
+Notes:
+- Server injects org scope; no organization_id in inputs.
+- `locale` filters results; if omitted, returns all locales for each type code.
+
+---
+
 ## 🛠️ CLI Tools for Direct Terminal Access
 
 **For development without Claude Desktop, use these command-line tools directly:**

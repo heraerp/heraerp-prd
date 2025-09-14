@@ -1,0 +1,24 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_number": "POS-SALES-0001",
+    "transaction_date": "2025-09-13",
+    "currency_code": "GBP",
+    "total_amount": 15.00,
+    "status": "posted",
+    "smart_code": "HERA.SALES.POS.ORDER.v1",
+    "metadata": { "idempotency_key": "uat-sales-pos-0001" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "item",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 15.00,
+      "line_amount": 15.00,
+      "metadata": { "sku": "SKU-002" }
+    }
+  ]
+}
+

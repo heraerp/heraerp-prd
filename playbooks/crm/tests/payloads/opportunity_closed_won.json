@@ -1,0 +1,25 @@
+{
+  "header": {
+    "transaction_type": "crm_oppty_event",
+    "transaction_number": "OPP-CLOSE-ACME-O-001-2025-10-15",
+    "transaction_date": "2025-10-15",
+    "currency_code": "GBP",
+    "total_amount": 25000,
+    "status": "posted",
+    "smart_code": "HERA.CRM.DEAL.CLOSED_WON.v1",
+    "metadata": { "stage": "won", "reference_entity_code": "opportunity:ACME-O-001" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "activity_line",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 25000,
+      "line_amount": 25000,
+      "smart_code": "HERA.CRM.DEAL.CLOSED_WON.LINE.v1",
+      "metadata": { "note": "deal revenue summary" }
+    }
+  ]
+}
+

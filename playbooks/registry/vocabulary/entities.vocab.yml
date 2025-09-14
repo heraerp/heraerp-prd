@@ -1,0 +1,47 @@
+smart_code: HERA.SYSTEM.VOCAB.ENTITY_CATALOG.v1
+items:
+  # Governance TYPES for vocabulary
+  - { slug: vocab_term,   entity_type: ENTITY_TYPE, name: "Vocabulary Term" }
+  - { slug: vocab_domain, entity_type: ENTITY_TYPE, name: "Vocabulary Domain" }
+
+  # Relationship TYPES for vocabulary
+  - { slug: TERM_SYNONYM_OF,        entity_type: REL_TYPE, name: "Term is synonym of canonical type" }
+  - { slug: DISPLAY_LABEL_FOR_TYPE,  entity_type: REL_TYPE, name: "Preferred UI label for type" }
+
+  # Domains (optional scoping)
+  - { slug: global, entity_type: ENTITY, name: "Global Vocabulary", metadata: { entity_type: "vocab_domain" } }
+  - { slug: sales,  entity_type: ENTITY, name: "Sales Vocabulary",  metadata: { entity_type: "vocab_domain" } }
+
+  # Terms (define words people use)
+  - { slug: customer, entity_type: ENTITY, name: "Customer", metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: client,   entity_type: ENTITY, name: "Client",   metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: patron,   entity_type: ENTITY, name: "Patron",   metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: guest,    entity_type: ENTITY, name: "Guest",    metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: vendor,   entity_type: ENTITY, name: "Vendor",   metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: supplier, entity_type: ENTITY, name: "Supplier", metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: product,  entity_type: ENTITY, name: "Product",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: item,     entity_type: ENTITY, name: "Item",     metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: order,    entity_type: ENTITY, name: "Order",    metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: invoice,  entity_type: ENTITY, name: "Invoice",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: bill,     entity_type: ENTITY, name: "Bill",     metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: pos_sale, entity_type: ENTITY, name: "POS Sale", metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: service,  entity_type: ENTITY, name: "Service",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: treatment,entity_type: ENTITY, name: "Treatment",metadata: { entity_type: "vocab_term", locale: "en" } }
+
+  # (a couple translations to show the pattern)
+  - { slug: cliente,  entity_type: ENTITY, name: "Cliente",  metadata: { entity_type: "vocab_term", locale: "es" } }
+  - { slug: proveedor,entity_type: ENTITY, name: "Proveedor",metadata: { entity_type: "vocab_term", locale: "es" } }
+
+  # Additional domain/localization seeds
+  - { slug: warehouse,  entity_type: ENTITY, name: "Warehouse",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: stockroom,  entity_type: ENTITY, name: "Stockroom",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: inventory,  entity_type: ENTITY, name: "Inventory",  metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: stock,      entity_type: ENTITY, name: "Stock",      metadata: { entity_type: "vocab_term", locale: "en" } }
+  - { slug: sku,        entity_type: ENTITY, name: "SKU",        metadata: { entity_type: "vocab_term", locale: "en" } }
+
+  # French examples
+  - { slug: client_fr,      entity_type: ENTITY, name: "Client",        metadata: { entity_type: "vocab_term", locale: "fr" } }
+  - { slug: fournisseur,    entity_type: ENTITY, name: "Fournisseur",   metadata: { entity_type: "vocab_term", locale: "fr" } }
+  - { slug: article,        entity_type: ENTITY, name: "Article",       metadata: { entity_type: "vocab_term", locale: "fr" } }
+  - { slug: commande,       entity_type: ENTITY, name: "Commande",      metadata: { entity_type: "vocab_term", locale: "fr" } }
+  - { slug: facture,        entity_type: ENTITY, name: "Facture",       metadata: { entity_type: "vocab_term", locale: "fr" } }

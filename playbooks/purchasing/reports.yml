@@ -1,0 +1,20 @@
+smart_code: HERA.PURCH.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.PURCH.REPORT.SPEND_BY_VENDOR.v1
+    description: "Total spend by vendor in date range"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT v.entity_name AS vendor_name,
+               t.currency_code,
+               SUM(t.total_amount) AS spend
+        FROM universal_transactions t
+        LEFT JOIN core_entities v ON v.id = t.reference_entity_id
+        WHERE t.organization_id = $org
+          AND t.transaction_type = 'ap_invoice'
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY v.entity_name, t.currency_code
+        ORDER BY spend DESC

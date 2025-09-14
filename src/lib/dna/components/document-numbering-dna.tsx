@@ -350,12 +350,17 @@ export function getHeraDocumentDescription(documentType: string, industry?: Hera
 }
 
 // 🧬 HERA DNA: React Hook for Document Number Generation
-export function useHeraDocumentNumbering(organizationId: string, industry?: HeraIndustryType) {
+export function useHeraDocumentNumbering(organizationId: string | null | undefined, industry?: HeraIndustryType) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastGenerated, setLastGenerated] = useState<string | null>(null)
   const [generationHistory, setGenerationHistory] = useState<string[]>([])
   
   const generateNumber = async (documentType: string): Promise<string> => {
+    if (!organizationId) {
+      console.error('HERA DNA: Cannot generate document number without organization ID')
+      throw new Error('Organization ID is required')
+    }
+    
     setIsGenerating(true)
     try {
       const docNumber = await generateHeraDocumentNumber(organizationId, documentType, industry)

@@ -1,0 +1,18 @@
+smart_code: HERA.HCM.RELATIONSHIPS.SEED.v1
+rows:
+  # Employee assignment
+  - from_slug: employee:EMP001
+    to_slug:   department:HEAD_OFFICE
+    relationship_type: EMPLOYEE_IN_DEPARTMENT
+    relationship_data: { effective_from: "2024-06-01" }
+
+  - from_slug: employee:EMP001
+    to_slug:   position:ENGINEER_I
+    relationship_type: EMPLOYEE_HAS_POSITION
+    relationship_data: { effective_from: "2024-06-01" }
+
+  # Example pay component assignment (override default if needed)
+  - from_slug: employee:EMP001
+    to_slug:   pay_component:BASE_SALARY
+    relationship_type: PAY_COMPONENT_FOR_EMPLOYEE
+    relationship_data: { amount: 3200, currency_code: "GBP" }

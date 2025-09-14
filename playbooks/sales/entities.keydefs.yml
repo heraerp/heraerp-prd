@@ -1,0 +1,9 @@
+smart_code: HERA.SALES.DYNAMIC_KEYS.CORE.v1
+items:
+  - { slug: product.sku,         entity_type: ENTITY, name: "SKU",            metadata: { type: "text" } }
+  - { slug: product.category,    entity_type: ENTITY, name: "Category",       metadata: { type: "text" } }
+  - { slug: price_list.currency, entity_type: ENTITY, name: "Currency Code",  metadata: { type: "text", pattern: "^[A-Z]{3}$" } }
+  - { slug: price_list.effective_from, entity_type: ENTITY, name: "Effective From", metadata: { type: "date" } }
+  - { slug: price_list.effective_to,   entity_type: ENTITY, name: "Effective To",   metadata: { type: "date" } }
+  - { slug: customer.segment,    entity_type: ENTITY, name: "Segment",        metadata: { type: "text" } }
+

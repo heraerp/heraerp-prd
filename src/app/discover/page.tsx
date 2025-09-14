@@ -193,114 +193,27 @@ export default function DiscoverPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background: `
-          linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            rgba(255, 255, 255, 0.05) 25%,
-            rgba(147, 51, 234, 0.02) 50%,
-            rgba(236, 72, 153, 0.02) 75%,
-            rgba(255, 255, 255, 0.1) 100%
-          ),
-          radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-            rgba(147, 51, 234, 0.15) 0%, 
-            rgba(236, 72, 153, 0.1) 25%,
-            rgba(59, 130, 246, 0.05) 50%,
-            transparent 70%
-          ),
-          linear-gradient(45deg, #f8fafc 0%, #e2e8f0 100%)
-        `
-      }}
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 overflow-x-hidden relative"
     >
-      {/* WSAG Animated Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div 
-          className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
-          style={{
-            background: `radial-gradient(circle, 
-              rgba(147, 51, 234, 0.4) 0%, 
-              rgba(147, 51, 234, 0.2) 30%, 
-              rgba(147, 51, 234, 0.05) 60%, 
-              transparent 100%
-            )`,
-            filter: 'blur(40px)',
-            left: `${20 + mousePosition.x * 0.1}%`,
-            top: `${10 + mousePosition.y * 0.05}%`,
-            transform: `translate(-50%, -50%) scale(${1 + mousePosition.x * 0.002})`
-          }}
-        />
-        
-        <div 
-          className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
-          style={{
-            background: `radial-gradient(circle, 
-              rgba(236, 72, 153, 0.3) 0%, 
-              rgba(236, 72, 153, 0.15) 30%, 
-              rgba(236, 72, 153, 0.03) 60%, 
-              transparent 100%
-            )`,
-            filter: 'blur(50px)',
-            right: `${15 + mousePosition.x * 0.08}%`,
-            top: `${60 + mousePosition.y * 0.03}%`,
-            transform: `translate(50%, -50%) scale(${1 + mousePosition.y * 0.002})`
-          }}
-        />
+      {/* Background Pattern - Match Home Page */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
+        <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
       </div>
 
       <div className="relative z-10">
-        {/* Header */}
-        <header 
-          className="sticky top-0 z-50 border-b shadow-lg"
-          style={{
-            background: `
-              linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.25) 0%, 
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0.05) 100%
-              )
-            `,
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderTop: 'none',
-            borderLeft: 'none',
-            borderRight: 'none',
-            boxShadow: `
-              0 8px 32px rgba(147, 51, 234, 0.15),
-              0 4px 16px rgba(0, 0, 0, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.4),
-              inset 0 -1px 0 rgba(255, 255, 255, 0.1)
-            `
-          }}
-        >
+        {/* Header - Match Home Page */}
+        <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex items-center gap-3">
-                <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transform transition-all duration-300"
-                  style={{
-                    background: `
-                      linear-gradient(135deg, 
-                        rgba(147, 51, 234, 0.3) 0%, 
-                        rgba(236, 72, 153, 0.2) 100%
-                      )
-                    `,
-                    backdropFilter: 'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    boxShadow: `
-                      0 8px 32px rgba(147, 51, 234, 0.3),
-                      0 4px 16px rgba(0, 0, 0, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.4)
-                    `
-                  }}
-                >
-                  <Sparkles className="w-5 h-5 text-white drop-shadow-md" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center hover:scale-110 transform transition-all duration-300">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">HERA</h1>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">Discover Live Demos</p>
+                  <h1 className="text-xl font-bold text-slate-900 dark:text-white">HERA</h1>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Discover Live Demos</p>
                 </div>
               </Link>
 
@@ -322,10 +235,10 @@ export default function DiscoverPage() {
         <main className="px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold !text-gray-900 dark:!text-white mb-4">
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
               See HERA in Action
             </h2>
-            <p className="text-lg !text-gray-700 dark:!text-gray-300 max-w-3xl mx-auto">
+            <p className="text-lg text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
               Explore real businesses powered by HERA. Click any industry below to experience 
               a live demo with actual data, features, and workflows.
             </p>
@@ -336,39 +249,11 @@ export default function DiscoverPage() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="relative overflow-hidden rounded-xl p-6 text-center group transition-all duration-700 hover:-translate-y-2"
-                style={{
-                  background: `
-                    linear-gradient(135deg, 
-                      rgba(255, 255, 255, 0.22) 0%, 
-                      rgba(255, 255, 255, 0.08) 100%
-                    )
-                  `,
-                  backdropFilter: 'blur(18px) saturate(160%)',
-                  WebkitBackdropFilter: 'blur(18px) saturate(160%)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  boxShadow: `
-                    0 6px 24px rgba(147, 51, 234, 0.15),
-                    0 2px 12px rgba(0, 0, 0, 0.08),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.3)
-                  `
-                }}
+                className="relative overflow-hidden rounded-xl p-6 text-center group transition-all duration-700 hover:-translate-y-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:shadow-lg"
               >
-                <div 
-                  className="absolute inset-0 transition-all duration-1000 opacity-60 group-hover:opacity-100"
-                  style={{
-                    background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-                      rgba(255, 255, 255, 0.4) 0%, 
-                      rgba(255, 255, 255, 0.1) 30%, 
-                      transparent 70%
-                    )`,
-                    pointerEvents: 'none',
-                    borderRadius: 'inherit'
-                  }}
-                />
-                <stat.icon className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                <p className="text-2xl font-bold !text-gray-900 dark:!text-white">{stat.value}</p>
-                <p className="text-sm !text-gray-700 dark:!text-gray-300">{stat.label}</p>
+                <stat.icon className="w-8 h-8 mx-auto mb-2 text-blue-600 dark:text-blue-400" />
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                <p className="text-sm text-slate-700 dark:text-slate-300">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -378,37 +263,9 @@ export default function DiscoverPage() {
             {industries.map((industry) => (
               <Card
                 key={industry.id}
-                className="relative overflow-hidden group transition-all duration-700 hover:-translate-y-2 cursor-pointer"
+                className="relative overflow-hidden group transition-all duration-700 hover:-translate-y-2 cursor-pointer bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:shadow-xl"
                 onClick={() => handleDemoClick(industry)}
-                style={{
-                  background: `
-                    linear-gradient(135deg, 
-                      rgba(255, 255, 255, 0.18) 0%, 
-                      rgba(255, 255, 255, 0.05) 100%
-                    )
-                  `,
-                  backdropFilter: 'blur(30px) saturate(200%)',
-                  WebkitBackdropFilter: 'blur(30px) saturate(200%)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: `
-                    0 12px 40px rgba(0, 0, 0, 0.08),
-                    0 4px 20px rgba(0, 0, 0, 0.05),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.35)
-                  `
-                }}
               >
-                {/* Specular Highlight */}
-                <div 
-                  className="absolute inset-0 transition-all duration-1000 opacity-0 group-hover:opacity-60"
-                  style={{
-                    background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-                      rgba(255, 255, 255, 0.5) 0%, 
-                      rgba(255, 255, 255, 0.1) 30%, 
-                      transparent 70%
-                    )`,
-                    pointerEvents: 'none'
-                  }}
-                />
 
                 <CardHeader className="relative z-10">
                   <div className="flex items-start justify-between">
@@ -420,10 +277,10 @@ export default function DiscoverPage() {
                         <industry.icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <CardTitle className="text-xl !text-gray-900 dark:!text-white">
+                        <CardTitle className="text-xl text-slate-900 dark:text-white">
                           {industry.name}
                         </CardTitle>
-                        <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
                           {industry.liveBusinesses.length} live businesses
                         </p>
                       </div>
@@ -439,25 +296,25 @@ export default function DiscoverPage() {
                 </CardHeader>
 
                 <CardContent className="relative z-10">
-                  <p className="!text-gray-700 dark:!text-gray-300 mb-4">
+                  <p className="text-slate-700 dark:text-slate-300 mb-4">
                     {industry.description}
                   </p>
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-2xl font-bold !text-purple-600">{industry.metrics.setupTime}</p>
-                      <p className="text-xs !text-gray-600 dark:!text-gray-400">Setup Time</p>
+                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{industry.metrics.setupTime}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Setup Time</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold !text-green-600">{industry.metrics.costSavings}</p>
-                      <p className="text-xs !text-gray-600 dark:!text-gray-400">Cost Savings</p>
+                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{industry.metrics.costSavings}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Cost Savings</p>
                     </div>
                   </div>
 
                   {/* Popular Features */}
                   <div className="mb-4">
-                    <p className="text-sm font-semibold !text-gray-900 dark:!text-white mb-2">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
                       Popular Features:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -465,14 +322,14 @@ export default function DiscoverPage() {
                         <Badge
                           key={idx}
                           variant="outline"
-                          className="text-xs border-gray-300 !text-gray-700 dark:border-gray-600 dark:!text-gray-300"
+                          className="text-xs border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300"
                         >
                           {feature}
                         </Badge>
                       ))}
                       <Badge
                         variant="outline"
-                        className="text-xs border-gray-300 !text-gray-700 dark:border-gray-600 dark:!text-gray-300"
+                        className="text-xs border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300"
                       >
                         +{industry.metrics.features - 3} more
                       </Badge>
@@ -480,12 +337,12 @@ export default function DiscoverPage() {
                   </div>
 
                   {/* Testimonial */}
-                  <div className="border-t pt-4">
-                    <p className="text-sm italic !text-gray-600 dark:!text-gray-400 mb-2">
+                  <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <p className="text-sm italic text-slate-600 dark:text-slate-400 mb-2">
                       "{industry.testimonial.quote}"
                     </p>
-                    <p className="text-xs !text-gray-700 dark:!text-gray-300">
-                      — {industry.testimonial.author}, <span className="!text-gray-600 dark:!text-gray-400">{industry.testimonial.role}</span>
+                    <p className="text-xs text-slate-700 dark:text-slate-300">
+                      — {industry.testimonial.author}, <span className="text-slate-600 dark:text-slate-400">{industry.testimonial.role}</span>
                     </p>
                   </div>
 
@@ -541,36 +398,19 @@ export default function DiscoverPage() {
 
           {/* Next Steps */}
           <div className="mt-16 text-center">
-            <div 
-              className="inline-block p-8 rounded-2xl"
-              style={{
-                background: `
-                  linear-gradient(135deg, 
-                    rgba(255, 255, 255, 0.15) 0%, 
-                    rgba(255, 255, 255, 0.05) 100%
-                  )
-                `,
-                backdropFilter: 'blur(20px) saturate(150%)',
-                WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: `
-                  0 10px 35px rgba(0, 0, 0, 0.1),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.3)
-                `
-              }}
-            >
-              <Zap className="w-12 h-12 mx-auto mb-4 text-purple-600" />
-              <h3 className="text-2xl font-bold !text-gray-900 dark:!text-white mb-2">
+            <div className="inline-block p-8 rounded-2xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:shadow-xl transition-all duration-300">
+              <Zap className="w-12 h-12 mx-auto mb-4 text-blue-600 dark:text-blue-400" />
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                 Ready to validate?
               </h3>
-              <p className="!text-gray-700 dark:!text-gray-300 mb-6 max-w-md">
+              <p className="text-slate-700 dark:text-slate-300 mb-6 max-w-md">
                 After exploring our demos, check if HERA fits your specific business needs 
                 with our interactive validation tools.
               </p>
               <Button
                 size="lg"
                 onClick={() => router.push('/validate')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
               >
                 Continue to Validation
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -579,6 +419,24 @@ export default function DiscoverPage() {
           </div>
         </main>
       </div>
+      {/* Add animation styles */}
+      <style jsx global>{`
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   )
 }

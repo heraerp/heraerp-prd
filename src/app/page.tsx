@@ -1,8 +1,5 @@
 'use client'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -213,6 +210,9 @@ export default function LandingPage() {
               <Link href="/discover" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
                 Discover
               </Link>
+              <Link href="/demo" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                Demo Apps
+              </Link>
               <Link href="/validate" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
                 Solutions
               </Link>
@@ -250,6 +250,9 @@ export default function LandingPage() {
             <div className="container mx-auto px-4 py-4 space-y-4">
               <Link href="/discover" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Discover
+              </Link>
+              <Link href="/demo" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Demo Apps
               </Link>
               <Link href="/validate" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Solutions
@@ -301,10 +304,10 @@ export default function LandingPage() {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
-                onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => router.push('/demo')}
               >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Explore Live Demos
+                Explore Demo Apps
               </Button>
               <Button 
                 size="lg" 

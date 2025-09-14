@@ -1,0 +1,24 @@
+smart_code: HERA.SERVICE.DYNAMIC_DATA.SEED.v1
+rows:
+  # Service
+  - { entity_slug: service:INSTALL_BASIC, key_slug: service.category,              value: "installation", value_type: text }
+  - { entity_slug: service:INSTALL_BASIC, key_slug: service.default_duration_min,  value: 120, value_type: number }
+  - { entity_slug: service:INSTALL_BASIC, key_slug: service.base_fee,              value: 75, value_type: number }
+
+  # Part
+  - { entity_slug: part:PART-001,         key_slug: part.sku,        value: "PART-001", value_type: text }
+  - { entity_slug: part:PART-001,         key_slug: part.standard_cost, value: 8.5, value_type: number }
+
+  # Technician
+  - { entity_slug: technician:TECH001,    key_slug: technician.skill_level, value: "mid", value_type: text }
+  - { entity_slug: technician:TECH001,    key_slug: technician.rate_hour,   value: 40, value_type: number }
+
+  # SLA
+  - { entity_slug: sla:STANDARD_48H,      key_slug: sla.response_hours,     value: 8, value_type: number }
+  - { entity_slug: sla:STANDARD_48H,      key_slug: sla.resolution_hours,   value: 48, value_type: number }
+
+  # Contract
+  - { entity_slug: contract:CON-001,      key_slug: contract.start_date,    value: "2025-01-01", value_type: date }
+  - { entity_slug: contract:CON-001,      key_slug: contract.end_date,      value: "2025-12-31", value_type: date }
+  - { entity_slug: contract:CON-001,      key_slug: contract.coverage,      value: "parts_and_labor", value_type: text }
+

@@ -1,0 +1,32 @@
+smart_code: HERA.FINANCE.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: ledger_account,          entity_type: ENTITY_TYPE,      name: "Ledger Account" }
+  - { slug: tax_code,                entity_type: ENTITY_TYPE,      name: "Tax Code" }
+  - { slug: account_group,           entity_type: ENTITY_TYPE,      name: "Account Group" }
+  - { slug: posting_profile,         entity_type: ENTITY_TYPE,      name: "Posting Profile" }
+  - { slug: organization,            entity_type: ENTITY_TYPE,      name: "Organization" }
+  - { slug: currency,                entity_type: ENTITY_TYPE,      name: "Currency" }
+
+  - { slug: journal_entry,           entity_type: TRANSACTION_TYPE, name: "Journal Entry" }
+  - { slug: ar_invoice,              entity_type: TRANSACTION_TYPE, name: "AR Invoice" }
+  - { slug: pos_order,               entity_type: TRANSACTION_TYPE, name: "POS Order" }
+
+  - { slug: gl_debit_line,           entity_type: LINE_TYPE,        name: "GL Debit Line" }
+  - { slug: gl_credit_line,          entity_type: LINE_TYPE,        name: "GL Credit Line" }
+  - { slug: tax_line,                entity_type: LINE_TYPE,        name: "Tax Line" }
+
+  - { slug: ACCOUNT_IN_GROUP,        entity_type: REL_TYPE,         name: "Account in Group" }
+  - { slug: ORG_DEFAULTS_TO_CURRENCY, entity_type: REL_TYPE,        name: "Org default currency" }
+  - { slug: POSTING_RULE_MAPS,       entity_type: REL_TYPE,         name: "Posting rule maps" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: currency:GBP,            entity_type: ENTITY, name: "Pound Sterling",    metadata: { entity_type: "currency" } }
+  - { slug: ledger_account:1000,     entity_type: ENTITY, name: "Cash",              metadata: { entity_type: "ledger_account" } }
+  - { slug: ledger_account:2100,     entity_type: ENTITY, name: "VAT Payable",       metadata: { entity_type: "ledger_account" } }
+  - { slug: ledger_account:4000,     entity_type: ENTITY, name: "Sales",             metadata: { entity_type: "ledger_account" } }
+  - { slug: tax_code:VAT20,          entity_type: ENTITY, name: "VAT 20%",           metadata: { entity_type: "tax_code" } }
+  - { slug: account_group:CURRENT_ASSETS, entity_type: ENTITY, name: "Current Assets", metadata: { entity_type: "account_group" } }
+  - { slug: posting_profile:STANDARD, entity_type: ENTITY, name: "Standard Posting",  metadata: { entity_type: "posting_profile" } }
+  - { slug: organization:this,       entity_type: ENTITY, name: "This Organization", metadata: { entity_type: "organization" } }
+

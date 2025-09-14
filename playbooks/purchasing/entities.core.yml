@@ -1,0 +1,32 @@
+smart_code: HERA.PURCH.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: vendor,             entity_type: ENTITY_TYPE,      name: "Vendor" }
+  - { slug: product,            entity_type: ENTITY_TYPE,      name: "Product" }
+  - { slug: location,           entity_type: ENTITY_TYPE,      name: "Location" }
+  - { slug: payment_terms,      entity_type: ENTITY_TYPE,      name: "Payment Terms" }
+
+  - { slug: purchase_requisition, entity_type: TRANSACTION_TYPE, name: "Purchase Requisition" }
+  - { slug: purchase_order,     entity_type: TRANSACTION_TYPE, name: "Purchase Order" }
+  - { slug: goods_receipt,      entity_type: TRANSACTION_TYPE, name: "Goods Receipt" }
+  - { slug: return_to_supplier,  entity_type: TRANSACTION_TYPE, name: "Return to Supplier" }
+  - { slug: ap_invoice,         entity_type: TRANSACTION_TYPE, name: "AP Invoice" }
+  - { slug: ap_credit_note,     entity_type: TRANSACTION_TYPE, name: "AP Credit Note" }
+  - { slug: ap_payment,         entity_type: TRANSACTION_TYPE, name: "AP Payment" }
+
+  - { slug: item,               entity_type: LINE_TYPE,        name: "Item Line" }
+  - { slug: service,            entity_type: LINE_TYPE,        name: "Service Line" }
+  - { slug: discount,           entity_type: LINE_TYPE,        name: "Discount Line" }
+  - { slug: tax,                entity_type: LINE_TYPE,        name: "Tax Line" }
+  - { slug: shipping,           entity_type: LINE_TYPE,        name: "Shipping Line" }
+  - { slug: adjustment,         entity_type: LINE_TYPE,        name: "Adjustment Line" }
+
+  - { slug: SUPPLIES,                entity_type: REL_TYPE,   name: "Supplier supplies product" }
+  - { slug: SUPPLIER_DEFAULT_TERMS,  entity_type: REL_TYPE,   name: "Supplier default terms" }
+  - { slug: SUPPLIER_ITEM_PRICE,     entity_type: REL_TYPE,   name: "Supplier item price" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: vendor:ACME_SUPPLIES,     entity_type: ENTITY, name: "ACME Supplies Ltd", metadata: { entity_type: "vendor" } }
+  - { slug: product:SKU-RAW-001,      entity_type: ENTITY, name: "Raw Material A",   metadata: { entity_type: "product" } }
+  - { slug: location:MAIN_WAREHOUSE,  entity_type: ENTITY, name: "Main Warehouse",   metadata: { entity_type: "location" } }
+  - { slug: payment_terms:NET30,      entity_type: ENTITY, name: "Net 30",           metadata: { entity_type: "payment_terms" } }

@@ -1,0 +1,8 @@
+smart_code: HERA.SALES.DYNAMIC_DATA.SEED.v1
+rows:
+  - { entity_slug: product:SKU-001, key_slug: product.sku,      value: "SKU-001", value_type: text }
+  - { entity_slug: product:SKU-001, key_slug: product.category, value: "service", value_type: text }
+  - { entity_slug: product:SKU-002, key_slug: product.sku,      value: "SKU-002", value_type: text }
+  - { entity_slug: product:SKU-002, key_slug: product.category, value: "retail",  value_type: text }
+  - { entity_slug: price_list:STANDARD, key_slug: price_list.currency, value: "GBP", value_type: text }
+

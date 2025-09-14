@@ -42,7 +42,7 @@ node hera-query.js summary          # Overview of all tables
 node hera-query.js entities         # List entities  
 node hera-query.js transactions     # List transactions
 
-# Create data
+# Create data (with automatic normalization & duplicate detection)
 node hera-cli.js create-entity customer "Company Name"
 node hera-cli.js create-transaction sale 50000
 node hera-cli.js set-field <entity-id> email "test@example.com"
@@ -1007,17 +1007,36 @@ import { universalApi } from '@/lib/universal-api'
 ## Universal Business Logic Patterns 🏗️
 
 ### Universal Entity Management
-**DEFAULT APPROACH**: All business objects use `core_entities` table:
+**DEFAULT APPROACH**: All business objects use `core_entities` table with AUTOMATIC NORMALIZATION:
 
 ```typescript
-// Example: Creating a new customer
-const customer = {
+// Example: Creating a new customer WITH NORMALIZATION (DEFAULT)
+import { universalApi } from '@/lib/universal-api-v2'
+import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
+
+// Method 1: Using Universal API (normalization built-in)
+const result = await universalApi.createEntity({
   entity_type: 'customer',
-  entity_name: 'ACME Corp',
-  entity_code: 'CUST001',
-  organization_id: user.organization_id,  // SACRED: Multi-tenant isolation
-  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'  // Universal business intelligence
-  // NO STATUS FIELD - Use relationships for status!
+  entity_name: 'ACME Corp LLC',  // Will auto-detect if "ACME Corp" already exists
+  organization_id: orgId,
+  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'
+})
+// Returns existing entity if duplicate detected (95%+ confidence)
+
+// Method 2: Using normalization service directly
+const normalizedResult = await createNormalizedEntity(
+  orgId,
+  'customer',
+  'ACME Corporation',  // Different variation of same company
+  { industry: 'SALON' }  // Auto-generates correct smart code
+)
+
+// Check if new or existing
+if (normalizedResult.data?.normalization?.isNew) {
+  console.log('Created new entity')
+} else {
+  console.log(`Matched existing entity by: ${normalizedResult.data.normalization.matchedBy}`)
+  console.log(`Confidence: ${(normalizedResult.data.normalization.confidenceScore * 100)}%`)
 }
 
 // Custom properties via core_dynamic_data (no schema changes needed)
@@ -1027,6 +1046,13 @@ const customFields = [
   { field_name: 'tax_id', field_value_text: '12-3456789', smart_code: 'HERA.CRM.CUST.DYN.TAX.v1' }
 ]
 ```
+
+**🧬 Entity Normalization Features**:
+- **Automatic Deduplication**: "ABC Company LLC", "ABC Company", "ABC COMPANY INC" → same entity
+- **Fuzzy Matching**: 85%+ similarity threshold catches typos and variations
+- **Confidence Scoring**: Know exactly how entities were matched
+- **Bypass Option**: Use `skipNormalization: true` when needed
+- **Batch Processing**: Efficient bulk imports with duplicate detection
 
 **Common Entity Types**:
 - `customer` - Customer records with dynamic CRM fields
@@ -2541,6 +2567,18 @@ universal_transaction_lines → Invoice lines + journal entry lines
   - **Disaster Recovery**: RPO ≤ 5min, RTO ≤ 30min with complete runbooks
   - **Zero New Tables**: All enterprise data stored in Sacred Six tables
   - **Smart Code Everywhere**: Every enterprise operation has business context
+- **🧬 Entity Normalization DNA** - Intelligent duplicate detection and resolution (NEW CORE DNA COMPONENT)
+  - **Automatic Text Normalization**: Handles case, accents, suffixes (LLC, Inc, Ltd), special characters
+  - **Smart Entity Resolution**: Entity code matching (100%), normalized name (95%), fuzzy matching (85%+)
+  - **Duplicate Prevention**: Automatically detects and resolves to existing entities
+  - **Confidence Scoring**: Every match includes confidence score for transparency
+  - **Batch Processing**: Efficient handling of bulk entity imports with normalization
+  - **Zero Schema Changes**: Uses core_dynamic_data for normalized names
+  - **Universal API Integration**: createEntity() now uses normalization by default
+  - **Industry Smart Codes**: Pre-configured smart codes for common entity types
+  - **CLI Tools**: All hera-cli.js entity creation includes normalization
+  - **Optional Bypass**: Can skip normalization when explicitly needed
+  - **🧬 REVOLUTIONARY**: First ERP with built-in entity deduplication at the data layer
 
 
 ---

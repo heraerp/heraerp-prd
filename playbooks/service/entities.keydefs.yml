@@ -1,0 +1,24 @@
+smart_code: HERA.SERVICE.DYNAMIC_KEYS.CORE.v1
+items:
+  # Service
+  - { slug: service.category,         entity_type: ENTITY, name: "Service Category",  metadata: { type: "text" } }
+  - { slug: service.default_duration_min, entity_type: ENTITY, name: "Default Duration (min)", metadata: { type: "number" } }
+  - { slug: service.base_fee,         entity_type: ENTITY, name: "Base Fee",          metadata: { type: "number" } }
+
+  # Part
+  - { slug: part.sku,                 entity_type: ENTITY, name: "Part SKU",          metadata: { type: "text" } }
+  - { slug: part.standard_cost,       entity_type: ENTITY, name: "Standard Cost",     metadata: { type: "number" } }
+
+  # Technician
+  - { slug: technician.skill_level,   entity_type: ENTITY, name: "Skill Level",       metadata: { type: "text", allowed: ["junior","mid","senior"] } }
+  - { slug: technician.rate_hour,     entity_type: ENTITY, name: "Rate per Hour",     metadata: { type: "number" } }
+
+  # SLA
+  - { slug: sla.response_hours,       entity_type: ENTITY, name: "Response Hours",     metadata: { type: "number" } }
+  - { slug: sla.resolution_hours,     entity_type: ENTITY, name: "Resolution Hours",    metadata: { type: "number" } }
+
+  # Contract
+  - { slug: contract.start_date,      entity_type: ENTITY, name: "Start Date",         metadata: { type: "date" } }
+  - { slug: contract.end_date,        entity_type: ENTITY, name: "End Date",           metadata: { type: "date" } }
+  - { slug: contract.coverage,        entity_type: ENTITY, name: "Coverage",           metadata: { type: "text" } }
+

@@ -1,0 +1,26 @@
+smart_code: HERA.SALES.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.SALES.REPORT.TOP_PRODUCTS.v1
+    description: "Top products by revenue"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+      limit: { type: number, default: 10 }
+    query:
+      template: |
+        SELECT i.entity_name AS product_name,
+               SUM(l.line_amount) AS revenue,
+               SUM(l.quantity)    AS qty
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id
+        LEFT JOIN core_entities i ON i.id = l.line_entity_id
+        WHERE t.organization_id = $org AND l.organization_id = $org
+          AND l.line_type = 'item'
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY i.entity_name
+        ORDER BY revenue DESC
+        LIMIT $limit
+      bindings:
+        limit: 10
+

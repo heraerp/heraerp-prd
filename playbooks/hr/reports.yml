@@ -1,0 +1,39 @@
+smart_code: HERA.HCM.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.HCM.REPORT.HEADCOUNT_BY_DEPT.v1
+    description: "Headcount by department"
+    params_schema:
+      as_of: { type: date }
+    query:
+      template: |
+        SELECT d.entity_name AS department,
+               COUNT(e.id)  AS headcount
+        FROM core_entities d
+        LEFT JOIN core_relationships r
+          ON r.organization_id = d.organization_id
+         AND r.relationship_type = 'EMPLOYEE_IN_DEPARTMENT'
+         AND r.child_entity_id = d.id
+        LEFT JOIN core_entities e ON e.id = r.parent_entity_id AND e.organization_id = d.organization_id
+        WHERE d.organization_id = $org
+          AND d.entity_type = 'department'
+        GROUP BY d.entity_name
+        ORDER BY headcount DESC
+
+  - report_code: HERA.HCM.REPORT.PAYROLL_SUMMARY.v1
+    description: "Payroll earnings vs deductions by period"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT t.transaction_date::date AS day,
+               SUM(CASE WHEN l.line_type = 'payroll_earning_line'   THEN l.line_amount ELSE 0 END) AS total_earnings,
+               SUM(CASE WHEN l.line_type = 'payroll_deduction_line' THEN l.line_amount ELSE 0 END) AS total_deductions
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        WHERE l.organization_id = $org
+          AND t.transaction_type IN ('payroll_run','payroll_adjustment')
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY day
+        ORDER BY day

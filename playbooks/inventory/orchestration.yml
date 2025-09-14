@@ -1,0 +1,12 @@
+smart_code: HERA.SYSTEM.PLAYBOOK.INVENTORY_SEED.v1
+
+contracts:
+  - entities.core.yml
+  - entities.keydefs.yml
+  - dynamic_data.seed.yml
+  - relationships.seed.yml
+  - reports.yml
+
+vars:
+  default_currency: GBP
+

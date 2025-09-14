@@ -1,0 +1,20 @@
+smart_code: HERA.PROJECTS.DYNAMIC_DATA.SEED.v1
+rows:
+  # Project
+  - { entity_slug: project:ALPHA, key_slug: project.code,          value: "ALPHA", value_type: text }
+  - { entity_slug: project:ALPHA, key_slug: project.start_date,    value: "2025-01-10", value_type: date }
+  - { entity_slug: project:ALPHA, key_slug: project.budget_amount, value: 100000, value_type: number }
+  - { entity_slug: project:ALPHA, key_slug: project.currency_code, value: "GBP", value_type: text }
+
+  # Task
+  - { entity_slug: task:ALPHA_T1, key_slug: task.estimated_hours,  value: 80, value_type: number }
+  - { entity_slug: task:ALPHA_T1, key_slug: task.priority,         value: "high", value_type: text }
+  - { entity_slug: task:ALPHA_T1, key_slug: task.status,           value: "todo", value_type: text }
+
+  # Resource
+  - { entity_slug: resource:RES001, key_slug: resource.role,       value: "Consultant", value_type: text }
+  - { entity_slug: resource:RES001, key_slug: resource.rate_hour,  value: 75, value_type: number }
+
+  # Milestone
+  - { entity_slug: milestone:ALPHA_M1, key_slug: milestone.due_date, value: "2025-02-01", value_type: date }
+

@@ -1,0 +1,36 @@
+smart_code: HERA.HCM.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: employee,          entity_type: ENTITY_TYPE,      name: "Employee" }
+  - { slug: department,        entity_type: ENTITY_TYPE,      name: "Department" }
+  - { slug: position,          entity_type: ENTITY_TYPE,      name: "Position" }
+  - { slug: payroll_cycle,     entity_type: ENTITY_TYPE,      name: "Payroll Cycle" }
+  - { slug: pay_component,     entity_type: ENTITY_TYPE,      name: "Pay Component" }
+  - { slug: leave_type,        entity_type: ENTITY_TYPE,      name: "Leave Type" }
+
+  - { slug: payroll_run,       entity_type: TRANSACTION_TYPE, name: "Payroll Run" }
+  - { slug: payroll_adjustment,entity_type: TRANSACTION_TYPE, name: "Payroll Adjustment" }
+  - { slug: leave_request,     entity_type: TRANSACTION_TYPE, name: "Leave Request" }
+  - { slug: timesheet,         entity_type: TRANSACTION_TYPE, name: "Timesheet" }
+  - { slug: expense_claim,     entity_type: TRANSACTION_TYPE, name: "Expense Claim" }
+
+  - { slug: payroll_earning_line,   entity_type: LINE_TYPE,   name: "Payroll Earning Line" }
+  - { slug: payroll_deduction_line, entity_type: LINE_TYPE,   name: "Payroll Deduction Line" }
+  - { slug: tax_line,               entity_type: LINE_TYPE,   name: "Tax Line" }
+  - { slug: timesheet_line,         entity_type: LINE_TYPE,   name: "Timesheet Line" }
+  - { slug: expense_line,           entity_type: LINE_TYPE,   name: "Expense Line" }
+  - { slug: leave_line,             entity_type: LINE_TYPE,   name: "Leave Line" }
+
+  - { slug: EMPLOYEE_IN_DEPARTMENT, entity_type: REL_TYPE,    name: "Employee in Department" }
+  - { slug: EMPLOYEE_HAS_POSITION,  entity_type: REL_TYPE,    name: "Employee has Position" }
+  - { slug: REPORTS_TO,             entity_type: REL_TYPE,    name: "Reports To" }
+  - { slug: PAY_COMPONENT_FOR_EMPLOYEE, entity_type: REL_TYPE, name: "Pay Component for Employee" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: department:HEAD_OFFICE,  entity_type: ENTITY, name: "Head Office",   metadata: { entity_type: "department" } }
+  - { slug: position:ENGINEER_I,     entity_type: ENTITY, name: "Engineer I",    metadata: { entity_type: "position" } }
+  - { slug: payroll_cycle:MONTHLY,   entity_type: ENTITY, name: "Monthly",       metadata: { entity_type: "payroll_cycle" } }
+  - { slug: pay_component:BASE_SALARY, entity_type: ENTITY, name: "Base Salary", metadata: { entity_type: "pay_component" } }
+  - { slug: pay_component:TAX_WITHHOLDING, entity_type: ENTITY, name: "Tax Withholding", metadata: { entity_type: "pay_component" } }
+  - { slug: leave_type:ANNUAL,       entity_type: ENTITY, name: "Annual Leave",  metadata: { entity_type: "leave_type" } }
+  - { slug: employee:EMP001,         entity_type: ENTITY, name: "John Doe",      metadata: { entity_type: "employee" } }

@@ -1,0 +1,25 @@
+smart_code: HERA.TEST.SCOPE.SALES_MINI.v1
+setup: []
+teardown: []
+
+cases:
+  - name: "Top products reflects recent POS order"
+    arrange:
+      # Create a POS order via tx-create (validator ensures totals/idempotency)
+      create_transaction_from_file: tests/payloads/pos_order.json
+      assign_output_to: created_pos_order_id
+
+    # No execute step required for report UAT; we validate analytics reads
+    expect:
+      report:
+        report_code: HERA.SALES.REPORT.TOP_PRODUCTS.v1
+        params:
+          from: "2025-09-01"
+          to:   "2025-12-31"
+          limit: 10
+        contains:
+          product_name: "Retail Shampoo"
+          revenue: 15.00
+
+strict: true
+

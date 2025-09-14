@@ -1,0 +1,32 @@
+smart_code: HERA.CRM.READ_MODELS.CORE.v1
+views:
+  - name: v_crm_opportunities_brief
+    description: "UI list of Opportunities with stage and amount"
+    sql: |
+      SELECT
+        o.id,
+        o.entity_name AS opportunity_name,
+        (SELECT value_text   FROM core_dynamic_data d WHERE d.organization_id = o.organization_id AND d.entity_id = o.id AND d.key = 'opportunity.stage'  LIMIT 1)   AS stage,
+        (SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = o.organization_id AND d.entity_id = o.id AND d.key = 'opportunity.amount' LIMIT 1)   AS amount,
+        (SELECT value_date   FROM core_dynamic_data d WHERE d.organization_id = o.organization_id AND d.entity_id = o.id AND d.key = 'opportunity.close_date' LIMIT 1) AS close_date
+      FROM core_entities o
+      WHERE o.organization_id = $org AND o.entity_type = 'opportunity'
+      ORDER BY close_date NULLS LAST, amount DESC NULLS LAST
+
+  - name: v_crm_messages
+    description: "CRM messages (email/whatsapp/etc.) with basic metadata"
+    sql: |
+      SELECT
+        t.id           AS transaction_id,
+        t.transaction_number,
+        t.transaction_date,
+        t.smart_code,
+        (t.metadata->>'channel')   AS channel,
+        (t.metadata->>'direction') AS direction,
+        t.reference_entity_id
+      FROM universal_transactions t
+      WHERE t.organization_id = $org
+        AND t.transaction_type = 'crm_activity'
+        AND (t.smart_code LIKE 'HERA.CRM.COMMS.%')
+      ORDER BY t.transaction_date DESC
+

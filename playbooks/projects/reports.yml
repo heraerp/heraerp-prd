@@ -1,0 +1,63 @@
+smart_code: HERA.PROJECTS.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.PROJECTS.REPORT.TIME_BY_PROJECT.v1
+    description: "Total timesheet hours by project"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT p.entity_name AS project_name,
+               SUM(l.quantity) AS hours
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        LEFT JOIN core_entities p ON p.id = (t.reference_entity_id) AND p.organization_id = $org
+        WHERE l.organization_id = $org
+          AND l.line_type = 'timesheet_line'
+          AND t.transaction_type = 'timesheet'
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY p.entity_name
+        ORDER BY hours DESC
+
+  - report_code: HERA.PROJECTS.REPORT.COST_BY_PROJECT.v1
+    description: "Total expense/material cost by project"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT p.entity_name AS project_name,
+               SUM(CASE WHEN l.line_type IN ('expense_line','material_line') THEN l.line_amount ELSE 0 END) AS cost
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        LEFT JOIN core_entities p ON p.id = (t.reference_entity_id) AND p.organization_id = $org
+        WHERE l.organization_id = $org
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY p.entity_name
+        ORDER BY cost DESC
+
+  - report_code: HERA.PROJECTS.REPORT.PROGRESS_BY_PROJECT.v1
+    description: "Task completion rate by project"
+    params_schema:
+      as_of: { type: date }
+    query:
+      template: |
+        WITH tasks AS (
+          SELECT pr.parent_entity_id AS project_id,
+                 te.id AS task_id,
+                 (SELECT value_text FROM core_dynamic_data WHERE entity_id = te.id AND key = 'task.status' AND organization_id = $org LIMIT 1) AS status
+          FROM core_relationships pr
+          JOIN core_entities te ON te.id = pr.child_entity_id AND te.organization_id = pr.organization_id
+          WHERE pr.organization_id = $org AND pr.relationship_type = 'PROJECT_HAS_TASK'
+        )
+        SELECT p.entity_name AS project_name,
+               COUNT(*) AS tasks_total,
+               SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) AS tasks_done,
+               ROUND(100.0 * SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0), 2) AS pct_done
+        FROM tasks ts
+        JOIN core_entities p ON p.id = ts.project_id AND p.organization_id = $org
+        GROUP BY p.entity_name
+        ORDER BY pct_done DESC NULLS LAST
+

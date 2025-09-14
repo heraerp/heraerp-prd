@@ -1,0 +1,26 @@
+smart_code: HERA.INVENTORY.RELATIONSHIPS.SEED.v1
+rows:
+  # Item stocked at location
+  - from_slug: item:SKU-INV-001
+    to_slug:   location:MAIN
+    relationship_type: ITEM_STOCKED_AT
+    relationship_data: { reorder_point: 50, safety_stock: 25 }
+
+  # Location hierarchy example (MAIN has bin A; optional)
+  # - from_slug: location:MAIN
+  #   to_slug:   location:BIN-A
+  #   relationship_type: LOCATION_HIERARCHY
+  #   relationship_data: {}
+
+  # UOM conversion (handled via dynamic data; relationships can capture mapping as well if needed)
+  # - from_slug: uom:BOX
+  #   to_slug:   uom:EA
+  #   relationship_type: UOM_CONVERSION
+  #   relationship_data: { factor: 12 }
+
+  # Replenishment rule (example)
+  - from_slug: item:SKU-INV-001
+    to_slug:   location:MAIN
+    relationship_type: REPLENISHMENT_RULE
+    relationship_data: { policy: "min_max", min: 50, max: 200 }
+

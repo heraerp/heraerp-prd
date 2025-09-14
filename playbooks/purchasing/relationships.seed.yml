@@ -1,0 +1,13 @@
+smart_code: HERA.PURCH.RELATIONSHIPS.SEED.v1
+rows:
+  # Supplier offers product with price and lead time
+  - from_slug: vendor:ACME_SUPPLIES
+    to_slug:   product:SKU-RAW-001
+    relationship_type: SUPPLIER_ITEM_PRICE
+    relationship_data: { price: 12.50, currency_code: "GBP", lead_time_days: 7 }
+
+  # Supplier default payment terms
+  - from_slug: vendor:ACME_SUPPLIES
+    to_slug:   payment_terms:NET30
+    relationship_type: SUPPLIER_DEFAULT_TERMS
+    relationship_data: {}

@@ -1,0 +1,7 @@
+smart_code: HERA.PURCH.DYNAMIC_DATA.SEED.v1
+rows:
+  - { entity_slug: product:SKU-RAW-001,     key_slug: product.sku,            value: "SKU-RAW-001", value_type: text }
+  - { entity_slug: product:SKU-RAW-001,     key_slug: product.buy_category,   value: "raw_material", value_type: text }
+  - { entity_slug: location:MAIN_WAREHOUSE, key_slug: location.location_code, value: "MAIN", value_type: text }
+  - { entity_slug: payment_terms:NET30,     key_slug: payment_terms.net_days, value: 30, value_type: number }
+  - { entity_slug: vendor:ACME_SUPPLIES,    key_slug: vendor.lead_time_days,  value: 7, value_type: number }

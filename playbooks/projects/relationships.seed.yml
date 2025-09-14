@@ -1,0 +1,29 @@
+smart_code: HERA.PROJECTS.RELATIONSHIPS.SEED.v1
+rows:
+  # Project structure and ownership
+  - from_slug: project:ALPHA
+    to_slug:   phase:ALPHA_INIT
+    relationship_type: PROJECT_PHASE
+    relationship_data: { sequence: 1 }
+
+  - from_slug: project:ALPHA
+    to_slug:   milestone:ALPHA_M1
+    relationship_type: PROJECT_MILESTONE
+    relationship_data: { sequencing: 1 }
+
+  - from_slug: project:ALPHA
+    to_slug:   task:ALPHA_T1
+    relationship_type: PROJECT_HAS_TASK
+    relationship_data: {}
+
+  - from_slug: task:ALPHA_T1
+    to_slug:   resource:RES001
+    relationship_type: ASSIGNED_TO
+    relationship_data: { start_date: "2025-01-12" }
+
+  # Optional: link to customer if defined in Sales bundle (keep as example if not present)
+  # - from_slug: project:ALPHA
+  #   to_slug:   customer:ALICE
+  #   relationship_type: PROJECT_CUSTOMER
+  #   relationship_data: {}
+

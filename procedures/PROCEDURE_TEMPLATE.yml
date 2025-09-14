@@ -1,0 +1,45 @@
+# /procedures/HERA.{INDUSTRY}.{MODULE}.{PROC}.{VERSION}.yml
+smart_code: HERA.{INDUSTRY}.{MODULE}.{PROC}.v1
+intent: >
+  One-sentence purpose of this procedure.
+scope:
+  in_scope: [ ]
+  out_of_scope: [ ]
+preconditions:
+  - org catalog contains required ENTITY_TYPE / TXN_TYPE / LINE_TYPE slugs
+  - permissions: [role_x, role_y]
+invariants:
+  - universal_transactions must balance if financial
+  - all writes include organization_id
+inputs:
+  required:
+    - name: ...
+      type: ...
+      where: core_entities|core_dynamic_data|payload
+  optional: [ ]
+outputs:
+  entities_created: [ ]
+  transactions_emitted:
+    - slug: ...
+      header_rules: ...
+      line_rules: ...
+happy_path:
+  - step: Validate input & resolve slugs → IDs
+  - step: Apply rule packs (smart codes) & lifecycles
+  - step: Emit universal_transactions + universal_transaction_lines
+  - step: Write derived dynamic_data / relationships
+errors:
+  - code: UNKNOWN_ENTITY_TYPE
+    when: type_code not in catalog
+    action: suggest closest matches
+  - code: OUT_OF_STOCK
+    when: availability < required
+    action: block
+observability:
+  logs: [procedure_started, rule_pack_applied, transaction_written]
+  audit_json: true
+example_payload:
+  organization_id: ...
+  ...
+checks:
+  - description: balances or constraints to assert post-write

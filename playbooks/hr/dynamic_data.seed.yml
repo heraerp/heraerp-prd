@@ -1,0 +1,24 @@
+smart_code: HERA.HCM.DYNAMIC_DATA.SEED.v1
+rows:
+  # Employee
+  - { entity_slug: employee:EMP001, key_slug: employee.employee_code, value: "EMP001", value_type: text }
+  - { entity_slug: employee:EMP001, key_slug: employee.hire_date,     value: "2024-06-01", value_type: date }
+
+  # Position/Department
+  - { entity_slug: position:ENGINEER_I, key_slug: position.grade,         value: "P1", value_type: text }
+  - { entity_slug: department:HEAD_OFFICE, key_slug: department.cost_center, value: "CC-100", value_type: text }
+
+  # Payroll Cycle
+  - { entity_slug: payroll_cycle:MONTHLY, key_slug: payroll_cycle.frequency, value: "monthly", value_type: text }
+  - { entity_slug: payroll_cycle:MONTHLY, key_slug: payroll_cycle.start_day, value: 1, value_type: number }
+
+  # Pay Components
+  - { entity_slug: pay_component:BASE_SALARY, key_slug: pay_component.type,          value: "earning", value_type: text }
+  - { entity_slug: pay_component:BASE_SALARY, key_slug: pay_component.amount_type,   value: "fixed", value_type: text }
+  - { entity_slug: pay_component:BASE_SALARY, key_slug: pay_component.default_amount, value: 3000, value_type: number }
+
+  - { entity_slug: pay_component:TAX_WITHHOLDING, key_slug: pay_component.type,        value: "tax", value_type: text }
+  - { entity_slug: pay_component:TAX_WITHHOLDING, key_slug: pay_component.amount_type, value: "variable", value_type: text }
+
+  # Leave type
+  - { entity_slug: leave_type:ANNUAL, key_slug: leave_type.entitlement_days_per_year, value: 20, value_type: number }

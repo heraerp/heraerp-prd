@@ -1,0 +1,8 @@
+smart_code: HERA.FINANCE.DYNAMIC_KEYS.CORE.v1
+items:
+  - { slug: ledger_account.account_type,   entity_type: ENTITY, name: "Account Type",  metadata: { type: "text",   allowed: ["asset","liability","equity","income","expense"] } }
+  - { slug: ledger_account.normal_balance, entity_type: ENTITY, name: "Normal Bal",    metadata: { type: "text",   allowed: ["debit","credit"] } }
+  - { slug: currency.minor_unit,           entity_type: ENTITY, name: "Minor Unit",    metadata: { type: "number", default: 2 } }
+  - { slug: tax_code.rate,                 entity_type: ENTITY, name: "Tax Rate",      metadata: { type: "number" } }
+  - { slug: tax_code.inclusive,            entity_type: ENTITY, name: "Price Incl",    metadata: { type: "boolean", default: false } }
+

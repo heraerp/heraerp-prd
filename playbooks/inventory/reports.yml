@@ -1,0 +1,44 @@
+smart_code: HERA.INVENTORY.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.INVENTORY.REPORT.ON_HAND_BY_ITEM.v1
+    description: "Quantity on hand by item (as of date)"
+    params_schema:
+      as_of: { type: date }
+    query:
+      template: |
+        SELECT i.entity_name AS item_name,
+               SUM(CASE WHEN COALESCE(l.metadata->>'movement','OUT') = 'IN' THEN l.quantity ELSE -l.quantity END) AS qty_on_hand
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        LEFT JOIN core_entities i ON i.id = l.line_entity_id AND i.organization_id = $org
+        WHERE l.organization_id = $org
+          AND l.line_type = 'item'
+          AND t.transaction_date <= $as_of
+        GROUP BY i.entity_name
+        ORDER BY i.entity_name
+
+  - report_code: HERA.INVENTORY.REPORT.VALUATION_BY_ITEM.v1
+    description: "Stock valuation by item using standard_cost"
+    params_schema:
+      as_of: { type: date }
+    query:
+      template: |
+        WITH onhand AS (
+          SELECT l.line_entity_id AS item_id,
+                 SUM(CASE WHEN COALESCE(l.metadata->>'movement','OUT') = 'IN' THEN l.quantity ELSE -l.quantity END) AS qty
+          FROM universal_transaction_lines l
+          JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+          WHERE l.organization_id = $org
+            AND l.line_type = 'item'
+            AND t.transaction_date <= $as_of
+          GROUP BY l.line_entity_id
+        )
+        SELECT i.entity_name AS item_name,
+               d.value_number AS standard_cost,
+               o.qty,
+               (o.qty * d.value_number) AS valuation
+        FROM onhand o
+        JOIN core_entities i ON i.id = o.item_id AND i.organization_id = $org
+        LEFT JOIN core_dynamic_data d ON d.entity_id = i.id AND d.organization_id = $org AND d.key = 'item.standard_cost'
+        ORDER BY valuation DESC NULLS LAST
+

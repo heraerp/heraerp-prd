@@ -1,0 +1,32 @@
+smart_code: HERA.PROJECTS.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: project,           entity_type: ENTITY_TYPE,      name: "Project" }
+  - { slug: task,              entity_type: ENTITY_TYPE,      name: "Task" }
+  - { slug: phase,             entity_type: ENTITY_TYPE,      name: "Phase" }
+  - { slug: milestone,         entity_type: ENTITY_TYPE,      name: "Milestone" }
+  - { slug: resource,          entity_type: ENTITY_TYPE,      name: "Resource" }
+
+  - { slug: timesheet,         entity_type: TRANSACTION_TYPE, name: "Timesheet" }
+  - { slug: expense_claim,     entity_type: TRANSACTION_TYPE, name: "Expense Claim" }
+  - { slug: project_invoice,   entity_type: TRANSACTION_TYPE, name: "Project Invoice" }
+
+  - { slug: timesheet_line,    entity_type: LINE_TYPE,        name: "Timesheet Line" }
+  - { slug: expense_line,      entity_type: LINE_TYPE,        name: "Expense Line" }
+  - { slug: material_line,     entity_type: LINE_TYPE,        name: "Material Line" }
+
+  - { slug: PROJECT_HAS_TASK,     entity_type: REL_TYPE,      name: "Project has Task" }
+  - { slug: TASK_HAS_SUBTASK,     entity_type: REL_TYPE,      name: "Task has Subtask" }
+  - { slug: ASSIGNED_TO,          entity_type: REL_TYPE,      name: "Assigned To" }
+  - { slug: PROJECT_PHASE,        entity_type: REL_TYPE,      name: "Project Phase" }
+  - { slug: PROJECT_MILESTONE,    entity_type: REL_TYPE,      name: "Project Milestone" }
+  - { slug: PROJECT_CUSTOMER,     entity_type: REL_TYPE,      name: "Project Customer" }
+  - { slug: TASK_DEPENDS_ON,      entity_type: REL_TYPE,      name: "Task Depends On" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: project:ALPHA,       entity_type: ENTITY, name: "Project Alpha",     metadata: { entity_type: "project" } }
+  - { slug: phase:ALPHA_INIT,    entity_type: ENTITY, name: "Initiation",        metadata: { entity_type: "phase" } }
+  - { slug: milestone:ALPHA_M1,  entity_type: ENTITY, name: "Kickoff",           metadata: { entity_type: "milestone" } }
+  - { slug: task:ALPHA_T1,       entity_type: ENTITY, name: "Gather Requirements", metadata: { entity_type: "task" } }
+  - { slug: resource:RES001,     entity_type: ENTITY, name: "Consultant A",      metadata: { entity_type: "resource" } }
+

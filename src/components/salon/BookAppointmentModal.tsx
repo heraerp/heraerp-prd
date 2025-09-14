@@ -219,37 +219,66 @@ export function BookAppointmentModal({
   // Use real data if available, otherwise fall back to empty arrays
   useEffect(() => {
     // If no data loaded and we have mock data for demo, use it
-    if (!loadingData && stylists.length === 0 && organizationId === 'demo-salon') {
+    if (!loadingData && organizationId === 'demo-salon') {
       // Demo data for testing
-      setStylists([
-        {
-          id: 'rocky',
-          entity_name: 'Rocky',
-          entity_code: 'STAFF-001',
-          smart_code: 'HERA.SALON.STAFF.CELEBRITY.v1',
-          avatar: 'R',
-          skills: ['Brazilian Blowout', 'Keratin', 'Bridal', 'Color Specialist'],
-          level: 'celebrity',
-          allow_double_book: false
-        }
-      ])
+      if (stylists.length === 0) {
+        setStylists([
+          {
+            id: 'rocky',
+            entity_name: 'Rocky',
+            entity_code: 'STAFF-001',
+            smart_code: 'HERA.SALON.STAFF.CELEBRITY.v1',
+            avatar: 'R',
+            skills: ['Brazilian Blowout', 'Keratin', 'Bridal', 'Color Specialist'],
+            level: 'celebrity',
+            allow_double_book: false
+          }
+        ])
+      }
       
-      setServices([
-        {
-          id: 'srv-1',
-          entity_name: 'Brazilian Blowout',
-          entity_code: 'SRV-001',
-          smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
-          duration: 240,
-          price: 500,
-          buffer_before: 15,
-          buffer_after: 30,
-          category: 'Chemical Treatment',
-          skills_required: ['Brazilian Blowout']
-        }
-      ])
+      if (services.length === 0) {
+        setServices([
+          {
+            id: 'srv-1',
+            entity_name: 'Brazilian Blowout',
+            entity_code: 'SRV-001',
+            smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+            duration: 240,
+            price: 500,
+            buffer_before: 15,
+            buffer_after: 30,
+            category: 'Chemical Treatment',
+            skills_required: ['Brazilian Blowout']
+          }
+        ])
+      }
+
+      if (customers.length === 0) {
+        setCustomers([
+          {
+            id: 'cust-1',
+            entity_name: 'Sarah Johnson',
+            entity_code: 'CUST-001',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+            phone: '+971500000001',
+            email: 'sarah@example.com',
+            vip_level: 'gold',
+            preferences: {}
+          },
+          {
+            id: 'cust-2',
+            entity_name: 'Emma Davis',
+            entity_code: 'CUST-002',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+            phone: '+971500000002',
+            email: 'emma@example.com',
+            vip_level: 'silver',
+            preferences: {}
+          }
+        ])
+      }
     }
-  }, [loadingData, stylists.length, organizationId])
+  }, [loadingData, stylists.length, services.length, customers.length, organizationId])
 
   // Initialize selected stylist from prop
   useEffect(() => {

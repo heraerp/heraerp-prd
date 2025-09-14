@@ -26,12 +26,15 @@ import {
   Briefcase,
   Bed,
   Square,
-  Grid3x3
+  Grid3x3,
+  Pencil
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/lib/supabase'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import NewProductModal from '@/components/furniture/NewProductModal'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -180,10 +183,10 @@ export default function FurnitureProductCatalog() {
   const [filteredProducts, setFilteredProducts] = useState<any[]>([])
 
   useEffect(() => {
-    if (organizationId && !orgLoading) {
+    if (organizationId) {
       loadProducts()
     }
-  }, [organizationId, orgLoading])
+  }, [organizationId])
 
   useEffect(() => {
     // Filter products based on search term
@@ -201,32 +204,37 @@ export default function FurnitureProductCatalog() {
   }, [products, searchTerm])
 
   const loadProducts = async () => {
+    console.log('loadProducts called with organizationId:', organizationId)
     try {
       setLoading(true)
       
-      // Set organization context
-      universalApi.setOrganizationId(organizationId)
+      // Use API endpoint to fetch products
+      console.log('Fetching products from API...')
+      const response = await fetch(`/api/furniture/products?organizationId=${organizationId}`)
       
-      // Load all entities
-      const { data: allEntities } = await universalApi.read({
-        table: 'core_entities',
-        organizationId: organizationId
-      })
+      if (!response.ok) {
+        const error = await response.json()
+        console.error('API error:', error)
+        return
+      }
+      
+      const { products: allEntities, dynamicData: allDynamicData } = await response.json()
+      
+      console.log('API response - Products:', allEntities?.length, 'Dynamic data:', allDynamicData?.length)
       
       // Filter for furniture products
-      const productEntities = allEntities?.filter((e: any) => 
-        e.entity_type === 'product' && 
+      const productEntities = (allEntities || []).filter((e: any) => 
         e.smart_code?.startsWith('HERA.FURNITURE.PRODUCT')
-      ) || []
-
-      // Load all dynamic data
-      const { data: allDynamicData } = await universalApi.read({
-        table: 'core_dynamic_data',
-        organizationId: organizationId
-      })
-
+      )
+      
+      console.log('Furniture products found:', productEntities.length)
+      
+      // If no furniture products, try all products
+      const finalProducts = productEntities.length > 0 ? productEntities : (allEntities || [])
+      console.log('Using products:', finalProducts.length)
+      
       // Enrich products with dynamic fields
-      const enrichedProducts = productEntities.map((product: any) => {
+      const enrichedProducts = finalProducts.map((product: any) => {
         // Get dynamic fields for this product
         const productDynamicData = allDynamicData?.filter((d: any) => 
           d.entity_id === product.id
@@ -234,11 +242,23 @@ export default function FurnitureProductCatalog() {
 
         // Transform dynamic data into object
         const dynamicFields = productDynamicData.reduce((acc: any, field: any) => {
-          const value = field.field_value_text || 
-                       field.field_value_number || 
-                       field.field_value_boolean ||
-                       (field.field_value_json ? JSON.parse(field.field_value_json) : null)
-          if (value !== null) {
+          let value = field.field_value_text || 
+                     field.field_value_number || 
+                     field.field_value_boolean
+          
+          // Handle JSON field - it might already be parsed
+          if (!value && field.field_value_json) {
+            try {
+              value = typeof field.field_value_json === 'string' 
+                ? JSON.parse(field.field_value_json) 
+                : field.field_value_json
+            } catch (e) {
+              console.warn('Failed to parse JSON for field:', field.field_name, field.field_value_json)
+              value = field.field_value_json
+            }
+          }
+          
+          if (value !== null && value !== undefined) {
             acc[field.field_name] = value
           }
           return acc
@@ -252,10 +272,17 @@ export default function FurnitureProductCatalog() {
         }
       })
 
+      console.log('Enriched products:', enrichedProducts.length)
+      console.log('Sample product:', enrichedProducts[0])
+      
       setProducts(enrichedProducts)
       setFilteredProducts(enrichedProducts)
     } catch (error) {
       console.error('Failed to load products:', error)
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
     } finally {
       setLoading(false)
     }
@@ -349,12 +376,15 @@ export default function FurnitureProductCatalog() {
                   Import
                 </Button>
               </Link>
-              <Link href="/furniture/products/catalog/new">
-                <Button size="sm" className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add Product
-                </Button>
-              </Link>
+              <NewProductModal 
+                organizationId={organizationId}
+                organizationName={organizationName}
+                onProductCreated={(productId) => {
+                  console.log('New product created:', productId)
+                  // Refresh the product list
+                  loadProducts()
+                }}
+              />
             </>
           }
         />

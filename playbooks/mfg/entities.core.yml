@@ -1,0 +1,41 @@
+smart_code: HERA.MFG.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: product,            entity_type: ENTITY_TYPE,      name: "Product" }
+  - { slug: component,          entity_type: ENTITY_TYPE,      name: "Component" }
+  - { slug: work_center,        entity_type: ENTITY_TYPE,      name: "Work Center" }
+  - { slug: routing,            entity_type: ENTITY_TYPE,      name: "Routing" }
+  - { slug: operation,          entity_type: ENTITY_TYPE,      name: "Operation" }
+  - { slug: bom,                entity_type: ENTITY_TYPE,      name: "Bill of Materials" }
+  - { slug: plant,              entity_type: ENTITY_TYPE,      name: "Plant" }
+
+  - { slug: production_order,   entity_type: TRANSACTION_TYPE, name: "Production Order" }
+  - { slug: production_batch,   entity_type: TRANSACTION_TYPE, name: "Production Batch" }
+  - { slug: production_issue,   entity_type: TRANSACTION_TYPE, name: "Component Issue" }
+  - { slug: production_receipt, entity_type: TRANSACTION_TYPE, name: "Production Receipt" }
+  - { slug: scrap_note,         entity_type: TRANSACTION_TYPE, name: "Scrap Note" }
+  - { slug: quality_inspection, entity_type: TRANSACTION_TYPE, name: "Quality Inspection" }
+
+  - { slug: material_issue_line,  entity_type: LINE_TYPE,      name: "Material Issue Line" }
+  - { slug: receipt_line,         entity_type: LINE_TYPE,      name: "Receipt Line" }
+  - { slug: labor_line,           entity_type: LINE_TYPE,      name: "Labor Line" }
+  - { slug: scrap_line,           entity_type: LINE_TYPE,      name: "Scrap Line" }
+  - { slug: quality_defect_line,  entity_type: LINE_TYPE,      name: "Quality Defect Line" }
+
+  - { slug: PRODUCT_HAS_BOM,          entity_type: REL_TYPE,   name: "Product has BOM" }
+  - { slug: PRODUCT_HAS_ROUTING,      entity_type: REL_TYPE,   name: "Product has Routing" }
+  - { slug: BOM_HAS_COMPONENT,        entity_type: REL_TYPE,   name: "BOM has Component" }
+  - { slug: ROUTING_HAS_OPERATION,    entity_type: REL_TYPE,   name: "Routing has Operation" }
+  - { slug: WORK_CENTER_IN_PLANT,     entity_type: REL_TYPE,   name: "Work Center in Plant" }
+  - { slug: OPERATION_AT_WORK_CENTER, entity_type: REL_TYPE,   name: "Operation at Work Center" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: product:FG-001,      entity_type: ENTITY, name: "Finished Good 001", metadata: { entity_type: "product" } }
+  - { slug: component:RM-001,    entity_type: ENTITY, name: "Raw Material 001",  metadata: { entity_type: "component" } }
+  - { slug: component:RM-002,    entity_type: ENTITY, name: "Raw Material 002",  metadata: { entity_type: "component" } }
+  - { slug: work_center:WC-ASSY, entity_type: ENTITY, name: "Assembly WC",       metadata: { entity_type: "work_center" } }
+  - { slug: routing:ROUTE-FG001, entity_type: ENTITY, name: "Routing FG-001",    metadata: { entity_type: "routing" } }
+  - { slug: operation:OP-ASSY,   entity_type: ENTITY, name: "Assemble",          metadata: { entity_type: "operation" } }
+  - { slug: bom:BOM-FG001,       entity_type: ENTITY, name: "BOM for FG-001",    metadata: { entity_type: "bom" } }
+  - { slug: plant:PLANT-01,      entity_type: ENTITY, name: "Plant 01",          metadata: { entity_type: "plant" } }
+

@@ -1,0 +1,40 @@
+smart_code: HERA.SERVICE.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.SERVICE.REPORT.WORKLOAD_BY_TECH.v1
+    description: "Upcoming appointments/work orders by technician"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT tech.entity_name AS technician,
+               COUNT(*)         AS upcoming_count
+        FROM universal_transactions t
+        LEFT JOIN core_entities tech ON tech.id = t.reference_entity_id AND tech.organization_id = $org
+        WHERE t.organization_id = $org
+          AND t.transaction_type IN ('appointment','work_order')
+          AND t.status IN ('pending','confirmed','approved')
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY tech.entity_name
+        ORDER BY upcoming_count DESC
+
+  - report_code: HERA.SERVICE.REPORT.REVENUE_BY_SERVICE.v1
+    description: "Revenue by service code"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT s.entity_name AS service_name,
+               SUM(l.line_amount) AS revenue
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        LEFT JOIN core_entities s ON s.id = l.line_entity_id AND s.organization_id = $org
+        WHERE l.organization_id = $org
+          AND l.line_type IN ('service_line','labor_line')
+          AND t.transaction_type IN ('service_order','service_invoice','work_order')
+          AND t.status = 'posted'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY s.entity_name
+        ORDER BY revenue DESC
+

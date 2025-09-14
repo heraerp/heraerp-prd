@@ -1,0 +1,5 @@
+smart_code: HERA.SYSTEM.PLAYBOOK.VOCABULARY.v1
+contracts:
+  - entities.vocab.yml
+  - relationships.vocab.yml
+

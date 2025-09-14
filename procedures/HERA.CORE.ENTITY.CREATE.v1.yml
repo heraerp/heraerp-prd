@@ -1,0 +1,97 @@
+# /procedures/HERA.CORE.ENTITY.CREATE.v1.yml
+smart_code: HERA.CORE.ENTITY.CREATE.v1
+intent: >
+  Create new entity with automatic normalization, smart code validation, and audit trail.
+scope:
+  in_scope: 
+    - Entity creation with duplicate detection
+    - Smart code validation and assignment
+    - Audit trail generation
+    - Multi-tenant isolation enforcement
+  out_of_scope: 
+    - Bulk entity creation (use BATCH procedures)
+    - Cross-organization entity relationships
+    - Entity deletion (use DEACTIVATE procedures)
+preconditions:
+  - org catalog contains required ENTITY_TYPE slugs
+  - organization_id exists and is active
+  - permissions: [entity_create, entity_write]
+  - smart_code follows HERA.{INDUSTRY}.{MODULE}.{TYPE}.v1 pattern
+invariants:
+  - all writes include organization_id
+  - entity_normalization_enabled = true by default
+  - audit trail created for all operations
+  - smart_code constraint validation enforced
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: entity_type
+      type: string
+      where: payload
+    - name: entity_name
+      type: string
+      where: payload
+    - name: smart_code
+      type: string
+      where: payload
+  optional: 
+    - name: entity_code
+      type: string
+      where: payload
+    - name: metadata
+      type: jsonb
+      where: payload
+    - name: normalization_options
+      type: jsonb
+      where: payload
+outputs:
+  entities_created:
+    - entity: core_entities (normalized result)
+    - audit: universal_transactions (creation audit)
+  transactions_emitted:
+    - slug: ENTITY_CREATE_AUDIT
+      header_rules: organization_id, user_id, timestamp
+      line_rules: entity_details, normalization_results
+happy_path:
+  - step: Validate input & resolve entity_type slug → ID
+  - step: Apply normalization using Entity Normalization DNA
+  - step: Validate smart_code against constraint patterns
+  - step: Create/update entity in core_entities table
+  - step: Emit audit transaction to universal_transactions
+  - step: Return normalized entity with confidence score
+errors:
+  - code: UNKNOWN_ENTITY_TYPE
+    when: entity_type not in catalog
+    action: suggest closest matches from system templates
+  - code: SMART_CODE_INVALID
+    when: smart_code violates constraint pattern
+    action: provide valid pattern examples
+  - code: NORMALIZATION_CONFLICT
+    when: multiple high-confidence matches found
+    action: return candidates for user resolution
+  - code: ORGANIZATION_INACTIVE
+    when: organization_id not active
+    action: block creation and notify admin
+observability:
+  logs: [procedure_started, normalization_applied, smart_code_validated, entity_created]
+  audit_json: true
+  metrics: [creation_time_ms, normalization_confidence, duplicate_matches_found]
+example_payload:
+  organization_id: "a1b2c3d4-5678-90ab-cdef-000000000001"
+  entity_type: "customer"
+  entity_name: "TechCorp Enterprise Solutions"
+  entity_code: "CUST-001"
+  smart_code: "HERA.TELECOM.CUSTOMER.ENTERPRISE.v1"
+  metadata:
+    industry: "technology"
+    credit_limit: 100000
+  normalization_options:
+    similarity_threshold: 0.85
+    auto_resolve: false
+checks:
+  - description: Entity exists in core_entities with correct organization_id
+  - description: Audit transaction created in universal_transactions
+  - description: Entity normalization confidence score >= 85%
+  - description: Smart code matches validated pattern constraint

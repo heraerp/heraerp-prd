@@ -19,7 +19,7 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { salonApiClient } from '@/lib/salon/salon-api-client'
 // Import the glassmorphism modal with WSAG effects
 import { BookAppointmentModalGlass } from '@/components/salon/BookAppointmentModalGlass'
-import { SalonDarkSidebar } from '@/components/salon/SalonDarkSidebar'
+import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
 import type { DashboardData, Organization } from '@/types/salon.types'
 import { handleError, withErrorHandler } from '@/lib/salon/error-handler'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'

@@ -1,0 +1,42 @@
+name: hera-schema
+
+on:
+  push:
+    paths:
+      - 'mcp-server/**'
+      - 'playbooks/**'
+      - '.husky/**'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'mcp-server/**'
+      - 'playbooks/**'
+      - '.husky/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+    inputs:
+      roots:
+        description: JSON array of roots
+        type: string
+        default: '[".","playbooks"]'
+      baseline_names:
+        description: JSON array of baseline filenames
+        type: string
+        default: '["baseline_catalog.json","baseline.json"]'
+      run_only_changed:
+        description: Only changed bundles (PRs ignored on manual runs if false)
+        type: boolean
+        default: false
+      override_label:
+        description: PR label that forces a full run
+        type: string
+        default: 'full-bundle-check'
+
+jobs:
+  bundles:
+    uses: ./.github/workflows/hera-bundles.yml
+    with:
+      roots: ${{ github.event_name == 'workflow_dispatch' && inputs.roots || '[".","playbooks"]' }}
+      baseline_names: ${{ github.event_name == 'workflow_dispatch' && inputs.baseline_names || '["baseline_catalog.json","baseline.json"]' }}
+      run_only_changed: ${{ github.event_name == 'workflow_dispatch' && inputs.run_only_changed || true }}
+      override_label: ${{ github.event_name == 'workflow_dispatch' && inputs.override_label || 'full-bundle-check' }}

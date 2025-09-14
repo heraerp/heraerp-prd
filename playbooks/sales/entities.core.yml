@@ -1,0 +1,34 @@
+smart_code: HERA.SALES.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: customer,         entity_type: ENTITY_TYPE,      name: "Customer" }
+  - { slug: product,          entity_type: ENTITY_TYPE,      name: "Product" }
+  - { slug: price_list,       entity_type: ENTITY_TYPE,      name: "Price List" }
+  - { slug: sales_channel,    entity_type: ENTITY_TYPE,      name: "Sales Channel" }
+
+  - { slug: sales_quote,      entity_type: TRANSACTION_TYPE, name: "Sales Quote" }
+  - { slug: sales_order,      entity_type: TRANSACTION_TYPE, name: "Sales Order" }
+  - { slug: shipment,         entity_type: TRANSACTION_TYPE, name: "Shipment" }
+  - { slug: return_authorization, entity_type: TRANSACTION_TYPE, name: "Return Authorization" }
+  - { slug: pos_order,        entity_type: TRANSACTION_TYPE, name: "POS Order" }
+  - { slug: ar_invoice,       entity_type: TRANSACTION_TYPE, name: "AR Invoice" }
+
+  - { slug: item,             entity_type: LINE_TYPE,        name: "Item Line" }
+  - { slug: service,          entity_type: LINE_TYPE,        name: "Service Line" }
+  - { slug: discount,         entity_type: LINE_TYPE,        name: "Discount Line" }
+  - { slug: tax,              entity_type: LINE_TYPE,        name: "Tax Line" }
+  - { slug: shipping,         entity_type: LINE_TYPE,        name: "Shipping Line" }
+  - { slug: adjustment,       entity_type: LINE_TYPE,        name: "Adjustment Line" }
+
+  - { slug: ITEM_IN_PRICE_LIST,     entity_type: REL_TYPE,   name: "Item in Price List" }
+  - { slug: CUSTOMER_PRICE_LIST,    entity_type: REL_TYPE,   name: "Customer Price List" }
+  - { slug: BUNDLE_HAS_ITEM,        entity_type: REL_TYPE,   name: "Bundle has Item" }
+  - { slug: TAX_GROUP_APPLIES_TO_TXN, entity_type: REL_TYPE, name: "Tax Group Applies to Txn" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: product:SKU-001,   entity_type: ENTITY, name: "Standard Service", metadata: { entity_type: "product" } }
+  - { slug: product:SKU-002,   entity_type: ENTITY, name: "Retail Shampoo",  metadata: { entity_type: "product" } }
+  - { slug: customer:ALICE,    entity_type: ENTITY, name: "Alice Example",   metadata: { entity_type: "customer" } }
+  - { slug: price_list:STANDARD, entity_type: ENTITY, name: "Standard Price List", metadata: { entity_type: "price_list" } }
+  - { slug: sales_channel:POS, entity_type: ENTITY, name: "POS", metadata: { entity_type: "sales_channel" } }
+

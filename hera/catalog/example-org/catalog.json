@@ -1,0 +1,95 @@
+{
+  "organization_id": "f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944",
+  "organization_name": "HERA System Organization",
+  "entity_types": [
+    {
+      "code": "customer",
+      "name": "Customer",
+      "smart_code": "HERA.CRM.ENTITY.CUSTOMER.v1",
+      "lifecycle_states": ["prospect", "active", "inactive", "archived"],
+      "required_fields": ["name", "customer_code"],
+      "optional_fields": ["email", "phone", "credit_limit", "payment_terms"]
+    },
+    {
+      "code": "product",
+      "name": "Product",
+      "smart_code": "HERA.INV.ENTITY.PRODUCT.v1",
+      "lifecycle_states": ["draft", "active", "discontinued"],
+      "required_fields": ["name", "product_code", "unit_of_measure"],
+      "optional_fields": ["description", "cost", "price", "barcode"]
+    },
+    {
+      "code": "gl_account",
+      "name": "GL Account",
+      "smart_code": "HERA.FIN.ENTITY.GL_ACCOUNT.v1",
+      "lifecycle_states": ["active", "inactive"],
+      "required_fields": ["account_code", "account_name", "account_type"],
+      "optional_fields": ["parent_account", "currency", "description"]
+    }
+  ],
+  "transaction_types": [
+    {
+      "code": "sale",
+      "name": "Sale Transaction",
+      "smart_code": "HERA.SALES.TXN.SALE.v1",
+      "requires_lines": true,
+      "financial": true,
+      "gl_impact": "immediate"
+    },
+    {
+      "code": "purchase",
+      "name": "Purchase Transaction",
+      "smart_code": "HERA.SCM.TXN.PURCHASE.v1",
+      "requires_lines": true,
+      "financial": true,
+      "gl_impact": "immediate"
+    },
+    {
+      "code": "journal_entry",
+      "name": "Journal Entry",
+      "smart_code": "HERA.FIN.TXN.JOURNAL.v1",
+      "requires_lines": true,
+      "financial": true,
+      "must_balance": true
+    }
+  ],
+  "relationship_types": [
+    {
+      "code": "has_status",
+      "name": "Has Status",
+      "smart_code": "HERA.WORKFLOW.REL.STATUS.v1",
+      "from_entity_types": ["*"],
+      "to_entity_types": ["workflow_status"]
+    },
+    {
+      "code": "parent_of",
+      "name": "Parent Of",
+      "smart_code": "HERA.HIERARCHY.REL.PARENT.v1",
+      "from_entity_types": ["*"],
+      "to_entity_types": ["*"]
+    },
+    {
+      "code": "customer_of",
+      "name": "Customer Of",
+      "smart_code": "HERA.CRM.REL.CUSTOMER.v1",
+      "from_entity_types": ["customer"],
+      "to_entity_types": ["organization"]
+    }
+  ],
+  "line_types": [
+    {
+      "code": "product_line",
+      "name": "Product Line Item",
+      "smart_code": "HERA.TXN.LINE.PRODUCT.v1",
+      "required_fields": ["line_entity_id", "quantity", "unit_price"],
+      "calculations": ["line_amount = quantity * unit_price"]
+    },
+    {
+      "code": "gl_line",
+      "name": "GL Journal Line",
+      "smart_code": "HERA.FIN.LINE.GL.v1",
+      "required_fields": ["line_entity_id", "debit_amount", "credit_amount"],
+      "validations": ["debit_amount OR credit_amount, not both"]
+    }
+  ]
+}

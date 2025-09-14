@@ -47,16 +47,15 @@ const SALON_HIERARCHY = {
 ## URL Structure
 
 ### Demo Pages (No Auth Required)
-- `http://localhost:3000/salon` - Demo salon dashboard
 - `http://localhost:3000/salon-data` - Demo with calendar
 - `http://localhost:3000/hera-dna-calendar` - Universal calendar demo
 - `http://localhost:3000/employee-manager` - Employee management demo
 
 ### Authenticated Pages (Auth Required)
-- `http://localhost:3000/org/salon` - Authenticated salon dashboard
-- `http://hairtalkz.localhost:3000/org/salon` - Head office access
-- `http://hairtalkz-karama.localhost:3000/org/salon` - Branch 1 access
-- `http://hairtalkz-almina.localhost:3000/org/salon` - Branch 2 access
+- `http://localhost:3000/org/salon-data` - Authenticated salon data dashboard
+- `http://hairtalkz.localhost:3000/org/salon-data` - Head office access
+- `http://hairtalkz-karama.localhost:3000/org/salon-data` - Branch 1 access
+- `http://hairtalkz-almina.localhost:3000/org/salon-data` - Branch 2 access
 
 ### Production URLs
 - `https://hairtalkz.heraerp.com` - Head office
@@ -144,7 +143,7 @@ NEXT_PUBLIC_ENABLE_SUBDOMAINS=true
 
 ## Key Implementation Files
 
-1. **`/src/app/org/salon/page.tsx`** - Authenticated salon dashboard
+1. **`/src/app/org/salon-data/page.tsx`** - Authenticated salon data dashboard
 2. **`/src/app/salon-data/page.tsx`** - Demo salon (no auth)
 3. **`/src/components/salon/SalonResourceCalendar.tsx`** - Calendar component
 4. **`/src/middleware.ts`** - Subdomain routing logic
@@ -160,7 +159,7 @@ NEXT_PUBLIC_ENABLE_SUBDOMAINS=true
 
 ### As Head Office User:
 1. Login with head office credentials
-2. Navigate to `/org/salon`
+2. Navigate to `/org/salon-data`
 3. Should see:
    - Organization Access panel showing all 3 organizations
    - Calendar tab with branch filter
@@ -169,7 +168,7 @@ NEXT_PUBLIC_ENABLE_SUBDOMAINS=true
 
 ### As Branch User:
 1. Login with branch credentials
-2. Navigate to `/org/salon`
+2. Navigate to `/org/salon-data`
 3. Should see:
    - Only their branch in Organization Access
    - Calendar showing only their appointments

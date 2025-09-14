@@ -1,0 +1,58 @@
+smart_code: HERA.MFG.REPORTS.CORE.v1
+reports:
+  - report_code: HERA.MFG.REPORT.YIELD_BY_BATCH.v1
+    description: "Production yield by batch"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT t.transaction_number AS batch_number,
+               t.transaction_date::date AS day,
+               SUM(CASE WHEN l.line_type = 'receipt_line' THEN l.quantity ELSE 0 END) AS good_qty,
+               SUM(CASE WHEN l.line_type = 'scrap_line'   THEN l.quantity ELSE 0 END) AS scrap_qty,
+               CASE WHEN SUM(CASE WHEN l.line_type IN ('receipt_line','scrap_line') THEN l.quantity ELSE 0 END) > 0
+                    THEN ROUND(100.0 * SUM(CASE WHEN l.line_type = 'receipt_line' THEN l.quantity ELSE 0 END)
+                               / SUM(CASE WHEN l.line_type IN ('receipt_line','scrap_line') THEN l.quantity ELSE 0 END), 2)
+                    ELSE NULL END AS yield_pct
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        WHERE l.organization_id = $org
+          AND t.transaction_type IN ('production_batch','production_receipt','scrap_note')
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY batch_number, day
+        ORDER BY day DESC, batch_number
+
+  - report_code: HERA.MFG.REPORT.CONSUMPTION_VS_STANDARD.v1
+    description: "Component consumption vs standard BOM"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        WITH actual AS (
+          SELECT l.line_entity_id AS component_id,
+                 SUM(l.quantity)  AS qty
+          FROM universal_transaction_lines l
+          JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+          WHERE l.organization_id = $org
+            AND t.transaction_type = 'production_issue'
+            AND l.line_type = 'material_issue_line'
+            AND t.transaction_date BETWEEN $from AND $to
+          GROUP BY l.line_entity_id
+        ), std AS (
+          SELECT r.child_entity_id AS component_id,
+                 SUM((r.relationship_data->>'quantity')::numeric) AS std_qty
+          FROM core_relationships r
+          WHERE r.organization_id = $org AND r.relationship_type = 'BOM_HAS_COMPONENT'
+          GROUP BY r.child_entity_id
+        )
+        SELECT ce.entity_name AS component_name,
+               a.qty AS actual_qty,
+               s.std_qty AS std_qty,
+               (a.qty - COALESCE(s.std_qty,0)) AS variance
+        FROM actual a
+        LEFT JOIN std s ON s.component_id = a.component_id
+        LEFT JOIN core_entities ce ON ce.id = a.component_id AND ce.organization_id = $org
+        ORDER BY variance DESC
+

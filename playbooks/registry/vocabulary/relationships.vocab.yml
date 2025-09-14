@@ -1,0 +1,48 @@
+smart_code: HERA.SYSTEM.VOCAB.RELATIONS.v1
+rows:
+  # --- Synonyms → canonical ENTITY_TYPE ---
+  - { from_slug: vocab_term:client,   to_slug: ENTITY_TYPE:customer, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "global", locale: "en" } }
+  - { from_slug: vocab_term:patron,   to_slug: ENTITY_TYPE:customer, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales",  locale: "en" } }
+  - { from_slug: vocab_term:guest,    to_slug: ENTITY_TYPE:customer, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales",  locale: "en" } }
+  - { from_slug: vocab_term:supplier, to_slug: ENTITY_TYPE:vendor,   relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "global", locale: "en" } }
+  - { from_slug: vocab_term:item,     to_slug: ENTITY_TYPE:product,  relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales",  locale: "en" } }
+
+  # --- Additional domain/localization synonyms ---
+  - { from_slug: vocab_term:warehouse,  to_slug: ENTITY_TYPE:location, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "inventory", locale: "en" } }
+  - { from_slug: vocab_term:stockroom,  to_slug: ENTITY_TYPE:location, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "inventory", locale: "en" } }
+  - { from_slug: vocab_term:sku,        to_slug: ENTITY_TYPE:product,  relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales",     locale: "en" } }
+  - { from_slug: vocab_term:stock,      to_slug: LINE_TYPE:item,       relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "inventory", locale: "en" } }
+
+  # --- Synonyms → canonical TRANSACTION_TYPE ---
+  - { from_slug: vocab_term:order,    to_slug: TRANSACTION_TYPE:sales_order,   relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales", locale: "en" } }
+  - { from_slug: vocab_term:pos_sale, to_slug: TRANSACTION_TYPE:pos_order,     relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales", locale: "en" } }
+  - { from_slug: vocab_term:invoice,  to_slug: TRANSACTION_TYPE:ar_invoice,    relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales", locale: "en" } }
+  - { from_slug: vocab_term:bill,     to_slug: TRANSACTION_TYPE:ap_invoice,    relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "purch", locale: "en" } }
+
+  # --- Synonyms → canonical LINE_TYPE ---
+  - { from_slug: vocab_term:item,      to_slug: LINE_TYPE:item,      relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales", locale: "en" } }
+  - { from_slug: vocab_term:service,   to_slug: LINE_TYPE:service,   relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "sales", locale: "en" } }
+  - { from_slug: vocab_term:treatment, to_slug: LINE_TYPE:service,   relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "salon", locale: "en" } }
+  - { from_slug: vocab_term:invoice,   to_slug: LINE_TYPE:fee,       relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "legacy", locale: "en" } }
+
+  # --- Per-org display labels (UI only) ---
+  - from_slug: organization:this
+    to_slug:   ENTITY_TYPE:customer
+    relationship_type: DISPLAY_LABEL_FOR_TYPE
+    relationship_data: { locale: "en-GB", singular: "Client", plural: "Clients" }
+
+  - from_slug: organization:this
+    to_slug:   ENTITY_TYPE:vendor
+    relationship_type: DISPLAY_LABEL_FOR_TYPE
+    relationship_data: { locale: "en-GB", singular: "Supplier", plural: "Suppliers" }
+
+  - from_slug: organization:this
+    to_slug:   ENTITY_TYPE:product
+    relationship_type: DISPLAY_LABEL_FOR_TYPE
+    relationship_data: { locale: "en-GB", singular: "Item", plural: "Items" }
+
+  # --- A couple translations for demo (es) ---
+  - from_slug: organization:this
+    to_slug:   ENTITY_TYPE:customer
+    relationship_type: DISPLAY_LABEL_FOR_TYPE
+    relationship_data: { locale: "es", singular: "Cliente", plural: "Clientes" }

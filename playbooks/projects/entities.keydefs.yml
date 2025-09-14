@@ -1,0 +1,21 @@
+smart_code: HERA.PROJECTS.DYNAMIC_KEYS.CORE.v1
+items:
+  # Project
+  - { slug: project.code,          entity_type: ENTITY, name: "Project Code",      metadata: { type: "text" } }
+  - { slug: project.start_date,    entity_type: ENTITY, name: "Start Date",        metadata: { type: "date" } }
+  - { slug: project.end_date,      entity_type: ENTITY, name: "End Date",          metadata: { type: "date" } }
+  - { slug: project.budget_amount, entity_type: ENTITY, name: "Budget Amount",     metadata: { type: "number" } }
+  - { slug: project.currency_code, entity_type: ENTITY, name: "Currency Code",     metadata: { type: "text", pattern: "^[A-Z]{3}$" } }
+
+  # Task
+  - { slug: task.estimated_hours,  entity_type: ENTITY, name: "Estimated Hours",    metadata: { type: "number" } }
+  - { slug: task.priority,         entity_type: ENTITY, name: "Priority",           metadata: { type: "text", allowed: ["low","medium","high"] } }
+  - { slug: task.status,           entity_type: ENTITY, name: "Status",             metadata: { type: "text", allowed: ["todo","in_progress","done","blocked"] } }
+
+  # Resource
+  - { slug: resource.role,         entity_type: ENTITY, name: "Role",               metadata: { type: "text" } }
+  - { slug: resource.rate_hour,    entity_type: ENTITY, name: "Rate per Hour",      metadata: { type: "number" } }
+
+  # Milestone
+  - { slug: milestone.due_date,    entity_type: ENTITY, name: "Due Date",           metadata: { type: "date" } }
+

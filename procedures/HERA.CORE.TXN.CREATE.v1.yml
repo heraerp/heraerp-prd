@@ -1,0 +1,124 @@
+# /procedures/HERA.CORE.TXN.CREATE.v1.yml
+smart_code: HERA.CORE.TXN.CREATE.v1
+intent: >
+  Create universal transaction with header, lines, and automatic business rule application.
+scope:
+  in_scope: 
+    - Transaction header creation in universal_transactions
+    - Transaction lines creation in universal_transaction_lines
+    - Smart code-driven business rule application
+    - Currency validation and conversion
+    - Auto-journal trigger activation
+  out_of_scope: 
+    - GL posting (handled by Auto-Journal DNA)
+    - Payment processing (separate procedures)
+    - Invoice generation (separate procedures)
+preconditions:
+  - org catalog contains required TXN_TYPE and LINE_TYPE slugs
+  - source_entity_id and target_entity_id exist if provided
+  - permissions: [transaction_create, transaction_write]
+  - currency_code is valid and supported
+invariants:
+  - universal_transactions must balance if financial
+  - all writes include organization_id
+  - transaction_code follows document numbering DNA
+  - total_amount equals sum of line_amounts
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: transaction_type
+      type: string
+      where: payload
+    - name: smart_code
+      type: string
+      where: payload
+    - name: total_amount
+      type: decimal
+      where: payload
+    - name: line_items
+      type: jsonb[]
+      where: payload
+  optional: 
+    - name: transaction_code
+      type: string
+      where: payload
+    - name: source_entity_id
+      type: uuid
+      where: payload
+    - name: target_entity_id
+      type: uuid
+      where: payload
+    - name: currency_code
+      type: string
+      where: payload
+    - name: exchange_rate
+      type: decimal
+      where: payload
+    - name: metadata
+      type: jsonb
+      where: payload
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: BUSINESS_TRANSACTION
+      header_rules: transaction_type, smart_code, amounts, entities
+      line_rules: line_entity_id, quantity, unit_amount, line_amount, smart_code
+    - slug: AUTO_JOURNAL_TRIGGER
+      header_rules: transaction_reference, posting_instructions
+      line_rules: gl_account_mappings, debit_credit_rules
+happy_path:
+  - step: Validate input & resolve transaction_type slug → ID
+  - step: Generate transaction_code using Document Numbering DNA
+  - step: Validate line_items and calculate totals
+  - step: Apply smart code business rules and validations
+  - step: Create transaction header in universal_transactions
+  - step: Create transaction lines in universal_transaction_lines
+  - step: Trigger Auto-Journal DNA processing if financial
+  - step: Return complete transaction with generated codes
+errors:
+  - code: UNKNOWN_TRANSACTION_TYPE
+    when: transaction_type not in catalog
+    action: suggest valid transaction types for organization
+  - code: AMOUNT_MISMATCH
+    when: total_amount != sum(line_amounts)
+    action: recalculate and highlight discrepancy
+  - code: INVALID_ENTITY_REFERENCE
+    when: source_entity_id or target_entity_id not found
+    action: validate entity exists in organization
+  - code: CURRENCY_UNSUPPORTED
+    when: currency_code not in organization settings
+    action: list supported currencies
+  - code: BUSINESS_RULE_VIOLATION
+    when: smart_code rules fail validation
+    action: describe specific rule violation
+observability:
+  logs: [procedure_started, amounts_validated, lines_created, auto_journal_triggered]
+  audit_json: true
+  metrics: [transaction_create_time_ms, line_count, auto_journal_relevance_score]
+example_payload:
+  organization_id: "a1b2c3d4-5678-90ab-cdef-000000000001"
+  transaction_type: "subscription"
+  smart_code: "HERA.TELECOM.SUBSCRIPTION.CREATE.v1"
+  total_amount: 999.00
+  source_entity_id: "customer-uuid-here"
+  target_entity_id: "service-uuid-here"
+  currency_code: "INR"
+  line_items:
+    - entity_id: "service-uuid-here"
+      line_type: "service"
+      description: "Monthly broadband subscription"
+      quantity: 1
+      unit_amount: 999.00
+      line_amount: 999.00
+      smart_code: "HERA.TELECOM.LINE.SUBSCRIPTION.v1"
+  metadata:
+    billing_cycle: "monthly"
+    contract_period: 12
+checks:
+  - description: Transaction header created with correct organization_id
+  - description: All transaction lines created with proper smart codes
+  - description: Total amount equals sum of line amounts
+  - description: Auto-Journal DNA triggered if transaction is financial
+  - description: Document number generated following numbering rules

@@ -1,0 +1,83 @@
+# Sales Order to Invoice - Finance DNA Handshake
+smart_code: HERA.SALES.SALES_ORDER.TO_INVOICE.v1
+intent: >
+  Convert a confirmed sales_order to an ar invoice and post GL.
+scope:
+  in_scope:
+    - Sales order to invoice conversion
+    - Billable quantity calculation
+    - GL posting via journal entry
+    - Tax and discount handling
+  out_of_scope:
+    - Payment collection
+    - Credit limit checking
+    - Dunning procedures
+preconditions:
+  - SO status = confirmed (via has_status relationship)
+  - catalog contains TXN_TYPE: [sales_order, invoice_ar, journal_entry]
+  - catalog contains LINE_TYPE: [sales_line, tax_line, discount_line, gl_debit_line, gl_credit_line]
+  - permissions: [invoice_create, gl_post]
+invariants:
+  - invoice total equals SO shipped/billed quantities
+  - GL lines balance (debit == credit)
+  - all writes include organization_id
+  - posting_profile determines GL accounts
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: sales_order_id
+      type: uuid
+      where: payload
+  optional:
+    - name: partial_quantities
+      type: object
+      where: payload
+    - name: invoice_date
+      type: date
+      where: payload
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: invoice_ar
+      header_rules: reference SO, smart_code HERA.FIN.AR.TXN.INVOICE.v1
+      line_rules:
+        - sales_line per SO line (billable qty)
+        - tax_line calculated
+        - discount_line if applicable
+    - slug: journal_entry
+      header_rules: auto-post flag, smart_code HERA.FIN.GL.TXN.JOURNAL.v1
+      line_rules:
+        - gl_debit_line (AR account)
+        - gl_credit_line (Revenue accounts)
+        - gl_credit_line (Tax payable)
+happy_path:
+  - step: Validate SO status = confirmed via relationship
+  - step: Read SO lines → derive billable qty/price
+  - step: Resolve posting_profile for GL accounts
+  - step: Emit invoice_ar header + sales_line + tax_line + discount_line
+  - step: Emit journal_entry with gl_debit_line/gl_credit_line from posting profile
+  - step: Create has_status relationship (invoice → draft/approved)
+errors:
+  - code: SO_NOT_CONFIRMED
+    when: SO status != confirmed
+    action: show current status
+  - code: NO_POSTING_PROFILE
+    when: customer has no default posting profile
+    action: require manual GL account selection
+  - code: UNBALANCED_JOURNAL
+    when: debit != credit in journal_entry
+    action: show imbalance amount
+observability:
+  logs: [so_validated, invoice_created, journal_posted, gl_accounts_derived]
+  audit_json: true
+example_payload:
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  sales_order_id: "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+  invoice_date: "2024-01-15"
+checks:
+  - description: Posting profile resolved correctly
+  - description: Invoice status lifecycle valid (draft→approved→posted)
+  - description: GL debits equal credits
+  - description: Invoice lines match SO billable quantities

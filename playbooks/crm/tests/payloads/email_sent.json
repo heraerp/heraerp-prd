@@ -1,0 +1,25 @@
+{
+  "header": {
+    "transaction_type": "crm_activity",
+    "transaction_number": "MSG-EMAIL-0001",
+    "transaction_date": "2025-09-13T11:00:00Z",
+    "currency_code": "GBP",
+    "total_amount": 0,
+    "status": "posted",
+    "smart_code": "HERA.CRM.COMMS.EMAIL.SENT.v1",
+    "metadata": { "channel": "email", "direction": "outbound", "subject": "Proposal", "reference_entity_code": "contact:JANE_DOE" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "note_line",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 0,
+      "line_amount": 0,
+      "smart_code": "HERA.CRM.COMMS.EMAIL.SENT.LINE.v1",
+      "metadata": { "body": "Hello Jane, attaching the proposal.", "attachments": [{ "file_url": "https://example.com/proposal.pdf", "mime": "application/pdf" }] }
+    }
+  ]
+}
+

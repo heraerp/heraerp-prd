@@ -1,0 +1,22 @@
+smart_code: HERA.HCM.DYNAMIC_KEYS.CORE.v1
+items:
+  # Employee
+  - { slug: employee.employee_code,   entity_type: ENTITY, name: "Employee Code",   metadata: { type: "text" } }
+  - { slug: employee.hire_date,       entity_type: ENTITY, name: "Hire Date",       metadata: { type: "date" } }
+  - { slug: employee.location_id,     entity_type: ENTITY, name: "Location ID",     metadata: { type: "uuid" } }
+
+  # Position/Department
+  - { slug: position.grade,           entity_type: ENTITY, name: "Grade",           metadata: { type: "text" } }
+  - { slug: department.cost_center,   entity_type: ENTITY, name: "Cost Center",     metadata: { type: "text" } }
+
+  # Payroll Cycle
+  - { slug: payroll_cycle.frequency,  entity_type: ENTITY, name: "Frequency",       metadata: { type: "text", allowed: ["monthly","biweekly","weekly"] } }
+  - { slug: payroll_cycle.start_day,  entity_type: ENTITY, name: "Start Day",       metadata: { type: "number" } }
+
+  # Pay Component
+  - { slug: pay_component.type,       entity_type: ENTITY, name: "Component Type",  metadata: { type: "text", allowed: ["earning","deduction","tax"] } }
+  - { slug: pay_component.amount_type,entity_type: ENTITY, name: "Amount Type",     metadata: { type: "text", allowed: ["fixed","variable"] } }
+  - { slug: pay_component.default_amount, entity_type: ENTITY, name: "Default Amount", metadata: { type: "number" } }
+
+  # Leave Type
+  - { slug: leave_type.entitlement_days_per_year, entity_type: ENTITY, name: "Entitlement Days/Year", metadata: { type: "number" } }

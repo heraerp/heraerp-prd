@@ -1,0 +1,22 @@
+smart_code: HERA.FINANCE.PROCEDURES.CORE.v1
+preconditions:
+  - "TRANSACTION_TYPE::pos_order"
+  - "LINE_TYPE::tax_line"
+inputs:
+  required:
+    - { name: source_transaction_id, type: uuid }
+  optional:
+    - { name: posting_profile_slug, type: text, default: "STANDARD" }
+outputs:
+  entities_created: []
+  transactions_emitted: ["journal_entry"]
+happy_path:
+  - { step: "Load pos_order and lines" }
+  - { step: "Resolve accounts via POSTING_RULE_MAPS" }
+  - { step: "Build journal_entry header + gl_debit_line/gl_credit_line lines" }
+  - { step: "Validate totals and status; post" }
+errors:
+  - { code: ACCOUNT_MAPPING_NOT_FOUND, when: "No POSTING_RULE_MAPS match for a line" }
+checks:
+  - { description: "Header total equals Σ lines" }
+

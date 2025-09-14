@@ -1,0 +1,11 @@
+[
+  "ENTITY_TYPE::customer","ENTITY_TYPE::vendor","ENTITY_TYPE::product","ENTITY_TYPE::price_list","ENTITY_TYPE::sales_channel",
+  "ENTITY_TYPE::tax_code","ENTITY_TYPE::ledger_account","ENTITY_TYPE::account_group","ENTITY_TYPE::posting_profile","ENTITY_TYPE::currency","ENTITY_TYPE::organization",
+  "TRANSACTION_TYPE::sales_order","TRANSACTION_TYPE::sales_quote","TRANSACTION_TYPE::shipment","TRANSACTION_TYPE::return_authorization","TRANSACTION_TYPE::pos_order",
+  "TRANSACTION_TYPE::ar_invoice","TRANSACTION_TYPE::ap_invoice","TRANSACTION_TYPE::journal_entry",
+  "LINE_TYPE::item","LINE_TYPE::service","LINE_TYPE::discount","LINE_TYPE::tax","LINE_TYPE::fee","LINE_TYPE::shipping","LINE_TYPE::adjustment",
+  "LINE_TYPE::gl_debit_line","LINE_TYPE::gl_credit_line",
+  "REL_TYPE::ITEM_IN_PRICE_LIST","REL_TYPE::CUSTOMER_PRICE_LIST","REL_TYPE::BUNDLE_HAS_ITEM","REL_TYPE::TAX_GROUP_APPLIES_TO_TXN",
+  "REL_TYPE::ACCOUNT_IN_GROUP","REL_TYPE::ORG_DEFAULTS_TO_CURRENCY","REL_TYPE::POSTING_RULE_MAPS",
+  "REL_TYPE::TERM_SYNONYM_OF","REL_TYPE::DISPLAY_LABEL_FOR_TYPE"
+]

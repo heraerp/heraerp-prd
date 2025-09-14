@@ -1,0 +1,45 @@
+smart_code: HERA.FINANCE.READ_MODELS.CORE.v1
+views:
+  - name: v_pos_orders_brief
+    description: "UI list of POS orders with header totals"
+    sql: |
+      SELECT
+        transaction_number,
+        transaction_date,
+        currency_code,
+        total_amount,
+        status,
+        smart_code,
+        created_at,
+        updated_at
+      FROM universal_transactions
+      WHERE organization_id = $org
+        AND transaction_type = 'pos_order'
+      ORDER BY transaction_date DESC, transaction_number DESC
+
+  - name: v_gl_entries_from_pos
+    description: "Journal entry lines originating from POS posting procedure"
+    sql: |
+      SELECT
+        l.transaction_id,
+        h.transaction_number    AS journal_number,
+        h.transaction_date      AS journal_date,
+        l.line_number,
+        l.line_type,
+        l.quantity,
+        l.unit_of_measure,
+        l.unit_price,
+        l.line_amount,
+        l.entity_id             AS ledger_account_id,
+        h.currency_code,
+        h.smart_code            AS posting_smart_code
+      FROM universal_transaction_lines l
+      JOIN universal_transactions h
+        ON h.organization_id = l.organization_id
+       AND h.id = l.transaction_id
+      WHERE l.organization_id = $org
+        AND h.transaction_type = 'journal_entry'
+        AND (h.smart_code = 'HERA.FINANCE.PROCEDURE.POST.POS_ORDER_TO_GL.v1'
+             OR h.metadata->>'source_transaction_type' = 'pos_order')
+      ORDER BY journal_date DESC, journal_number DESC, line_number ASC
+

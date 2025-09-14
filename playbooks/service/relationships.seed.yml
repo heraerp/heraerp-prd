@@ -1,0 +1,26 @@
+smart_code: HERA.SERVICE.RELATIONSHIPS.SEED.v1
+rows:
+  # BOM: Service requires Part
+  - from_slug: service:INSTALL_BASIC
+    to_slug:   part:PART-001
+    relationship_type: SERVICE_BOM
+    relationship_data: { quantity: 1, uom: "EA" }
+
+  # Service has SLA
+  - from_slug: service:INSTALL_BASIC
+    to_slug:   sla:STANDARD_48H
+    relationship_type: SERVICE_HAS_SLA
+    relationship_data: {}
+
+  # Assign technician to a work order type (example scope)
+  - from_slug: technician:TECH001
+    to_slug:   service:INSTALL_BASIC
+    relationship_type: ASSIGNED_TECHNICIAN
+    relationship_data: { skill_match: true }
+
+  # Service at a canonical location type
+  - from_slug: service:INSTALL_BASIC
+    to_slug:   service_location:CUSTOMER_SITE
+    relationship_type: SERVICE_AT_LOCATION
+    relationship_data: {}
+

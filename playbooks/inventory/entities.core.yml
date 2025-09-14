@@ -1,0 +1,29 @@
+smart_code: HERA.INVENTORY.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: item,             entity_type: ENTITY_TYPE,      name: "Item" }
+  - { slug: location,         entity_type: ENTITY_TYPE,      name: "Location" }
+  - { slug: uom,              entity_type: ENTITY_TYPE,      name: "Unit of Measure" }
+  - { slug: lot,              entity_type: ENTITY_TYPE,      name: "Lot/Batch" }
+
+  - { slug: goods_receipt,    entity_type: TRANSACTION_TYPE, name: "Goods Receipt" }
+  - { slug: goods_issue,      entity_type: TRANSACTION_TYPE, name: "Goods Issue" }
+  - { slug: transfer,         entity_type: TRANSACTION_TYPE, name: "Inventory Transfer" }
+  - { slug: stock_count,      entity_type: TRANSACTION_TYPE, name: "Stock Count" }
+  - { slug: adjustment,       entity_type: TRANSACTION_TYPE, name: "Inventory Adjustment" }
+
+  - { slug: item,             entity_type: LINE_TYPE,        name: "Item Line" }
+  - { slug: adjustment,       entity_type: LINE_TYPE,        name: "Adjustment Line" }
+
+  - { slug: ITEM_STOCKED_AT,      entity_type: REL_TYPE,     name: "Item stocked at Location" }
+  - { slug: LOCATION_HIERARCHY,   entity_type: REL_TYPE,     name: "Location Hierarchy" }
+  - { slug: UOM_CONVERSION,       entity_type: REL_TYPE,     name: "UOM Conversion" }
+  - { slug: REPLENISHMENT_RULE,   entity_type: REL_TYPE,     name: "Replenishment Rule" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: item:SKU-INV-001,     entity_type: ENTITY, name: "Inventory Item A", metadata: { entity_type: "item" } }
+  - { slug: location:MAIN,        entity_type: ENTITY, name: "Main Warehouse",  metadata: { entity_type: "location", type: "warehouse" } }
+  - { slug: uom:EA,               entity_type: ENTITY, name: "Each",            metadata: { entity_type: "uom" } }
+  - { slug: uom:BOX,              entity_type: ENTITY, name: "Box",             metadata: { entity_type: "uom" } }
+  - { slug: lot:LOT-001,          entity_type: ENTITY, name: "Lot 001",         metadata: { entity_type: "lot" } }
+

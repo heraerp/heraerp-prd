@@ -1,0 +1,85 @@
+# Restaurant Bundle Order - Core Pattern
+smart_code: HERA.RESTAURANT.BUNDLE.ORDER.v1
+intent: >
+  Place an order for a menu bundle with optional substitutions.
+scope:
+  in_scope: 
+    - Bundle selection and configuration
+    - Substitution validation
+    - Dynamic pricing strategies
+    - Inventory movement tracking
+  out_of_scope:
+    - Payment processing
+    - Kitchen order routing
+    - Delivery scheduling
+preconditions:
+  - org catalog contains required ENTITY_TYPE: [menu, menu_item, bundle]
+  - org catalog contains required TXN_TYPE: [pos_order]
+  - org catalog contains required LINE_TYPE: [sales_line, tax_line, discount_line, inventory_move_line]
+  - permissions: [pos_operator, order_create]
+invariants:
+  - if pricing.strategy='FIXED' then header.amount == fixed_price
+  - inventory_move_line sum == consumption from compiled bundle
+  - all writes include organization_id
+  - universal_transactions must balance if financial
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: bundle_code
+      type: slug
+      where: payload
+    - name: items_selected
+      type: array
+      where: payload
+  optional:
+    - name: customer_id
+      type: uuid
+      where: payload
+    - name: notes
+      type: string
+      where: payload
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: pos_order
+      header_rules: total from pricing strategy, smart_code HERA.REST.POS.TXN.ORDER.v1
+      line_rules: 
+        - sales_line for bundle parent
+        - sales_line for child items
+        - tax_line per tax rules
+        - discount_line if applicable
+        - inventory_move_line per consumed item
+happy_path:
+  - step: Resolve bundle_code → bundle entity_id
+  - step: Compile bundle (or reuse compiled_dynamic_data)
+  - step: Validate substitutions against relationship_data policy
+  - step: Price per pricing.strategy (fixed | sum_of_items | cost_plus)
+  - step: Emit universal_transactions (pos_order) + lines
+errors:
+  - code: UNKNOWN_BUNDLE
+    when: bundle_code not found
+    action: list available bundles
+  - code: INVALID_SUBSTITUTION
+    when: selected item not in allowed substitutions
+    action: show valid options
+  - code: OUT_OF_STOCK
+    when: inventory < required
+    action: suggest alternatives or backorder
+observability:
+  logs: [bundle_resolved, substitutions_validated, order_created, inventory_updated]
+  audit_json: true
+example_payload:
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  bundle_code: "veg_thali"
+  items_selected:
+    - component: "curry"
+      choice: "paneer_curry"
+    - component: "bread"
+      choice: "naan"
+checks:
+  - description: No invalid substitutions
+  - description: Stock available for all items (or backorder policy)
+  - description: Pricing calculation matches strategy
+  - description: All lines reference valid entities

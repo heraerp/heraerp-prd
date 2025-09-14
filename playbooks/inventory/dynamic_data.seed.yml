@@ -1,0 +1,21 @@
+smart_code: HERA.INVENTORY.DYNAMIC_DATA.SEED.v1
+rows:
+  # Item
+  - { entity_slug: item:SKU-INV-001, key_slug: item.sku,            value: "SKU-INV-001", value_type: text }
+  - { entity_slug: item:SKU-INV-001, key_slug: item.category,       value: "raw_material", value_type: text }
+  - { entity_slug: item:SKU-INV-001, key_slug: item.base_uom,       value: "EA", value_type: text }
+  - { entity_slug: item:SKU-INV-001, key_slug: item.standard_cost,  value: 2.50, value_type: number }
+  - { entity_slug: item:SKU-INV-001, key_slug: item.safety_stock,   value: 25, value_type: number }
+  - { entity_slug: item:SKU-INV-001, key_slug: item.reorder_point,  value: 50, value_type: number }
+
+  # Location
+  - { entity_slug: location:MAIN,    key_slug: location.location_code, value: "MAIN", value_type: text }
+  - { entity_slug: location:MAIN,    key_slug: location.type,          value: "warehouse", value_type: text }
+
+  # UOM
+  - { entity_slug: uom:EA,           key_slug: uom.conversion_to_base, value: 1, value_type: number }
+  - { entity_slug: uom:BOX,          key_slug: uom.conversion_to_base, value: 12, value_type: number }
+
+  # Lot
+  - { entity_slug: lot:LOT-001,      key_slug: lot.expiry_date,        value: "2026-12-31", value_type: date }
+

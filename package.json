@@ -53,7 +53,16 @@
     "test:unit": "jest tests/unit",
     "schema:validate": "node mcp-server/schema-introspection.js validate",
     "schema:types": "node mcp-server/schema-introspection.js types",
+    "schema:lint:bundle": "node mcp-server/contract-lint.js --bundle",
+    "schema:plan": "node mcp-server/contract-plan.js --bundle",
+    "schema:graph": "node mcp-server/contract-graph.js",
+    "schema:graph:check": "node mcp-server/contract-graph.js && git diff --exit-code -- .hera/graph.dot .hera/graph.svg",
+    "schema:apply:dryrun": "node mcp-server/src/cli/contract-apply-dryrun.js .",
     "schema:check": "node mcp-server/check-schema.js",
+    "tx:create": "node mcp-server/src/cli/tx-create.js",
+    "schema:compat:write": "node mcp-server/contract-lint.js --bundle --compat --compat-write",
+    "schema:precommit": "node mcp-server/contract-lint.js --bundle . --compat --strict-compat",
+    "prepare": "husky install",
     "prebuild": "echo 'Pre-build hook - schema validation included in quality checks'",
     "predev": "npm run schema:types",
     "test": "jest",
@@ -262,6 +271,7 @@
     "ts-jest": "^29.4.1",
     "tsx": "^4.19.0",
     "typescript": "^5.3.0",
-    "vitest": "^1.0.4"
+    "vitest": "^1.0.4",
+    "husky": "^9.1.3"
   }
 }

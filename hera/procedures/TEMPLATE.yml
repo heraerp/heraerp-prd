@@ -1,0 +1,28 @@
+smart_code: HERA.{INDUSTRY}.{MODULE}.{PROC}.v1
+intent: >
+  What this procedure does in one sentence.
+scope:
+  in_scope: []
+  out_of_scope: []
+preconditions:
+  - catalog has required ENTITY_TYPE / TXN_TYPE / LINE_TYPE slugs
+  - permissions: []
+invariants:
+  - all writes include organization_id
+  - financial txns must balance if posted
+inputs:
+  required: []
+  optional: []
+outputs:
+  entities_created: []
+  transactions_emitted: []
+happy_path:
+  - step: ...
+errors:
+  - code: ...
+observability:
+  logs: [procedure_started, rule_pack_applied, transaction_written]
+  audit_json: true
+example_payload: {}
+checks:
+  - description: ...

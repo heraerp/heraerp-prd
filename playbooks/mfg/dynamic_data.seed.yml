@@ -1,0 +1,20 @@
+smart_code: HERA.MFG.DYNAMIC_DATA.SEED.v1
+rows:
+  # Product/Component
+  - { entity_slug: product:FG-001,     key_slug: product.sku,        value: "FG-001", value_type: text }
+  - { entity_slug: product:FG-001,     key_slug: product.base_uom,   value: "EA", value_type: text }
+  - { entity_slug: component:RM-001,   key_slug: component.sku,      value: "RM-001", value_type: text }
+  - { entity_slug: component:RM-001,   key_slug: component.base_uom, value: "EA", value_type: text }
+  - { entity_slug: component:RM-002,   key_slug: component.sku,      value: "RM-002", value_type: text }
+  - { entity_slug: component:RM-002,   key_slug: component.base_uom, value: "EA", value_type: text }
+
+  # Work Center
+  - { entity_slug: work_center:WC-ASSY, key_slug: work_center.capacity_per_hour, value: 30, value_type: number }
+  - { entity_slug: work_center:WC-ASSY, key_slug: work_center.setup_time_min,    value: 15, value_type: number }
+
+  # Routing/Operation
+  - { entity_slug: routing:ROUTE-FG001, key_slug: routing.version, value: "v1", value_type: text }
+  - { entity_slug: operation:OP-ASSY,   key_slug: operation.sequence, value: 10, value_type: number }
+  - { entity_slug: operation:OP-ASSY,   key_slug: operation.std_cycle_time_min, value: 2, value_type: number }
+  - { entity_slug: operation:OP-ASSY,   key_slug: operation.yield_percent, value: 98, value_type: number }
+

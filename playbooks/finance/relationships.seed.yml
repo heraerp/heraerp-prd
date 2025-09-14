@@ -1,0 +1,25 @@
+smart_code: HERA.FINANCE.RELATIONSHIPS.SEED.v1
+rows:
+  # Group account
+  - from_slug: ledger_account:1000
+    to_slug:   account_group:CURRENT_ASSETS
+    relationship_type: ACCOUNT_IN_GROUP
+    relationship_data: {}
+
+  # Org default currency
+  - from_slug: organization:this
+    to_slug:   currency:GBP
+    relationship_type: ORG_DEFAULTS_TO_CURRENCY
+    relationship_data: {}
+
+  # Posting profile: example rule
+  - from_slug: posting_profile:STANDARD
+    to_slug:   ledger_account:2100   # VAT payable
+    relationship_type: POSTING_RULE_MAPS
+    relationship_data:
+      applies_to:
+        transaction_type: pos_order
+        line_type: tax_line
+        tax_code: VAT20
+      rule: HERA.FINANCE.POSTING.TAX_PAYABLE.v1
+

@@ -1,0 +1,14 @@
+smart_code: HERA.FINANCE.DYNAMIC_DATA.SEED.v1
+rows:
+  # Currency facts (GBP)
+  - { entity_slug: currency:GBP, key_slug: currency.minor_unit, value: 2, value_type: number }
+
+  # Account classification
+  - { entity_slug: ledger_account:1000, key_slug: ledger_account.account_type,   value: "asset",  value_type: text }
+  - { entity_slug: ledger_account:1000, key_slug: ledger_account.normal_balance, value: "debit",  value_type: text }
+  - { entity_slug: ledger_account:4000, key_slug: ledger_account.account_type,   value: "income", value_type: text }
+
+  # Tax code
+  - { entity_slug: tax_code:VAT20, key_slug: tax_code.rate,      value: 0.20, value_type: number }
+  - { entity_slug: tax_code:VAT20, key_slug: tax_code.inclusive, value: false, value_type: boolean }
+

@@ -1,0 +1,33 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_number": "POS-0001",
+    "transaction_date": "2025-09-13",
+    "currency_code": "GBP",
+    "total_amount": 120.00,
+    "status": "posted",
+    "smart_code": "HERA.SALON.POS.ORDER.v1",
+    "metadata": { "idempotency_key": "uat-pos-0001" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "service",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 100.00,
+      "line_amount": 100.00,
+      "metadata": { "sku": "SERVICE_GENERIC" }
+    },
+    {
+      "line_number": 2,
+      "line_type": "tax",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 20.00,
+      "line_amount": 20.00,
+      "metadata": { "tax_code": "VAT20" }
+    }
+  ]
+}
+

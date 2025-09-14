@@ -34,6 +34,10 @@ import {
   BookOpen
 } from 'lucide-react'
 
+interface FurnitureDarkSidebarProps {
+  onNavigate?: () => void
+}
+
 interface SidebarItem {
   title: string
   href: string
@@ -97,7 +101,7 @@ const bottomItems: SidebarItem[] = [
 ]
 
 // Apps Modal Component - Memoized to prevent unnecessary re-renders
-const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean }) {
+const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive, onNavigate }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean; onNavigate?: () => void }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -147,7 +151,10 @@ const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive }: {
                   <Link
                     key={app.href}
                     href={app.href}
-                    onClick={onClose}
+                    onClick={() => {
+                      onClose()
+                      if (onNavigate) onNavigate()
+                    }}
                     className={cn(
                       "flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group",
                       "bg-gray-700/30 hover:bg-gradient-to-br hover:from-amber-600/20 hover:to-orange-600/20",
@@ -184,7 +191,7 @@ const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive }: {
   )
 })
 
-function FurnitureDarkSidebar() {
+function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
   const pathname = usePathname()
   const [showAppsModal, setShowAppsModal] = useState(false)
 
@@ -194,8 +201,14 @@ function FurnitureDarkSidebar() {
     return false
   }, [pathname])
 
+  const handleNavClick = useCallback(() => {
+    if (onNavigate) {
+      onNavigate()
+    }
+  }, [onNavigate])
+
   return (
-    <div className="fixed left-0 top-0 h-full bg-gray-800/90 backdrop-blur-xl border-r border-gray-700/50 w-20 z-40 shadow-xl">
+    <div className="fixed left-0 top-0 h-full bg-gray-800/95 backdrop-blur-xl border-r border-gray-700/50 w-64 lg:w-20 z-40 shadow-xl">
       {/* Logo Section */}
       <div className="h-20 flex flex-col items-center justify-center border-b border-gray-700/50 bg-gray-900/50">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
@@ -215,8 +228,9 @@ function FurnitureDarkSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={handleNavClick}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
                   active
                     ? "bg-gradient-to-r from-amber-600/20 to-orange-600/20 text-white"
                     : "text-gray-400 hover:text-white hover:bg-gray-700/50"
@@ -239,16 +253,16 @@ function FurnitureDarkSidebar() {
                   )}
                 </div>
                 
-                {/* Text label */}
+                {/* Text label - full text on mobile, abbreviated on desktop */}
                 <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-amber-400" : "text-gray-500 group-hover:text-gray-300"
+                  "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
+                  active ? "text-amber-400" : "text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300"
                 )}>
                   {item.title}
                 </span>
 
-                {/* Tooltip for full title */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                {/* Tooltip for full title - desktop only */}
+                <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                   {item.badge && (
                     <p className="text-xs text-gray-400 mt-1">
@@ -264,17 +278,17 @@ function FurnitureDarkSidebar() {
           <button
             onClick={() => setShowAppsModal(true)}
             className={cn(
-              "flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative",
+              "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-200 group relative",
               "text-gray-400 hover:text-white hover:bg-gray-700/50"
             )}
           >
             <Grid3x3 className="h-5 w-5 text-gray-400 group-hover:text-amber-400" />
-            <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-gray-500 group-hover:text-gray-300">
-              More
+            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300">
+              More Apps
             </span>
             
-            {/* Tooltip */}
-            <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            {/* Tooltip - desktop only */}
+            <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>
@@ -293,8 +307,9 @@ function FurnitureDarkSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={handleNavClick}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
                   active
                     ? "bg-gradient-to-r from-amber-600/20 to-orange-600/20 text-white"
                     : "text-gray-400 hover:text-white hover:bg-gray-700/50"
@@ -307,14 +322,14 @@ function FurnitureDarkSidebar() {
                 
                 {/* Text label */}
                 <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-amber-400" : "text-gray-500 group-hover:text-gray-300"
+                  "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
+                  active ? "text-amber-400" : "text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300"
                 )}>
                   {item.title}
                 </span>
 
-                {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                {/* Tooltip - desktop only */}
+                <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                 </div>
               </Link>
@@ -324,15 +339,21 @@ function FurnitureDarkSidebar() {
       </nav>
 
       {/* Status Indicators */}
-      <div className="p-2 border-t border-gray-700/50 bg-gray-900/50">
-        <div className="space-y-1">
-          <div className="flex items-center justify-between px-2 py-1">
-            <Clock className="h-3 w-3 text-amber-400" />
-            <span className="text-[9px] text-gray-400">23 Pending</span>
+      <div className="p-2 lg:p-2 px-4 border-t border-gray-700/50 bg-gray-900/50">
+        <div className="space-y-2 lg:space-y-1">
+          <div className="flex items-center justify-between px-2 lg:px-2 py-1">
+            <div className="flex items-center gap-2 lg:gap-0">
+              <Clock className="h-4 lg:h-3 w-4 lg:w-3 text-amber-400" />
+              <span className="lg:hidden text-sm text-gray-300">Pending Orders</span>
+            </div>
+            <span className="text-sm lg:text-[9px] text-gray-300 lg:text-gray-400 font-medium">23</span>
           </div>
-          <div className="flex items-center justify-between px-2 py-1">
-            <AlertCircle className="h-3 w-3 text-red-400" />
-            <span className="text-[9px] text-gray-400">5 Urgent</span>
+          <div className="flex items-center justify-between px-2 lg:px-2 py-1">
+            <div className="flex items-center gap-2 lg:gap-0">
+              <AlertCircle className="h-4 lg:h-3 w-4 lg:w-3 text-red-400" />
+              <span className="lg:hidden text-sm text-gray-300">Urgent Items</span>
+            </div>
+            <span className="text-sm lg:text-[9px] text-gray-300 lg:text-gray-400 font-medium">5</span>
           </div>
         </div>
       </div>
@@ -341,7 +362,8 @@ function FurnitureDarkSidebar() {
       <AppsModal 
         isOpen={showAppsModal} 
         onClose={() => setShowAppsModal(false)} 
-        isActive={isActive} 
+        isActive={isActive}
+        onNavigate={onNavigate}
       />
     </div>
   )

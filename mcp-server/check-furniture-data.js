@@ -1,54 +1,69 @@
-#!/usr/bin/env node
-require('dotenv').config({ path: '../.env' });
+#\!/usr/bin/env node
+
 const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const FURNITURE_ORG_ID = 'f0af4ced-9d12-4a55-a649-b484368db249';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const KERALA_FURNITURE_ORG_ID = 'f0af4ced-9d12-4a55-a649-b484368db249';
 
 async function checkFurnitureData() {
-  console.log('🪑 Checking furniture data for Kerala Furniture Works (Demo)...');
-  console.log(`📍 Organization ID: ${FURNITURE_ORG_ID}\n`);
-
+  console.log('🔍 Checking Kerala Furniture Works data...\n');
+  
   // Check organization
-  const { data: org } = await supabase
+  const { data: orgData, error: orgError } = await supabase
     .from('core_organizations')
     .select('*')
-    .eq('id', FURNITURE_ORG_ID)
-    .single();
+    .eq('id', KERALA_FURNITURE_ORG_ID);
+    
+  console.log('📦 Organization:', orgData ? orgData.length : 0, 'found');
   
-  console.log('Organization:', org?.organization_name || 'Not found');
-
   // Check products
-  const { data: products } = await supabase
+  const { data: productData, error: productError } = await supabase
     .from('core_entities')
     .select('*')
-    .eq('organization_id', FURNITURE_ORG_ID)
+    .eq('organization_id', KERALA_FURNITURE_ORG_ID)
     .eq('entity_type', 'product');
+    
+  console.log('🪑 Products:', productData ? productData.length : 0, 'found');
   
-  console.log('\nProducts:', products?.length || 0);
-  products?.forEach(p => console.log(`  - ${p.entity_name}`));
-
   // Check customers
-  const { data: customers } = await supabase
+  const { data: customerData, error: customerError } = await supabase
     .from('core_entities')
     .select('*')
-    .eq('organization_id', FURNITURE_ORG_ID)
+    .eq('organization_id', KERALA_FURNITURE_ORG_ID)
     .eq('entity_type', 'customer');
+    
+  console.log('👥 Customers:', customerData ? customerData.length : 0, 'found');
   
-  console.log('\nCustomers:', customers?.length || 0);
-  customers?.forEach(c => console.log(`  - ${c.entity_name}`));
-
-  // Check transactions
-  const { data: transactions } = await supabase
+  // Check sales orders
+  const { data: orderData, error: orderError } = await supabase
     .from('universal_transactions')
     .select('*')
-    .eq('organization_id', FURNITURE_ORG_ID);
+    .eq('organization_id', KERALA_FURNITURE_ORG_ID)
+    .eq('transaction_type', 'sales_order');
+    
+  console.log('📋 Sales Orders:', orderData ? orderData.length : 0, 'found');
   
-  console.log('\nTransactions:', transactions?.length || 0);
-  transactions?.forEach(t => console.log(`  - ${t.transaction_code}: ${t.transaction_type}`));
+  if (orderData && orderData.length > 0) {
+    console.log('\nOrder Details:');
+    orderData.forEach(order => {
+      console.log(`  - ${order.transaction_code}: ₹${order.total_amount} (Status: ${order.transaction_status})`);
+    });
+    
+    // Check order lines
+    const orderIds = orderData.map(o => o.id);
+    const { data: lineData, error: lineError } = await supabase
+      .from('universal_transaction_lines')
+      .select('*')
+      .in('transaction_id', orderIds);
+      
+    console.log('\n📝 Order Lines:', lineData ? lineData.length : 0, 'found');
+  }
 }
 
-checkFurnitureData();
+checkFurnitureData().catch(console.error);
+EOF < /dev/null

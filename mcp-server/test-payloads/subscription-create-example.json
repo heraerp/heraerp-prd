@@ -1,0 +1,35 @@
+{
+  "organization_id": "a1b2c3d4-5678-90ab-cdef-000000000001",
+  "customer_id": "customer-enterprise-uuid-here",
+  "service_plan_id": "broadband-enterprise-uuid-here",
+  "agent_id": "agent-kochi-uuid-here",
+  "monthly_amount": 2499.00,
+  "activation_fee": 2000.00,
+  "contract_months": 24,
+  "discount_percent": 15.0,
+  "promo_code": "ENTERPRISE2025",
+  "metadata": {
+    "bandwidth": "200 Mbps",
+    "service_type": "dedicated",
+    "installation_address": {
+      "building": "Cyber Tower",
+      "floor": "5th Floor",
+      "area": "Infopark",
+      "city": "Kochi",
+      "pincode": "682030"
+    },
+    "billing_contact": {
+      "name": "Finance Team",
+      "email": "accounts@keralait.com",
+      "phone": "+91-484-2345679"
+    },
+    "technical_contact": {
+      "name": "IT Admin",
+      "email": "admin@keralait.com", 
+      "phone": "+91-484-2345680"
+    },
+    "service_level": "premium",
+    "backup_connectivity": true,
+    "static_ip_count": 5
+  }
+}

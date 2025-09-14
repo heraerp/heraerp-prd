@@ -1,0 +1,97 @@
+# /procedures/HERA.FIN.AUTOJOURNAL.PROCESS.v1.yml
+smart_code: HERA.FIN.AUTOJOURNAL.PROCESS.v1
+intent: >
+  Process business transaction for automatic journal entry creation using AI classification and industry rules.
+scope:
+  in_scope: 
+    - Transaction relevance classification (rule-based + AI)
+    - Automatic GL account determination from smart codes
+    - Journal entry creation with proper debit/credit rules
+    - Batch processing decision (immediate vs end-of-day)
+    - Multi-currency handling with FX gain/loss
+  out_of_scope: 
+    - Manual journal entry creation (separate procedures)
+    - GL posting approval workflows (separate procedures)  
+    - Financial statement generation (separate procedures)
+preconditions:
+  - transaction exists in universal_transactions table
+  - Chart of Accounts setup completed for organization
+  - Auto-Journal DNA configuration active for industry
+  - permissions: [autojournal_process, gl_write]
+invariants:
+  - journal entries must balance (total debits = total credits)
+  - all GL postings include organization_id isolation
+  - original transaction reference maintained in journal entries
+  - confidence scoring recorded for AI classification decisions
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: universal_transactions
+    - name: transaction_id
+      type: uuid
+      where: universal_transactions
+  optional:
+    - name: force_immediate
+      type: boolean
+      where: payload
+    - name: override_rules
+      type: jsonb
+      where: payload
+    - name: confidence_threshold
+      type: decimal
+      where: payload
+outputs:
+  entities_created:
+    - journal_entry: universal_transactions (if journal created)
+  transactions_emitted:
+    - slug: AUTO_JOURNAL_ENTRY
+      header_rules: original_transaction_ref, posting_date, currency
+      line_rules: gl_account_id, debit_amount, credit_amount, description
+    - slug: AUTO_JOURNAL_BATCH_QUEUE
+      header_rules: batch_criteria, scheduled_processing_time
+      line_rules: transaction_references, batch_total_amount
+happy_path:
+  - step: Load transaction and lines from universal_transactions/lines tables
+  - step: Apply industry-specific relevance classification (rule-based 95%)
+  - step: Use AI classification for complex/edge cases (5%)
+  - step: Determine immediate vs batch processing based on amount/type
+  - step: Resolve GL accounts using Chart of Accounts and smart codes
+  - step: Create journal entry with balanced debit/credit lines
+  - step: Record confidence scores and processing metadata
+  - step: Return journal entry details with classification confidence
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist in organization
+    action: validate transaction exists and is accessible
+  - code: TRANSACTION_NOT_RELEVANT
+    when: transaction smart code indicates no journal needed
+    action: log classification result and skip processing
+  - code: GL_ACCOUNT_MAPPING_FAILED
+    when: cannot resolve GL accounts from smart codes
+    action: flag for manual review and provide mapping suggestions
+  - code: JOURNAL_IMBALANCE
+    when: calculated debits != credits
+    action: recalculate amounts and identify source of imbalance
+  - code: CURRENCY_CONVERSION_FAILED
+    when: multi-currency transaction cannot be converted
+    action: use fallback exchange rate and flag for review
+  - code: CONFIDENCE_TOO_LOW
+    when: AI classification confidence < threshold
+    action: queue for manual review instead of auto-posting
+observability:
+  logs: [procedure_started, relevance_classified, gl_accounts_resolved, journal_created]
+  audit_json: true
+  metrics: [classification_confidence, processing_time_ms, journal_balance_check, batch_vs_immediate_decision]
+example_payload:
+  organization_id: "a1b2c3d4-5678-90ab-cdef-000000000001"
+  transaction_id: "subscription-transaction-uuid"
+  force_immediate: false
+  confidence_threshold: 0.85
+checks:
+  - description: Transaction relevance properly classified with confidence score
+  - description: GL accounts resolved from smart codes and COA mapping
+  - description: Journal entry created with balanced debit/credit amounts
+  - description: Original transaction reference preserved in journal entry
+  - description: Processing decision (immediate/batch) logged with reasoning
+  - description: Multi-currency transactions handled with proper FX rates

@@ -3,7 +3,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -29,6 +29,7 @@ import {
 import Link from 'next/link'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
@@ -104,41 +105,62 @@ export default function FurnitureSales() {
     loadDemoOrg()
   }, [isAuthenticated, currentOrganization, pathname])
 
-  useEffect(() => {
-    // Load data when organization is ready
-    if (organizationId && !orgLoading) {
-      loadSalesData()
-    }
-  }, [organizationId, orgLoading])
-
-  const loadSalesData = async () => {
+  const loadSalesData = useCallback(async () => {
+    console.log('loadSalesData called with organizationId:', organizationId)
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
       
       // Load all transactions
       console.log('Loading transactions for organization:', organizationId, organizationName)
-      const transactionsResponse = await universalApi.read('universal_transactions', undefined, organizationId)
+      console.log('Using direct Supabase query...')
       
-      console.log('Transactions response:', transactionsResponse)
+      const { data: transactionsData, error: transactionsError } = await supabase
+        .from('universal_transactions')
+        .select('*')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false })
       
-      if (!transactionsResponse.success || !transactionsResponse.data) {
-        console.error('Failed to load transactions:', transactionsResponse.error)
+      console.log('Transactions query result:', { data: transactionsData, error: transactionsError })
+      
+      if (transactionsError) {
+        console.error('Failed to load transactions:', transactionsError)
         return
+      }
+
+      const transactionsResponse = {
+        success: true,
+        data: transactionsData || [],
+        error: null
       }
 
       console.log('Total transactions loaded:', transactionsResponse.data.length)
       console.log('Sample transaction:', transactionsResponse.data[0])
-
-      // Filter sales orders
-      const salesOrders = transactionsResponse.data.filter((t: any) => 
-        t.transaction_type === 'sales_order' && 
-        (t.smart_code?.includes('FURNITURE.SALES') || t.smart_code?.includes('FURNITURE'))
-      ).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       
-      console.log('Furniture sales orders found:', salesOrders.length)
+      // Debug: Log all transaction types and smart codes
+      console.log('All transaction types:', [...new Set(transactionsResponse.data.map((t: any) => t.transaction_type))])
+      console.log('All smart codes:', [...new Set(transactionsResponse.data.map((t: any) => t.smart_code).filter(Boolean))])
+
+      // Filter sales orders and sales invoices - be more flexible with the filter
+      const salesOrders = transactionsResponse.data.filter((t: any) => {
+        // Check if it's a sales order or sales invoice type
+        if (!['sales_order', 'sales_invoice'].includes(t.transaction_type)) return false
+        
+        // Check if it has a furniture-related smart code or belongs to this organization
+        if (t.smart_code) {
+          return t.smart_code.includes('FURNITURE') || 
+                 t.smart_code.includes('SALES.ORDER') ||
+                 t.smart_code.includes('SALES.INVOICE') ||
+                 t.smart_code.includes('HERA.FURNITURE')
+        }
+        
+        // If no smart code but it's a sales transaction in a furniture org, include it
+        return true
+      }).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      
+      console.log('Furniture sales orders/invoices found:', salesOrders.length)
       if (salesOrders.length > 0) {
-        console.log('First sales order:', salesOrders[0])
+        console.log('First sales transaction:', salesOrders[0])
       }
 
       // Filter proforma invoices
@@ -155,6 +177,10 @@ export default function FurnitureSales() {
 
       const activeOrders = salesOrders.filter((o: any) => {
         const status = (o.metadata as any)?.status || 'pending_approval'
+        // Include different statuses based on transaction type
+        if (o.transaction_type === 'sales_invoice') {
+          return ['unpaid', 'pending', 'overdue'].includes(status)
+        }
         return ['pending_approval', 'confirmed', 'in_production'].includes(status)
       }).length
 
@@ -165,6 +191,10 @@ export default function FurnitureSales() {
 
       const readyToDispatch = salesOrders.filter((o: any) => {
         const status = (o.metadata as any)?.status || ''
+        // Include ready orders and paid invoices
+        if (o.transaction_type === 'sales_invoice') {
+          return status === 'paid'
+        }
         return status === 'ready_for_delivery'
       }).length
 
@@ -209,8 +239,16 @@ export default function FurnitureSales() {
       const customerOrders: { [key: string]: { name: string, revenue: number } } = {}
       
       // Load all entities to get customer names
-      const entitiesResponse = await universalApi.read('core_entities', undefined, organizationId)
-      const customerEntities = entitiesResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
+      const { data: entitiesData, error: entitiesError } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', organizationId)
+      
+      if (entitiesError) {
+        console.error('Failed to load entities:', entitiesError)
+      }
+      const customerEntities = entitiesData?.filter((e: any) => e.entity_type === 'customer') || []
+      console.log('Customer entities loaded:', customerEntities.length)
       
       for (const order of salesOrders) {
         if (order.source_entity_id || order.target_entity_id) {
@@ -254,10 +292,15 @@ export default function FurnitureSales() {
           }
 
           // Get line items count
-          const linesResponse = await universalApi.read('universal_transaction_lines', undefined, organizationId)
-          const orderLines = linesResponse.data?.filter((line: any) => 
-            line.transaction_id === order.id
-          ) || []
+          const { data: linesData, error: linesError } = await supabase
+            .from('universal_transaction_lines')
+            .select('*')
+            .eq('transaction_id', order.id)
+          
+          if (linesError) {
+            console.error('Failed to load transaction lines for order:', order.id, linesError)
+          }
+          const orderLines = linesData || []
 
           const deliveryDateStr = (order.metadata as any)?.delivery_date || 
             new Date(new Date(order.transaction_date).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
@@ -281,11 +324,18 @@ export default function FurnitureSales() {
       const productSales: { [key: string]: { name: string, category: string, units: number, revenue: number } } = {}
       
       // Get all transaction lines
-      const allLinesResponse = await universalApi.read('universal_transaction_lines', undefined, organizationId)
-      const allLines = allLinesResponse.data || []
+      const { data: allLinesData, error: allLinesError } = await supabase
+        .from('universal_transaction_lines')
+        .select('*')
+        .eq('organization_id', organizationId)
+      
+      if (allLinesError) {
+        console.error('Failed to load all transaction lines:', allLinesError)
+      }
+      const allLines = allLinesData || []
       
       // Get all products
-      const productEntities = entitiesResponse.data?.filter((e: any) => e.entity_type === 'product') || []
+      const productEntities = entitiesData?.filter((e: any) => e.entity_type === 'product') || []
       
       for (const order of salesOrders) {
         const orderLines = allLines.filter((line: any) => line.transaction_id === order.id)
@@ -344,10 +394,22 @@ export default function FurnitureSales() {
 
     } catch (error) {
       console.error('Failed to load sales data:', error)
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
     } finally {
       setLoading(false)
     }
-  }
+  }, [organizationId, organizationName])
+
+  useEffect(() => {
+    // Load data when organization is ready
+    // If we have an organizationId, load data even if still loading orgs (for demo/fallback scenarios)
+    if (organizationId) {
+      loadSalesData()
+    }
+  }, [organizationId, loadSalesData])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -357,6 +419,9 @@ export default function FurnitureSales() {
       case 'in_production': return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
       case 'ready_for_delivery': return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
       case 'delivered': return 'bg-gray-100 dark:bg-gray-800/30 text-gray-700 dark:text-gray-300'
+      case 'paid': return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+      case 'unpaid': return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+      case 'overdue': return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
       default: return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
     }
   }
@@ -368,7 +433,10 @@ export default function FurnitureSales() {
       case 'in_production': return 'In Production'
       case 'ready_for_delivery': return 'Ready'
       case 'delivered': return 'Delivered'
-      default: return status
+      case 'paid': return 'Paid'
+      case 'unpaid': return 'Unpaid'
+      case 'overdue': return 'Overdue'
+      default: return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ')
     }
   }
 
@@ -399,11 +467,15 @@ export default function FurnitureSales() {
               {organizationName} - Manage sales orders, proforma, and customer relationships
             </p>
           </div>
-          <NewSalesOrderModal onOrderCreated={(orderId) => {
-            console.log('New sales order created:', orderId)
-            // Refresh the data
-            loadSalesData()
-          }} />
+          <NewSalesOrderModal 
+            organizationId={organizationId}
+            organizationName={organizationName}
+            onOrderCreated={(orderId) => {
+              console.log('New sales order created:', orderId)
+              // Refresh the data
+              loadSalesData()
+            }} 
+          />
         </div>
 
         {/* Key Metrics */}

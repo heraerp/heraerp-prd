@@ -1,0 +1,101 @@
+{
+  "smart_code": "HERA.SALES.SALES_ORDER.TO_INVOICE.v1",
+  "test_cases": [
+    {
+      "name": "Happy path - Full SO to Invoice",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "sales_order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a",
+        "invoice_date": "2024-01-15"
+      },
+      "setup": {
+        "so_status": "confirmed",
+        "so_total": 1000.00,
+        "so_lines": [
+          { "product": "PROD-001", "quantity": 10, "unit_price": 100.00 }
+        ]
+      },
+      "expected_outputs": {
+        "invoice": {
+          "transaction_type": "invoice_ar",
+          "smart_code": "HERA.FIN.AR.TXN.INVOICE.v1",
+          "total_amount": 1000.00,
+          "reference_entity_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+        },
+        "journal_entry": {
+          "transaction_type": "journal_entry",
+          "smart_code": "HERA.FIN.GL.TXN.JOURNAL.v1",
+          "total_amount": 1000.00,
+          "lines": [
+            {
+              "line_type": "gl_debit_line",
+              "account": "1200000",
+              "debit_amount": 1000.00
+            },
+            {
+              "line_type": "gl_credit_line",
+              "account": "4100000",
+              "credit_amount": 1000.00
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Happy path - Partial Invoice",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "sales_order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a",
+        "partial_quantities": {
+          "line_001": 5
+        }
+      },
+      "setup": {
+        "so_status": "confirmed",
+        "so_lines": [
+          { "id": "line_001", "product": "PROD-001", "quantity": 10, "unit_price": 100.00 }
+        ]
+      },
+      "expected_outputs": {
+        "invoice": {
+          "total_amount": 500.00
+        },
+        "invoice_lines": [
+          {
+            "quantity": 5,
+            "line_amount": 500.00
+          }
+        ]
+      }
+    },
+    {
+      "name": "Error - SO not confirmed",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "sales_order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+      },
+      "setup": {
+        "so_status": "draft"
+      },
+      "expected_error": {
+        "code": "SO_NOT_CONFIRMED",
+        "message": "Sales order status is draft, must be confirmed"
+      }
+    },
+    {
+      "name": "Error - Unbalanced journal",
+      "input": {
+        "organization_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "sales_order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+      },
+      "setup": {
+        "so_status": "confirmed",
+        "posting_profile_error": true
+      },
+      "expected_error": {
+        "code": "UNBALANCED_JOURNAL",
+        "message": "Journal entry debits (1000.00) != credits (900.00)"
+      }
+    }
+  ]
+}

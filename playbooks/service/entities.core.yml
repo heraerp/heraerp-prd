@@ -1,0 +1,36 @@
+smart_code: HERA.SERVICE.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: service,            entity_type: ENTITY_TYPE,      name: "Service" }
+  - { slug: part,               entity_type: ENTITY_TYPE,      name: "Part" }
+  - { slug: technician,         entity_type: ENTITY_TYPE,      name: "Technician" }
+  - { slug: service_location,   entity_type: ENTITY_TYPE,      name: "Service Location" }
+  - { slug: sla,                entity_type: ENTITY_TYPE,      name: "Service Level Agreement" }
+  - { slug: contract,           entity_type: ENTITY_TYPE,      name: "Service Contract" }
+
+  - { slug: service_order,      entity_type: TRANSACTION_TYPE, name: "Service Order" }
+  - { slug: work_order,         entity_type: TRANSACTION_TYPE, name: "Work Order" }
+  - { slug: appointment,        entity_type: TRANSACTION_TYPE, name: "Appointment" }
+  - { slug: service_invoice,    entity_type: TRANSACTION_TYPE, name: "Service Invoice" }
+  - { slug: service_ticket,     entity_type: TRANSACTION_TYPE, name: "Service Ticket" }
+
+  - { slug: service_line,       entity_type: LINE_TYPE,        name: "Service Line" }
+  - { slug: labor_line,         entity_type: LINE_TYPE,        name: "Labor Line" }
+  - { slug: part_line,          entity_type: LINE_TYPE,        name: "Part Line" }
+  - { slug: fee,                entity_type: LINE_TYPE,        name: "Fee Line" }
+  - { slug: tax,                entity_type: LINE_TYPE,        name: "Tax Line" }
+
+  - { slug: SERVICE_BOM,            entity_type: REL_TYPE,     name: "Service requires Part" }
+  - { slug: SERVICE_HAS_SLA,        entity_type: REL_TYPE,     name: "Service has SLA" }
+  - { slug: CUSTOMER_CONTRACT,      entity_type: REL_TYPE,     name: "Customer Contract" }
+  - { slug: ASSIGNED_TECHNICIAN,    entity_type: REL_TYPE,     name: "Assigned Technician" }
+  - { slug: SERVICE_AT_LOCATION,    entity_type: REL_TYPE,     name: "Service at Location" }
+
+  # ---- MASTER ENTITIES (examples) ----
+  - { slug: service:INSTALL_BASIC,       entity_type: ENTITY, name: "Basic Installation", metadata: { entity_type: "service" } }
+  - { slug: part:PART-001,               entity_type: ENTITY, name: "Mounting Kit",       metadata: { entity_type: "part" } }
+  - { slug: technician:TECH001,          entity_type: ENTITY, name: "Tech One",           metadata: { entity_type: "technician" } }
+  - { slug: service_location:CUSTOMER_SITE, entity_type: ENTITY, name: "Customer Site",   metadata: { entity_type: "service_location" } }
+  - { slug: sla:STANDARD_48H,            entity_type: ENTITY, name: "Standard (48h)",    metadata: { entity_type: "sla" } }
+  - { slug: contract:CON-001,            entity_type: ENTITY, name: "Annual Support",     metadata: { entity_type: "contract" } }
+
