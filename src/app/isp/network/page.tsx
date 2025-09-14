@@ -598,7 +598,7 @@ export default function NetworkPage() {
 
       {/* Network Performance Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="relative group">
+        <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">24-Hour Bandwidth Usage</h2>
@@ -633,7 +633,7 @@ export default function NetworkPage() {
           </div>
         </div>
 
-        <div className="relative group">
+        <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Infrastructure Status</h2>

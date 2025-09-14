@@ -65,6 +65,7 @@ const FinancialReportSchema = z.object({
 
 export async function GET(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
@@ -114,6 +115,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
     const { action, data, organizationId: orgId } = body

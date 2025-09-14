@@ -636,7 +636,7 @@ export default function AgentsPage() {
 
       {/* Performance Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 relative group">
+        <div className="lg:col-span-2 relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Agent Network Growth</h2>

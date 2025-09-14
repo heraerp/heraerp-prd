@@ -9,6 +9,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     
     // Check authentication
@@ -99,6 +100,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     
     // Check authentication

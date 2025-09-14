@@ -63,10 +63,10 @@ export default function ISPLayout({
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="h-full bg-gradient-to-b from-background/60 to-background/30 backdrop-blur-2xl border-r border-border/50">
+        <div className="h-full bg-gradient-to-b from-background/50 to-background/20 backdrop-blur-2xl border-r-[0.5px] border-border/20">
           <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center justify-between px-4 border-b border-border/50">
+            <div className="flex h-16 items-center justify-between px-4 border-b-[0.5px] border-border/20">
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg blur-lg opacity-80 animate-pulse" />
@@ -173,7 +173,7 @@ export default function ISPLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-card backdrop-blur-2xl border-b border-border/50">
+        <header className="sticky top-0 z-20 bg-card backdrop-blur-2xl border-0">
           <div className="flex h-16 items-center justify-between px-4 lg:px-6">
             <button
               onClick={() => setSidebarOpen(true)}

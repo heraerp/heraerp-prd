@@ -294,7 +294,7 @@ export default function ISPAIManagerPage() {
             variant="outline"
             size="sm"
             onClick={() => setShowMetrics(!showMetrics)}
-            className="gap-2 text-foreground border-border hover:bg-accent hover:text-accent-foreground"
+            className="gap-2 text-white border-white/20 bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/30"
           >
             <Activity className="h-4 w-4" /> {showMetrics ? 'Hide' : 'Show'} Metrics
           </Button>

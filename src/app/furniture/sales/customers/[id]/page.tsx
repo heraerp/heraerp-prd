@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Building2, User, Mail, Phone, MapPin, CreditCard, FileText, AlertCircle, Save, Package, Calendar, TrendingUp, Edit2, X } from 'lucide-react'
@@ -10,7 +10,8 @@ import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
-export default function CustomerDetailPage({ params }: { params: { id: string } }) {
+export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
   const [activeTab, setActiveTab] = useState('details')
@@ -22,7 +23,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
   const { data: customers, refetch: refetchCustomer } = useUniversalData({
     table: 'core_entities',
     filter: (item) => 
-      item.id === params.id &&
+      item.id === id &&
       item.entity_type === 'customer' &&
       item.organization_id === organizationId,
     organizationId,

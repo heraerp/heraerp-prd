@@ -545,7 +545,7 @@ export default function IPOPage() {
           </div>
         </div>
 
-        <div className="relative group">
+        <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Peer Valuation</h2>
@@ -676,7 +676,7 @@ export default function IPOPage() {
       {/* Investor Metrics & Milestones */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Investor Metrics Radar */}
-        <div className="relative group">
+        <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Investor Appeal Metrics</h2>

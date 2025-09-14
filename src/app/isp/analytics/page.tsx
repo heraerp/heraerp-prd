@@ -380,7 +380,7 @@ export default function AnalyticsPage() {
 
       {/* Revenue Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 relative group">
+        <div className="lg:col-span-2 relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
@@ -400,8 +400,9 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <ComposedChart data={safeRevenueData}>
+            <div className="w-full h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={safeRevenueData}>
                 <defs>
                   <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
@@ -442,7 +443,8 @@ export default function AnalyticsPage() {
                   strokeDasharray="3 3"
                 />
               </ComposedChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
@@ -450,8 +452,9 @@ export default function AnalyticsPage() {
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Customer Segments</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
+            <div className="w-full h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
                 <Pie
                   data={safeCustomerSegments}
                   cx="50%"
@@ -473,7 +476,8 @@ export default function AnalyticsPage() {
                   }}
                 />
               </PieChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
             <div className="mt-4 space-y-3">
               {safeCustomerSegments.map((segment: any) => (
                 <div key={segment.name} className="flex items-center justify-between">
@@ -540,8 +544,9 @@ export default function AnalyticsPage() {
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">KPI Performance</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={safeKpiData}>
+            <div className="w-full h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={safeKpiData}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
                 <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
@@ -569,7 +574,8 @@ export default function AnalyticsPage() {
                   }}
                 />
               </RadarChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
@@ -620,8 +626,9 @@ export default function AnalyticsPage() {
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Regional Performance</h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={safeRegionPerformance}>
+            <div className="w-full h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={safeRegionPerformance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="region" stroke="rgba(255,255,255,0.5)" />
                 <YAxis yAxisId="left" stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/1000000).toFixed(0)}M`} />
@@ -636,14 +643,15 @@ export default function AnalyticsPage() {
                 <Bar yAxisId="left" dataKey="revenue" fill="#0099CC" radius={[8, 8, 0, 0]} />
                 <Line yAxisId="right" type="monotone" dataKey="satisfaction" stroke="#fff685" strokeWidth={2} />
               </BarChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
         {/* Churn Analysis */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Churn Analysis</h2>
             <div className="space-y-4">
               {churnAnalysis.map((reason) => (

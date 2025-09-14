@@ -24,6 +24,7 @@ import {
 // GET /api/v1/calendar - Fetch events and resources
 export async function GET(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     
@@ -222,6 +223,7 @@ export async function GET(request: NextRequest) {
 // POST /api/v1/calendar - Create event or resource
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
 
@@ -250,6 +252,7 @@ export async function POST(request: NextRequest) {
 // PUT /api/v1/calendar - Update event or resource
 export async function PUT(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const body = await request.json()
 
@@ -286,6 +289,7 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/v1/calendar - Delete event or resource
 export async function DELETE(request: NextRequest) {
   try {
+    const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
     

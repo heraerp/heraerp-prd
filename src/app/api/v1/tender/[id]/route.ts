@@ -9,11 +9,12 @@ const supabase = createClient(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   return enterpriseMiddleware(request, async (req, ctx) => {
+    const resolvedParams = await params
     const organizationId = ctx.organizationId
-    const tenderId = params.id
+    const tenderId = resolvedParams.id
 
     try {
       // 1. Get tender header from core_entities
@@ -199,12 +200,13 @@ export async function GET(
 // Calculate bid for a tender
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   return enterpriseMiddleware(request, async (req, ctx) => {
+    const resolvedParams = await params
     const organizationId = ctx.organizationId
     const userId = ctx.userId
-    const tenderId = params.id
+    const tenderId = resolvedParams.id
     const body = await request.json()
 
     try {

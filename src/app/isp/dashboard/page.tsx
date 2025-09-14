@@ -272,8 +272,8 @@ export default function ISPDashboard() {
         {/* Revenue Trend */}
         <div className="lg:col-span-2">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none z-0" />
+            <div className="relative z-10 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white">Revenue & Subscriber Growth</h2>
                 <div className="flex items-center space-x-4 text-xs">
@@ -288,8 +288,9 @@ export default function ISPDashboard() {
                 </div>
               </div>
               
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={safeRevenueData}>
+              <div className="w-full h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={safeRevenueData}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
@@ -331,7 +332,8 @@ export default function ISPDashboard() {
                     fill="url(#subscriberGradient)"
                   />
                 </AreaChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         </div>
@@ -343,8 +345,9 @@ export default function ISPDashboard() {
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Revenue Streams</h2>
               
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
+              <div className="w-full h-[250px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
                   <Pie
                     data={safeRevenueStreams}
                     cx="50%"
@@ -367,7 +370,8 @@ export default function ISPDashboard() {
                     }}
                   />
                 </PieChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              </div>
               
               <div className="space-y-2 mt-4">
                 {revenueStreams.map((stream, index) => (

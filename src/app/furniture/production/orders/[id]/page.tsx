@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Edit2, Trash2, Calendar, Package, User, FileText, Clock, CheckCircle, AlertCircle, Truck } from 'lucide-react'
@@ -9,7 +9,8 @@ import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
-export default function ProductionOrderDetailPage({ params }: { params: { id: string } }) {
+export default function ProductionOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
   const [activeTab, setActiveTab] = useState('details')
@@ -18,7 +19,7 @@ export default function ProductionOrderDetailPage({ params }: { params: { id: st
   const { data: productionOrders } = useUniversalData({
     table: 'universal_transactions',
     filter: (item) => 
-      item.id === params.id &&
+      item.id === id &&
       item.transaction_type === 'production_order' &&
       item.organization_id === organizationId,
     organizationId,
