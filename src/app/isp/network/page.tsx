@@ -16,12 +16,79 @@ import {
   TrendingUp,
   Users,
   BarChart3,
-  Map
+  Map,
+  Plus,
+  MapPin,
+  Edit2,
+  Trash2
 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
+import { ISPModal } from '@/components/isp/ISPModal'
+import { ISPTable } from '@/components/isp/ISPTable'
+import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
 
 // India Vision Organization ID
 const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+
+interface NetworkTower {
+  id: string
+  name: string
+  location: string
+  region: string
+  latitude: number
+  longitude: number
+  status: 'operational' | 'maintenance' | 'offline'
+  type: 'primary' | 'backup' | 'relay'
+  capacity: number
+  currentLoad: number
+  lastMaintenance: string
+  subscribers: number
+}
+
+const mockTowers: NetworkTower[] = [
+  {
+    id: 'TWR-001',
+    name: 'TVM Central Tower',
+    location: 'Thiruvananthapuram City Center',
+    region: 'Thiruvananthapuram',
+    latitude: 8.5241,
+    longitude: 76.9366,
+    status: 'operational',
+    type: 'primary',
+    capacity: 5000,
+    currentLoad: 3800,
+    lastMaintenance: '2024-05-15',
+    subscribers: 3800
+  },
+  {
+    id: 'TWR-002',
+    name: 'Kochi Marine Tower',
+    location: 'Marine Drive, Kochi',
+    region: 'Kochi',
+    latitude: 9.9816,
+    longitude: 76.2998,
+    status: 'operational',
+    type: 'primary',
+    capacity: 4500,
+    currentLoad: 3200,
+    lastMaintenance: '2024-05-20',
+    subscribers: 3200
+  },
+  {
+    id: 'TWR-003',
+    name: 'CCJ Hilltop Relay',
+    location: 'Kozhikode Hills',
+    region: 'Kozhikode',
+    latitude: 11.2588,
+    longitude: 75.7804,
+    status: 'maintenance',
+    type: 'relay',
+    capacity: 2000,
+    currentLoad: 0,
+    lastMaintenance: '2024-06-10',
+    subscribers: 0
+  }
+]
 
 interface NetworkCardProps {
   title: string
@@ -41,8 +108,8 @@ function NetworkCard({ title, value, subtitle, icon: Icon, status, gradient }: N
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
@@ -69,6 +136,22 @@ export default function NetworkPage() {
     total_towers: 115,
     active_connections: 42156,
     service_tickets: 23
+  })
+
+  const [towers, setTowers] = useState<NetworkTower[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedTower, setSelectedTower] = useState<NetworkTower | null>(null)
+  const [formData, setFormData] = useState({
+    name: '',
+    location: '',
+    region: 'Thiruvananthapuram',
+    latitude: 0,
+    longitude: 0,
+    status: 'operational' as const,
+    type: 'primary' as const,
+    capacity: 5000
   })
 
   const [regionalData, setRegionalData] = useState([
@@ -115,7 +198,241 @@ export default function NetworkPage() {
 
   useEffect(() => {
     fetchNetworkData()
+    fetchTowers()
   }, [])
+
+  const handleAdd = async () => {
+    try {
+      const towerCode = `TWR-${String((towers.length || 0) + 1).padStart(3, '0')}`
+      
+      const { data, error } = await supabase
+        .from('core_entities')
+        .insert({
+          organization_id: INDIA_VISION_ORG_ID,
+          entity_type: 'network_tower',
+          entity_name: formData.name,
+          entity_code: towerCode,
+          metadata: {
+            location: formData.location,
+            region: formData.region,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
+            status: formData.status,
+            type: formData.type,
+            capacity: formData.capacity,
+            current_load: 0,
+            last_maintenance: new Date().toISOString().split('T')[0],
+            subscribers: 0
+          }
+  })
+
+      // Create new tower entity
+
+      if (error) throw error
+
+      if (data) {
+        const newTower: NetworkTower = {
+          id: data.entity_code,
+          name: data.entity_name,
+          location: data.metadata.location,
+          region: data.metadata.region,
+          latitude: data.metadata.latitude,
+          longitude: data.metadata.longitude,
+          status: data.metadata.status,
+          type: data.metadata.type,
+          capacity: data.metadata.capacity,
+          currentLoad: data.metadata.current_load,
+          lastMaintenance: data.metadata.last_maintenance,
+          subscribers: data.metadata.subscribers
+        }
+        setTowers([...towers, newTower])
+        setShowAddModal(false)
+        resetForm()
+      }
+    } catch (error) {
+      console.error('Error adding tower:', error)
+      alert('Failed to add tower. Please try again.')
+    }
+  }
+
+  const handleEdit = (tower: NetworkTower) => {
+    setSelectedTower(tower)
+    setFormData({
+      name: tower.name,
+      location: tower.location,
+      region: tower.region,
+      latitude: tower.latitude,
+      longitude: tower.longitude,
+      status: tower.status,
+      type: tower.type,
+      capacity: tower.capacity
+    })
+    setShowEditModal(true)
+  }
+
+  const handleUpdate = async () => {
+    if (selectedTower) {
+      try {
+        // First find the entity in database
+        const { data: entities } = await supabase
+          .from('core_entities')
+          .select('id')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'network_tower')
+          .eq('entity_code', selectedTower.id)
+          .single()
+
+        if (!entities) {
+          throw new Error('Tower not found')
+        }
+
+        const { error } = await supabase
+          .from('core_entities')
+          .update({
+            entity_name: formData.name,
+            metadata: {
+              location: formData.location,
+              region: formData.region,
+              latitude: formData.latitude,
+              longitude: formData.longitude,
+              status: formData.status,
+              type: formData.type,
+              capacity: formData.capacity,
+              current_load: selectedTower.currentLoad,
+              last_maintenance: selectedTower.lastMaintenance,
+              subscribers: selectedTower.subscribers
+            }
+          })
+          .eq('id', entities.id)
+
+        if (error) throw error
+
+        setTowers(towers.map(t => 
+          t.id === selectedTower.id 
+            ? { ...t, ...formData, currentLoad: selectedTower.currentLoad, subscribers: selectedTower.subscribers }
+            : t
+        ))
+        setShowEditModal(false)
+        setSelectedTower(null)
+        resetForm()
+      } catch (error) {
+        console.error('Error updating tower:', error)
+        alert('Failed to update tower. Please try again.')
+      }
+    }
+  }
+
+  const handleDelete = async (tower: NetworkTower) => {
+    if (confirm(`Are you sure you want to delete tower ${tower.name}?`)) {
+      try {
+        // First find the entity in database
+        const { data: entities } = await supabase
+          .from('core_entities')
+          .select('id')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'network_tower')
+          .eq('entity_code', tower.id)
+          .single()
+
+        if (!entities) {
+          throw new Error('Tower not found')
+        }
+
+        const { error } = await supabase
+          .from('core_entities')
+          .delete()
+          .eq('id', entities.id)
+
+        if (error) throw error
+
+        setTowers(towers.filter(t => t.id !== tower.id))
+      } catch (error) {
+        console.error('Error deleting tower:', error)
+        alert('Failed to delete tower. Please try again.')
+      }
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      location: '',
+      region: 'Thiruvananthapuram',
+      latitude: 0,
+      longitude: 0,
+      status: 'operational',
+      type: 'primary',
+      capacity: 5000
+    })
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'operational':
+        return (
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <CheckCircle className="h-3 w-3 text-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400">Operational</span>
+          </div>
+        )
+      case 'maintenance':
+        return (
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+            <AlertCircle className="h-3 w-3 text-yellow-400" />
+            <span className="text-xs font-medium text-yellow-400">Maintenance</span>
+          </div>
+        )
+      case 'offline':
+        return (
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
+            <AlertCircle className="h-3 w-3 text-red-400" />
+            <span className="text-xs font-medium text-red-400">Offline</span>
+          </div>
+        )
+      default:
+        return null
+    }
+  }
+
+  async function fetchTowers() {
+    try {
+      setLoading(true)
+      const { data: towerEntities, error } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', INDIA_VISION_ORG_ID)
+        .eq('entity_type', 'network_tower')
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+
+      if (towerEntities) {
+        const loadedTowers = towerEntities.map((entity) => ({
+          id: entity.entity_code || entity.id,
+          name: entity.entity_name,
+          location: entity.metadata?.location || '',
+          region: entity.metadata?.region || 'Thiruvananthapuram',
+          latitude: entity.metadata?.latitude || 0,
+          longitude: entity.metadata?.longitude || 0,
+          status: entity.metadata?.status || 'operational',
+          type: entity.metadata?.type || 'primary',
+          capacity: entity.metadata?.capacity || 5000,
+          currentLoad: entity.metadata?.current_load || 0,
+          lastMaintenance: entity.metadata?.last_maintenance || new Date().toISOString().split('T')[0],
+          subscribers: entity.metadata?.subscribers || 0
+        }))
+        setTowers(loadedTowers)
+      }
+    } catch (error) {
+      console.error('Error fetching towers:', error)
+      // Show some sample data if no real data exists
+      if (towers.length === 0) {
+        setTowers(mockTowers)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function fetchNetworkData() {
     try {
@@ -176,6 +493,13 @@ export default function NetworkPage() {
             </div>
             <span className="text-sm font-medium text-emerald-400">All Systems Operational</span>
           </div>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Add Tower</span>
+          </button>
         </div>
       </div>
 
@@ -195,7 +519,7 @@ export default function NetworkPage() {
           subtitle={`${networkData.peak_utilization}% peak utilization`}
           icon={Zap}
           status="operational"
-          gradient="from-[#00DDFF] to-[#0049B7]"
+          gradient="from-[#0099CC] to-[#0049B7]"
         />
         <NetworkCard
           title="Network Towers"
@@ -203,7 +527,7 @@ export default function NetworkPage() {
           subtitle="Across 3 regions"
           icon={Radio}
           status="operational"
-          gradient="from-[#fff685] to-[#00DDFF]"
+          gradient="from-[#FFD700] to-[#0099CC]"
         />
         <NetworkCard
           title="Active Connections"
@@ -211,7 +535,7 @@ export default function NetworkPage() {
           subtitle={`${networkData.service_tickets} service tickets`}
           icon={Users}
           status={networkData.service_tickets > 50 ? 'warning' : 'operational'}
-          gradient="from-[#ff1d58] to-[#f75990]"
+          gradient="from-[#E91E63] to-[#C2185B]"
         />
       </div>
 
@@ -219,11 +543,11 @@ export default function NetworkPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {regionalData.map((region, index) => (
           <div key={region.code} className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-[#00DDFF] to-[#0049B7]">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-[#0099CC] to-[#0049B7]">
                     <Map className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -232,7 +556,7 @@ export default function NetworkPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold bg-gradient-to-r from-[#00DDFF] to-[#fff685] bg-clip-text text-transparent">
+                  <p className="text-2xl font-bold bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent">
                     {region.uptime}%
                   </p>
                   <p className="text-xs text-white/60">Uptime</p>
@@ -261,7 +585,7 @@ export default function NetworkPage() {
                 <div className="mt-4">
                   <div className="h-2 rounded-full bg-white/10 overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-[#00DDFF] to-[#fff685] rounded-full transition-all duration-500"
+                      className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-500"
                       style={{ width: `${region.bandwidth_utilization}%` }}
                     />
                   </div>
@@ -275,15 +599,15 @@ export default function NetworkPage() {
       {/* Network Performance Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">24-Hour Bandwidth Usage</h2>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={performanceData}>
                 <defs>
                   <linearGradient id="bandwidthGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00DDFF" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -299,7 +623,7 @@ export default function NetworkPage() {
                 <Area 
                   type="monotone" 
                   dataKey="bandwidth" 
-                  stroke="#00DDFF" 
+                  stroke="#0099CC" 
                   fillOpacity={1} 
                   fill="url(#bandwidthGradient)" 
                   strokeWidth={2}
@@ -310,8 +634,8 @@ export default function NetworkPage() {
         </div>
 
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Infrastructure Status</h2>
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
@@ -361,6 +685,314 @@ export default function NetworkPage() {
           </div>
         </div>
       </div>
+
+      {/* Network Towers Table */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold text-white mb-6">Network Towers</h2>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0099CC]"></div>
+          </div>
+        ) : (
+          <ISPTable
+            data={towers}
+            columns={[
+            {
+              key: 'id',
+              label: 'Tower ID',
+              render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+            },
+            {
+              key: 'name',
+              label: 'Tower Info',
+              render: (item) => (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">{item.name}</p>
+                  <div className="flex items-center space-x-1 text-xs text-white/60">
+                    <MapPin className="h-3 w-3" />
+                    <span>{item.location}</span>
+                  </div>
+                  <p className="text-xs text-white/60">Region: {item.region}</p>
+                </div>
+              )
+            },
+            {
+              key: 'type',
+              label: 'Type',
+              render: (item) => (
+                <div className="flex items-center space-x-2">
+                  <Radio className="h-4 w-4 text-[#0099CC]" />
+                  <span className="text-sm text-white capitalize">{item.type}</span>
+                </div>
+              )
+            },
+            {
+              key: 'status',
+              label: 'Status',
+              render: (item) => getStatusBadge(item.status)
+            },
+            {
+              key: 'capacity',
+              label: 'Capacity',
+              render: (item) => (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">
+                    {item.currentLoad} / {item.capacity}
+                  </p>
+                  <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
+                      style={{ width: `${(item.currentLoad / item.capacity) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-white/60">{item.subscribers} subscribers</p>
+                </div>
+              )
+            },
+            {
+              key: 'lastMaintenance',
+              label: 'Last Maintenance',
+              render: (item) => (
+                <p className="text-sm text-white/80">{item.lastMaintenance}</p>
+              )
+            }
+          ]}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            searchPlaceholder="Search towers by ID, name, or location..."
+          />
+        )}
+      </div>
+
+      {/* Add Tower Modal */}
+      <ISPModal
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false)
+          resetForm()
+        }}
+        title="Add New Tower"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleAdd()
+        }} className="space-y-4">
+          <ISPInput
+            label="Tower Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter tower name"
+            required
+          />
+          
+          <ISPInput
+            label="Location"
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Enter location details"
+            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Region"
+            value={formData.region}
+            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            options={[
+              { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
+              { value: 'Kochi', label: 'Kochi' },
+              { value: 'Kozhikode', label: 'Kozhikode' }
+            ]}
+          />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <ISPInput
+              label="Latitude"
+              type="number"
+              step="0.0001"
+              value={formData.latitude}
+              onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
+              placeholder="8.5241"
+              required
+            />
+            
+            <ISPInput
+              label="Longitude"
+              type="number"
+              step="0.0001"
+              value={formData.longitude}
+              onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
+              placeholder="76.9366"
+              required
+            />
+          </div>
+          
+          <ISPSelect
+            label="Tower Type"
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            options={[
+              { value: 'primary', label: 'Primary' },
+              { value: 'backup', label: 'Backup' },
+              { value: 'relay', label: 'Relay' }
+            ]}
+          />
+          
+          <ISPSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            options={[
+              { value: 'operational', label: 'Operational' },
+              { value: 'maintenance', label: 'Maintenance' },
+              { value: 'offline', label: 'Offline' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Capacity"
+            type="number"
+            value={formData.capacity}
+            onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+            placeholder="Enter capacity"
+            icon={<Users className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowAddModal(false)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Add Tower
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
+
+      {/* Edit Tower Modal */}
+      <ISPModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setSelectedTower(null)
+          resetForm()
+        }}
+        title="Edit Tower"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleUpdate()
+        }} className="space-y-4">
+          <ISPInput
+            label="Tower Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter tower name"
+            required
+          />
+          
+          <ISPInput
+            label="Location"
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Enter location details"
+            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Region"
+            value={formData.region}
+            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            options={[
+              { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
+              { value: 'Kochi', label: 'Kochi' },
+              { value: 'Kozhikode', label: 'Kozhikode' }
+            ]}
+          />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <ISPInput
+              label="Latitude"
+              type="number"
+              step="0.0001"
+              value={formData.latitude}
+              onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
+              placeholder="8.5241"
+              required
+            />
+            
+            <ISPInput
+              label="Longitude"
+              type="number"
+              step="0.0001"
+              value={formData.longitude}
+              onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
+              placeholder="76.9366"
+              required
+            />
+          </div>
+          
+          <ISPSelect
+            label="Tower Type"
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            options={[
+              { value: 'primary', label: 'Primary' },
+              { value: 'backup', label: 'Backup' },
+              { value: 'relay', label: 'Relay' }
+            ]}
+          />
+          
+          <ISPSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            options={[
+              { value: 'operational', label: 'Operational' },
+              { value: 'maintenance', label: 'Maintenance' },
+              { value: 'offline', label: 'Offline' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Capacity"
+            type="number"
+            value={formData.capacity}
+            onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+            placeholder="Enter capacity"
+            icon={<Users className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowEditModal(false)
+                setSelectedTower(null)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Update Tower
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
     </div>
   )
 }
