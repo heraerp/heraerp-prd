@@ -56,8 +56,8 @@ import {
   ComposedChart
 } from 'recharts'
 
-// Kerala Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface ComplianceItem {
   category: string
@@ -168,7 +168,7 @@ export default function IPOPage() {
   ])
 
   const [peerComparison] = useState([
-    { company: 'Kerala Vision', pe: 18, evEbitda: 12, pbv: 3.2, color: '#00DDFF' },
+    { company: 'India Vision', pe: 18, evEbitda: 12, pbv: 3.2, color: '#00DDFF' },
     { company: 'Peer A', pe: 22, evEbitda: 15, pbv: 4.1, color: '#fff685' },
     { company: 'Peer B', pe: 20, evEbitda: 13, pbv: 3.8, color: '#ff1d58' },
     { company: 'Industry Avg', pe: 21, evEbitda: 14, pbv: 3.9, color: '#f75990' }
@@ -187,7 +187,7 @@ export default function IPOPage() {
       const { data: ipoEntity } = await supabase
         .from('core_entities')
         .select('metadata')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
+        .eq('organization_id', INDIA_VISION_ORG_ID)
         .eq('entity_type', 'ipo_preparation')
         .single()
 
@@ -237,7 +237,7 @@ export default function IPOPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             IPO Preparation Dashboard
           </h1>
-          <p className="text-white/60 mt-1">Track Kerala Vision's journey to Initial Public Offering</p>
+          <p className="text-white/60 mt-1">Track India Vision's journey to Initial Public Offering</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button 
@@ -597,7 +597,7 @@ export default function IPOPage() {
                 <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
                 <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
                 <Radar 
-                  name="Kerala Vision" 
+                  name="India Vision" 
                   dataKey="value" 
                   stroke="#00DDFF" 
                   fill="#00DDFF" 

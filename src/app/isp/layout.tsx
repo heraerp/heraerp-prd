@@ -73,7 +73,7 @@ export default function ISPLayout({
                 </div>
                 <div>
                   <h1 className="text-lg font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                    Kerala Vision
+                    India Vision
                   </h1>
                   <p className="text-xs bg-gradient-to-r from-[#00DDFF] to-[#fff685] bg-clip-text text-transparent font-medium">
                     ISP Management System

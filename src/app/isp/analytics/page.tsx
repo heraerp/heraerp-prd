@@ -49,8 +49,8 @@ import {
   Scatter
 } from 'recharts'
 
-// Kerala Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface MetricCardProps {
   title: string
@@ -183,14 +183,14 @@ export default function AnalyticsPage() {
         supabase
           .from('core_entities')
           .select('metadata')
-          .eq('organization_id', KERALA_VISION_ORG_ID)
+          .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('entity_type', 'metrics')
           .single(),
         
         supabase
           .from('universal_transactions')
           .select('*')
-          .eq('organization_id', KERALA_VISION_ORG_ID)
+          .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('transaction_type', 'revenue')
           .order('transaction_date', { ascending: true })
       ])

@@ -22,8 +22,8 @@ import {
 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
 
-// Kerala Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface MetricCardProps {
   title: string
@@ -107,7 +107,7 @@ export default function ISPDashboard() {
         supabase
           .from('core_entities')
           .select('metadata')
-          .eq('organization_id', KERALA_VISION_ORG_ID)
+          .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('entity_type', 'metrics')
           .single(),
         
@@ -115,7 +115,7 @@ export default function ISPDashboard() {
         supabase
           .from('universal_transactions')
           .select('total_amount, metadata, transaction_date')
-          .eq('organization_id', KERALA_VISION_ORG_ID)
+          .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('transaction_type', 'revenue')
           .order('transaction_date', { ascending: true })
           .limit(6),
@@ -124,7 +124,7 @@ export default function ISPDashboard() {
         supabase
           .from('core_entities')
           .select('metadata')
-          .eq('organization_id', KERALA_VISION_ORG_ID)
+          .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('entity_type', 'network_metrics')
           .single()
       ])

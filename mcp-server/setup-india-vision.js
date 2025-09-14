@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * 🚀 Kerala Vision Broadband - IPO-Ready ERP Setup
+ * 🚀 India Vision Broadband - IPO-Ready ERP Setup
  * 
- * This script sets up a complete ERP system for Kerala Vision using HERA DNA:
+ * This script sets up a complete ERP system for India Vision using HERA DNA:
  * - Organization structure (parent + subsidiary)
  * - IndAS-compliant Chart of Accounts
  * - Finance DNA for audit trails
  * - Document numbering sequences
- * - 3000 agents across Kerala
+ * - 3000 agents across India
  * - Multiple revenue streams
  * - Budgeting with variance analysis
  * - IPO readiness with SEBI ratios
@@ -31,11 +31,11 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Organization IDs (proper UUIDs)
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001';
-const KERALA_CABLES_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000002';
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001';
+const INDIA_CABLES_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000002';
 
-async function setupKeralaVision() {
-  console.log('🚀 Setting up Kerala Vision Broadband IPO-Ready ERP...\n');
+async function setupIndiaVision() {
+  console.log('🚀 Setting up India Vision Broadband IPO-Ready ERP...\n');
 
   try {
     // Step 1: Create Organizations
@@ -75,7 +75,7 @@ async function setupKeralaVision() {
     await configureIPOReadiness();
 
     // Step 10: Display Summary
-    console.log('\n✅ Kerala Vision ERP Setup Complete!\n');
+    console.log('\n✅ India Vision ERP Setup Complete!\n');
     await displaySummary();
 
   } catch (error) {
@@ -89,8 +89,8 @@ async function createOrganizations() {
   const { error: parentError } = await supabase
     .from('core_organizations')
     .upsert({
-      id: KERALA_VISION_ORG_ID,
-      organization_name: 'Kerala Vision Broadband Ltd',
+      id: INDIA_VISION_ORG_ID,
+      organization_name: 'India Vision Broadband Ltd',
       organization_code: 'KVBL',
       organization_type: 'company',
       industry_classification: 'telecom',
@@ -128,14 +128,14 @@ async function createOrganizations() {
   const { error: subError } = await supabase
     .from('core_organizations')
     .upsert({
-      id: KERALA_CABLES_ORG_ID,
-      organization_name: 'Kerala Communicators Cables Ltd',
+      id: INDIA_CABLES_ORG_ID,
+      organization_name: 'India Communicators Cables Ltd',
       organization_code: 'KCCL',
       organization_type: 'subsidiary',
       industry_classification: 'telecom',
-      parent_organization_id: KERALA_VISION_ORG_ID,
+      parent_organization_id: INDIA_VISION_ORG_ID,
       settings: {
-        parent_company_id: KERALA_VISION_ORG_ID,
+        parent_company_id: INDIA_VISION_ORG_ID,
         country_code: 'IN',
         currency_code: 'INR',
         fiscal_year_start: '04-01',
@@ -149,8 +149,8 @@ async function createOrganizations() {
     throw subError;
   }
 
-  console.log('  ✓ Kerala Vision Broadband Ltd created');
-  console.log('  ✓ Kerala Communicators Cables Ltd (subsidiary) created');
+  console.log('  ✓ India Vision Broadband Ltd created');
+  console.log('  ✓ India Communicators Cables Ltd (subsidiary) created');
 }
 
 async function setupChartOfAccounts() {
@@ -200,7 +200,7 @@ async function setupChartOfAccounts() {
     const smartCode = `HERA.FIN.GL.${account.type.toUpperCase()}.${account.subtype.toUpperCase().replace(/_/g, '_')}.v1`;
     
     const { error } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'gl_account',
       p_entity_name: account.name,
       p_entity_code: account.code,
@@ -220,7 +220,7 @@ async function setupChartOfAccounts() {
 
 async function configureFinanceDNA() {
   const { error } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-    p_org_id: KERALA_VISION_ORG_ID,
+    p_org_id: INDIA_VISION_ORG_ID,
     p_entity_type: 'system_config',
     p_entity_name: 'Finance DNA Configuration',
     p_entity_code: 'FINANCE-DNA-CONFIG',
@@ -273,7 +273,7 @@ async function setupDocumentNumbering() {
 
   for (const seq of sequences) {
     const { error } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'document_sequence',
       p_entity_name: seq.name,
       p_entity_code: seq.code,
@@ -299,11 +299,11 @@ async function createRegionsAndAgents() {
 
   for (const region of regions) {
     await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'region',
       p_entity_name: region.name,
       p_entity_code: region.code,
-      p_smart_code: 'HERA.MASTER.REGION.STATE.KERALA.v1',
+      p_smart_code: 'HERA.MASTER.REGION.STATE.INDIA.v1',
       p_metadata: {
         state: 'Kerala',
         zone: region.zone
@@ -320,7 +320,7 @@ async function createRegionsAndAgents() {
 
   for (const agent of agents) {
     await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'agent',
       p_entity_name: agent.name,
       p_entity_code: agent.code,
@@ -375,7 +375,7 @@ async function createProductsAndPlans() {
 
   for (const product of products) {
     await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'product',
       p_entity_name: product.name,
       p_entity_code: product.code,
@@ -404,7 +404,7 @@ async function createSampleTransactions() {
 
   for (const customer of customers) {
     await supabase.rpc('rpc_entities_resolve_and_upsert', {
-      p_org_id: KERALA_VISION_ORG_ID,
+      p_org_id: INDIA_VISION_ORG_ID,
       p_entity_type: 'customer',
       p_entity_name: customer.name,
       p_entity_code: customer.code,
@@ -420,14 +420,14 @@ async function createSampleTransactions() {
   const { data: customerData } = await supabase
     .from('core_entities')
     .select('id')
-    .eq('organization_id', KERALA_VISION_ORG_ID)
+    .eq('organization_id', INDIA_VISION_ORG_ID)
     .eq('entity_code', 'CUST-100002')
     .single();
 
   const { data: planData } = await supabase
     .from('core_entities')
     .select('id')
-    .eq('organization_id', KERALA_VISION_ORG_ID)
+    .eq('organization_id', INDIA_VISION_ORG_ID)
     .eq('entity_code', 'PLAN-HOME-50')
     .single();
 
@@ -435,7 +435,7 @@ async function createSampleTransactions() {
     await supabase
       .from('universal_transactions')
       .insert({
-        organization_id: KERALA_VISION_ORG_ID,
+        organization_id: INDIA_VISION_ORG_ID,
         transaction_type: 'subscription',
         transaction_code: 'KV/INV/10001/24-25',
         transaction_date: new Date().toISOString(),
@@ -461,7 +461,7 @@ async function createSampleTransactions() {
 async function setupBudgeting() {
   // Create annual budget
   const { data: budgetData } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-    p_org_id: KERALA_VISION_ORG_ID,
+    p_org_id: INDIA_VISION_ORG_ID,
     p_entity_type: 'budget',
     p_entity_name: 'FY 2024-25 Annual Budget',
     p_entity_code: 'BUDGET-FY2425',
@@ -492,7 +492,7 @@ async function setupBudgeting() {
       await supabase
         .from('universal_transactions')
         .insert({
-          organization_id: KERALA_VISION_ORG_ID,
+          organization_id: INDIA_VISION_ORG_ID,
           transaction_type: 'budget_line',
           transaction_code: `BUDGET-LINE-${i + 1}`,
           transaction_date: '2024-04-01',
@@ -516,7 +516,7 @@ async function setupBudgeting() {
 async function configureIPOReadiness() {
   // Configure SEBI ratios
   const { error } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-    p_org_id: KERALA_VISION_ORG_ID,
+    p_org_id: INDIA_VISION_ORG_ID,
     p_entity_type: 'kpi_config',
     p_entity_name: 'SEBI IPO Ratios Configuration',
     p_entity_code: 'KPI-SEBI-IPO',
@@ -574,9 +574,9 @@ async function configureIPOReadiness() {
   await supabase
     .from('core_relationships')
     .upsert({
-      organization_id: KERALA_VISION_ORG_ID,
-      from_entity_id: KERALA_VISION_ORG_ID,
-      to_entity_id: KERALA_CABLES_ORG_ID,
+      organization_id: INDIA_VISION_ORG_ID,
+      from_entity_id: INDIA_VISION_ORG_ID,
+      to_entity_id: INDIA_CABLES_ORG_ID,
       relationship_type: 'parent_subsidiary',
       smart_code: 'HERA.CORPORATE.RELATIONSHIP.SUBSIDIARY.v1',
       relationship_data: {
@@ -592,10 +592,10 @@ async function configureIPOReadiness() {
 }
 
 async function displaySummary() {
-  console.log('📊 Kerala Vision ERP Setup Summary:');
+  console.log('📊 India Vision ERP Setup Summary:');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(`Organization ID: ${KERALA_VISION_ORG_ID}`);
-  console.log(`Subsidiary ID: ${KERALA_CABLES_ORG_ID}`);
+  console.log(`Organization ID: ${INDIA_VISION_ORG_ID}`);
+  console.log(`Subsidiary ID: ${INDIA_CABLES_ORG_ID}`);
   console.log('\n🎯 IPO Target: 2028');
   console.log('\n📈 Key Features Enabled:');
   console.log('  • IndAS-compliant Chart of Accounts');
@@ -609,7 +609,7 @@ async function displaySummary() {
   
   console.log('\n🚀 Next Steps:');
   console.log('  1. Run the application: npm run dev');
-  console.log('  2. Access Kerala Vision dashboard');
+  console.log('  2. Access India Vision dashboard');
   console.log('  3. Review IPO readiness metrics');
   console.log('  4. Configure additional workflows as needed');
   
@@ -622,4 +622,4 @@ async function displaySummary() {
 }
 
 // Run the setup
-setupKeralaVision();
+setupIndiaVision();

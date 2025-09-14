@@ -38,8 +38,8 @@ import {
   BarChart3
 } from 'lucide-react'
 
-// Kerala Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface ConfigSection {
   id: string
@@ -84,7 +84,7 @@ export default function SettingsPage() {
           key: 'org_name',
           label: 'Organization Name',
           type: 'text',
-          value: 'Kerala Vision Internet Services Pvt Ltd',
+          value: 'India Vision Internet Services Pvt Ltd',
           description: 'Legal name of the organization'
         },
         {
@@ -527,7 +527,7 @@ export default function SettingsPage() {
       const { data: settingsEntity } = await supabase
         .from('core_entities')
         .select('metadata')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
+        .eq('organization_id', INDIA_VISION_ORG_ID)
         .eq('entity_type', 'system_settings')
         .single()
 
@@ -584,7 +584,7 @@ export default function SettingsPage() {
       const { data: existing } = await supabase
         .from('core_entities')
         .select('id')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
+        .eq('organization_id', INDIA_VISION_ORG_ID)
         .eq('entity_type', 'system_settings')
         .single()
 
@@ -601,9 +601,9 @@ export default function SettingsPage() {
         await supabase
           .from('core_entities')
           .insert({
-            organization_id: KERALA_VISION_ORG_ID,
+            organization_id: INDIA_VISION_ORG_ID,
             entity_type: 'system_settings',
-            entity_name: 'Kerala Vision System Settings',
+            entity_name: 'India Vision System Settings',
             entity_code: 'SETTINGS-001',
             smart_code: 'HERA.ISP.CONFIG.SYSTEM.SETTINGS.v1',
             metadata: allSettings

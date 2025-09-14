@@ -20,8 +20,8 @@ import {
 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
 
-// Kerala Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface NetworkCardProps {
   title: string
@@ -123,7 +123,7 @@ export default function NetworkPage() {
       const { data: networkMetrics } = await supabase
         .from('core_entities')
         .select('metadata')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
+        .eq('organization_id', INDIA_VISION_ORG_ID)
         .eq('entity_type', 'network_metrics')
         .single()
 

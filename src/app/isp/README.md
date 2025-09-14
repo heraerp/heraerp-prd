@@ -1,4 +1,4 @@
-# 🚀 Kerala Vision ISP Management System
+# 🚀 India Vision ISP Management System
 
 ## Overview
 
@@ -74,7 +74,7 @@ HERA.TELECOM.AGENT.PERFORMANCE.v1
 ### 1. Setup Data
 ```bash
 cd mcp-server
-node setup-kerala-vision.js        # Create organization
+node setup-india-vision.js         # Create organization
 node setup-isp-dashboard-data.js   # Create ISP data
 ```
 
@@ -117,7 +117,7 @@ Navigate to: `http://localhost:3000/isp`
 
 ## Integration Points
 
-### With Kerala Vision Setup
+### With India Vision Setup
 - Uses existing organization structure
 - Connects to IndAS-compliant COA
 - Leverages Finance DNA for audit trails

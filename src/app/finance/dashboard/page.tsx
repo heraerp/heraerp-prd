@@ -42,7 +42,7 @@ import {
   ComposedChart
 } from 'recharts'
 
-// Kerala Vision Organization ID
+// India Vision Organization ID
 const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface MetricCardProps {
