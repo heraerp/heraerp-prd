@@ -1,4 +1,4 @@
-smart_code: HERA.TEST.SCOPE.SALES_MINI.v1
+smart_code: HERA.TEST.SCOPE.SALES.MINI.v1
 setup: []
 teardown: []
 
@@ -12,7 +12,7 @@ cases:
     # No execute step required for report UAT; we validate analytics reads
     expect:
       report:
-        report_code: HERA.SALES.REPORT.TOP_PRODUCTS.v1
+        report_code: HERA.SALES.REPORT.TOP_PRODUCTS.CORE.v1
         params:
           from: "2025-09-01"
           to:   "2025-12-31"
@@ -22,4 +22,3 @@ cases:
           revenue: 15.00
 
 strict: true
-

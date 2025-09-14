@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.SMART_CODE.REGISTRY_OVERLAY.v1
+smart_code: HERA.SYSTEM.SMART_CODE.REGISTRY_OVERLAY.CORE.v1
 allocations:
   - { code: HERA.CRM.DEAL.OPPORTUNITY.v1,         status: active,   owner: crm@yourco }
   - { code: HERA.CRM.DEAL.STAGE_CHANGE.v1,        status: active,   owner: crm@yourco }
@@ -11,4 +11,3 @@ allocations:
   - { code: HERA.CRM.COMMS.WHATSAPP.MESSAGE_SENT.v1,     status: active,   owner: crm@yourco }
   - { code: HERA.CRM.IMPORT.DEAL.v1,              status: active,   owner: data@yourco }
   - { code: HERA.CRM.IMPORT.ROLLBACK.v1,          status: proposed, owner: data@yourco }
-

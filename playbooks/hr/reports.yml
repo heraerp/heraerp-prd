@@ -1,6 +1,6 @@
-smart_code: HERA.HCM.REPORTS.CORE.v1
+smart_code: HERA.HCM.REPORTS.CORE.DEFS.v1
 reports:
-  - report_code: HERA.HCM.REPORT.HEADCOUNT_BY_DEPT.v1
+  - report_code: HERA.HCM.REPORT.HEADCOUNT_BY_DEPT.CORE.v1
     description: "Headcount by department"
     params_schema:
       as_of: { type: date }
@@ -19,7 +19,7 @@ reports:
         GROUP BY d.entity_name
         ORDER BY headcount DESC
 
-  - report_code: HERA.HCM.REPORT.PAYROLL_SUMMARY.v1
+  - report_code: HERA.HCM.REPORT.PAYROLL_SUMMARY.CORE.v1
     description: "Payroll earnings vs deductions by period"
     params_schema:
       from: { type: date }

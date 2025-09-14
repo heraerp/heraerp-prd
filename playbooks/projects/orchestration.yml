@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.PLAYBOOK.PROJECTS_SEED.v1
+smart_code: HERA.SYSTEM.PLAYBOOK.PROJECTS.SEED.v1
 
 contracts:
   - entities.core.yml
@@ -9,4 +9,3 @@ contracts:
 
 vars:
   default_currency: GBP
-

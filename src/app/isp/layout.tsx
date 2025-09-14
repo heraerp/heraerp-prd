@@ -63,10 +63,10 @@ export default function ISPLayout({
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="h-full bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border-r border-white/10">
+        <div className="h-full bg-gradient-to-b from-background/60 to-background/30 backdrop-blur-2xl border-r border-border/50">
           <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center justify-between px-4 border-b border-white/10">
+            <div className="flex h-16 items-center justify-between px-4 border-b border-border/50">
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg blur-lg opacity-80 animate-pulse" />
@@ -114,7 +114,7 @@ export default function ISPLayout({
                     <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
                       isActive
                         ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 shadow-lg shadow-[#E91E63]/30'
-                        : 'bg-transparent group-hover:bg-white/5'
+                        : 'bg-transparent group-hover:bg-muted/50'
                     }`} />
                     
                     <span className="relative">{item.name}</span>
@@ -132,7 +132,7 @@ export default function ISPLayout({
             <div className="p-4">
               <div className="relative rounded-2xl overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#E91E63]/30 via-[#C2185B]/30 to-[#FFD700]/30 animate-gradient-shift" />
-                <div className="relative bg-white/5 backdrop-blur-xl p-4 border border-white/10">
+                <div className="relative bg-card backdrop-blur-xl p-4 border border-border">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#0099CC]">
@@ -148,7 +148,7 @@ export default function ISPLayout({
                       <span className="text-white/60">Progress</span>
                       <span className="text-[#0099CC] font-medium">72%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
                       <div className="h-full w-[72%] bg-gradient-to-r from-[#0099CC] via-[#FFD700] to-[#E91E63] animate-gradient-shift rounded-full" />
                     </div>
                   </div>
@@ -173,7 +173,7 @@ export default function ISPLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-white/5 backdrop-blur-2xl border-b border-white/10">
+        <header className="sticky top-0 z-20 bg-card backdrop-blur-2xl border-b border-border/50">
           <div className="flex h-16 items-center justify-between px-4 lg:px-6">
             <button
               onClick={() => setSidebarOpen(true)}

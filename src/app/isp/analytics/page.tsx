@@ -67,8 +67,8 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, f
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
@@ -82,7 +82,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, f
         <p className="text-2xl font-bold text-white mb-1">{value}</p>
         <p className="text-xs text-white/40">{changeLabel}</p>
         {forecast && (
-          <p className="text-xs text-[#fff685] mt-2">Forecast: {forecast}</p>
+          <p className="text-xs text-[#FFD700] mt-2">Forecast: {forecast}</p>
         )}
       </div>
     </div>
@@ -90,8 +90,8 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, f
 }
 
 export default function AnalyticsPage() {
-  // Initial real data for instant loading
-  const [revenueData] = useState([
+  // State for dynamic data from Supabase
+  const [revenueData, setRevenueData] = useState([
     { month: 'Jan', actual: 38000000, target: 37000000, lastYear: 32000000 },
     { month: 'Feb', actual: 39500000, target: 38500000, lastYear: 33500000 },
     { month: 'Mar', actual: 41000000, target: 40000000, lastYear: 35000000 },
@@ -106,20 +106,20 @@ export default function AnalyticsPage() {
     { month: 'Dec', forecast: 54500000, target: 53500000, lastYear: 48500000 }
   ])
 
-  const [customerSegments] = useState([
-    { name: 'Residential', value: 35000, growth: 15.2, color: '#00DDFF' },
-    { name: 'Business', value: 8500, growth: 22.5, color: '#fff685' },
-    { name: 'Enterprise', value: 2332, growth: 8.7, color: '#ff1d58' }
+  const [customerSegments, setCustomerSegments] = useState([
+    { name: 'Residential', value: 35000, growth: 15.2, color: '#0099CC' },
+    { name: 'Business', value: 8500, growth: 22.5, color: '#FFD700' },
+    { name: 'Enterprise', value: 2332, growth: 8.7, color: '#E91E63' }
   ])
 
-  const [serviceMetrics] = useState([
+  const [serviceMetrics, setServiceMetrics] = useState([
     { service: 'Broadband', customers: 38500, revenue: 32725000, satisfaction: 92 },
     { service: 'Cable TV', customers: 22000, revenue: 13200000, satisfaction: 88 },
     { service: 'Leased Lines', customers: 2500, revenue: 7500000, satisfaction: 95 },
     { service: 'Bundle Plans', customers: 15832, revenue: 12675600, satisfaction: 94 }
   ])
 
-  const [kpiData] = useState([
+  const [kpiData, setKpiData] = useState([
     { metric: 'ARPU', value: 916, target: 900, unit: '₹' },
     { metric: 'Churn Rate', value: 2.3, target: 3.0, unit: '%' },
     { metric: 'NPS Score', value: 72, target: 70, unit: '' },
@@ -128,13 +128,13 @@ export default function AnalyticsPage() {
     { metric: 'First Call Resolution', value: 87, target: 85, unit: '%' }
   ])
 
-  const [regionPerformance] = useState([
+  const [regionPerformance, setRegionPerformance] = useState([
     { region: 'TVM', revenue: 16200000, customers: 18000, growth: 12.5, satisfaction: 91 },
     { region: 'Kochi', revenue: 13500000, customers: 15000, growth: 15.8, satisfaction: 89 },
     { region: 'Kozhikode', revenue: 11544800, customers: 12832, growth: 18.2, satisfaction: 93 }
   ])
 
-  const [churnAnalysis] = useState([
+  const [churnAnalysis, setChurnAnalysis] = useState([
     { reason: 'Price', percentage: 35, count: 287 },
     { reason: 'Service Quality', percentage: 25, count: 205 },
     { reason: 'Competition', percentage: 20, count: 164 },
@@ -142,7 +142,7 @@ export default function AnalyticsPage() {
     { reason: 'Other', percentage: 5, count: 41 }
   ])
 
-  const [predictiveInsights] = useState([
+  const [predictiveInsights, setPredictiveInsights] = useState([
     { 
       title: 'Revenue Growth Opportunity',
       description: 'Based on current trends, targeting SMB segment could increase revenue by ₹2.5 Cr in Q3',
@@ -178,13 +178,13 @@ export default function AnalyticsPage() {
 
   async function fetchAnalyticsData() {
     try {
-      // Fetch real data from Supabase
-      const [metricsResult, transactionsResult] = await Promise.all([
+      // Fetch real data from Supabase - run queries in parallel for performance
+      const [metricsResult, transactionsResult, customersResult, networkResult] = await Promise.all([
         supabase
           .from('core_entities')
           .select('metadata')
           .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'metrics')
+          .eq('entity_type', 'analytics_metrics')
           .single(),
         
         supabase
@@ -193,20 +193,113 @@ export default function AnalyticsPage() {
           .eq('organization_id', INDIA_VISION_ORG_ID)
           .eq('transaction_type', 'revenue')
           .order('transaction_date', { ascending: true })
+          .limit(50),
+
+        supabase
+          .from('core_entities')
+          .select('metadata, entity_type')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'isp_subscriber'),
+
+        supabase
+          .from('core_entities')
+          .select('metadata')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'network_region')
       ])
 
-      // Update with real data if available
+      // Process metrics data
       if (metricsResult.data?.metadata) {
-        // Update dashboard metrics with real values
+        const metrics = metricsResult.data.metadata
+        
+        if (metrics.revenue_trend) {
+          setRevenueData(metrics.revenue_trend)
+        }
+        
+        if (metrics.customer_segments) {
+          setCustomerSegments(metrics.customer_segments)
+        }
+        
+        if (metrics.service_metrics) {
+          setServiceMetrics(metrics.service_metrics)
+        }
+        
+        if (metrics.kpi_data) {
+          setKpiData(metrics.kpi_data)
+        }
+        
+        if (metrics.churn_analysis) {
+          setChurnAnalysis(metrics.churn_analysis)
+        }
+        
+        if (metrics.predictive_insights) {
+          setPredictiveInsights(metrics.predictive_insights)
+        }
       }
 
-      if (transactionsResult.data) {
-        // Process transaction data for charts
+      // Process transaction data for revenue charts
+      if (transactionsResult.data && transactionsResult.data.length > 0) {
+        const monthlyData = transactionsResult.data.reduce((acc: any, txn: any) => {
+          const month = new Date(txn.transaction_date).toLocaleDateString('en-US', { month: 'short' })
+          if (!acc[month]) {
+            acc[month] = { month, actual: 0, target: 0, lastYear: 0 }
+          }
+          acc[month].actual += txn.total_amount || 0
+          return acc
+        }, {})
+        
+        if (Object.keys(monthlyData).length > 0) {
+          setRevenueData(Object.values(monthlyData))
+        }
       }
+
+      // Process customer data for segments
+      if (customersResult.data && customersResult.data.length > 0) {
+        const segments = customersResult.data.reduce((acc: any, customer: any) => {
+          const type = customer.metadata?.customer_type || 'Residential'
+          if (!acc[type]) {
+            acc[type] = { name: type, value: 0, growth: 0, color: '#0099CC' }
+          }
+          acc[type].value += 1
+          return acc
+        }, {})
+        
+        const segmentArray = Object.values(segments).map((seg: any, index) => ({
+          ...seg,
+          color: ['#0099CC', '#FFD700', '#E91E63'][index] || '#0099CC',
+          growth: Math.random() * 20 + 5 // Mock growth data
+        }))
+        
+        if (segmentArray.length > 0) {
+          setCustomerSegments(segmentArray)
+        }
+      }
+
+      // Process network data for regional performance
+      if (networkResult.data && networkResult.data.length > 0) {
+        const regions = networkResult.data.map((region: any) => ({
+          region: region.metadata?.region_name || 'Region',
+          revenue: region.metadata?.monthly_revenue || 0,
+          customers: region.metadata?.subscriber_count || 0,
+          growth: region.metadata?.growth_rate || 0,
+          satisfaction: region.metadata?.satisfaction_score || 90
+        }))
+        
+        setRegionPerformance(regions)
+      }
+
     } catch (error) {
       console.error('Error fetching analytics data:', error)
+      // Keep fallback data on error
     }
   }
+
+  // Defensive normalization for chart inputs (guards against unexpected object payloads)
+  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const safeRevenueData = toArray(revenueData)
+  const safeCustomerSegments = toArray(customerSegments)
+  const safeKpiData = toArray(kpiData)
+  const safeRegionPerformance = toArray(regionPerformance)
 
   const refreshData = async () => {
     setIsRefreshing(true)
@@ -253,7 +346,7 @@ export default function AnalyticsPage() {
           change={15.8}
           changeLabel="vs last year"
           icon={DollarSign}
-          gradient="from-[#ff1d58] to-[#f75990]"
+          gradient="from-[#E91E63] to-[#C2185B]"
           forecast={`₹${(projectedAnnualRevenue / 10000000).toFixed(1)} Cr by year end`}
         />
         <MetricCard
@@ -262,7 +355,7 @@ export default function AnalyticsPage() {
           change={12.3}
           changeLabel="vs last quarter"
           icon={Users}
-          gradient="from-[#00DDFF] to-[#0049B7]"
+          gradient="from-[#0099CC] to-[#0049B7]"
           forecast="50K by Q4"
         />
         <MetricCard
@@ -271,7 +364,7 @@ export default function AnalyticsPage() {
           change={5.7}
           changeLabel="vs last month"
           icon={Target}
-          gradient="from-[#fff685] to-[#00DDFF]"
+          gradient="from-[#FFD700] to-[#0099CC]"
           forecast="₹950 target"
         />
         <MetricCard
@@ -288,31 +381,31 @@ export default function AnalyticsPage() {
       {/* Revenue Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">Revenue Trend & Forecast</h2>
               <div className="flex items-center space-x-4 text-xs">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-[#00DDFF]" />
+                  <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
                   <span className="text-white/60">Actual</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-[#fff685]" />
+                  <div className="w-3 h-3 rounded-full bg-[#FFD700]" />
                   <span className="text-white/60">Target</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-[#ff1d58]" />
+                  <div className="w-3 h-3 rounded-full bg-[#E91E63]" />
                   <span className="text-white/60">Forecast</span>
                 </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={300}>
-              <ComposedChart data={revenueData}>
+              <ComposedChart data={safeRevenueData}>
                 <defs>
                   <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00DDFF" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -329,7 +422,7 @@ export default function AnalyticsPage() {
                 <Area 
                   type="monotone" 
                   dataKey="actual" 
-                  stroke="#00DDFF" 
+                  stroke="#0099CC" 
                   fillOpacity={1} 
                   fill="url(#actualGradient)" 
                   strokeWidth={2}
@@ -337,14 +430,14 @@ export default function AnalyticsPage() {
                 <Line 
                   type="monotone" 
                   dataKey="target" 
-                  stroke="#fff685" 
+                  stroke="#FFD700" 
                   strokeWidth={2}
                   strokeDasharray="5 5"
                 />
                 <Line 
                   type="monotone" 
                   dataKey="forecast" 
-                  stroke="#ff1d58" 
+                  stroke="#E91E63" 
                   strokeWidth={2}
                   strokeDasharray="3 3"
                 />
@@ -354,13 +447,13 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Customer Segments</h2>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
-                  data={customerSegments}
+                  data={safeCustomerSegments}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -368,7 +461,7 @@ export default function AnalyticsPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {customerSegments.map((entry, index) => (
+                  {safeCustomerSegments.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -382,7 +475,7 @@ export default function AnalyticsPage() {
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-4 space-y-3">
-              {customerSegments.map((segment) => (
+              {safeCustomerSegments.map((segment: any) => (
                 <div key={segment.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color }} />
@@ -402,12 +495,12 @@ export default function AnalyticsPage() {
       {/* Service Performance */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
           <h2 className="text-xl font-semibold text-white mb-6">Service Performance Analysis</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left border-b border-white/10">
+                <tr className="text-left border-b border-border/50">
                   <th className="pb-3 text-sm font-medium text-white/60">Service</th>
                   <th className="pb-3 text-sm font-medium text-white/60 text-right">Customers</th>
                   <th className="pb-3 text-sm font-medium text-white/60 text-right">Revenue</th>
@@ -415,9 +508,9 @@ export default function AnalyticsPage() {
                   <th className="pb-3 text-sm font-medium text-white/60 text-right">Revenue/Customer</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-white/10">
                 {serviceMetrics.map((service) => (
-                  <tr key={service.service} className="hover:bg-white/5 transition-colors">
+                  <tr key={service.service} className="hover:bg-accent/20 transition-colors">
                     <td className="py-4 text-white font-medium">{service.service}</td>
                     <td className="py-4 text-white text-right">{service.customers.toLocaleString()}</td>
                     <td className="py-4 text-white text-right">₹{(service.revenue / 100000).toFixed(1)}L</td>
@@ -429,7 +522,7 @@ export default function AnalyticsPage() {
                         {service.satisfaction}%
                       </span>
                     </td>
-                    <td className="py-4 text-[#00DDFF] font-medium text-right">
+                    <td className="py-4 text-[#0099CC] font-medium text-right">
                       ₹{Math.round(service.revenue / service.customers)}
                     </td>
                   </tr>
@@ -444,27 +537,27 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* KPI Radar Chart */}
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">KPI Performance</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={kpiData}>
+              <RadarChart data={safeKpiData}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
                 <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
                 <Radar 
                   name="Actual" 
                   dataKey="value" 
-                  stroke="#00DDFF" 
-                  fill="#00DDFF" 
+                  stroke="#0099CC" 
+                  fill="#0099CC" 
                   fillOpacity={0.3}
                   strokeWidth={2}
                 />
                 <Radar 
                   name="Target" 
                   dataKey="target" 
-                  stroke="#fff685" 
-                  fill="#fff685" 
+                  stroke="#FFD700" 
+                  fill="#FFD700" 
                   fillOpacity={0.1}
                   strokeWidth={2}
                 />
@@ -482,14 +575,14 @@ export default function AnalyticsPage() {
 
         {/* Predictive Insights */}
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">AI-Powered Insights</h2>
             <div className="space-y-4">
               {predictiveInsights.map((insight, index) => (
                 <div 
                   key={index}
-                  className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300"
+                  className="p-4 rounded-lg bg-slate-900/50 border border-border/50 hover:bg-accent/20 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-medium text-white">{insight.title}</h3>
@@ -503,9 +596,9 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-white/60 mb-2">{insight.description}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <div className="h-1.5 w-20 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-[#00DDFF] to-[#fff685] rounded-full"
+                          className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
                           style={{ width: `${insight.confidence}%` }}
                         />
                       </div>
@@ -524,11 +617,11 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Regional Performance */}
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Regional Performance</h2>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={regionPerformance}>
+              <BarChart data={safeRegionPerformance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="region" stroke="rgba(255,255,255,0.5)" />
                 <YAxis yAxisId="left" stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/1000000).toFixed(0)}M`} />
@@ -540,7 +633,7 @@ export default function AnalyticsPage() {
                     borderRadius: '8px'
                   }}
                 />
-                <Bar yAxisId="left" dataKey="revenue" fill="#00DDFF" radius={[8, 8, 0, 0]} />
+                <Bar yAxisId="left" dataKey="revenue" fill="#0099CC" radius={[8, 8, 0, 0]} />
                 <Line yAxisId="right" type="monotone" dataKey="satisfaction" stroke="#fff685" strokeWidth={2} />
               </BarChart>
             </ResponsiveContainer>
@@ -549,8 +642,8 @@ export default function AnalyticsPage() {
 
         {/* Churn Analysis */}
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Churn Analysis</h2>
             <div className="space-y-4">
               {churnAnalysis.map((reason) => (
@@ -559,9 +652,9 @@ export default function AnalyticsPage() {
                     <span className="text-sm text-white/80">{reason.reason}</span>
                     <span className="text-sm font-medium text-white">{reason.percentage}% ({reason.count})</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-full transition-all duration-500"
+                      className="h-full bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-full transition-all duration-500"
                       style={{ width: `${reason.percentage}%` }}
                     />
                   </div>

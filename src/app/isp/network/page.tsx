@@ -109,7 +109,7 @@ function NetworkCard({ title, value, subtitle, icon: Icon, status, gradient }: N
   return (
     <div className="relative group">
       <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
@@ -544,7 +544,7 @@ export default function NetworkPage() {
         {regionalData.map((region, index) => (
           <div key={region.code} className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-lg bg-gradient-to-br from-[#0099CC] to-[#0049B7]">
@@ -583,7 +583,7 @@ export default function NetworkPage() {
 
                 {/* Bandwidth usage bar */}
                 <div className="mt-4">
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-500"
                       style={{ width: `${region.bandwidth_utilization}%` }}
@@ -600,7 +600,7 @@ export default function NetworkPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">24-Hour Bandwidth Usage</h2>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={performanceData}>
@@ -635,7 +635,7 @@ export default function NetworkPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Infrastructure Status</h2>
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
@@ -739,7 +739,7 @@ export default function NetworkPage() {
                   <p className="text-sm font-medium text-white">
                     {item.currentLoad} / {item.capacity}
                   </p>
-                  <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
                       style={{ width: `${(item.currentLoad / item.capacity) * 100}%` }}

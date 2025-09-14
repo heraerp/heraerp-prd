@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.VOCAB.RELATIONS.v1
+smart_code: HERA.SYSTEM.VOCAB.RELATIONS.CORE.v1
 rows:
   # --- Synonyms → canonical ENTITY_TYPE ---
   - { from_slug: vocab_term:client,   to_slug: ENTITY_TYPE:customer, relationship_type: TERM_SYNONYM_OF, relationship_data: { domain: "global", locale: "en" } }

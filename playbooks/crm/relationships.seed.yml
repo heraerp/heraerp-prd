@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.CRM.MDM.RELATIONSHIPS.SEED.v1
 rows:
   - from_slug: account:ACME
     to_slug:   contact:JANE_DOE
@@ -29,4 +29,3 @@ rows:
     to_slug:   account:ACME
     relationship_type: CASE_FOR_ACCOUNT
     relationship_data: { priority: "high" }
-

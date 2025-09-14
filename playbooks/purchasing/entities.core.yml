@@ -1,4 +1,4 @@
-smart_code: HERA.PURCH.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.PURCH.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: vendor,             entity_type: ENTITY_TYPE,      name: "Vendor" }

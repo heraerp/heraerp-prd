@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.SERVICE.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Service
   - { entity_slug: service:INSTALL_BASIC, key_slug: service.category,              value: "installation", value_type: text }
@@ -21,4 +21,3 @@ rows:
   - { entity_slug: contract:CON-001,      key_slug: contract.start_date,    value: "2025-01-01", value_type: date }
   - { entity_slug: contract:CON-001,      key_slug: contract.end_date,      value: "2025-12-31", value_type: date }
   - { entity_slug: contract:CON-001,      key_slug: contract.coverage,      value: "parts_and_labor", value_type: text }
-

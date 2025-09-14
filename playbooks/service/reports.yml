@@ -1,6 +1,6 @@
-smart_code: HERA.SERVICE.REPORTS.CORE.v1
+smart_code: HERA.SERVICE.REPORTS.CORE.DEFS.v1
 reports:
-  - report_code: HERA.SERVICE.REPORT.WORKLOAD_BY_TECH.v1
+  - report_code: HERA.SERVICE.REPORT.WORKLOAD_BY_TECH.CORE.v1
     description: "Upcoming appointments/work orders by technician"
     params_schema:
       from: { type: date }
@@ -18,7 +18,7 @@ reports:
         GROUP BY tech.entity_name
         ORDER BY upcoming_count DESC
 
-  - report_code: HERA.SERVICE.REPORT.REVENUE_BY_SERVICE.v1
+  - report_code: HERA.SERVICE.REPORT.REVENUE_BY_SERVICE.CORE.v1
     description: "Revenue by service code"
     params_schema:
       from: { type: date }
@@ -37,4 +37,3 @@ reports:
           AND t.transaction_date BETWEEN $from AND $to
         GROUP BY s.entity_name
         ORDER BY revenue DESC
-

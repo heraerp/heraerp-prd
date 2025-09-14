@@ -10,8 +10,11 @@ const { Procedure } = require('./src/schemas/procedures')
 const { SMART_CODE_REGEX } = require('./src/schemas/smart-code')
 const { _compatNormalizeHeader, _compatNormalizeLine } = require('./src/validators/db-universal')
 
+// Base directory for playbooks (override via env if mirrored under hera/)
+const PLAYBOOK_ROOT = process.env.HERA_PLAYBOOK_ROOT || 'playbooks'
+
 // Vocabulary alias loader (for non-canonical term detection)
-const VOCAB_REL = path.resolve(process.cwd(), 'playbooks/registry/vocabulary/relationships.vocab.yml')
+const VOCAB_REL = path.resolve(process.cwd(), `${PLAYBOOK_ROOT}/registry/vocabulary/relationships.vocab.yml`)
 function loadVocabAliases() {
   const map = new Map()
   try {
@@ -35,7 +38,8 @@ function loadVocabAliases() {
   return map
 }
 const VOCAB_ALIASES = loadVocabAliases()
-const isVocabFile = (f) => /playbooks[\/\\]registry[\/\\]vocabulary[\/\\]/.test(f)
+// treat any file under registry/vocabulary as vocabulary bundle regardless of root
+const isVocabFile = (f) => /[\/\\]registry[\/\\]vocabulary[\/\\]/.test(f)
 
 function readYaml(filePath) {
   const text = fs.readFileSync(filePath, 'utf8')

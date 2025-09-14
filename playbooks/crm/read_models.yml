@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.READ_MODELS.CORE.v1
+smart_code: HERA.CRM.READ_MODELS.CORE.DEFS.v1
 views:
   - name: v_crm_opportunities_brief
     description: "UI list of Opportunities with stage and amount"
@@ -29,4 +29,3 @@ views:
         AND t.transaction_type = 'crm_activity'
         AND (t.smart_code LIKE 'HERA.CRM.COMMS.%')
       ORDER BY t.transaction_date DESC
-

@@ -1,6 +1,6 @@
-smart_code: HERA.INVENTORY.REPORTS.CORE.v1
+smart_code: HERA.INVENTORY.REPORTS.CORE.DEFS.v1
 reports:
-  - report_code: HERA.INVENTORY.REPORT.ON_HAND_BY_ITEM.v1
+  - report_code: HERA.INVENTORY.REPORT.ON_HAND_BY_ITEM.CORE.v1
     description: "Quantity on hand by item (as of date)"
     params_schema:
       as_of: { type: date }
@@ -17,7 +17,7 @@ reports:
         GROUP BY i.entity_name
         ORDER BY i.entity_name
 
-  - report_code: HERA.INVENTORY.REPORT.VALUATION_BY_ITEM.v1
+  - report_code: HERA.INVENTORY.REPORT.VALUATION_BY_ITEM.CORE.v1
     description: "Stock valuation by item using standard_cost"
     params_schema:
       as_of: { type: date }
@@ -41,4 +41,3 @@ reports:
         JOIN core_entities i ON i.id = o.item_id AND i.organization_id = $org
         LEFT JOIN core_dynamic_data d ON d.entity_id = i.id AND d.organization_id = $org AND d.key = 'item.standard_cost'
         ORDER BY valuation DESC NULLS LAST
-

@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.SERVICE.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: service,            entity_type: ENTITY_TYPE,      name: "Service" }
@@ -33,4 +33,3 @@ items:
   - { slug: service_location:CUSTOMER_SITE, entity_type: ENTITY, name: "Customer Site",   metadata: { entity_type: "service_location" } }
   - { slug: sla:STANDARD_48H,            entity_type: ENTITY, name: "Standard (48h)",    metadata: { entity_type: "sla" } }
   - { slug: contract:CON-001,            entity_type: ENTITY, name: "Annual Support",     metadata: { entity_type: "contract" } }
-

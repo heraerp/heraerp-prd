@@ -65,12 +65,12 @@ export default function SalonLayout({
 
   return (
     <NavigationLoadingProvider>
-      <div className="min-h-screen bg-gradient-to-br from-[#DC143C] via-slate-950 to-[#1A0F1F]">
-      {/* Animated background elements with Pinterest 2025 colors */}
+      <div className="min-h-screen bg-gradient-to-b from-[#8332EC] to-[#CE8A73]">
+      {/* Animated background elements with new colors */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-[#DC143C] to-[#9370DB] rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-[#9370DB] to-[#FFE4B5] rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-[#FFE4B5] to-[#8FBC8F] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-[#8332EC] to-[#DD97E2] rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-[#DD97E2] to-[#CE8A73] rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-[#762866] to-[#8332EC] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
       </div>
 
       {/* Mobile sidebar backdrop */}
@@ -85,22 +85,22 @@ export default function SalonLayout({
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="h-full bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border-r border-white/10">
+        <div className="h-full bg-[#762866] border-r border-white/10">
           <div className="flex h-full flex-col">
             {/* Logo */}
             <div className="flex h-16 items-center justify-between px-4 border-b border-white/10">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#DC143C] to-[#9370DB] rounded-lg blur-lg opacity-80 animate-pulse" />
-                  <div className="relative bg-gradient-to-br from-[#DC143C] to-[#9370DB] p-2 rounded-lg">
+                  <div className="absolute inset-0 bg-[#DD97E2] rounded-lg blur-lg opacity-80 animate-pulse" />
+                  <div className="relative bg-[#DD97E2] p-2 rounded-lg">
                     <Sparkles className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                  <h1 className="text-lg font-bold text-white">
                     Premium Salon
                   </h1>
-                  <p className="text-xs bg-gradient-to-r from-[#FFE4B5] to-[#8FBC8F] bg-clip-text text-transparent font-medium">
+                  <p className="text-xs text-white/80 font-medium">
                     Beauty & Wellness
                   </p>
                 </div>
@@ -127,7 +127,7 @@ export default function SalonLayout({
                         ? 'text-white'
                         : 'text-white/70 hover:text-white'
                     }`}
-                    activeClassName="bg-gradient-to-r from-[#DC143C]/30 to-[#9370DB]/30 shadow-lg shadow-[#DC143C]/30"
+                    activeClassName="bg-[#DD97E2]/20"
                     style={{
                       animationDelay: `${index * 50}ms`
                     }}
@@ -135,7 +135,7 @@ export default function SalonLayout({
                     {/* Background gradient on active/hover */}
                     <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-gradient-to-r from-[#DC143C]/30 to-[#9370DB]/30 shadow-lg shadow-[#DC143C]/30'
+                        ? 'bg-[#DD97E2]/20'
                         : 'bg-transparent group-hover:bg-white/5'
                     }`} />
                     
@@ -143,7 +143,7 @@ export default function SalonLayout({
                     
                     {/* Active indicator */}
                     {isActive && (
-                      <div className="absolute right-3 h-2 w-2 rounded-full bg-gradient-to-r from-[#FFE4B5] to-[#8FBC8F] animate-pulse shadow-lg shadow-[#FFE4B5]/50" />
+                      <div className="absolute right-3 h-2 w-2 rounded-full bg-[#DD97E2] animate-pulse" />
                     )}
                   </NavigationLink>
                 )
@@ -152,31 +152,30 @@ export default function SalonLayout({
 
             {/* Bottom Stats Card */}
             <div className="p-4">
-              <div className="relative rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#DC143C]/30 via-[#9370DB]/30 to-[#FFE4B5]/30 animate-gradient-shift" />
-                <div className="relative bg-white/5 backdrop-blur-xl p-4 border border-white/10">
+              <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 overflow-hidden">
+                <div className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#FFE4B5] to-[#8FBC8F]">
-                        <Activity className="h-4 w-4 text-[#DC143C]" />
+                      <div className="p-1.5 rounded-lg bg-[#DD97E2]">
+                        <Activity className="h-4 w-4 text-white" />
                       </div>
                       <span className="text-sm font-semibold text-white">Today's Status</span>
                     </div>
-                    <span className="text-xs font-medium text-[#FFE4B5]">Live</span>
+                    <span className="text-xs font-medium text-[#DD97E2]">Live</span>
                   </div>
                   
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
                       <span className="text-white/60">Appointments</span>
-                      <span className="text-[#8FBC8F] font-medium">12</span>
+                      <span className="text-white font-medium">12</span>
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-white/60">Walk-ins</span>
-                      <span className="text-[#FFE4B5] font-medium">3</span>
+                      <span className="text-white font-medium">3</span>
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-white/60">Revenue</span>
-                      <span className="text-[#DC143C] font-medium">₹24.5K</span>
+                      <span className="text-[#DD97E2] font-medium">₹24.5K</span>
                     </div>
                   </div>
                   
@@ -187,10 +186,10 @@ export default function SalonLayout({
                         {[1, 2, 3, 4].map((i) => (
                           <div
                             key={i}
-                            className="w-6 h-6 rounded-full border-2 border-slate-900 bg-gradient-to-br from-[#DC143C] to-[#9370DB]"
+                            className="w-6 h-6 rounded-full border-2 border-[#762866] bg-[#DD97E2]"
                           />
                         ))}
-                        <div className="w-6 h-6 rounded-full border-2 border-slate-900 bg-slate-900/50 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full border-2 border-[#762866] bg-[#762866]/50 flex items-center justify-center">
                           <span className="text-[8px] text-white/60">+2</span>
                         </div>
                       </div>
@@ -206,7 +205,7 @@ export default function SalonLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-white/5 backdrop-blur-2xl border-b border-white/10">
+        <header className="sticky top-0 z-20 bg-[#762866]/80 backdrop-blur-2xl border-b border-white/10">
           <div className="flex h-16 items-center justify-between px-4 lg:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -217,36 +216,36 @@ export default function SalonLayout({
             
             <div className="flex items-center space-x-6 ml-auto">
               {/* Quick Stats */}
-              <div className="hidden sm:flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#8FBC8F]/20 to-[#D2B48C]/20 border border-[#8FBC8F]/30">
+              <div className="hidden sm:flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/10 border border-white/20">
                 <div className="relative">
-                  <CheckCircle className="h-4 w-4 text-[#8FBC8F]" />
+                  <CheckCircle className="h-4 w-4 text-[#DD97E2]" />
                   <div className="absolute inset-0 animate-ping">
-                    <CheckCircle className="h-4 w-4 text-[#8FBC8F]" />
+                    <CheckCircle className="h-4 w-4 text-[#DD97E2]" />
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs text-white/60">Available Slots</span>
-                  <span className="text-xs font-semibold text-[#8FBC8F]">8 Today</span>
+                  <span className="text-xs font-semibold text-white">8 Today</span>
                 </div>
               </div>
               
               {/* Active Clients */}
-              <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#DC143C]/20 to-[#9370DB]/20 border border-[#DC143C]/30">
-                <Heart className="h-4 w-4 text-[#DC143C]" />
+              <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/10 border border-white/20">
+                <Heart className="h-4 w-4 text-[#DD97E2]" />
                 <div className="flex flex-col">
                   <span className="text-xs text-white/60">Active Clients</span>
-                  <span className="text-sm font-bold bg-gradient-to-r from-[#DC143C] to-[#FFE4B5] bg-clip-text text-transparent">
+                  <span className="text-sm font-bold text-white">
                     248
                   </span>
                 </div>
               </div>
               
               {/* Revenue Indicator */}
-              <div className="hidden lg:flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#FFE4B5]/20 to-[#9370DB]/20 border border-[#FFE4B5]/30">
-                <TrendingUp className="h-4 w-4 text-[#FFE4B5]" />
+              <div className="hidden lg:flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/10 border border-white/20">
+                <TrendingUp className="h-4 w-4 text-[#DD97E2]" />
                 <div className="flex flex-col">
                   <span className="text-xs text-white/60">Today's Revenue</span>
-                  <span className="text-sm font-bold bg-gradient-to-r from-[#FFE4B5] to-[#DC143C] bg-clip-text text-transparent">
+                  <span className="text-sm font-bold text-[#DD97E2]">
                     ₹24,500
                   </span>
                 </div>

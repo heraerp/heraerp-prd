@@ -111,6 +111,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "ui:validate": "node scripts/validate-ui-patterns.js",
+    "ui:validate:staged": "node scripts/validate-ui-patterns-staged.js",
     "ui:generate": "node scripts/generate-ui-component.js",
     "ui:check": "npm run ui:validate && npm run format:check",
     "test:e2e:headed": "playwright test --headed",
@@ -142,7 +143,9 @@
     "build:production": "npm run predeploy && npm run build",
     "build:force": "node scripts/force-production-deploy.js && npm run build",
     "build:emergency": "echo \"Emergency build mode - skipping build\" && mkdir -p .next && echo \"{\"phase\": \"phase-production-build\"}\" > .next/BUILD_ID",
-    "start:emergency": "NODE_ENV=production node emergency-server.js"
+    "start:emergency": "NODE_ENV=production node emergency-server.js",
+    "playbooks:sync:to-hera": "node scripts/sync-playbooks.mjs --direction=to-hera",
+    "playbooks:sync:to-root": "node scripts/sync-playbooks.mjs --direction=to-root"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",

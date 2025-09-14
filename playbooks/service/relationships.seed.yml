@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.RELATIONSHIPS.SEED.v1
+smart_code: HERA.SERVICE.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # BOM: Service requires Part
   - from_slug: service:INSTALL_BASIC
@@ -23,4 +23,3 @@ rows:
     to_slug:   service_location:CUSTOMER_SITE
     relationship_type: SERVICE_AT_LOCATION
     relationship_data: {}
-

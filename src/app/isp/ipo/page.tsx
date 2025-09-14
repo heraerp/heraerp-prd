@@ -77,12 +77,12 @@ interface MilestoneItem {
 }
 
 export default function IPOPage() {
-  // Initial real data for instant loading
-  const [ipoReadiness] = useState(73)
-  const [targetValuation] = useState(2500) // In Crores
-  const [currentValuation] = useState(1850) // In Crores
+  // State for dynamic IPO data from Supabase
+  const [ipoReadiness, setIpoReadiness] = useState(73)
+  const [targetValuation, setTargetValuation] = useState(2500) // In Crores
+  const [currentValuation, setCurrentValuation] = useState(1850) // In Crores
   
-  const [financialMetrics] = useState({
+  const [financialMetrics, setFinancialMetrics] = useState({
     revenue: { current: 540, target: 720, unit: 'Cr' },
     ebitda: { current: 162, target: 216, unit: 'Cr' },
     ebitdaMargin: { current: 30, target: 30, unit: '%' },
@@ -91,7 +91,7 @@ export default function IPOPage() {
     roce: { current: 22, target: 25, unit: '%' }
   })
 
-  const [growthMetrics] = useState([
+  const [growthMetrics, setGrowthMetrics] = useState([
     { year: '2020', revenue: 320, profit: 48, subscribers: 25000 },
     { year: '2021', revenue: 380, profit: 68, subscribers: 32000 },
     { year: '2022', revenue: 450, profit: 81, subscribers: 38000 },
@@ -100,7 +100,7 @@ export default function IPOPage() {
     { year: '2025E', revenue: 780, profit: 195, subscribers: 65000 }
   ])
 
-  const [complianceItems] = useState<ComplianceItem[]>([
+  const [complianceItems, setComplianceItems] = useState<ComplianceItem[]>([
     { category: 'Financial', item: 'Audited financials for 3 years', status: 'completed', priority: 'critical' },
     { category: 'Financial', item: 'Quarterly results for last 8 quarters', status: 'completed', priority: 'critical' },
     { category: 'Legal', item: 'SEBI compliance documentation', status: 'in-progress', priority: 'critical', progress: 85 },
@@ -113,7 +113,7 @@ export default function IPOPage() {
     { category: 'Legal', item: 'IP rights documentation', status: 'pending', priority: 'medium', dueDate: '2024-08-15' }
   ])
 
-  const [milestones] = useState<MilestoneItem[]>([
+  const [milestones, setMilestones] = useState<MilestoneItem[]>([
     { 
       title: 'Series B Funding Closed',
       date: '2023-03-15',
@@ -158,7 +158,7 @@ export default function IPOPage() {
     }
   ])
 
-  const [investorMetrics] = useState([
+  const [investorMetrics, setInvestorMetrics] = useState([
     { metric: 'Market Share', value: 18, benchmark: 15, unit: '%' },
     { metric: 'Customer Retention', value: 92, benchmark: 85, unit: '%' },
     { metric: 'ARPU Growth', value: 15, benchmark: 10, unit: '%' },
@@ -167,7 +167,7 @@ export default function IPOPage() {
     { metric: 'Brand Value', value: 82, benchmark: 75, unit: 'score' }
   ])
 
-  const [peerComparison] = useState([
+  const [peerComparison, setPeerComparison] = useState([
     { company: 'India Vision', pe: 18, evEbitda: 12, pbv: 3.2, color: '#00DDFF' },
     { company: 'Peer A', pe: 22, evEbitda: 15, pbv: 4.1, color: '#fff685' },
     { company: 'Peer B', pe: 20, evEbitda: 13, pbv: 3.8, color: '#ff1d58' },
@@ -183,19 +183,103 @@ export default function IPOPage() {
 
   async function fetchIPOData() {
     try {
-      // Fetch IPO-related data from Supabase
-      const { data: ipoEntity } = await supabase
-        .from('core_entities')
-        .select('metadata')
-        .eq('organization_id', INDIA_VISION_ORG_ID)
-        .eq('entity_type', 'ipo_preparation')
-        .single()
+      // Fetch IPO-related data from Supabase - run queries in parallel
+      const [ipoEntityResult, financialResult, complianceResult, milestonesResult] = await Promise.all([
+        supabase
+          .from('core_entities')
+          .select('metadata')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'ipo_preparation')
+          .single(),
 
-      if (ipoEntity?.metadata) {
-        // Update with real IPO preparation data if available
+        supabase
+          .from('core_entities')
+          .select('metadata')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'financial_metrics')
+          .single(),
+
+        supabase
+          .from('core_entities')
+          .select('metadata')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'compliance_tracker'),
+
+        supabase
+          .from('universal_transactions')
+          .select('*')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('transaction_type', 'milestone')
+          .order('transaction_date', { ascending: true })
+      ])
+
+      // Process IPO preparation data
+      if (ipoEntityResult.data?.metadata) {
+        const ipoData = ipoEntityResult.data.metadata
+        
+        if (ipoData.readiness_score) {
+          setIpoReadiness(ipoData.readiness_score)
+        }
+        
+        if (ipoData.target_valuation) {
+          setTargetValuation(ipoData.target_valuation)
+        }
+        
+        if (ipoData.current_valuation) {
+          setCurrentValuation(ipoData.current_valuation)
+        }
+        
+        if (ipoData.growth_metrics) {
+          setGrowthMetrics(ipoData.growth_metrics)
+        }
+        
+        if (ipoData.investor_metrics) {
+          setInvestorMetrics(ipoData.investor_metrics)
+        }
+        
+        if (ipoData.peer_comparison) {
+          setPeerComparison(ipoData.peer_comparison)
+        }
       }
+
+      // Process financial metrics
+      if (financialResult.data?.metadata) {
+        const metrics = financialResult.data.metadata
+        if (metrics.financial_metrics) {
+          setFinancialMetrics(metrics.financial_metrics)
+        }
+      }
+
+      // Process compliance items
+      if (complianceResult.data && complianceResult.data.length > 0) {
+        const compliance = complianceResult.data.map((item: any) => ({
+          category: item.metadata?.category || 'General',
+          item: item.metadata?.compliance_item || item.entity_name,
+          status: item.metadata?.status || 'pending',
+          priority: item.metadata?.priority || 'medium',
+          progress: item.metadata?.progress || 0,
+          dueDate: item.metadata?.due_date
+        }))
+        
+        setComplianceItems(compliance)
+      }
+
+      // Process milestones from transactions
+      if (milestonesResult.data && milestonesResult.data.length > 0) {
+        const milestoneData = milestonesResult.data.map((txn: any) => ({
+          title: txn.metadata?.milestone_title || 'Milestone',
+          date: txn.transaction_date,
+          status: txn.metadata?.status || 'upcoming',
+          description: txn.metadata?.description || '',
+          impact: txn.metadata?.impact || 'medium'
+        }))
+        
+        setMilestones(milestoneData)
+      }
+
     } catch (error) {
       console.error('Error fetching IPO data:', error)
+      // Keep fallback data on error
     }
   }
 
@@ -204,6 +288,11 @@ export default function IPOPage() {
     await fetchIPOData()
     setTimeout(() => setIsRefreshing(false), 1000)
   }
+
+  // Defensive normalization for charts: ensure arrays for Recharts components
+  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const safeInvestorMetrics = toArray(investorMetrics)
+  const safeGrowthMetrics = toArray(growthMetrics)
 
   // Calculate compliance progress
   const totalCompliance = complianceItems.length
@@ -242,7 +331,7 @@ export default function IPOPage() {
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button 
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/20 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -257,7 +346,7 @@ export default function IPOPage() {
       {/* IPO Readiness Score */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-semibold text-white">IPO Readiness Score</h2>
@@ -365,7 +454,7 @@ export default function IPOPage() {
           return (
             <div key={key} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+              <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-white/60 text-sm font-medium mb-1">
@@ -407,10 +496,10 @@ export default function IPOPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Growth Trajectory</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <ComposedChart data={growthMetrics}>
+              <ComposedChart data={safeGrowthMetrics}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
@@ -458,7 +547,7 @@ export default function IPOPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Peer Valuation</h2>
             <div className="space-y-4">
               {peerComparison.map((peer) => (
@@ -468,15 +557,15 @@ export default function IPOPage() {
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: peer.color }} />
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="text-center p-2 rounded bg-white/5">
+                    <div className="text-center p-2 rounded bg-slate-900/50">
                       <p className="text-white/60">P/E</p>
                       <p className="text-white font-medium">{peer.pe}x</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-white/5">
+                    <div className="text-center p-2 rounded bg-slate-900/50">
                       <p className="text-white/60">EV/EBITDA</p>
                       <p className="text-white font-medium">{peer.evEbitda}x</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-white/5">
+                    <div className="text-center p-2 rounded bg-slate-900/50">
                       <p className="text-white/60">P/BV</p>
                       <p className="text-white font-medium">{peer.pbv}x</p>
                     </div>
@@ -491,7 +580,7 @@ export default function IPOPage() {
       {/* Compliance Tracker */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-white">Compliance Tracker</h2>
             <div className="flex items-center space-x-4">
@@ -544,7 +633,7 @@ export default function IPOPage() {
           {/* Compliance Items */}
           <div className="space-y-3">
             {complianceItems.slice(0, 5).map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 hover:bg-white/20 transition-colors">
                 <div className="flex items-center space-x-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     item.status === 'completed' ? 'bg-emerald-500/20' :
@@ -589,10 +678,10 @@ export default function IPOPage() {
         {/* Investor Metrics Radar */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Investor Appeal Metrics</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={investorMetrics}>
+              <RadarChart data={safeInvestorMetrics}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
                 <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
@@ -627,7 +716,7 @@ export default function IPOPage() {
         {/* Key Milestones */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">IPO Journey Milestones</h2>
             <div className="space-y-4 relative">
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-white/10" />
@@ -682,7 +771,7 @@ export default function IPOPage() {
       {/* Action Items */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
           <h2 className="text-xl font-semibold text-white mb-4">Next Steps for IPO Readiness</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">

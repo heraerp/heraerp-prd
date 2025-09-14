@@ -1,4 +1,4 @@
-smart_code: HERA.HCM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.HCM.MDM.DYNAMIC_KEYS.CORE.v1
 items:
   # Employee
   - { slug: employee.employee_code,   entity_type: ENTITY, name: "Employee Code",   metadata: { type: "text" } }

@@ -1,6 +1,6 @@
-smart_code: HERA.CRM.REPORTS.CORE.v1
+smart_code: HERA.CRM.REPORTS.CORE.DEFS.v1
 reports:
-  - report_code: HERA.CRM.REPORT.PIPELINE_BY_STAGE.v1
+  - report_code: HERA.CRM.REPORT.PIPELINE_BY_STAGE.CORE.v1
     description: "Opportunity pipeline by stage"
     params_schema:
       as_of: { type: date }
@@ -14,7 +14,7 @@ reports:
         GROUP BY stage
         ORDER BY opp_count DESC
 
-  - report_code: HERA.CRM.REPORT.ACTIVITIES_BY_OWNER.v1
+  - report_code: HERA.CRM.REPORT.ACTIVITIES_BY_OWNER.CORE.v1
     description: "Activities count by assigned owner"
     params_schema:
       from: { type: date }
@@ -31,7 +31,7 @@ reports:
         GROUP BY owner_name
         ORDER BY activity_count DESC
 
-  - report_code: HERA.CRM.REPORT.LEAD_CONVERSION.v1
+  - report_code: HERA.CRM.REPORT.LEAD_CONVERSION.CORE.v1
     description: "Lead status distribution (conversion)"
     params_schema:
       as_of: { type: date }
@@ -43,4 +43,3 @@ reports:
         WHERE l.organization_id = $org AND l.entity_type = 'lead'
         GROUP BY status
         ORDER BY leads DESC
-

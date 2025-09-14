@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.FINANCE.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: ledger_account,          entity_type: ENTITY_TYPE,      name: "Ledger Account" }
@@ -29,4 +29,3 @@ items:
   - { slug: account_group:CURRENT_ASSETS, entity_type: ENTITY, name: "Current Assets", metadata: { entity_type: "account_group" } }
   - { slug: posting_profile:STANDARD, entity_type: ENTITY, name: "Standard Posting",  metadata: { entity_type: "posting_profile" } }
   - { slug: organization:this,       entity_type: ENTITY, name: "This Organization", metadata: { entity_type: "organization" } }
-

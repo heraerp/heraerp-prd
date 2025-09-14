@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.RELATIONSHIPS.SEED.v1
+smart_code: HERA.MFG.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Product master data
   - from_slug: product:FG-001
@@ -38,4 +38,3 @@ rows:
     to_slug:   plant:PLANT-01
     relationship_type: WORK_CENTER_IN_PLANT
     relationship_data: {}
-

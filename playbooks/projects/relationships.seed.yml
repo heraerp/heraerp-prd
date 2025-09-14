@@ -1,4 +1,4 @@
-smart_code: HERA.PROJECTS.RELATIONSHIPS.SEED.v1
+smart_code: HERA.PROJECTS.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Project structure and ownership
   - from_slug: project:ALPHA
@@ -26,4 +26,3 @@ rows:
   #   to_slug:   customer:ALICE
   #   relationship_type: PROJECT_CUSTOMER
   #   relationship_data: {}
-

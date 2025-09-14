@@ -1,4 +1,4 @@
-smart_code: HERA.PURCH.RELATIONSHIPS.SEED.v1
+smart_code: HERA.PURCH.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Supplier offers product with price and lead time
   - from_slug: vendor:ACME_SUPPLIES

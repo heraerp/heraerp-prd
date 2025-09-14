@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.INVENTORY.MDM.DYNAMIC_KEYS.CORE.v1
 items:
   # Item
   - { slug: item.sku,              entity_type: ENTITY, name: "SKU",               metadata: { type: "text" } }
@@ -17,4 +17,3 @@ items:
 
   # Lot
   - { slug: lot.expiry_date,        entity_type: ENTITY, name: "Expiry Date",       metadata: { type: "date" } }
-

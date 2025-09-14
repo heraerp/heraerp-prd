@@ -17,9 +17,15 @@ import {
   Search,
   ArrowUpRight,
   ArrowDownRight,
-  BarChart3
+  BarChart3,
+  Plus,
+  Edit2,
+  Trash2
 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import { ISPModal } from '@/components/isp/ISPModal'
+import { ISPTable } from '@/components/isp/ISPTable'
+import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
 
 const billingData = [
   { month: 'Jan', billed: 3800000, collected: 3650000, pending: 150000 },
@@ -37,14 +43,27 @@ const paymentMethods = [
   { method: 'Cash', amount: 210000, percentage: 5 },
 ]
 
-const recentInvoices = [
+interface Invoice {
+  id: string
+  customer: string
+  amount: number
+  status: 'paid' | 'pending' | 'overdue'
+  dueDate: string
+  paidDate: string | null
+  description?: string
+  billingPeriod?: string
+}
+
+const initialInvoices: Invoice[] = [
   {
     id: 'INV-2024-06-001',
     customer: 'ABC Enterprises',
     amount: 2499,
     status: 'paid',
     dueDate: '2024-06-15',
-    paidDate: '2024-06-12'
+    paidDate: '2024-06-12',
+    description: 'Monthly broadband subscription',
+    billingPeriod: 'June 2024'
   },
   {
     id: 'INV-2024-06-002',
@@ -52,7 +71,9 @@ const recentInvoices = [
     amount: 9999,
     status: 'paid',
     dueDate: '2024-06-15',
-    paidDate: '2024-06-14'
+    paidDate: '2024-06-14',
+    description: 'Enterprise broadband subscription',
+    billingPeriod: 'June 2024'
   },
   {
     id: 'INV-2024-06-003',
@@ -60,7 +81,9 @@ const recentInvoices = [
     amount: 799,
     status: 'pending',
     dueDate: '2024-06-20',
-    paidDate: null
+    paidDate: null,
+    description: 'Home broadband subscription',
+    billingPeriod: 'June 2024'
   },
   {
     id: 'INV-2024-06-004',
@@ -68,7 +91,9 @@ const recentInvoices = [
     amount: 799,
     status: 'overdue',
     dueDate: '2024-05-20',
-    paidDate: null
+    paidDate: null,
+    description: 'Home broadband subscription',
+    billingPeriod: 'May 2024'
   },
 ]
 
@@ -86,8 +111,8 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
@@ -110,6 +135,89 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
 export default function BillingPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('month')
   const [searchTerm, setSearchTerm] = useState('')
+  const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
+  const [formData, setFormData] = useState({
+    customer: '',
+    amount: 0,
+    status: 'pending' as const,
+    dueDate: '',
+    description: '',
+    billingPeriod: 'June 2024'
+  })
+
+  const handleAdd = () => {
+    const newInvoice: Invoice = {
+      id: `INV-2024-06-${String(invoices.length + 1).padStart(3, '0')}`,
+      customer: formData.customer,
+      amount: formData.amount,
+      status: formData.status,
+      dueDate: formData.dueDate,
+      paidDate: formData.status === 'paid' ? new Date().toISOString().split('T')[0] : null,
+      description: formData.description,
+      billingPeriod: formData.billingPeriod
+    }
+    setInvoices([...invoices, newInvoice])
+    setShowAddModal(false)
+    resetForm()
+  }
+
+  const handleEdit = (invoice: Invoice) => {
+    setSelectedInvoice(invoice)
+    setFormData({
+      customer: invoice.customer,
+      amount: invoice.amount,
+      status: invoice.status,
+      dueDate: invoice.dueDate,
+      description: invoice.description || '',
+      billingPeriod: invoice.billingPeriod || 'June 2024'
+    })
+    setShowEditModal(true)
+  }
+
+  const handleUpdate = () => {
+    if (selectedInvoice) {
+      setInvoices(invoices.map(inv => 
+        inv.id === selectedInvoice.id 
+          ? { 
+              ...inv, 
+              ...formData,
+              paidDate: formData.status === 'paid' && !inv.paidDate 
+                ? new Date().toISOString().split('T')[0] 
+                : inv.paidDate
+            }
+          : inv
+      ))
+      setShowEditModal(false)
+      setSelectedInvoice(null)
+      resetForm()
+    }
+  }
+
+  const handleDelete = (invoice: Invoice) => {
+    if (confirm(`Are you sure you want to delete invoice ${invoice.id}?`)) {
+      setInvoices(invoices.filter(inv => inv.id !== invoice.id))
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      customer: '',
+      amount: 0,
+      status: 'pending',
+      dueDate: '',
+      description: '',
+      billingPeriod: 'June 2024'
+    })
+  }
+
+  const filteredInvoices = invoices.filter(invoice => {
+    const matchesSearch = invoice.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         invoice.id.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesSearch
+  })
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -122,16 +230,16 @@ export default function BillingPage() {
         )
       case 'pending':
         return (
-          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-[#fff685]/10 border border-[#fff685]/20">
-            <Clock className="h-3 w-3 text-[#fff685]" />
-            <span className="text-xs font-medium text-[#fff685]">Pending</span>
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20">
+            <Clock className="h-3 w-3 text-[#FFD700]" />
+            <span className="text-xs font-medium text-[#FFD700]">Pending</span>
           </div>
         )
       case 'overdue':
         return (
-          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-[#ff1d58]/10 border border-[#ff1d58]/20">
-            <AlertCircle className="h-3 w-3 text-[#ff1d58]" />
-            <span className="text-xs font-medium text-[#ff1d58]">Overdue</span>
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-[#E91E63]/10 border border-[#E91E63]/20">
+            <AlertCircle className="h-3 w-3 text-[#E91E63]" />
+            <span className="text-xs font-medium text-[#E91E63]">Overdue</span>
           </div>
         )
       default:
@@ -151,12 +259,15 @@ export default function BillingPage() {
         </div>
         
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
             <Calendar className="h-5 w-5" />
             <span>Jun 2024</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
-            <FileText className="h-5 w-5" />
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
+          >
+            <Plus className="h-5 w-5" />
             <span>Generate Invoice</span>
           </button>
         </div>
@@ -169,7 +280,7 @@ export default function BillingPage() {
           value="₹4.35 Cr"
           change={8.5}
           icon={DollarSign}
-          gradient="from-[#00DDFF] to-[#0049B7]"
+          gradient="from-[#0099CC] to-[#0049B7]"
           subValue="June 2024"
         />
         <BillingCard
@@ -185,14 +296,14 @@ export default function BillingPage() {
           value="₹15 L"
           change={-12.3}
           icon={Clock}
-          gradient="from-[#fff685] to-[#00DDFF]"
+          gradient="from-[#FFD700] to-[#0099CC]"
           subValue="3.5% of total"
         />
         <BillingCard
           title="Overdue"
           value="₹3.2 L"
           icon={AlertCircle}
-          gradient="from-[#ff1d58] to-[#f75990]"
+          gradient="from-[#E91E63] to-[#C2185B]"
           subValue="45 invoices"
         />
       </div>
@@ -202,13 +313,13 @@ export default function BillingPage() {
         {/* Billing Trend */}
         <div className="lg:col-span-2">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white">Billing & Collection Trend</h2>
                 <div className="flex items-center space-x-4 text-xs">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-[#00DDFF]" />
+                    <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
                     <span className="text-white/60">Billed</span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -219,11 +330,11 @@ export default function BillingPage() {
               </div>
               
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={billingData}>
+                <AreaChart data={safeBillingData}>
                   <defs>
                     <linearGradient id="billedGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#00DDFF" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="collectedGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
@@ -244,7 +355,7 @@ export default function BillingPage() {
                   <Area
                     type="monotone"
                     dataKey="billed"
-                    stroke="#00DDFF"
+                    stroke="#0099CC"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#billedGradient)"
@@ -266,8 +377,8 @@ export default function BillingPage() {
         {/* Payment Methods */}
         <div>
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Payment Methods</h2>
               
               <div className="space-y-4">
@@ -280,7 +391,7 @@ export default function BillingPage() {
                     <div className="relative">
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-[#00DDFF] to-[#fff685] rounded-full transition-all duration-1000"
+                          className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-1000"
                           style={{ width: `${method.percentage}%` }}
                         />
                       </div>
@@ -304,104 +415,61 @@ export default function BillingPage() {
       </div>
 
       {/* Recent Invoices */}
-      <div className="relative overflow-hidden">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF]/20 to-[#0049B7]/20 rounded-2xl blur" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
-          <div className="p-6 border-b border-white/10">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h2 className="text-xl font-semibold text-white">Recent Invoices</h2>
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
-                  <input
-                    type="text"
-                    placeholder="Search invoices..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#00DDFF]/50 focus:bg-white/10 transition-all duration-200"
-                  />
+      <div>
+        <h2 className="text-xl font-semibold text-white mb-6">Recent Invoices</h2>
+        <ISPTable
+          data={filteredInvoices}
+          columns={[
+            {
+              key: 'id',
+              label: 'Invoice ID',
+              render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+            },
+            {
+              key: 'customer',
+              label: 'Customer',
+              render: (item) => (
+                <div>
+                  <p className="text-sm font-medium text-white">{item.customer}</p>
+                  {item.description && <p className="text-xs text-white/60">{item.description}</p>}
                 </div>
-                <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200">
-                  <Filter className="h-5 w-5" />
-                </button>
-                <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200">
-                  <Download className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/5">
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Invoice ID
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Due Date
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {recentInvoices.map((invoice) => (
-                  <tr key={invoice.id} className="hover:bg-white/5 transition-colors duration-200">
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-[#00DDFF]">{invoice.id}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-white">{invoice.customer}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-white">₹{invoice.amount.toLocaleString()}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      {getStatusBadge(invoice.status)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <p className="text-sm text-white/80">{invoice.dueDate}</p>
-                        {invoice.paidDate && (
-                          <p className="text-xs text-emerald-400">Paid: {invoice.paidDate}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <button className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors duration-200">
-                          <Receipt className="h-4 w-4 text-white/60" />
-                        </button>
-                        <button className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors duration-200">
-                          <Download className="h-4 w-4 text-white/60" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              )
+            },
+            {
+              key: 'amount',
+              label: 'Amount',
+              render: (item) => <span className="text-sm font-medium text-white">₹{item.amount.toLocaleString()}</span>
+            },
+            {
+              key: 'status',
+              label: 'Status',
+              render: (item) => getStatusBadge(item.status)
+            },
+            {
+              key: 'dueDate',
+              label: 'Due Date',
+              render: (item) => (
+                <div className="space-y-1">
+                  <p className="text-sm text-white/80">{item.dueDate}</p>
+                  {item.paidDate && (
+                    <p className="text-xs text-emerald-400">Paid: {item.paidDate}</p>
+                  )}
+                </div>
+              )
+            }
+          ]}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          searchPlaceholder="Search invoices by ID or customer..."
+        />
       </div>
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-300">
-            <div className="p-2 bg-gradient-to-br from-[#00DDFF] to-[#0049B7] rounded-lg">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+            <div className="p-2 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg">
               <FileText className="h-5 w-5 text-white" />
             </div>
             <div className="text-left">
@@ -412,9 +480,9 @@ export default function BillingPage() {
         </button>
 
         <button className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-300">
-            <div className="p-2 bg-gradient-to-br from-[#fff685] to-[#00DDFF] rounded-lg">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+            <div className="p-2 bg-gradient-to-br from-[#FFD700] to-[#0099CC] rounded-lg">
               <CreditCard className="h-5 w-5 text-[#0049B7]" />
             </div>
             <div className="text-left">
@@ -425,9 +493,9 @@ export default function BillingPage() {
         </button>
 
         <button className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-300">
-            <div className="p-2 bg-gradient-to-br from-[#ff1d58] to-[#f75990] rounded-lg">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+            <div className="p-2 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-lg">
               <BarChart3 className="h-5 w-5 text-white" />
             </div>
             <div className="text-left">
@@ -437,6 +505,183 @@ export default function BillingPage() {
           </div>
         </button>
       </div>
+
+      {/* Add Invoice Modal */}
+      <ISPModal
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false)
+          resetForm()
+        }}
+        title="Generate New Invoice"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleAdd()
+        }} className="space-y-4">
+          <ISPInput
+            label="Customer Name"
+            value={formData.customer}
+            onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+            placeholder="Enter customer name"
+            required
+          />
+          
+          <ISPInput
+            label="Amount (₹)"
+            type="number"
+            value={formData.amount}
+            onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+            placeholder="Enter invoice amount"
+            icon={<DollarSign className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Due Date"
+            type="date"
+            value={formData.dueDate}
+            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            icon={<Calendar className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            options={[
+              { value: 'pending', label: 'Pending' },
+              { value: 'paid', label: 'Paid' },
+              { value: 'overdue', label: 'Overdue' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Billing Period"
+            value={formData.billingPeriod}
+            onChange={(e) => setFormData({ ...formData, billingPeriod: e.target.value })}
+            placeholder="e.g., June 2024"
+            required
+          />
+          
+          <ISPInput
+            label="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="Enter invoice description"
+            icon={<FileText className="h-4 w-4 text-white/40" />}
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowAddModal(false)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Generate Invoice
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
+
+      {/* Edit Invoice Modal */}
+      <ISPModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setSelectedInvoice(null)
+          resetForm()
+        }}
+        title="Edit Invoice"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleUpdate()
+        }} className="space-y-4">
+          <ISPInput
+            label="Customer Name"
+            value={formData.customer}
+            onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+            placeholder="Enter customer name"
+            required
+          />
+          
+          <ISPInput
+            label="Amount (₹)"
+            type="number"
+            value={formData.amount}
+            onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+            placeholder="Enter invoice amount"
+            icon={<DollarSign className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Due Date"
+            type="date"
+            value={formData.dueDate}
+            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            icon={<Calendar className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            options={[
+              { value: 'pending', label: 'Pending' },
+              { value: 'paid', label: 'Paid' },
+              { value: 'overdue', label: 'Overdue' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Billing Period"
+            value={formData.billingPeriod}
+            onChange={(e) => setFormData({ ...formData, billingPeriod: e.target.value })}
+            placeholder="e.g., June 2024"
+            required
+          />
+          
+          <ISPInput
+            label="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="Enter invoice description"
+            icon={<FileText className="h-4 w-4 text-white/40" />}
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowEditModal(false)
+                setSelectedInvoice(null)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Update Invoice
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
     </div>
   )
 }
+  // Defensive normalization for chart inputs
+  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const safeBillingData = toArray(billingData)

@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.PROCEDURES.CORE.v1
+smart_code: HERA.FINANCE.PROCEDURES.CORE.DEFS.v1
 preconditions:
   - "TRANSACTION_TYPE::pos_order"
   - "LINE_TYPE::tax_line"
@@ -19,4 +19,3 @@ errors:
   - { code: ACCOUNT_MAPPING_NOT_FOUND, when: "No POSTING_RULE_MAPS match for a line" }
 checks:
   - { description: "Header total equals Σ lines" }
-

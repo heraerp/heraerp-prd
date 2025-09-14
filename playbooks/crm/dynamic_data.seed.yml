@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.CRM.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Account
   - { entity_slug: account:ACME, key_slug: account.industry, value: "software", value_type: text }
@@ -22,4 +22,3 @@ rows:
   # Activity
   - { entity_slug: activity:CALL_GENERIC, key_slug: activity.type,    value: "call", value_type: text }
   - { entity_slug: activity:CALL_GENERIC, key_slug: activity.subject, value: "Initial discovery", value_type: text }
-

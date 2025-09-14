@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.MFG.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Product/Component
   - { entity_slug: product:FG-001,     key_slug: product.sku,        value: "FG-001", value_type: text }
@@ -17,4 +17,3 @@ rows:
   - { entity_slug: operation:OP-ASSY,   key_slug: operation.sequence, value: 10, value_type: number }
   - { entity_slug: operation:OP-ASSY,   key_slug: operation.std_cycle_time_min, value: 2, value_type: number }
   - { entity_slug: operation:OP-ASSY,   key_slug: operation.yield_percent, value: 98, value_type: number }
-

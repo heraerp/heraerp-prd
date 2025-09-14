@@ -123,68 +123,8 @@ export default function ExpensesTrackingPage() {
         due_date: t.metadata?.due_date
       }));
 
-      // Add some demo data if no real expenses
-      if (expenseData.length === 0) {
-        const demoExpenses: Expense[] = [
-          {
-            id: '1',
-            transaction_date: new Date().toISOString(),
-            vendor_name: 'Beauty Supplies Co.',
-            category: 'supplies',
-            description: 'Hair care products monthly order',
-            amount: 3500,
-            payment_method: 'bank_transfer',
-            status: 'paid',
-            invoice_number: 'INV-2024-001'
-          },
-          {
-            id: '2',
-            transaction_date: new Date().toISOString(),
-            vendor_name: 'City Property Management',
-            category: 'rent',
-            description: 'Monthly rent payment',
-            amount: 8000,
-            payment_method: 'bank_transfer',
-            status: 'paid',
-            invoice_number: 'RENT-2024-01'
-          },
-          {
-            id: '3',
-            transaction_date: new Date().toISOString(),
-            vendor_name: 'DEWA',
-            category: 'utilities',
-            description: 'Electricity and water bill',
-            amount: 1200,
-            payment_method: 'auto_debit',
-            status: 'paid',
-            invoice_number: 'DEWA-2024-01'
-          },
-          {
-            id: '4',
-            transaction_date: new Date().toISOString(),
-            vendor_name: 'Digital Marketing Agency',
-            category: 'marketing',
-            description: 'Social media marketing services',
-            amount: 2000,
-            payment_method: 'credit_card',
-            status: 'pending',
-            invoice_number: 'MKT-2024-01',
-            due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            id: '5',
-            transaction_date: new Date().toISOString(),
-            vendor_name: 'Office Mart',
-            category: 'other',
-            description: 'Office supplies and stationery',
-            amount: 500,
-            payment_method: 'cash',
-            status: 'approved',
-            invoice_number: 'OFF-2024-01'
-          }
-        ];
-        expenseData.push(...demoExpenses);
-      }
+      // No demo data - use only real Supabase data
+      // If no expenses exist, the page will show appropriate empty state
 
       // Calculate summary
       const totalExpenses = expenseData.reduce((sum, e) => sum + e.amount, 0);
@@ -687,68 +627,82 @@ export default function ExpensesTrackingPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredExpenses.map((expense, index) => (
-                        <TableRow 
-                          key={expense.id} 
-                          className={cn(
-                            "border-b border-[#6C63FF]/5 hover:bg-[#F5F3FA]/50 transition-colors",
-                            index % 2 === 0 ? "bg-white/50" : "bg-[#F5F3FA]/30"
-                          )}
-                        >
-                          <TableCell className="text-[#2B2B2B]/70">
-                            {format(new Date(expense.transaction_date), 'MMM d')}
-                          </TableCell>
-                          <TableCell className="font-medium text-[#2B2B2B]">
-                            {expense.vendor_name}
-                          </TableCell>
-                          <TableCell>
-                            <span className="flex items-center gap-2">
-                              <span className="text-xl">{getCategoryIcon(expense.category)}</span>
-                              <span className="capitalize text-[#2B2B2B]/80">{expense.category}</span>
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-[#2B2B2B]/70">
-                            {expense.description || '-'}
-                          </TableCell>
-                          <TableCell className="font-semibold text-[#2B2B2B]">
-                            AED {expense.amount.toFixed(2)}
-                          </TableCell>
-                          <TableCell className="text-[#2B2B2B]/70">
-                            {expense.invoice_number || '-'}
-                          </TableCell>
-                          <TableCell>{getStatusBadge(expense.status)}</TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              {expense.status === 'pending' && (
+                      {filteredExpenses.length > 0 ? (
+                        filteredExpenses.map((expense, index) => (
+                          <TableRow 
+                            key={expense.id} 
+                            className={cn(
+                              "border-b border-[#6C63FF]/5 hover:bg-[#F5F3FA]/50 transition-colors",
+                              index % 2 === 0 ? "bg-white/50" : "bg-[#F5F3FA]/30"
+                            )}
+                          >
+                            <TableCell className="text-[#2B2B2B]/70">
+                              {format(new Date(expense.transaction_date), 'MMM d')}
+                            </TableCell>
+                            <TableCell className="font-medium text-[#2B2B2B]">
+                              {expense.vendor_name}
+                            </TableCell>
+                            <TableCell>
+                              <span className="flex items-center gap-2">
+                                <span className="text-xl">{getCategoryIcon(expense.category)}</span>
+                                <span className="capitalize text-[#2B2B2B]/80">{expense.category}</span>
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-[#2B2B2B]/70">
+                              {expense.description || '-'}
+                            </TableCell>
+                            <TableCell className="font-semibold text-[#2B2B2B]">
+                              AED {expense.amount.toFixed(2)}
+                            </TableCell>
+                            <TableCell className="text-[#2B2B2B]/70">
+                              {expense.invoice_number || '-'}
+                            </TableCell>
+                            <TableCell>{getStatusBadge(expense.status)}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                {expense.status === 'pending' && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleApproveExpense(expense.id)}
+                                    className="bg-[#F5F3FA] border-[#6C63FF]/30 text-[#6C63FF] hover:bg-[#6C63FF] hover:text-white transition-all"
+                                  >
+                                    Approve
+                                  </Button>
+                                )}
+                                {expense.status === 'approved' && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleMarkAsPaid(expense.id)}
+                                    className="bg-[#6C63FF] hover:bg-[#6C63FF]/90 text-white shadow-sm"
+                                  >
+                                    Mark Paid
+                                  </Button>
+                                )}
                                 <Button
                                   size="sm"
-                                  variant="outline"
-                                  onClick={() => handleApproveExpense(expense.id)}
-                                  className="bg-[#F5F3FA] border-[#6C63FF]/30 text-[#6C63FF] hover:bg-[#6C63FF] hover:text-white transition-all"
+                                  variant="ghost"
+                                  className="text-[#6C63FF] hover:bg-[#F5F3FA]"
                                 >
-                                  Approve
+                                  <MoreVertical className="h-4 w-4" />
                                 </Button>
-                              )}
-                              {expense.status === 'approved' && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleMarkAsPaid(expense.id)}
-                                  className="bg-[#6C63FF] hover:bg-[#6C63FF]/90 text-white shadow-sm"
-                                >
-                                  Mark Paid
-                                </Button>
-                              )}
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-[#6C63FF] hover:bg-[#F5F3FA]"
-                              >
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-center py-12">
+                            <div className="flex flex-col items-center gap-3">
+                              <Receipt className="h-12 w-12 text-[#6C63FF]/30" />
+                              <div>
+                                <p className="text-[#2B2B2B]/60 font-medium">No expenses found</p>
+                                <p className="text-sm text-[#2B2B2B]/40">Start by recording your first expense</p>
+                              </div>
                             </div>
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>

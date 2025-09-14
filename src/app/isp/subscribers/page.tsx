@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { 
   Search, 
   Filter,
@@ -20,6 +21,12 @@ import {
   TrendingUp,
   AlertCircle
 } from 'lucide-react'
+import { ISPModal } from '@/components/isp/ISPModal'
+import { ISPTable } from '@/components/isp/ISPTable'
+import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
+
+// India Vision Organization ID
+const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
 
 interface Subscriber {
   id: string
@@ -96,10 +103,72 @@ const mockSubscribers: Subscriber[] = [
 ]
 
 export default function SubscribersPage() {
-  const [subscribers] = useState<Subscriber[]>(mockSubscribers)
+  const supabase = createClientComponentClient()
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('all')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedSubscriber, setSelectedSubscriber] = useState<Subscriber | null>(null)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    planType: 'Home',
+    speed: '50 Mbps',
+    location: '',
+    billAmount: 799,
+    paymentStatus: 'paid' as const
+  })
+
+  // Fetch subscribers from Supabase
+  async function fetchSubscribers() {
+    try {
+      setLoading(true)
+      const { data: subscriberEntities, error } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', INDIA_VISION_ORG_ID)
+        .eq('entity_type', 'isp_subscriber')
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+
+      if (subscriberEntities && subscriberEntities.length > 0) {
+        const mappedSubscribers: Subscriber[] = subscriberEntities.map(entity => ({
+          id: entity.entity_code || entity.id,
+          name: entity.entity_name,
+          email: entity.metadata?.email || '',
+          phone: entity.metadata?.phone || '',
+          planType: entity.metadata?.plan_type || 'Home',
+          speed: entity.metadata?.speed || '50 Mbps',
+          status: entity.metadata?.status || 'active',
+          location: entity.metadata?.location || '',
+          joinDate: entity.metadata?.join_date || new Date().toISOString().split('T')[0],
+          billAmount: entity.metadata?.bill_amount || 799,
+          dataUsage: entity.metadata?.data_usage || 0,
+          paymentStatus: entity.metadata?.payment_status || 'paid'
+        }))
+        setSubscribers(mappedSubscribers)
+      } else {
+        // If no data exists, use mock data as fallback
+        setSubscribers(mockSubscribers)
+      }
+    } catch (error) {
+      console.error('Error fetching subscribers:', error)
+      // Use mock data as fallback
+      if (subscribers.length === 0) {
+        setSubscribers(mockSubscribers)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchSubscribers()
+  }, [])
 
   const filteredSubscribers = subscribers.filter(subscriber => {
     const matchesSearch = subscriber.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -110,6 +179,178 @@ export default function SubscribersPage() {
     
     return matchesSearch && matchesFilter
   })
+
+  const handleAdd = async () => {
+    try {
+      const subscriberCode = `CUST-${String((subscribers.length || 0) + 100001).padStart(6, '0')}`
+      
+      const { data, error } = await supabase
+        .from('core_entities')
+        .insert({
+          organization_id: INDIA_VISION_ORG_ID,
+          entity_type: 'isp_subscriber',
+          entity_name: formData.name,
+          entity_code: subscriberCode,
+          metadata: {
+            email: formData.email,
+            phone: formData.phone,
+            plan_type: formData.planType,
+            speed: formData.speed,
+            status: 'active',
+            location: formData.location,
+            join_date: new Date().toISOString().split('T')[0],
+            bill_amount: formData.billAmount,
+            data_usage: 0,
+            payment_status: formData.paymentStatus
+          }
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      if (data) {
+        const newSubscriber: Subscriber = {
+          id: data.entity_code || data.id,
+          name: data.entity_name,
+          email: data.metadata?.email || '',
+          phone: data.metadata?.phone || '',
+          planType: data.metadata?.plan_type || 'Home',
+          speed: data.metadata?.speed || '50 Mbps',
+          status: data.metadata?.status || 'active',
+          location: data.metadata?.location || '',
+          joinDate: data.metadata?.join_date || new Date().toISOString().split('T')[0],
+          billAmount: data.metadata?.bill_amount || 799,
+          dataUsage: data.metadata?.data_usage || 0,
+          paymentStatus: data.metadata?.payment_status || 'paid'
+        }
+        setSubscribers([...subscribers, newSubscriber])
+        setShowAddModal(false)
+        resetForm()
+        alert('Subscriber added successfully!')
+      }
+    } catch (error) {
+      console.error('Error adding subscriber:', error)
+      alert('Failed to add subscriber. Please try again.')
+    }
+  }
+
+  const handleEdit = (subscriber: Subscriber) => {
+    setSelectedSubscriber(subscriber)
+    setFormData({
+      name: subscriber.name,
+      email: subscriber.email,
+      phone: subscriber.phone,
+      planType: subscriber.planType,
+      speed: subscriber.speed,
+      location: subscriber.location,
+      billAmount: subscriber.billAmount,
+      paymentStatus: subscriber.paymentStatus
+    })
+    setShowEditModal(true)
+  }
+
+  const handleUpdate = async () => {
+    if (selectedSubscriber) {
+      try {
+        // First find the entity by code
+        const { data: entity, error: findError } = await supabase
+          .from('core_entities')
+          .select('id')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'isp_subscriber')
+          .eq('entity_code', selectedSubscriber.id)
+          .single()
+
+        if (findError) throw findError
+
+        if (entity) {
+          // Update the entity
+          const { error: updateError } = await supabase
+            .from('core_entities')
+            .update({
+              entity_name: formData.name,
+              metadata: {
+                email: formData.email,
+                phone: formData.phone,
+                plan_type: formData.planType,
+                speed: formData.speed,
+                status: selectedSubscriber.status,
+                location: formData.location,
+                join_date: selectedSubscriber.joinDate,
+                bill_amount: formData.billAmount,
+                data_usage: selectedSubscriber.dataUsage,
+                payment_status: formData.paymentStatus
+              }
+            })
+            .eq('id', entity.id)
+
+          if (updateError) throw updateError
+
+          // Update local state
+          setSubscribers(subscribers.map(s => 
+            s.id === selectedSubscriber.id 
+              ? { ...s, ...formData }
+              : s
+          ))
+          setShowEditModal(false)
+          setSelectedSubscriber(null)
+          resetForm()
+          alert('Subscriber updated successfully!')
+        }
+      } catch (error) {
+        console.error('Error updating subscriber:', error)
+        alert('Failed to update subscriber. Please try again.')
+      }
+    }
+  }
+
+  const handleDelete = async (subscriber: Subscriber) => {
+    if (confirm(`Are you sure you want to delete subscriber ${subscriber.name}?`)) {
+      try {
+        // First find the entity by code
+        const { data: entity, error: findError } = await supabase
+          .from('core_entities')
+          .select('id')
+          .eq('organization_id', INDIA_VISION_ORG_ID)
+          .eq('entity_type', 'isp_subscriber')
+          .eq('entity_code', subscriber.id)
+          .single()
+
+        if (findError) throw findError
+
+        if (entity) {
+          // Delete the entity
+          const { error: deleteError } = await supabase
+            .from('core_entities')
+            .delete()
+            .eq('id', entity.id)
+
+          if (deleteError) throw deleteError
+
+          // Update local state
+          setSubscribers(subscribers.filter(s => s.id !== subscriber.id))
+          alert('Subscriber deleted successfully!')
+        }
+      } catch (error) {
+        console.error('Error deleting subscriber:', error)
+        alert('Failed to delete subscriber. Please try again.')
+      }
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      planType: 'Home',
+      speed: '50 Mbps',
+      location: '',
+      billAmount: 799,
+      paymentStatus: 'paid'
+    })
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -144,9 +385,9 @@ export default function SubscribersPage() {
       case 'paid':
         return <span className="text-xs font-medium text-emerald-400">Paid</span>
       case 'pending':
-        return <span className="text-xs font-medium text-[#fff685]">Pending</span>
+        return <span className="text-xs font-medium text-[#FFD700]">Pending</span>
       case 'overdue':
-        return <span className="text-xs font-medium text-[#ff1d58]">Overdue</span>
+        return <span className="text-xs font-medium text-[#E91E63]">Overdue</span>
       default:
         return null
     }
@@ -165,7 +406,7 @@ export default function SubscribersPage() {
         
         <button
           onClick={() => setShowAddModal(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>Add Subscriber</span>
@@ -175,14 +416,14 @@ export default function SubscribersPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/60 text-sm">Total Subscribers</p>
                 <p className="text-2xl font-bold text-white mt-1">45,832</p>
               </div>
-              <div className="p-2 bg-gradient-to-br from-[#00DDFF] to-[#0049B7] rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg">
                 <Users className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -190,8 +431,8 @@ export default function SubscribersPage() {
         </div>
 
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/60 text-sm">Active</p>
@@ -205,14 +446,14 @@ export default function SubscribersPage() {
         </div>
 
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/60 text-sm">New This Month</p>
                 <p className="text-2xl font-bold text-white mt-1">1,245</p>
               </div>
-              <div className="p-2 bg-gradient-to-br from-[#fff685] to-[#00DDFF] rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-[#FFD700] to-[#0099CC] rounded-lg">
                 <TrendingUp className="h-6 w-6 text-[#0049B7]" />
               </div>
             </div>
@@ -220,14 +461,14 @@ export default function SubscribersPage() {
         </div>
 
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/60 text-sm">Churn Rate</p>
                 <p className="text-2xl font-bold text-white mt-1">2.3%</p>
               </div>
-              <div className="p-2 bg-gradient-to-br from-[#ff1d58] to-[#f75990] rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-lg">
                 <AlertCircle className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -242,8 +483,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('all')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'all'
-                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white shadow-lg shadow-[#00DDFF]/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             All
@@ -252,8 +493,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('active')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'active'
-                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             Active
@@ -262,8 +503,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('suspended')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'suspended'
-                ? 'bg-gradient-to-r from-[#ff1d58] to-[#f75990] text-white shadow-lg shadow-[#ff1d58]/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-[#E91E63] to-[#C2185B] text-white shadow-lg shadow-[#E91E63]/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             Suspended
@@ -278,125 +519,330 @@ export default function SubscribersPage() {
               placeholder="Search subscribers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#00DDFF]/50 focus:bg-white/10 transition-all duration-200"
+              className="pl-10 pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#0099CC]/50 focus:bg-white/10 transition-all duration-200"
             />
           </div>
-          <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200">
+          <button className="p-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
             <Filter className="h-5 w-5" />
           </button>
-          <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200">
+          <button className="p-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
             <Download className="h-5 w-5" />
           </button>
         </div>
       </div>
 
       {/* Subscribers Table */}
-      <div className="relative overflow-hidden">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF]/20 to-[#0049B7]/20 rounded-2xl blur" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/5">
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Subscriber ID
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Customer Info
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Plan Details
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Usage
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Billing
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-white/60 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filteredSubscribers.map((subscriber) => (
-                  <tr 
-                    key={subscriber.id} 
-                    className="hover:bg-white/5 transition-colors duration-200"
-                  >
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-[#00DDFF]">{subscriber.id}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">{subscriber.name}</p>
-                        <div className="flex items-center space-x-3 text-xs text-white/60">
-                          <div className="flex items-center space-x-1">
-                            <Mail className="h-3 w-3" />
-                            <span>{subscriber.email}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Phone className="h-3 w-3" />
-                            <span>{subscriber.phone}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-1 text-xs text-white/60">
-                          <MapPin className="h-3 w-3" />
-                          <span>{subscriber.location}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <Wifi className="h-4 w-4 text-[#00DDFF]" />
-                          <span className="text-sm font-medium text-white">{subscriber.planType}</span>
-                        </div>
-                        <p className="text-xs text-white/60">{subscriber.speed}</p>
-                        <div className="flex items-center space-x-1 text-xs text-white/60">
-                          <Calendar className="h-3 w-3" />
-                          <span>Since {subscriber.joinDate}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      {getStatusBadge(subscriber.status)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">{subscriber.dataUsage} GB</p>
-                        <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-[#00DDFF] to-[#fff685] rounded-full"
-                            style={{ width: `${(subscriber.dataUsage / 1000) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">₹{subscriber.billAmount}</p>
-                        <div className="flex items-center space-x-1">
-                          <CreditCard className="h-3 w-3 text-white/60" />
-                          {getPaymentBadge(subscriber.paymentStatus)}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button className="p-1 hover:bg-white/10 rounded-lg transition-colors duration-200">
-                        <MoreVertical className="h-4 w-4 text-white/60" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0099CC]"></div>
         </div>
-      </div>
+      ) : (
+        <ISPTable
+          data={filteredSubscribers}
+        columns={[
+          {
+            key: 'id',
+            label: 'Subscriber ID',
+            render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+          },
+          {
+            key: 'name',
+            label: 'Customer Info',
+            render: (item) => (
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-white">{item.name}</p>
+                <div className="flex items-center space-x-3 text-xs text-white/60">
+                  <div className="flex items-center space-x-1">
+                    <Mail className="h-3 w-3" />
+                    <span>{item.email}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Phone className="h-3 w-3" />
+                    <span>{item.phone}</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-1 text-xs text-white/60">
+                  <MapPin className="h-3 w-3" />
+                  <span>{item.location}</span>
+                </div>
+              </div>
+            )
+          },
+          {
+            key: 'planType',
+            label: 'Plan Details',
+            render: (item) => (
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <Wifi className="h-4 w-4 text-[#0099CC]" />
+                  <span className="text-sm font-medium text-white">{item.planType}</span>
+                </div>
+                <p className="text-xs text-white/60">{item.speed}</p>
+                <div className="flex items-center space-x-1 text-xs text-white/60">
+                  <Calendar className="h-3 w-3" />
+                  <span>Since {item.joinDate}</span>
+                </div>
+              </div>
+            )
+          },
+          {
+            key: 'status',
+            label: 'Status',
+            render: (item) => getStatusBadge(item.status)
+          },
+          {
+            key: 'dataUsage',
+            label: 'Usage',
+            render: (item) => (
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-white">{item.dataUsage} GB</p>
+                <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
+                    style={{ width: `${(item.dataUsage / 1000) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )
+          },
+          {
+            key: 'billAmount',
+            label: 'Billing',
+            render: (item) => (
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-white">₹{item.billAmount}</p>
+                <div className="flex items-center space-x-1">
+                  <CreditCard className="h-3 w-3 text-white/60" />
+                  {getPaymentBadge(item.paymentStatus)}
+                </div>
+              </div>
+            )
+          }
+        ]}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        searchPlaceholder="Search by ID, name, or email..."
+        />
+      )}
+
+      {/* Add Subscriber Modal */}
+      <ISPModal
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false)
+          resetForm()
+        }}
+        title="Add New Subscriber"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleAdd()
+        }} className="space-y-4">
+          <ISPInput
+            label="Customer Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter customer name"
+            required
+          />
+          
+          <ISPInput
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="customer@example.com"
+            icon={<Mail className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+91 9876543210"
+            icon={<Phone className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Plan Type"
+            value={formData.planType}
+            onChange={(e) => setFormData({ ...formData, planType: e.target.value })}
+            options={[
+              { value: 'Home', label: 'Home' },
+              { value: 'Business', label: 'Business' },
+              { value: 'Enterprise', label: 'Enterprise' }
+            ]}
+          />
+          
+          <ISPSelect
+            label="Speed"
+            value={formData.speed}
+            onChange={(e) => setFormData({ ...formData, speed: e.target.value })}
+            options={[
+              { value: '50 Mbps', label: '50 Mbps' },
+              { value: '100 Mbps', label: '100 Mbps' },
+              { value: '200 Mbps', label: '200 Mbps' },
+              { value: '500 Mbps', label: '500 Mbps' },
+              { value: '1 Gbps', label: '1 Gbps' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Location"
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Enter location"
+            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Monthly Bill Amount"
+            type="number"
+            value={formData.billAmount}
+            onChange={(e) => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
+            placeholder="Enter amount"
+            icon={<CreditCard className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowAddModal(false)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Add Subscriber
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
+
+      {/* Edit Subscriber Modal */}
+      <ISPModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setSelectedSubscriber(null)
+          resetForm()
+        }}
+        title="Edit Subscriber"
+        size="md"
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleUpdate()
+        }} className="space-y-4">
+          <ISPInput
+            label="Customer Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter customer name"
+            required
+          />
+          
+          <ISPInput
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="customer@example.com"
+            icon={<Mail className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+91 9876543210"
+            icon={<Phone className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPSelect
+            label="Plan Type"
+            value={formData.planType}
+            onChange={(e) => setFormData({ ...formData, planType: e.target.value })}
+            options={[
+              { value: 'Home', label: 'Home' },
+              { value: 'Business', label: 'Business' },
+              { value: 'Enterprise', label: 'Enterprise' }
+            ]}
+          />
+          
+          <ISPSelect
+            label="Speed"
+            value={formData.speed}
+            onChange={(e) => setFormData({ ...formData, speed: e.target.value })}
+            options={[
+              { value: '50 Mbps', label: '50 Mbps' },
+              { value: '100 Mbps', label: '100 Mbps' },
+              { value: '200 Mbps', label: '200 Mbps' },
+              { value: '500 Mbps', label: '500 Mbps' },
+              { value: '1 Gbps', label: '1 Gbps' }
+            ]}
+          />
+          
+          <ISPInput
+            label="Location"
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Enter location"
+            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            required
+          />
+          
+          <ISPInput
+            label="Monthly Bill Amount"
+            type="number"
+            value={formData.billAmount}
+            onChange={(e) => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
+            placeholder="Enter amount"
+            icon={<CreditCard className="h-4 w-4 text-white/40" />}
+            required
+          />
+
+          <ISPSelect
+            label="Payment Status"
+            value={formData.paymentStatus}
+            onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as any })}
+            options={[
+              { value: 'paid', label: 'Paid' },
+              { value: 'pending', label: 'Pending' },
+              { value: 'overdue', label: 'Overdue' }
+            ]}
+          />
+          
+          <div className="flex justify-end space-x-3 pt-4">
+            <ISPButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowEditModal(false)
+                setSelectedSubscriber(null)
+                resetForm()
+              }}
+            >
+              Cancel
+            </ISPButton>
+            <ISPButton type="submit">
+              Update Subscriber
+            </ISPButton>
+          </div>
+        </form>
+      </ISPModal>
     </div>
   )
 }

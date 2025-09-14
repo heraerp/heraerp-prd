@@ -1,4 +1,4 @@
-smart_code: HERA.PROJECTS.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.PROJECTS.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: project,           entity_type: ENTITY_TYPE,      name: "Project" }
@@ -29,4 +29,3 @@ items:
   - { slug: milestone:ALPHA_M1,  entity_type: ENTITY, name: "Kickoff",           metadata: { entity_type: "milestone" } }
   - { slug: task:ALPHA_T1,       entity_type: ENTITY, name: "Gather Requirements", metadata: { entity_type: "task" } }
   - { slug: resource:RES001,     entity_type: ENTITY, name: "Consultant A",      metadata: { entity_type: "resource" } }
-

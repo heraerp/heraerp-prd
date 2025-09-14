@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.MFG.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: product,            entity_type: ENTITY_TYPE,      name: "Product" }
@@ -38,4 +38,3 @@ items:
   - { slug: operation:OP-ASSY,   entity_type: ENTITY, name: "Assemble",          metadata: { entity_type: "operation" } }
   - { slug: bom:BOM-FG001,       entity_type: ENTITY, name: "BOM for FG-001",    metadata: { entity_type: "bom" } }
   - { slug: plant:PLANT-01,      entity_type: ENTITY, name: "Plant 01",          metadata: { entity_type: "plant" } }
-

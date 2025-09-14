@@ -1,4 +1,4 @@
-smart_code: HERA.SALES.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.SALES.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: customer,         entity_type: ENTITY_TYPE,      name: "Customer" }
@@ -31,4 +31,3 @@ items:
   - { slug: customer:ALICE,    entity_type: ENTITY, name: "Alice Example",   metadata: { entity_type: "customer" } }
   - { slug: price_list:STANDARD, entity_type: ENTITY, name: "Standard Price List", metadata: { entity_type: "price_list" } }
   - { slug: sales_channel:POS, entity_type: ENTITY, name: "POS", metadata: { entity_type: "sales_channel" } }
-

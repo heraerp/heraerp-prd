@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.CRM.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: account,           entity_type: ENTITY_TYPE,      name: "Account" }
@@ -36,4 +36,3 @@ items:
   - { slug: campaign:SPRING24,      entity_type: ENTITY, name: "Spring 2024",     metadata: { entity_type: "campaign" } }
   - { slug: case:CASE-001,          entity_type: ENTITY, name: "Support Case 001", metadata: { entity_type: "case" } }
   - { slug: activity:CALL_GENERIC,  entity_type: ENTITY, name: "Call",             metadata: { entity_type: "activity" } }
-

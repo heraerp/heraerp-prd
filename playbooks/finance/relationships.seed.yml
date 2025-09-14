@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.RELATIONSHIPS.SEED.v1
+smart_code: HERA.FINANCE.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Group account
   - from_slug: ledger_account:1000
@@ -22,4 +22,3 @@ rows:
         line_type: tax_line
         tax_code: VAT20
       rule: HERA.FINANCE.POSTING.TAX_PAYABLE.v1
-

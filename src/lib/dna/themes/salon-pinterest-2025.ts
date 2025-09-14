@@ -1,30 +1,31 @@
 /**
- * Pinterest 2025 Salon & Beauty Color Palette
- * Applied to HERA Glassmorphic Dark Template
+ * Salon Theme - Custom Color Palette
+ * Professional salon app with elegant purple-pink gradient
  */
 
 export const salonPinterest2025Theme = {
-  name: 'Salon Pinterest 2025',
+  name: 'Salon Theme',
   colors: {
-    // Primary: Cherry Red - Bold, vibrant red for energy and passion
-    primary: '#DC143C',
+    // Background gradient colors
+    bgStart: '#8332EC',      // Purple start
+    bgEnd: '#CE8A73',        // Peach end
     
-    // Secondary: Aura Indigo - Mystical lilac-purple for ethereal vibe
-    secondary: '#9370DB',
+    // Surface colors
+    surface: '#762866',      // Dark purple surface
+    surfaceLight: '#E7D8D5', // Light beige surface
     
-    // Accent: Butter Yellow - Warm, playful pastel yellow
-    accent: '#FFE4B5',
+    // Accent color
+    accent: '#DD97E2',       // Pink accent
     
-    // Danger: Deeper Cherry Red for alerts
-    danger: '#B91C1C',
-    dangerDark: '#991B1B',
+    // Text colors
+    textOnDark: '#FFFFFF',   // White text on dark surfaces
+    textOnLight: '#2D1B2E', // Very dark plum on light surfaces
     
-    // Dark Base: Deep indigo-black for contrast
-    darkBase: '#1A0F1F',
-    
-    // Additional colors for the palette
-    dillGreen: '#8FBC8F',  // Fresh, tangy green
-    alpineOat: '#D2B48C',  // Cozy beige neutral
+    // Additional colors for various UI elements
+    success: '#10B981',      // Green for success states
+    warning: '#F59E0B',      // Amber for warnings
+    danger: '#EF4444',       // Red for errors
+    info: '#3B82F6',         // Blue for info
   }
 }
 
@@ -32,27 +33,26 @@ export const salonPinterest2025Theme = {
 export const salonColorVariants = {
   // Gradient combinations
   gradients: {
-    primary: 'from-[#DC143C] to-[#9370DB]',      // Cherry to Indigo
-    secondary: 'from-[#9370DB] to-[#FFE4B5]',    // Indigo to Butter
-    accent: 'from-[#FFE4B5] to-[#8FBC8F]',       // Butter to Dill
-    warm: 'from-[#DC143C] to-[#FFE4B5]',         // Cherry to Butter
-    natural: 'from-[#8FBC8F] to-[#D2B48C]',      // Dill to Alpine
+    background: 'from-[#8332EC] to-[#CE8A73]',    // Main background gradient
+    surface: 'from-[#762866] to-[#5A1F4F]',       // Surface gradient variation
+    accent: 'from-[#DD97E2] to-[#C573CC]',        // Accent gradient
+    highlight: 'from-[#DD97E2]/20 to-[#8332EC]/20', // Subtle highlight
   },
   
-  // Status colors
+  // Status colors (using the accent and surface colors)
   status: {
-    available: '#8FBC8F',    // Dill Green
-    busy: '#DC143C',         // Cherry Red
-    break: '#FFE4B5',        // Butter Yellow
-    offline: '#D2B48C'       // Alpine Oat
+    available: '#10B981',    // Success green
+    busy: '#DD97E2',         // Accent pink
+    break: '#F59E0B',        // Warning amber
+    offline: '#6B7280'       // Gray
   },
   
-  // Service categories
+  // Service categories (variations of the main colors)
   services: {
-    hair: '#DC143C',         // Cherry Red
-    beauty: '#9370DB',       // Aura Indigo
-    nails: '#FFE4B5',        // Butter Yellow
-    spa: '#8FBC8F',          // Dill Green
-    makeup: '#D2B48C'        // Alpine Oat
+    hair: '#DD97E2',         // Accent pink
+    beauty: '#8332EC',       // Purple
+    nails: '#CE8A73',        // Peach
+    spa: '#762866',          // Surface purple
+    makeup: '#E7D8D5'        // Light surface
   }
 }

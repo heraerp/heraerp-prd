@@ -275,7 +275,7 @@ export default function CRMDashboard() {
               </button>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={revenueTrend}>
+              <AreaChart data={Array.isArray(revenueTrend) ? revenueTrend : (revenueTrend && typeof revenueTrend === 'object' ? Object.values(revenueTrend as any) : [])}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#FF5A09" stopOpacity={0.8}/>
@@ -373,7 +373,7 @@ export default function CRMDashboard() {
             <span className="text-sm text-white/60">Total: ₹1.85 Cr</span>
           </div>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={pipelineData}>
+            <BarChart data={Array.isArray(pipelineData) ? pipelineData : (pipelineData && typeof pipelineData === 'object' ? Object.values(pipelineData as any) : [])}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
               <XAxis dataKey="stage" stroke="rgba(255,255,255,0.5)" angle={-45} textAnchor="end" height={60} />
               <YAxis stroke="rgba(255,255,255,0.5)" />
@@ -389,7 +389,7 @@ export default function CRMDashboard() {
                 }}
               />
               <Bar dataKey="value" fill="#FF5A09" radius={[8, 8, 0, 0]}>
-                {pipelineData.map((entry, index) => (
+                {(Array.isArray(pipelineData) ? pipelineData : (pipelineData && typeof pipelineData === 'object' ? Object.values(pipelineData as any) : [])).map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={getStageColor(entry.stage)} />
                 ))}
               </Bar>

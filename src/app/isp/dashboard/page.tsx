@@ -40,10 +40,10 @@ function MetricCard({ title, value, change, icon: Icon, gradient, subValue }: Me
   return (
     <div className="relative group">
       {/* Glow effect on hover */}
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
+      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
       
       {/* Card content */}
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
@@ -87,10 +87,10 @@ export default function ISPDashboard() {
     { region: 'Kozhikode', uptime: 99.9, subscribers: 12832 }
   ])
   const [revenueStreams, setRevenueStreams] = useState<any[]>([
-    { name: 'Broadband', value: 60, color: '#00DDFF' },
-    { name: 'Cable Tv', value: 24, color: '#fff685' },
-    { name: 'Advertisement', value: 10, color: '#ff1d58' },
-    { name: 'Leased Lines', value: 6, color: '#f75990' }
+    { name: 'Broadband', value: 60, color: '#0099CC' },
+    { name: 'Cable Tv', value: 24, color: '#FFD700' },
+    { name: 'Advertisement', value: 10, color: '#E91E63' },
+    { name: 'Leased Lines', value: 6, color: '#C2185B' }
   ])
   
   const supabase = createClientComponentClient()
@@ -138,9 +138,9 @@ export default function ISPDashboard() {
           const streams = Object.entries(metricsResult.data.metadata.revenue_streams).map(([name, value]) => ({
             name: name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
             value: value as number,
-            color: name === 'broadband' ? '#00DDFF' : 
-                   name === 'cable_tv' ? '#fff685' : 
-                   name === 'advertisement' ? '#ff1d58' : '#f75990'
+            color: name === 'broadband' ? '#0099CC' : 
+                   name === 'cable_tv' ? '#FFD700' : 
+                   name === 'advertisement' ? '#E91E63' : '#C2185B'
           }))
           setRevenueStreams(streams)
         }
@@ -181,6 +181,11 @@ export default function ISPDashboard() {
     }
   }
 
+  // Defensive normalization for chart inputs
+  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const safeRevenueData = toArray(revenueData)
+  const safeRevenueStreams = toArray(revenueStreams)
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -197,8 +202,8 @@ export default function ISPDashboard() {
             onClick={() => setSelectedPeriod('day')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedPeriod === 'day'
-                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white shadow-lg shadow-[#00DDFF]/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             Day
@@ -207,8 +212,8 @@ export default function ISPDashboard() {
             onClick={() => setSelectedPeriod('month')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedPeriod === 'month'
-                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white shadow-lg shadow-[#00DDFF]/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             Month
@@ -217,8 +222,8 @@ export default function ISPDashboard() {
             onClick={() => setSelectedPeriod('year')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedPeriod === 'year'
-                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white shadow-lg shadow-[#00DDFF]/30'
-                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
+                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
             }`}
           >
             Year
@@ -233,7 +238,7 @@ export default function ISPDashboard() {
           value={`₹${((dashboardData?.monthly_revenue || 0) / 10000000).toFixed(1)} Cr`}
           change={12.5}
           icon={DollarSign}
-          gradient="from-[#ff1d58] to-[#f75990]"
+          gradient="from-[#E91E63] to-[#C2185B]"
           subValue="Target: ₹5 Cr"
         />
         <MetricCard
@@ -241,7 +246,7 @@ export default function ISPDashboard() {
           value={(dashboardData?.total_subscribers || 0).toLocaleString()}
           change={8.3}
           icon={Users}
-          gradient="from-[#00DDFF] to-[#0049B7]"
+          gradient="from-[#0099CC] to-[#0049B7]"
           subValue={`+${(dashboardData?.new_this_month || 0).toLocaleString()} this month`}
         />
         <MetricCard
@@ -249,7 +254,7 @@ export default function ISPDashboard() {
           value={`${dashboardData?.network_uptime || 0}%`}
           change={0.2}
           icon={Wifi}
-          gradient="from-[#fff685] to-[#00DDFF]"
+          gradient="from-[#FFD700] to-[#0099CC]"
           subValue="SLA: 99.5%"
         />
         <MetricCard
@@ -267,32 +272,32 @@ export default function ISPDashboard() {
         {/* Revenue Trend */}
         <div className="lg:col-span-2">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white">Revenue & Subscriber Growth</h2>
                 <div className="flex items-center space-x-4 text-xs">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-[#00DDFF]" />
+                    <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
                     <span className="text-white/60">Revenue</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-[#fff685]" />
+                    <div className="w-3 h-3 rounded-full bg-[#FFD700]" />
                     <span className="text-white/60">Subscribers</span>
                   </div>
                 </div>
               </div>
               
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={revenueData}>
+                <AreaChart data={safeRevenueData}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#00DDFF" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="subscriberGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#fff685" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#fff685" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#FFD700" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -311,7 +316,7 @@ export default function ISPDashboard() {
                     yAxisId="left"
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#00DDFF"
+                    stroke="#0099CC"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#revenueGradient)"
@@ -320,7 +325,7 @@ export default function ISPDashboard() {
                     yAxisId="right"
                     type="monotone"
                     dataKey="subscribers"
-                    stroke="#fff685"
+                    stroke="#FFD700"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#subscriberGradient)"
@@ -334,14 +339,14 @@ export default function ISPDashboard() {
         {/* Revenue Streams */}
         <div>
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Revenue Streams</h2>
               
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={revenueStreams}
+                    data={safeRevenueStreams}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -349,7 +354,7 @@ export default function ISPDashboard() {
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {revenueStreams.map((entry, index) => (
+                    {safeRevenueStreams.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -387,8 +392,8 @@ export default function ISPDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Network Performance */}
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Regional Network Performance</h2>
             
             <div className="space-y-4">
@@ -419,29 +424,29 @@ export default function ISPDashboard() {
         {/* Agent Performance */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0049B7] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">Agent Network</h2>
               <span className="text-sm text-[#fff685] font-medium">3,000+ Agents</span>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-white/10">
                 <UserCheck className="h-8 w-8 text-[#00DDFF] mb-2" />
                 <p className="text-2xl font-bold text-white">245</p>
                 <p className="text-xs text-white/60">New activations today</p>
               </div>
-              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-white/10">
                 <Award className="h-8 w-8 text-[#fff685] mb-2" />
                 <p className="text-2xl font-bold text-white">92%</p>
                 <p className="text-xs text-white/60">Target achievement</p>
               </div>
-              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-white/10">
                 <Target className="h-8 w-8 text-[#ff1d58] mb-2" />
                 <p className="text-2xl font-bold text-white">₹8.5L</p>
                 <p className="text-xs text-white/60">Commission this month</p>
               </div>
-              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-white/10">
                 <TrendingUp className="h-8 w-8 text-emerald-400 mb-2" />
                 <p className="text-2xl font-bold text-white">15%</p>
                 <p className="text-xs text-white/60">Growth rate</p>
@@ -454,7 +459,7 @@ export default function ISPDashboard() {
       {/* IPO Readiness Alert */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#ff1d58]/10 via-[#f75990]/10 to-[#fff685]/10 animate-gradient-shift" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
           <div className="flex items-start space-x-4">
             <div className="p-3 rounded-xl bg-gradient-to-br from-[#ff1d58] to-[#f75990]">
               <AlertCircle className="h-6 w-6 text-white" />
@@ -468,7 +473,7 @@ export default function ISPDashboard() {
                 <button className="px-4 py-2 bg-gradient-to-r from-[#ff1d58] to-[#f75990] text-white rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-[#ff1d58]/30 transition-all duration-300">
                   View Compliance Report
                 </button>
-                <button className="px-4 py-2 bg-white/10 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-all duration-300">
+                <button className="px-4 py-2 bg-slate-900/50 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-all duration-300">
                   Schedule Audit
                 </button>
               </div>

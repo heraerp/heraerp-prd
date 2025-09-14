@@ -1,4 +1,4 @@
-smart_code: HERA.PROJECTS.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.PROJECTS.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Project
   - { entity_slug: project:ALPHA, key_slug: project.code,          value: "ALPHA", value_type: text }
@@ -17,4 +17,3 @@ rows:
 
   # Milestone
   - { entity_slug: milestone:ALPHA_M1, key_slug: milestone.due_date, value: "2025-02-01", value_type: date }
-

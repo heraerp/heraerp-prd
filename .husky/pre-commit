@@ -1,13 +1,13 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# UI Pattern Validation
-echo "🔍 Checking UI patterns..."
-npm run ui:validate
+# UI Pattern Validation (staged only to avoid legacy noise)
+echo "🔍 Checking UI patterns (staged)..."
+npm run ui:validate:staged
 
 if [ $? -ne 0 ]; then
   echo "❌ UI pattern validation failed. Please fix the issues before committing."
-  echo "💡 Run 'npm run ui:validate' to see details"
+  echo "💡 Run 'npm run ui:validate:staged' to see details, or 'npm run ui:validate' for full scan"
   exit 1
 fi
 

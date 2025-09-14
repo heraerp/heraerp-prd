@@ -2,51 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { universalApi } from '@/lib/universal-api-v2'
-import { Calendar, TrendingUp, Users, DollarSign, Clock, Sparkles, AlertCircle, RefreshCw } from 'lucide-react'
+import { Calendar, TrendingUp, Users, DollarSign, Clock, Sparkles, AlertCircle, RefreshCw, Heart, Star, Gift, Scissors } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/use-toast'
+import { SalonCard, SalonStatCard } from '@/components/salon/SalonCard'
 
 // Hardcoded organization ID from the SQL setup
 const SALON_ORG_ID = '84a3654b-907b-472a-ac8f-a1ffb6fb711b'
-
-interface StatsCardProps {
-  title: string
-  value: string | number
-  icon: any
-  trend?: number
-  color: string
-}
-
-function StatsCard({ title, value, icon: Icon, trend, color }: StatsCardProps) {
-  return (
-    <div className="relative group">
-      {/* Glassmorphism Card */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/20 hover:bg-white/80 hover:scale-[1.02]">
-        {/* Gradient Border Effect */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-400/20 to-purple-400/20 -z-10 blur-xl group-hover:blur-2xl transition-all duration-500" />
-        
-        <div className="flex items-center justify-between mb-4">
-          <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shadow-lg", color)}>
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          {trend !== undefined && (
-            <div className={cn(
-              "flex items-center gap-1 text-sm font-semibold px-3 py-1 rounded-full",
-              trend > 0 ? "text-emerald-700 bg-emerald-100/50" : "text-rose-700 bg-rose-100/50"
-            )}>
-              <TrendingUp className="w-4 h-4" />
-              <span>{Math.abs(trend)}%</span>
-            </div>
-          )}
-        </div>
-        <h3 className="text-gray-700 text-sm font-medium">{title}</h3>
-        <p className="text-gray-900 text-2xl font-bold mt-1 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-          {value}
-        </p>
-      </div>
-    </div>
-  )
-}
 
 interface Appointment {
   id: string
@@ -101,285 +63,224 @@ export default function SalonDashboard() {
       })
       const staff = staffResponse.success ? staffResponse.data || [] : []
 
-      // Load POS sales for revenue (today only)
+      // Load today's sales (revenue)
       const salesResponse = await universalApi.getTransactions({
         filters: { 
           transaction_type: 'sale',
           transaction_date: { gte: today }
         }
       })
-      const todaySales = salesResponse.success ? salesResponse.data || [] : []
-      const todayRevenue = todaySales.reduce((sum: number, sale: any) => sum + (sale.total_amount || 0), 0)
+      const sales = salesResponse.success ? salesResponse.data || [] : []
+      const todayRevenue = sales.reduce((sum, sale) => sum + (sale.total_amount || 0), 0)
 
-      // Get real appointment data with proper customer/stylist names
-      const customerMap = new Map(customers.map(c => [c.id, c.entity_name]))
-      const staffMap = new Map(staff.map(s => [s.id, s.entity_name]))
+      // Format appointments for display
+      const formattedAppointments = todayAppointments.slice(0, 5).map(apt => ({
+        id: apt.id,
+        customer_name: apt.metadata?.customer_name || 'Walk-in',
+        service_name: apt.metadata?.service_name || 'Service',
+        time: apt.metadata?.appointment_time || '00:00',
+        stylist_name: apt.metadata?.stylist_name || 'Available',
+        status: apt.metadata?.status || 'scheduled'
+      }))
 
       setStats({
         todayAppointments: todayAppointments.length,
-        todayRevenue: todayRevenue,
+        todayRevenue,
         activeCustomers: customers.length,
-        availableStaff: staff.length
+        availableStaff: staff.filter(s => s.metadata?.available !== false).length
       })
-
-      // Transform appointments for display with real data
-      const appointmentList = todayAppointments.slice(0, 5).map((apt: any) => {
-        // Extract customer and stylist info from metadata or relationships
-        const customerId = apt.metadata?.customer_id || apt.from_entity_id
-        const stylistId = apt.metadata?.stylist_id || apt.to_entity_id
-        
-        return {
-          id: apt.id,
-          customer_name: customerMap.get(customerId) || 'Walk-in Customer',
-          service_name: apt.metadata?.service_name || apt.description || 'Hair Service',
-          time: new Date(apt.transaction_date).toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          }),
-          stylist_name: staffMap.get(stylistId) || 'Available Stylist',
-          status: apt.metadata?.status || 'confirmed'
-        }
-      })
-      setAppointments(appointmentList)
-
-      // If no real data, create some demo data for better UX
-      if (todayAppointments.length === 0 && customers.length === 0) {
-        // Clear error state since we're providing good demo data
-        setError(null)
-        
-        const demoAppointments = [
-          {
-            id: 'demo-1',
-            customer_name: 'Sarah Johnson',
-            service_name: 'Cut & Color',
-            time: '10:00 AM',
-            stylist_name: 'Emma Wilson',
-            status: 'confirmed'
-          },
-          {
-            id: 'demo-2',
-            customer_name: 'Maria Garcia',
-            service_name: 'Deep Treatment',
-            time: '11:30 AM',
-            stylist_name: 'Lisa Chen',
-            status: 'in-progress'
-          },
-          {
-            id: 'demo-3',
-            customer_name: 'Jessica Brown',
-            service_name: 'Styling',
-            time: '2:00 PM',
-            stylist_name: 'Emma Wilson',
-            status: 'confirmed'
-          },
-          {
-            id: 'demo-4',
-            customer_name: 'Amanda Rodriguez',
-            service_name: 'Highlights',
-            time: '3:30 PM',
-            stylist_name: 'Lisa Chen',
-            status: 'confirmed'
-          },
-          {
-            id: 'demo-5',
-            customer_name: 'Rachel Lee',
-            service_name: 'Trim & Style',
-            time: '4:45 PM',
-            stylist_name: 'Emma Wilson',
-            status: 'confirmed'
-          }
-        ]
-        setAppointments(demoAppointments)
-        
-        // Set realistic demo stats
-        setStats({
-          todayAppointments: 12,
-          todayRevenue: 3250,
-          activeCustomers: 248,
-          availableStaff: 5
-        })
-      } else if (todayAppointments.length === 0) {
-        // Show empty state when connected but no appointments today
-        setAppointments([])
-      }
-
-    } catch (error) {
-      console.error('Error loading dashboard data:', error)
-      setError('Failed to load dashboard data. Using demo data.')
-      
+      setAppointments(formattedAppointments)
+    } catch (err: any) {
+      console.error('Dashboard data error:', err)
+      setError(err.message || 'Failed to load dashboard data')
       toast({
-        title: "Connection Issue",
-        description: "Using demo data. Check your internet connection.",
+        title: "Error",
+        description: "Failed to load dashboard data",
         variant: "destructive"
       })
-      
-      // Fallback demo data on error
-      setStats({
-        todayAppointments: 8,
-        todayRevenue: 2450,
-        activeCustomers: 156,
-        availableStaff: 4
-      })
-      
-      setAppointments([
-        {
-          id: 'demo-1',
-          customer_name: 'Sarah Johnson',
-          service_name: 'Cut & Color',
-          time: '10:00 AM',
-          stylist_name: 'Emma Wilson',
-          status: 'confirmed'
-        },
-        {
-          id: 'demo-2', 
-          customer_name: 'Maria Garcia',
-          service_name: 'Deep Treatment',
-          time: '11:30 AM',
-          stylist_name: 'Lisa Chen',
-          status: 'in-progress'
-        }
-      ])
     } finally {
       setLoading(false)
     }
   }
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'text-green-400'
+      case 'scheduled': return 'text-[#DD97E2]'
+      case 'in-progress': return 'text-[#8332EC]'
+      case 'completed': return 'text-[#CE8A73]'
+      default: return 'text-white/60'
+    }
+  }
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
+      <div className="flex items-center justify-center min-h-[600px]">
+        <div className="text-center">
+          <RefreshCw className="w-8 h-8 animate-spin text-[#DD97E2] mx-auto mb-4" />
+          <p className="text-white/60">Loading your salon dashboard...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      {/* Connection Status */}
-      {error && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center gap-3">
-          <AlertCircle className="h-5 w-5 text-yellow-600" />
-          <div className="flex-1">
-            <p className="text-yellow-800 text-sm font-medium">Demo Mode Active</p>
-            <p className="text-yellow-700 text-xs">Showing demo data due to connection issues</p>
-          </div>
-          <button
-            onClick={() => {
-              setError(null)
-              loadDashboardData()
-            }}
-            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Retry
-          </button>
-        </div>
-      )}
-
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-            Dashboard
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            Salon Dashboard
           </h1>
-          <p className="text-gray-700 mt-2 font-medium">Welcome back to Premium Hair & Beauty</p>
+          <p className="text-white/60 mt-1">Welcome back! Here's your salon overview</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="bg-white/60 backdrop-blur-xl rounded-xl px-5 py-3 shadow-lg border border-white/20">
-            <p className="text-gray-700 text-sm font-semibold">{new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</p>
-          </div>
-        </div>
+        <button
+          onClick={loadDashboardData}
+          className="flex items-center gap-2 px-4 py-2 bg-[#DD97E2] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#DD97E2]/40 transition-all duration-300"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Refresh
+        </button>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Today's Appointments"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <SalonStatCard
+          label="Today's Appointments"
           value={stats.todayAppointments}
           icon={Calendar}
-          trend={12}
-          color="bg-gradient-to-br from-violet-500 to-purple-600"
+          trend={{ value: 12, isPositive: true }}
         />
-        <StatsCard
-          title="Today's Revenue"
-          value={`AED ${stats.todayRevenue.toFixed(2)}`}
+        <SalonStatCard
+          label="Today's Revenue"
+          value={`₹${stats.todayRevenue.toLocaleString()}`}
           icon={DollarSign}
-          trend={8}
-          color="bg-gradient-to-br from-purple-500 to-pink-600"
+          trend={{ value: 8, isPositive: true }}
         />
-        <StatsCard
-          title="Active Customers"
+        <SalonStatCard
+          label="Active Customers"
           value={stats.activeCustomers}
           icon={Users}
-          trend={5}
-          color="bg-gradient-to-br from-pink-500 to-rose-600"
+          trend={{ value: 5, isPositive: true }}
         />
-        <StatsCard
-          title="Available Staff"
+        <SalonStatCard
+          label="Available Staff"
           value={stats.availableStaff}
-          icon={Sparkles}
-          color="bg-gradient-to-br from-indigo-500 to-purple-600"
+          icon={Heart}
         />
       </div>
 
-      {/* Quick Actions */}
+      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Today's Appointments */}
-        <div className="lg:col-span-2 relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-400/10 to-purple-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-          <div className="relative bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-violet-500" />
-              Today's Appointments
-            </h2>
-            <div className="space-y-3">
-              {appointments.length > 0 ? (
-                appointments.map((apt) => (
-                  <div key={apt.id} className="bg-white/50 backdrop-blur rounded-xl p-4 hover:bg-white/70 transition-all duration-300 border border-white/20">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-gray-900 font-semibold">{apt.customer_name}</p>
-                        <p className="text-gray-700 text-sm">{apt.service_name}</p>
+        <div className="lg:col-span-2">
+          <SalonCard>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">Today's Appointments</h2>
+              <span className="text-sm text-[#DD97E2]">{new Date().toLocaleDateString()}</span>
+            </div>
+            
+            {appointments.length > 0 ? (
+              <div className="space-y-3">
+                {appointments.map((apt) => (
+                  <div
+                    key={apt.id}
+                    className="flex items-center justify-between p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-lg bg-[#DD97E2]">
+                        <Scissors className="w-4 h-4 text-white" />
                       </div>
-                      <div className="text-right">
-                        <p className="text-violet-600 text-sm font-bold">{apt.time}</p>
-                        <p className="text-gray-600 text-sm">{apt.stylist_name}</p>
+                      <div>
+                        <p className="font-medium text-white">{apt.customer_name}</p>
+                        <p className="text-sm text-white/60">{apt.service_name}</p>
                       </div>
                     </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-white">{apt.time}</p>
+                      <p className="text-xs text-white/60">with {apt.stylist_name}</p>
+                      <p className={`text-xs font-medium ${getStatusColor(apt.status)}`}>
+                        {apt.status}
+                      </p>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-gray-500 font-medium">No appointments scheduled for today</p>
-                </div>
-              )}
-            </div>
-          </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Calendar className="w-12 h-12 text-white/20 mx-auto mb-3" />
+                <p className="text-white/60">No appointments scheduled for today</p>
+              </div>
+            )}
+          </SalonCard>
         </div>
 
-        {/* Quick Actions */}
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-400/10 to-purple-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-          <div className="relative bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Quick Actions
-            </h2>
+        {/* Quick Actions & Services */}
+        <div className="space-y-4">
+          {/* Quick Actions */}
+          <SalonCard>
+            <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
             <div className="space-y-3">
-              <button className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02]">
-                Book Appointment
+              <button className="w-full relative group">
+                <div className="absolute -inset-0.5 bg-[#DD97E2] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center space-x-2 px-4 py-3 bg-[#DD97E2] text-white rounded-lg font-medium">
+                  <Calendar className="w-4 h-4" />
+                  <span>Book Appointment</span>
+                </div>
               </button>
-              <button className="w-full bg-white/50 backdrop-blur text-gray-700 rounded-xl py-3.5 font-semibold hover:bg-white/70 transition-all duration-300 border border-white/20 hover:shadow-lg">
-                Quick Sale
+              
+              <button className="w-full relative group">
+                <div className="absolute -inset-0.5 bg-[#E7D8D5] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center space-x-2 px-4 py-3 bg-[#E7D8D5] text-[#2D1B2E] rounded-lg font-medium">
+                  <Users className="w-4 h-4" />
+                  <span>Add Customer</span>
+                </div>
               </button>
-              <button className="w-full bg-white/50 backdrop-blur text-gray-700 rounded-xl py-3.5 font-semibold hover:bg-white/70 transition-all duration-300 border border-white/20 hover:shadow-lg">
-                Check In Customer
+              
+              <button className="w-full relative group">
+                <div className="absolute -inset-0.5 bg-white/20 rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center space-x-2 px-4 py-3 bg-white/20 text-white rounded-lg font-medium">
+                  <DollarSign className="w-4 h-4" />
+                  <span>Process Payment</span>
+                </div>
               </button>
             </div>
-          </div>
+          </SalonCard>
+
+          {/* Popular Services */}
+          <SalonCard>
+            <h3 className="text-lg font-semibold text-white mb-4">Popular Services</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-[#DD97E2]" />
+                  <span className="text-sm text-white/80">Hair Color</span>
+                </div>
+                <span className="text-sm font-medium text-[#DD97E2]">₹2,500</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-[#8332EC]" />
+                  <span className="text-sm text-white/80">Hair Spa</span>
+                </div>
+                <span className="text-sm font-medium text-[#DD97E2]">₹1,800</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-[#CE8A73]" />
+                  <span className="text-sm text-white/80">Haircut & Style</span>
+                </div>
+                <span className="text-sm font-medium text-[#DD97E2]">₹800</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-white/60" />
+                  <span className="text-sm text-white/80">Facial</span>
+                </div>
+                <span className="text-sm font-medium text-[#DD97E2]">₹1,500</span>
+              </div>
+            </div>
+          </SalonCard>
         </div>
       </div>
     </div>

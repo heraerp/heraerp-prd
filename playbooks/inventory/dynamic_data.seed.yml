@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.INVENTORY.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Item
   - { entity_slug: item:SKU-INV-001, key_slug: item.sku,            value: "SKU-INV-001", value_type: text }
@@ -18,4 +18,3 @@ rows:
 
   # Lot
   - { entity_slug: lot:LOT-001,      key_slug: lot.expiry_date,        value: "2026-12-31", value_type: date }
-

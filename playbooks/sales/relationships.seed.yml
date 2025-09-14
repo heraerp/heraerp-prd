@@ -1,4 +1,4 @@
-smart_code: HERA.SALES.RELATIONSHIPS.SEED.v1
+smart_code: HERA.SALES.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Price list contents
   - from_slug: price_list:STANDARD
@@ -16,4 +16,3 @@ rows:
     to_slug:   price_list:STANDARD
     relationship_type: CUSTOMER_PRICE_LIST
     relationship_data: {}
-

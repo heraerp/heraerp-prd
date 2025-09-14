@@ -137,12 +137,14 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
   const renderChart = () => {
     const config = widget.config
     
+    // Normalize data to array to prevent runtime errors when a non-array payload is provided
+    const safeData = Array.isArray(data) ? data : data && typeof data === 'object' ? Object.values(data as any) : []
     switch (config.chart_type) {
       case 'pie':
         return (
           <PieChart>
             <Pie
-              data={data}
+              data={safeData as any[]}
               cx="50%"
               cy="50%"
               labelLine={false}
@@ -150,7 +152,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
               fill="#8884d8"
               dataKey="value"
             >
-              {data.map((entry, index) => (
+              {(safeData as any[]).map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
               ))}
             </Pie>
@@ -161,7 +163,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
       
       case 'line':
         return (
-          <LineChart data={data}>
+          <LineChart data={safeData as any[]}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={config.x_axis || 'month'} />
             <YAxis />
@@ -181,7 +183,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
       
       case 'bar':
         return (
-          <BarChart data={data}>
+          <BarChart data={safeData as any[]}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={config.x_axis || 'category'} />
             <YAxis />
@@ -193,7 +195,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
       
       case 'area':
         return (
-          <AreaChart data={data}>
+          <AreaChart data={safeData as any[]}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={config.x_axis || 'month'} />
             <YAxis />

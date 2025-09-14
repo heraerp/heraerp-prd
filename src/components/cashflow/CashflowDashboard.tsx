@@ -650,7 +650,7 @@ function CashflowForecast({ organizationId, currency }: CashflowForecastProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={forecastData}>
+            <LineChart data={Array.isArray(forecastData) ? forecastData : (forecastData && typeof forecastData === 'object' ? Object.values(forecastData as any) : [])}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
@@ -694,7 +694,7 @@ function CashflowTrends({ organizationId, currency, historicalData }: CashflowTr
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
-            <AreaChart data={historicalData}>
+            <AreaChart data={Array.isArray(historicalData) ? historicalData : (historicalData && typeof historicalData === 'object' ? Object.values(historicalData as any) : [])}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="period" />
               <YAxis />

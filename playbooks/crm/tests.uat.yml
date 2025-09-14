@@ -1,4 +1,4 @@
-smart_code: HERA.TEST.SCOPE.CRM_MINI.v1
+smart_code: HERA.TEST.SCOPE.CRM.MINI.v1
 setup: []
 teardown: []
 
@@ -12,7 +12,7 @@ cases:
         headers:
           - { transaction_type: "crm_oppty_event", status: "posted" }
       report:
-        report_code: HERA.CRM.REPORT.PIPELINE_BY_STAGE.v1
+        report_code: HERA.CRM.REPORT.PIPELINE_BY_STAGE.CORE.v1
         params: { as_of: "2025-12-31" }
     strict: true
 
@@ -35,4 +35,3 @@ cases:
         headers:
           - { transaction_type: "crm_activity", status: "posted" }
     strict: true
-

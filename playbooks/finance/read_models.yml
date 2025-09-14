@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.READ_MODELS.CORE.v1
+smart_code: HERA.FINANCE.READ_MODELS.CORE.DEFS.v1
 views:
   - name: v_pos_orders_brief
     description: "UI list of POS orders with header totals"
@@ -42,4 +42,3 @@ views:
         AND (h.smart_code = 'HERA.FINANCE.PROCEDURE.POST.POS_ORDER_TO_GL.v1'
              OR h.metadata->>'source_transaction_type' = 'pos_order')
       ORDER BY journal_date DESC, journal_number DESC, line_number ASC
-

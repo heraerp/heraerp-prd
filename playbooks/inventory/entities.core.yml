@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.INVENTORY.MDM.ENTITY_CATALOG.CORE.v1
 items:
   # ---- TYPES (governance) ----
   - { slug: item,             entity_type: ENTITY_TYPE,      name: "Item" }
@@ -26,4 +26,3 @@ items:
   - { slug: uom:EA,               entity_type: ENTITY, name: "Each",            metadata: { entity_type: "uom" } }
   - { slug: uom:BOX,              entity_type: ENTITY, name: "Box",             metadata: { entity_type: "uom" } }
   - { slug: lot:LOT-001,          entity_type: ENTITY, name: "Lot 001",         metadata: { entity_type: "lot" } }
-

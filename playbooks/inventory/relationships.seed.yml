@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.RELATIONSHIPS.SEED.v1
+smart_code: HERA.INVENTORY.MDM.RELATIONSHIPS.SEED.v1
 rows:
   # Item stocked at location
   - from_slug: item:SKU-INV-001
@@ -23,4 +23,3 @@ rows:
     to_slug:   location:MAIN
     relationship_type: REPLENISHMENT_RULE
     relationship_data: { policy: "min_max", min: 50, max: 200 }
-

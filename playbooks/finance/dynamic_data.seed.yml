@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.FINANCE.MDM.DYNAMIC_DATA.SEED.v1
 rows:
   # Currency facts (GBP)
   - { entity_slug: currency:GBP, key_slug: currency.minor_unit, value: 2, value_type: number }
@@ -11,4 +11,3 @@ rows:
   # Tax code
   - { entity_slug: tax_code:VAT20, key_slug: tax_code.rate,      value: 0.20, value_type: number }
   - { entity_slug: tax_code:VAT20, key_slug: tax_code.inclusive, value: false, value_type: boolean }
-

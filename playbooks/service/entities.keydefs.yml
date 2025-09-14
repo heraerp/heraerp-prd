@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.SERVICE.MDM.DYNAMIC_KEYS.CORE.v1
 items:
   # Service
   - { slug: service.category,         entity_type: ENTITY, name: "Service Category",  metadata: { type: "text" } }
@@ -21,4 +21,3 @@ items:
   - { slug: contract.start_date,      entity_type: ENTITY, name: "Start Date",         metadata: { type: "date" } }
   - { slug: contract.end_date,        entity_type: ENTITY, name: "End Date",           metadata: { type: "date" } }
   - { slug: contract.coverage,        entity_type: ENTITY, name: "Coverage",           metadata: { type: "text" } }
-

@@ -533,7 +533,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData}>
+                  <BarChart data={Array.isArray(chartData) ? chartData : (chartData && typeof chartData === 'object' ? Object.values(chartData as any) : [])}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -554,7 +554,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={pieData}
+                      data={Array.isArray(pieData) ? pieData : (pieData && typeof pieData === 'object' ? Object.values(pieData as any) : [])}
                       cx="50%"
                       cy="50%"
                       labelLine={false}

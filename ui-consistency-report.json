@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-09-14T10:28:04.188Z",
-  "violations": 2731,
-  "warnings": 664,
+  "timestamp": "2025-09-14T18:40:17.133Z",
+  "violations": 2664,
+  "warnings": 680,
   "details": {
     "violations": [
       {
@@ -867,6 +867,30 @@
         "line": 364,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"flex items-center justify-center w-8 h-8 rou..."
+      },
+      {
+        "file": "src/app/demo/glassmorphic-dark/page.tsx",
+        "line": 68,
+        "message": "Hardcoded dollar sign found. Use CurrencyDisplay component",
+        "code": "value=\"$125,430\"..."
+      },
+      {
+        "file": "src/app/demo/glassmorphic-dark/page.tsx",
+        "line": 104,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div key={item} className=\"flex items-center justify-between..."
+      },
+      {
+        "file": "src/app/demo/glassmorphic-dark/page.tsx",
+        "line": 166,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"w-10 h-6 bg-white/10 rounded-full p-1 cursor..."
+      },
+      {
+        "file": "src/app/demo/glassmorphic-dark/page.tsx",
+        "line": 167,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"w-4 h-4 bg-white/40 rounded-full\" />..."
       },
       {
         "file": "src/app/demo/page.tsx",
@@ -2670,103 +2694,91 @@
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 202,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"min-h-screen bg-gray-50 dark:bg-gray-900 fle..."
-      },
-      {
-        "file": "src/app/finance/page.tsx",
-        "line": 213,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"min-h-screen bg-gray-50 dark:bg-gray-900 fle..."
-      },
-      {
-        "file": "src/app/finance/page.tsx",
-        "line": 255,
+        "line": 374,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 264,
+        "line": 383,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 274,
+        "line": 393,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 301,
+        "line": 471,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 319,
+        "line": 489,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 337,
+        "line": 507,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 355,
+        "line": 528,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 379,
+        "line": 609,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 400,
+        "line": 630,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"flex items-center justify-between mb-4 p-4 b..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 438,
+        "line": 669,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<Card className=\"bg-white/80 dark:bg-gray-900/80 backdrop-bl..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 451,
+        "line": 682,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 460,
+        "line": 691,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 469,
+        "line": 700,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 478,
+        "line": 709,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
       {
         "file": "src/app/finance/page.tsx",
-        "line": 487,
+        "line": 718,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm ..."
       },
@@ -6636,489 +6648,141 @@
       },
       {
         "file": "src/app/isp/agents/page.tsx",
-        "line": 61,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 84,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 326,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 338,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 350,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 362,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 374,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 394,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-x..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 401,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"px-4 py-3 bg-white/5 backdrop-blur-xl border bord..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 412,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"px-4 py-3 bg-white/5 backdrop-blur-xl border bord..."
-      },
-      {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 420,
+        "line": 631,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<button className=\"flex items-center space-x-2 px-4 py-3 bg-..."
       },
       {
         "file": "src/app/isp/agents/page.tsx",
-        "line": 430,
+        "line": 764,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<div className=\"w-20 h-2 bg-white/10 rounded-full overflow-h..."
       },
       {
-        "file": "src/app/isp/agents/page.tsx",
-        "line": 465,
+        "file": "src/app/isp/ai-manager/page.tsx",
+        "line": 252,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<div key={i} className=\"bg-black/30 rounded p-3\">..."
+      },
+      {
+        "file": "src/app/isp/ai-manager/page.tsx",
+        "line": 417,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<Card className=\"bg-white/10 backdrop-blur-xl border-white/2..."
       },
       {
         "file": "src/app/isp/analytics/page.tsx",
         "line": 71,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 292,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 358,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 405,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 420,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<tr key={service.service} className=\"hover:bg-white/5 transi..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 448,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 486,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 492,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"p-4 rounded-lg bg-white/5 border border-white/10 ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 506,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-1.5 w-20 rounded-full bg-white/10 overflow..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 528,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 553,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/analytics/page.tsx",
-        "line": 562,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
+        "code": "<div className=\"relative bg-slate-900/50 backdrop-blur-xl bo..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 90,
+        "line": 115,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<div className=\"relative bg-slate-900/50 backdrop-blur-xl bo..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 154,
+        "line": 262,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<button className=\"flex items-center space-x-2 px-4 py-2 bg-..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 206,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 270,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 281,
+        "line": 392,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 309,
+        "line": 471,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<div className=\"relative flex items-center space-x-3 bg-slat..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 321,
+        "line": 484,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"pl-10 pr-4 py-2 bg-white/5 border border-white/10..."
+        "code": "<div className=\"relative flex items-center space-x-3 bg-slat..."
       },
       {
         "file": "src/app/isp/billing/page.tsx",
-        "line": 324,
+        "line": 497,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-2 bg-white/5 border border-white/10 rou..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 327,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-2 bg-white/5 border border-white/10 rou..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 337,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<tr className=\"border-b border-white/10 bg-white/5\">..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 360,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<tr key={invoice.id} className=\"hover:bg-white/5 transition-..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 383,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-1.5 bg-white/5 hover:bg-white/10 rounde..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 386,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-1.5 bg-white/5 hover:bg-white/10 rounde..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 403,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative flex items-center space-x-3 bg-whit..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 416,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative flex items-center space-x-3 bg-whit..."
-      },
-      {
-        "file": "src/app/isp/billing/page.tsx",
-        "line": 429,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative flex items-center space-x-3 bg-whit..."
+        "code": "<div className=\"relative flex items-center space-x-3 bg-slat..."
       },
       {
         "file": "src/app/isp/dashboard/page.tsx",
         "line": 46,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<div className=\"relative bg-slate-900/50 backdrop-blur-xl bo..."
       },
       {
         "file": "src/app/isp/dashboard/page.tsx",
-        "line": 271,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 338,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 391,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 402,
+        "line": 407,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/dashboard/page.tsx",
-        "line": 422,
+        "line": 476,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 429,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/5 rounded-xl p-4 border border-whit..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 434,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/5 rounded-xl p-4 border border-whit..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 439,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/5 rounded-xl p-4 border border-whit..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 444,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/5 rounded-xl p-4 border border-whit..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 457,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/dashboard/page.tsx",
-        "line": 471,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"px-4 py-2 bg-white/10 text-white rounded-..."
+        "code": "<button className=\"px-4 py-2 bg-slate-900/50 text-white roun..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 372,
+        "line": 461,
         "message": "Hardcoded dollar sign found. Use CurrencyDisplay component",
         "code": "{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toU..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 260,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 283,
+        "line": 372,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 292,
+        "line": 381,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 301,
+        "line": 390,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 310,
+        "line": 399,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 368,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 391,
+        "line": 480,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-1.5 rounded-full bg-white/10 overflow-hidd..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 410,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 461,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 471,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"text-center p-2 rounded bg-white/5\">..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 475,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"text-center p-2 rounded bg-white/5\">..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 479,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"text-center p-2 rounded bg-white/5\">..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 494,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 547,
+        "line": 636,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div key={index} className=\"flex items-center justify-betwee..."
       },
       {
         "file": "src/app/isp/ipo/page.tsx",
-        "line": 592,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 630,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 633,
+        "line": 722,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"absolute left-6 top-0 bottom-0 w-0.5 bg-whit..."
       },
       {
-        "file": "src/app/isp/ipo/page.tsx",
-        "line": 685,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
         "file": "src/app/isp/layout.tsx",
-        "line": 54,
+        "line": 57,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"fixed inset-0 z-30 bg-black/50 backdrop-blur-sm l..."
-      },
-      {
-        "file": "src/app/isp/layout.tsx",
-        "line": 139,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl p-4 bor..."
-      },
-      {
-        "file": "src/app/isp/layout.tsx",
-        "line": 155,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
-      },
-      {
-        "file": "src/app/isp/layout.tsx",
-        "line": 180,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<header className=\"sticky top-0 z-20 bg-white/5 backdrop-blu..."
-      },
-      {
-        "file": "src/app/isp/network/page.tsx",
-        "line": 45,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/network/page.tsx",
-        "line": 223,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/network/page.tsx",
-        "line": 262,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-2 rounded-full bg-white/10 overflow-hidden..."
-      },
-      {
-        "file": "src/app/isp/network/page.tsx",
-        "line": 279,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/network/page.tsx",
-        "line": 314,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
       },
       {
         "file": "src/app/isp/settings/page.tsx",
@@ -7176,81 +6840,33 @@
       },
       {
         "file": "src/app/isp/subscribers/page.tsx",
-        "line": 125,
+        "line": 366,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"flex items-center space-x-1 px-3 py-1 rounde..."
       },
       {
         "file": "src/app/isp/subscribers/page.tsx",
-        "line": 179,
+        "line": 522,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "className=\"pl-10 pr-4 py-2 bg-slate-900/50 border border-whi..."
       },
       {
         "file": "src/app/isp/subscribers/page.tsx",
-        "line": 194,
+        "line": 525,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<button className=\"p-2 bg-slate-900/50 border border-white/1..."
       },
       {
         "file": "src/app/isp/subscribers/page.tsx",
-        "line": 209,
+        "line": 528,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+        "code": "<button className=\"p-2 bg-slate-900/50 border border-white/1..."
       },
       {
         "file": "src/app/isp/subscribers/page.tsx",
-        "line": 224,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 281,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"pl-10 pr-4 py-2 bg-white/5 border border-white/10..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 284,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-2 bg-white/5 border border-white/10 rou..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 287,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-2 bg-white/5 border border-white/10 rou..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 296,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 300,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<tr className=\"border-b border-white/10 bg-white/5\">..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 328,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"hover:bg-white/5 transition-colors duration-200\"..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 371,
+        "line": 599,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"w-24 h-2 bg-white/10 rounded-full overflow-h..."
-      },
-      {
-        "file": "src/app/isp/subscribers/page.tsx",
-        "line": 389,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"p-1 hover:bg-white/10 rounded-lg transiti..."
       },
       {
         "file": "src/app/landing/page.tsx",
@@ -8394,87 +8010,33 @@
       },
       {
         "file": "src/app/salon/appointments/page.tsx",
-        "line": 42,
+        "line": 231,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/70 backdrop-blur-xl rounde..."
+        "code": "className=\"p-2 hover:bg-white/10 rounded-lg transition-color..."
       },
       {
         "file": "src/app/salon/appointments/page.tsx",
-        "line": 58,
+        "line": 245,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"h-8 bg-gray-200/50 rounded-lg animate-pulse ..."
+        "code": "className=\"p-2 hover:bg-white/10 rounded-lg transition-color..."
       },
       {
         "file": "src/app/salon/appointments/page.tsx",
-        "line": 91,
+        "line": 286,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/60 backdrop-blur-sm rounded-xl p-4 ..."
+        "code": "<div key={time} className=\"flex items-start gap-4 p-3 rounde..."
       },
       {
         "file": "src/app/salon/appointments/page.tsx",
-        "line": 388,
+        "line": 294,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/70 backdrop-blur-xl rounded-2xl p-6..."
+        "code": "className=\"flex items-center justify-between p-3 rounded-lg ..."
       },
       {
         "file": "src/app/salon/appointments/page.tsx",
-        "line": 394,
+        "line": 321,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"p-2 rounded-lg bg-white/50 backdrop-blur-sm text-..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 411,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"p-2 rounded-lg bg-white/50 backdrop-blur-sm text-..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 419,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"flex items-center gap-2 bg-white/50 backdrop..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 443,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "className=\"bg-white/50 backdrop-blur-sm border border-white/..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 488,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/70 backdrop-blur-xl rounded-2xl sha..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 490,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"absolute inset-0 bg-white/50 backdrop-blur-s..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 509,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"flex-1 min-h-[80px] bg-white/30 backdrop-blu..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 545,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"flex items-center justify-between bg-white/7..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 551,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"px-4 py-2 bg-white/50 backdrop-blur-sm te..."
-      },
-      {
-        "file": "src/app/salon/appointments/page.tsx",
-        "line": 554,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"px-4 py-2 bg-white/50 backdrop-blur-sm te..."
+        "code": "<div className=\"w-full h-0.5 bg-white/5 rounded\" />..."
       },
       {
         "file": "src/app/salon/customers/page.tsx",
@@ -8526,93 +8088,75 @@
       },
       {
         "file": "src/app/salon/dashboard/page.tsx",
-        "line": 24,
+        "line": 194,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/70 backdrop-blur-xl rounded-2xl p-6..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 287,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"bg-white/60 backdrop-blur-xl rounded-xl px-5..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 334,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/70 backdrop-blur-xl rounde..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 342,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div key={apt.id} className=\"bg-white/50 backdrop-blur round..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 367,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<div className=\"relative bg-white/70 backdrop-blur-xl rounde..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 375,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"w-full bg-white/50 backdrop-blur text-gra..."
-      },
-      {
-        "file": "src/app/salon/dashboard/page.tsx",
-        "line": 378,
-        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
-        "code": "<button className=\"w-full bg-white/50 backdrop-blur text-gra..."
+        "code": "className=\"flex items-center justify-between p-4 rounded-xl ..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 367,
+        "line": 307,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"min-h-screen bg-white/60 backdrop-blur-sm sh..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 370,
+        "line": 310,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"bg-white/80 backdrop-blur-sm rounded-2xl p-8..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 388,
+        "line": 328,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<DialogContent className=\"backdrop-blur-xl bg-white/90 dark:..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 554,
+        "line": 494,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"bg-white/80 backdrop-blur-sm rounded-2xl sha..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 591,
+        "line": 531,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"bg-white/80 backdrop-blur-sm rounded-2xl sha..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 636,
+        "line": 576,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"bg-white/80 backdrop-blur-sm rounded-2xl p-6..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 644,
+        "line": 584,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "className=\"pl-10 bg-[#F5F3FA] border-[#6C63FF]/20 text-[#2B2..."
       },
       {
         "file": "src/app/salon/finance/expenses/page.tsx",
-        "line": 655,
+        "line": 595,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"bg-white/80 backdrop-blur-sm rounded-2xl sha..."
+      },
+      {
+        "file": "src/app/salon/layout.tsx",
+        "line": 79,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"fixed inset-0 z-30 bg-black/50 backdrop-blur-sm l..."
+      },
+      {
+        "file": "src/app/salon/layout.tsx",
+        "line": 157,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl p-4 bor..."
+      },
+      {
+        "file": "src/app/salon/layout.tsx",
+        "line": 209,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<header className=\"sticky top-0 z-20 bg-white/5 backdrop-blu..."
       },
       {
         "file": "src/app/salon/pos/page.tsx",
@@ -12413,6 +11957,48 @@
         "code": "<div key={code} className=\"p-3 bg-gray-50 rounded-lg\">..."
       },
       {
+        "file": "src/components/isp/ISPModal.tsx",
+        "line": 42,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"absolute inset-0 bg-black/80 backdrop-blur-md\"..."
+      },
+      {
+        "file": "src/components/isp/ISPModal.tsx",
+        "line": 60,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"p-2 rounded-lg bg-white/5 hover:bg-white/10 trans..."
+      },
+      {
+        "file": "src/components/isp/ISPTable.tsx",
+        "line": 61,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"w-full pl-10 pr-4 py-3 bg-white/5 border border-w..."
+      },
+      {
+        "file": "src/components/isp/ISPTable.tsx",
+        "line": 70,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"relative bg-white/5 backdrop-blur-xl border ..."
+      },
+      {
+        "file": "src/components/isp/ISPTable.tsx",
+        "line": 106,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"border-b border-white/5 hover:bg-white/5 transiti..."
+      },
+      {
+        "file": "src/components/isp/ISPTable.tsx",
+        "line": 157,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"p-2 rounded-lg bg-white/5 hover:bg-white/10 disab..."
+      },
+      {
+        "file": "src/components/isp/ISPTable.tsx",
+        "line": 168,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "className=\"p-2 rounded-lg bg-white/5 hover:bg-white/10 disab..."
+      },
+      {
         "file": "src/components/layout/UniversalSidebar.tsx",
         "line": 260,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
@@ -12441,6 +12027,18 @@
         "line": 161,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"fixed inset-0 bg-black/50\" onClick={() => se..."
+      },
+      {
+        "file": "src/components/navigation/NavigationLoadingProvider.tsx",
+        "line": 57,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"fixed inset-0 z-50 bg-black/20 backdrop-blur..."
+      },
+      {
+        "file": "src/components/navigation/NavigationLoadingProvider.tsx",
+        "line": 58,
+        "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
+        "code": "<div className=\"bg-white/90 dark:bg-slate-900/90 backdrop-bl..."
       },
       {
         "file": "src/components/o2c/O2CDashboard.tsx",
@@ -16212,7 +15810,7 @@
       },
       {
         "file": "src/components/universal-ui/widgets/ChartWidget.tsx",
-        "line": 237,
+        "line": 239,
         "message": "Hardcoded colors found. Use semantic colors (bg-background, bg-muted)",
         "code": "<div className=\"h-64 bg-gray-200 dark:bg-gray-700 rounded\"><..."
       },
@@ -16748,6 +16346,11 @@
       },
       {
         "file": "src/app/finance/page.tsx",
+        "message": "Dialog should be imported from '@/components/ui/dialog'",
+        "found": "import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from"
+      },
+      {
+        "file": "src/app/finance/page.tsx",
         "message": "Button should be imported from '@/components/ui/button'",
         "found": "import { Button } from"
       },
@@ -17043,11 +16646,61 @@
       },
       {
         "file": "src/app/isp/agents/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/agents/page.tsx",
+        "message": "Input should be imported from '@/components/ui/input'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/agents/page.tsx",
         "message": "Inconsistent spacing detected. Use either margin utilities OR space utilities, not both"
+      },
+      {
+        "file": "src/app/isp/ai-manager/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { Button } from"
+      },
+      {
+        "file": "src/app/isp/ai-manager/page.tsx",
+        "message": "Input should be imported from '@/components/ui/input'",
+        "found": "import { Input } from"
       },
       {
         "file": "src/app/isp/analytics/page.tsx",
         "message": "Inconsistent spacing detected. Use either margin utilities OR space utilities, not both"
+      },
+      {
+        "file": "src/app/isp/billing/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/billing/page.tsx",
+        "message": "Input should be imported from '@/components/ui/input'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/network/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/network/page.tsx",
+        "message": "Input should be imported from '@/components/ui/input'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/subscribers/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
+      },
+      {
+        "file": "src/app/isp/subscribers/page.tsx",
+        "message": "Input should be imported from '@/components/ui/input'",
+        "found": "import { ISPInput, ISPSelect, ISPButton } from"
       },
       {
         "file": "src/app/landing/page.tsx",
@@ -17177,6 +16830,11 @@
         "file": "src/app/restaurant/page.tsx",
         "message": "Button should be imported from '@/components/ui/button'",
         "found": "import { Button } from"
+      },
+      {
+        "file": "src/app/salon/appointments/page.tsx",
+        "message": "Button should be imported from '@/components/ui/button'",
+        "found": "import { GlassmorphicCard, GlassmorphicButton, GlassmorphicStatCard } from"
       },
       {
         "file": "src/app/salon/finance/commissions/page.tsx",
@@ -18321,6 +17979,22 @@
         "file": "src/components/inventory/UniversalAIInventoryDashboard.tsx",
         "message": "Button should be imported from '@/components/ui/button'",
         "found": "import { Button } from"
+      },
+      {
+        "file": "src/components/isp/ISPForm.tsx",
+        "message": "form files: Forms should have onSubmit handler"
+      },
+      {
+        "file": "src/components/isp/ISPForm.tsx",
+        "message": "form files: Forms should show loading state during submission"
+      },
+      {
+        "file": "src/components/isp/ISPModal.tsx",
+        "message": "dialog files: Dialogs should have max-height constraint"
+      },
+      {
+        "file": "src/components/isp/ISPModal.tsx",
+        "message": "dialog files: Dialogs should handle overflow properly"
       },
       {
         "file": "src/components/layout/ControlCenterWidget.tsx",
@@ -19634,9 +19308,9 @@
     ]
   },
   "summary": {
-    "hardcodedCurrency": 226,
-    "hardcodedColors": 2485,
+    "hardcodedCurrency": 227,
+    "hardcodedColors": 2417,
     "customModals": 0,
-    "inconsistentImports": 583
+    "inconsistentImports": 595
   }
 }
