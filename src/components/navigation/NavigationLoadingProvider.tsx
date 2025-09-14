@@ -32,15 +32,12 @@ export function NavigationLoadingProvider({ children }: { children: React.ReactN
 
   // Reset loading state when pathname changes (navigation complete)
   useEffect(() => {
-    if (isNavigating) {
-      const timer = setTimeout(() => {
-        setIsNavigating(false)
-        setNavigationTarget(null)
-      }, 100) // Small delay to prevent flash
-
-      return () => clearTimeout(timer)
+    if (isNavigating && pathname === navigationTarget) {
+      // Navigation is complete, reset immediately for smooth transition
+      setIsNavigating(false)
+      setNavigationTarget(null)
     }
-  }, [pathname, isNavigating])
+  }, [pathname, isNavigating, navigationTarget])
 
   return (
     <NavigationLoadingContext.Provider 
@@ -52,23 +49,9 @@ export function NavigationLoadingProvider({ children }: { children: React.ReactN
     >
       {children}
       
-      {/* Global Loading Overlay */}
+      {/* Subtle loading indicator at top of page */}
       {isNavigating && (
-        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-white/20">
-            <div className="flex items-center gap-4">
-              <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-              <div>
-                <p className="font-semibold text-gray-900 dark:text-white">Loading page...</p>
-                {navigationTarget && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Navigating to {navigationTarget}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-pulse" />
       )}
     </NavigationLoadingContext.Provider>
   )

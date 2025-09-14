@@ -41,7 +41,7 @@ export function NavigationLink({
     onClick?.()
     
     // Reset clicked state after a delay
-    setTimeout(() => setIsClicked(false), 200)
+    setTimeout(() => setIsClicked(false), 150)
   }
 
   return (
@@ -49,34 +49,27 @@ export function NavigationLink({
       href={href}
       onClick={handleClick}
       className={cn(
-        'relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
-        'hover:bg-white/10 hover:backdrop-blur-sm',
+        'relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ease-in-out',
+        'hover:bg-white/10 hover:backdrop-blur-sm transform hover:scale-[1.02]',
         isActive && 'bg-white/20 text-white shadow-lg',
         isActive && activeClassName,
         (disabled || isNavigating) && 'opacity-50 cursor-not-allowed pointer-events-none',
-        isClicked && 'scale-95 bg-white/30',
-        isThisLinkNavigating && 'bg-white/30 animate-pulse',
+        isClicked && 'scale-[0.98] bg-white/30',
+        isThisLinkNavigating && 'bg-white/30',
         className
       )}
     >
-      {/* Loading spinner for this specific link */}
-      {isThisLinkNavigating ? (
-        <Loader2 className="w-5 h-5 animate-spin text-white" />
-      ) : (
-        Icon && <Icon className="w-5 h-5" />
-      )}
+      {Icon && <Icon className={cn(
+        "w-5 h-5 transition-transform duration-300",
+        isThisLinkNavigating && "scale-110"
+      )} />}
       
       <span className={cn(
-        'font-medium transition-opacity',
-        isThisLinkNavigating && 'opacity-70'
+        'font-medium transition-all duration-300',
+        isThisLinkNavigating && 'translate-x-1'
       )}>
         {children}
       </span>
-      
-      {/* Subtle loading indicator */}
-      {isThisLinkNavigating && (
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
-      )}
     </Link>
   )
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/lib/universal-api'
 
 export async function GET(request: NextRequest) {
+  const moduleName = 'budgets'
   try {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action') || 'list'
@@ -48,6 +49,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const moduleName = 'budgets'
   try {
     const body = await request.json()
     const { action, data, organizationId } = body
@@ -99,6 +101,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const moduleName = 'budgets'
   try {
     const body = await request.json()
     const { id, data, organizationId } = body
@@ -132,6 +135,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const moduleName = 'budgets'
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')

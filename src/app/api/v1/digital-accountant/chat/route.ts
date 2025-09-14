@@ -1201,7 +1201,7 @@ export async function POST(request: NextRequest) {
         if (context?.mode === 'salon') {
           // Try using AI to understand the query better
           try {
-            const aiResponse = await fetch(`${request.url.origin}/api/v1/ai/universal`, {
+            const aiResponse = await fetch(`${new URL(request.url).origin}/api/v1/ai/universal`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

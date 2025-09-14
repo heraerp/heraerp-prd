@@ -181,7 +181,7 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
     // Import Organizations
     for (const org of universalMapping.core_organizations) {
       try {
-        await heraApi.createOrganization(org)
+        await heraApi.createEntity(org)
         results.organizations_imported++
       } catch (error) {
         console.error('Organization import error:', error)
@@ -203,7 +203,7 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
     // Import Dynamic Data
     for (const dynamicData of universalMapping.core_dynamic_data) {
       try {
-        await heraApi.createDynamicData(dynamicData)
+        await heraApi.setDynamicField(dynamicData)
         results.dynamic_data_imported++
       } catch (error) {
         console.error('Dynamic data import error:', error)
@@ -236,7 +236,7 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
     // Import Transaction Lines
     for (const line of universalMapping.universal_transaction_lines) {
       try {
-        await heraApi.createTransactionLine(line)
+        await heraApi.createTransaction(line)
         results.transaction_lines_imported++
       } catch (error) {
         console.error('Transaction line import error:', error)

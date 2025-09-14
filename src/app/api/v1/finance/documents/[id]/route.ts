@@ -18,6 +18,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organizationId')
     
@@ -62,7 +63,7 @@ export async function GET(
           entity_type
         )
       `)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .eq('organization_id', organizationId)
       .single()
     
@@ -94,7 +95,7 @@ export async function GET(
       .from('universal_transactions')
       .select('id, transaction_type, transaction_code, created_at, metadata')
       .eq('organization_id', organizationId)
-      .eq('metadata->original_document_id', params.id)
+      .eq('metadata->original_document_id', resolvedParams.id)
       .eq('transaction_type', 'audit_log')
       .order('created_at', { ascending: false })
     

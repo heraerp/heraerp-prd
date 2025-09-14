@@ -100,29 +100,10 @@ export default function ISPLayout({
                     key={item.name}
                     href={item.href}
                     icon={item.icon}
-                    className={`group relative space-x-3 text-sm font-medium transition-all duration-300 ${
-                      isActive
-                        ? 'text-white'
-                        : 'text-white/70 hover:text-white'
-                    }`}
-                    activeClassName="bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 shadow-lg shadow-[#E91E63]/30"
-                    style={{
-                      animationDelay: `${index * 50}ms`
-                    }}
+                    className="text-sm font-medium text-white/70 hover:text-white"
+                    activeClassName="!bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 !text-white shadow-lg shadow-[#E91E63]/30"
                   >
-                    {/* Background gradient on active/hover */}
-                    <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 shadow-lg shadow-[#E91E63]/30'
-                        : 'bg-transparent group-hover:bg-muted/50'
-                    }`} />
-                    
-                    <span className="relative">{item.name}</span>
-                    
-                    {/* Active indicator */}
-                    {isActive && (
-                      <div className="absolute right-3 h-2 w-2 rounded-full bg-gradient-to-r from-[#E91E63] to-[#C2185B] animate-pulse shadow-lg shadow-[#E91E63]/50" />
-                    )}
+                    {item.name}
                   </NavigationLink>
                 )
               })}

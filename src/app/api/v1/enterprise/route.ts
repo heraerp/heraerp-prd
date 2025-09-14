@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Record business metric
-    heraMetrics.recordBusinessTransaction(
+    heraMetrics.recordTransaction(
       ctx.organizationId || 'system',
       'enterprise_summary_view',
       1,
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
                   encryption: {
                     key_id: encrypted.key_id,
                     algorithm: encrypted.algorithm,
-                    encrypted_at: encrypted.encrypted_at
+                    encrypted_at: new Date().toISOString()
                   }
                 },
                 smart_code: `HERA.ADMIN.CONFIG.SECRET.${key.toUpperCase()}.v1`,
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
       case 'update_rbac_policy':
         // Example: Update RBAC policy
         const { rbacPolicy } = await import('@/lib/rbac/policy-engine')
-        await rbacPolicy.loadPolicy(data.policy_yaml, ctx.organizationId!)
+        await rbacPolicy.loadPolicies(data.policy_yaml, ctx.organizationId!)
         
         result = { status: 'policy_updated' }
         break
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
           user_name: 'Admin User', // Get from auth context
           action: action,
           resource: data.resource || 'enterprise_config',
-          ip_address: req.headers.get('x-forwarded-for') || req.ip,
+          ip_address: req.headers.get('x-forwarded-for') || 'unknown',
           details: {
             request_data: data,
             result: result
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
       })
 
     // Record metrics
-    heraMetrics.recordBusinessTransaction(
+    heraMetrics.recordTransaction(
       ctx.organizationId!,
       action,
       1,

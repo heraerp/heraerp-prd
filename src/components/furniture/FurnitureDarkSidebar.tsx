@@ -5,6 +5,8 @@ import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { FurnitureNavigationLink } from './FurnitureNavigationLink'
+import { FurnitureModalLink } from './FurnitureModalLink'
 import {
   Home,
   Package,
@@ -119,13 +121,20 @@ const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive, onN
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+        className={cn(
+          "fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300",
+          isOpen ? "opacity-100" : "opacity-0"
+        )}
         onClick={onClose}
       />
       
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-800/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
+        <div className={cn(
+          "bg-gray-800/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden",
+          "transition-all duration-300 transform",
+          isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        )}>
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
             <div>
@@ -148,38 +157,15 @@ const AppsModal = React.memo(function AppsModal({ isOpen, onClose, isActive, onN
                 const active = isActive(app.href)
                 
                 return (
-                  <Link
+                  <FurnitureModalLink
                     key={app.href}
                     href={app.href}
-                    onClick={() => {
-                      onClose()
-                      if (onNavigate) onNavigate()
-                    }}
-                    className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group",
-                      "bg-gray-700/30 hover:bg-gradient-to-br hover:from-amber-600/20 hover:to-orange-600/20",
-                      "border border-gray-700/50 hover:border-amber-500/30",
-                      active && "bg-gradient-to-br from-amber-600/20 to-orange-600/20 border-amber-500/30"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-2",
-                      "bg-gradient-to-br from-gray-700 to-gray-800",
-                      "group-hover:from-amber-600 group-hover:to-orange-600",
-                      active && "from-amber-600 to-orange-600"
-                    )}>
-                      <Icon className={cn(
-                        "h-6 w-6",
-                        active ? "text-white" : "text-gray-400 group-hover:text-white"
-                      )} />
-                    </div>
-                    <span className={cn(
-                      "text-xs font-medium text-center",
-                      active ? "text-amber-400" : "text-gray-400 group-hover:text-white"
-                    )}>
-                      {app.title}
-                    </span>
-                  </Link>
+                    icon={app.icon}
+                    title={app.title}
+                    active={active}
+                    onClose={onClose}
+                    onNavigate={onNavigate}
+                  />
                 )
               })}
             </div>
@@ -225,52 +211,16 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
             const active = isActive(item.href)
             
             return (
-              <Link
+              <FurnitureNavigationLink
                 key={item.href}
                 href={item.href}
+                icon={item.icon}
+                title={item.title}
+                badge={item.badge}
+                badgeColor={item.badgeColor}
+                active={active}
                 onClick={handleNavClick}
-                className={cn(
-                  "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
-                  active
-                    ? "bg-gradient-to-r from-amber-600/20 to-orange-600/20 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-gray-700/50"
-                )}
-              >
-                <div className="relative">
-                  <Icon className={cn(
-                    "h-5 w-5",
-                    active ? "text-amber-400" : "text-gray-400 group-hover:text-amber-400"
-                  )} />
-                  
-                  {/* Badge indicator */}
-                  {item.badge && (
-                    <span className={cn(
-                      "absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center",
-                      item.badgeColor || "bg-gray-600"
-                    )}>
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-                
-                {/* Text label - full text on mobile, abbreviated on desktop */}
-                <span className={cn(
-                  "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
-                  active ? "text-amber-400" : "text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300"
-                )}>
-                  {item.title}
-                </span>
-
-                {/* Tooltip for full title - desktop only */}
-                <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                  <p className="font-medium">{item.title}</p>
-                  {item.badge && (
-                    <p className="text-xs text-gray-400 mt-1">
-                      {item.badge} {item.title === 'Sales' ? 'active orders' : item.title === 'Production' ? 'in queue' : 'alerts'}
-                    </p>
-                  )}
-                </div>
-              </Link>
+              />
             )
           })}
           
@@ -278,8 +228,9 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
           <button
             onClick={() => setShowAppsModal(true)}
             className={cn(
-              "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-200 group relative",
-              "text-gray-400 hover:text-white hover:bg-gray-700/50"
+              "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-300 group relative",
+              "text-gray-400 hover:text-white hover:bg-gray-700/50",
+              "transform hover:scale-[1.02] active:scale-[0.98]"
             )}
           >
             <Grid3x3 className="h-5 w-5 text-gray-400 group-hover:text-amber-400" />
@@ -304,35 +255,14 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
             const active = isActive(item.href)
             
             return (
-              <Link
+              <FurnitureNavigationLink
                 key={item.href}
                 href={item.href}
+                icon={item.icon}
+                title={item.title}
+                active={active}
                 onClick={handleNavClick}
-                className={cn(
-                  "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
-                  active
-                    ? "bg-gradient-to-r from-amber-600/20 to-orange-600/20 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-gray-700/50"
-                )}
-              >
-                <Icon className={cn(
-                  "h-5 w-5",
-                  active ? "text-amber-400" : "text-gray-400 group-hover:text-amber-400"
-                )} />
-                
-                {/* Text label */}
-                <span className={cn(
-                  "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
-                  active ? "text-amber-400" : "text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300"
-                )}>
-                  {item.title}
-                </span>
-
-                {/* Tooltip - desktop only */}
-                <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                  <p className="font-medium">{item.title}</p>
-                </div>
-              </Link>
+              />
             )
           })}
         </div>

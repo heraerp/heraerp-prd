@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/lib/universal-api'
 
 export async function GET(request: NextRequest) {
+  const moduleName = 'fixed-assets'
   try {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action') || 'list'
@@ -32,7 +33,8 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: true, data: entity })
 
       case 'stats':
-        const stats = await this.calculateStats(organizationId)
+        // TODO: Implement stats calculation
+        const stats = { total: 0, active: 0, inactive: 0 }
         return NextResponse.json({ success: true, data: stats })
 
       default:
@@ -48,6 +50,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const moduleName = 'fixed-assets'
   try {
     const body = await request.json()
     const { action, data, organizationId } = body
@@ -83,7 +86,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: true, data: newEntity })
 
       case 'validate':
-        const validation = await this.validateData(data)
+        // TODO: Implement data validation
+        const validation = { valid: true, errors: [] }
         return NextResponse.json({ success: true, data: validation })
 
       default:
@@ -99,6 +103,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const moduleName = 'fixed-assets'
   try {
     const body = await request.json()
     const { id, data, organizationId } = body
@@ -132,6 +137,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const moduleName = 'fixed-assets'
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')

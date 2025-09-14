@@ -12,7 +12,7 @@ async function getOrganizationFromAuth(request: NextRequest): Promise<string> {
   }
 
   const token = authHeader.replace('Bearer ', '')
-  const payload = await jwtService.verifyToken(token)
+  const payload = await jwtService.verify(token)
   
   if (!payload.organization_id) {
     throw new Error('Organization context missing')

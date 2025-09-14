@@ -22,7 +22,7 @@ interface EmailCampaign {
   target_audience: string
   email_template_id: string
   scheduled_send_date?: string
-  organization_id: string
+  organizationId: string
   
   // Campaign metrics (stored in core_dynamic_data)
   total_recipients?: number
@@ -270,7 +270,7 @@ async function createEmailCampaign(data: any, organizationId: string) {
     entity_type: 'email_campaign' as const,
     entity_name: campaign_name,
     entity_code: `CAMP-${Date.now()}`,
-    organization_id: organizationId,
+    organizationId: organizationId,
     status: 'draft' as const,
     metadata: {
       campaign_type,
@@ -305,7 +305,7 @@ async function createEmailCampaign(data: any, organizationId: string) {
   // Create campaign creation transaction
   await universalApi.createTransaction({
     transaction_type: 'email_campaign_created',
-    organization_id: organizationId,
+    organizationId: organizationId,
     reference_number: createdCampaign.entity_code,
     smart_code: 'HERA.EMAIL.CAMPAIGN.CREATE.v1',
     metadata: {
@@ -371,7 +371,7 @@ async function sendEmailCampaign(data: any) {
   // Create campaign send transaction
   await universalApi.createTransaction({
     transaction_type: 'email_campaign_sent',
-    organization_id: campaign.organization_id,
+    organizationId: campaign.organizationId,
     reference_number: campaign.entity_code,
     smart_code: 'HERA.EMAIL.CAMPAIGN.SEND.v1',
     total_amount: recipients.length,
@@ -406,7 +406,7 @@ async function trackEmailEngagement(data: any, organizationId: string) {
   // Create engagement transaction
   const transaction = await universalApi.createTransaction({
     transaction_type: `email_${engagement_type}`,
-    organization_id,
+    organizationId,
     reference_number: `ENG-${Date.now()}`,
     smart_code: `HERA.EMAIL.INTERACTION.${engagement_type.toUpperCase()}.v1`,
     metadata: {
@@ -492,7 +492,7 @@ async function createEmailTemplate(data: any, organizationId: string) {
     entity_type: 'email_template' as const,
     entity_name: template_name,
     entity_code: `TMPL-${Date.now()}`,
-    organization_id: organizationId,
+    organizationId: organizationId,
     status: 'active' as const,
     metadata: { category, created_at: new Date().toISOString() }
   }
@@ -530,7 +530,7 @@ async function createAudienceSegment(data: any, organizationId: string) {
     entity_type: 'email_audience' as const,
     entity_name: segment_name,
     entity_code: `AUD-${Date.now()}`,
-    organization_id: organizationId,
+    organizationId: organizationId,
     status: 'active' as const,
     metadata: { 
       description, 
@@ -654,7 +654,7 @@ async function evaluateLeadConversion(email: string, campaignId: string, organiz
       entity_type: 'lead' as const,
       entity_name: `Lead from ${email}`,
       entity_code: `LEAD-${Date.now()}`,
-      organization_id: organizationId,
+      organizationId: organizationId,
       status: 'new' as const,
       metadata: {
         lead_source: 'email_campaign',

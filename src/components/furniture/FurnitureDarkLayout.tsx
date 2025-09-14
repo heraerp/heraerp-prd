@@ -5,6 +5,7 @@ import FurnitureDarkSidebar from './FurnitureDarkSidebar'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
 
 interface FurnitureDarkLayoutProps {
   children: React.ReactNode
@@ -39,14 +40,15 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
   }, [isMobile])
 
   return (
-    <div className="relative min-h-screen bg-gray-900">
-      {/* Sidebar with proper mobile behavior */}
-      <div className={cn(
-        "fixed left-0 top-0 h-full z-40 transition-transform duration-300",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <FurnitureDarkSidebar onNavigate={handleSidebarClose} />
-      </div>
+    <NavigationLoadingProvider>
+      <div className="relative min-h-screen bg-gray-900">
+        {/* Sidebar with proper mobile behavior */}
+        <div className={cn(
+          "fixed left-0 top-0 h-full z-40 transition-transform duration-300",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}>
+          <FurnitureDarkSidebar onNavigate={handleSidebarClose} />
+        </div>
 
       {/* Mobile Menu Button - Always visible on mobile */}
       <Button
@@ -87,7 +89,8 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
           aria-label="Close sidebar"
         />
       )}
-    </div>
+      </div>
+    </NavigationLoadingProvider>
   )
 }
 
