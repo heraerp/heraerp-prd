@@ -1,4 +1,6 @@
-'use client' import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+'use client'
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation' interface FurnitureOrgContextType { organizationId: string organizationName: string orgLoading: boolean

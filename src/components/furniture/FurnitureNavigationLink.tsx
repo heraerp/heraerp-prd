@@ -1,4 +1,6 @@
-'use client' import React from 'react'
+'use client'
+
+import React from 'react'
 import { cn } from '@/lib/utils'
 import { NavigationLink } from '@/components/navigation/NavigationLink' interface FurnitureNavigationLinkProps { href: string icon: React.ElementType title: string badge?: string badgeColor?: string active?: boolean onClick?: () => void
 } export function FurnitureNavigationLink({ href, icon: Icon, title, badge, badgeColor, active, onClick

@@ -1,4 +1,6 @@
-'use client' import { useState, useEffect } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, Search, Filter, MoreVertical, Calendar, Package, Clock, AlertCircle, CheckCircle, ArrowRight
 } from 'lucide-react'

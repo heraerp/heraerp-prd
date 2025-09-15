@@ -1,4 +1,6 @@
-'use client' import React from 'react'
+'use client'
+
+import React from 'react'
 import { cn } from '@/lib/utils'
 import { NavigationLink } from '@/components/navigation/NavigationLink' interface FurnitureModalLinkProps { href: string icon: React.ElementType title: string active?: boolean onClose: () => void onNavigate?: () => void
 } export function FurnitureModalLink({ href, icon: Icon, title, active, onClose, onNavigate

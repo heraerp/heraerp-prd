@@ -1,4 +1,6 @@
-'use client' import { useState, useEffect } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, Search, Filter, MoreVertical, Phone, Mail, MapPin, Building2, Calendar, IndianRupee, TrendingUp, Edit, Trash2
 } from 'lucide-react'

@@ -1,4 +1,6 @@
-'use client' import React from 'react'
+'use client'
+
+import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils' interface FurnitureStatCardProps { label: string value: string | number change?: string trend?: 'up' | 'down' | 'neutral' icon: LucideIcon gradient: string className?: string

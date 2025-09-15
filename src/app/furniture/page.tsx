@@ -1,4 +1,7 @@
-'use client' import React, { useState, useEffect } from 'react' // Force dynamic rendering to avoid build issues
+'use client'
+
+import React, { useState, useEffect } from 'react' // Force dynamic rendering to avoid build issues
+
 export const dynamic = 'force-dynamic'
 // Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
 import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'

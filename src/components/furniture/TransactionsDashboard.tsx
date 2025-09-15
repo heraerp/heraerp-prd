@@ -1,4 +1,6 @@
-'use client' import React, { useState } from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ShoppingCart, Package, Factory, TruckIcon, BarChart, TrendingUp, AlertCircle, CheckCircle

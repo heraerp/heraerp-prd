@@ -1,4 +1,6 @@
-'use client' import { Button } from '@/components/ui/button'
+'use client'
+
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'

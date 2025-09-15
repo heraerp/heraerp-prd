@@ -1,4 +1,6 @@
-'use client' import { useState, useEffect, use } from 'react'
+'use client'
+
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Building2, User, Mail, Phone, MapPin, CreditCard, FileText, AlertCircle, Save, Package, Calendar, TrendingUp, Edit2, X
