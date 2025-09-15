@@ -289,7 +289,7 @@ export function ProtectedAuditRoute({ children, fallback }: ProtectedRouteProps)
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
-            <p className="text-gray-600">Please sign in to access this page.</p>
+            <p className="text-muted-foreground">Please sign in to access this page.</p>
           </div>
         </div>
       )

@@ -52,10 +52,10 @@ export function MediaMessage({
         case 'xlsx':
           return <FileText className="w-8 h-8 text-green-500" />
         default:
-          return <File className="w-8 h-8 text-gray-500" />
+          return <File className="w-8 h-8 text-muted-foreground" />
       }
     }
-    return <File className="w-8 h-8 text-gray-500" />
+    return <File className="w-8 h-8 text-muted-foreground" />
   }
 
   if (type === 'image') {
@@ -69,8 +69,8 @@ export function MediaMessage({
             {url ? (
               <img src={url} alt="Image" className="w-full h-auto max-h-64 object-cover" />
             ) : (
-              <div className="w-64 h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <span className="text-gray-500">Loading image...</span>
+              <div className="w-64 h-48 bg-gray-200 dark:bg-muted-foreground/10 flex items-center justify-center">
+                <span className="text-muted-foreground">Loading image...</span>
               </div>
             )}
           </div>
@@ -79,12 +79,12 @@ export function MediaMessage({
 
         {/* Image Preview Dialog */}
         <Dialog open={showPreview} onOpenChange={setShowPreview}>
-          <DialogContent className="max-w-4xl p-0 bg-black">
+          <DialogContent className="max-w-4xl p-0 bg-background">
             <div className="relative">
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
+                className="absolute top-4 right-4 z-10 text-foreground hover:bg-background/20"
                 onClick={() => setShowPreview(false)}
               >
                 <X className="w-5 h-5" />
@@ -98,7 +98,7 @@ export function MediaMessage({
               )}
               {caption && (
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <p className="text-white">{caption}</p>
+                  <p className="text-foreground">{caption}</p>
                 </div>
               )}
             </div>
@@ -111,7 +111,7 @@ export function MediaMessage({
   if (type === 'video') {
     return (
       <div className={cn('relative', className)}>
-        <div className="relative rounded-lg overflow-hidden max-w-xs bg-black">
+        <div className="relative rounded-lg overflow-hidden max-w-xs bg-background">
           {thumbnail ? (
             <div className="relative">
               <img
@@ -119,20 +119,20 @@ export function MediaMessage({
                 alt="Video thumbnail"
                 className="w-full h-auto max-h-48 object-cover"
               />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                <div className="bg-white/90 rounded-full p-3">
+              <div className="absolute inset-0 flex items-center justify-center bg-background/30">
+                <div className="bg-background/90 rounded-full p-3">
                   <Play className="w-6 h-6 text-black" />
                 </div>
               </div>
               {duration && (
-                <span className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                <span className="absolute bottom-2 left-2 bg-background/70 text-foreground text-xs px-2 py-1 rounded">
                   {duration}
                 </span>
               )}
             </div>
           ) : (
-            <div className="w-64 h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-              <Play className="w-12 h-12 text-gray-500" />
+            <div className="w-64 h-48 bg-gray-200 dark:bg-muted-foreground/10 flex items-center justify-center">
+              <Play className="w-12 h-12 text-muted-foreground" />
             </div>
           )}
         </div>
@@ -145,14 +145,14 @@ export function MediaMessage({
     return (
       <div
         className={cn(
-          'flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs',
+          'flex items-center gap-3 p-3 bg-muted dark:bg-muted rounded-lg max-w-xs',
           className
         )}
       >
         {getFileIcon()}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{fileName || 'Document'}</p>
-          <p className="text-xs text-gray-500">{formatFileSize(fileSize)}</p>
+          <p className="text-xs text-muted-foreground">{formatFileSize(fileSize)}</p>
         </div>
         <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={onDownload}>
           <Download className="w-4 h-4" />
@@ -165,7 +165,7 @@ export function MediaMessage({
     return (
       <div
         className={cn(
-          'flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs',
+          'flex items-center gap-2 p-2 bg-muted dark:bg-muted rounded-lg max-w-xs',
           className
         )}
       >
@@ -173,9 +173,9 @@ export function MediaMessage({
           <Play className="w-4 h-4" />
         </Button>
         <div className="flex-1">
-          <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded-full" />
+          <div className="h-8 bg-gray-300 dark:bg-muted-foreground/10 rounded-full" />
         </div>
-        <span className="text-xs text-gray-500">{duration || '0:00'}</span>
+        <span className="text-xs text-muted-foreground">{duration || '0:00'}</span>
       </div>
     )
   }

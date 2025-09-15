@@ -551,7 +551,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                         <Label className="text-sm font-medium text-muted-foreground">
                           Non-Standard Fields
                         </Label>
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-2xl font-bold text-primary">
                           {qualityMetrics.data.non_standard_fields}
                         </div>
                       </div>
@@ -630,7 +630,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                     <div className="text-muted-foreground">New Tables</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">6</div>
+                    <div className="text-lg font-bold text-primary">6</div>
                     <div className="text-muted-foreground">Universal Tables</div>
                   </div>
                 </div>
@@ -700,7 +700,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {smartCodes.data?.slice(0, 6).map(code => (
                     <div key={code.id} className="border rounded p-3">
-                      <div className="font-mono text-xs text-blue-600 mb-1">{code.smart_code}</div>
+                      <div className="font-mono text-xs text-primary mb-1">{code.smart_code}</div>
                       <div className="text-sm font-medium">{code.description}</div>
                       <div className="text-xs text-muted-foreground mt-1">
                         Industry: {code.industry}

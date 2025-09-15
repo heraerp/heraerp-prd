@@ -337,7 +337,7 @@ export function HeraChatInterface({
         <div
           className={cn(
             'flex items-center justify-between p-4 border-b',
-            isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+            isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-background border-border'
           )}
         >
           <div className="flex items-center gap-3">
@@ -348,16 +348,16 @@ export function HeraChatInterface({
                   iconGradient
                 )}
               >
-                <Icon className="h-6 w-6 text-white" />
+                <Icon className="h-6 w-6 text-foreground" />
               </div>
             )}
             <div>
               <h1
-                className={cn('text-xl font-semibold', isDarkMode ? 'text-white' : 'text-gray-900')}
+                className={cn('text-xl font-semibold', isDarkMode ? 'text-foreground' : 'text-gray-900')}
               >
                 {title}
               </h1>
-              <p className={cn('text-sm', isDarkMode ? 'text-gray-400' : 'text-gray-600')}>
+              <p className={cn('text-sm', isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground')}>
                 {subtitle}
               </p>
             </div>
@@ -389,19 +389,19 @@ export function HeraChatInterface({
                 <Card
                   className={cn(
                     'shadow-sm',
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-background border-border'
                   )}
                 >
                   <CardHeader
                     className={cn(
                       'p-2 border-b',
-                      isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                      isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                     )}
                   >
                     <CardTitle
                       className={cn(
                         'text-xs flex items-center gap-1.5',
-                        isDarkMode ? 'text-white' : 'text-gray-900'
+                        isDarkMode ? 'text-foreground' : 'text-gray-900'
                       )}
                     >
                       Quick Actions
@@ -417,7 +417,7 @@ export function HeraChatInterface({
                             'w-full justify-start gap-2 h-auto py-1.5 px-2 group transition-all',
                             isDarkMode
                               ? 'hover:bg-[#3a3a3a] text-gray-300'
-                              : 'hover:bg-gray-100 text-gray-700'
+                              : 'hover:bg-muted text-gray-700'
                           )}
                           onClick={() => handleQuickAction(action)}
                         >
@@ -428,19 +428,19 @@ export function HeraChatInterface({
                             )}
                           >
                             <action.icon
-                              className={cn('h-3 w-3', isDarkMode ? 'text-white' : 'text-gray-700')}
+                              className={cn('h-3 w-3', isDarkMode ? 'text-foreground' : 'text-gray-700')}
                             />
                           </div>
                           <div className="text-left">
                             <div
                               className={cn(
                                 'font-medium text-xs',
-                                isDarkMode ? 'text-white' : 'text-gray-900'
+                                isDarkMode ? 'text-foreground' : 'text-gray-900'
                               )}
                             >
                               {action.label}
                             </div>
-                            <div className="text-[10px] text-gray-400">{action.description}</div>
+                            <div className="text-[10px] text-muted-foreground">{action.description}</div>
                           </div>
                         </Button>
                       ))}
@@ -454,22 +454,22 @@ export function HeraChatInterface({
                 <Card
                   className={cn(
                     'shadow-sm',
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-background border-border'
                   )}
                 >
                   <CardHeader
                     className={cn(
                       'p-2 border-b',
-                      isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                      isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                     )}
                   >
                     <CardTitle
                       className={cn(
                         'text-xs flex items-center gap-1.5',
-                        isDarkMode ? 'text-white' : 'text-gray-900'
+                        isDarkMode ? 'text-foreground' : 'text-gray-900'
                       )}
                     >
-                      <TrendingUp className="h-3 w-3 text-gray-400" />
+                      <TrendingUp className="h-3 w-3 text-muted-foreground" />
                       Today's Metrics
                     </CardTitle>
                   </CardHeader>
@@ -482,7 +482,7 @@ export function HeraChatInterface({
                             'p-2 rounded border',
                             isDarkMode
                               ? 'bg-[#323232] border-[#3a3a3a]'
-                              : 'bg-gray-50 border-gray-200'
+                              : 'bg-muted border-border'
                           )}
                         >
                           <div className="flex items-center gap-1.5">
@@ -495,16 +495,16 @@ export function HeraChatInterface({
                               <metric.icon
                                 className={cn(
                                   'h-2.5 w-2.5',
-                                  isDarkMode ? 'text-white' : 'text-gray-700'
+                                  isDarkMode ? 'text-foreground' : 'text-gray-700'
                                 )}
                               />
                             </div>
                             <div>
-                              <p className="text-[10px] text-gray-400">{metric.label}</p>
+                              <p className="text-[10px] text-muted-foreground">{metric.label}</p>
                               <p
                                 className={cn(
                                   'font-semibold text-xs',
-                                  isDarkMode ? 'text-white' : 'text-gray-900'
+                                  isDarkMode ? 'text-foreground' : 'text-gray-900'
                                 )}
                               >
                                 {metric.value}
@@ -524,7 +524,7 @@ export function HeraChatInterface({
           <Card
             className={cn(
               'flex-1 flex flex-col border-0 rounded-none',
-              isDarkMode ? 'bg-[#292929]' : 'bg-white'
+              isDarkMode ? 'bg-[#292929]' : 'bg-background'
             )}
           >
             <Tabs
@@ -533,21 +533,21 @@ export function HeraChatInterface({
               className="flex-1 flex flex-col h-full"
             >
               <CardHeader
-                className={cn('border-b p-3', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}
+                className={cn('border-b p-3', isDarkMode ? 'border-[#3a3a3a]' : 'border-border')}
               >
                 <TabsList
                   className={cn(
                     'grid w-full max-w-[400px] grid-cols-3 p-1',
-                    isDarkMode ? 'bg-[#1f1f1f]' : 'bg-gray-100'
+                    isDarkMode ? 'bg-[#1f1f1f]' : 'bg-muted'
                   )}
                 >
                   <TabsTrigger
                     value="chat"
                     className={cn(
-                      'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                      'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-foreground text-xs sm:text-sm',
                       isDarkMode
-                        ? 'text-gray-300 hover:text-white'
-                        : 'text-gray-600 hover:text-gray-900'
+                        ? 'text-gray-300 hover:text-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
                     Chat
@@ -556,10 +556,10 @@ export function HeraChatInterface({
                     <TabsTrigger
                       value="production"
                       className={cn(
-                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-foreground text-xs sm:text-sm',
                         isDarkMode
-                          ? 'text-gray-300 hover:text-white'
-                          : 'text-gray-600 hover:text-gray-900'
+                          ? 'text-gray-300 hover:text-foreground'
+                          : 'text-muted-foreground hover:text-foreground'
                       )}
                     >
                       Production
@@ -569,10 +569,10 @@ export function HeraChatInterface({
                     <TabsTrigger
                       value="analytics"
                       className={cn(
-                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-foreground text-xs sm:text-sm',
                         isDarkMode
-                          ? 'text-gray-300 hover:text-white'
-                          : 'text-gray-600 hover:text-gray-900'
+                          ? 'text-gray-300 hover:text-foreground'
+                          : 'text-muted-foreground hover:text-foreground'
                       )}
                     >
                       Analytics
@@ -589,7 +589,7 @@ export function HeraChatInterface({
                     <div
                       className={cn(
                         'flex-shrink-0 px-4 py-3 border-b',
-                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-100 border-gray-200'
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                       )}
                     >
                       <div className="flex items-center gap-2">
@@ -627,7 +627,7 @@ export function HeraChatInterface({
                                 ? 'bg-red-500/20'
                                 : isDarkMode
                                   ? 'bg-[#323232]'
-                                  : 'bg-gray-100'
+                                  : 'bg-muted'
                             )}
                           >
                             {Icon ? (
@@ -637,8 +637,8 @@ export function HeraChatInterface({
                                   message.role === 'error'
                                     ? 'text-red-500'
                                     : isDarkMode
-                                      ? 'text-gray-400'
-                                      : 'text-gray-600'
+                                      ? 'text-muted-foreground'
+                                      : 'text-muted-foreground'
                                 )}
                               />
                             ) : (
@@ -659,7 +659,7 @@ export function HeraChatInterface({
                                     : 'bg-red-50 text-red-600'
                                   : isDarkMode
                                     ? 'bg-[#323232] text-gray-100'
-                                    : 'bg-gray-100 text-gray-900'
+                                    : 'bg-muted text-gray-900'
                             )}
                             style={
                               message.role === 'user'
@@ -673,7 +673,7 @@ export function HeraChatInterface({
                             <p
                               className={cn(
                                 'text-sm whitespace-pre-wrap relative z-10',
-                                message.role === 'user' && 'text-white'
+                                message.role === 'user' && 'text-foreground'
                               )}
                             >
                               {message.content}
@@ -700,7 +700,7 @@ export function HeraChatInterface({
                           <div
                             className={cn(
                               'text-xs mt-1',
-                              isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                              isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground'
                             )}
                           >
                             {message.timestamp.toLocaleTimeString()}
@@ -714,14 +714,14 @@ export function HeraChatInterface({
                         <div
                           className={cn(
                             'w-8 h-8 rounded-full flex items-center justify-center animate-pulse',
-                            isDarkMode ? 'bg-[#323232]' : 'bg-gray-100'
+                            isDarkMode ? 'bg-[#323232]' : 'bg-muted'
                           )}
                         >
                           {Icon && (
                             <Icon
                               className={cn(
                                 'h-4 w-4',
-                                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                                isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground'
                               )}
                             />
                           )}
@@ -729,7 +729,7 @@ export function HeraChatInterface({
                         <div
                           className={cn(
                             'rounded-lg px-4 py-3',
-                            isDarkMode ? 'bg-[#323232]' : 'bg-gray-100'
+                            isDarkMode ? 'bg-[#323232]' : 'bg-muted'
                           )}
                         >
                           <div className="flex items-center gap-2">
@@ -761,11 +761,11 @@ export function HeraChatInterface({
                   <div
                     className={cn(
                       'flex-shrink-0 px-4 pb-4',
-                      isDarkMode ? 'bg-[#292929]' : 'bg-white'
+                      isDarkMode ? 'bg-[#292929]' : 'bg-background'
                     )}
                   >
                     <p
-                      className={cn('text-xs mb-2', isDarkMode ? 'text-gray-500' : 'text-gray-400')}
+                      className={cn('text-xs mb-2', isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground')}
                     >
                       Try these examples:
                     </p>
@@ -783,7 +783,7 @@ export function HeraChatInterface({
                             'text-xs',
                             isDarkMode
                               ? 'border-[#484848] hover:bg-[#3a3a3a] text-gray-300'
-                              : 'border-gray-300 hover:bg-gray-100 text-gray-700'
+                              : 'border-border hover:bg-muted text-gray-700'
                           )}
                         >
                           {prompt}
@@ -799,7 +799,7 @@ export function HeraChatInterface({
                   onSubmit={handleSubmit}
                   className={cn(
                     'flex-shrink-0 p-4 border-t',
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-background border-border'
                   )}
                 >
                   <div className="flex gap-2">
@@ -811,15 +811,15 @@ export function HeraChatInterface({
                       className={cn(
                         'flex-1',
                         isDarkMode
-                          ? 'bg-[#1f1f1f] border-[#3a3a3a] text-white placeholder:text-gray-500'
-                          : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-400'
+                          ? 'bg-[#1f1f1f] border-[#3a3a3a] text-foreground placeholder:text-muted-foreground'
+                          : 'bg-background border-border text-gray-900 placeholder:text-muted-foreground'
                       )}
                       disabled={loading}
                     />
                     <Button
                       type="submit"
                       disabled={loading || !input.trim()}
-                      className="min-w-[60px] bg-blue-600 hover:bg-blue-700 text-white"
+                      className="min-w-[60px] bg-blue-600 hover:bg-blue-700 text-foreground"
                     >
                       {loading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -838,8 +838,8 @@ export function HeraChatInterface({
                     className={cn(
                       'absolute bottom-20 right-6 rounded-full shadow-lg',
                       isDarkMode
-                        ? 'bg-[#0078d4] hover:bg-[#106ebe] text-white'
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        ? 'bg-[#0078d4] hover:bg-[#106ebe] text-foreground'
+                        : 'bg-blue-600 hover:bg-blue-700 text-foreground'
                     )}
                   >
                     <ArrowDown className="h-4 w-4" />

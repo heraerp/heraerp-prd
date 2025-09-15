@@ -63,7 +63,7 @@ export const DashboardSection: React.FC<{
           {collapsible && (
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted dark:hover:bg-muted rounded-lg transition-colors"
             >
               <motion.div
                 animate={{ rotate: isCollapsed ? 180 : 0 }}
@@ -151,7 +151,7 @@ export const KPICard: React.FC<{
                   'flex items-center gap-1 text-sm font-medium',
                   change.trend === 'up' && 'text-green-600',
                   change.trend === 'down' && 'text-red-600',
-                  change.trend === 'neutral' && 'text-gray-600'
+                  change.trend === 'neutral' && 'text-muted-foreground'
                 )}
               >
                 {change.trend === 'up' && <TrendingUp className="w-3 h-3" />}
@@ -178,7 +178,7 @@ export const ActivityItem: React.FC<{
   onClick?: () => void
 }> = ({ icon, title, description, timestamp, variant = 'default', onClick }) => {
   const variantStyles = {
-    default: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
+    default: 'bg-muted dark:bg-muted text-muted-foreground',
     success: 'bg-green-100 dark:bg-green-900/30 text-green-600',
     warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600',
     danger: 'bg-red-100 dark:bg-red-900/30 text-red-600'
@@ -189,7 +189,7 @@ export const ActivityItem: React.FC<{
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       className={cn(
-        'flex gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors',
+        'flex gap-3 p-3 rounded-lg hover:bg-muted dark:hover:bg-muted/50 transition-colors',
         onClick && 'cursor-pointer'
       )}
       onClick={onClick}
@@ -223,17 +223,17 @@ export const ChartPlaceholder: React.FC<{
 }> = ({ type = 'line', height = '300px', loading = false }) => {
   if (loading) {
     return (
-      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" style={{ height }} />
+      <div className="animate-pulse bg-gray-200 dark:bg-muted-foreground/10 rounded-lg" style={{ height }} />
     )
   }
 
   return (
     <div
-      className="flex items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-dashed border-gray-300 dark:border-gray-600"
+      className="flex items-center justify-center bg-muted dark:bg-background/50 rounded-lg border border-dashed border-border dark:border-border"
       style={{ height }}
     >
       <div className="text-center">
-        <BarChart3 className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+        <BarChart3 className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
         <p className="text-sm text-muted-foreground">
           {type.charAt(0).toUpperCase() + type.slice(1)} chart placeholder
         </p>
@@ -278,7 +278,7 @@ export const MetricTile: React.FC<{
               'text-xs font-medium flex items-center gap-1',
               trend > 0 && 'text-green-600',
               trend < 0 && 'text-red-600',
-              trend === 0 && 'text-gray-600'
+              trend === 0 && 'text-muted-foreground'
             )}
           >
             {trend > 0 && '↑'}
@@ -335,7 +335,7 @@ export const ProgressIndicator: React.FC<{
 
       <div
         className={cn(
-          'w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
+          'w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full overflow-hidden',
           config.height
         )}
       >
@@ -363,7 +363,7 @@ export const DashboardEmptyState: React.FC<{
   return (
     <EnterpriseCard className="py-12" glassIntensity="subtle" animateOnMount>
       <div className="text-center space-y-3">
-        <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto text-gray-400">
+        <div className="w-12 h-12 rounded-full bg-muted dark:bg-muted flex items-center justify-center mx-auto text-muted-foreground">
           {icon}
         </div>
 

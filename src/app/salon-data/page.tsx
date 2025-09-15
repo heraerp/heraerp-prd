@@ -295,13 +295,13 @@ export default function SalonModernDashboard() {
   // Loading state
   if (contextLoading || loadingSubdomainOrg || data.loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
             <div className="w-20 h-20 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 animate-pulse shadow-2xl" />
-            <Scissors className="w-10 h-10 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            <Scissors className="w-10 h-10 text-foreground absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
           </div>
-          <p className="text-gray-400 mt-4 font-medium">Loading your salon...</p>
+          <p className="text-muted-foreground mt-4 font-medium">Loading your salon...</p>
         </div>
       </div>
     )
@@ -590,11 +590,11 @@ export default function SalonModernDashboard() {
                     transform: `perspective(1000px) rotateX(${mousePosition.y * 0.01 - 0.5}deg) rotateY(${mousePosition.x * 0.01 - 0.5}deg)`
                   }}
                 >
-                  <Scissors className="w-5 h-5 text-white drop-shadow-md" />
+                  <Scissors className="w-5 h-5 text-foreground drop-shadow-md" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">Hair Talkz</h1>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">
+                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-foreground">Hair Talkz</h1>
+                  <p className="text-xs !text-muted-foreground dark:!text-gray-300 font-medium">
                     {isHeadOffice
                       ? 'Head Office - All Branches'
                       : (currentOrganization?.organization_name?.includes('•')
@@ -611,13 +611,13 @@ export default function SalonModernDashboard() {
                   size="icon"
                   onClick={fetchDashboardData}
                   disabled={refreshing}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                  className="border-border text-gray-300 hover:bg-muted"
                 >
                   <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
                 </Button>
                 <Button
                   onClick={() => setIsBookingOpen(true)}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   New Booking
@@ -720,9 +720,9 @@ export default function SalonModernDashboard() {
                         }, 0.2)`
                       }}
                     >
-                      <stat.icon className="w-6 h-6 text-white drop-shadow-md" />
+                      <stat.icon className="w-6 h-6 text-foreground drop-shadow-md" />
                     </div>
-                    <p className="text-3xl font-bold !text-gray-900 dark:!text-white relative z-10">
+                    <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground relative z-10">
                       {stat.value}
                     </p>
                     <p className="text-sm !text-gray-700 dark:!text-gray-300 mt-1 font-medium">
@@ -739,13 +739,13 @@ export default function SalonModernDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-sage-500 to-champagne-500 flex items-center justify-center shadow-lg">
-                      <Settings className="w-7 h-7 text-white" />
+                      <Settings className="w-7 h-7 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold !text-gray-900 dark:!text-white">
+                      <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground">
                         Business Configuration Rules
                       </h3>
-                      <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                      <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                         {salonConfig.rules_applied.booking_rules +
                           salonConfig.rules_applied.pricing_rules +
                           salonConfig.rules_applied.notification_rules}{' '}
@@ -756,7 +756,7 @@ export default function SalonModernDashboard() {
                   <Link href="/salon-data/settings/ucr">
                     <Button
                       size="sm"
-                      className="bg-gradient-to-r from-sage-500 to-champagne-500 hover:from-sage-600 hover:to-champagne-600 text-white"
+                      className="bg-gradient-to-r from-sage-500 to-champagne-500 hover:from-sage-600 hover:to-champagne-600 text-foreground"
                     >
                       Manage Settings
                       <ChevronRight className="w-4 h-4 ml-1" />
@@ -768,7 +768,7 @@ export default function SalonModernDashboard() {
 
             {/* Configuration Loading State */}
             {configLoading && (
-              <div className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/20 dark:border-gray-700 rounded-xl p-6">
+              <div className="bg-background/10 dark:bg-muted/70 backdrop-blur-xl border border-border/20 dark:border-border rounded-xl p-6">
                 <div className="flex items-center justify-center gap-3">
                   <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
                   <span className="!text-gray-700 dark:!text-gray-300">
@@ -792,20 +792,20 @@ export default function SalonModernDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-sage-500 to-dusty-rose-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Calendar className="w-7 h-7 text-white" />
+                        <Calendar className="w-7 h-7 text-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-white mb-1">
+                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground mb-1">
                           Book Appointment
                         </h3>
-                        <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                        <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                           Schedule new client appointments
                         </p>
                       </div>
                     </div>
                     <Button
                       size="sm"
-                      className="bg-gradient-to-r from-sage-500 to-dusty-rose-600 hover:from-sage-600 hover:to-dusty-rose-700 text-white"
+                      className="bg-gradient-to-r from-sage-500 to-dusty-rose-600 hover:from-sage-600 hover:to-dusty-rose-700 text-foreground"
                       onClick={() => setIsBookingOpen(true)}
                     >
                       Book Now
@@ -827,13 +827,13 @@ export default function SalonModernDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-champagne-500 to-sage-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Settings className="w-7 h-7 text-white" />
+                        <Settings className="w-7 h-7 text-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-white mb-1">
+                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground mb-1">
                           Salon Settings
                         </h3>
-                        <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                        <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                           Configure business rules & preferences
                         </p>
                       </div>
@@ -841,7 +841,7 @@ export default function SalonModernDashboard() {
                     <Link href="/salon-data/settings">
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-champagne-500 to-sage-600 hover:from-champagne-600 hover:to-sage-700 text-white"
+                        className="bg-gradient-to-r from-champagne-500 to-sage-600 hover:from-champagne-600 hover:to-sage-700 text-foreground"
                       >
                         Settings
                         <ChevronRight className="w-4 h-4 ml-1" />
@@ -854,14 +854,14 @@ export default function SalonModernDashboard() {
 
             {/* Services Grid */}
             <div>
-              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-white mb-6 text-center">
+              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-6 text-center">
                 Popular Services
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {services.map((service, index) => (
                   <Card
                     key={index}
-                    className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border-gray-700 hover:bg-white/20 dark:hover:bg-gray-800/80 transition-all duration-300 transform hover:scale-105 cursor-pointer overflow-hidden group"
+                    className="bg-background/10 dark:bg-muted/70 backdrop-blur-xl border-border hover:bg-background/20 dark:hover:bg-muted/80 transition-all duration-300 transform hover:scale-105 cursor-pointer overflow-hidden group"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -892,18 +892,18 @@ export default function SalonModernDashboard() {
                           </Badge>
                         )}
                       </div>
-                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-2">
+                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-2">
                         {service.name}
                       </h3>
-                      <div className="flex items-center gap-2 text-sm !text-gray-600 dark:!text-gray-400">
+                      <div className="flex items-center gap-2 text-sm !text-muted-foreground dark:!text-muted-foreground">
                         <Clock className="w-4 h-4" />
                         <span>{service.duration}</span>
                       </div>
-                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
-                        <span className="text-sm !text-gray-600 dark:!text-gray-400">
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                        <span className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                           {service.category}
                         </span>
-                        <span className="text-lg font-bold !text-gray-900 dark:!text-white">
+                        <span className="text-lg font-bold !text-gray-900 dark:!text-foreground">
                           {service.price}
                         </span>
                       </div>
@@ -915,14 +915,14 @@ export default function SalonModernDashboard() {
 
             {/* Team Section */}
             <div>
-              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-white mb-6 text-center">
+              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-6 text-center">
                 Our Expert Team
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {team.map((member, index) => (
                   <Card
                     key={index}
-                    className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border-gray-700 hover:bg-white/20 dark:hover:bg-gray-800/80 transition-all duration-300 transform hover:scale-105 overflow-hidden group"
+                    className="bg-background/10 dark:bg-muted/70 backdrop-blur-xl border-border hover:bg-background/20 dark:hover:bg-muted/80 transition-all duration-300 transform hover:scale-105 overflow-hidden group"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -938,16 +938,16 @@ export default function SalonModernDashboard() {
                     <CardContent className="p-6 text-center">
                       <div
                         className={cn(
-                          'w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r flex items-center justify-center text-2xl font-bold text-white shadow-xl',
+                          'w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r flex items-center justify-center text-2xl font-bold text-foreground shadow-xl',
                           member.gradient
                         )}
                       >
                         {member.avatar}
                       </div>
-                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-1">
+                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-1">
                         {member.name}
                       </h3>
-                      <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-3">
+                      <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mb-3">
                         {member.title}
                       </p>
                       <div className="flex items-center justify-center gap-1 mb-3">
@@ -958,15 +958,15 @@ export default function SalonModernDashboard() {
                               'w-4 h-4',
                               i < Math.floor(member.rating)
                                 ? 'text-yellow-400 fill-current'
-                                : 'text-gray-600'
+                                : 'text-muted-foreground'
                             )}
                           />
                         ))}
-                        <span className="text-sm !text-gray-600 dark:!text-gray-400 ml-1">
+                        <span className="text-sm !text-muted-foreground dark:!text-muted-foreground ml-1">
                           {member.rating}
                         </span>
                       </div>
-                      <p className="text-xs !text-gray-600 dark:!text-gray-400 mb-3">
+                      <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mb-3">
                         {member.reviews} reviews
                       </p>
                       <Badge
@@ -980,19 +980,19 @@ export default function SalonModernDashboard() {
                       >
                         {member.available ? 'Available' : 'Busy'}
                       </Badge>
-                      <div className="mt-4 pt-4 border-t border-gray-700">
+                      <div className="mt-4 pt-4 border-t border-border">
                         <div className="flex flex-wrap gap-1 justify-center mb-2">
                           {member.specialties.slice(0, 2).map((specialty, idx) => (
                             <Badge
                               key={idx}
                               variant="outline"
-                              className="text-xs border-gray-600 text-gray-300"
+                              className="text-xs border-border text-gray-300"
                             >
                               {specialty}
                             </Badge>
                           ))}
                         </div>
-                        <p className="text-xs !text-gray-600 dark:!text-gray-400 flex items-center justify-center gap-1">
+                        <p className="text-xs !text-muted-foreground dark:!text-muted-foreground flex items-center justify-center gap-1">
                           <Instagram className="w-3 h-3" />
                           {member.instagram}
                         </p>
@@ -1006,7 +1006,7 @@ export default function SalonModernDashboard() {
             {/* Recent Appointments */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card
-                className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border-gray-700"
+                className="bg-background/10 dark:bg-muted/70 backdrop-blur-xl border-border"
                 style={{
                   background: `
                     linear-gradient(135deg, 
@@ -1020,11 +1020,11 @@ export default function SalonModernDashboard() {
                 }}
               >
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-white">
+                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-foreground">
                     <CalendarCheck className="w-5 h-5 text-purple-400" />
                     Recent Appointments
                   </CardTitle>
-                  <CardDescription className="!text-gray-600 dark:!text-gray-400">
+                  <CardDescription className="!text-muted-foreground dark:!text-muted-foreground">
                     Latest customer bookings
                   </CardDescription>
                 </CardHeader>
@@ -1034,29 +1034,29 @@ export default function SalonModernDashboard() {
                       {data.recentAppointments.slice(0, 5).map((appointment, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                              <Users className="w-5 h-5 text-white" />
+                              <Users className="w-5 h-5 text-foreground" />
                             </div>
                             <div>
-                              <p className="font-medium !text-gray-900 dark:!text-white">
+                              <p className="font-medium !text-gray-900 dark:!text-foreground">
                                 {appointment.customer_name || 'Guest Customer'}
                               </p>
-                              <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                                 {appointment.service_name || 'General Service'} •{' '}
                                 {appointment.staff_name || 'Any Staff'}
                               </p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium !text-gray-900 dark:!text-white">
+                            <p className="text-sm font-medium !text-gray-900 dark:!text-foreground">
                               {appointment.transaction_date
                                 ? new Date(appointment.transaction_date).toLocaleDateString()
                                 : 'N/A'}
                             </p>
-                            <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                            <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                               {appointment.status || 'Confirmed'}
                             </p>
                           </div>
@@ -1065,15 +1065,15 @@ export default function SalonModernDashboard() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <CalendarCheck className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                      <p className="!text-gray-600 dark:!text-gray-400">No recent appointments</p>
+                      <CalendarCheck className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                      <p className="!text-muted-foreground dark:!text-muted-foreground">No recent appointments</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
               <Card
-                className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border-gray-700"
+                className="bg-background/10 dark:bg-muted/70 backdrop-blur-xl border-border"
                 style={{
                   background: `
                     linear-gradient(135deg, 
@@ -1087,11 +1087,11 @@ export default function SalonModernDashboard() {
                 }}
               >
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-white">
+                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-foreground">
                     <TrendingUp className="w-5 h-5 text-green-400" />
                     Top Services
                   </CardTitle>
-                  <CardDescription className="!text-gray-600 dark:!text-gray-400">
+                  <CardDescription className="!text-muted-foreground dark:!text-muted-foreground">
                     Most booked services
                   </CardDescription>
                 </CardHeader>
@@ -1101,7 +1101,7 @@ export default function SalonModernDashboard() {
                       {data.topServices.slice(0, 5).map((service, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <div
@@ -1116,22 +1116,22 @@ export default function SalonModernDashboard() {
                                       : 'from-gray-500 to-gray-600'
                               )}
                             >
-                              <Scissors className="w-5 h-5 text-white" />
+                              <Scissors className="w-5 h-5 text-foreground" />
                             </div>
                             <div>
-                              <p className="font-medium !text-gray-900 dark:!text-white">
+                              <p className="font-medium !text-gray-900 dark:!text-foreground">
                                 {service.entity_name || service.service_name || 'Service'}
                               </p>
-                              <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                                 AED {service.price || 0}
                               </p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium !text-gray-900 dark:!text-white">
+                            <p className="text-sm font-medium !text-gray-900 dark:!text-foreground">
                               {(service.metadata as any)?.booking_count || 0} bookings
                             </p>
-                            <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                            <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                               {(service.metadata as any)?.percentage || 0}% of total
                             </p>
                           </div>
@@ -1140,8 +1140,8 @@ export default function SalonModernDashboard() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                      <p className="!text-gray-600 dark:!text-gray-400">
+                      <TrendingUp className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                      <p className="!text-muted-foreground dark:!text-muted-foreground">
                         No service data available
                       </p>
                     </div>
@@ -1155,27 +1155,27 @@ export default function SalonModernDashboard() {
         {/* Floating Action Button (Mobile) */}
         <button
           onClick={() => setIsBookingOpen(true)}
-          className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center text-white transform hover:scale-110 transition-all"
+          className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center text-foreground transform hover:scale-110 transition-all"
         >
           <Plus className="w-6 h-6" />
         </button>
 
         {/* Footer */}
-        <footer className="mt-12 border-t border-gray-800 bg-gray-900/50 backdrop-blur-xl">
+        <footer className="mt-12 border-t border-gray-800 bg-background/50 backdrop-blur-xl">
           <div className="px-6 py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-4">
+                <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-4">
                   Hair Talkz {isHeadOffice ? '- All Branches' : ''}
                 </h3>
-                <p className="!text-gray-600 dark:!text-gray-400 text-sm">
+                <p className="!text-muted-foreground dark:!text-muted-foreground text-sm">
                   Premium hair salon services in Dubai. Expert stylists, premium products,
                   exceptional service.
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Contact</h4>
-                <div className="space-y-2 text-sm !text-gray-600 dark:!text-gray-400">
+                <h4 className="font-semibold !text-gray-900 dark:!text-foreground mb-3">Contact</h4>
+                <div className="space-y-2 text-sm !text-muted-foreground dark:!text-muted-foreground">
                   <p className="flex items-center gap-2">
                     <Phone className="w-4 h-4" />
                     +971 4 123 4567
@@ -1191,15 +1191,15 @@ export default function SalonModernDashboard() {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Hours</h4>
-                <div className="space-y-1 text-sm !text-gray-600 dark:!text-gray-400">
+                <h4 className="font-semibold !text-gray-900 dark:!text-foreground mb-3">Hours</h4>
+                <div className="space-y-1 text-sm !text-muted-foreground dark:!text-muted-foreground">
                   <p>Monday - Friday: 9:00 AM - 9:00 PM</p>
                   <p>Saturday: 9:00 AM - 10:00 PM</p>
                   <p>Sunday: 10:00 AM - 8:00 PM</p>
                 </div>
               </div>
             </div>
-            <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm !text-gray-600 dark:!text-gray-400">
+            <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm !text-muted-foreground dark:!text-muted-foreground">
               <p>© 2024 Hair Talkz Dubai. All rights reserved. Powered by HERA ERP.</p>
             </div>
           </div>

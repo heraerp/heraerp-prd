@@ -422,7 +422,7 @@ export function UniversalLearningInterface({ className }: UniversalLearningInter
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center space-x-3">
-          <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl text-white">
+          <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl text-foreground">
             <Brain className="h-8 w-8" />
           </div>
           <div>
@@ -676,10 +676,10 @@ export function UniversalLearningInterface({ className }: UniversalLearningInter
                             step.status === 'completed'
                               ? 'bg-green-100 text-green-600'
                               : step.status === 'processing'
-                                ? 'bg-blue-100 text-blue-600'
+                                ? 'bg-blue-100 text-primary'
                                 : step.status === 'error'
                                   ? 'bg-red-100 text-red-600'
-                                  : 'bg-gray-100 text-gray-400'
+                                  : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {step.status === 'completed' ? (

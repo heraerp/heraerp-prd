@@ -181,12 +181,12 @@ export function EmailComposer({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-blue-600" />
+              <Mail className="h-5 w-5 text-primary" />
               Compose Email
               {contact && (
                 <Badge variant="outline" className="ml-2">
@@ -203,7 +203,7 @@ export function EmailComposer({
         <CardContent className="p-6 space-y-6">
           {/* Contact Information */}
           {contact && (
-            <Card className="bg-gray-50 border-gray-200">
+            <Card className="bg-muted border-border">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <Avatar>
@@ -219,11 +219,11 @@ export function EmailComposer({
                       <User className="h-4 w-4" />
                       {contact.name}
                     </h3>
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
                       <Building className="h-4 w-4" />
                       {contact.company}
                     </p>
-                    <p className="text-sm text-gray-500">{contact.email}</p>
+                    <p className="text-sm text-muted-foreground">{contact.email}</p>
                   </div>
                 </div>
               </CardContent>
@@ -234,7 +234,7 @@ export function EmailComposer({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="font-medium">Email Templates</Label>
-              {isLoadingTemplates && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
+              {isLoadingTemplates && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
             </div>
             <Select
               value={selectedTemplate}
@@ -349,8 +349,8 @@ export function EmailComposer({
 
             {/* Attachments (Future Feature) */}
             <div>
-              <Label className="text-gray-400">Attachments (Coming Soon)</Label>
-              <div className="mt-1 p-4 border-2 border-dashed border-gray-200 rounded-lg text-center text-gray-400">
+              <Label className="text-muted-foreground">Attachments (Coming Soon)</Label>
+              <div className="mt-1 p-4 border-2 border-dashed border-border rounded-lg text-center text-muted-foreground">
                 <Paperclip className="h-8 w-8 mx-auto mb-2" />
                 <p className="text-sm">File attachments will be available in the next release</p>
               </div>
@@ -427,7 +427,7 @@ export function EmailComposer({
 
           {/* Email History Preview */}
           {contact && (
-            <Card className="bg-gray-50">
+            <Card className="bg-muted">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Clock className="h-4 w-4" />
@@ -435,7 +435,7 @@ export function EmailComposer({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Email history will be displayed here in the next update
                 </p>
               </CardContent>

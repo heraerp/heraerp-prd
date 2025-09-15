@@ -394,7 +394,7 @@ export function KitchenDisplaySystem() {
                 </Badge>
               )}
             </div>
-            <Badge className={cn(urgencyColor, 'text-white')}>
+            <Badge className={cn(urgencyColor, 'text-foreground')}>
               {remaining < 0 ? `${Math.abs(remaining)}m LATE` : `${remaining}m`}
             </Badge>
           </div>
@@ -437,7 +437,7 @@ export function KitchenDisplaySystem() {
                     )}
                   </div>
                   {item.modifiers.length > 0 && (
-                    <p className="text-xs text-gray-600">{item.modifiers.join(', ')}</p>
+                    <p className="text-xs text-muted-foreground">{item.modifiers.join(', ')}</p>
                   )}
                   {item.specialInstructions && (
                     <p className="text-xs text-red-600 font-medium">
@@ -478,7 +478,7 @@ export function KitchenDisplaySystem() {
 
           {/* Progress bar */}
           <div className="space-y-1">
-            <div className="flex justify-between text-xs text-gray-600">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>
                 {order.itemsReady} of {order.totalItems} ready
               </span>
@@ -562,16 +562,16 @@ export function KitchenDisplaySystem() {
   }
 
   return (
-    <div className="h-screen bg-gray-900 text-white">
+    <div className="h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 p-4">
+      <div className="bg-muted border-b border-border p-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <ChefHat className="w-8 h-8 text-orange-500" />
               Kitchen Display System
             </h1>
-            <Badge variant="outline" className="text-white border-white">
+            <Badge variant="outline" className="text-foreground border-white">
               {currentTime.toLocaleTimeString()}
             </Badge>
           </div>
@@ -598,7 +598,7 @@ export function KitchenDisplaySystem() {
       </div>
 
       {/* Station Tabs */}
-      <div className="bg-gray-800 px-4 pb-4">
+      <div className="bg-muted px-4 pb-4">
         <div className="flex gap-2 overflow-x-auto">
           {stations.map(station => {
             const metrics = station.id !== 'all' ? getStationMetrics(station.id as Station) : null
@@ -617,7 +617,7 @@ export function KitchenDisplaySystem() {
                   {station.icon}
                   <span>{station.name}</span>
                   {metrics && metrics.itemsPending > 0 && (
-                    <Badge className="bg-red-500 text-white text-xs">{metrics.itemsPending}</Badge>
+                    <Badge className="bg-red-500 text-foreground text-xs">{metrics.itemsPending}</Badge>
                   )}
                 </div>
               </Button>
@@ -632,7 +632,7 @@ export function KitchenDisplaySystem() {
         <ScrollArea className="flex-1 p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredOrders.length === 0 ? (
-              <div className="col-span-full flex flex-col items-center justify-center h-64 text-gray-400">
+              <div className="col-span-full flex flex-col items-center justify-center h-64 text-muted-foreground">
                 <ChefHat className="w-16 h-16 mb-4" />
                 <p className="text-xl">No orders in queue</p>
                 <p className="text-sm mt-2">Orders will appear here when placed</p>
@@ -645,23 +645,23 @@ export function KitchenDisplaySystem() {
 
         {/* Station Metrics Sidebar */}
         {selectedStation !== 'all' && (
-          <div className="w-80 bg-gray-800 border-l border-gray-700 p-4">
+          <div className="w-80 bg-muted border-l border-border p-4">
             <h2 className="text-lg font-bold mb-4">
               {stations.find(s => s.id === selectedStation)?.name} Station
             </h2>
 
             <div className="space-y-4">
-              <Card className="bg-gray-700 border-gray-600">
+              <Card className="bg-muted-foreground/10 border-border">
                 <CardContent className="pt-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-gray-400">Pending</p>
+                      <p className="text-xs text-muted-foreground">Pending</p>
                       <p className="text-2xl font-bold text-yellow-500">
                         {getStationMetrics(selectedStation as Station).itemsPending}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400">In Progress</p>
+                      <p className="text-xs text-muted-foreground">In Progress</p>
                       <p className="text-2xl font-bold text-orange-500">
                         {getStationMetrics(selectedStation as Station).itemsInProgress}
                       </p>
@@ -670,10 +670,10 @@ export function KitchenDisplaySystem() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-700 border-gray-600">
+              <Card className="bg-muted-foreground/10 border-border">
                 <CardContent className="pt-4">
                   <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm text-gray-400">Efficiency</p>
+                    <p className="text-sm text-muted-foreground">Efficiency</p>
                     <Badge className="bg-green-500">
                       {getStationMetrics(selectedStation as Station).efficiency}%
                     </Badge>
@@ -685,9 +685,9 @@ export function KitchenDisplaySystem() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-700 border-gray-600">
+              <Card className="bg-muted-foreground/10 border-border">
                 <CardContent className="pt-4">
-                  <p className="text-sm text-gray-400 mb-2">Avg Prep Time</p>
+                  <p className="text-sm text-muted-foreground mb-2">Avg Prep Time</p>
                   <div className="flex items-center gap-2">
                     <Timer className="w-5 h-5 text-blue-500" />
                     <span className="text-xl font-bold">
@@ -702,32 +702,32 @@ export function KitchenDisplaySystem() {
       </div>
 
       {/* Quick Stats Bar */}
-      <div className="bg-gray-800 border-t border-gray-700 p-4">
+      <div className="bg-muted border-t border-border p-4">
         <div className="flex justify-around">
           <div className="text-center">
-            <p className="text-xs text-gray-400">New Orders</p>
+            <p className="text-xs text-muted-foreground">New Orders</p>
             <p className="text-xl font-bold text-blue-500">
               {orders.filter(o => o.status === 'new').length}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-400">In Progress</p>
+            <p className="text-xs text-muted-foreground">In Progress</p>
             <p className="text-xl font-bold text-orange-500">
               {orders.filter(o => o.status === 'preparing').length}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-400">Ready</p>
+            <p className="text-xs text-muted-foreground">Ready</p>
             <p className="text-xl font-bold text-green-500">
               {orders.filter(o => o.status === 'ready').length}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-400">Avg Wait</p>
+            <p className="text-xs text-muted-foreground">Avg Wait</p>
             <p className="text-xl font-bold text-purple-500">15m</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-400">Efficiency</p>
+            <p className="text-xs text-muted-foreground">Efficiency</p>
             <p className="text-xl font-bold text-cyan-500">92%</p>
           </div>
         </div>

@@ -179,14 +179,14 @@ export default function HowItWorksPage() {
                 See it in action right now
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-foreground mb-6">
                 Experience HERA in
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   3 Simple Steps
                 </span>
               </h1>
 
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground dark:text-gray-300 mb-8 max-w-2xl mx-auto">
                 No signup needed. Just click a demo and see how HERA transforms your business in
                 seconds.
               </p>
@@ -200,15 +200,15 @@ export default function HowItWorksPage() {
                   className="relative animate-fadeIn"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-200 dark:border-gray-700 h-full">
+                  <Card className="bg-background/80 dark:bg-muted/80 backdrop-blur-sm border-border dark:border-border h-full">
                     <CardContent className="p-6 text-center">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-foreground flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                         {step.number}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
                         {step.description}
                       </p>
                       <div className="flex items-center justify-center gap-2 text-xs text-green-600 dark:text-green-400">
@@ -218,7 +218,7 @@ export default function HowItWorksPage() {
                     </CardContent>
                   </Card>
                   {index < JOURNEY_STEPS.length - 1 && (
-                    <ChevronRight className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
+                    <ChevronRight className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
                   )}
                 </div>
               ))}
@@ -228,13 +228,13 @@ export default function HowItWorksPage() {
       </div>
 
       {/* Live Demos Section */}
-      <div className="px-4 sm:px-6 lg:px-8 py-16 bg-white dark:bg-gray-800">
+      <div className="px-4 sm:px-6 lg:px-8 py-16 bg-background dark:bg-muted">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
               Step 1: Click Any Demo to Start
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
+            <p className="text-lg text-muted-foreground dark:text-gray-300">
               No login required. Just click and explore.
             </p>
           </div>
@@ -249,7 +249,7 @@ export default function HowItWorksPage() {
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Card className="h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-gray-200 dark:border-gray-700 overflow-hidden group hover:shadow-xl transition-all">
+                <Card className="h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-border dark:border-border overflow-hidden group hover:shadow-xl transition-all">
                   <div
                     className={cn('absolute inset-0 opacity-10 bg-gradient-to-br', demo.gradient)}
                   />
@@ -262,7 +262,7 @@ export default function HowItWorksPage() {
                           demo.gradient
                         )}
                       >
-                        {React.createElement(demo.icon, { className: 'w-6 h-6 text-white' })}
+                        {React.createElement(demo.icon, { className: 'w-6 h-6 text-foreground' })}
                       </div>
                       {demo.tag && (
                         <Badge
@@ -298,13 +298,13 @@ export default function HowItWorksPage() {
 
                     {/* Stats */}
                     {demo.stats && (
-                      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border dark:border-border">
                         {Object.entries(demo.stats).map(([key, value]) => (
                           <div key={key} className="text-center">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                            <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
                               {value}
                             </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 capitalize">
+                            <p className="text-xs text-muted-foreground dark:text-muted-foreground capitalize">
                               {key}
                             </p>
                           </div>
@@ -321,7 +321,7 @@ export default function HowItWorksPage() {
                       <Link href={demo.path} className="block">
                         <Button
                           className={cn(
-                            'w-full bg-gradient-to-r text-white group-hover:shadow-md transition-all',
+                            'w-full bg-gradient-to-r text-foreground group-hover:shadow-md transition-all',
                             demo.gradient
                           )}
                         >
@@ -344,7 +344,7 @@ export default function HowItWorksPage() {
         <div className="max-w-4xl mx-auto">
           <Card className="bg-gradient-to-br from-white to-purple-50 dark:from-gray-800 dark:to-purple-950/20 border-purple-200 dark:border-purple-700">
             <CardHeader className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-foreground flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8" />
               </div>
               <CardTitle className="text-2xl mb-2">Don't see your business type?</CardTitle>
@@ -387,16 +387,16 @@ export default function HowItWorksPage() {
                   <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
                     <CheckCheck className="w-10 h-10 text-green-600 dark:text-green-400" />
                   </div>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                     Perfect! Redirecting you to signup...
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     We'll have your {requestedDemo} demo ready!
                   </p>
                 </div>
               ) : (
                 <Button
-                  className="w-full h-12 text-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                  className="w-full h-12 text-lg bg-gradient-to-r from-purple-600 to-pink-600 text-foreground"
                   disabled={!requestedDemo || !email || isSubmitting}
                   onClick={handleDemoRequest}
                 >
@@ -419,14 +419,14 @@ export default function HowItWorksPage() {
       </div>
 
       {/* Final CTA Section */}
-      <div className="px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+      <div className="px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-foreground">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to transform your business?</h2>
           <p className="text-xl mb-8 text-blue-100">Join 10,000+ businesses already using HERA</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+              <Button size="lg" className="bg-background text-primary hover:bg-muted">
                 <Rocket className="w-5 h-5 mr-2" />
                 Start Free Trial
               </Button>
@@ -435,7 +435,7 @@ export default function HowItWorksPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="border-white text-foreground hover:bg-background/10"
               >
                 <Play className="w-5 h-5 mr-2" />
                 Try Salon Demo First

@@ -84,13 +84,13 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center">
-            <Building2 className="w-6 h-6 text-white" />
+            <Building2 className="w-6 h-6 text-foreground" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">
               {mode === 'create' ? 'New Client Engagement' : client.entity_name || 'Client Profile'}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {mode === 'create'
                 ? 'Complete client acceptance process'
                 : 'Manage client information and compliance'}
@@ -201,7 +201,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <div className="space-y-2">
                   <Label htmlFor="annual_revenue">Annual Revenue</Label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                    <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="annual_revenue"
                       type="number"
@@ -225,7 +225,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <div className="space-y-2">
                   <Label htmlFor="total_assets">Total Assets</Label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                    <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="total_assets"
                       type="number"
@@ -259,7 +259,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                       })
                     }
                     disabled={!editMode}
-                    className="rounded border-gray-300"
+                    className="rounded border-border"
                   />
                   <span className="text-sm text-gray-700">Public Interest Entity (PIE)</span>
                 </label>
@@ -380,7 +380,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium">EQCR Required</p>
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           Based on risk assessment and PIE status
                         </p>
                       </div>
@@ -400,7 +400,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium">Materiality Planning</p>
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           Calculate based on revenue/assets
                         </p>
                       </div>
@@ -469,7 +469,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <h4 className="font-medium text-gray-900">Compliance Checklist</h4>
 
                 <div className="space-y-2">
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
@@ -481,18 +481,18 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                           })
                         }
                         disabled={!editMode}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Independence Confirmed</span>
                     </div>
                     {independenceChecks.independence_confirmed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <Clock className="w-5 h-5 text-gray-600" />
+                      <Clock className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
 
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
@@ -504,18 +504,18 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                           })
                         }
                         disabled={!editMode}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Conflict Check Completed</span>
                     </div>
                     {independenceChecks.conflict_check_completed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <Clock className="w-5 h-5 text-gray-600" />
+                      <Clock className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
 
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
@@ -527,14 +527,14 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                           })
                         }
                         disabled={!editMode}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Compliance Officer Approval</span>
                     </div>
                     {independenceChecks.compliance_approved ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <Clock className="w-5 h-5 text-gray-600" />
+                      <Clock className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
                 </div>
@@ -563,9 +563,9 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
             <CardContent>
               {(client.metadata as any)?.audit_history?.length === 0 ? (
                 <div className="text-center py-8">
-                  <Calendar className="w-12 h-12 mx-auto text-gray-600 mb-4" />
-                  <p className="text-gray-600">No audit history recorded</p>
-                  <p className="text-sm text-gray-500 mt-1">Add previous audit information</p>
+                  <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">No audit history recorded</p>
+                  <p className="text-sm text-muted-foreground mt-1">Add previous audit information</p>
                 </div>
               ) : (
                 <div className="space-y-3">{/* Audit history items would go here */}</div>

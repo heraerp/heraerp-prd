@@ -36,7 +36,7 @@ export function MessageStatusHistory({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'queued':
-        return <Clock className="w-5 h-5 text-gray-400" />
+        return <Clock className="w-5 h-5 text-muted-foreground" />
       case 'sent':
         return <Send className="w-5 h-5 text-blue-400" />
       case 'delivered':
@@ -46,7 +46,7 @@ export function MessageStatusHistory({
       case 'failed':
         return <AlertCircle className="w-5 h-5 text-red-500" />
       default:
-        return <Clock className="w-5 h-5 text-gray-400" />
+        return <Clock className="w-5 h-5 text-muted-foreground" />
     }
   }
 
@@ -61,7 +61,7 @@ export function MessageStatusHistory({
       case 'failed':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
+        return 'bg-muted text-gray-800 dark:bg-background/20 dark:text-muted-foreground'
     }
   }
 
@@ -91,14 +91,14 @@ export function MessageStatusHistory({
 
         <div className="space-y-4 py-4">
           {/* Current Status */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+          <div className="bg-muted dark:bg-muted rounded-lg p-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Current Status</span>
               <Badge className={getStatusColor(currentStatus || 'pending')}>
                 {currentStatus || 'pending'}
               </Badge>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Message ID: {messageId.slice(0, 20)}...</p>
+            <p className="text-xs text-muted-foreground mt-1">Message ID: {messageId.slice(0, 20)}...</p>
           </div>
 
           {/* Status Timeline */}
@@ -106,14 +106,14 @@ export function MessageStatusHistory({
             <h4 className="text-sm font-medium">Status Timeline</h4>
             <div className="relative">
               {/* Timeline line */}
-              <div className="absolute left-2.5 top-5 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+              <div className="absolute left-2.5 top-5 bottom-0 w-0.5 bg-gray-200 dark:bg-muted-foreground/10" />
 
               {/* Status items */}
               <div className="space-y-4">
                 {displayHistory.map((item, index) => (
                   <div key={index} className="relative flex items-start gap-4">
                     {/* Status icon with background */}
-                    <div className="relative z-10 bg-white dark:bg-gray-900 p-0.5">
+                    <div className="relative z-10 bg-background dark:bg-background p-0.5">
                       {getStatusIcon(item.status)}
                     </div>
 
@@ -121,7 +121,7 @@ export function MessageStatusHistory({
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium capitalize">{item.status}</span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           {formatTimestamp(item.timestamp)}
                         </span>
                       </div>

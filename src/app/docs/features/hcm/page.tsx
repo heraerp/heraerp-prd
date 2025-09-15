@@ -432,7 +432,7 @@ export default function HCMDoc() {
         <section id="metrics" className="mb-12">
           <h2>Success Metrics</h2>
 
-          <div className="docs-card bg-success-emphasis text-white">
+          <div className="docs-card bg-success-emphasis text-foreground">
             <h3 className="text-xl font-semibold mb-4">Proven Results Across Industries</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>

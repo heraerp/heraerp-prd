@@ -11,7 +11,7 @@ interface SalonCardProps {
 
 export function SalonCard({ children, className, variant = 'surface' }: SalonCardProps) {
   const variants = {
-    surface: 'bg-[#762866] border-white/20',
+    surface: 'bg-[#762866] border-border/20',
     light: 'bg-[#E7D8D5] border-[#762866]/20',
     accent: 'bg-[#DD97E2] border-white/30'
   }
@@ -42,11 +42,11 @@ export function SalonStatCard({ label, value, icon: Icon, trend, className }: Sa
     <SalonCard className={cn('relative', className)}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-white/60 text-sm mb-1">{label}</p>
-          <p className="text-2xl font-bold text-white">{value}</p>
+          <p className="text-foreground/60 text-sm mb-1">{label}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
         </div>
         <div className="p-2 rounded-lg bg-[#DD97E2]">
-          <Icon className="w-5 h-5 text-white" />
+          <Icon className="w-5 h-5 text-foreground" />
         </div>
       </div>
       {trend && (
@@ -60,7 +60,7 @@ export function SalonStatCard({ label, value, icon: Icon, trend, className }: Sa
             {trend.isPositive ? '+' : '-'}
             {Math.abs(trend.value)}%
           </div>
-          <span className="text-xs text-white/40">vs last month</span>
+          <span className="text-xs text-foreground/40">vs last month</span>
         </div>
       )}
     </SalonCard>

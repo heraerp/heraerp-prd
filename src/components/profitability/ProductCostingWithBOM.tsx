@@ -191,32 +191,32 @@ export function ProductCostingWithBOM({
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Total Cost</p>
+              <div className="bg-background p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground">Total Cost</p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${selectedProduct.total_cost.toFixed(2)}
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Selling Price</p>
+              <div className="bg-background p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground">Selling Price</p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${selectedProduct.selling_price.toFixed(2)}
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Gross Margin</p>
+              <div className="bg-background p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground">Gross Margin</p>
                 <p className="text-2xl font-bold text-green-600">
                   ${selectedProduct.gross_margin.toFixed(2)}
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Margin %</p>
+              <div className="bg-background p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground">Margin %</p>
                 <p className="text-2xl font-bold text-green-600">
                   {selectedProduct.gross_margin_pct.toFixed(1)}%
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Last Updated</p>
+              <div className="bg-background p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground">Last Updated</p>
                 <p className="text-sm font-medium text-gray-900">
                   {new Date(selectedProduct.last_updated).toLocaleString()}
                 </p>
@@ -246,7 +246,7 @@ export function ProductCostingWithBOM({
                 <div key={category.category} className="border rounded-lg overflow-hidden">
                   <button
                     onClick={() => toggleSection(category.category.toLowerCase().replace(' ', '_'))}
-                    className="w-full p-4 hover:bg-gray-50 transition-colors"
+                    className="w-full p-4 hover:bg-muted transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export function ProductCostingWithBOM({
                         )}
                         <div className="text-left">
                           <h4 className="font-medium">{category.category}</h4>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {category.percentage.toFixed(1)}% of total cost
                           </p>
                         </div>
@@ -270,7 +270,7 @@ export function ProductCostingWithBOM({
                   </button>
 
                   {expandedSections.has(category.category.toLowerCase().replace(' ', '_')) && (
-                    <div className="border-t p-4 bg-gray-50">
+                    <div className="border-t p-4 bg-muted">
                       <div className="space-y-2">
                         {category.details.map((detail: any, idx: number) => (
                           <div key={idx} className="flex items-center justify-between text-sm">
@@ -306,7 +306,7 @@ export function ProductCostingWithBOM({
               <div className="pt-4 border-t">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Calculator className="w-5 h-5 text-gray-600" />
+                    <Calculator className="w-5 h-5 text-muted-foreground" />
                     <span className="font-semibold text-lg">Total Product Cost</span>
                   </div>
                   <span className="text-2xl font-bold">
@@ -333,7 +333,7 @@ export function ProductCostingWithBOM({
                 {bomComponents.map((component, idx) => (
                   <div
                     key={component.id}
-                    className="p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                    className="p-3 border rounded-lg hover:bg-muted transition-colors"
                     style={{ marginLeft: `${(component.level - 1) * 24}px` }}
                   >
                     <div className="flex items-center justify-between">
@@ -341,14 +341,14 @@ export function ProductCostingWithBOM({
                         <Package className="w-4 h-4 text-blue-500" />
                         <div>
                           <div className="font-medium">{component.item_name}</div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-muted-foreground">
                             Code: {component.item_code} | Qty: {component.quantity}
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="font-medium">${component.total_cost.toFixed(2)}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-muted-foreground">
                           ${component.unit_cost.toFixed(2)}/unit
                         </div>
                       </div>
@@ -359,7 +359,7 @@ export function ProductCostingWithBOM({
 
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                 <div className="flex items-start gap-2">
-                  <Zap className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <Zap className="w-5 h-5 text-primary mt-0.5" />
                   <div>
                     <h4 className="font-medium text-blue-900">BOM Integration Active</h4>
                     <p className="text-sm text-blue-700 mt-1">
@@ -431,19 +431,19 @@ export function ProductCostingWithBOM({
                   <h4 className="font-medium mb-3">Profitability Metrics</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Contribution Margin</span>
+                      <span className="text-muted-foreground">Contribution Margin</span>
                       <span className="font-medium">42.5%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Break-even Units</span>
+                      <span className="text-muted-foreground">Break-even Units</span>
                       <span className="font-medium">1,247 units</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Target Margin</span>
+                      <span className="text-muted-foreground">Target Margin</span>
                       <span className="font-medium">35.0%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Actual vs Target</span>
+                      <span className="text-muted-foreground">Actual vs Target</span>
                       <span className="font-medium text-green-600">+7.5pp</span>
                     </div>
                   </div>
@@ -453,19 +453,19 @@ export function ProductCostingWithBOM({
                   <h4 className="font-medium mb-3">Cost Trends</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Material (3mo)</span>
+                      <span className="text-muted-foreground">Material (3mo)</span>
                       <span className="font-medium text-red-600">↑ 5.2%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Labor (3mo)</span>
+                      <span className="text-muted-foreground">Labor (3mo)</span>
                       <span className="font-medium text-green-600">↓ 2.1%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Overhead (3mo)</span>
+                      <span className="text-muted-foreground">Overhead (3mo)</span>
                       <span className="font-medium text-yellow-600">→ 0.8%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Cost (3mo)</span>
+                      <span className="text-muted-foreground">Total Cost (3mo)</span>
                       <span className="font-medium text-red-600">↑ 3.4%</span>
                     </div>
                   </div>

@@ -18,27 +18,27 @@ import Link from 'next/link'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Minimal Header */}
-      <header className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-100/50">
+      <header className="py-8 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold text-white">H</span>
+              <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center">
+                <span className="text-sm font-bold text-foreground">H</span>
               </div>
               <span className="text-xl font-light">HERA</span>
             </div>
             <div className="flex items-center gap-6">
               <Link
                 href="/how-it-works"
-                className="text-gray-600 hover:text-black transition-colors"
+                className="text-muted-foreground hover:text-black transition-colors"
               >
                 See Demos
               </Link>
               <Button
                 asChild
-                className="bg-black hover:bg-gray-800 text-white hover:text-white rounded-full px-6"
+                className="bg-background hover:bg-muted text-foreground hover:text-foreground rounded-full px-6"
               >
                 <Link href="/auth/login">Get Started</Link>
               </Button>
@@ -57,9 +57,9 @@ export default function HomePage() {
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-thin text-gray-900 mb-6 md:mb-8 leading-tight">
                 Enterprise-grade ERP.
                 <br />
-                <span className="font-light text-blue-600">Small-business price.</span>
+                <span className="font-light text-primary">Small-business price.</span>
                 <br />
-                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600">
+                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground">
                   Live in 2 weeks — or your implementation is free.*
                 </span>
               </h1>
@@ -67,7 +67,7 @@ export default function HomePage() {
 
             {/* Tagline - Mobile Optimized */}
             <div className="mb-8 md:mb-12">
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 font-light leading-relaxed max-w-4xl mx-auto px-2">
+              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground font-light leading-relaxed max-w-4xl mx-auto px-2">
                 Revolutionary enterprise software that eliminates the pain of traditional ERP
                 implementations.
               </p>
@@ -78,7 +78,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 md:gap-8 justify-center items-center max-w-2xl mx-auto">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-gradient-to-r from-black to-gray-900 hover:from-gray-900 hover:to-black text-white hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full sm:w-auto bg-gradient-to-r from-black to-gray-900 hover:from-gray-900 hover:to-black text-foreground hover:text-foreground text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light shadow-lg hover:shadow-xl transition-all duration-300"
                   asChild
                 >
                   <Link href="/auth/signup">Start Your 2-Week Challenge</Link>
@@ -86,7 +86,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border-2 border-black text-black hover:bg-black hover:text-white text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light hover:shadow-lg transition-all duration-200"
+                  className="w-full sm:w-auto border-2 border-black text-black hover:bg-background hover:text-foreground text-base md:text-lg px-8 md:px-12 py-4 md:py-6 rounded-full font-light hover:shadow-lg transition-all duration-200"
                   asChild
                 >
                   <Link href="/how-it-works">Explore Live Demos</Link>
@@ -96,24 +96,24 @@ export default function HomePage() {
 
             {/* Proof Points - Mobile Optimized with Glassmorphism */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 px-4">
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">70%</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Cost Savings</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">Cost Savings</p>
               </div>
 
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">2</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Week Guarantee</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">Week Guarantee</p>
               </div>
 
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">92%</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Success Rate</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">Success Rate</p>
               </div>
 
-              <div className="text-center bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">0</div>
-                <p className="text-sm md:text-base text-gray-600 font-light">Configuration</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">Configuration</p>
               </div>
             </div>
           </div>
@@ -131,38 +131,38 @@ export default function HomePage() {
             </div>
 
             {/* Clean Comparison Table with Enhanced Glassmorphism */}
-            <div className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+            <div className="bg-background/30 backdrop-blur-xl rounded-2xl shadow-xl border border-border/20 overflow-hidden">
               <table className="w-full">
-                <thead className="bg-white/20 backdrop-blur-sm">
+                <thead className="bg-background/20 backdrop-blur-sm">
                   <tr>
-                    <th className="text-left py-8 px-8 font-light text-xl text-gray-600">
+                    <th className="text-left py-8 px-8 font-light text-xl text-muted-foreground">
                       Solution
                     </th>
                     <th className="text-center py-8 px-8 font-light text-xl text-black">HERA</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-gray-400">SAP</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-gray-400">
+                    <th className="text-center py-8 px-8 font-light text-xl text-muted-foreground">SAP</th>
+                    <th className="text-center py-8 px-8 font-light text-xl text-muted-foreground">
                       Salesforce
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Implementation</td>
+                  <tr className="border-t border-border/10">
+                    <td className="py-8 px-8 font-light text-muted-foreground">Implementation</td>
                     <td className="py-8 px-8 text-center font-light text-black">2 weeks</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">12-21 months</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">6+ months</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">12-21 months</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">6+ months</td>
                   </tr>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Annual Cost</td>
+                  <tr className="border-t border-border/10">
+                    <td className="py-8 px-8 font-light text-muted-foreground">Annual Cost</td>
                     <td className="py-8 px-8 text-center font-light text-black">$50,000</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">$150,000+</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">$144,000+</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">$150,000+</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">$144,000+</td>
                   </tr>
-                  <tr className="border-t border-white/10">
-                    <td className="py-8 px-8 font-light text-gray-600">Success Rate</td>
+                  <tr className="border-t border-border/10">
+                    <td className="py-8 px-8 font-light text-muted-foreground">Success Rate</td>
                     <td className="py-8 px-8 text-center font-light text-black">92%</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">40%</td>
-                    <td className="py-8 px-8 text-center font-light text-gray-400">60%</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">40%</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">60%</td>
                   </tr>
                 </tbody>
               </table>
@@ -176,7 +176,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-thin text-gray-900 mb-4">Try HERA Apps Now</h2>
-            <p className="text-xl font-light text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl font-light text-muted-foreground max-w-3xl mx-auto">
               Experience enterprise-grade functionality with industry-specific apps. No signup
               required - start planning your business immediately.
             </p>
@@ -185,13 +185,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <a
               href="/budgeting/salon"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">✂️</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Budgeting</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Complete budgeting for beauty salons with service-based revenue planning, staff
                 productivity tracking, and seasonal analysis.
               </p>
@@ -203,17 +203,17 @@ export default function HomePage() {
 
             <a
               href="/budgeting"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Target className="w-8 h-8 text-white" />
+                <Target className="w-8 h-8 text-foreground" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Universal Budgeting</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Enterprise budgeting for any industry. Multi-dimensional planning, variance
                 analysis, and rolling forecasts built-in.
               </p>
-              <div className="flex items-center text-blue-600 font-medium">
+              <div className="flex items-center text-primary font-medium">
                 <span>Explore Apps</span>
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -221,13 +221,13 @@ export default function HomePage() {
 
             <a
               href="/financial"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <DollarSign className="w-8 h-8 text-white" />
+                <DollarSign className="w-8 h-8 text-foreground" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Financial Management</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Complete financial suite with GL, AR, AP, budgeting, and real-time reporting.
                 IFRS-compliant from day one.
               </p>
@@ -239,13 +239,13 @@ export default function HomePage() {
 
             <a
               href="/digital-accountant"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">🧮</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Digital Accountant</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 AI-powered accounting with natural language. Post journals, create invoices,
                 reconcile accounts through chat.
               </p>
@@ -257,13 +257,13 @@ export default function HomePage() {
 
             <a
               href="/auto-journal"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">🤖</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Auto-Journal Engine</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Intelligent journal entry automation with AI. 85%+ automation rate, 92% time
                 savings, zero manual intervention.
               </p>
@@ -275,13 +275,13 @@ export default function HomePage() {
 
             <a
               href="/salon-manager"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">💅</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Manager</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Complete salon operations with AI. Book appointments, manage inventory, track
                 revenue, calculate commissions through natural language.
               </p>
@@ -293,13 +293,13 @@ export default function HomePage() {
 
             <a
               href="/mcp-tools"
-              className="group block p-8 bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group block p-8 bg-background rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Wand2 className="w-8 h-8 text-white" />
+                <Wand2 className="w-8 h-8 text-foreground" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">MCP Conversion Tools</h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-muted-foreground font-light mb-4">
                 Advanced development tools. SQL generation, code transformation, batch operations,
                 and automated deployment.
               </p>
@@ -311,7 +311,7 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-sm text-gray-500 font-light">
+            <p className="text-sm text-muted-foreground font-light">
               ✨ All apps include sample data - no setup required. Experience enterprise features
               instantly.
             </p>
@@ -336,11 +336,11 @@ export default function HomePage() {
 
             <div className="flex items-center justify-center">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-6">
-                <span className="text-gray-600 font-light text-lg">HT</span>
+                <span className="text-muted-foreground font-light text-lg">HT</span>
               </div>
               <div className="text-left">
                 <p className="font-light text-gray-900 text-lg">HERA Team</p>
-                <p className="text-gray-600 font-light">Launching September 2025</p>
+                <p className="text-muted-foreground font-light">Launching September 2025</p>
               </div>
             </div>
           </div>
@@ -350,7 +350,7 @@ export default function HomePage() {
       {/* Final CTA - Powerful and Simple */}
       <section className="py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center text-white">
+          <div className="max-w-4xl mx-auto text-center text-foreground">
             {/* Massive Breathing Space */}
             <div className="mb-20">
               <h2 className="text-6xl font-thin mb-12 leading-tight">
@@ -381,7 +381,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black text-lg px-16 py-6 rounded-full font-light"
+                className="border-white text-foreground hover:bg-background hover:text-black text-lg px-16 py-6 rounded-full font-light"
                 asChild
               >
                 <Link href="/apps">View Demo Apps</Link>
@@ -392,25 +392,25 @@ export default function HomePage() {
       </section>
 
       {/* Minimal Footer */}
-      <footer className="py-16 bg-white border-t border-gray-100">
+      <footer className="py-16 bg-background border-t border-gray-100">
         <div className="container mx-auto px-6">
           <div className="flex flex-col space-y-6">
             {/* Main Footer Content */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-black rounded flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">H</span>
+                <div className="w-6 h-6 bg-background rounded flex items-center justify-center">
+                  <span className="text-xs font-bold text-foreground">H</span>
                 </div>
-                <span className="font-light text-gray-600">HERA</span>
+                <span className="font-light text-muted-foreground">HERA</span>
               </div>
-              <div className="text-sm text-gray-400 font-light">
+              <div className="text-sm text-muted-foreground font-light">
                 Enterprise-grade ERP. Small-business price.
               </div>
             </div>
 
             {/* Disclaimer */}
             <div className="border-t border-gray-100 pt-6">
-              <p className="text-xs text-gray-400 font-light max-w-4xl">
+              <p className="text-xs text-muted-foreground font-light max-w-4xl">
                 *2-week implementation guarantee applies to standard business configurations using
                 HERA's universal templates. Complex integrations, custom development, or
                 enterprise-scale deployments may require additional time. Free implementation offer

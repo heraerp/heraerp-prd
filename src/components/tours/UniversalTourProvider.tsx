@@ -99,17 +99,17 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
     industryNames[industryKey as keyof typeof industryNames] || 'Business Management'
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+    <div className="fixed inset-0 bg-background/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-background rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-foreground">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-background/20 rounded-full flex items-center justify-center">
               <HelpCircle className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-xl font-bold">Welcome to HERA!</h2>
-              <p className="text-white/90 text-sm">Ready for a quick tour?</p>
+              <p className="text-foreground/90 text-sm">Ready for a quick tour?</p>
             </div>
           </div>
         </div>
@@ -120,7 +120,7 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
             Discover Your {industryName} System
           </h3>
 
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             Take a 2-minute guided tour to learn the key features and get started quickly. You'll
             discover how to navigate, use modules, and maximize your productivity.
           </p>
@@ -130,7 +130,7 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
               <div className="text-2xl">🎯</div>
               <div>
                 <div className="font-medium text-gray-900 text-sm">What you'll learn:</div>
-                <ul className="text-sm text-gray-600 mt-1 space-y-1">
+                <ul className="text-sm text-muted-foreground mt-1 space-y-1">
                   <li>• Navigate your command center</li>
                   <li>• Understand live metrics</li>
                   <li>• Access key modules</li>
@@ -143,7 +143,7 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
           <div className="flex gap-3">
             <Button
               onClick={onStart}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg transition-all duration-300"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-foreground hover:shadow-lg transition-all duration-300"
             >
               <Play className="w-4 h-4 mr-2" />
               Start Tour (2 min)
@@ -177,7 +177,7 @@ function FloatingTourButton({ onClick }: FloatingTourButtonProps) {
     <div className="fixed bottom-6 right-6 z-40">
       <Button
         onClick={onClick}
-        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-xl transition-all duration-300 rounded-full w-14 h-14 shadow-lg hover:-translate-y-1"
+        className="bg-gradient-to-r from-blue-500 to-purple-600 text-foreground hover:shadow-xl transition-all duration-300 rounded-full w-14 h-14 shadow-lg hover:-translate-y-1"
         title="Start Guided Tour"
       >
         <HelpCircle className="w-6 h-6" />

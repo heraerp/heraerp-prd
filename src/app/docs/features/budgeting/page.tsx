@@ -262,7 +262,7 @@ Customers/Month × Average Check × Days = Revenue
               <h3 className="text-lg font-semibold mb-3">Budget Creation Workflow</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  <div className="w-6 h-6 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
                     1
                   </div>
                   <div className="flex-1">
@@ -273,7 +273,7 @@ Customers/Month × Average Check × Days = Revenue
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  <div className="w-6 h-6 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
                     2
                   </div>
                   <div className="flex-1">
@@ -284,7 +284,7 @@ Customers/Month × Average Check × Days = Revenue
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  <div className="w-6 h-6 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
                     3
                   </div>
                   <div className="flex-1">
@@ -295,7 +295,7 @@ Customers/Month × Average Check × Days = Revenue
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  <div className="w-6 h-6 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
                     4
                   </div>
                   <div className="flex-1">
@@ -512,7 +512,7 @@ Customers/Month × Average Check × Days = Revenue
         <section id="metrics" className="mb-12">
           <h2>Success Metrics</h2>
 
-          <div className="docs-card bg-success-emphasis text-white">
+          <div className="docs-card bg-success-emphasis text-foreground">
             <h3 className="text-xl font-semibold mb-4">Proven Results Across Industries</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>

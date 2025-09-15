@@ -308,12 +308,12 @@ function OnboardingOverlay({
   return createPortal(
     <>
       {/* Overlay */}
-      <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+      <div className="fixed inset-0 bg-background/50 z-[9998]" onClick={onClose} />
 
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className={`fixed z-[9999] max-w-sm ${theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'} rounded-lg shadow-2xl p-6`}
+        className={`fixed z-[9999] max-w-sm ${theme === 'dark' ? 'bg-muted text-foreground' : 'bg-background text-gray-900'} rounded-lg shadow-2xl p-6`}
         style={{
           left: `${tooltipPosition.x}px`,
           top: `${tooltipPosition.y}px`
@@ -322,27 +322,27 @@ function OnboardingOverlay({
         {/* Arrow */}
         <div
           ref={arrowRef}
-          className={`absolute w-3 h-3 rotate-45 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
+          className={`absolute w-3 h-3 rotate-45 ${theme === 'dark' ? 'bg-muted' : 'bg-background'}`}
           style={{ bottom: '-6px' }}
         />
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className={`absolute top-2 right-2 p-1 rounded ${theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}
+          className={`absolute top-2 right-2 p-1 rounded ${theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-muted'}`}
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Content */}
         <h3 className="font-semibold text-lg mb-2">{step.titleKey}</h3>
-        <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+        <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>
           {step.bodyKey}
         </p>
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-4">
-          <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+          <div className={`text-xs ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
             Step {currentStep + 1} of {tour.steps.length}
           </div>
           <div className="flex gap-1">
@@ -357,7 +357,7 @@ function OnboardingOverlay({
                         ? 'bg-gray-600'
                         : 'bg-gray-400'
                       : theme === 'dark'
-                        ? 'bg-gray-700'
+                        ? 'bg-muted-foreground/10'
                         : 'bg-gray-300'
                 }`}
               />
@@ -375,7 +375,7 @@ function OnboardingOverlay({
                 ? 'opacity-50 cursor-not-allowed'
                 : theme === 'dark'
                   ? 'hover:bg-slate-700'
-                  : 'hover:bg-gray-100'
+                  : 'hover:bg-muted'
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -387,7 +387,7 @@ function OnboardingOverlay({
               <button
                 onClick={onClose}
                 className={`px-3 py-1 text-sm rounded ${
-                  theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                  theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-muted'
                 }`}
               >
                 Skip Tour
@@ -396,7 +396,7 @@ function OnboardingOverlay({
 
             <button
               onClick={onNext}
-              className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-1"
+              className="px-3 py-1 text-sm bg-blue-500 text-foreground rounded hover:bg-blue-600 flex items-center gap-1"
             >
               {isLastStep ? 'Finish' : 'Next'}
               {!isLastStep && <ChevronRight className="w-4 h-4" />}

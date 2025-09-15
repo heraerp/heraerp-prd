@@ -183,7 +183,7 @@ export default function AccountsPage() {
       case 'prospect':
         return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -241,12 +241,12 @@ export default function AccountsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Accounts</h1>
-          <p className="text-white/60 mt-1">Manage your customer accounts and relationships</p>
+          <h1 className="text-3xl font-bold text-foreground">Accounts</h1>
+          <p className="text-foreground/60 mt-1">Manage your customer accounts and relationships</p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>New Account</span>
@@ -260,15 +260,15 @@ export default function AccountsPage() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">+12%</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/60 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
               </div>
             </div>
           )
@@ -278,20 +278,20 @@ export default function AccountsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
           <input
             type="text"
             placeholder="Search accounts..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
 
         <select
           value={selectedSegment}
           onChange={e => setSelectedSegment(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Segments</option>
           <option value="Enterprise">Enterprise</option>
@@ -302,7 +302,7 @@ export default function AccountsPage() {
         <select
           value={selectedStatus}
           onChange={e => setSelectedStatus(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
           <option value="active">Active</option>
@@ -310,7 +310,7 @@ export default function AccountsPage() {
           <option value="prospect">Prospect</option>
         </select>
 
-        <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
           <Filter className="h-5 w-5" />
           <span>More Filters</span>
         </button>
@@ -321,18 +321,18 @@ export default function AccountsPage() {
         {filteredAccounts.map(account => (
           <div key={account.id} className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start space-x-4">
                   <div
                     className={`p-3 rounded-xl bg-gradient-to-br ${getSegmentColor(account.segment)}`}
                   >
-                    <Building2 className="h-6 w-6 text-white" />
+                    <Building2 className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">{account.name}</h3>
-                    <p className="text-sm text-white/60">{account.industry}</p>
+                    <h3 className="text-lg font-semibold text-foreground">{account.name}</h3>
+                    <p className="text-sm text-foreground/60">{account.industry}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -341,7 +341,7 @@ export default function AccountsPage() {
                   >
                     {account.status}
                   </span>
-                  <button className="text-white/40 hover:text-white transition-colors">
+                  <button className="text-foreground/40 hover:text-foreground transition-colors">
                     <MoreVertical className="h-5 w-5" />
                   </button>
                 </div>
@@ -353,34 +353,34 @@ export default function AccountsPage() {
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= account.rating ? 'text-[#FF5A09] fill-[#FF5A09]' : 'text-white/20'
+                      star <= account.rating ? 'text-[#FF5A09] fill-[#FF5A09]' : 'text-foreground/20'
                     }`}
                   />
                 ))}
-                <span className="text-xs text-white/60 ml-2">({account.rating}.0)</span>
+                <span className="text-xs text-foreground/60 ml-2">({account.rating}.0)</span>
               </div>
 
               {/* Info Grid */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <p className="text-xs text-white/60 mb-1">Annual Revenue</p>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-xs text-foreground/60 mb-1">Annual Revenue</p>
+                  <p className="text-sm font-semibold text-foreground">
                     ₹{(account.revenue / 10000000).toFixed(0)} Cr
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 mb-1">Employees</p>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-xs text-foreground/60 mb-1">Employees</p>
+                  <p className="text-sm font-semibold text-foreground">
                     {(account.employees / 1000).toFixed(0)}K
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 mb-1">Segment</p>
-                  <p className="text-sm font-semibold text-white">{account.segment}</p>
+                  <p className="text-xs text-foreground/60 mb-1">Segment</p>
+                  <p className="text-sm font-semibold text-foreground">{account.segment}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 mb-1">Last Contact</p>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-xs text-foreground/60 mb-1">Last Contact</p>
+                  <p className="text-sm font-semibold text-foreground">
                     {new Date(account.lastContact).toLocaleDateString()}
                   </p>
                 </div>
@@ -388,38 +388,38 @@ export default function AccountsPage() {
 
               {/* Quick Actions */}
               <div className="flex items-center space-x-3 mb-4 text-xs">
-                <div className="flex items-center space-x-1 text-white/60">
+                <div className="flex items-center space-x-1 text-foreground/60">
                   <Globe className="h-3 w-3" />
                   <span>{account.website}</span>
                 </div>
               </div>
 
               {/* Metrics */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/10">
                 <div className="text-center">
                   <p className="text-lg font-semibold text-[#FF5A09]">{account.opportunities}</p>
-                  <p className="text-xs text-white/60">Open Opps</p>
+                  <p className="text-xs text-foreground/60">Open Opps</p>
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-semibold text-emerald-400">{account.wonDeals}</p>
-                  <p className="text-xs text-white/60">Won Deals</p>
+                  <p className="text-xs text-foreground/60">Won Deals</p>
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-semibold text-red-400">{account.openCases}</p>
-                  <p className="text-xs text-white/60">Open Cases</p>
+                  <p className="text-xs text-foreground/60">Open Cases</p>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/10">
                 <div className="flex items-center space-x-2">
-                  <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                  <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                     <Mail className="h-4 w-4" />
                   </button>
-                  <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                  <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                     <Phone className="h-4 w-4" />
                   </button>
-                  <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                  <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                     <Calendar className="h-4 w-4" />
                   </button>
                 </div>
@@ -436,9 +436,9 @@ export default function AccountsPage() {
       {/* Empty State */}
       {filteredAccounts.length === 0 && (
         <div className="text-center py-12">
-          <Building2 className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No accounts found</h3>
-          <p className="text-white/60">Try adjusting your search or filters</p>
+          <Building2 className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No accounts found</h3>
+          <p className="text-foreground/60">Try adjusting your search or filters</p>
         </div>
       )}
     </div>

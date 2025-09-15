@@ -177,10 +177,10 @@ export function SaaSConversionWizard({
               flex items-center justify-center w-12 h-12 rounded-full border-2 
               ${
                 isActive
-                  ? 'border-blue-500 bg-blue-500 text-white'
+                  ? 'border-blue-500 bg-blue-500 text-foreground'
                   : isCompleted
-                    ? 'border-green-500 bg-green-500 text-white'
-                    : 'border-gray-300 bg-white text-gray-400'
+                    ? 'border-green-500 bg-green-500 text-foreground'
+                    : 'border-border bg-background text-muted-foreground'
               }
               transition-all duration-300
             `}
@@ -190,12 +190,12 @@ export function SaaSConversionWizard({
 
             <div className="ml-3 mr-8">
               <div
-                className={`text-sm font-medium ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}
+                className={`text-sm font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-600' : 'text-muted-foreground'}`}
               >
                 Step {step.id}
               </div>
               <div
-                className={`text-xs ${isActive ? 'text-blue-500' : isCompleted ? 'text-green-500' : 'text-gray-400'}`}
+                className={`text-xs ${isActive ? 'text-blue-500' : isCompleted ? 'text-green-500' : 'text-muted-foreground'}`}
               >
                 {step.name}
               </div>
@@ -217,7 +217,7 @@ export function SaaSConversionWizard({
           <Building2 className="w-5 h-5" />
           Company Information
         </CardTitle>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground dark:text-muted-foreground">
           Tell us about your business to set up your production account
         </p>
       </CardHeader>
@@ -312,7 +312,7 @@ export function SaaSConversionWizard({
           <Globe className="w-5 h-5" />
           Choose Your Subdomain
         </CardTitle>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground dark:text-muted-foreground">
           Your business will be accessible at yourname.heraerp.com
         </p>
       </CardHeader>
@@ -329,11 +329,11 @@ export function SaaSConversionWizard({
               placeholder="yourcompany"
               className="rounded-r-none"
             />
-            <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md text-sm text-gray-500">
+            <div className="px-3 py-2 bg-muted dark:bg-muted border border-l-0 border-border dark:border-border rounded-r-md text-sm text-muted-foreground">
               .heraerp.com
             </div>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Use lowercase letters, numbers, and hyphens only
           </p>
         </div>
@@ -343,18 +343,18 @@ export function SaaSConversionWizard({
             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
               Your Production URL:
             </h4>
-            <div className="text-lg font-mono bg-white dark:bg-gray-800 p-3 rounded border">
+            <div className="text-lg font-mono bg-background dark:bg-muted p-3 rounded border">
               https://{conversionData.subdomain}.heraerp.com
             </div>
           </div>
         )}
 
-        <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+        <div className="bg-muted dark:bg-background p-4 rounded-lg">
           <h4 className="font-medium mb-2 flex items-center gap-2">
             <Shield className="w-4 h-4" />
             Included with your subdomain:
           </h4>
-          <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+          <ul className="text-sm space-y-1 text-muted-foreground dark:text-muted-foreground">
             <li>• Free SSL certificate (HTTPS)</li>
             <li>• Global CDN for fast loading</li>
             <li>• Custom branding and logo</li>
@@ -369,7 +369,7 @@ export function SaaSConversionWizard({
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">Choose Your Plan</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground dark:text-muted-foreground">
           Select the plan that best fits your {getModuleDisplayName(demoModule)} business needs
         </p>
       </div>
@@ -381,7 +381,7 @@ export function SaaSConversionWizard({
             className={`relative cursor-pointer transition-all duration-200 hover:shadow-xl ${
               conversionData.plan?.type === plan.id
                 ? 'border-2 border-blue-500 shadow-lg'
-                : 'border border-gray-200 dark:border-gray-700'
+                : 'border border-border dark:border-border'
             }`}
             onClick={() =>
               updateData({
@@ -395,18 +395,18 @@ export function SaaSConversionWizard({
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-blue-500 text-white px-4 py-1">Most Popular</Badge>
+                <Badge className="bg-blue-500 text-foreground px-4 py-1">Most Popular</Badge>
               </div>
             )}
 
             <CardContent className="p-6">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                <div className="text-3xl font-bold text-blue-600 mb-1">
+                <div className="text-3xl font-bold text-primary mb-1">
                   ${plan.monthlyPrice}
-                  <span className="text-base text-gray-500 font-normal">/month</span>
+                  <span className="text-base text-muted-foreground font-normal">/month</span>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{plan.description}</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{plan.description}</p>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -439,7 +439,7 @@ export function SaaSConversionWizard({
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">{feature}</span>
+                    <span className="text-muted-foreground dark:text-muted-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -505,16 +505,16 @@ export function SaaSConversionWizard({
           <div className="w-24 h-24 mx-auto mb-6 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
 
           <h3 className="text-2xl font-bold mb-4">Converting Your Demo to Production</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">{currentTask}</p>
+          <p className="text-muted-foreground dark:text-muted-foreground mb-8">{currentTask}</p>
 
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
+          <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-3 mb-4">
             <div
               className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
 
-          <p className="text-sm text-gray-500">{Math.round(progress)}% Complete</p>
+          <p className="text-sm text-muted-foreground">{Math.round(progress)}% Complete</p>
 
           <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">What's happening:</h4>
@@ -544,7 +544,7 @@ export function SaaSConversionWizard({
             <CardContent className="p-8 text-center">
               <CreditCard className="w-16 h-16 mx-auto text-blue-500 mb-4" />
               <h3 className="text-xl font-bold mb-4">Payment Setup</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground dark:text-muted-foreground mb-6">
                 Payment integration will be configured here.
                 <br />
                 For now, we'll proceed with the conversion process.
@@ -591,7 +591,7 @@ export function SaaSConversionWizard({
           <h1 className="text-3xl font-bold text-center mb-2">
             Convert {getModuleDisplayName(demoModule)} to Production
           </h1>
-          <p className="text-center text-gray-600 dark:text-gray-400">
+          <p className="text-center text-muted-foreground dark:text-muted-foreground">
             Transform your demo into a fully-featured production system in minutes
           </p>
         </div>

@@ -103,16 +103,16 @@ export default function GetStartedPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header */}
-      <header className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-100/50">
+      <header className="py-8 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold text-white">H</span>
+              <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center">
+                <span className="text-sm font-bold text-foreground">H</span>
               </div>
               <span className="text-xl font-light">HERA</span>
             </Link>
-            <Link href="/apps" className="text-gray-600 hover:text-black transition-colors">
+            <Link href="/apps" className="text-muted-foreground hover:text-black transition-colors">
               View All Apps
             </Link>
           </div>
@@ -124,7 +124,7 @@ export default function GetStartedPage() {
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-5xl font-light text-gray-900 mb-6">Start Your HERA Journey</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses already
               transforming their operations with HERA.
             </p>
@@ -137,7 +137,7 @@ export default function GetStartedPage() {
               <Card className="border-2 border-gray-100">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <Rocket className="w-6 h-6 text-blue-600" />
+                    <Rocket className="w-6 h-6 text-primary" />
                     Why Choose HERA?
                   </CardTitle>
                 </CardHeader>
@@ -147,7 +147,7 @@ export default function GetStartedPage() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">2-Week Implementation Guarantee</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Live in 14 days or your implementation is free
                         </p>
                       </div>
@@ -156,7 +156,7 @@ export default function GetStartedPage() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">70% Cost Savings</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Enterprise features at small business prices
                         </p>
                       </div>
@@ -165,7 +165,7 @@ export default function GetStartedPage() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">Industry-Specific Solutions</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Pre-configured for salon, restaurant, healthcare & more
                         </p>
                       </div>
@@ -174,7 +174,7 @@ export default function GetStartedPage() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">AI-Powered Automation</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           85% journal automation, smart insights, and more
                         </p>
                       </div>
@@ -187,7 +187,7 @@ export default function GetStartedPage() {
               <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <Shield className="w-6 h-6 text-blue-600" />
+                    <Shield className="w-6 h-6 text-primary" />
                     <h3 className="text-lg font-semibold text-gray-900">Enterprise Security</h3>
                   </div>
                   <ul className="space-y-2 text-sm text-gray-700">
@@ -372,7 +372,7 @@ export default function GetStartedPage() {
                         )}
                       </Button>
 
-                      <p className="text-xs text-gray-600 text-center mt-4">
+                      <p className="text-xs text-muted-foreground text-center mt-4">
                         By signing up, you agree to our Terms of Service and Privacy Policy
                       </p>
                     </form>
@@ -388,49 +388,49 @@ export default function GetStartedPage() {
               Available Industry Solutions
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">✂️</span>
                 </div>
                 <p className="text-sm font-medium">Salon & Spa</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">🍽️</span>
                 </div>
                 <p className="text-sm font-medium">Restaurant</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">🍦</span>
                 </div>
                 <p className="text-sm font-medium">Ice Cream</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">🏥</span>
                 </div>
                 <p className="text-sm font-medium">Healthcare</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">💎</span>
                 </div>
                 <p className="text-sm font-medium">Jewelry</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">🛍️</span>
                 </div>
                 <p className="text-sm font-medium">Retail</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <span className="text-2xl">🏭</span>
                 </div>
                 <p className="text-sm font-medium">Manufacturing</p>
               </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-center p-4 bg-background rounded-lg border border-border">
                 <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                   <Globe className="w-6 h-6 text-emerald-600" />
                 </div>

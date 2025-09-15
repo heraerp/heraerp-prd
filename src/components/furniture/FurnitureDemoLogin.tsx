@@ -69,8 +69,8 @@ export function FurnitureDemoLogin() {
             <User className="h-6 w-6 text-amber-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-white">Demo Account</h3>
-            <p className="text-sm text-gray-400">Kerala Furniture Works</p>
+            <h3 className="font-semibold text-foreground">Demo Account</h3>
+            <p className="text-sm text-muted-foreground">Kerala Furniture Works</p>
           </div>
         </div>
 

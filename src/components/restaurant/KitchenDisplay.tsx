@@ -425,7 +425,7 @@ export function KitchenDisplay({
           {(order.metadata as any)?.status === 'in_progress' && (
             <Button
               size="sm"
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-foreground"
               onClick={() => updateOrderStatus(order.id, 'ready')}
               disabled={updatingOrderId === order.id}
             >
@@ -554,7 +554,7 @@ export function KitchenDisplay({
 
             {/* Recently Served Column */}
             <div>
-              <h3 className="font-semibold mb-3 text-gray-600 dark:text-gray-400">
+              <h3 className="font-semibold mb-3 text-muted-foreground dark:text-muted-foreground">
                 Recently Served
               </h3>
               <ScrollArea className="h-[600px]">

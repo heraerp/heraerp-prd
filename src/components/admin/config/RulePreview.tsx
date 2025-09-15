@@ -235,7 +235,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
       case 'warning':
         return 'text-amber-600 dark:text-amber-400'
       default:
-        return 'text-blue-600 dark:text-blue-400'
+        return 'text-primary dark:text-blue-400'
     }
   }
 
@@ -246,7 +246,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header */}
-      <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+      <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -254,7 +254,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 <Eye className="w-6 h-6" />
                 Rule Preview & Testing
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Preview rule configuration and test execution with sample data
               </CardDescription>
             </div>
@@ -275,7 +275,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               <h2 className="text-xl font-semibold !text-gray-900 dark:!text-gray-100">
                 {rule.name}
               </h2>
-              <p className="!text-gray-600 dark:!text-gray-300">{rule.description}</p>
+              <p className="!text-muted-foreground dark:!text-gray-300">{rule.description}</p>
               <div className="flex items-center gap-4">
                 <Badge
                   className={cn(
@@ -294,16 +294,16 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 <Badge variant="outline" className="capitalize">
                   {rule.scope}
                 </Badge>
-                <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded font-mono !text-gray-800 dark:!text-gray-200">
+                <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded font-mono !text-gray-800 dark:!text-gray-200">
                   {rule.smart_code}
                 </code>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold !text-blue-600 dark:!text-blue-400">
+              <div className="text-2xl font-bold !text-primary dark:!text-blue-400">
                 #{rule.priority}
               </div>
-              <div className="text-sm !text-gray-500 dark:!text-gray-500">Priority</div>
+              <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Priority</div>
             </div>
           </div>
         </CardContent>
@@ -311,31 +311,31 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl">
+        <TabsList className="grid w-full grid-cols-4 bg-background/50 dark:bg-background/50 backdrop-blur-xl">
           <TabsTrigger
             value="overview"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
           >
             <FileText className="w-4 h-4 mr-2" />
             Overview
           </TabsTrigger>
           <TabsTrigger
             value="test"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
           >
             <Play className="w-4 h-4 mr-2" />
             Test Rule
           </TabsTrigger>
           <TabsTrigger
             value="results"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
             Results
           </TabsTrigger>
           <TabsTrigger
             value="logs"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
           >
             <Activity className="w-4 h-4 mr-2" />
             Execution Logs
@@ -346,7 +346,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Conditions */}
-            <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+            <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                   <Database className="w-5 h-5" />
@@ -357,11 +357,11 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 {rule.conditions.map((condition, index) => (
                   <div
                     key={index}
-                    className="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
+                    className="p-3 bg-background/30 dark:bg-muted/30 rounded-lg border border-white/30 dark:border-border/30"
                   >
                     <div className="flex items-center gap-2 text-sm font-mono">
-                      <span className="!text-blue-600 dark:!text-blue-400">{condition.field}</span>
-                      <span className="!text-gray-500 dark:!text-gray-500">
+                      <span className="!text-primary dark:!text-blue-400">{condition.field}</span>
+                      <span className="!text-muted-foreground dark:!text-muted-foreground">
                         {condition.operator}
                       </span>
                       <span className="!text-green-600 dark:!text-green-400">
@@ -369,7 +369,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                       </span>
                     </div>
                     {index < rule.conditions.length - 1 && (
-                      <div className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">
+                      <div className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                         {condition.logic || 'AND'}
                       </div>
                     )}
@@ -379,7 +379,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
             </Card>
 
             {/* Actions */}
-            <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+            <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                   <Zap className="w-5 h-5" />
@@ -390,18 +390,18 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 {rule.actions.map((action, index) => (
                   <div
                     key={index}
-                    className="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
+                    className="p-3 bg-background/30 dark:bg-muted/30 rounded-lg border border-white/30 dark:border-border/30"
                   >
                     <div className="font-medium !text-gray-900 dark:!text-gray-100 capitalize">
                       {action.type.replace('_', ' ')}
                     </div>
-                    <div className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
+                    <div className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-1">
                       Target:{' '}
-                      <code className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
+                      <code className="font-mono text-xs bg-muted dark:bg-muted px-1 py-0.5 rounded">
                         {action.target}
                       </code>
                     </div>
-                    <div className="text-sm !text-gray-600 dark:!text-gray-400">
+                    <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                       Value: <span className="font-mono">{action.value}</span>
                     </div>
                   </div>
@@ -411,7 +411,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
           </div>
 
           {/* Configuration */}
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                 <Settings className="w-5 h-5" />
@@ -420,29 +420,29 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-lg font-semibold !text-gray-900 dark:!text-gray-100">
                     {rule.configuration.timeout_ms || 5000}ms
                   </div>
-                  <div className="text-sm !text-gray-500 dark:!text-gray-500">Timeout</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Timeout</div>
                 </div>
-                <div className="text-center p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-lg font-semibold !text-gray-900 dark:!text-gray-100">
                     {rule.configuration.retry_count || 3}
                   </div>
-                  <div className="text-sm !text-gray-500 dark:!text-gray-500">Retries</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Retries</div>
                 </div>
-                <div className="text-center p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-sm font-semibold !text-gray-900 dark:!text-gray-100 capitalize">
                     {rule.configuration.failure_action || 'stop'}
                   </div>
-                  <div className="text-sm !text-gray-500 dark:!text-gray-500">On Failure</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">On Failure</div>
                 </div>
-                <div className="text-center p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-sm font-semibold !text-gray-900 dark:!text-gray-100 capitalize">
                     {rule.configuration.logging_level || 'basic'}
                   </div>
-                  <div className="text-sm !text-gray-500 dark:!text-gray-500">Logging</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Logging</div>
                 </div>
               </div>
             </CardContent>
@@ -453,13 +453,13 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
         <TabsContent value="test" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Test Input */}
-            <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+            <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                   <Code2 className="w-5 h-5" />
                   Test Data
                 </CardTitle>
-                <CardDescription className="!text-gray-600 dark:!text-gray-300">
+                <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                   Provide sample data to test rule execution
                 </CardDescription>
               </CardHeader>
@@ -472,7 +472,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                     value={testData}
                     onChange={e => setTestData(e.target.value)}
                     placeholder="Enter test data as JSON"
-                    className="min-h-[200px] font-mono text-sm bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                    className="min-h-[200px] font-mono text-sm bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                   />
                 </div>
 
@@ -480,7 +480,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   <Button
                     onClick={runTest}
                     disabled={isTestRunning}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-foreground shadow-lg"
                   >
                     {isTestRunning ? (
                       <>
@@ -497,7 +497,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   <Button
                     variant="outline"
                     onClick={() => setTestData(getSampleTestData())}
-                    className="bg-white/70 dark:bg-gray-800/70"
+                    className="bg-background/70 dark:bg-muted/70"
                   >
                     <RotateCcw className="w-4 h-4 mr-2" />
                     Reset
@@ -507,7 +507,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
             </Card>
 
             {/* Test Status */}
-            <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+            <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                   <Activity className="w-5 h-5" />
@@ -519,15 +519,15 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   <div className="flex items-center justify-center p-8">
                     <div className="text-center">
                       <div className="w-12 h-12 mx-auto mb-4 animate-spin border-4 border-blue-600 border-t-transparent rounded-full"></div>
-                      <p className="!text-gray-600 dark:!text-gray-400">Running rule test...</p>
+                      <p className="!text-muted-foreground dark:!text-muted-foreground">Running rule test...</p>
                     </div>
                   </div>
                 )}
 
                 {!isTestRunning && !testResult && (
                   <div className="text-center p-8">
-                    <Clock className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                    <p className="!text-gray-500 dark:!text-gray-500">
+                    <Clock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="!text-muted-foreground dark:!text-muted-foreground">
                       Click "Run Test" to execute the rule with your test data
                     </p>
                   </div>
@@ -589,7 +589,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
           {testResult && (
             <>
               {/* Conditions Results */}
-              <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+              <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                     <Database className="w-5 h-5" />
@@ -615,7 +615,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                               {condition.condition}
                             </code>
                           </div>
-                          <div className="text-sm !text-gray-600 dark:!text-gray-400">
+                          <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                             Value: <strong>{String(condition.value)}</strong>
                           </div>
                         </div>
@@ -626,7 +626,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               </Card>
 
               {/* Actions Results */}
-              <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+              <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                     <Zap className="w-5 h-5" />
@@ -653,7 +653,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                             </span>
                           </div>
                         </div>
-                        <div className="text-sm !text-gray-600 dark:!text-gray-400 mt-2">
+                        <div className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
                           {action.output}
                         </div>
                       </div>
@@ -666,7 +666,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
 
           {/* Test History */}
           {testHistory.length > 0 && (
-            <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+            <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                   <TrendingUp className="w-5 h-5" />
@@ -678,7 +678,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   {testHistory.map((result, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
+                      className="flex items-center justify-between p-3 bg-background/30 dark:bg-muted/30 rounded-lg border border-white/30 dark:border-border/30"
                     >
                       <div className="flex items-center gap-3">
                         {getStatusIcon(result.success)}
@@ -686,12 +686,12 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                           <div className="font-medium !text-gray-900 dark:!text-gray-100">
                             Test {index + 1}
                           </div>
-                          <div className="text-sm !text-gray-500 dark:!text-gray-500">
+                          <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                             {result.executionTime}ms
                           </div>
                         </div>
                       </div>
-                      <div className="text-sm !text-gray-600 dark:!text-gray-400">
+                      <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                         {result.conditionsEvaluated.filter(c => c.result).length}/
                         {result.conditionsEvaluated.length} conditions passed
                       </div>
@@ -704,8 +704,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
 
           {!testResult && (
             <div className="text-center p-8">
-              <TrendingUp className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <p className="!text-gray-500 dark:!text-gray-500">
+              <TrendingUp className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="!text-muted-foreground dark:!text-muted-foreground">
                 Run a test to see detailed results
               </p>
             </div>
@@ -714,7 +714,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
 
         {/* Logs Tab */}
         <TabsContent value="logs" className="space-y-6">
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                 <Activity className="w-5 h-5" />
@@ -727,7 +727,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   {testResult.logs.map((log, index) => (
                     <div
                       key={index}
-                      className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700"
+                      className="p-3 bg-muted dark:bg-muted/50 rounded-lg border border-border dark:border-border"
                     >
                       <div className="flex items-start gap-3">
                         <div
@@ -745,7 +745,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                         </div>
                         <div className="flex-1">
                           <div className="!text-gray-900 dark:!text-gray-100">{log.message}</div>
-                          <div className="text-xs !text-gray-500 dark:!text-gray-500 mt-1 font-mono">
+                          <div className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1 font-mono">
                             {new Date(log.timestamp).toLocaleTimeString()}
                           </div>
                         </div>
@@ -755,8 +755,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 </div>
               ) : (
                 <div className="text-center p-8">
-                  <Activity className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="!text-gray-500 dark:!text-gray-500">
+                  <Activity className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="!text-muted-foreground dark:!text-muted-foreground">
                     Execution logs will appear here after running a test
                   </p>
                 </div>

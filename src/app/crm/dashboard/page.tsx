@@ -263,7 +263,7 @@ export default function CRMDashboard() {
       case 'task':
         return 'text-emerald-500'
       default:
-        return 'text-gray-500'
+        return 'text-muted-foreground'
     }
   }
 
@@ -276,7 +276,7 @@ export default function CRMDashboard() {
       case 'overdue':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
     }
   }
 
@@ -304,8 +304,8 @@ export default function CRMDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">CRM Dashboard</h1>
-          <p className="text-white/60 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">CRM Dashboard</h1>
+          <p className="text-foreground/60 mt-1">
             Track your sales performance and customer relationships
           </p>
         </div>
@@ -313,7 +313,7 @@ export default function CRMDashboard() {
           <select
             value={selectedPeriod}
             onChange={e => setSelectedPeriod(e.target.value)}
-            className="px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+            className="px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
           >
             <option value="week">This Week</option>
             <option value="month">This Month</option>
@@ -322,7 +322,7 @@ export default function CRMDashboard() {
           </select>
           <button
             onClick={refreshData}
-            className={`p-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${
+            className={`p-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${
               isRefreshing ? 'animate-spin' : ''
             }`}
           >
@@ -338,10 +338,10 @@ export default function CRMDashboard() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${metric.color}`}>
-                    <Icon className="h-6 w-6 text-white" />
+                    <Icon className="h-6 w-6 text-foreground" />
                   </div>
                   <div
                     className={`flex items-center space-x-1 text-sm font-medium ${
@@ -349,7 +349,7 @@ export default function CRMDashboard() {
                         ? 'text-emerald-400'
                         : metric.changeType === 'negative'
                           ? 'text-red-400'
-                          : 'text-white/60'
+                          : 'text-foreground/60'
                     }`}
                   >
                     {metric.changeType === 'positive' ? (
@@ -360,8 +360,8 @@ export default function CRMDashboard() {
                     <span>{metric.change}</span>
                   </div>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">{metric.title}</h3>
-                <p className="text-2xl font-bold text-white">{metric.value}</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">{metric.title}</h3>
+                <p className="text-2xl font-bold text-foreground">{metric.value}</p>
               </div>
             </div>
           )
@@ -373,10 +373,10 @@ export default function CRMDashboard() {
         {/* Revenue Trend */}
         <div className="lg:col-span-2 relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Revenue Trend</h2>
-              <button className="text-white/40 hover:text-white transition-colors">
+              <h2 className="text-xl font-semibold text-foreground">Revenue Trend</h2>
+              <button className="text-foreground/40 hover:text-foreground transition-colors">
                 <MoreVertical className="h-5 w-5" />
               </button>
             </div>
@@ -436,8 +436,8 @@ export default function CRMDashboard() {
         {/* Sales by Category */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ec7f37]/50 to-[#be4f0c]/50 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Sales by Category</h2>
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Sales by Category</h2>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
@@ -468,9 +468,9 @@ export default function CRMDashboard() {
                 <div key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-sm text-white/80">{item.name}</span>
+                    <span className="text-sm text-foreground/80">{item.name}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">{item.value}%</span>
+                  <span className="text-sm font-medium text-foreground">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -481,10 +481,10 @@ export default function CRMDashboard() {
       {/* Pipeline Overview */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#be4f0c]/50 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Sales Pipeline</h2>
-            <span className="text-sm text-white/60">Total: ₹1.85 Cr</span>
+            <h2 className="text-xl font-semibold text-foreground">Sales Pipeline</h2>
+            <span className="text-sm text-foreground/60">Total: ₹1.85 Cr</span>
           </div>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart
@@ -536,9 +536,9 @@ export default function CRMDashboard() {
         {/* Recent Activities */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Recent Activities</h2>
+              <h2 className="text-xl font-semibold text-foreground">Recent Activities</h2>
               <button className="text-sm text-[#FF5A09] hover:text-[#ec7f37] transition-colors flex items-center space-x-1">
                 <span>View All</span>
                 <ArrowRight className="h-4 w-4" />
@@ -549,12 +549,12 @@ export default function CRMDashboard() {
                 const Icon = getActivityIcon(activity.type)
                 return (
                   <div key={activity.id} className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg bg-white/5 ${getActivityColor(activity.type)}`}>
+                    <div className={`p-2 rounded-lg bg-background/5 ${getActivityColor(activity.type)}`}>
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-white">{activity.title}</p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                      <p className="text-xs text-foreground/60">
                         {activity.contact} • {activity.time}
                       </p>
                     </div>
@@ -573,9 +573,9 @@ export default function CRMDashboard() {
         {/* Top Opportunities */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ec7f37]/50 to-[#be4f0c]/50 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Top Opportunities</h2>
+              <h2 className="text-xl font-semibold text-foreground">Top Opportunities</h2>
               <button className="text-sm text-[#FF5A09] hover:text-[#ec7f37] transition-colors flex items-center space-x-1">
                 <span>View All</span>
                 <ArrowRight className="h-4 w-4" />
@@ -583,18 +583,18 @@ export default function CRMDashboard() {
             </div>
             <div className="space-y-4">
               {opportunities.map(opp => (
-                <div key={opp.id} className="border-b border-white/10 pb-4 last:border-0">
+                <div key={opp.id} className="border-b border-border/10 pb-4 last:border-0">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="text-sm font-medium text-white">{opp.name}</p>
-                      <p className="text-xs text-white/60">{opp.account}</p>
+                      <p className="text-sm font-medium text-foreground">{opp.name}</p>
+                      <p className="text-xs text-foreground/60">{opp.account}</p>
                     </div>
                     <p className="text-sm font-semibold text-[#FF5A09]">
                       ₹{(opp.value / 100000).toFixed(1)}L
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 text-xs text-white/60">
+                    <div className="flex items-center space-x-4 text-xs text-foreground/60">
                       <span className="flex items-center space-x-1">
                         <Target className="h-3 w-3" />
                         <span>{opp.stage}</span>
@@ -605,13 +605,13 @@ export default function CRMDashboard() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div className="w-24 h-2 bg-background/10 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-full transition-all duration-500"
                           style={{ width: `${opp.probability}%` }}
                         />
                       </div>
-                      <span className="text-xs text-white/60">{opp.probability}%</span>
+                      <span className="text-xs text-foreground/60">{opp.probability}%</span>
                     </div>
                   </div>
                 </div>

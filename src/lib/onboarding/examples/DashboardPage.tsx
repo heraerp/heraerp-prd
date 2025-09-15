@@ -29,14 +29,14 @@ function DashboardContent() {
   }, [startTour, isActive])
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-background dark:bg-muted shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <h1
               data-testid="page-title"
-              className="text-3xl font-bold text-gray-900 dark:text-white"
+              className="text-3xl font-bold text-gray-900 dark:text-foreground"
             >
               HERA Dashboard
             </h1>
@@ -44,7 +44,7 @@ function DashboardContent() {
             {/* Help button to restart tour */}
             <button
               onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1')}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-blue-600 hover:bg-blue-700"
               disabled={isActive}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@ function DashboardContent() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters Panel */}
           <div data-testid="filters-panel" className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="bg-background dark:bg-muted rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold mb-4">Filters</h2>
 
               <div className="space-y-4">
@@ -104,20 +104,20 @@ function DashboardContent() {
           <div className="lg:col-span-3 space-y-6">
             {/* KPI Cards */}
             <div data-testid="kpi-cards" className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500">Total Entities</h3>
+              <div className="bg-background dark:bg-muted rounded-lg shadow p-6">
+                <h3 className="text-sm font-medium text-muted-foreground">Total Entities</h3>
                 <p className="text-2xl font-bold mt-2">12,345</p>
                 <p className="text-sm text-green-600 mt-2">+12% from last month</p>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500">Transactions</h3>
+              <div className="bg-background dark:bg-muted rounded-lg shadow p-6">
+                <h3 className="text-sm font-medium text-muted-foreground">Transactions</h3>
                 <p className="text-2xl font-bold mt-2">98,765</p>
                 <p className="text-sm text-green-600 mt-2">+23% from last month</p>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500">Revenue</h3>
+              <div className="bg-background dark:bg-muted rounded-lg shadow p-6">
+                <h3 className="text-sm font-medium text-muted-foreground">Revenue</h3>
                 <p className="text-2xl font-bold mt-2">$456,789</p>
                 <p className="text-sm text-red-600 mt-2">-5% from last month</p>
               </div>
@@ -129,7 +129,7 @@ function DashboardContent() {
 
               <button
                 data-testid="create-entity-button"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-green-600 hover:bg-green-700"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -144,32 +144,32 @@ function DashboardContent() {
             </div>
 
             {/* Activity Table */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+            <div className="bg-background dark:bg-muted rounded-lg shadow overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-muted">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Entity
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Smart Code
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Created
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-background divide-y divide-gray-200">
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">Acme Corp</td>
                     <td className="px-6 py-4 whitespace-nowrap">Customer</td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
                       HERA.CRM.CUST.ENT.PROF.v1
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">2 hours ago</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">2 hours ago</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">Invoice #1234</td>
@@ -177,7 +177,7 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
                       HERA.FIN.INV.TXN.SALE.v1
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">4 hours ago</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">4 hours ago</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">Widget Pro</td>
@@ -185,7 +185,7 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
                       HERA.INV.PROD.ENT.ITEM.v1
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">Yesterday</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">Yesterday</td>
                   </tr>
                 </tbody>
               </table>

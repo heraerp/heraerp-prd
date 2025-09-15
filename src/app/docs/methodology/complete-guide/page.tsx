@@ -78,13 +78,13 @@ export default function CompleteGuidePage() {
           </p>
 
           {/* Download Section */}
-          <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 mb-8 bg-gray-50 dark:bg-gray-800/50">
+          <div className="border border-border dark:border-border rounded-lg p-6 mb-8 bg-muted dark:bg-muted/50">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-foreground">
                   HERA Implementation Methodology Bundle
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                <p className="text-muted-foreground dark:text-gray-300 mb-4">
                   Comprehensive guide including diagrams, code examples, ROI calculator, and
                   step-by-step instructions.
                 </p>
@@ -92,7 +92,7 @@ export default function CompleteGuidePage() {
                   <a
                     href="/HERA-IMPLEMENTATION-METHODOLOGY-BUNDLE.md"
                     download
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-foreground rounded-md transition-colors"
                   >
                     <Download className="h-4 w-4" />
                     Download Bundle
@@ -100,63 +100,63 @@ export default function CompleteGuidePage() {
                   <a
                     href="/HERA-IMPLEMENTATION-METHODOLOGY-BUNDLE.md"
                     target="_blank"
-                    className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-border dark:border-border rounded-md hover:bg-muted dark:hover:bg-muted-foreground/10 transition-colors text-gray-700 dark:text-gray-200"
                   >
                     <ExternalLink className="h-4 w-4" />
                     View in Browser
                   </a>
                 </div>
               </div>
-              <FileText className="h-12 w-12 text-gray-400 dark:text-gray-500" />
+              <FileText className="h-12 w-12 text-muted-foreground dark:text-muted-foreground" />
             </div>
           </div>
 
           {/* Key Metrics */}
-          <h2 id="key-metrics" className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <h2 id="key-metrics" className="text-2xl font-semibold text-gray-900 dark:text-foreground">
             Key Implementation Metrics
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
-                <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Time to Deploy</span>
+                <Clock className="h-5 w-5 text-primary dark:text-blue-400" />
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Time to Deploy</span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">21 Days</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">vs 6-18 months</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-foreground">21 Days</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">vs 6-18 months</div>
             </div>
 
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <TrendingDown className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Cost Reduction</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Cost Reduction</span>
               </div>
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">90%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">$50-100K total</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">$50-100K total</div>
             </div>
 
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Success Rate</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Success Rate</span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">95%+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">vs 60% average</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-foreground">95%+</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">vs 60% average</div>
             </div>
 
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
-                <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Module Reuse</span>
+                <Package className="h-5 w-5 text-primary dark:text-blue-400" />
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Module Reuse</span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">100%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Zero custom dev</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-foreground">100%</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">Zero custom dev</div>
             </div>
           </div>
 
           {/* Executive Summary */}
           <h2
             id="executive-summary"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-4"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-4"
           >
             Executive Summary
           </h2>
@@ -187,60 +187,60 @@ export default function CompleteGuidePage() {
           {/* Bundle Contents */}
           <h2
             id="bundle-contents"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             What's in the Bundle
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-4">
-                <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <Target className="h-6 w-6 text-primary dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   Business Content
                 </h3>
               </div>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   Executive summary with ROI metrics
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   21-day implementation timeline
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   Success stories and case studies
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   5-year TCO comparison
                 </li>
               </ul>
             </div>
 
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+            <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-4">
-                <Code2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <Code2 className="h-6 w-6 text-primary dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   Technical Content
                 </h3>
               </div>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   MCP orchestration architecture
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   Complete flow & swimlane diagrams
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   Code examples for each phase
                 </li>
-                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <li className="flex items-center gap-2 text-muted-foreground dark:text-gray-300">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   Deployment guide & scripts
                 </li>
               </ul>
@@ -250,7 +250,7 @@ export default function CompleteGuidePage() {
           {/* Implementation Phases */}
           <h2
             id="implementation-phases"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             6-Phase Implementation Journey
           </h2>
@@ -296,22 +296,22 @@ export default function CompleteGuidePage() {
             ].map(item => (
               <div
                 key={item.phase}
-                className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-2">
-                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-sm font-semibold">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 text-foreground text-sm font-semibold">
                         {item.phase}
                       </span>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                         {item.name}
                       </h3>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                         Days {item.days}
                       </span>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 ml-12">{item.description}</p>
+                    <p className="text-muted-foreground dark:text-gray-300 ml-12">{item.description}</p>
                   </div>
                 </div>
               </div>
@@ -321,12 +321,12 @@ export default function CompleteGuidePage() {
           {/* Technical Architecture */}
           <h2
             id="technical-architecture"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             Technical Architecture
           </h2>
           <div className="mb-12">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4">
               Universal Foundation
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -340,26 +340,26 @@ export default function CompleteGuidePage() {
               ].map(table => (
                 <div
                   key={table.name}
-                  className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800"
+                  className="border border-border dark:border-border rounded-lg p-4 bg-background dark:bg-muted"
                 >
-                  <code className="text-sm font-mono text-blue-600 dark:text-blue-400">
+                  <code className="text-sm font-mono text-primary dark:text-blue-400">
                     {table.name}
                   </code>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{table.desc}</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300 mt-1">{table.desc}</p>
                 </div>
               ))}
             </div>
 
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4">
               Intelligent Classification
             </h3>
-            <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 mb-8">
-              <div className="text-sm mb-4 text-gray-900 dark:text-gray-100">
+            <div className="border border-border dark:border-border rounded-lg p-4 bg-muted dark:bg-muted mb-8">
+              <div className="text-sm mb-4 text-gray-900 dark:text-foreground">
                 Industry-specific • Module-aware • Type-driven • Version-controlled
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <strong className="text-gray-900 dark:text-gray-100">Examples:</strong>
+                  <strong className="text-gray-900 dark:text-foreground">Examples:</strong>
                   <ul className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
                     <li>Manufacturing Purchase Orders</li>
                     <li>Retail Tax Invoicing</li>
@@ -367,7 +367,7 @@ export default function CompleteGuidePage() {
                   </ul>
                 </div>
                 <div>
-                  <strong className="text-gray-900 dark:text-gray-100">Benefits:</strong>
+                  <strong className="text-gray-900 dark:text-foreground">Benefits:</strong>
                   <ul className="mt-2 space-y-1 text-gray-700 dark:text-gray-300">
                     <li>• Intelligent business context</li>
                     <li>• Version control built-in</li>
@@ -381,16 +381,16 @@ export default function CompleteGuidePage() {
           {/* Code Examples */}
           <h2
             id="code-examples"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             Implementation Code Examples
           </h2>
           <div className="space-y-6 mb-12">
             <div>
-              <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-md font-semibold text-gray-900 dark:text-foreground mb-2">
                 Phase 1: Requirement Capture
               </h3>
-              <pre className="language-typescript bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto">
+              <pre className="language-typescript bg-background dark:bg-gray-950 p-4 rounded-lg overflow-x-auto">
                 <code>{`const requirement = {
   type: 'project_requirement',
   name: 'P2P Approval Workflow',
@@ -412,10 +412,10 @@ export default function CompleteGuidePage() {
             </div>
 
             <div>
-              <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-md font-semibold text-gray-900 dark:text-foreground mb-2">
                 Phase 5: UAT Sign-off
               </h3>
-              <pre className="language-typescript bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto">
+              <pre className="language-typescript bg-background dark:bg-gray-950 p-4 rounded-lg overflow-x-auto">
                 <code>{`const signoff = {
   type: 'project_milestone',
   category: 'UAT_SIGNOFF',
@@ -435,11 +435,11 @@ export default function CompleteGuidePage() {
           {/* ROI Calculator */}
           <h2
             id="roi-calculator"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             ROI Calculator
           </h2>
-          <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-6 mb-12 bg-white dark:bg-gray-800">
+          <div className="border border-border dark:border-border rounded-lg p-6 mb-12 bg-background dark:bg-muted">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-lg font-semibold mb-4 text-red-600 dark:text-red-400">
@@ -447,24 +447,24 @@ export default function CompleteGuidePage() {
                 </h3>
                 <dl className="space-y-2">
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Implementation:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$2,000,000</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Implementation:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$2,000,000</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Timeline:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">12 months</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Timeline:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">12 months</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Customization:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$500,000</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Customization:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$500,000</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Annual Maintenance:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$400,000</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Annual Maintenance:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$400,000</dd>
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <dt className="font-semibold text-gray-900 dark:text-gray-100">5-Year TCO:</dt>
-                    <dd className="font-mono font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex justify-between pt-2 border-t border-border dark:border-border">
+                    <dt className="font-semibold text-gray-900 dark:text-foreground">5-Year TCO:</dt>
+                    <dd className="font-mono font-semibold text-gray-900 dark:text-foreground">
                       $4,500,000
                     </dd>
                   </div>
@@ -477,24 +477,24 @@ export default function CompleteGuidePage() {
                 </h3>
                 <dl className="space-y-2">
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Implementation:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$75,000</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Implementation:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$75,000</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Timeline:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">21 days</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Timeline:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">21 days</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Customization:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$0</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Customization:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$0</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-600 dark:text-gray-400">Annual Maintenance:</dt>
-                    <dd className="font-mono text-gray-900 dark:text-gray-100">$60,000</dd>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">Annual Maintenance:</dt>
+                    <dd className="font-mono text-gray-900 dark:text-foreground">$60,000</dd>
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <dt className="font-semibold text-gray-900 dark:text-gray-100">5-Year TCO:</dt>
-                    <dd className="font-mono font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex justify-between pt-2 border-t border-border dark:border-border">
+                    <dt className="font-semibold text-gray-900 dark:text-foreground">5-Year TCO:</dt>
+                    <dd className="font-mono font-semibold text-gray-900 dark:text-foreground">
                       $375,000
                     </dd>
                   </div>
@@ -508,17 +508,17 @@ export default function CompleteGuidePage() {
                   <div className="font-semibold text-green-700 dark:text-green-300">
                     Total Savings
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">$4,125,000</div>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-foreground">$4,125,000</div>
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-green-700 dark:text-green-300">
                     Cost Reduction
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">91.7%</div>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-foreground">91.7%</div>
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-green-700 dark:text-green-300">ROI Period</div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">2 months</div>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-foreground">2 months</div>
                 </div>
               </div>
             </div>
@@ -527,31 +527,31 @@ export default function CompleteGuidePage() {
           {/* Success Metrics */}
           <h2
             id="success-metrics"
-            className="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
+            className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-6"
           >
             Proven Success Metrics
           </h2>
-          <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden mb-12">
+          <div className="border border-border dark:border-border rounded-lg overflow-hidden mb-12">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
+              <thead className="bg-muted dark:bg-muted border-b border-border dark:border-border">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-foreground">
                     Metric
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-foreground">
                     Traditional ERP
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-foreground">
                     HERA with MCP
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900 dark:text-foreground">
                     Improvement
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-900">
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="px-6 py-3 text-gray-900 dark:text-gray-100">
+              <tbody className="bg-background dark:bg-background">
+                <tr className="border-b border-border dark:border-border">
+                  <td className="px-6 py-3 text-gray-900 dark:text-foreground">
                     Implementation Time
                   </td>
                   <td className="px-6 py-3 text-gray-700 dark:text-gray-300">6-18 months</td>
@@ -560,24 +560,24 @@ export default function CompleteGuidePage() {
                   </td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400">20x faster</td>
                 </tr>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="px-6 py-3 text-gray-900 dark:text-gray-100">Total Cost</td>
+                <tr className="border-b border-border dark:border-border">
+                  <td className="px-6 py-3 text-gray-900 dark:text-foreground">Total Cost</td>
                   <td className="px-6 py-3 text-gray-700 dark:text-gray-300">$500K-5M</td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400 font-semibold">
                     $50K-100K
                   </td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400">90% less</td>
                 </tr>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="px-6 py-3 text-gray-900 dark:text-gray-100">Schema Changes</td>
+                <tr className="border-b border-border dark:border-border">
+                  <td className="px-6 py-3 text-gray-900 dark:text-foreground">Schema Changes</td>
                   <td className="px-6 py-3 text-gray-700 dark:text-gray-300">Hundreds</td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400 font-semibold">
                     Zero
                   </td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400">100% reduction</td>
                 </tr>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="px-6 py-3 text-gray-900 dark:text-gray-100">Module Reuse</td>
+                <tr className="border-b border-border dark:border-border">
+                  <td className="px-6 py-3 text-gray-900 dark:text-foreground">Module Reuse</td>
                   <td className="px-6 py-3 text-gray-700 dark:text-gray-300">0%</td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400 font-semibold">
                     100%
@@ -585,7 +585,7 @@ export default function CompleteGuidePage() {
                   <td className="px-6 py-3 text-green-600 dark:text-green-400">Complete reuse</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-3 text-gray-900 dark:text-gray-100">Success Rate</td>
+                  <td className="px-6 py-3 text-gray-900 dark:text-foreground">Success Rate</td>
                   <td className="px-6 py-3 text-gray-700 dark:text-gray-300">60%</td>
                   <td className="px-6 py-3 text-green-600 dark:text-green-400 font-semibold">
                     95%+
@@ -598,10 +598,10 @@ export default function CompleteGuidePage() {
 
           {/* Next Steps */}
           <div className="border-2 border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 rounded-lg p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-foreground">
               Ready to Transform Your Business?
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-lg text-muted-foreground dark:text-gray-300 mb-6">
               Join hundreds of businesses that have revolutionized their operations with HERA's
               21-day implementation
             </p>
@@ -609,14 +609,14 @@ export default function CompleteGuidePage() {
               <a
                 href="/HERA-IMPLEMENTATION-METHODOLOGY-BUNDLE.md"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-lg"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-foreground rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-lg"
               >
                 <Download className="h-5 w-5" />
                 Download Complete Bundle
               </a>
               <Link
                 href="/docs/methodology"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg text-gray-700 dark:text-gray-200"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-border dark:border-border rounded-md hover:bg-muted dark:hover:bg-muted transition-colors text-lg text-gray-700 dark:text-gray-200"
               >
                 View Methodology Overview
               </Link>

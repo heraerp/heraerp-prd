@@ -350,13 +350,13 @@ export default function FINDashboard() {
         <Card className="hera-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Net Income</CardTitle>
-            <Activity className="h-4 w-4 text-blue-600" />
+            <Activity className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               ${financialSummary?.net_income.toLocaleString() || '0'}
             </div>
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="text-xs text-primary mt-1">
               +{financialSummary?.income_change || 0}% from last period
             </p>
           </CardContent>
@@ -684,7 +684,7 @@ export default function FINDashboard() {
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                      <BarChart3 className="h-8 w-8 text-blue-600" />
+                      <BarChart3 className="h-8 w-8 text-primary" />
                       <div>
                         <CardTitle className="text-base">Balance Sheet</CardTitle>
                         <CardDescription>Assets, liabilities & equity</CardDescription>
@@ -876,7 +876,7 @@ export default function FINDashboard() {
                   <h3 className="font-medium mb-3">Company Structure</h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 p-3 border rounded-lg">
-                      <Building2 className="h-5 w-5 text-blue-600" />
+                      <Building2 className="h-5 w-5 text-primary" />
                       <div className="flex-1">
                         <p className="font-medium">Parent Company</p>
                         <p className="text-sm text-muted-foreground">100% ownership</p>
@@ -885,7 +885,7 @@ export default function FINDashboard() {
                     </div>
                     <div className="ml-8 space-y-2">
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Building2 className="h-4 w-4 text-gray-600" />
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
                         <div className="flex-1">
                           <p className="text-sm font-medium">European Subsidiary</p>
                           <p className="text-xs text-muted-foreground">80% ownership</p>
@@ -893,7 +893,7 @@ export default function FINDashboard() {
                         <Badge variant="outline">EUR</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Building2 className="h-4 w-4 text-gray-600" />
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
                         <div className="flex-1">
                           <p className="text-sm font-medium">Asian Subsidiary</p>
                           <p className="text-xs text-muted-foreground">60% ownership</p>

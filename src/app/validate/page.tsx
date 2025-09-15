@@ -286,14 +286,14 @@ export default function ValidatePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white mb-2">
+          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground mb-2">
             {question.title}
           </h3>
           <Progress
             value={((currentStep + 1) / validationQuestions.length) * 100}
             className="h-2"
           />
-          <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
+          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-1">
             Question {currentStep + 1} of {validationQuestions.length}
           </p>
         </div>
@@ -307,11 +307,11 @@ export default function ValidatePage() {
               {question.options.map(option => (
                 <label
                   key={option.value}
-                  className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 transition-colors"
+                  className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-border dark:border-border hover:border-purple-500 transition-colors"
                 >
                   <RadioGroupItem value={option.value} />
                   {option.icon && <span className="text-2xl">{option.icon}</span>}
-                  <span className="!text-gray-900 dark:!text-white">{option.label}</span>
+                  <span className="!text-gray-900 dark:!text-foreground">{option.label}</span>
                 </label>
               ))}
             </div>
@@ -321,7 +321,7 @@ export default function ValidatePage() {
             {question.options.map(option => (
               <label
                 key={option.value}
-                className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 transition-colors"
+                className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-border dark:border-border hover:border-purple-500 transition-colors"
               >
                 <Checkbox
                   checked={((answer?.answer as string[]) || []).includes(option.value)}
@@ -333,8 +333,8 @@ export default function ValidatePage() {
                     handleAnswer(question.id, newValues)
                   }}
                 />
-                {option.icon && <option.icon className="w-5 h-5 text-gray-600" />}
-                <span className="!text-gray-900 dark:!text-white">{option.label}</span>
+                {option.icon && <option.icon className="w-5 h-5 text-muted-foreground" />}
+                <span className="!text-gray-900 dark:!text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -348,7 +348,7 @@ export default function ValidatePage() {
           <Button
             onClick={handleNext}
             disabled={!isStepComplete()}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground"
           >
             {currentStep === validationQuestions.length - 1 ? 'Get Results' : 'Next'}
             <ChevronRight className="w-4 h-4 ml-2" />
@@ -380,7 +380,7 @@ export default function ValidatePage() {
         {/* Score Card */}
         <div
           className={cn(
-            'relative overflow-hidden rounded-2xl p-8 text-white',
+            'relative overflow-hidden rounded-2xl p-8 text-foreground',
             'bg-gradient-to-r',
             recommendationColors[validationResult.recommendation]
           )}
@@ -393,7 +393,7 @@ export default function ValidatePage() {
             <p className="text-lg">Implementation Time: {validationResult.implementationTime}</p>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 opacity-20">
-            <div className="w-full h-full rounded-full bg-white/20 blur-3xl" />
+            <div className="w-full h-full rounded-full bg-background/20 blur-3xl" />
           </div>
         </div>
 
@@ -468,13 +468,13 @@ export default function ValidatePage() {
             </Button>
 
             <div className="p-6 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
-              <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-2">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mb-2">
                 Estimated Annual Savings with HERA:
               </p>
               <p className="text-3xl font-bold !text-purple-600 dark:!text-purple-400">
                 ${validationResult.estimatedSavings.toLocaleString()}
               </p>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-2">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
                 ROI in less than 2 months
               </p>
             </div>
@@ -491,7 +491,7 @@ export default function ValidatePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-3">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mb-3">
                 These features may require custom configuration:
               </p>
               <div className="flex flex-wrap gap-2">
@@ -511,13 +511,13 @@ export default function ValidatePage() {
 
         {/* Next Steps */}
         <div className="text-center">
-          <h3 className="text-2xl font-bold !text-gray-900 dark:!text-white mb-4">
+          <h3 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-4">
             Ready to build your custom solution?
           </h3>
           <Button
             size="lg"
             onClick={() => router.push('/build')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground shadow-lg"
           >
             Start Building
             <ArrowRight className="w-5 h-5 ml-2" />
@@ -633,11 +633,11 @@ export default function ValidatePage() {
                     `
                   }}
                 >
-                  <Sparkles className="w-5 h-5 text-white drop-shadow-md" />
+                  <Sparkles className="w-5 h-5 text-foreground drop-shadow-md" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">HERA</h1>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">
+                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-foreground">HERA</h1>
+                  <p className="text-xs !text-muted-foreground dark:!text-gray-300 font-medium">
                     Business Validation
                   </p>
                 </div>
@@ -645,7 +645,7 @@ export default function ValidatePage() {
 
               <Button
                 onClick={() => router.push('/build')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground shadow-lg"
                 disabled={!showResults}
               >
                 Continue to Build
@@ -664,7 +664,7 @@ export default function ValidatePage() {
             <>
               {/* Hero Section */}
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold !text-gray-900 dark:!text-white mb-4">
+                <h2 className="text-3xl font-bold !text-gray-900 dark:!text-foreground mb-4">
                   Let's Find Your Perfect Fit
                 </h2>
                 <p className="text-lg !text-gray-700 dark:!text-gray-300">
@@ -706,10 +706,10 @@ export default function ValidatePage() {
                   }}
                 >
                   <Zap className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                     Quick Setup
                   </p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                  <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                     30 seconds to 5 minutes
                   </p>
                 </div>
@@ -722,10 +722,10 @@ export default function ValidatePage() {
                   }}
                 >
                   <Shield className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                     Data Security
                   </p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                  <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                     Bank-level encryption
                   </p>
                 </div>
@@ -738,10 +738,10 @@ export default function ValidatePage() {
                   }}
                 >
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-emerald-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                     Cost Savings
                   </p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                  <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                     Average 92% reduction
                   </p>
                 </div>

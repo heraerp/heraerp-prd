@@ -96,12 +96,12 @@ export default function AIAssistantsPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-6 shadow-2xl">
-            <Sparkles className="h-10 w-10 text-white" />
+            <Sparkles className="h-10 w-10 text-foreground" />
           </div>
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             HERA AI Assistants
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground dark:text-gray-300 max-w-2xl mx-auto">
             Select your AI-powered assistant for specialized business operations
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function AIAssistantsPage() {
                     assistant.gradient
                   )}
                 >
-                  <assistant.icon className="h-8 w-8 text-white" />
+                  <assistant.icon className="h-8 w-8 text-foreground" />
                 </div>
                 <CardTitle className="text-2xl">{assistant.title}</CardTitle>
                 <CardDescription className="mt-2">{assistant.description}</CardDescription>
@@ -175,7 +175,7 @@ export default function AIAssistantsPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12 text-sm text-gray-500">
+        <div className="text-center mt-12 text-sm text-muted-foreground">
           More AI assistants coming soon • Powered by HERA Universal Architecture
         </div>
       </div>

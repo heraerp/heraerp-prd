@@ -50,12 +50,12 @@ export function NavigationLink({
       onClick={handleClick}
       className={cn(
         'relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ease-in-out',
-        'hover:bg-white/10 hover:backdrop-blur-sm transform hover:scale-[1.02]',
-        isActive && 'bg-white/20 text-white shadow-lg',
+        'hover:bg-background/10 hover:backdrop-blur-sm transform hover:scale-[1.02]',
+        isActive && 'bg-background/20 text-foreground shadow-lg',
         isActive && activeClassName,
         (disabled || isNavigating) && 'opacity-50 cursor-not-allowed pointer-events-none',
-        isClicked && 'scale-[0.98] bg-white/30',
-        isThisLinkNavigating && 'bg-white/30',
+        isClicked && 'scale-[0.98] bg-background/30',
+        isThisLinkNavigating && 'bg-background/30',
         className
       )}
     >

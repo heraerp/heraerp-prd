@@ -230,7 +230,7 @@ Total time: < 2 minutes`}
           <div className="space-y-4">
             <div className="docs-card">
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-white rounded-full flex items-center justify-center font-semibold">
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center font-semibold">
                   1
                 </div>
                 <div className="flex-1">
@@ -248,7 +248,7 @@ Total time: < 2 minutes`}
 
             <div className="docs-card">
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-white rounded-full flex items-center justify-center font-semibold">
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center font-semibold">
                   2
                 </div>
                 <div className="flex-1">
@@ -266,7 +266,7 @@ Total time: < 2 minutes`}
 
             <div className="docs-card">
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-white rounded-full flex items-center justify-center font-semibold">
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center font-semibold">
                   3
                 </div>
                 <div className="flex-1">
@@ -283,7 +283,7 @@ Total time: < 2 minutes`}
 
             <div className="docs-card">
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-white rounded-full flex items-center justify-center font-semibold">
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center font-semibold">
                   4
                 </div>
                 <div className="flex-1">
@@ -300,7 +300,7 @@ Total time: < 2 minutes`}
 
             <div className="docs-card">
               <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-white rounded-full flex items-center justify-center font-semibold">
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-emphasis text-foreground rounded-full flex items-center justify-center font-semibold">
                   5
                 </div>
                 <div className="flex-1">
@@ -433,7 +433,7 @@ Total time: < 2 minutes`}
         <section id="metrics" className="mb-12">
           <h2>Success Metrics</h2>
 
-          <div className="docs-card bg-success-emphasis text-white">
+          <div className="docs-card bg-success-emphasis text-foreground">
             <h3 className="text-xl font-semibold mb-4">Proven Results Across Industries</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>

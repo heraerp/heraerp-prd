@@ -27,7 +27,7 @@ export default function POSTestPage() {
 
   if (paymentComplete) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader className="text-center">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
@@ -36,7 +36,7 @@ export default function POSTestPage() {
           <CardContent>
             <div className="text-center space-y-4">
               <p className="text-lg">Amount Paid: AED {amount}</p>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Payment Type: {paymentType === 'cash' ? 'Cash' : 'Card'}
               </p>
               <Button
@@ -56,9 +56,9 @@ export default function POSTestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+    <div className="min-h-screen bg-muted dark:bg-background p-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-foreground">
           POS Payment Test
         </h1>
 
@@ -74,7 +74,7 @@ export default function POSTestPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="relative">
-                  <span className="absolute left-3 top-3 text-gray-500">AED</span>
+                  <span className="absolute left-3 top-3 text-muted-foreground">AED</span>
                   <Input
                     type="number"
                     value={amount}
@@ -134,14 +134,14 @@ export default function POSTestPage() {
           <CardContent className="p-6">
             <div className="space-y-4">
               <div className="text-center">
-                <p className="text-gray-600 mb-2">Total Amount</p>
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">
+                <p className="text-muted-foreground mb-2">Total Amount</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-foreground">
                   AED {amount || '0'}
                 </p>
               </div>
               <Button
                 onClick={processPayment}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-foreground"
                 size="lg"
                 disabled={!amount || amount === '0'}
               >

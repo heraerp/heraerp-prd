@@ -26,10 +26,10 @@ export function ProgressIndicator({
       </div>
 
       {/* Message */}
-      <p className="text-gray-600 font-medium text-center">{message}</p>
+      <p className="text-muted-foreground font-medium text-center">{message}</p>
 
       {/* Optional subtext */}
-      <p className="text-sm text-gray-500 mt-2 text-center max-w-md">
+      <p className="text-sm text-muted-foreground mt-2 text-center max-w-md">
         Setting up your enterprise application showcase...
       </p>
     </div>

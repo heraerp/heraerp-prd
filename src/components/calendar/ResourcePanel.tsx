@@ -186,9 +186,9 @@ export function ResourcePanel({
       case 'maintenance':
         return 'bg-orange-100 text-orange-800'
       case 'inactive':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -280,7 +280,7 @@ export function ResourcePanel({
                 <span>{Math.round(utilization.utilization_percentage)}%</span>
               </div>
               <Progress value={utilization.utilization_percentage} className="h-2" />
-              <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+              <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
                 <div>
                   <span className="font-medium">{utilization.appointments_count}</span> appointments
                 </div>
@@ -301,7 +301,7 @@ export function ResourcePanel({
           )}
 
           {/* Smart Code */}
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-muted-foreground">
             <code>{resource.smart_code}</code>
             {resource.ai_confidence && (
               <span className="ml-2">
@@ -318,8 +318,8 @@ export function ResourcePanel({
     if (!show_analytics || utilizationData.length === 0) {
       return (
         <div className="text-center py-8">
-          <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-600">No analytics data available</p>
+          <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <p className="text-muted-foreground">No analytics data available</p>
         </div>
       )
     }
@@ -345,14 +345,14 @@ export function ResourcePanel({
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold">{Math.round(avgUtilization)}%</div>
-              <div className="text-sm text-gray-600">Avg Utilization</div>
+              <div className="text-sm text-muted-foreground">Avg Utilization</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold">{totalAppointments}</div>
-              <div className="text-sm text-gray-600">Total Appointments</div>
+              <div className="text-sm text-muted-foreground">Total Appointments</div>
             </CardContent>
           </Card>
 
@@ -360,7 +360,7 @@ export function ResourcePanel({
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold">${totalRevenue.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Revenue</div>
+                <div className="text-sm text-muted-foreground">Revenue</div>
               </CardContent>
             </Card>
           )}
@@ -442,13 +442,13 @@ export function ResourcePanel({
               <Card>
                 <CardContent className="p-3 text-center">
                   <div className="text-lg font-bold">{resourceStats.total}</div>
-                  <div className="text-xs text-gray-600">Total</div>
+                  <div className="text-xs text-muted-foreground">Total</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-3 text-center">
                   <div className="text-lg font-bold text-green-600">{resourceStats.active}</div>
-                  <div className="text-xs text-gray-600">Active</div>
+                  <div className="text-xs text-muted-foreground">Active</div>
                 </CardContent>
               </Card>
               <Card>
@@ -456,13 +456,13 @@ export function ResourcePanel({
                   <div className="text-lg font-bold text-orange-600">
                     {resourceStats.maintenance}
                   </div>
-                  <div className="text-xs text-gray-600">Maintenance</div>
+                  <div className="text-xs text-muted-foreground">Maintenance</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-3 text-center">
-                  <div className="text-lg font-bold text-gray-600">{resourceStats.inactive}</div>
-                  <div className="text-xs text-gray-600">Inactive</div>
+                  <div className="text-lg font-bold text-muted-foreground">{resourceStats.inactive}</div>
+                  <div className="text-xs text-muted-foreground">Inactive</div>
                 </CardContent>
               </Card>
             </div>
@@ -484,7 +484,7 @@ export function ResourcePanel({
                 {/* Filters */}
                 <div className="space-y-3">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search resources..."
                       value={searchQuery}
@@ -526,8 +526,8 @@ export function ResourcePanel({
                     filteredResources.map(renderResourceCard)
                   ) : (
                     <div className="text-center py-8">
-                      <Users className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                      <p className="text-gray-600">No resources found</p>
+                      <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">No resources found</p>
                       {searchQuery && (
                         <Button
                           variant="outline"

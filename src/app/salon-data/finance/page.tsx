@@ -113,7 +113,7 @@ export default function SalonFinanceDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             Finance Management
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground dark:text-muted-foreground mt-1">
             Complete financial control for your salon operations
           </p>
         </div>
@@ -123,11 +123,11 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Revenue</span>
                 <DollarSign className="w-4 h-4 text-purple-600" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.todayRevenue)}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 <TrendingUp className="w-3 h-3 inline mr-1 text-green-500" />
                 +15% from yesterday
               </p>
@@ -137,11 +137,11 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Month to Date</span>
-                <Calendar className="w-4 h-4 text-blue-600" />
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Month to Date</span>
+                <Calendar className="w-4 h-4 text-primary" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.monthRevenue)}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {quickStats.monthGrowth > 0 ? (
                   <>
                     <ArrowUpRight className="w-3 h-3 inline mr-1 text-green-500" />+
@@ -160,22 +160,22 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Pending Payments</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Pending Payments</span>
                 <CreditCard className="w-4 h-4 text-orange-600" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.pendingPayments)}</p>
-              <p className="text-xs text-gray-500 mt-1">From 7 invoices</p>
+              <p className="text-xs text-muted-foreground mt-1">From 7 invoices</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Profit Margin</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Profit Margin</span>
                 <PieChart className="w-4 h-4 text-green-600" />
               </div>
               <p className="text-2xl font-bold">42.5%</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 <TrendingUp className="w-3 h-3 inline mr-1 text-green-500" />
                 +2.3% from last month
               </p>
@@ -192,20 +192,20 @@ export default function SalonFinanceDashboard() {
                   <div className="flex items-center justify-between mb-2">
                     <div
                       className={cn(
-                        'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white shadow-lg',
+                        'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-foreground shadow-lg',
                         module.color
                       )}
                     >
                       {module.icon}
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                   </div>
                   <CardTitle className="text-xl">{module.title}</CardTitle>
                   <CardDescription>{module.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {module.stats.label}
                     </span>
                     <span className="font-semibold">{module.stats.value}</span>
@@ -231,28 +231,28 @@ export default function SalonFinanceDashboard() {
                   </div>
                   <div>
                     <p className="font-medium">Payment Received</p>
-                    <p className="text-sm text-gray-500">Invoice #1234 - Sarah Ahmed</p>
+                    <p className="text-sm text-muted-foreground">Invoice #1234 - Sarah Ahmed</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-green-600">+{formatCurrency(850)}</p>
-                  <p className="text-xs text-gray-500">2 hours ago</p>
+                  <p className="text-xs text-muted-foreground">2 hours ago</p>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-blue-600" />
+                    <CreditCard className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">Card Batch Submitted</p>
-                    <p className="text-sm text-gray-500">Network International - 62 transactions</p>
+                    <p className="text-sm text-muted-foreground">Network International - 62 transactions</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">{formatCurrency(8700)}</p>
-                  <p className="text-xs text-gray-500">Yesterday</p>
+                  <p className="text-xs text-muted-foreground">Yesterday</p>
                 </div>
               </div>
 
@@ -263,14 +263,14 @@ export default function SalonFinanceDashboard() {
                   </div>
                   <div>
                     <p className="font-medium">Expense Recorded</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       Salon Supplies - Beauty Pro Distributors
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-red-600">-{formatCurrency(2340)}</p>
-                  <p className="text-xs text-gray-500">2 days ago</p>
+                  <p className="text-xs text-muted-foreground">2 days ago</p>
                 </div>
               </div>
             </div>

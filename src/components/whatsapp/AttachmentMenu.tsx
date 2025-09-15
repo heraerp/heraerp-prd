@@ -38,7 +38,7 @@ export function AttachmentMenu({
     {
       icon: FileText,
       label: 'Document',
-      color: 'text-blue-600',
+      color: 'text-primary',
       bgColor: 'bg-blue-100 dark:bg-blue-900/20',
       onClick: () => documentInputRef.current?.click()
     },
@@ -88,7 +88,7 @@ export function AttachmentMenu({
                 <button
                   key={index}
                   onClick={option.onClick}
-                  className="flex items-center gap-3 w-full p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="flex items-center gap-3 w-full p-2 rounded-md hover:bg-muted dark:hover:bg-muted transition-colors"
                 >
                   <div className={`p-2 rounded-full ${option.bgColor}`}>
                     <Icon className={`w-5 h-5 ${option.color}`} />

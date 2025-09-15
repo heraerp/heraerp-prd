@@ -192,7 +192,7 @@ export function RulesList({
   const getStatusBadge = (status: string) => {
     const variants: Record<string, string> = {
       active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-      inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-300',
+      inactive: 'bg-muted text-gray-800 dark:bg-muted/30 dark:text-gray-300',
       draft: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
       deprecated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
     }
@@ -243,21 +243,21 @@ export function RulesList({
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header Card with Glass Effect */}
-      <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+      <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl !text-gray-900 dark:!text-gray-100">
                 Configuration Rules
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Manage universal configuration rules that control system behavior across
                 organizations
               </CardDescription>
             </div>
             <Button
               onClick={onCreateRule}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
+              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-foreground shadow-lg"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Rule
@@ -267,24 +267,24 @@ export function RulesList({
       </Card>
 
       {/* Filters and Search */}
-      <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+      <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
         <CardContent className="p-6">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search rules by name, description, or smart code..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                className="pl-10 bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
               />
             </div>
 
             {/* Filters */}
             <div className="flex gap-3">
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-40 bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                <SelectTrigger className="w-40 bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                   <Filter className="w-4 h-4 mr-2" />
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
@@ -298,7 +298,7 @@ export function RulesList({
               </Select>
 
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-40 bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                <SelectTrigger className="w-40 bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -311,7 +311,7 @@ export function RulesList({
               </Select>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-32 bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                <SelectTrigger className="w-32 bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -332,7 +332,7 @@ export function RulesList({
                   setTypeFilter('all')
                   setStatusFilter('all')
                 }}
-                className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
               >
                 <RefreshCw className="w-4 h-4" />
               </Button>
@@ -342,7 +342,7 @@ export function RulesList({
       </Card>
 
       {/* Rules Table */}
-      <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+      <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -352,11 +352,11 @@ export function RulesList({
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent border-white/20 dark:border-gray-700/30">
+                  <TableRow className="hover:bg-transparent border-border/20 dark:border-border/30">
                     <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
                       <button
                         onClick={() => handleSort('name')}
-                        className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="flex items-center hover:text-primary dark:hover:text-blue-400 transition-colors"
                       >
                         Rule Name
                         {sortField === 'name' && (
@@ -373,7 +373,7 @@ export function RulesList({
                     <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
                       <button
                         onClick={() => handleSort('priority')}
-                        className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="flex items-center hover:text-primary dark:hover:text-blue-400 transition-colors"
                       >
                         Priority
                         {sortField === 'priority' && (
@@ -396,17 +396,17 @@ export function RulesList({
                   {sortedRules.map(rule => (
                     <TableRow
                       key={rule.id}
-                      className="hover:bg-white/30 dark:hover:bg-gray-800/30 border-white/20 dark:border-gray-700/30 transition-colors"
+                      className="hover:bg-background/30 dark:hover:bg-muted/30 border-border/20 dark:border-border/30 transition-colors"
                     >
                       <TableCell>
                         <div>
                           <div className="font-medium !text-gray-900 dark:!text-gray-100">
                             {rule.name}
                           </div>
-                          <div className="text-sm !text-gray-600 dark:!text-gray-400 truncate max-w-xs">
+                          <div className="text-sm !text-muted-foreground dark:!text-muted-foreground truncate max-w-xs">
                             {rule.description}
                           </div>
-                          <div className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">
+                          <div className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                             {rule.category}
                           </div>
                         </div>
@@ -416,7 +416,7 @@ export function RulesList({
                           {getTypeBadge(rule.type)}
                           <div className="flex items-center gap-2">
                             {getScopeIcon(rule.scope)}
-                            <span className="text-sm !text-gray-600 dark:!text-gray-400 capitalize">
+                            <span className="text-sm !text-muted-foreground dark:!text-muted-foreground capitalize">
                               {rule.scope}
                             </span>
                           </div>
@@ -438,7 +438,7 @@ export function RulesList({
                               {rule.success_rate}%
                             </span>
                           </div>
-                          <div className="text-xs !text-gray-500 dark:!text-gray-500">
+                          <div className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                             Applied: {rule.applied_count.toLocaleString()}
                           </div>
                           {rule.error_count > 0 && (
@@ -449,7 +449,7 @@ export function RulesList({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded font-mono !text-gray-800 dark:!text-gray-200">
+                        <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded font-mono !text-gray-800 dark:!text-gray-200">
                           {rule.smart_code}
                         </code>
                       </TableCell>
@@ -461,7 +461,7 @@ export function RulesList({
                             onClick={() => onViewRule?.(rule)}
                             className="h-8 w-8 hover:bg-blue-100 dark:hover:bg-blue-900/30"
                           >
-                            <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            <Eye className="w-4 h-4 text-primary dark:text-blue-400" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -490,11 +490,11 @@ export function RulesList({
 
           {!loading && sortedRules.length === 0 && (
             <div className="flex flex-col items-center justify-center h-64 text-center">
-              <Filter className="w-12 h-12 text-gray-400 mb-4" />
+              <Filter className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium !text-gray-900 dark:!text-gray-100">
                 No rules found
               </p>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-1">
                 Try adjusting your search criteria or create a new rule
               </p>
             </div>
@@ -510,7 +510,7 @@ export function RulesList({
               <div className="text-2xl font-bold !text-blue-700 dark:!text-blue-300">
                 {rules.length}
               </div>
-              <div className="text-sm !text-blue-600 dark:!text-blue-400">Total Rules</div>
+              <div className="text-sm !text-primary dark:!text-blue-400">Total Rules</div>
             </CardContent>
           </Card>
 

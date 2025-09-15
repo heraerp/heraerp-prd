@@ -16,12 +16,12 @@ const AppointmentManagementDashboard = dynamicImport(
     ),
   {
     loading: () => (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
           <div className="relative">
             <div className="w-20 h-20 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 animate-pulse shadow-lg" />
           </div>
-          <p className="text-gray-400 mt-4 font-medium">Loading appointments...</p>
+          <p className="text-muted-foreground mt-4 font-medium">Loading appointments...</p>
         </div>
       </div>
     ),
@@ -84,7 +84,7 @@ export default function SalonAppointmentsPage() {
   // Loading state
   if (contextLoading || loadingSubdomainOrg) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
       </div>
     )

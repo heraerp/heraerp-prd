@@ -220,7 +220,7 @@ export function TemplateMessageDialog({
     if (!selectedTemplate) return null
 
     return (
-      <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 space-y-2">
+      <div className="bg-muted dark:bg-muted rounded-lg p-4 space-y-2">
         {selectedTemplate.components.map((component, idx) => {
           let text = component.text
 
@@ -236,7 +236,7 @@ export function TemplateMessageDialog({
             <div key={idx}>
               {component.type === 'HEADER' && <p className="font-semibold">{text}</p>}
               {component.type === 'BODY' && <p className="text-sm">{text}</p>}
-              {component.type === 'FOOTER' && <p className="text-xs text-gray-500">{text}</p>}
+              {component.type === 'FOOTER' && <p className="text-xs text-muted-foreground">{text}</p>}
             </div>
           )
         })}
@@ -284,7 +284,7 @@ export function TemplateMessageDialog({
                 {selectedTemplate.components.map(component =>
                   component.variables?.map((variable, index) => (
                     <div key={`${component.type}_${index}`} className="space-y-1">
-                      <Label className="text-sm text-gray-600">
+                      <Label className="text-sm text-muted-foreground">
                         {variable.charAt(0).toUpperCase() + variable.slice(1)}
                       </Label>
                       {variable === 'name' ? (

@@ -61,10 +61,10 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white">Top Holdings</h3>
-        <span className="text-sm text-slate-400">By value</span>
+        <h3 className="text-lg font-semibold text-foreground">Top Holdings</h3>
+        <span className="text-sm text-muted-foreground">By value</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -74,8 +74,8 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
             onClick={() => onHoldingClick?.(holding)}
             className={cn(
               'p-4 rounded-xl border transition-all duration-200 cursor-pointer',
-              'bg-slate-800/30 border-slate-700/50',
-              'hover:bg-slate-800/50 hover:border-slate-600 hover:shadow-lg'
+              'bg-muted/30 border-border/50',
+              'hover:bg-muted/50 hover:border-input hover:shadow-lg'
             )}
           >
             {/* Holding Header */}
@@ -83,7 +83,7 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-bold text-slate-500">#{index + 1}</span>
-                  <h4 className="font-semibold text-white truncate">{holding.entity_name}</h4>
+                  <h4 className="font-semibold text-foreground truncate">{holding.entity_name}</h4>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge
@@ -108,8 +108,8 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
             <div className="space-y-3">
               <div className="flex items-end justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Value</p>
-                  <p className="text-xl font-bold text-white">{formatCurrency(holding.value)}</p>
+                  <p className="text-sm text-muted-foreground">Value</p>
+                  <p className="text-xl font-bold text-foreground">{formatCurrency(holding.value)}</p>
                 </div>
                 <div
                   className={cn(
@@ -129,7 +129,7 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
               {/* Allocation Bar */}
               <div>
                 <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-slate-400">Portfolio allocation</span>
+                  <span className="text-muted-foreground">Portfolio allocation</span>
                   <span className="text-slate-300 font-medium">
                     {holding.allocation.toFixed(1)}%
                   </span>
@@ -142,7 +142,7 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
       </div>
 
       {/* View All Button */}
-      <button className="w-full mt-4 p-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-colors">
+      <button className="w-full mt-4 p-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors">
         View all holdings →
       </button>
     </Card>

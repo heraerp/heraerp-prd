@@ -125,7 +125,7 @@ const STATUS_COLORS = {
   occupied: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300',
   reserved: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
   cleaning: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-  maintenance: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+  maintenance: 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-300'
 }
 
 // Status icons
@@ -702,7 +702,7 @@ export function TableManagement({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="relative bg-gray-50 dark:bg-gray-900/20 rounded-lg p-6 min-h-[500px]">
+              <div className="relative bg-muted dark:bg-background/20 rounded-lg p-6 min-h-[500px]">
                 {/* Section labels */}
                 {selectedSection === 'all' && (
                   <div className="absolute top-2 left-2 space-y-2">
@@ -750,7 +750,7 @@ export function TableManagement({
 
                 {/* Table details popup */}
                 {selectedTable && (
-                  <div className="absolute bottom-4 right-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg max-w-[300px]">
+                  <div className="absolute bottom-4 right-4 bg-background dark:bg-muted p-4 rounded-lg shadow-lg max-w-[300px]">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold">{selectedTable.entity_name}</h3>
                       <Button size="sm" variant="ghost" onClick={() => setSelectedTable(null)}>

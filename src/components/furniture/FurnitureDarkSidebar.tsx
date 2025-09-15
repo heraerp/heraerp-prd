@@ -276,9 +276,9 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
   }
 
   return (
-    <div className="h-full bg-muted/95 backdrop-blur-xl border-r border-border/50 w-72 lg:w-20 shadow-2xl flex flex-col">
+    <div className="h-full bg-muted/95 backdrop-blur-xl border-r border-border/50 w-72 lg:w-20 shadow-2xl flex flex-col overflow-hidden">
       {/* Logo Section */}
-      <div className="h-16 lg:h-20 flex items-center justify-start lg:justify-center px-4 lg:px-0 border-b border-border/50 bg-background/50">
+      <div className="h-16 lg:h-20 flex items-center justify-start lg:justify-center px-4 lg:px-0 border-b border-border/50 bg-background/50 flex-shrink-0">
         <div className="flex items-center gap-3 lg:flex-col lg:gap-1">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center shadow-lg">
             <Armchair className="h-6 w-6 text-foreground" />
@@ -294,7 +294,7 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 overflow-y-auto py-1">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-1">
         <div className="space-y-0">
           {sidebarItems.map(item => {
             const Icon = item.icon
@@ -324,12 +324,12 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
             )}
           >
             <Grid3x3 className="h-5 w-5 text-muted-foreground group-hover:text-amber-400" />
-            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300">
+            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-gray-300 lg:text-muted-foreground group-hover:text-gray-100 lg:group-hover:text-gray-300">
               More Apps
             </span>
 
             {/* Tooltip - desktop only */}
-            <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>
@@ -337,7 +337,7 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
       </nav>
 
       {/* Bottom Section */}
-      <div className="mt-auto border-t border-border/50">
+      <div className="mt-auto border-t border-border/50 flex-shrink-0">
         {/* Status Indicators */}
         <div className="px-4 py-3 lg:p-2 space-y-2 bg-background/30">
           <div className="flex items-center justify-between">

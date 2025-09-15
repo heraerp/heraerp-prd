@@ -39,8 +39,8 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
             <Brain className="h-6 w-6 text-purple-400" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">AI Intelligence Center</h2>
-            <p className="text-slate-400 mt-1">
+            <h2 className="text-2xl font-bold text-foreground">AI Intelligence Center</h2>
+            <p className="text-muted-foreground mt-1">
               Advanced analytics and predictive insights powered by AI
             </p>
           </div>
@@ -49,7 +49,7 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
 
       {/* AI Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-5 w-full max-w-3xl bg-slate-800/50 p-1">
+        <TabsList className="grid grid-cols-5 w-full max-w-3xl bg-muted/50 p-1">
           <TabsTrigger
             value="predictions"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
@@ -120,15 +120,15 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
       </Tabs>
 
       {/* AI Confidence Indicator */}
-      <div className="fixed bottom-6 left-6 p-4 bg-slate-900/90 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl">
+      <div className="fixed bottom-6 left-6 p-4 bg-background/90 backdrop-blur-sm border border-border rounded-lg shadow-xl">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="h-3 w-3 bg-purple-400 rounded-full animate-pulse" />
             <div className="absolute inset-0 h-3 w-3 bg-purple-400 rounded-full animate-ping" />
           </div>
           <div>
-            <p className="text-sm font-medium text-white">AI Active</p>
-            <p className="text-xs text-slate-400">Processing {insights?.length || 0} insights</p>
+            <p className="text-sm font-medium text-foreground">AI Active</p>
+            <p className="text-xs text-muted-foreground">Processing {insights?.length || 0} insights</p>
           </div>
         </div>
       </div>

@@ -102,8 +102,8 @@ export default function SetupPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading your workspace...</p>
+          <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading your workspace...</p>
         </div>
       </div>
     )
@@ -116,7 +116,7 @@ export default function SetupPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               {currentOrganization
                 ? `Welcome to ${currentOrganization.name}. Select an app to get started.`
                 : 'Select an application to begin your business management journey'}
@@ -137,7 +137,7 @@ export default function SetupPage() {
                     <div
                       className={`w-16 h-16 bg-gradient-to-r ${app.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
                     >
-                      <Icon className="w-8 h-8 text-white" />
+                      <Icon className="w-8 h-8 text-foreground" />
                     </div>
                     <CardTitle className="text-xl">{app.title}</CardTitle>
                     <CardDescription>{app.description}</CardDescription>
@@ -168,7 +168,7 @@ export default function SetupPage() {
 
           {/* Footer */}
           <div className="mt-12 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               All apps include sample data and are ready to use immediately. No setup required.
             </p>
             <div className="mt-4">

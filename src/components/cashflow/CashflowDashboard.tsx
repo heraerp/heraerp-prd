@@ -218,7 +218,7 @@ export default function CashflowDashboard({
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading cashflow data...</p>
+          <p className="text-muted-foreground">Loading cashflow data...</p>
         </div>
       </div>
     )
@@ -244,10 +244,10 @@ export default function CashflowDashboard({
       {/* Header Controls */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
             💰 Cashflow Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground dark:text-muted-foreground mt-1">
             Comprehensive cashflow analysis and reporting
           </p>
         </div>
@@ -375,14 +375,14 @@ export default function CashflowDashboard({
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Beginning Cash</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <div className="p-4 bg-muted dark:bg-muted rounded-lg">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Beginning Cash</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {formatCurrency(currentStatement.cash_beginning)}
                       </p>
                     </div>
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <p className="text-sm text-blue-600 dark:text-blue-400">Net Change</p>
+                      <p className="text-sm text-primary dark:text-blue-400">Net Change</p>
                       <p
                         className={`text-2xl font-bold ${
                           currentStatement.net_change_in_cash >= 0
@@ -395,13 +395,13 @@ export default function CashflowDashboard({
                     </div>
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <p className="text-sm text-green-600 dark:text-green-400">Ending Cash</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {formatCurrency(currentStatement.cash_ending)}
                       </p>
                     </div>
                     <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
                       <p className="text-sm text-amber-600 dark:text-amber-400">Method</p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 capitalize">
+                      <p className="text-lg font-semibold text-gray-900 dark:text-foreground capitalize">
                         {currentStatement.method}
                       </p>
                     </div>
@@ -455,7 +455,7 @@ export default function CashflowDashboard({
                               {insight.icon}
                               <div>
                                 <p className="font-medium">{insight.title}</p>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                   {insight.description}
                                 </p>
                               </div>
@@ -518,7 +518,7 @@ function CashflowMetricCard({
   }
 
   const iconColors = {
-    blue: 'text-blue-600 dark:text-blue-400',
+    blue: 'text-primary dark:text-blue-400',
     green: 'text-green-600 dark:text-green-400',
     purple: 'text-purple-600 dark:text-purple-400',
     amber: 'text-amber-600 dark:text-amber-400'
@@ -538,14 +538,14 @@ function CashflowMetricCard({
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-full bg-white dark:bg-gray-800 ${iconColors[color]}`}>
+            <div className={`p-2 rounded-full bg-background dark:bg-muted ${iconColors[color]}`}>
               {icon}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+              <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
               <p
                 className={`text-2xl font-bold ${
-                  value >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-600 dark:text-red-400'
+                  value >= 0 ? 'text-gray-900 dark:text-foreground' : 'text-red-600 dark:text-red-400'
                 }`}
               >
                 {formatCurrency(value)}
@@ -619,7 +619,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
           <span
             className={`text-lg font-bold ${
               totalAmount >= 0
-                ? 'text-gray-900 dark:text-gray-100'
+                ? 'text-gray-900 dark:text-foreground'
                 : 'text-red-600 dark:text-red-400'
             }`}
           >
@@ -637,12 +637,12 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
             >
               <div>
                 <p
-                  className={`font-medium ${activity.is_subtotal ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}
+                  className={`font-medium ${activity.is_subtotal ? 'text-gray-900 dark:text-foreground' : 'text-gray-700 dark:text-gray-300'}`}
                 >
                   {activity.description}
                 </p>
                 {activity.account_code && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                     Account: {activity.account_code}
                   </p>
                 )}
@@ -650,7 +650,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
               <p
                 className={`font-semibold ${
                   activity.amount >= 0
-                    ? 'text-gray-900 dark:text-gray-100'
+                    ? 'text-gray-900 dark:text-foreground'
                     : 'text-red-600 dark:text-red-400'
                 } ${activity.is_subtotal ? 'text-lg' : ''}`}
               >
@@ -721,7 +721,7 @@ function CashflowForecast({ organizationId, currency }: CashflowForecastProps) {
       <Card>
         <CardHeader>
           <CardTitle>12-Month Cashflow Forecast</CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
             Projected cashflow based on historical trends and growth assumptions
           </p>
         </CardHeader>
@@ -802,7 +802,7 @@ function CashflowTrends({ organizationId, currency, historicalData }: CashflowTr
       <Card>
         <CardHeader>
           <CardTitle>Cashflow Trends</CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
             Historical cashflow performance over the last 6 periods
           </p>
         </CardHeader>
@@ -907,7 +907,7 @@ function generateCashflowInsights(statement: CashflowStatement, trendAnalysis: a
 
   if (netChange > 0) {
     insights.push({
-      icon: <TrendingUp className="h-5 w-5 text-blue-600" />,
+      icon: <TrendingUp className="h-5 w-5 text-primary" />,
       title: 'Growing Cash Position',
       description: 'Overall cash position increased during this period.',
       color: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'

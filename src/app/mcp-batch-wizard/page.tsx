@@ -235,11 +235,11 @@ import { Loader2 } from 'lucide-react'
       case 'completed':
         return <CheckCircle className="h-5 w-5 text-green-600" />
       case 'processing':
-        return <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+        return <Loader2 className="h-5 w-5 text-primary animate-spin" />
       case 'error':
         return <AlertTriangle className="h-5 w-5 text-red-600" />
       default:
-        return <div className="h-5 w-5 rounded-full border-2 border-slate-300" />
+        return <div className="h-5 w-5 rounded-full border-2 border-input" />
     }
   }
 
@@ -253,7 +253,7 @@ import { Loader2 } from 'lucide-react'
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <Button variant="outline" asChild className="bg-white/80">
+              <Button variant="outline" asChild className="bg-background/80">
                 <Link href="/">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
@@ -279,7 +279,7 @@ import { Loader2 } from 'lucide-react'
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
-            <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+            <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
                   <FolderOpen className="h-6 w-6 text-indigo-600" />
@@ -294,7 +294,7 @@ import { Loader2 } from 'lucide-react'
                     placeholder="e.g., https://heraerp.com/salon-progressive"
                     value={baseUrl}
                     onChange={e => setBaseUrl(e.target.value)}
-                    className="bg-white/80 border-slate-200"
+                    className="bg-background/80 border-border"
                   />
                   <p className="text-xs text-slate-700 mt-1 font-medium">
                     Enter the base URL of a progressive app
@@ -332,7 +332,7 @@ import { Loader2 } from 'lucide-react'
                 <Button
                   onClick={loadProgressivePages}
                   disabled={!baseUrl || isLoadingPages}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-foreground font-medium"
                 >
                   {isLoadingPages ? (
                     <>
@@ -351,7 +351,7 @@ import { Loader2 } from 'lucide-react'
 
             {/* Page Selection */}
             {pages.length > 0 && (
-              <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+              <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-3">
@@ -373,7 +373,7 @@ import { Loader2 } from 'lucide-react'
                     {pages.map((page, index) => (
                       <div
                         key={page.path}
-                        className="flex items-center gap-3 p-3 bg-white/50 rounded-lg border border-slate-200"
+                        className="flex items-center gap-3 p-3 bg-background/50 rounded-lg border border-border"
                       >
                         <Checkbox
                           checked={page.selected}
@@ -382,7 +382,7 @@ import { Loader2 } from 'lucide-react'
                         />
                         <div className="flex-1">
                           <p className="font-medium text-slate-800">{page.displayName}</p>
-                          <p className="text-xs text-slate-600">{page.path}</p>
+                          <p className="text-xs text-muted-foreground">{page.path}</p>
                         </div>
                         {getStatusIcon(page.status)}
                       </div>
@@ -392,7 +392,7 @@ import { Loader2 } from 'lucide-react'
                   <Button
                     onClick={startBatchConversion}
                     disabled={isConverting || pages.filter(p => p.selected).length === 0}
-                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium"
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-foreground font-medium"
                   >
                     {isConverting ? (
                       <>
@@ -415,7 +415,7 @@ import { Loader2 } from 'lucide-react'
           <div className="space-y-6">
             {/* Conversion Progress */}
             {(isConverting || conversionProgress > 0) && (
-              <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+              <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <RefreshCw className="h-6 w-6 text-green-600" />
@@ -428,7 +428,7 @@ import { Loader2 } from 'lucide-react'
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Total Pages:</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-foreground">
                         {pages.filter(p => p.selected).length}
                       </span>
                     </div>

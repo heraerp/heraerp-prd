@@ -185,7 +185,7 @@ export default function ProfitCentersPage() {
       case 'poor':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
     }
   }
 
@@ -208,17 +208,17 @@ export default function ProfitCentersPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Profit Centers
           </h1>
-          <p className="text-white/60 mt-1">Monitor regional performance and profitability</p>
+          <p className="text-foreground/60 mt-1">Monitor regional performance and profitability</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
             <Plus className="h-5 w-5" />
             <span>New Profit Center</span>
           </button>
@@ -226,13 +226,13 @@ export default function ProfitCentersPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-background/5 backdrop-blur-xl p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'overview'
-              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Overview
@@ -241,8 +241,8 @@ export default function ProfitCentersPage() {
           onClick={() => setActiveTab('centers')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'centers'
-              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Profit Centers
@@ -251,8 +251,8 @@ export default function ProfitCentersPage() {
           onClick={() => setActiveTab('performance')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'performance'
-              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Performance
@@ -265,52 +265,52 @@ export default function ProfitCentersPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-[#00DDFF] to-[#0049B7]">
-                    <DollarSign className="h-6 w-6 text-white" />
+                    <DollarSign className="h-6 w-6 text-foreground" />
                   </div>
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Total Revenue</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Total Revenue</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.totalRevenue / 10000000).toFixed(0)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">+15.2% YoY</p>
+                <p className="text-xs text-foreground/40 mt-1">+15.2% YoY</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600">
-                    <TrendingUp className="h-6 w-6 text-white" />
+                    <TrendingUp className="h-6 w-6 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">
                     {overviewMetrics.totalCenters} centers
                   </span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Total Profit</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Total Profit</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.totalProfit / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">{overviewMetrics.avgMargin}% margin</p>
+                <p className="text-xs text-foreground/40 mt-1">{overviewMetrics.avgMargin}% margin</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-[#fff685] to-amber-500">
-                    <Target className="h-6 w-6 text-white" />
+                    <Target className="h-6 w-6 text-foreground" />
                   </div>
                   <CheckCircle className="h-4 w-4 text-emerald-400" />
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Top Performer</h3>
-                <p className="text-lg font-bold text-white">{overviewMetrics.topPerformer}</p>
-                <p className="text-xs text-white/40 mt-1">25% profit margin</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Top Performer</h3>
+                <p className="text-lg font-bold text-foreground">{overviewMetrics.topPerformer}</p>
+                <p className="text-xs text-foreground/40 mt-1">25% profit margin</p>
               </div>
             </div>
           </div>
@@ -320,8 +320,8 @@ export default function ProfitCentersPage() {
             {/* Monthly Performance */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Revenue & Profit Trend</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Revenue & Profit Trend</h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <ComposedChart data={monthlyPerformance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -347,8 +347,8 @@ export default function ProfitCentersPage() {
             {/* Regional Distribution */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   Regional Revenue Distribution
                 </h2>
                 <ResponsiveContainer width="100%" height={200}>
@@ -384,9 +384,9 @@ export default function ProfitCentersPage() {
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: item.color }}
                         />
-                        <span className="text-sm text-white/80">{item.name} Region</span>
+                        <span className="text-sm text-foreground/80">{item.name} Region</span>
                       </div>
-                      <span className="text-sm font-medium text-white">₹{item.value} Cr</span>
+                      <span className="text-sm font-medium text-foreground">₹{item.value} Cr</span>
                     </div>
                   ))}
                 </div>
@@ -401,20 +401,20 @@ export default function ProfitCentersPage() {
           {/* Centers Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search profit centers..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
               />
             </div>
 
             <select
               value={selectedRegion}
               onChange={e => setSelectedRegion(e.target.value)}
-              className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#00DDFF] transition-colors"
+              className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#00DDFF] transition-colors"
             >
               <option value="all">All Regions</option>
               <option value="south">South</option>
@@ -422,7 +422,7 @@ export default function ProfitCentersPage() {
               <option value="north">North</option>
             </select>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Download className="h-5 w-5" />
               <span>Export</span>
             </button>
@@ -433,12 +433,12 @@ export default function ProfitCentersPage() {
             {profitCenters.map(center => (
               <div key={center.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
                         <Building2 className="h-5 w-5 text-[#00DDFF]" />
-                        <h3 className="text-lg font-semibold text-white">{center.name}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">{center.name}</h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(center.status)}`}
                         >
@@ -446,7 +446,7 @@ export default function ProfitCentersPage() {
                         </span>
                         {getTrendIcon(center.trend)}
                       </div>
-                      <div className="flex items-center space-x-4 text-sm text-white/60">
+                      <div className="flex items-center space-x-4 text-sm text-foreground/60">
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-4 w-4" />
                           <span>{center.region}</span>
@@ -457,7 +457,7 @@ export default function ProfitCentersPage() {
                         </div>
                       </div>
                     </div>
-                    <button className="text-white/40 hover:text-white transition-colors">
+                    <button className="text-foreground/40 hover:text-foreground transition-colors">
                       <MoreVertical className="h-5 w-5" />
                     </button>
                   </div>
@@ -465,19 +465,19 @@ export default function ProfitCentersPage() {
                   {/* Metrics Grid */}
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Revenue</p>
-                      <p className="text-lg font-semibold text-white">
+                      <p className="text-xs text-foreground/60 mb-1">Revenue</p>
+                      <p className="text-lg font-semibold text-foreground">
                         ₹{(center.revenue / 10000000).toFixed(0)} Cr
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Cost</p>
-                      <p className="text-lg font-semibold text-white">
+                      <p className="text-xs text-foreground/60 mb-1">Cost</p>
+                      <p className="text-lg font-semibold text-foreground">
                         ₹{(center.cost / 10000000).toFixed(0)} Cr
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Profit</p>
+                      <p className="text-xs text-foreground/60 mb-1">Profit</p>
                       <p className="text-lg font-semibold text-emerald-400">
                         ₹{(center.profit / 10000000).toFixed(0)} Cr
                       </p>
@@ -486,11 +486,11 @@ export default function ProfitCentersPage() {
 
                   {/* Profit Margin Progress */}
                   <div className="mb-4">
-                    <div className="flex justify-between text-xs text-white/60 mb-1">
+                    <div className="flex justify-between text-xs text-foreground/60 mb-1">
                       <span>Profit Margin</span>
-                      <span className="font-medium text-white">{center.margin}%</span>
+                      <span className="font-medium text-foreground">{center.margin}%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           center.margin >= 25
@@ -508,7 +508,7 @@ export default function ProfitCentersPage() {
 
                   {/* Bottom Stats */}
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center space-x-4 text-white/60">
+                    <div className="flex items-center space-x-4 text-foreground/60">
                       <div className="flex items-center space-x-1">
                         <Users className="h-4 w-4" />
                         <span>{center.customers} customers</span>
@@ -518,7 +518,7 @@ export default function ProfitCentersPage() {
                         <span>{center.employees} employees</span>
                       </div>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-white/40" />
+                    <ChevronRight className="h-5 w-5 text-foreground/40" />
                   </div>
                 </div>
               </div>
@@ -534,9 +534,9 @@ export default function ProfitCentersPage() {
             {performanceMetrics.map(metric => (
               <div key={metric.metric} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">{metric.metric}</h3>
+                    <h3 className="text-lg font-semibold text-foreground">{metric.metric}</h3>
                     {metric.achievement >= 100 ? (
                       <CheckCircle className="h-5 w-5 text-emerald-400" />
                     ) : (
@@ -546,8 +546,8 @@ export default function ProfitCentersPage() {
 
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Actual</p>
-                      <p className="text-lg font-semibold text-white">
+                      <p className="text-xs text-foreground/60 mb-1">Actual</p>
+                      <p className="text-lg font-semibold text-foreground">
                         {metric.metric.includes('%') ||
                         metric.metric.includes('Margin') ||
                         metric.metric.includes('Efficiency')
@@ -556,8 +556,8 @@ export default function ProfitCentersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Target</p>
-                      <p className="text-lg font-semibold text-white/60">
+                      <p className="text-xs text-foreground/60 mb-1">Target</p>
+                      <p className="text-lg font-semibold text-foreground/60">
                         {metric.metric.includes('%') ||
                         metric.metric.includes('Margin') ||
                         metric.metric.includes('Efficiency')
@@ -566,7 +566,7 @@ export default function ProfitCentersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Achievement</p>
+                      <p className="text-xs text-foreground/60 mb-1">Achievement</p>
                       <p
                         className={`text-lg font-semibold ${
                           metric.achievement >= 100 ? 'text-emerald-400' : 'text-yellow-400'
@@ -577,7 +577,7 @@ export default function ProfitCentersPage() {
                     </div>
                   </div>
 
-                  <div className="h-3 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-3 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         metric.achievement >= 100
@@ -595,8 +595,8 @@ export default function ProfitCentersPage() {
           {/* Regional Comparison */}
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 Regional Performance Comparison
               </h2>
               <ResponsiveContainer width="100%" height={300}>

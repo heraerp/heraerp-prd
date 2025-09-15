@@ -293,19 +293,19 @@ export default function ModuleGeneratorPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+              <Zap className="w-6 h-6 text-foreground" />
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-600 bg-clip-text text-transparent">
                 🧬 HERA DNA Generator
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 200x Development Acceleration - Generate complete business modules in 30 seconds
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-gray-500">
+          <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Rocket className="w-4 h-4" />
               <span>30 seconds vs 26+ weeks manual development</span>
@@ -399,11 +399,11 @@ export default function ModuleGeneratorPage() {
                     {generatedModules.slice(0, 5).map((module, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                        className="flex items-center justify-between p-2 bg-muted rounded"
                       >
                         <div>
                           <div className="font-medium text-sm">{module.name}</div>
-                          <div className="text-xs text-gray-500">{module.generatedAt}</div>
+                          <div className="text-xs text-muted-foreground">{module.generatedAt}</div>
                         </div>
                         <div className="flex items-center gap-1">
                           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
@@ -417,7 +417,7 @@ export default function ModuleGeneratorPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No modules generated yet</p>
+                  <p className="text-sm text-muted-foreground">No modules generated yet</p>
                 )}
               </CardContent>
             </Card>
@@ -443,12 +443,12 @@ export default function ModuleGeneratorPage() {
                           <div
                             className={`w-16 h-16 bg-gradient-to-r from-${system.color}-400 to-${system.color}-600 rounded-2xl flex items-center justify-center`}
                           >
-                            <system.icon className="w-8 h-8 text-white" />
+                            <system.icon className="w-8 h-8 text-foreground" />
                           </div>
                           <div>
                             <h3 className="text-xl font-bold">{system.name}</h3>
-                            <p className="text-gray-600 mb-2">{system.description}</p>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <p className="text-muted-foreground mb-2">{system.description}</p>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Clock className="w-4 h-4" />
                                 {system.estimatedTime}
@@ -504,7 +504,7 @@ export default function ModuleGeneratorPage() {
                           <div
                             className={`w-12 h-12 bg-gradient-to-r from-${module.color}-400 to-${module.color}-600 rounded-xl flex items-center justify-center`}
                           >
-                            <IconComponent className="w-6 h-6 text-white" />
+                            <IconComponent className="w-6 h-6 text-foreground" />
                           </div>
                           <Badge variant="secondary" className="text-xs">
                             {module.complexity}
@@ -513,11 +513,11 @@ export default function ModuleGeneratorPage() {
                         <CardTitle className="text-lg">{module.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-600 mb-4 text-sm">{module.description}</p>
+                        <p className="text-muted-foreground mb-4 text-sm">{module.description}</p>
 
                         <div className="space-y-3">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">Generation Time:</span>
+                            <span className="text-muted-foreground">Generation Time:</span>
                             <span className="font-medium">{module.estimatedTime}</span>
                           </div>
 
@@ -527,14 +527,14 @@ export default function ModuleGeneratorPage() {
                               {module.features.slice(0, 2).map((feature, index) => (
                                 <div
                                   key={index}
-                                  className="text-xs text-gray-600 flex items-center gap-1"
+                                  className="text-xs text-muted-foreground flex items-center gap-1"
                                 >
                                   <CheckCircle className="w-3 h-3 text-green-500" />
                                   {feature}
                                 </div>
                               ))}
                               {module.features.length > 2 && (
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs text-muted-foreground">
                                   +{module.features.length - 2} more features
                                 </div>
                               )}
@@ -573,7 +573,7 @@ export default function ModuleGeneratorPage() {
 
         {/* Generation Progress Modal */}
         {isGenerating && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50">
             <Card className="w-full max-w-2xl mx-4">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -598,10 +598,10 @@ export default function ModuleGeneratorPage() {
                   </div>
 
                   {/* Generation Log */}
-                  <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
+                  <div className="bg-background text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
                     {generationLog.map((log, index) => (
                       <div key={index} className="flex items-center gap-2 mb-1">
-                        <span className="text-gray-500">[{log.timestamp}]</span>
+                        <span className="text-muted-foreground">[{log.timestamp}]</span>
                         {log.type === 'success' && (
                           <CheckCircle className="w-4 h-4 text-green-400" />
                         )}

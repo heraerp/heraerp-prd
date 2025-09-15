@@ -129,7 +129,7 @@ function AppsModal({
   return createPortal(
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+      <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
@@ -137,12 +137,12 @@ function AppsModal({
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-[#2a3942]">
             <div>
-              <h2 className="text-2xl font-bold text-white">All Apps</h2>
+              <h2 className="text-2xl font-bold text-foreground">All Apps</h2>
               <p className="text-sm text-[#8696a0] mt-1">Access all your salon management tools</p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-[#2a3942] transition-colors text-[#8696a0] hover:text-white"
+              className="p-2 rounded-lg hover:bg-[#2a3942] transition-colors text-[#8696a0] hover:text-foreground"
             >
               <X className="h-6 w-6" />
             </button>
@@ -178,14 +178,14 @@ function AppsModal({
                       <Icon
                         className={cn(
                           'h-6 w-6',
-                          active ? 'text-white' : 'text-[#8696a0] group-hover:text-white'
+                          active ? 'text-foreground' : 'text-[#8696a0] group-hover:text-foreground'
                         )}
                       />
                     </div>
                     <span
                       className={cn(
                         'text-xs font-medium text-center',
-                        active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-white'
+                        active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-foreground'
                       )}
                     >
                       {app.title}
@@ -218,7 +218,7 @@ export default function SalonWhatsAppSidebar() {
       {/* Logo Section */}
       <div className="h-20 flex flex-col items-center justify-center border-b border-[#2a3942]">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#00a884] to-[#00a884]/80 flex items-center justify-center">
-          <Sparkles className="h-6 w-6 text-white" />
+          <Sparkles className="h-6 w-6 text-foreground" />
         </div>
         <span className="text-[10px] text-[#8696a0] mt-1 font-medium">Salon</span>
       </div>
@@ -238,8 +238,8 @@ export default function SalonWhatsAppSidebar() {
                 className={cn(
                   'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? 'bg-[#00a884]/20 text-white border-r-4 border-[#00a884]'
-                    : 'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
+                    ? 'bg-[#00a884]/20 text-foreground border-r-4 border-[#00a884]'
+                    : 'text-[#8696a0] hover:text-foreground hover:bg-[#2a3942]'
                 )}
               >
                 <div className="relative">
@@ -254,7 +254,7 @@ export default function SalonWhatsAppSidebar() {
                   {item.badge && (
                     <span
                       className={cn(
-                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-foreground min-w-[16px] text-center',
                         item.badgeColor || 'bg-[#8696a0]'
                       )}
                     >
@@ -274,7 +274,7 @@ export default function SalonWhatsAppSidebar() {
                 </span>
 
                 {/* Tooltip for full title */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                   {item.badge && (
                     <p className="text-xs text-[#8696a0] mt-1">
@@ -296,7 +296,7 @@ export default function SalonWhatsAppSidebar() {
             onClick={() => setShowAppsModal(true)}
             className={cn(
               'flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative',
-              'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
+              'text-[#8696a0] hover:text-foreground hover:bg-[#2a3942]'
             )}
           >
             <Grid3x3 className="h-5 w-5 text-[#8696a0] group-hover:text-[#00a884]" />
@@ -305,7 +305,7 @@ export default function SalonWhatsAppSidebar() {
             </span>
 
             {/* Tooltip */}
-            <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>
@@ -327,8 +327,8 @@ export default function SalonWhatsAppSidebar() {
                 className={cn(
                   'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? 'bg-[#00a884]/20 text-white border-r-4 border-[#00a884]'
-                    : 'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
+                    ? 'bg-[#00a884]/20 text-foreground border-r-4 border-[#00a884]'
+                    : 'text-[#8696a0] hover:text-foreground hover:bg-[#2a3942]'
                 )}
               >
                 <Icon
@@ -349,7 +349,7 @@ export default function SalonWhatsAppSidebar() {
                 </span>
 
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                 </div>
               </Link>
@@ -362,12 +362,12 @@ export default function SalonWhatsAppSidebar() {
       <div className="p-2 border-t border-[#2a3942]">
         <div className="flex flex-col items-center justify-center py-2 rounded-lg hover:bg-[#2a3942] transition-colors cursor-pointer group relative">
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#00a884] to-[#00a884]/80 flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">S</span>
+            <span className="text-foreground text-sm font-semibold">S</span>
           </div>
           <span className="text-[10px] text-[#8696a0] mt-1 font-medium">Admin</span>
 
           {/* Tooltip */}
-          <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
+          <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
             <p className="font-medium">Salon Admin</p>
             <p className="text-[#8696a0] text-xs">admin@salon.com</p>
           </div>

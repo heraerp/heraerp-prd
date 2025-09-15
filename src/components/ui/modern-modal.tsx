@@ -34,9 +34,9 @@ const sizeClasses = {
 }
 
 const variantClasses = {
-  default: 'bg-white border border-gray-200 shadow-2xl',
-  glassmorphism: 'bg-white/95 backdrop-blur-xl border border-white/20 shadow-2xl',
-  enterprise: 'bg-gradient-to-br from-slate-50 to-white border border-slate-200 shadow-2xl',
+  default: 'bg-background border border-border shadow-2xl',
+  glassmorphism: 'bg-background/95 backdrop-blur-xl border border-border/20 shadow-2xl',
+  enterprise: 'bg-gradient-to-br from-slate-50 to-white border border-border shadow-2xl',
   premium:
     'bg-gradient-to-br from-blue-50 via-white to-purple-50 border border-blue-200/50 shadow-2xl'
 }
@@ -92,7 +92,7 @@ export function ModernModal({
       className={cn(
         'fixed inset-0 z-50 flex items-start sm:items-center justify-center',
         'p-2 sm:p-4 md:p-6',
-        'bg-black/70 backdrop-blur-md',
+        'bg-background/70 backdrop-blur-md',
         'animate-in fade-in-0 duration-300',
         'overflow-y-auto',
         overlayClassName
@@ -118,17 +118,17 @@ export function ModernModal({
           {/* Premium Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/5 to-indigo-600/10 opacity-50" />
 
-          <div className="relative flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50">
+          <div className="relative flex items-center justify-between p-4 sm:p-6 border-b border-border/50">
             <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
               {/* Modern Icon - smaller on mobile */}
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
 
               <div className="flex-1 min-w-0">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{title}</h2>
                 {subtitle && (
-                  <p className="text-sm text-gray-600 mt-0.5 sm:mt-1 truncate">{subtitle}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5 sm:mt-1 truncate">{subtitle}</p>
                 )}
               </div>
             </div>
@@ -144,7 +144,7 @@ export function ModernModal({
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsFullScreen(!isFullScreen)}
-                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-gray-100/80 text-gray-500 hover:text-gray-700 hidden sm:flex"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-muted/80 text-muted-foreground hover:text-foreground hidden sm:flex"
                   >
                     {isFullScreen ? (
                       <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -160,7 +160,7 @@ export function ModernModal({
                     size="sm"
                     onClick={onClose}
                     data-testid="close-modal"
-                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-red-50 text-gray-500 hover:text-red-600 transition-colors"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors"
                   >
                     <X className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
@@ -199,7 +199,7 @@ export function ModernModal({
             {/* Subtle Divider */}
             <div className="absolute top-0 left-4 right-4 sm:left-6 sm:right-6 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
-            <div className="p-4 sm:p-6 bg-gray-50/50">{footer}</div>
+            <div className="p-4 sm:p-6 bg-muted/50">{footer}</div>
           </div>
         )}
 
@@ -240,11 +240,11 @@ export function CRMFormModal({
 
   const submitButtonClass = {
     default:
-      'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg',
+      'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-foreground shadow-lg',
     destructive:
-      'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg',
+      'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-foreground shadow-lg',
     success:
-      'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg'
+      'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-foreground shadow-lg'
   }
 
   const footer = (
@@ -255,7 +255,7 @@ export function CRMFormModal({
         onClick={onCancel || modalProps.onClose}
         disabled={isLoading}
         data-testid="cancel-btn"
-        className="w-full sm:w-auto px-4 sm:px-6 h-11 sm:h-10 border-gray-300 hover:bg-gray-50"
+        className="w-full sm:w-auto px-4 sm:px-6 h-11 sm:h-10 border-border hover:bg-muted"
       >
         {cancelText}
       </Button>
@@ -271,7 +271,7 @@ export function CRMFormModal({
       >
         {isLoading ? (
           <div className="flex items-center justify-center space-x-2">
-            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-border/20 border-t-white rounded-full animate-spin" />
             <span>Saving...</span>
           </div>
         ) : (

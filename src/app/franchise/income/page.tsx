@@ -172,36 +172,36 @@ export default function IncomePage() {
       />
 
       {/* Income Projection Table */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Income Scaling Projections
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Based on actual partner performance data and conservative estimates
             </p>
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="bg-slate-50 dark:bg-muted rounded-2xl p-8 border border-border dark:border-border overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                    <tr className="border-b border-border dark:border-border">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Level
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Clients
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Avg Deal
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Commission %
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Monthly
                       </th>
                       <th className="text-left py-4 px-4 font-semibold text-green-600">
@@ -213,13 +213,13 @@ export default function IncomePage() {
                     {incomeTable.map((row, index) => (
                       <tr
                         key={index}
-                        className={`border-b border-slate-200 dark:border-slate-700 last:border-b-0 ${index === 1 ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                        className={`border-b border-border dark:border-border last:border-b-0 ${index === 1 ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
                       >
                         <td className="py-4 px-4">
                           <span
                             className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
                               index === 0
-                                ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
+                                ? 'bg-muted text-gray-800 dark:bg-muted dark:text-gray-200'
                                 : index === 1
                                   ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200'
                                   : index === 2
@@ -232,14 +232,14 @@ export default function IncomePage() {
                             {row.level}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">{row.clients}</td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                        <td className="py-4 px-4 text-foreground dark:text-foreground">{row.clients}</td>
+                        <td className="py-4 px-4 text-foreground dark:text-foreground">
                           ${row.avgDeal.toLocaleString()}
                         </td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                        <td className="py-4 px-4 text-foreground dark:text-foreground">
                           {(row.commission * 100).toFixed(0)}%
                         </td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                        <td className="py-4 px-4 text-foreground dark:text-foreground">
                           ${row.monthly.toLocaleString()}
                         </td>
                         <td className="py-4 px-4 font-bold text-green-600 text-lg">
@@ -254,7 +254,7 @@ export default function IncomePage() {
 
             <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
               <div className="flex items-center mb-3">
-                <Calculator className="h-5 w-5 text-blue-600 mr-2" />
+                <Calculator className="h-5 w-5 text-primary mr-2" />
                 <span className="font-semibold text-blue-900 dark:text-blue-100">
                   Calculation Notes
                 </span>
@@ -271,13 +271,13 @@ export default function IncomePage() {
       </section>
 
       {/* Revenue Streams */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Multiple Revenue Streams
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Diversified income sources provide stability and growth potential
             </p>
           </div>
@@ -286,19 +286,19 @@ export default function IncomePage() {
             {revenueStreams.map((stream, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="bg-background dark:bg-background rounded-xl p-6 border border-border dark:border-border shadow-sm hover:shadow-md transition-shadow duration-200"
               >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <stream.icon className="h-6 w-6 text-white" />
+                  <stream.icon className="h-6 w-6 text-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground mb-2">
                   {stream.title}
                 </h3>
                 <div className="text-2xl font-bold text-green-600 mb-3">{stream.percentage}</div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
                   {stream.description}
                 </p>
-                <p className="text-xs text-blue-600 font-medium">Example: {stream.example}</p>
+                <p className="text-xs text-primary font-medium">Example: {stream.example}</p>
               </div>
             ))}
           </div>
@@ -306,13 +306,13 @@ export default function IncomePage() {
       </section>
 
       {/* Real World Examples */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Real Partner Success Stories
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Actual income results from current HERA franchise partners
             </p>
           </div>
@@ -321,15 +321,15 @@ export default function IncomePage() {
             {realWorldExamples.map((example, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700"
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-8 border border-border dark:border-border"
               >
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white font-semibold">{example.name.charAt(0)}</span>
+                    <span className="text-foreground font-semibold">{example.name.charAt(0)}</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white">{example.name}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <h3 className="font-semibold text-foreground dark:text-foreground">{example.name}</h3>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {example.territory}
                     </p>
                   </div>
@@ -337,21 +337,21 @@ export default function IncomePage() {
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Timeframe</p>
-                    <p className="font-semibold text-slate-900 dark:text-white">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">Timeframe</p>
+                    <p className="font-semibold text-foreground dark:text-foreground">
                       {example.timeframe}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Clients</p>
-                    <p className="font-semibold text-slate-900 dark:text-white">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">Clients</p>
+                    <p className="font-semibold text-foreground dark:text-foreground">
                       {example.clients}
                     </p>
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Annual Income</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Annual Income</p>
                   <p className="text-3xl font-bold text-green-600">{example.income}</p>
                 </div>
 
@@ -363,13 +363,13 @@ export default function IncomePage() {
       </section>
 
       {/* Factors Affecting Income */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               What Affects Your Income
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Key factors that influence your earning potential as a HERA partner
             </p>
           </div>
@@ -378,15 +378,15 @@ export default function IncomePage() {
             {factors.map((factor, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700"
+                className="bg-background dark:bg-background rounded-xl p-6 border border-border dark:border-border"
               >
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-                  <factor.icon className="h-6 w-6 text-blue-600" />
+                  <factor.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground mb-2">
                   {factor.title}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
                   {factor.description}
                 </p>
                 <span
@@ -410,7 +410,7 @@ export default function IncomePage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Calculate Your Potential
             </h2>
             <p className="text-xl text-blue-100 mb-8">
@@ -418,23 +418,23 @@ export default function IncomePage() {
               and goals
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-8">
+            <div className="bg-background/10 backdrop-blur-sm rounded-2xl p-8 border border-border/20 mb-8">
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <PiggyBank className="h-8 w-8 text-green-300 mx-auto mb-3" />
-                  <h3 className="font-semibold text-white mb-2">Conservative</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Conservative</h3>
                   <p className="text-3xl font-bold text-green-300">$85K</p>
                   <p className="text-sm text-blue-100">5 clients, part-time</p>
                 </div>
                 <div className="text-center">
                   <Coins className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
-                  <h3 className="font-semibold text-white mb-2">Realistic</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Realistic</h3>
                   <p className="text-3xl font-bold text-yellow-300">$265K</p>
                   <p className="text-sm text-blue-100">10 clients, full-time</p>
                 </div>
                 <div className="text-center">
                   <Award className="h-8 w-8 text-purple-300 mx-auto mb-3" />
-                  <h3 className="font-semibold text-white mb-2">Aggressive</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Aggressive</h3>
                   <p className="text-3xl font-bold text-purple-300">$500K+</p>
                   <p className="text-sm text-blue-100">20+ clients, dedicated</p>
                 </div>
@@ -445,7 +445,7 @@ export default function IncomePage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
+                className="bg-background text-primary hover:bg-muted font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Start Earning Today
@@ -457,7 +457,7 @@ export default function IncomePage() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
+                className="border-white text-foreground hover:bg-background/10 px-8 py-6 text-lg"
               >
                 <Link href="/franchise/proof">See More Case Studies</Link>
               </Button>
@@ -467,20 +467,20 @@ export default function IncomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Your Financial Future Starts Here
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               Stop trading time for money. Build a scalable business that grows while you sleep.
             </p>
 
             <Button
               asChild
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
             >
               <Link href="/franchise/apply" className="flex items-center">
                 Apply Now - Territory Going Fast

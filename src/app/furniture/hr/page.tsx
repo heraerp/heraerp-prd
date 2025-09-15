@@ -76,7 +76,7 @@ const employeeColumns = [
         </div>
         <div>
           <p className="font-medium">{value}</p>
-          <p className="text-xs text-gray-500">{(row.metadata as any)?.position || 'Employee'}</p>
+          <p className="text-xs text-muted-foreground">{(row.metadata as any)?.position || 'Employee'}</p>
         </div>
       </div>
     )
@@ -548,7 +548,7 @@ export default function FurnitureHR() {
                   <stat.icon className={cn('h-4 w-4', stat.color)} />
                 </div>
                 <p className="text-xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-gray-500">{stat.description}</p>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
                 <p
                   className={cn(
                     'text-xs',
@@ -747,7 +747,7 @@ export default function FurnitureHR() {
                   <p className="text-2xl font-bold">
                     ₹{metrics.totalPayroll.toLocaleString('en-IN')}
                   </p>
-                  <p className="text-xs text-gray-500">{metrics.totalEmployees} employees</p>
+                  <p className="text-xs text-muted-foreground">{metrics.totalEmployees} employees</p>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Next Payment Date</p>
@@ -759,7 +759,7 @@ export default function FurnitureHR() {
                       0
                     ).toLocaleDateString('en-IN', { month: 'short' })}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     In{' '}
                     {Math.ceil(
                       (new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getTime() -
@@ -772,7 +772,7 @@ export default function FurnitureHR() {
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Pending Approvals</p>
                   <p className="text-2xl font-bold text-amber-400">{metrics.pendingApprovals}</p>
-                  <p className="text-xs text-gray-500">Overtime & bonuses</p>
+                  <p className="text-xs text-muted-foreground">Overtime & bonuses</p>
                 </div>
               </div>
 

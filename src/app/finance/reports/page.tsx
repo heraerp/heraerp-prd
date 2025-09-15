@@ -244,9 +244,9 @@ export default function FinanceReportsPage() {
       case 'active':
         return 'bg-emerald-500/20 text-emerald-400'
       case 'paused':
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
     }
   }
 
@@ -286,19 +286,19 @@ export default function FinanceReportsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Financial Reports
           </h1>
-          <p className="text-white/60 mt-1">
+          <p className="text-foreground/60 mt-1">
             Generate and schedule financial reports and statements
           </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshReports}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
             <FileText className="h-5 w-5" />
             <span>Create Report</span>
           </button>
@@ -306,13 +306,13 @@ export default function FinanceReportsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-background/5 backdrop-blur-xl p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('standard')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'standard'
-              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Standard Reports
@@ -321,8 +321,8 @@ export default function FinanceReportsPage() {
           onClick={() => setActiveTab('custom')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'custom'
-              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Custom Reports
@@ -331,8 +331,8 @@ export default function FinanceReportsPage() {
           onClick={() => setActiveTab('scheduled')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'scheduled'
-              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Scheduled Reports
@@ -344,20 +344,20 @@ export default function FinanceReportsPage() {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search reports..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
 
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-colors"
+              className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-indigo-500 transition-colors"
             >
               <option value="all">All Categories</option>
               <option value="Financial Statements">Financial Statements</option>
@@ -368,7 +368,7 @@ export default function FinanceReportsPage() {
               <option value="Custom">Custom Reports</option>
             </select>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Calendar className="h-5 w-5" />
               <span>Date Range</span>
             </button>
@@ -389,48 +389,48 @@ export default function FinanceReportsPage() {
                     <div
                       className={`absolute -inset-0.5 bg-gradient-to-r ${getCategoryColor(report.category)} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
                     />
-                    <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start space-x-4">
                           <div
                             className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}
                           >
-                            <Icon className="h-6 w-6 text-white" />
+                            <Icon className="h-6 w-6 text-foreground" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-white">{report.name}</h3>
-                            <p className="text-sm text-white/60 mt-1">{report.description}</p>
+                            <h3 className="text-lg font-semibold text-foreground">{report.name}</h3>
+                            <p className="text-sm text-foreground/60 mt-1">{report.description}</p>
                           </div>
                         </div>
                       </div>
 
                       <div className="space-y-3 mb-4">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-white/60">Category</span>
-                          <span className="text-white">{report.category}</span>
+                          <span className="text-foreground/60">Category</span>
+                          <span className="text-foreground">{report.category}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-white/60">Frequency</span>
-                          <span className="text-white">{report.frequency}</span>
+                          <span className="text-foreground/60">Frequency</span>
+                          <span className="text-foreground">{report.frequency}</span>
                         </div>
                         {report.lastRun && (
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-white/60">Last Run</span>
-                            <span className="text-white">
+                            <span className="text-foreground/60">Last Run</span>
+                            <span className="text-foreground">
                               {new Date(report.lastRun).toLocaleDateString()}
                             </span>
                           </div>
                         )}
                         {report.nextRun && (
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-white/60">Next Run</span>
-                            <span className="text-white">
+                            <span className="text-foreground/60">Next Run</span>
+                            <span className="text-foreground">
                               {new Date(report.nextRun).toLocaleDateString()}
                             </span>
                           </div>
                         )}
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-white/60">Status</span>
+                          <span className="text-foreground/60">Status</span>
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}
                           >
@@ -439,36 +439,36 @@ export default function FinanceReportsPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                      <div className="flex items-center justify-between pt-4 border-t border-border/10">
                         <div className="flex items-center space-x-2">
                           {report.format.map(format => (
                             <span
                               key={format}
-                              className="px-2 py-1 rounded text-xs bg-white/10 text-white/60"
+                              className="px-2 py-1 rounded text-xs bg-background/10 text-foreground/60"
                             >
                               {format}
                             </span>
                           ))}
                           {report.size && (
-                            <span className="text-xs text-white/40">{report.size}</span>
+                            <span className="text-xs text-foreground/40">{report.size}</span>
                           )}
                         </div>
                         <div className="flex items-center space-x-2">
                           {report.status === 'ready' && (
                             <>
-                              <button className="p-2 text-white/40 hover:text-white transition-colors">
+                              <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                                 <Eye className="h-4 w-4" />
                               </button>
-                              <button className="p-2 text-white/40 hover:text-white transition-colors">
+                              <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                                 <Download className="h-4 w-4" />
                               </button>
-                              <button className="p-2 text-white/40 hover:text-white transition-colors">
+                              <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                                 <Send className="h-4 w-4" />
                               </button>
                             </>
                           )}
                           {report.status === 'scheduled' && (
-                            <button className="flex items-center space-x-2 px-3 py-1.5 bg-white/10 rounded-lg text-white hover:bg-white/20 transition-colors">
+                            <button className="flex items-center space-x-2 px-3 py-1.5 bg-background/10 rounded-lg text-foreground hover:bg-background/20 transition-colors">
                               <Play className="h-4 w-4" />
                               <span className="text-sm">Run Now</span>
                             </button>
@@ -495,9 +495,9 @@ export default function FinanceReportsPage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <Clock className="h-5 w-5 text-indigo-400" />
-              <p className="text-white/80">Manage automated report delivery schedules</p>
+              <p className="text-foreground/80">Manage automated report delivery schedules</p>
             </div>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Calendar className="h-5 w-5" />
               <span>New Schedule</span>
             </button>
@@ -508,12 +508,12 @@ export default function FinanceReportsPage() {
             {scheduledReports.map(schedule => (
               <div key={schedule.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <FileText className="h-5 w-5 text-indigo-400" />
-                        <h3 className="text-lg font-semibold text-white">{schedule.reportName}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">{schedule.reportName}</h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(schedule.status)}`}
                         >
@@ -523,24 +523,24 @@ export default function FinanceReportsPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-xs text-white/60 mb-1">Frequency</p>
-                          <p className="text-sm text-white">{schedule.frequency}</p>
+                          <p className="text-xs text-foreground/60 mb-1">Frequency</p>
+                          <p className="text-sm text-foreground">{schedule.frequency}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-white/60 mb-1">Next Run</p>
-                          <p className="text-sm text-white">
+                          <p className="text-xs text-foreground/60 mb-1">Next Run</p>
+                          <p className="text-sm text-foreground">
                             {new Date(schedule.nextRun).toLocaleDateString()}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-white/60 mb-1">Last Run</p>
-                          <p className="text-sm text-white">
+                          <p className="text-xs text-foreground/60 mb-1">Last Run</p>
+                          <p className="text-sm text-foreground">
                             {new Date(schedule.lastRun).toLocaleDateString()}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-white/60 mb-1">Recipients</p>
-                          <p className="text-sm text-white">{schedule.recipients.length} emails</p>
+                          <p className="text-xs text-foreground/60 mb-1">Recipients</p>
+                          <p className="text-sm text-foreground">{schedule.recipients.length} emails</p>
                         </div>
                       </div>
 
@@ -548,7 +548,7 @@ export default function FinanceReportsPage() {
                         {schedule.recipients.map((email, index) => (
                           <div
                             key={index}
-                            className="flex items-center space-x-2 text-xs text-white/60"
+                            className="flex items-center space-x-2 text-xs text-foreground/60"
                           >
                             <Mail className="h-3 w-3" />
                             <span>{email}</span>
@@ -558,13 +558,13 @@ export default function FinanceReportsPage() {
                     </div>
 
                     <div className="flex items-center space-x-2 ml-4">
-                      <button className="p-2 text-white/40 hover:text-white transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-white/40 hover:text-white transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                         <Play className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-white/40 hover:text-white transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-foreground transition-colors">
                         <ChevronRight className="h-4 w-4" />
                       </button>
                     </div>
@@ -577,14 +577,14 @@ export default function FinanceReportsPage() {
           {/* Info Box */}
           <div className="relative group mt-6">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               <div className="flex items-start space-x-4">
                 <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600">
-                  <Info className="h-6 w-6 text-white" />
+                  <Info className="h-6 w-6 text-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Report Scheduling Tips</h3>
-                  <ul className="space-y-2 text-sm text-white/60">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Report Scheduling Tips</h3>
+                  <ul className="space-y-2 text-sm text-foreground/60">
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />
                       <span>

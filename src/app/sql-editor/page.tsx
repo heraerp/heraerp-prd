@@ -296,7 +296,7 @@ export default function SQLEditorPage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               HERA SQL Editor
             </h1>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Query and manage the sacred 6-table universal architecture
             </p>
           </div>
@@ -305,7 +305,7 @@ export default function SQLEditorPage() {
               variant="outline"
               onClick={testConnection}
               disabled={loading}
-              className="bg-white/80"
+              className="bg-background/80"
             >
               <Database className="h-4 w-4 mr-2" />
               Test Connection
@@ -328,7 +328,7 @@ export default function SQLEditorPage() {
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar - Table Navigator */}
           <div className="col-span-3">
-            <Card className="bg-white/70 backdrop-blur-xl border-white/30">
+            <Card className="bg-background/70 backdrop-blur-xl border-white/30">
               <CardHeader>
                 <CardTitle className="text-lg">Sacred Tables</CardTitle>
                 <CardDescription>Click to explore</CardDescription>
@@ -356,7 +356,7 @@ export default function SQLEditorPage() {
                           <Icon
                             className={cn(
                               'h-4 w-4',
-                              selectedTable === table.name ? 'text-blue-600' : 'text-slate-600'
+                              selectedTable === table.name ? 'text-primary' : 'text-muted-foreground'
                             )}
                           />
                         </div>
@@ -384,7 +384,7 @@ export default function SQLEditorPage() {
             </Card>
 
             {/* Query Templates */}
-            <Card className="bg-white/70 backdrop-blur-xl border-white/30 mt-4">
+            <Card className="bg-background/70 backdrop-blur-xl border-white/30 mt-4">
               <CardHeader>
                 <CardTitle className="text-lg">Quick Templates</CardTitle>
               </CardHeader>
@@ -415,7 +415,7 @@ export default function SQLEditorPage() {
               </TabsList>
 
               <TabsContent value="editor" className="space-y-4">
-                <Card className="bg-white/70 backdrop-blur-xl border-white/30">
+                <Card className="bg-background/70 backdrop-blur-xl border-white/30">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>Query Editor</CardTitle>
@@ -448,11 +448,11 @@ export default function SQLEditorPage() {
                       value={query}
                       onChange={e => setQuery(e.target.value)}
                       placeholder="Enter your SQL query here..."
-                      className="font-mono text-sm h-64 bg-slate-900 text-slate-100 border-slate-700"
+                      className="font-mono text-sm h-64 bg-background text-slate-100 border-border"
                       spellCheck={false}
                     />
                     {executionTime !== null && (
-                      <div className="mt-2 text-sm text-slate-600">
+                      <div className="mt-2 text-sm text-muted-foreground">
                         Execution time: {executionTime}ms
                       </div>
                     )}
@@ -478,7 +478,7 @@ export default function SQLEditorPage() {
 
               <TabsContent value="results">
                 {results && results.data && (
-                  <Card className="bg-white/70 backdrop-blur-xl border-white/30">
+                  <Card className="bg-background/70 backdrop-blur-xl border-white/30">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Query Results</CardTitle>
@@ -507,7 +507,7 @@ export default function SQLEditorPage() {
                                 {Object.values(row).map((value: any, j: number) => (
                                   <td key={j} className="p-2">
                                     {value === null ? (
-                                      <span className="text-slate-400">NULL</span>
+                                      <span className="text-muted-foreground">NULL</span>
                                     ) : typeof value === 'object' ? (
                                       <pre className="text-xs">
                                         {JSON.stringify(value, null, 2)}
@@ -528,7 +528,7 @@ export default function SQLEditorPage() {
               </TabsContent>
 
               <TabsContent value="history">
-                <Card className="bg-white/70 backdrop-blur-xl border-white/30">
+                <Card className="bg-background/70 backdrop-blur-xl border-white/30">
                   <CardHeader>
                     <CardTitle>Query History</CardTitle>
                     <CardDescription>Your recent queries</CardDescription>

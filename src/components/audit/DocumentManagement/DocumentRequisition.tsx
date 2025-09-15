@@ -99,7 +99,7 @@ export function DocumentRequisition({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       case 'received':
         return 'bg-blue-100 text-blue-800'
       case 'under_review':
@@ -111,7 +111,7 @@ export function DocumentRequisition({
       case 'resubmission_required':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -126,7 +126,7 @@ export function DocumentRequisition({
       case 'low':
         return 'text-green-600 bg-green-50 border-green-200'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -182,21 +182,21 @@ export function DocumentRequisition({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center">
-            <FileText className="w-6 h-6 text-white" />
+            <FileText className="w-6 h-6 text-foreground" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Document Requisition</h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {clientName} - FY{auditYear}
             </p>
-            <p className="text-xs text-gray-500 font-mono">Org: {organizationId}</p>
+            <p className="text-xs text-muted-foreground font-mono">Org: {organizationId}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge
             className={
               requisition.status === 'draft'
-                ? 'bg-gray-100 text-gray-800'
+                ? 'bg-muted text-gray-800'
                 : 'bg-blue-100 text-blue-800'
             }
           >
@@ -224,7 +224,7 @@ export function DocumentRequisition({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-blue-600 mb-1">Total Documents</p>
+                <p className="text-xs font-medium text-primary mb-1">Total Documents</p>
                 <p className="text-2xl font-bold text-blue-900">{stats.total_documents}</p>
               </div>
               <FileText className="w-8 h-8 text-blue-500" />
@@ -248,7 +248,7 @@ export function DocumentRequisition({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-blue-600 mb-1">Received</p>
+                <p className="text-xs font-medium text-primary mb-1">Received</p>
                 <p className="text-2xl font-bold text-blue-900">{stats.received}</p>
               </div>
               <Upload className="w-8 h-8 text-blue-500" />
@@ -297,7 +297,7 @@ export function DocumentRequisition({
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search documents..."
                 value={searchTerm}
@@ -379,12 +379,12 @@ export function DocumentRequisition({
                     return (
                       <div
                         key={item.code}
-                        className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                        className="border rounded-lg p-4 hover:bg-muted transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <span className="font-mono text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                              <span className="font-mono text-sm text-primary bg-blue-50 px-2 py-1 rounded">
                                 {item.code}
                               </span>
                               <Badge className={getPriorityColor(item.priority)}>
@@ -395,7 +395,7 @@ export function DocumentRequisition({
                               </Badge>
                             </div>
                             <h4 className="font-medium text-gray-900 mb-1">{item.name}</h4>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
                                 Due: {new Date(docItem.due_date).toLocaleDateString()}
@@ -491,7 +491,7 @@ export function DocumentRequisition({
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 Last updated: {new Date().toLocaleString()}
               </span>
             </div>

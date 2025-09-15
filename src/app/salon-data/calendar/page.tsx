@@ -30,7 +30,7 @@ export default function SalonDataCalendarPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       <SalonResourceCalendar
         organizations={salonOrganizations}
         currentOrganizationId={currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'}

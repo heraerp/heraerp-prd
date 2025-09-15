@@ -264,12 +264,12 @@ export function DataImportExport({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-blue-600" />
+              <Database className="h-5 w-5 text-primary" />
               Data Import/Export
               <Badge variant="outline" className="ml-2">
                 Customer Migration Tools
@@ -395,11 +395,11 @@ export function DataImportExport({
                         <h4 className="font-medium text-blue-800 mb-2">
                           {importTemplates.find(t => t.id === selectedTemplate)?.name}
                         </h4>
-                        <p className="text-sm text-blue-600 mb-2">
+                        <p className="text-sm text-primary mb-2">
                           Pre-configured for{' '}
                           {importTemplates.find(t => t.id === selectedTemplate)?.sourceSystem} data
                         </p>
-                        <div className="text-xs text-blue-600">
+                        <div className="text-xs text-primary">
                           <strong>Field Mappings:</strong>{' '}
                           {importTemplates
                             .find(t => t.id === selectedTemplate)
@@ -438,7 +438,7 @@ export function DataImportExport({
                             <tr className="border-b">
                               {parsedData[0] &&
                                 Object.keys(parsedData[0]).map(key => (
-                                  <th key={key} className="text-left p-2 font-medium bg-gray-50">
+                                  <th key={key} className="text-left p-2 font-medium bg-muted">
                                     {key}
                                   </th>
                                 ))}
@@ -446,7 +446,7 @@ export function DataImportExport({
                           </thead>
                           <tbody>
                             {parsedData.map((row, idx) => (
-                              <tr key={idx} className="border-b hover:bg-gray-50">
+                              <tr key={idx} className="border-b hover:bg-muted">
                                 {Object.values(row).map((value, cellIdx) => (
                                   <td key={cellIdx} className="p-2 border-r max-w-32 truncate">
                                     {String(value)}
@@ -467,7 +467,7 @@ export function DataImportExport({
                 <Card className="border-blue-200 bg-blue-50">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                      <Loader2 className="h-5 w-5 text-primary animate-spin" />
                       <span className="text-blue-800 font-medium">Importing data...</span>
                     </div>
                     <Progress value={importProgress} className="w-full" />
@@ -496,19 +496,19 @@ export function DataImportExport({
                         <div className="text-2xl font-bold text-gray-900">
                           {importResult.totalRecords}
                         </div>
-                        <div className="text-sm text-gray-600">Total Records</div>
+                        <div className="text-sm text-muted-foreground">Total Records</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-green-600">
                           {importResult.importedRecords}
                         </div>
-                        <div className="text-sm text-gray-600">Imported</div>
+                        <div className="text-sm text-muted-foreground">Imported</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-red-600">
                           {importResult.failedRecords}
                         </div>
-                        <div className="text-sm text-gray-600">Failed</div>
+                        <div className="text-sm text-muted-foreground">Failed</div>
                       </div>
                     </div>
 
@@ -544,7 +544,7 @@ export function DataImportExport({
 
               {/* Import Actions */}
               <div className="flex justify-between items-center pt-4 border-t">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   Supported formats: CSV, JSON • Maximum file size: 10MB
                 </div>
                 <div className="flex gap-2">
@@ -690,7 +690,7 @@ export function DataImportExport({
 
               {/* Export Actions */}
               <div className="flex justify-between items-center pt-4 border-t">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   Export includes all organization data with applied filters
                 </div>
                 <div className="flex gap-2">

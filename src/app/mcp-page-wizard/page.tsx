@@ -352,8 +352,8 @@ import { Loader2 } from 'lucide-react'
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-slate-600">Loading business data...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading business data...</p>
         </div>
       </div>
     )
@@ -443,7 +443,7 @@ import { Loader2 } from 'lucide-react'
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <Button variant="outline" asChild className="bg-white/80">
+              <Button variant="outline" asChild className="bg-background/80">
                 <Link href="/">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
@@ -469,7 +469,7 @@ import { Loader2 } from 'lucide-react'
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
-            <Card className="bg-white/40 backdrop-blur-xl border-white/20 shadow-xl">
+            <Card className="bg-background/40 backdrop-blur-xl border-border/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
                   <FileCode className="h-6 w-6 text-purple-600" />
@@ -509,21 +509,21 @@ import { Loader2 } from 'lucide-react'
                           placeholder="e.g., https://heraerp.com/salon-progressive/customers"
                           value={pageUrl}
                           onChange={e => setPageUrl(e.target.value)}
-                          className="bg-white/50"
+                          className="bg-background/50"
                         />
-                        <p className="text-xs text-slate-600 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           Enter the full URL of your progressive page
                         </p>
                         {/* Quick Demo Links */}
                         <div className="mt-2">
-                          <p className="text-xs text-slate-600 mb-1">Quick demos:</p>
+                          <p className="text-xs text-muted-foreground mb-1">Quick demos:</p>
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
                               onClick={() =>
                                 setPageUrl('https://heraerp.com/salon-progressive/customers')
                               }
-                              className="text-xs text-blue-600 hover:text-blue-800 underline"
+                              className="text-xs text-primary hover:text-blue-800 underline"
                             >
                               Salon Customers
                             </button>
@@ -532,7 +532,7 @@ import { Loader2 } from 'lucide-react'
                               onClick={() =>
                                 setPageUrl('https://heraerp.com/restaurant-progressive/pos')
                               }
-                              className="text-xs text-blue-600 hover:text-blue-800 underline"
+                              className="text-xs text-primary hover:text-blue-800 underline"
                             >
                               Restaurant POS
                             </button>
@@ -541,7 +541,7 @@ import { Loader2 } from 'lucide-react'
                               onClick={() =>
                                 setPageUrl('https://heraerp.com/jewelry-progressive/inventory')
                               }
-                              className="text-xs text-blue-600 hover:text-blue-800 underline"
+                              className="text-xs text-primary hover:text-blue-800 underline"
                             >
                               Jewelry Inventory
                             </button>
@@ -587,7 +587,7 @@ import { Loader2 } from 'lucide-react'
                         placeholder="Paste your complete progressive page component code here..."
                         value={originalCode}
                         onChange={e => setOriginalCode(e.target.value)}
-                        className="h-96 font-mono text-sm bg-white/80 border-slate-200 text-slate-800"
+                        className="h-96 font-mono text-sm bg-background/80 border-border text-slate-800"
                       />
                     </div>
                   )}
@@ -615,10 +615,10 @@ import { Loader2 } from 'lucide-react'
 
             {/* Conversion Progress */}
             {conversionSteps.length > 0 && (
-              <Card className="bg-white/40 backdrop-blur-xl border-white/20 shadow-xl">
+              <Card className="bg-background/40 backdrop-blur-xl border-border/20 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <RefreshCw className="h-6 w-6 text-blue-600" />
+                    <RefreshCw className="h-6 w-6 text-primary" />
                     Conversion Progress
                   </CardTitle>
                 </CardHeader>
@@ -633,10 +633,10 @@ import { Loader2 } from 'lucide-react'
                             <CheckCircle className="h-5 w-5 text-green-600" />
                           )}
                           {step.status === 'processing' && (
-                            <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                            <Loader2 className="h-5 w-5 text-primary animate-spin" />
                           )}
                           {step.status === 'pending' && (
-                            <div className="h-5 w-5 rounded-full border-2 border-slate-300" />
+                            <div className="h-5 w-5 rounded-full border-2 border-input" />
                           )}
                         </div>
                         <div className="flex-1">
@@ -653,7 +653,7 @@ import { Loader2 } from 'lucide-react'
 
           {/* Output Section */}
           <div className="space-y-6">
-            <Card className="bg-white/40 backdrop-blur-xl border-white/20 shadow-xl">
+            <Card className="bg-background/40 backdrop-blur-xl border-border/20 shadow-xl">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-3">
@@ -699,7 +699,7 @@ import { Loader2 } from 'lucide-react'
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto h-96">
+                <div className="bg-background text-slate-100 p-4 rounded-lg overflow-x-auto h-96">
                   <pre className="text-xs font-mono whitespace-pre-wrap">
                     {convertedCode || '// Production-ready code will appear here after conversion'}
                   </pre>

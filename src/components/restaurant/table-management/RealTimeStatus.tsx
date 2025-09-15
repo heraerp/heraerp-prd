@@ -62,7 +62,7 @@ export function RealTimeStatus({
       case 'Closed':
         return <WifiOff className="w-4 h-4 text-red-500" />
       default:
-        return <AlertCircle className="w-4 h-4 text-gray-500" />
+        return <AlertCircle className="w-4 h-4 text-muted-foreground" />
     }
   }
 
@@ -79,7 +79,7 @@ export function RealTimeStatus({
       case 'Closed':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -98,13 +98,13 @@ export function RealTimeStatus({
                     ? 'HTTP Polling'
                     : connectionState}
               </Badge>
-              <p className="text-xs text-gray-500 mt-1">Real-time Updates</p>
+              <p className="text-xs text-muted-foreground mt-1">Real-time Updates</p>
             </div>
           </div>
 
           {/* Last Update */}
           {lastUpdate && (
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               <div>
                 <p className="font-medium">Last Update</p>
@@ -120,7 +120,7 @@ export function RealTimeStatus({
                 isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
               }`}
             />
-            <span className="text-xs text-gray-500">{isConnected ? 'Live' : 'Offline'}</span>
+            <span className="text-xs text-muted-foreground">{isConnected ? 'Live' : 'Offline'}</span>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export function RealTimeStatus({
             variant="ghost"
             size="sm"
             onClick={() => onToggleNotifications(!enableNotifications)}
-            className={enableNotifications ? 'text-blue-600' : 'text-gray-400'}
+            className={enableNotifications ? 'text-primary' : 'text-muted-foreground'}
           >
             {enableNotifications ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
           </Button>
@@ -141,7 +141,7 @@ export function RealTimeStatus({
             variant="ghost"
             size="sm"
             onClick={() => onToggleSoundAlerts(!enableSoundAlerts)}
-            className={enableSoundAlerts ? 'text-blue-600' : 'text-gray-400'}
+            className={enableSoundAlerts ? 'text-primary' : 'text-muted-foreground'}
           >
             {enableSoundAlerts ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </Button>
@@ -194,7 +194,7 @@ export function RealTimeStatus({
               <p className="font-medium">
                 Table {lastUpdate.table_id} → {lastUpdate.new_status}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {formatDate(new Date(lastUpdate.timestamp), 'MMM d, HH:mm:ss')}
               </p>
             </div>
@@ -206,11 +206,11 @@ export function RealTimeStatus({
       {/* Connection Tips */}
       {!isConnected && (
         <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-start space-x-2 text-sm text-gray-600">
+          <div className="flex items-start space-x-2 text-sm text-muted-foreground">
             <AlertCircle className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
             <div>
               <p className="font-medium text-orange-800">Real-time updates disconnected</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Table statuses will refresh automatically every 30 seconds
               </p>
             </div>

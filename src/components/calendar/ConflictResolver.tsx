@@ -80,7 +80,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
       case 'warning':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -148,7 +148,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
           {/* Affected Items */}
           <div>
             <h4 className="font-medium text-sm mb-2">Affected:</h4>
-            <div className="space-y-1 text-sm text-gray-600">
+            <div className="space-y-1 text-sm text-muted-foreground">
               {conflict.affected_appointments.length > 0 && (
                 <div>
                   <span className="font-medium">Appointments:</span>{' '}
@@ -176,7 +176,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                   <Card
                     key={index}
                     className={`cursor-pointer transition-all p-3 ${
-                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
                     }`}
                     onClick={() => handleResolutionSelect(conflict.conflict_id, suggestion)}
                   >
@@ -190,15 +190,15 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                               .replace(/_/g, ' ')
                               .replace(/\b\w/g, l => l.toUpperCase())}
                           </h5>
-                          {isSelected && <CheckCircle className="h-4 w-4 text-blue-600" />}
+                          {isSelected && <CheckCircle className="h-4 w-4 text-primary" />}
                         </div>
 
-                        <p className="text-sm text-gray-600 mb-2">{suggestion.description}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{suggestion.description}</p>
 
                         {/* Alternative options */}
                         {suggestion.alternative_slots &&
                           suggestion.alternative_slots.length > 0 && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-muted-foreground">
                               <span className="font-medium">Alternative times:</span>
                               <div className="mt-1 space-y-1">
                                 {suggestion.alternative_slots.slice(0, 3).map((slot, slotIndex) => (
@@ -208,7 +208,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                                   </div>
                                 ))}
                                 {suggestion.alternative_slots.length > 3 && (
-                                  <span className="text-gray-400">
+                                  <span className="text-muted-foreground">
                                     +{suggestion.alternative_slots.length - 3} more options
                                   </span>
                                 )}
@@ -218,7 +218,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
 
                         {suggestion.alternative_resources &&
                           suggestion.alternative_resources.length > 0 && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-muted-foreground">
                               <span className="font-medium">Alternative resources:</span>
                               <span className="ml-1">
                                 {suggestion.alternative_resources.join(', ')}
@@ -302,21 +302,21 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-red-600">{conflictStats.critical}</div>
-                <div className="text-sm text-gray-600">Critical</div>
+                <div className="text-sm text-muted-foreground">Critical</div>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-orange-600">{conflictStats.error}</div>
-                <div className="text-sm text-gray-600">Errors</div>
+                <div className="text-sm text-muted-foreground">Errors</div>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-yellow-600">{conflictStats.warning}</div>
-                <div className="text-sm text-gray-600">Warnings</div>
+                <div className="text-sm text-muted-foreground">Warnings</div>
               </CardContent>
             </Card>
 
@@ -325,7 +325,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                 <div className="text-2xl font-bold text-green-600">
                   {conflictStats.autoResolvable}
                 </div>
-                <div className="text-sm text-gray-600">Auto-resolvable</div>
+                <div className="text-sm text-muted-foreground">Auto-resolvable</div>
               </CardContent>
             </Card>
           </div>
@@ -336,10 +336,10 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
               <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div>
                   <h4 className="font-medium">Auto-resolve all possible conflicts</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Automatically apply the best suggested resolution for{' '}
                     {conflictStats.autoResolvable} conflicts
                   </p>
@@ -353,10 +353,10 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div>
                   <h4 className="font-medium">Review each conflict manually</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Examine each conflict and choose the best resolution option
                   </p>
                 </div>

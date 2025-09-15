@@ -85,7 +85,7 @@ export function HeraNavigation() {
               href="/"
               className="flex items-center space-x-2 text-xl font-bold bg-gradient-to-r from-hera-500 to-hera-cyan-500 bg-clip-text text-transparent"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-hera-500 to-hera-cyan-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-8 h-8 bg-gradient-to-br from-hera-500 to-hera-cyan-500 rounded-lg flex items-center justify-center text-foreground text-sm font-bold">
                 H
               </div>
               <span>HERA</span>

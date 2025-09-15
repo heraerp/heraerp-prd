@@ -585,7 +585,7 @@ export function SalesOrderForm() {
           {/* Promised Delivery Date */}
           {promisedDeliveryDate && (
             <Alert className="border-blue-200 bg-blue-50">
-              <CheckCircle className="h-4 w-4 text-blue-600" />
+              <CheckCircle className="h-4 w-4 text-primary" />
               <AlertDescription className="text-blue-800">
                 <strong>Promised Delivery Date:</strong> {formatDate(promisedDeliveryDate, 'PPP')}
               </AlertDescription>

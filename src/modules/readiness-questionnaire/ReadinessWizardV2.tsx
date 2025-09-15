@@ -69,12 +69,12 @@ const TextQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value)}
       placeholder="Type your answer..."
       className={cn(
-        'text-lg p-4 bg-white dark:bg-gray-900/95 border-2 transition-all duration-300',
-        'text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        'text-lg p-4 bg-background dark:bg-background/95 border-2 transition-all duration-300',
+        'text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400',
         'shadow-sm hover:shadow-md focus:shadow-lg',
-        'backdrop-blur-sm border-gray-200/80 dark:border-gray-700/80',
+        'backdrop-blur-sm border-border/80 dark:border-border/80',
         'hover:border-blue-300/60 dark:hover:border-blue-500/40',
-        'hover:bg-blue-50/30 dark:hover:bg-blue-950/20',
+        'hover:bg-primary/10/30 dark:hover:bg-blue-950/20',
         'focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-400/30',
         'focus:border-blue-500 dark:focus:border-blue-400',
         'focus:bg-blue-50/50 dark:focus:bg-blue-950/30',
@@ -107,12 +107,12 @@ const TextareaQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value)}
       placeholder="Share your thoughts in detail..."
       className={cn(
-        'text-lg p-4 min-h-[150px] bg-white dark:bg-gray-900/95 border-2 transition-all duration-300 resize-none',
-        'text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        'text-lg p-4 min-h-[150px] bg-background dark:bg-background/95 border-2 transition-all duration-300 resize-none',
+        'text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400',
         'shadow-sm hover:shadow-md focus:shadow-lg',
-        'backdrop-blur-sm border-gray-200/80 dark:border-gray-700/80',
+        'backdrop-blur-sm border-border/80 dark:border-border/80',
         'hover:border-blue-300/60 dark:hover:border-blue-500/40',
-        'hover:bg-blue-50/30 dark:hover:bg-blue-950/20',
+        'hover:bg-primary/10/30 dark:hover:bg-blue-950/20',
         'focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-400/30',
         'focus:border-blue-500 dark:focus:border-blue-400',
         'focus:bg-blue-50/50 dark:focus:bg-blue-950/30',
@@ -143,21 +143,21 @@ const SelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onC
           htmlFor={option.code}
           className={cn(
             'flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all duration-300',
-            'bg-white dark:bg-gray-800/95 border-2 shadow-sm backdrop-blur-sm',
-            'border-gray-200/80 dark:border-gray-700/80',
-            'hover:bg-blue-50/40 dark:hover:bg-blue-950/25 hover:shadow-md',
+            'bg-background dark:bg-muted/95 border-2 shadow-sm backdrop-blur-sm',
+            'border-border/80 dark:border-border/80',
+            'hover:bg-primary/10/40 dark:hover:bg-blue-950/25 hover:shadow-md',
             'hover:border-blue-300/60 dark:hover:border-blue-500/40',
             'hover:backdrop-blur-md',
             'peer-checked:bg-blue-50/60 dark:peer-checked:bg-blue-950/40',
             'peer-checked:border-blue-500/80 dark:peer-checked:border-blue-400/80',
             'peer-checked:shadow-md peer-checked:shadow-blue-500/10',
-            'peer-checked:hover:bg-blue-50/70 dark:peer-checked:hover:bg-blue-950/50'
+            'peer-checked:hover:bg-primary/10/70 dark:peer-checked:hover:bg-blue-950/50'
           )}
         >
           <div
             className={cn(
               'w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 transition-all duration-300 flex items-center justify-center',
-              'border-gray-300/80 dark:border-gray-600/80 bg-white dark:bg-gray-900',
+              'border-border/80 dark:border-border/80 bg-background dark:bg-background',
               'peer-checked:border-blue-500 dark:peer-checked:border-blue-400',
               'peer-checked:shadow-sm peer-checked:shadow-blue-500/20'
             )}
@@ -172,11 +172,11 @@ const SelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onC
             />
           </div>
           <div className="flex-1">
-            <div className="text-base font-semibold text-gray-900 dark:text-white">
+            <div className="text-base font-semibold text-gray-900 dark:text-foreground">
               {option.label}
             </div>
             {option.description && (
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                 {option.description}
               </div>
             )}
@@ -212,23 +212,23 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
             htmlFor={option.code}
             className={cn(
               'flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all duration-300',
-              'bg-white dark:bg-gray-800/95 border-2 shadow-sm backdrop-blur-sm',
-              'border-gray-200/80 dark:border-gray-700/80',
-              'hover:bg-blue-50/40 dark:hover:bg-blue-950/25 hover:shadow-md',
+              'bg-background dark:bg-muted/95 border-2 shadow-sm backdrop-blur-sm',
+              'border-border/80 dark:border-border/80',
+              'hover:bg-primary/10/40 dark:hover:bg-blue-950/25 hover:shadow-md',
               'hover:border-blue-300/60 dark:hover:border-blue-500/40',
               'hover:backdrop-blur-md',
               currentValues.includes(option.code) && [
                 'bg-blue-50/60 dark:bg-blue-950/40',
                 'border-blue-500/80 dark:border-blue-400/80',
                 'shadow-md shadow-blue-500/10',
-                'hover:bg-blue-50/70 dark:hover:bg-blue-950/50'
+                'hover:bg-primary/10/70 dark:hover:bg-blue-950/50'
               ]
             )}
           >
             <div
               className={cn(
                 'w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 transition-all duration-300 flex items-center justify-center',
-                'border-gray-300/80 dark:border-gray-600/80 bg-white dark:bg-gray-900',
+                'border-border/80 dark:border-border/80 bg-background dark:bg-background',
                 currentValues.includes(option.code) && [
                   'border-blue-500 dark:border-blue-400',
                   'bg-blue-500 dark:bg-blue-400',
@@ -238,7 +238,7 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
             >
               {currentValues.includes(option.code) && (
                 <svg
-                  className="w-3 h-3 text-white drop-shadow-sm"
+                  className="w-3 h-3 text-foreground drop-shadow-sm"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -249,11 +249,11 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
               )}
             </div>
             <div className="flex-1">
-              <div className="text-base font-semibold text-gray-900 dark:text-white">
+              <div className="text-base font-semibold text-gray-900 dark:text-foreground">
                 {option.label}
               </div>
               {option.description && (
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                   {option.description}
                 </div>
               )}
@@ -275,13 +275,13 @@ const YesNoQuestion: React.FC<QuestionComponentProps> = ({ question, value, onCh
         value === true
           ? [
               'bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700',
-              'text-white border-emerald-500 dark:border-emerald-600',
+              'text-foreground border-emerald-500 dark:border-emerald-600',
               'shadow-lg shadow-emerald-500/25 transform scale-105',
               'ring-2 ring-emerald-200 dark:ring-emerald-800'
             ]
           : [
-              'bg-white dark:bg-gray-800/95 text-gray-700 dark:text-gray-300',
-              'border-gray-200/80 dark:border-gray-700/80',
+              'bg-background dark:bg-muted/95 text-gray-700 dark:text-gray-300',
+              'border-border/80 dark:border-border/80',
               'hover:bg-emerald-50/30 dark:hover:bg-emerald-950/20',
               'hover:border-emerald-300/60 dark:hover:border-emerald-500/40',
               'hover:text-emerald-700 dark:hover:text-emerald-300'
@@ -301,13 +301,13 @@ const YesNoQuestion: React.FC<QuestionComponentProps> = ({ question, value, onCh
         value === false
           ? [
               'bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700',
-              'text-white border-red-500 dark:border-red-600',
+              'text-foreground border-red-500 dark:border-red-600',
               'shadow-lg shadow-red-500/25 transform scale-105',
               'ring-2 ring-red-200 dark:ring-red-800'
             ]
           : [
-              'bg-white dark:bg-gray-800/95 text-gray-700 dark:text-gray-300',
-              'border-gray-200/80 dark:border-gray-700/80',
+              'bg-background dark:bg-muted/95 text-gray-700 dark:text-gray-300',
+              'border-border/80 dark:border-border/80',
               'hover:bg-red-50/30 dark:hover:bg-red-950/20',
               'hover:border-red-300/60 dark:hover:border-red-500/40',
               'hover:text-red-700 dark:hover:text-red-300'
@@ -335,12 +335,12 @@ const NumberQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value ? parseInt(e.target.value) : 0)}
       placeholder="Enter a number..."
       className={cn(
-        'text-2xl p-4 bg-white dark:bg-gray-900/95 border-2 text-center font-bold transition-all duration-300',
-        'text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        'text-2xl p-4 bg-background dark:bg-background/95 border-2 text-center font-bold transition-all duration-300',
+        'text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400',
         'shadow-sm hover:shadow-md focus:shadow-lg',
-        'backdrop-blur-sm border-gray-200/80 dark:border-gray-700/80',
+        'backdrop-blur-sm border-border/80 dark:border-border/80',
         'hover:border-blue-300/60 dark:hover:border-blue-500/40',
-        'hover:bg-blue-50/30 dark:hover:bg-blue-950/20',
+        'hover:bg-primary/10/30 dark:hover:bg-blue-950/20',
         'focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-400/30',
         'focus:border-blue-500 dark:focus:border-blue-400',
         'focus:bg-blue-50/50 dark:focus:bg-blue-950/30',
@@ -497,13 +497,13 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
 
   if (showInsights) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-4xl w-full"
         >
-          <Card className="bg-white dark:bg-gray-800 shadow-2xl border-0">
+          <Card className="bg-background dark:bg-muted shadow-2xl border-0">
             <CardHeader className="text-center pb-6">
               <motion.div
                 initial={{ scale: 0 }}
@@ -511,9 +511,9 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                 transition={{ delay: 0.2 }}
                 className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
               >
-                <CheckCircle className="w-12 h-12 text-white" />
+                <CheckCircle className="w-12 h-12 text-foreground" />
               </motion.div>
-              <CardTitle className="text-4xl font-bold text-gray-900 dark:text-white">
+              <CardTitle className="text-4xl font-bold text-gray-900 dark:text-foreground">
                 Assessment Complete!
               </CardTitle>
               <p className="text-xl text-gray-700 dark:text-gray-300 mt-2 font-medium">
@@ -522,27 +522,27 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
             </CardHeader>
             <CardContent className="space-y-8 pb-8">
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="text-center bg-muted dark:bg-muted/50 p-6 rounded-xl border border-border dark:border-border">
                   <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent mb-2">
                     {progress.current}
                   </div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                  <div className="text-sm font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
                     Questions Answered
                   </div>
                 </div>
-                <div className="text-center bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="text-center bg-muted dark:bg-muted/50 p-6 rounded-xl border border-border dark:border-border">
                   <div className="text-5xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent mb-2">
                     {Math.round(Math.random() * 30 + 70)}%
                   </div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                  <div className="text-sm font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
                     Readiness Score
                   </div>
                 </div>
-                <div className="text-center bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="text-center bg-muted dark:bg-muted/50 p-6 rounded-xl border border-border dark:border-border">
                   <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent mb-2">
                     A+
                   </div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                  <div className="text-sm font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
                     Overall Grade
                   </div>
                 </div>
@@ -555,8 +555,8 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                 className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl p-8 border border-blue-100 dark:border-blue-900/50"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <Lightbulb className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <Lightbulb className="w-8 h-8 text-primary dark:text-blue-400" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     AI-Powered Insights
                   </h3>
                 </div>
@@ -570,7 +570,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
               <div className="flex justify-center pt-4">
                 <Button
                   size="lg"
-                  className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-foreground font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   View Detailed Report
                   <TrendingUp className="w-6 h-6 ml-3" />
@@ -584,20 +584,20 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-muted dark:bg-background flex flex-col">
       {/* Fixed Header */}
-      <div className="bg-white/95 dark:bg-gray-800/95 shadow-sm border-b border-gray-200/60 dark:border-gray-700/60 sticky top-0 z-50 backdrop-blur-md">
+      <div className="bg-background/95 dark:bg-muted/95 shadow-sm border-b border-border/60 dark:border-border/60 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                <BarChart3 className="w-6 h-6 text-white" />
+                <BarChart3 className="w-6 h-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-lg font-bold !text-gray-900 dark:!text-white">
+                <h1 className="text-lg font-bold !text-gray-900 dark:!text-foreground">
                   ERP Readiness Assessment
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground font-medium">
                   {template.title}
                 </p>
               </div>
@@ -610,9 +610,9 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-700 dark:text-gray-300 font-semibold">Progress</span>
-              <span className="!text-gray-900 dark:!text-white font-bold">{progress.percent}%</span>
+              <span className="!text-gray-900 dark:!text-foreground font-bold">{progress.percent}%</span>
             </div>
-            <div className="relative h-2.5 bg-gray-200/80 dark:bg-gray-700/80 rounded-full overflow-hidden shadow-inner backdrop-blur-sm">
+            <div className="relative h-2.5 bg-gray-200/80 dark:bg-muted-foreground/10/80 rounded-full overflow-hidden shadow-inner backdrop-blur-sm">
               <div
                 className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 transition-all duration-500 ease-out shadow-sm"
                 style={{ width: `${progress.percent}%` }}
@@ -640,7 +640,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
               className="max-w-3xl w-full"
             >
               <Card
-                className="bg-white/95 dark:bg-gray-800/95 shadow-2xl border-0 backdrop-blur-sm"
+                className="bg-background/95 dark:bg-muted/95 shadow-2xl border-0 backdrop-blur-sm"
                 data-testid="question-card"
               >
                 <CardHeader className="space-y-4 pb-6">
@@ -655,7 +655,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                   )}
 
                   <div className="text-center">
-                    <CardTitle className="text-2xl md:text-3xl font-bold !text-gray-900 dark:!text-white leading-tight">
+                    <CardTitle className="text-2xl md:text-3xl font-bold !text-gray-900 dark:!text-foreground leading-tight">
                       {currentQuestion.prompt}
                     </CardTitle>
 
@@ -664,7 +664,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-lg text-gray-600 dark:text-gray-400 mt-3 font-medium"
+                        className="text-lg text-muted-foreground dark:text-muted-foreground mt-3 font-medium"
                       >
                         {currentQuestion.help_text}
                       </motion.p>
@@ -673,7 +673,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                     {currentQuestion.required && (
                       <div className="flex items-center gap-1.5 mt-4 justify-center">
                         <span className="text-red-500 text-lg leading-none">*</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground font-medium">
                           Required field
                         </span>
                       </div>
@@ -691,7 +691,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                   </motion.div>
 
                   {/* Navigation */}
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-200/60 dark:border-gray-700/60">
+                  <div className="flex items-center justify-between pt-6 border-t border-border/60 dark:border-border/60">
                     <Button
                       variant="outline"
                       onClick={handlePrev}
@@ -699,21 +699,21 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                       className={cn(
                         'flex items-center gap-2 px-4 py-2 font-medium transition-all duration-300',
                         'text-gray-700 dark:text-gray-300',
-                        'bg-white dark:bg-gray-800/95 backdrop-blur-sm',
-                        'border-gray-200/80 dark:border-gray-700/80 shadow-sm',
-                        'hover:bg-gray-50/80 dark:hover:bg-gray-800/70',
-                        'hover:border-gray-300/80 dark:hover:border-gray-600/80',
-                        'hover:shadow-md hover:text-gray-900 dark:hover:text-white',
+                        'bg-background dark:bg-muted/95 backdrop-blur-sm',
+                        'border-border/80 dark:border-border/80 shadow-sm',
+                        'hover:bg-muted/80 dark:hover:bg-muted/70',
+                        'hover:border-border/80 dark:hover:border-border/80',
+                        'hover:shadow-md hover:text-foreground dark:hover:text-foreground',
                         'disabled:opacity-40 disabled:cursor-not-allowed',
-                        'disabled:hover:bg-white dark:disabled:hover:bg-gray-800/95',
-                        'disabled:hover:border-gray-200/80 dark:disabled:hover:border-gray-700/80'
+                        'disabled:hover:bg-background dark:disabled:hover:bg-muted/95',
+                        'disabled:hover:border-border/80 dark:disabled:hover:border-border/80'
                       )}
                     >
                       <ChevronLeft className="w-4 h-4" />
                       Previous
                     </Button>
 
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium px-3 py-2 bg-gray-50/60 dark:bg-gray-800/60 rounded-lg backdrop-blur-sm border border-gray-200/60 dark:border-gray-700/60">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground font-medium px-3 py-2 bg-muted/60 dark:bg-muted/60 rounded-lg backdrop-blur-sm border border-border/60 dark:border-border/60">
                       <Clock className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                       <span>
                         ~{Math.max(1, allQuestions.length - progress.current)} min remaining
@@ -730,7 +730,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                         'flex items-center gap-2 px-6 py-2 font-semibold transition-all duration-300',
                         'bg-gradient-to-r from-blue-600 to-indigo-600',
                         'hover:from-blue-700 hover:to-indigo-700',
-                        'text-white shadow-md hover:shadow-lg',
+                        'text-foreground shadow-md hover:shadow-lg',
                         'transform hover:scale-105 active:scale-95',
                         'backdrop-blur-sm border border-blue-500/20',
                         'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -742,7 +742,7 @@ export const ReadinessWizardV2: React.FC<ReadinessWizardProps> = ({ template, se
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            className="text-white"
+                            className="text-foreground"
                           >
                             <Clock className="w-4 h-4" />
                           </motion.div>

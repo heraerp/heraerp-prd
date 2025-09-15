@@ -459,13 +459,13 @@ export default function ServicesManagement() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="sticky top-0 z-20 px-6 py-4 mb-0 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="sticky top-0 z-20 px-6 py-4 mb-0 backdrop-blur-xl bg-background/80 dark:bg-background/80 border-b border-border dark:border-gray-800 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-[1600px] mx-auto">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Services Management
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-2">
               Manage your salon services, categories, and pricing
             </p>
           </div>
@@ -484,7 +484,7 @@ export default function ServicesManagement() {
 
             <Button
               onClick={() => setShowServiceForm(true)}
-              className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
+              className="bg-purple-600 hover:bg-purple-700 text-foreground flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Service
@@ -496,15 +496,15 @@ export default function ServicesManagement() {
       {/* Tab Navigation */}
       <div className="px-6 py-4">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
+          <div className="flex items-center gap-1 p-1 bg-muted dark:bg-muted rounded-lg w-fit">
             <Button
               variant={activeTab === 'services' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('services')}
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200',
                 activeTab === 'services'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm'
-                  : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-background dark:bg-muted-foreground/10 shadow-sm'
+                  : 'hover:bg-gray-200 dark:hover:bg-muted-foreground/10'
               )}
             >
               <Scissors className="w-4 h-4 mr-2" />
@@ -516,8 +516,8 @@ export default function ServicesManagement() {
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200',
                 activeTab === 'categories'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm'
-                  : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-background dark:bg-muted-foreground/10 shadow-sm'
+                  : 'hover:bg-gray-200 dark:hover:bg-muted-foreground/10'
               )}
             >
               <Grid3x3 className="w-4 h-4 mr-2" />
@@ -530,21 +530,21 @@ export default function ServicesManagement() {
       {/* Content Area */}
       <div className="px-6 pb-6">
         <div className="max-w-[1600px] mx-auto">
-          <Card className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 shadow-xl">
+          <Card className="bg-background/95 dark:bg-muted/95 backdrop-blur-sm border-border/50 dark:border-border/50 shadow-xl">
             {activeTab === 'services' ? (
               <div>
                 {/* Services Controls */}
-                <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <CardHeader className="border-b border-border dark:border-border pb-6">
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div className="flex items-center gap-4 w-full lg:w-auto">
                       {/* Search */}
                       <div className="relative flex-1 lg:flex-none">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                         <Input
                           placeholder="Search services..."
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
-                          className="pl-9 lg:w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900"
+                          className="pl-9 lg:w-64 bg-muted dark:bg-muted border-border dark:border-border focus:bg-background dark:focus:bg-background"
                         />
                       </div>
 
@@ -552,7 +552,7 @@ export default function ServicesManagement() {
                       <select
                         value={selectedCategory}
                         onChange={e => setSelectedCategory(e.target.value)}
-                        className="px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:bg-white dark:focus:bg-gray-900"
+                        className="px-3 py-2 bg-muted dark:bg-muted border border-border dark:border-border rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:bg-background dark:focus:bg-background"
                       >
                         <option value="">All Categories</option>
                         {categories.map(category => (
@@ -568,7 +568,7 @@ export default function ServicesManagement() {
                           checked={showInactiveServices}
                           onCheckedChange={setShowInactiveServices}
                         />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                           Show inactive
                         </span>
                       </label>
@@ -576,7 +576,7 @@ export default function ServicesManagement() {
 
                     <div className="flex items-center gap-2">
                       {/* View Mode Toggle */}
-                      <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                      <div className="flex bg-muted dark:bg-muted-foreground/10 rounded-lg p-1">
                         <Button
                           variant={viewMode === 'grid' ? 'default' : 'ghost'}
                           size="sm"
@@ -597,7 +597,7 @@ export default function ServicesManagement() {
                       <select
                         value={sortBy}
                         onChange={e => setSortBy(e.target.value as any)}
-                        className="px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:bg-white dark:focus:bg-gray-900"
+                        className="px-3 py-2 bg-muted dark:bg-muted border border-border dark:border-border rounded-md text-sm focus:bg-background dark:focus:bg-background"
                       >
                         <option value="name">Sort by Name</option>
                         <option value="price">Sort by Price</option>
@@ -659,7 +659,7 @@ export default function ServicesManagement() {
                       {filteredServices.map(service => (
                         <div
                           key={service.id}
-                          className="group relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-purple-200 dark:hover:border-purple-600"
+                          className="group relative bg-background dark:bg-muted border border-border dark:border-border rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-purple-200 dark:hover:border-purple-600"
                         >
                           {/* Selection Checkbox */}
                           <div className="absolute top-4 left-4">
@@ -688,7 +688,7 @@ export default function ServicesManagement() {
                                 'text-xs',
                                 service.active
                                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200'
+                                  : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
                               )}
                             >
                               {service.active ? 'Active' : 'Inactive'}
@@ -697,10 +697,10 @@ export default function ServicesManagement() {
 
                           {/* Service Details */}
                           <div className="mt-8">
-                            <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+                            <h3 className="font-semibold text-gray-900 dark:text-foreground text-lg mb-2">
                               {service.name}
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+                            <p className="text-muted-foreground dark:text-muted-foreground text-sm mb-4 line-clamp-2">
                               {service.description}
                             </p>
 
@@ -713,13 +713,13 @@ export default function ServicesManagement() {
                                     ?.color
                                 }}
                               />
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                              <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                                 {service.categoryName}
                               </span>
                             </div>
 
                             {/* Metrics */}
-                            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground mb-4">
                               <div className="flex items-center gap-1">
                                 <Clock className="w-4 h-4" />
                                 <span>{service.duration}m</span>
@@ -730,7 +730,7 @@ export default function ServicesManagement() {
                               </div>
                               <div className="flex items-center gap-1">
                                 <DollarSign className="w-4 h-4" />
-                                <span className="font-semibold text-gray-900 dark:text-white">
+                                <span className="font-semibold text-gray-900 dark:text-foreground">
                                   AED {service.price}
                                 </span>
                               </div>
@@ -781,7 +781,7 @@ export default function ServicesManagement() {
                             {service.createdAt &&
                               new Date().getTime() - service.createdAt.getTime() <
                                 30 * 24 * 60 * 60 * 1000 && (
-                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <div className="mt-4 pt-4 border-t border-border dark:border-border">
                                   <ServiceWhatsAppActions
                                     service={{
                                       id: service.id,
@@ -809,8 +809,8 @@ export default function ServicesManagement() {
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
-                          <tr className="border-b border-gray-200 dark:border-gray-700">
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                          <tr className="border-b border-border dark:border-border">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               <Checkbox
                                 checked={
                                   selectedServices.length === filteredServices.length &&
@@ -825,22 +825,22 @@ export default function ServicesManagement() {
                                 }}
                               />
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Service
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Category
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Duration
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Price
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Status
                             </th>
-                            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">
+                            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-foreground">
                               Actions
                             </th>
                           </tr>
@@ -849,7 +849,7 @@ export default function ServicesManagement() {
                           {filteredServices.map(service => (
                             <tr
                               key={service.id}
-                              className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                              className="border-b border-gray-100 dark:border-gray-800 hover:bg-muted dark:hover:bg-muted/50"
                             >
                               <td className="py-4 px-4">
                                 <Checkbox
@@ -867,10 +867,10 @@ export default function ServicesManagement() {
                               </td>
                               <td className="py-4 px-4">
                                 <div>
-                                  <div className="font-medium text-gray-900 dark:text-white">
+                                  <div className="font-medium text-gray-900 dark:text-foreground">
                                     {service.name}
                                   </div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                                  <div className="text-sm text-muted-foreground dark:text-muted-foreground truncate max-w-xs">
                                     {service.description}
                                   </div>
                                 </div>
@@ -885,15 +885,15 @@ export default function ServicesManagement() {
                                       )?.color
                                     }}
                                   />
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                                  <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                                     {service.categoryName}
                                   </span>
                                 </div>
                               </td>
-                              <td className="py-4 px-4 text-sm text-gray-600 dark:text-gray-400">
+                              <td className="py-4 px-4 text-sm text-muted-foreground dark:text-muted-foreground">
                                 {service.duration}m
                               </td>
-                              <td className="py-4 px-4 text-sm font-medium text-gray-900 dark:text-white">
+                              <td className="py-4 px-4 text-sm font-medium text-gray-900 dark:text-foreground">
                                 AED {service.price}
                               </td>
                               <td className="py-4 px-4">
@@ -903,7 +903,7 @@ export default function ServicesManagement() {
                                       'text-xs',
                                       service.active
                                         ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200'
+                                        : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
                                     )}
                                   >
                                     {service.active ? 'Active' : 'Inactive'}
@@ -947,10 +947,10 @@ export default function ServicesManagement() {
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
                         <Scissors className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
                         No services found
                       </h3>
-                      <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-6">
+                      <p className="text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto mb-6">
                         {searchQuery || selectedCategory
                           ? 'Try adjusting your search or filters'
                           : 'Create your first service to get started'}
@@ -958,7 +958,7 @@ export default function ServicesManagement() {
                       {!searchQuery && !selectedCategory && (
                         <Button
                           onClick={() => setShowServiceForm(true)}
-                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                          className="bg-purple-600 hover:bg-purple-700 text-foreground"
                         >
                           <Plus className="w-4 h-4 mr-2" />
                           Create First Service
@@ -971,29 +971,29 @@ export default function ServicesManagement() {
             ) : (
               /* Categories Tab */
               <div>
-                <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <CardHeader className="border-b border-border dark:border-border pb-6">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <CardTitle className="text-xl">Service Categories</CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                         Organize your services into categories
                       </p>
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto">
                       <div className="relative flex-1 sm:flex-none">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                         <Input
                           placeholder="Search categories..."
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
-                          className="pl-9 sm:w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900"
+                          className="pl-9 sm:w-64 bg-muted dark:bg-muted border-border dark:border-border focus:bg-background dark:focus:bg-background"
                         />
                       </div>
 
                       <Button
                         onClick={() => setShowCategoryForm(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
+                        className="bg-purple-600 hover:bg-purple-700 text-foreground flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
                         Add Category
@@ -1007,7 +1007,7 @@ export default function ServicesManagement() {
                     {filteredCategories.map(category => (
                       <div
                         key={category.id}
-                        className="group relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-all duration-200"
+                        className="group relative bg-background dark:bg-muted border border-border dark:border-border rounded-xl p-6 hover:shadow-lg transition-all duration-200"
                         style={{ borderTopColor: category.color, borderTopWidth: '4px' }}
                       >
                         {/* Category Header */}
@@ -1031,7 +1031,7 @@ export default function ServicesManagement() {
                               )}
                             </div>
                             <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-white">
+                              <h3 className="font-semibold text-gray-900 dark:text-foreground">
                                 {category.name}
                               </h3>
                               <Badge
@@ -1039,7 +1039,7 @@ export default function ServicesManagement() {
                                   'text-xs mt-1',
                                   category.active
                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200'
+                                    : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
                                 )}
                               >
                                 {category.active ? 'Active' : 'Inactive'}
@@ -1049,12 +1049,12 @@ export default function ServicesManagement() {
                         </div>
 
                         {/* Description */}
-                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                        <p className="text-muted-foreground dark:text-muted-foreground text-sm mb-4">
                           {category.description}
                         </p>
 
                         {/* Stats */}
-                        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-6">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground mb-6">
                           <div className="flex items-center gap-1">
                             <Scissors className="w-4 h-4" />
                             <span>{category.serviceCount} services</span>
@@ -1093,15 +1093,15 @@ export default function ServicesManagement() {
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
                         <Grid3x3 className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
                         No categories found
                       </h3>
-                      <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-6">
+                      <p className="text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto mb-6">
                         Create service categories to organize your salon offerings.
                       </p>
                       <Button
                         onClick={() => setShowCategoryForm(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                        className="bg-purple-600 hover:bg-purple-700 text-foreground"
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Create First Category
@@ -1117,9 +1117,9 @@ export default function ServicesManagement() {
 
       {/* Service Form Modal */}
       {showServiceForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
-            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 bg-muted dark:bg-background border-border dark:border-gray-800">
+            <CardHeader className="border-b border-border dark:border-border">
               <CardTitle className="flex items-center justify-between">
                 <span>{editingService ? 'Pencil Service' : 'Create New Service'}</span>
                 <Button
@@ -1144,7 +1144,7 @@ export default function ServicesManagement() {
                     placeholder="e.g., Premium Cut & Style"
                     value={serviceForm.name}
                     onChange={e => setServiceForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
 
@@ -1155,7 +1155,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, categoryId: e.target.value }))
                     }
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="w-full px-3 py-2 bg-background dark:bg-muted border border-border dark:border-border rounded-md focus:ring-2 focus:ring-purple-500 focus:bg-muted dark:focus:bg-background"
                   >
                     <option value="">Select a category</option>
                     {categories.map(category => (
@@ -1173,7 +1173,7 @@ export default function ServicesManagement() {
                   placeholder="Brief description of the service"
                   value={serviceForm.description}
                   onChange={e => setServiceForm(prev => ({ ...prev, description: e.target.value }))}
-                  className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                  className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                 />
               </div>
 
@@ -1188,7 +1188,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, duration: Number(e.target.value) }))
                     }
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
 
@@ -1202,7 +1202,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, price: Number(e.target.value) }))
                     }
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
 
@@ -1216,7 +1216,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, cost: Number(e.target.value) }))
                     }
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
               </div>
@@ -1233,7 +1233,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, staffRequired: Number(e.target.value) }))
                     }
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
 
@@ -1243,7 +1243,7 @@ export default function ServicesManagement() {
                     placeholder="premium, consultation, styling"
                     value={serviceForm.tags}
                     onChange={e => setServiceForm(prev => ({ ...prev, tags: e.target.value }))}
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
               </div>
@@ -1293,7 +1293,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setServiceForm(prev => ({ ...prev, instructions: e.target.value }))
                     }
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="w-full px-3 py-2 bg-background dark:bg-muted border border-border dark:border-border rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-muted dark:focus:bg-background"
                     rows={3}
                   />
                 </div>
@@ -1304,14 +1304,14 @@ export default function ServicesManagement() {
                     placeholder="Instructions for client aftercare..."
                     value={serviceForm.aftercare}
                     onChange={e => setServiceForm(prev => ({ ...prev, aftercare: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="w-full px-3 py-2 bg-background dark:bg-muted border border-border dark:border-border rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none focus:bg-muted dark:focus:bg-background"
                     rows={3}
                   />
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex gap-3 pt-4 border-t border-border dark:border-border">
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -1324,7 +1324,7 @@ export default function ServicesManagement() {
                 </Button>
                 <Button
                   onClick={handleServiceSave}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-foreground"
                 >
                   <Save className="w-4 h-4 mr-2" />
                   {editingService ? 'Update Service' : 'Create Service'}
@@ -1337,9 +1337,9 @@ export default function ServicesManagement() {
 
       {/* Category Form Modal */}
       {showCategoryForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
-            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+          <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4 bg-muted dark:bg-background border-border dark:border-gray-800">
+            <CardHeader className="border-b border-border dark:border-border">
               <CardTitle className="flex items-center justify-between">
                 <span>{editingCategory ? 'Pencil Category' : 'Create New Category'}</span>
                 <Button
@@ -1371,7 +1371,7 @@ export default function ServicesManagement() {
                     placeholder="e.g., Hair Services"
                     value={categoryForm.name}
                     onChange={e => setCategoryForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
 
@@ -1383,7 +1383,7 @@ export default function ServicesManagement() {
                     onChange={e =>
                       setCategoryForm(prev => ({ ...prev, description: e.target.value }))
                     }
-                    className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-gray-50 dark:focus:bg-gray-900"
+                    className="bg-background dark:bg-muted border-border dark:border-border focus:bg-muted dark:focus:bg-background"
                   />
                 </div>
               </div>
@@ -1397,7 +1397,7 @@ export default function ServicesManagement() {
                       type="color"
                       value={categoryForm.color}
                       onChange={e => setCategoryForm(prev => ({ ...prev, color: e.target.value }))}
-                      className="w-10 h-10 rounded-md border border-gray-200 dark:border-gray-600 cursor-pointer"
+                      className="w-10 h-10 rounded-md border border-border dark:border-border cursor-pointer"
                     />
                     <Input
                       value={categoryForm.color}
@@ -1413,7 +1413,7 @@ export default function ServicesManagement() {
                   <select
                     value={categoryForm.icon}
                     onChange={e => setCategoryForm(prev => ({ ...prev, icon: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-3 py-2 bg-background dark:bg-muted-foreground/10 border border-border dark:border-border rounded-md focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="Scissors">Scissors (Hair Services)</option>
                     <option value="Sparkles">Sparkles (Spa Treatments)</option>
@@ -1426,7 +1426,7 @@ export default function ServicesManagement() {
               </div>
 
               {/* Preview */}
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="p-4 bg-muted dark:bg-muted-foreground/10 rounded-lg">
                 <label className="block text-sm font-medium mb-3">Preview</label>
                 <div className="flex items-center gap-3">
                   <div
@@ -1453,10 +1453,10 @@ export default function ServicesManagement() {
                     )}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900 dark:text-white">
+                    <div className="font-semibold text-gray-900 dark:text-foreground">
                       {categoryForm.name || 'Category Name'}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {categoryForm.description || 'Category description'}
                     </div>
                   </div>
@@ -1477,7 +1477,7 @@ export default function ServicesManagement() {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex gap-3 pt-4 border-t border-border dark:border-border">
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -1497,7 +1497,7 @@ export default function ServicesManagement() {
                 </Button>
                 <Button
                   onClick={handleCategorySave}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-foreground"
                   disabled={!categoryForm.name.trim()}
                 >
                   <Save className="w-4 h-4 mr-2" />

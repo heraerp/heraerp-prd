@@ -132,18 +132,18 @@ export default function LandingPage() {
     <HeraGradientBackgroundDNA showBlobs={true} blobCount={3}>
       <div className="relative z-10 w-full">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-50 border-b border-white/20 dark:border-gray-700/50 shadow-lg">
+        <nav className="fixed top-0 left-0 right-0 bg-background/80 dark:bg-background/80 backdrop-blur-xl z-50 border-b border-border/20 dark:border-border/50 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-18">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mr-3">
-                  <Building className="w-7 h-7 text-white" />
+                  <Building className="w-7 h-7 text-foreground" />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
                     HERA
                   </h1>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
                     Enterprise Platform
                   </p>
                 </div>
@@ -151,25 +151,25 @@ export default function LandingPage() {
               <div className="hidden md:flex items-center space-x-8">
                 <a
                   href="#proof"
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   The Proof
                 </a>
                 <a
                   href="#process"
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   How It Works
                 </a>
                 <a
                   href="#industries"
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   Industries
                 </a>
                 <a
                   href="#testimonials"
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   Success Stories
                 </a>
@@ -204,25 +204,25 @@ export default function LandingPage() {
                   Watch 2-min Overview
                 </button>
               </div>
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm text-muted-foreground font-medium">
                 Join 500+ businesses who've seen their future
               </p>
             </div>
 
             {/* Visual Comparison */}
             <div className="grid md:grid-cols-2 gap-8 mb-16">
-              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-foreground mb-4">
                   Traditional ERP Demos
                 </h3>
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4">
-                  <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded opacity-50 flex items-center justify-center">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">
+                <div className="bg-muted dark:bg-muted rounded-lg p-4 mb-4">
+                  <div className="h-48 bg-gray-200 dark:bg-muted-foreground/10 rounded opacity-50 flex items-center justify-center">
+                    <span className="text-muted-foreground dark:text-muted-foreground text-sm">
                       Generic Demo Interface
                     </span>
                   </div>
                 </div>
-                <ul className="space-y-3 text-gray-600 dark:text-gray-400">
+                <ul className="space-y-3 text-muted-foreground dark:text-muted-foreground">
                   <li className="flex items-center gap-3 text-base">
                     <span className="text-red-500 text-xl">✗</span> Generic sandbox data
                   </li>
@@ -235,8 +235,8 @@ export default function LandingPage() {
                 </ul>
               </Card>
 
-              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 transform hover:scale-105 transition-all duration-300">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 transform hover:scale-105 transition-all duration-300">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-foreground mb-4">
                   HERA Live Preview
                 </h3>
                 <div className="bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg p-4 mb-4">
@@ -265,7 +265,7 @@ export default function LandingPage() {
         {/* The Proof Section */}
         <section
           id="proof"
-          className="py-16 px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/40 backdrop-blur-xl"
+          className="py-16 px-4 sm:px-6 lg:px-8 bg-background/80 dark:bg-background/40 backdrop-blur-xl"
         >
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-blue-700 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text mb-12">
@@ -273,36 +273,36 @@ export default function LandingPage() {
             </h2>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6 text-center">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">SAP</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">Generic sandbox</p>
-                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-gray-400" />
+              <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">SAP</h3>
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4">Generic sandbox</p>
+                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">18 months later</p>
               </Card>
 
-              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6 text-center">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">Oracle</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">Template demo</p>
-                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-gray-400" />
+              <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">Oracle</h3>
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4">Template demo</p>
+                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">12 months later</p>
               </Card>
 
-              <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 text-center transform hover:scale-105 transition-all duration-300">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">HERA</h3>
-                <p className="text-blue-600 dark:text-blue-400 font-medium mb-4">
+              <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 text-center transform hover:scale-105 transition-all duration-300">
+                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">HERA</h3>
+                <p className="text-primary dark:text-blue-400 font-medium mb-4">
                   Your business working
                 </p>
-                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-blue-600 dark:text-blue-400" />
+                <ArrowRight className="h-6 w-6 mx-auto mb-4 text-primary dark:text-blue-400" />
                 <p className="text-green-600 dark:text-green-400 font-semibold">2 weeks</p>
               </Card>
             </div>
 
             {/* Video Testimonial */}
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 p-8">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 p-8">
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900 dark:to-cyan-900 flex items-center justify-center">
-                    <Users className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                    <Users className="w-10 h-10 text-primary dark:text-blue-400" />
                   </div>
                 </div>
                 <div className="flex-grow">
@@ -343,8 +343,8 @@ export default function LandingPage() {
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
                   <p className="text-gray-700 mb-4">{step.description}</p>
                   {activeStep === index && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <p className="text-sm text-gray-600">{step.details}</p>
+                    <div className="mt-4 pt-4 border-t border-border">
+                      <p className="text-sm text-muted-foreground">{step.details}</p>
                     </div>
                   )}
                 </Card>
@@ -354,7 +354,7 @@ export default function LandingPage() {
         </section>
 
         {/* Industry Showcase */}
-        <section id="industries" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section id="industries" className="py-16 px-4 sm:px-6 lg:px-8 bg-background/80">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
               Proven Across Every Industry
@@ -415,15 +415,15 @@ export default function LandingPage() {
                         <h4 className="font-semibold text-gray-900 mb-4">Before & After</h4>
                         <div className="space-y-4">
                           <div>
-                            <p className="text-sm text-gray-600 mb-2">Before HERA:</p>
-                            <div className="bg-gray-100 rounded p-3 text-sm">
+                            <p className="text-sm text-muted-foreground mb-2">Before HERA:</p>
+                            <div className="bg-muted rounded p-3 text-sm">
                               Multiple disconnected systems, manual processes, no real-time
                               visibility
                             </div>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-600 mb-2">After HERA:</p>
-                            <div className="bg-white rounded p-3 text-sm border-2 border-violet-200">
+                            <p className="text-sm text-muted-foreground mb-2">After HERA:</p>
+                            <div className="bg-background rounded p-3 text-sm border-2 border-violet-200">
                               Unified platform, automated workflows, real-time dashboards
                             </div>
                           </div>
@@ -444,7 +444,7 @@ export default function LandingPage() {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 Join the Revolution
               </h2>
-              <div className="bg-gradient-to-r from-violet-600 to-cyan-600 text-white rounded-lg p-6 inline-block">
+              <div className="bg-gradient-to-r from-violet-600 to-cyan-600 text-foreground rounded-lg p-6 inline-block">
                 <p className="text-3xl font-bold mb-2">{implementationCount}</p>
                 <p className="text-lg">Implementations This Month</p>
               </div>
@@ -466,7 +466,7 @@ export default function LandingPage() {
                     <div className="w-12 h-12 rounded-full bg-gray-300" />
                     <div>
                       <p className="font-semibold">Sarah Chen</p>
-                      <p className="text-sm text-gray-600">CEO, TechFlow Solutions</p>
+                      <p className="text-sm text-muted-foreground">CEO, TechFlow Solutions</p>
                     </div>
                   </div>
                 </Card>
@@ -496,7 +496,7 @@ export default function LandingPage() {
         </section>
 
         {/* Technical Credibility */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background/80">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
               How We Do It
@@ -585,10 +585,10 @@ export default function LandingPage() {
         {/* Final CTA */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-violet-600 to-cyan-600">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
               Ready to See Your Business in HERA?
             </h2>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-xl text-foreground/90 mb-8">
               Limited to 10 previews per month. Book your week starting next Monday.
             </p>
 
@@ -615,8 +615,8 @@ export default function LandingPage() {
                 </HeraButtonDNA>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-600 font-medium">
+              <div className="mt-6 pt-6 border-t border-border">
+                <p className="text-sm text-muted-foreground font-medium">
                   ✓ No setup fees for preview week
                   <br />
                   ✓ If you don't see value in 14 days, we'll refund your time
@@ -628,7 +628,7 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-4 bg-gray-900 text-white">
+        <footer className="py-8 px-4 bg-background text-foreground">
           <div className="max-w-7xl mx-auto text-center">
             <img
               src="/logo.png"
@@ -636,7 +636,7 @@ export default function LandingPage() {
               className="h-12 w-auto mx-auto mb-4 filter brightness-0 invert"
             />
             <p className="text-lg font-medium mb-2">ERP in weeks, not years</p>
-            <p className="text-sm text-gray-400">Powered by patent pending technology</p>
+            <p className="text-sm text-muted-foreground">Powered by patent pending technology</p>
           </div>
         </footer>
       </div>

@@ -220,11 +220,11 @@ export default function TenderManagementPage() {
 
   if (orgLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2">
             <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400">Loading tender management...</p>
+            <p className="text-muted-foreground">Loading tender management...</p>
           </div>
         </div>
       </div>
@@ -232,7 +232,7 @@ export default function TenderManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -273,7 +273,7 @@ export default function TenderManagementPage() {
 
         {/* Key Metrics */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Tender Performance</h2>
+          <h2 className="text-xl font-semibold text-foreground">Tender Performance</h2>
           <StatCardGrid>
             {tenderStats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
@@ -283,7 +283,7 @@ export default function TenderManagementPage() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-muted/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="active">Active Tenders</TabsTrigger>
             <TabsTrigger value="bidding">Bid Strategy</TabsTrigger>
@@ -294,19 +294,19 @@ export default function TenderManagementPage() {
           <TabsContent value="overview" className="space-y-6">
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search tenders by code, title, or department..."
-                className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400"
+                className="pl-10 bg-muted/50 border-border text-foreground placeholder-gray-400"
               />
             </div>
 
             {/* Active Tenders List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">Active Tenders</h3>
+                <h3 className="text-lg font-semibold text-foreground">Active Tenders</h3>
                 <Button variant="outline" size="sm" className="gap-2">
                   <Filter className="h-4 w-4" />
                   Filter
@@ -315,31 +315,31 @@ export default function TenderManagementPage() {
 
               <div className="grid gap-4">
                 {loading ? (
-                  <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+                  <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
                     <div className="flex items-center justify-center">
-                      <div className="text-gray-400">Loading tenders...</div>
+                      <div className="text-muted-foreground">Loading tenders...</div>
                     </div>
                   </Card>
                 ) : tenders.length === 0 ? (
-                  <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-                    <div className="text-center text-gray-400">No active tenders found</div>
+                  <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+                    <div className="text-center text-muted-foreground">No active tenders found</div>
                   </Card>
                 ) : (
                   tenders.map(tender => (
                     <Card
                       key={tender.id}
-                      className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50 hover:border-amber-500/50 transition-colors"
+                      className="p-6 bg-muted/70 backdrop-blur-sm border-border/50 hover:border-amber-500/50 transition-colors"
                     >
                       <div className="space-y-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3">
-                              <h4 className="text-lg font-semibold text-white">{tender.title}</h4>
+                              <h4 className="text-lg font-semibold text-foreground">{tender.title}</h4>
                               <Badge variant={tender.status === 'active' ? 'default' : 'secondary'}>
                                 {tender.status}
                               </Badge>
                             </div>
-                            <p className="text-sm text-gray-400 mt-1">
+                            <p className="text-sm text-muted-foreground mt-1">
                               {tender.code} • {tender.department}
                             </p>
                           </div>
@@ -353,23 +353,23 @@ export default function TenderManagementPage() {
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div>
-                            <p className="text-xs text-gray-400">Lots</p>
-                            <p className="text-sm font-medium text-white">{tender.lots || 0}</p>
+                            <p className="text-xs text-muted-foreground">Lots</p>
+                            <p className="text-sm font-medium text-foreground">{tender.lots || 0}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-400">Estimated Value</p>
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-xs text-muted-foreground">Estimated Value</p>
+                            <p className="text-sm font-medium text-foreground">
                               ₹{(tender.estimated_value / 100000).toFixed(1)}L
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-400">EMD Required</p>
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-xs text-muted-foreground">EMD Required</p>
+                            <p className="text-sm font-medium text-foreground">
                               ₹{(tender.emd_amount / 1000).toFixed(0)}K
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-400">Closing Date</p>
+                            <p className="text-xs text-muted-foreground">Closing Date</p>
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3 text-amber-400" />
                               <p className="text-sm font-medium text-amber-400">
@@ -379,12 +379,12 @@ export default function TenderManagementPage() {
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t border-gray-700/50">
+                        <div className="flex items-center justify-between pt-2 border-t border-border/50">
                           <div className="flex items-center gap-2">
                             <Brain className="h-4 w-4 text-purple-400" />
-                            <span className="text-sm text-gray-400">
+                            <span className="text-sm text-muted-foreground">
                               AI Strategy:{' '}
-                              <span className="text-white font-medium">
+                              <span className="text-foreground font-medium">
                                 {tender.bid_strategy || 'moderate'}
                               </span>
                             </span>
@@ -463,7 +463,7 @@ export default function TenderManagementPage() {
                     <Brain className="h-6 w-6 text-purple-400" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">AI Bid Recommendations</h4>
+                    <h4 className="font-semibold text-foreground">AI Bid Recommendations</h4>
                     <p className="text-sm text-gray-300 mt-1">
                       3 tenders identified with high win probability based on historical data and
                       current market conditions.
@@ -481,7 +481,7 @@ export default function TenderManagementPage() {
                     <AlertCircle className="h-6 w-6 text-amber-400" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">Compliance Alerts</h4>
+                    <h4 className="font-semibold text-foreground">Compliance Alerts</h4>
                     <p className="text-sm text-gray-300 mt-1">
                       2 tenders require document updates. EMD payment due for KFD/2025/WOOD/001.
                     </p>
@@ -496,30 +496,30 @@ export default function TenderManagementPage() {
 
           <TabsContent value="competitors" className="space-y-6">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white">Competitor Analysis</h3>
+              <h3 className="text-lg font-semibold text-foreground">Competitor Analysis</h3>
               <div className="grid gap-4">
                 {mockCompetitors.map(competitor => (
                   <Card
                     key={competitor.id}
-                    className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50"
+                    className="p-6 bg-muted/70 backdrop-blur-sm border-border/50"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-white">{competitor.name}</h4>
+                        <h4 className="font-semibold text-foreground">{competitor.name}</h4>
                         <div className="flex items-center gap-4 mt-2 text-sm">
-                          <span className="text-gray-400">
+                          <span className="text-muted-foreground">
                             Win Rate:{' '}
-                            <span className="text-white font-medium">{competitor.winRate}</span>
+                            <span className="text-foreground font-medium">{competitor.winRate}</span>
                           </span>
-                          <span className="text-gray-400">
+                          <span className="text-muted-foreground">
                             Avg Margin:{' '}
-                            <span className="text-white font-medium">
+                            <span className="text-foreground font-medium">
                               {competitor.avgBidMargin}
                             </span>
                           </span>
-                          <span className="text-gray-400">
+                          <span className="text-muted-foreground">
                             Total Wins:{' '}
-                            <span className="text-white font-medium">{competitor.totalWins}</span>
+                            <span className="text-foreground font-medium">{competitor.totalWins}</span>
                           </span>
                         </div>
                       </div>

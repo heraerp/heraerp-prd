@@ -654,7 +654,7 @@ export default function NewSalesOrderModal({
 
       <DialogContent
         className={cn(
-          'border-gray-700/50 shadow-2xl overflow-y-auto transition-all duration-300',
+          'border-border/50 shadow-2xl overflow-y-auto transition-all duration-300',
           isExpanded ? 'max-w-[95vw] w-[95vw] max-h-[95vh] h-[95vh]' : 'max-w-4xl max-h-[90vh]'
         )}
         style={{
@@ -674,8 +674,8 @@ export default function NewSalesOrderModal({
           `
         }}
       >
-        <DialogHeader className="border-b border-gray-800/50 bg-gray-900/30 backdrop-blur-xl p-6">
-          <DialogTitle className="text-white flex items-center justify-between">
+        <DialogHeader className="border-b border-gray-800/50 bg-background/30 backdrop-blur-xl p-6">
+          <DialogTitle className="text-foreground flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
@@ -691,7 +691,7 @@ export default function NewSalesOrderModal({
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <ShoppingCart className="h-5 w-5 text-white" />
+                <ShoppingCart className="h-5 w-5 text-foreground" />
               </div>
               <span className="text-xl font-semibold">Create New Sales Order</span>
             </div>
@@ -700,7 +700,7 @@ export default function NewSalesOrderModal({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
               >
                 {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
               </Button>
@@ -708,7 +708,7 @@ export default function NewSalesOrderModal({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -720,21 +720,21 @@ export default function NewSalesOrderModal({
           {/* Left Column - Customer & Order Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Customer Selection */}
-            <Card className="p-4 bg-gray-700/50 border-gray-600">
+            <Card className="p-4 bg-muted-foreground/10/50 border-border">
               <div className="flex items-center gap-2 mb-4">
                 <User className="h-5 w-5 text-blue-400" />
-                <h3 className="text-lg font-semibold text-white">Customer Information</h3>
+                <h3 className="text-lg font-semibold text-foreground">Customer Information</h3>
               </div>
 
               {!selectedCustomer && !newCustomerMode ? (
                 <div className="space-y-3">
                   <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search customers..."
                       value={customerSearchTerm}
                       onChange={e => setCustomerSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                      className="pl-10 bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                     />
                   </div>
 
@@ -747,15 +747,15 @@ export default function NewSalesOrderModal({
                       >
                         <div className="flex justify-between">
                           <div>
-                            <p className="font-medium text-white">{customer.entity_name}</p>
-                            <p className="text-sm text-gray-400">{customer.entity_code}</p>
+                            <p className="font-medium text-foreground">{customer.entity_name}</p>
+                            <p className="text-sm text-muted-foreground">{customer.entity_code}</p>
                           </div>
                           <div className="text-right">
                             {customer.phone && (
                               <p className="text-sm text-gray-300">{customer.phone}</p>
                             )}
                             {customer.email && (
-                              <p className="text-xs text-gray-400">{customer.email}</p>
+                              <p className="text-xs text-muted-foreground">{customer.email}</p>
                             )}
                           </div>
                         </div>
@@ -782,7 +782,7 @@ export default function NewSalesOrderModal({
                         onChange={e =>
                           setCustomerFormData({ ...customerFormData, name: e.target.value })
                         }
-                        className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                        className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                         placeholder="Enter customer name"
                       />
                     </div>
@@ -793,7 +793,7 @@ export default function NewSalesOrderModal({
                         onChange={e =>
                           setCustomerFormData({ ...customerFormData, phone: e.target.value })
                         }
-                        className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                        className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                         placeholder="Enter phone number"
                       />
                     </div>
@@ -807,7 +807,7 @@ export default function NewSalesOrderModal({
                       onChange={e =>
                         setCustomerFormData({ ...customerFormData, email: e.target.value })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                      className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       placeholder="Enter email address"
                     />
                   </div>
@@ -819,7 +819,7 @@ export default function NewSalesOrderModal({
                       onChange={e =>
                         setCustomerFormData({ ...customerFormData, address: e.target.value })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                      className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       placeholder="Enter complete address"
                       rows={2}
                     />
@@ -847,8 +847,8 @@ export default function NewSalesOrderModal({
               ) : (
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-white">{selectedCustomer.entity_name}</p>
-                    <p className="text-sm text-gray-400">{selectedCustomer.entity_code}</p>
+                    <p className="font-medium text-foreground">{selectedCustomer.entity_name}</p>
+                    <p className="text-sm text-muted-foreground">{selectedCustomer.entity_code}</p>
                     {selectedCustomer.phone && (
                       <p className="text-sm text-gray-300">{selectedCustomer.phone}</p>
                     )}
@@ -861,20 +861,20 @@ export default function NewSalesOrderModal({
             </Card>
 
             {/* Product Selection */}
-            <Card className="p-4 bg-gray-700/50 border-gray-600">
+            <Card className="p-4 bg-muted-foreground/10/50 border-border">
               <div className="flex items-center gap-2 mb-4">
                 <Package className="h-5 w-5 text-purple-400" />
-                <h3 className="text-lg font-semibold text-white">Add Products</h3>
+                <h3 className="text-lg font-semibold text-foreground">Add Products</h3>
               </div>
 
               <div className="space-y-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search products..."
                     value={productSearchTerm}
                     onChange={e => setProductSearchTerm(e.target.value)}
-                    className="pl-10 bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                    className="pl-10 bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                   />
                 </div>
 
@@ -888,8 +888,8 @@ export default function NewSalesOrderModal({
                       >
                         <div className="flex justify-between">
                           <div>
-                            <p className="font-medium text-white">{product.entity_name}</p>
-                            <p className="text-sm text-gray-400">{product.entity_code}</p>
+                            <p className="font-medium text-foreground">{product.entity_name}</p>
+                            <p className="text-sm text-muted-foreground">{product.entity_code}</p>
                             {product.category && (
                               <Badge variant="outline" className="mt-1 text-xs">
                                 {product.category}
@@ -897,10 +897,10 @@ export default function NewSalesOrderModal({
                             )}
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-foreground">
                               ₹{product.price?.toLocaleString('en-IN') || '0'}
                             </p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               Stock: {product.stock_quantity || 0}
                             </p>
                           </div>
@@ -914,15 +914,15 @@ export default function NewSalesOrderModal({
 
             {/* Line Items */}
             {lineItems.length > 0 && (
-              <Card className="p-4 bg-gray-700/50 border-gray-600">
-                <h3 className="text-lg font-semibold text-white mb-4">Order Items</h3>
+              <Card className="p-4 bg-muted-foreground/10/50 border-border">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Order Items</h3>
                 <div className="space-y-3">
                   {lineItems.map((item, index) => (
                     <div key={index} className="p-3 bg-gray-600/50 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <p className="font-medium text-white">{item.product.entity_name}</p>
-                          <p className="text-sm text-gray-400">{item.product.entity_code}</p>
+                          <p className="font-medium text-foreground">{item.product.entity_name}</p>
+                          <p className="text-sm text-muted-foreground">{item.product.entity_code}</p>
                         </div>
                         <Button
                           variant="ghost"
@@ -936,42 +936,42 @@ export default function NewSalesOrderModal({
 
                       <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <Label className="text-xs text-gray-400">Quantity</Label>
+                          <Label className="text-xs text-muted-foreground">Quantity</Label>
                           <Input
                             type="number"
                             value={item.quantity}
                             onChange={e => updateLineItem(index, 'quantity', e.target.value)}
-                            className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                            className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                             min="1"
                           />
                         </div>
                         <div>
-                          <Label className="text-xs text-gray-400">Unit Price</Label>
+                          <Label className="text-xs text-muted-foreground">Unit Price</Label>
                           <Input
                             type="number"
                             value={item.unit_price}
                             onChange={e => updateLineItem(index, 'unit_price', e.target.value)}
-                            className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                            className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                             min="0"
                             step="0.01"
                           />
                         </div>
                         <div>
-                          <Label className="text-xs text-gray-400">Amount</Label>
+                          <Label className="text-xs text-muted-foreground">Amount</Label>
                           <Input
                             value={`₹${item.line_amount.toLocaleString('en-IN')}`}
                             disabled
-                            className="bg-gray-700/50 border-gray-600/50 text-gray-300 backdrop-blur-sm"
+                            className="bg-muted-foreground/10/50 border-border/50 text-gray-300 backdrop-blur-sm"
                           />
                         </div>
                       </div>
 
                       <div className="mt-2">
-                        <Label className="text-xs text-gray-400">Notes</Label>
+                        <Label className="text-xs text-muted-foreground">Notes</Label>
                         <Input
                           value={item.notes || ''}
                           onChange={e => updateLineItem(index, 'notes', e.target.value)}
-                          className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                          className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                           placeholder="Add notes..."
                         />
                       </div>
@@ -985,41 +985,41 @@ export default function NewSalesOrderModal({
           {/* Right Column - Order Summary & Details */}
           <div className="space-y-6">
             {/* Order Summary */}
-            <Card className="p-4 bg-gray-700/50 border-gray-600">
-              <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
+            <Card className="p-4 bg-muted-foreground/10/50 border-border">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Order Summary</h3>
 
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Items ({totals.itemCount})</span>
-                  <span className="text-white">₹{totals.subtotal.toLocaleString('en-IN')}</span>
+                  <span className="text-muted-foreground">Items ({totals.itemCount})</span>
+                  <span className="text-foreground">₹{totals.subtotal.toLocaleString('en-IN')}</span>
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Discount ({orderDetails.discount_percent}%)</span>
-                  <span className="text-white">
+                  <span className="text-muted-foreground">Discount ({orderDetails.discount_percent}%)</span>
+                  <span className="text-foreground">
                     -₹{totals.discountAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">GST ({orderDetails.tax_percent}%)</span>
-                  <span className="text-white">₹{totals.taxAmount.toLocaleString('en-IN')}</span>
+                  <span className="text-muted-foreground">GST ({orderDetails.tax_percent}%)</span>
+                  <span className="text-foreground">₹{totals.taxAmount.toLocaleString('en-IN')}</span>
                 </div>
 
                 <Separator className="bg-gray-600" />
 
                 <div className="flex justify-between font-semibold">
-                  <span className="text-white">Total</span>
-                  <span className="text-white">₹{totals.total.toLocaleString('en-IN')}</span>
+                  <span className="text-foreground">Total</span>
+                  <span className="text-foreground">₹{totals.total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </Card>
 
             {/* Order Details */}
-            <Card className="p-4 bg-gray-700/50 border-gray-600">
+            <Card className="p-4 bg-muted-foreground/10/50 border-border">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="h-5 w-5 text-green-400" />
-                <h3 className="text-lg font-semibold text-white">Order Details</h3>
+                <h3 className="text-lg font-semibold text-foreground">Order Details</h3>
               </div>
 
               <div className="space-y-3">
@@ -1032,7 +1032,7 @@ export default function NewSalesOrderModal({
                       onChange={e =>
                         setOrderDetails({ ...orderDetails, order_date: e.target.value })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
+                      className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
                     />
                   </div>
 
@@ -1044,7 +1044,7 @@ export default function NewSalesOrderModal({
                       onChange={e =>
                         setOrderDetails({ ...orderDetails, delivery_date: e.target.value })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
+                      className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
                     />
                   </div>
                 </div>
@@ -1057,7 +1057,7 @@ export default function NewSalesOrderModal({
                       setOrderDetails({ ...orderDetails, payment_terms: value })
                     }
                   >
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
+                    <SelectTrigger className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1077,7 +1077,7 @@ export default function NewSalesOrderModal({
                       setOrderDetails({ ...orderDetails, delivery_method: value })
                     }
                   >
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
+                    <SelectTrigger className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1100,7 +1100,7 @@ export default function NewSalesOrderModal({
                           discount_percent: parseFloat(e.target.value) || 0
                         })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                      className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       min="0"
                       max="100"
                       step="0.1"
@@ -1117,7 +1117,7 @@ export default function NewSalesOrderModal({
                           tax_percent: parseFloat(e.target.value) || 0
                         })
                       }
-                      className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                      className="bg-muted/50 border-border/50 text-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       min="0"
                       max="30"
                       step="0.1"
@@ -1130,7 +1130,7 @@ export default function NewSalesOrderModal({
                   <Textarea
                     value={orderDetails.notes}
                     onChange={e => setOrderDetails({ ...orderDetails, notes: e.target.value })}
-                    className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
+                    className="bg-muted/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                     placeholder="Special instructions..."
                     rows={3}
                   />
@@ -1143,7 +1143,7 @@ export default function NewSalesOrderModal({
               <Button
                 onClick={handleSubmitOrder}
                 disabled={!selectedCustomer || lineItems.length === 0 || isSubmitting}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground shadow-lg disabled:opacity-50"
               >
                 {isSubmitting ? 'Creating Order...' : 'Create Sales Order'}
               </Button>

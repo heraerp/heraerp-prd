@@ -33,7 +33,7 @@ export const WSAGAuditReport = {
         element: 'Category labels',
         status: '⚠️',
         problem: 'Gray-600 text still used in some areas',
-        solution: 'Update to gray-900 dark:text-white',
+        solution: 'Update to gray-900 dark:text-foreground',
         wcagRatio: '4.5:1 (AA needed)'
       },
       {
@@ -140,7 +140,7 @@ export const WSAGAuditReport = {
   codeExamples: {
     goodPractices: `
 // Good contrast example
-<p className="text-gray-900 dark:text-white">
+<p className="text-gray-900 dark:text-foreground">
   Visible text in both modes
 </p>
 
@@ -163,10 +163,10 @@ export const WSAGAuditReport = {
 
     fixesApplied: `
 // Before (poor contrast)
-<p className="text-gray-600 dark:text-gray-400">
+<p className="text-muted-foreground dark:text-muted-foreground">
 
 // After (good contrast)  
-<p className="text-gray-900 dark:text-white">
+<p className="text-gray-900 dark:text-foreground">
 
 // Before (no ARIA)
 <Button>Next</Button>

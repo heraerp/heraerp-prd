@@ -422,7 +422,7 @@ export function HeraDocumentNumberDisplay({
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono">
+      <code className="px-2 py-1 bg-muted dark:bg-muted rounded text-sm font-mono">
         {documentNumber}
       </code>
 
@@ -433,7 +433,7 @@ export function HeraDocumentNumberDisplay({
       )}
 
       {showDetails && parsed.isValid && (
-        <div className="text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-xs text-muted-foreground dark:text-muted-foreground">
           {parsed.industry} • {parsed.year} • #{parsed.sequence}
         </div>
       )}

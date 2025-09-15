@@ -156,7 +156,7 @@ export default function SalonUCRSettings() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                className="text-muted-foreground hover:text-foreground hover:bg-background/10 transition-all"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Settings
@@ -166,14 +166,14 @@ export default function SalonUCRSettings() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Universal Configuration Rules
               </h1>
-              <p className="text-gray-400 mt-2">Manage salon business logic without code changes</p>
+              <p className="text-muted-foreground mt-2">Manage salon business logic without code changes</p>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl">
-          <div className="p-4 border-b border-white/10">
+        <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-2xl">
+          <div className="p-4 border-b border-border/10">
             <div className="flex gap-2 overflow-x-auto">
               {tabs.map(tab => {
                 const Icon = tab.icon
@@ -186,8 +186,8 @@ export default function SalonUCRSettings() {
                     className={cn(
                       'min-w-fit transition-all',
                       activeTab === tab.id
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
-                        : 'text-gray-400 hover:text-white hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-foreground hover:from-purple-600 hover:to-pink-600'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-background/10'
                     )}
                   >
                     <Icon className="h-4 w-4 mr-2" />
@@ -210,8 +210,8 @@ export default function SalonUCRSettings() {
                         Active
                       </Badge>
                     </div>
-                    <h3 className="font-semibold text-white/90">Booking Rules</h3>
-                    <p className="text-2xl font-bold text-white">
+                    <h3 className="font-semibold text-foreground/90">Booking Rules</h3>
+                    <p className="text-2xl font-bold text-foreground">
                       {salonConfig.rules_applied?.booking_rules || 0}
                     </p>
                     <p className="text-sm text-purple-300 mt-1">Configuration rules</p>
@@ -224,8 +224,8 @@ export default function SalonUCRSettings() {
                         Active
                       </Badge>
                     </div>
-                    <h3 className="font-semibold text-white/90">Pricing Rules</h3>
-                    <p className="text-2xl font-bold text-white">
+                    <h3 className="font-semibold text-foreground/90">Pricing Rules</h3>
+                    <p className="text-2xl font-bold text-foreground">
                       {salonConfig.rules_applied?.pricing_rules || 0}
                     </p>
                     <p className="text-sm text-pink-300 mt-1">Dynamic pricing</p>
@@ -238,8 +238,8 @@ export default function SalonUCRSettings() {
                         Active
                       </Badge>
                     </div>
-                    <h3 className="font-semibold text-white/90">Notifications</h3>
-                    <p className="text-2xl font-bold text-white">
+                    <h3 className="font-semibold text-foreground/90">Notifications</h3>
+                    <p className="text-2xl font-bold text-foreground">
                       {salonConfig.rules_applied?.notification_rules || 0}
                     </p>
                     <p className="text-sm text-blue-300 mt-1">Alert rules</p>
@@ -248,13 +248,13 @@ export default function SalonUCRSettings() {
 
                 {/* Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                  <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 mb-4">
                         <FileText className="h-5 w-5 text-purple-400" />
                         Rule Templates
                       </h3>
-                      <p className="text-gray-400 mb-4">
+                      <p className="text-muted-foreground mb-4">
                         Pre-configured salon business rule templates
                       </p>
                       <div className="space-y-2">
@@ -290,20 +290,20 @@ export default function SalonUCRSettings() {
                         </div>
                       </div>
                       <Link href="/salon-data/templates">
-                        <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+                        <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-foreground">
                           Browse All Templates
                         </Button>
                       </Link>
                     </div>
                   </div>
 
-                  <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                  <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 mb-4">
                         <Brain className="h-5 w-5 text-pink-400" />
                         AI Configuration Assistant
                       </h3>
-                      <p className="text-gray-400 mb-4">Natural language rule creation with AI</p>
+                      <p className="text-muted-foreground mb-4">Natural language rule creation with AI</p>
                       <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
                         <p className="text-purple-300">
                           Describe your business rule in plain language and AI will create the
@@ -311,7 +311,7 @@ export default function SalonUCRSettings() {
                         </p>
                       </div>
                       <Link href="/salon-data/config">
-                        <Button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                        <Button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-foreground">
                           <MessageCircle className="h-4 w-4 mr-2" />
                           Open AI Assistant
                         </Button>
@@ -326,9 +326,9 @@ export default function SalonUCRSettings() {
             {activeTab === 'booking' && (
               <div className="space-y-6">
                 {!configLoading && salonConfig.booking && (
-                  <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                  <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">
+                      <h3 className="text-xl font-semibold text-foreground mb-6">
                         Current Booking Configuration
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -337,13 +337,13 @@ export default function SalonUCRSettings() {
                           <div className="space-y-2">
                             <div className="flex justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Advance Booking</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.booking.advance_booking_days || 30} days
                               </span>
                             </div>
                             <div className="flex justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Minimum Lead Time</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.booking.min_lead_minutes || 60} minutes
                               </span>
                             </div>
@@ -374,7 +374,7 @@ export default function SalonUCRSettings() {
                                     className="flex justify-between p-3 bg-pink-500/10 border border-pink-500/20 rounded-lg"
                                   >
                                     <span className="text-sm text-gray-300 capitalize">{day}</span>
-                                    <span className="font-medium text-white">
+                                    <span className="font-medium text-foreground">
                                       {hours.open} - {hours.close}
                                     </span>
                                   </div>
@@ -393,9 +393,9 @@ export default function SalonUCRSettings() {
             {activeTab === 'pricing' && (
               <div className="space-y-6">
                 {!configLoading && salonConfig.pricing && (
-                  <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                  <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">
+                      <h3 className="text-xl font-semibold text-foreground mb-6">
                         Current Pricing Configuration
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -404,13 +404,13 @@ export default function SalonUCRSettings() {
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">VIP Discount</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.pricing.vip_discount || 10}%
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Early Bird</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.pricing.early_bird_discount || 15}%
                               </span>
                             </div>
@@ -422,13 +422,13 @@ export default function SalonUCRSettings() {
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Peak Hours</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 +{((salonConfig.pricing.peak_surcharge || 1.2) - 1) * 100}%
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Last Minute</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 +{((salonConfig.pricing.last_minute_surcharge || 1.1) - 1) * 100}%
                               </span>
                             </div>
@@ -440,13 +440,13 @@ export default function SalonUCRSettings() {
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Cancellation Fee</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.pricing.cancellation_fee || 25}%
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">No-show Fee</span>
-                              <span className="font-medium text-white">
+                              <span className="font-medium text-foreground">
                                 {salonConfig.pricing.no_show_fee || 50}%
                               </span>
                             </div>
@@ -463,9 +463,9 @@ export default function SalonUCRSettings() {
             {activeTab === 'notifications' && (
               <div className="space-y-6">
                 {!configLoading && salonConfig.notifications && (
-                  <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                  <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">
+                      <h3 className="text-xl font-semibold text-foreground mb-6">
                         Notification Settings
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -548,7 +548,7 @@ export default function SalonUCRSettings() {
                       <UserCheck className="h-5 h-5 text-green-400" />
                       <span className="text-sm text-green-300">Active Rules</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-2xl font-bold text-foreground">
                       {salonConfig.rules_applied
                         ? salonConfig.rules_applied.booking_rules +
                           salonConfig.rules_applied.pricing_rules +
@@ -562,7 +562,7 @@ export default function SalonUCRSettings() {
                       <Clock className="h-5 h-5 text-yellow-400" />
                       <span className="text-sm text-yellow-300">Draft Rules</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">3</p>
+                    <p className="text-2xl font-bold text-foreground">3</p>
                   </div>
 
                   <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-lg border border-blue-500/20 rounded-xl p-4">
@@ -570,7 +570,7 @@ export default function SalonUCRSettings() {
                       <TestTube className="h-5 h-5 text-blue-400" />
                       <span className="text-sm text-blue-300">Tests Run</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">24</p>
+                    <p className="text-2xl font-bold text-foreground">24</p>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-lg border border-purple-500/20 rounded-xl p-4">
@@ -578,14 +578,14 @@ export default function SalonUCRSettings() {
                       <Rocket className="h-5 h-5 text-purple-400" />
                       <span className="text-sm text-purple-300">Deployments</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">7</p>
+                    <p className="text-2xl font-bold text-foreground">7</p>
                   </div>
                 </div>
 
                 {/* Recent Activity Timeline */}
-                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
+                <div className="bg-background/5 backdrop-blur-lg border border-border/10 rounded-xl">
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold text-white mb-6">Recent Activity</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-6">Recent Activity</h3>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mt-0.5">
@@ -593,12 +593,12 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white">
+                            <h4 className="font-medium text-foreground">
                               Deployed "Salon Cancellation Policy"
                             </h4>
-                            <span className="text-sm text-gray-400">2h ago</span>
+                            <span className="text-sm text-muted-foreground">2h ago</span>
                           </div>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             Updated policy to production environment
                           </p>
                         </div>
@@ -610,10 +610,10 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white">Tested "VIP Discount Rules"</h4>
-                            <span className="text-sm text-gray-400">5h ago</span>
+                            <h4 className="font-medium text-foreground">Tested "VIP Discount Rules"</h4>
+                            <span className="text-sm text-muted-foreground">5h ago</span>
                           </div>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             100% pass rate on all test scenarios
                           </p>
                         </div>
@@ -625,10 +625,10 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white">Created rule from template</h4>
-                            <span className="text-sm text-gray-400">1d ago</span>
+                            <h4 className="font-medium text-foreground">Created rule from template</h4>
+                            <span className="text-sm text-muted-foreground">1d ago</span>
                           </div>
-                          <p className="text-sm text-gray-400">Used "Peak Hour Pricing" template</p>
+                          <p className="text-sm text-muted-foreground">Used "Peak Hour Pricing" template</p>
                         </div>
                       </div>
                     </div>
@@ -641,14 +641,14 @@ export default function SalonUCRSettings() {
             {configLoading && (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
-                <span className="ml-2 text-gray-400">Loading configuration...</span>
+                <span className="ml-2 text-muted-foreground">Loading configuration...</span>
               </div>
             )}
           </div>
         </div>
 
         {/* UCR Information Footer */}
-        <div className="bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-blue-900/30 backdrop-blur-lg border border-white/10 rounded-xl p-4">
+        <div className="bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-blue-900/30 backdrop-blur-lg border border-border/10 rounded-xl p-4">
           <div className="flex items-center gap-3">
             <Zap className="h-5 w-5 text-purple-400" />
             <p className="text-gray-300">

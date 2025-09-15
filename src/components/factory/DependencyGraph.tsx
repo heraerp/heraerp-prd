@@ -168,21 +168,21 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
   return (
     <section
       aria-label="Dependency Graph"
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6"
+      className="bg-background dark:bg-muted rounded-2xl shadow-lg p-6"
     >
       <header className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground flex items-center gap-2">
           <GitBranch className="w-5 h-5" />
           Module Dependencies
         </h2>
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-blue-500 rounded-full" />
-            <span className="text-gray-600 dark:text-gray-400">Module</span>
+            <span className="text-muted-foreground dark:text-muted-foreground">Module</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-purple-500 rounded-full" />
-            <span className="text-gray-600 dark:text-gray-400">Capability</span>
+            <span className="text-muted-foreground dark:text-muted-foreground">Capability</span>
           </div>
         </div>
       </header>
@@ -192,7 +192,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
           ref={canvasRef}
           width={800}
           height={400}
-          className="w-full h-[400px] border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer"
+          className="w-full h-[400px] border border-border dark:border-border rounded-lg cursor-pointer"
           onClick={handleCanvasClick}
         />
 
@@ -200,9 +200,9 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 w-64 border border-gray-200 dark:border-gray-700"
+            className="absolute top-4 right-4 bg-background dark:bg-muted rounded-lg shadow-lg p-4 w-64 border border-border dark:border-border"
           >
-            <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground flex items-center gap-2">
               {selectedNode.type === 'module' ? (
                 <Package className="w-4 h-4" />
               ) : (
@@ -210,7 +210,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
               )}
               {selectedNode.name}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
               Type: {selectedNode.type}
             </p>
 
@@ -226,7 +226,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
                     return (
                       <div
                         key={idx}
-                        className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400"
+                        className="flex items-center gap-1 text-xs text-muted-foreground dark:text-muted-foreground"
                       >
                         <ChevronRight className="w-3 h-3" />
                         {targetNode?.name || 'Unknown'}
@@ -247,7 +247,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
                     return (
                       <div
                         key={idx}
-                        className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400"
+                        className="flex items-center gap-1 text-xs text-muted-foreground dark:text-muted-foreground"
                       >
                         <ChevronRight className="w-3 h-3" />
                         {sourceNode?.name || 'Unknown'}

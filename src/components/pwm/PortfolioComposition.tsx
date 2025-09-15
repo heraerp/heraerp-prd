@@ -102,7 +102,7 @@ export function PortfolioComposition({ organizationId }: PortfolioCompositionPro
   if (isLoading) {
     return (
       <div className="p-6">
-        <Card className="h-96 bg-slate-800 animate-pulse" />
+        <Card className="h-96 bg-muted animate-pulse" />
       </div>
     )
   }
@@ -112,8 +112,8 @@ export function PortfolioComposition({ organizationId }: PortfolioCompositionPro
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Portfolio Composition</h2>
-          <p className="text-slate-400 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Portfolio Composition</h2>
+          <p className="text-muted-foreground mt-1">
             Comprehensive analysis of your investment distribution
           </p>
         </div>
@@ -121,7 +121,7 @@ export function PortfolioComposition({ organizationId }: PortfolioCompositionPro
 
       {/* Tab Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full max-w-2xl bg-slate-800/50 p-1">
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl bg-muted/50 p-1">
           <TabsTrigger
             value="allocation"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
@@ -188,8 +188,8 @@ export function PortfolioComposition({ organizationId }: PortfolioCompositionPro
 
       {/* Selected Category Details */}
       {selectedCategory && (
-        <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-          <h3 className="text-lg font-semibold text-white mb-4">{selectedCategory} Details</h3>
+        <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+          <h3 className="text-lg font-semibold text-foreground mb-4">{selectedCategory} Details</h3>
           {/* TODO: Add detailed breakdown of selected category */}
         </Card>
       )}

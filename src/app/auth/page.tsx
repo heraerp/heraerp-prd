@@ -38,8 +38,8 @@ export default function AuthHubPage() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="text-center">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" />
-        <p className="text-gray-600">Checking authentication...</p>
+        <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
+        <p className="text-muted-foreground">Checking authentication...</p>
       </div>
     </div>
   )

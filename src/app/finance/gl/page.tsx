@@ -448,7 +448,7 @@ export default function GeneralLedgerPage() {
       case 'expense':
         return 'text-yellow-400'
       default:
-        return 'text-white'
+        return 'text-foreground'
     }
   }
 
@@ -483,13 +483,13 @@ export default function GeneralLedgerPage() {
 
     return (
       <>
-        <tr key={account.id} className="hover:bg-white/5 transition-colors">
+        <tr key={account.id} className="hover:bg-background/5 transition-colors">
           <td className="py-3 pl-4">
             <div className="flex items-center" style={{ paddingLeft: `${level * 24}px` }}>
               {hasChildren && (
                 <button
                   onClick={() => toggleAccountExpansion(account.accountCode)}
-                  className="mr-2 text-white/40 hover:text-white transition-colors"
+                  className="mr-2 text-foreground/40 hover:text-foreground transition-colors"
                 >
                   {isExpanded ? (
                     <ChevronDown className="h-4 w-4" />
@@ -498,13 +498,13 @@ export default function GeneralLedgerPage() {
                   )}
                 </button>
               )}
-              <span className="font-mono text-sm text-white/80">{account.accountCode}</span>
+              <span className="font-mono text-sm text-foreground/80">{account.accountCode}</span>
             </div>
           </td>
           <td className="py-3">
             <div className="flex items-center space-x-2">
               <span>{getAccountTypeIcon(account.accountType)}</span>
-              <span className="text-white font-medium">{account.accountName}</span>
+              <span className="text-foreground font-medium">{account.accountName}</span>
             </div>
           </td>
           <td className="py-3">
@@ -515,7 +515,7 @@ export default function GeneralLedgerPage() {
             </span>
           </td>
           <td className="py-3 text-right">
-            <span className="text-white font-medium">
+            <span className="text-foreground font-medium">
               ₹{(account.balance / 10000000).toFixed(2)} Cr
             </span>
           </td>
@@ -524,14 +524,14 @@ export default function GeneralLedgerPage() {
               className={`px-2 py-1 rounded-full text-xs font-medium ${
                 account.status === 'active'
                   ? 'bg-emerald-500/20 text-emerald-400'
-                  : 'bg-gray-500/20 text-gray-400'
+                  : 'bg-gray-500/20 text-muted-foreground'
               }`}
             >
               {account.status}
             </span>
           </td>
           <td className="py-3 text-right pr-4">
-            <button className="text-white/40 hover:text-white transition-colors">
+            <button className="text-foreground/40 hover:text-foreground transition-colors">
               <MoreVertical className="h-4 w-4" />
             </button>
           </td>
@@ -559,17 +559,17 @@ export default function GeneralLedgerPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             General Ledger
           </h1>
-          <p className="text-white/60 mt-1">Chart of accounts and journal entries management</p>
+          <p className="text-foreground/60 mt-1">Chart of accounts and journal entries management</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300">
             <Plus className="h-5 w-5" />
             <span>New Entry</span>
           </button>
@@ -577,13 +577,13 @@ export default function GeneralLedgerPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-background/5 backdrop-blur-xl p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('accounts')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'accounts'
-              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Chart of Accounts
@@ -592,8 +592,8 @@ export default function GeneralLedgerPage() {
           onClick={() => setActiveTab('journal')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'journal'
-              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Journal Entries
@@ -605,20 +605,20 @@ export default function GeneralLedgerPage() {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search by account name or code..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
 
             <select
               value={selectedAccountType}
               onChange={e => setSelectedAccountType(e.target.value)}
-              className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
+              className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-emerald-500 transition-colors"
             >
               <option value="all">All Account Types</option>
               <option value="asset">Assets</option>
@@ -628,7 +628,7 @@ export default function GeneralLedgerPage() {
               <option value="expense">Expenses</option>
             </select>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Download className="h-5 w-5" />
               <span>Export</span>
             </button>
@@ -637,20 +637,20 @@ export default function GeneralLedgerPage() {
           {/* Chart of Accounts Table */}
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl overflow-hidden">
               <table className="w-full">
-                <thead className="bg-white/5 border-b border-white/10">
+                <thead className="bg-background/5 border-b border-border/10">
                   <tr>
-                    <th className="text-left py-4 pl-4 text-sm font-medium text-white/60">
+                    <th className="text-left py-4 pl-4 text-sm font-medium text-foreground/60">
                       Account Code
                     </th>
-                    <th className="text-left py-4 text-sm font-medium text-white/60">
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">
                       Account Name
                     </th>
-                    <th className="text-left py-4 text-sm font-medium text-white/60">Type</th>
-                    <th className="text-right py-4 text-sm font-medium text-white/60">Balance</th>
-                    <th className="text-center py-4 text-sm font-medium text-white/60">Status</th>
-                    <th className="text-right py-4 pr-4 text-sm font-medium text-white/60">
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">Type</th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Balance</th>
+                    <th className="text-center py-4 text-sm font-medium text-foreground/60">Status</th>
+                    <th className="text-right py-4 pr-4 text-sm font-medium text-foreground/60">
                       Actions
                     </th>
                   </tr>
@@ -669,22 +669,22 @@ export default function GeneralLedgerPage() {
           {/* Journal Entries Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search journal entries..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Calendar className="h-5 w-5" />
               <span>Date Range</span>
             </button>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Filter className="h-5 w-5" />
               <span>Filter</span>
             </button>
@@ -695,31 +695,31 @@ export default function GeneralLedgerPage() {
             {journalEntries.map(entry => (
               <div key={entry.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-white">{entry.entryNumber}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">{entry.entryNumber}</h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             entry.status === 'posted'
                               ? 'bg-emerald-500/20 text-emerald-400'
                               : entry.status === 'pending'
                                 ? 'bg-yellow-500/20 text-yellow-400'
-                                : 'bg-gray-500/20 text-gray-400'
+                                : 'bg-gray-500/20 text-muted-foreground'
                           }`}
                         >
                           {entry.status}
                         </span>
                       </div>
-                      <p className="text-white/80">{entry.description}</p>
-                      <div className="flex items-center space-x-4 mt-2 text-xs text-white/60">
+                      <p className="text-foreground/80">{entry.description}</p>
+                      <div className="flex items-center space-x-4 mt-2 text-xs text-foreground/60">
                         <span>{new Date(entry.entryDate).toLocaleDateString()}</span>
                         <span>•</span>
                         <span>Created by {entry.createdBy}</span>
                       </div>
                     </div>
-                    <button className="text-white/40 hover:text-white transition-colors">
+                    <button className="text-foreground/40 hover:text-foreground transition-colors">
                       <Eye className="h-5 w-5" />
                     </button>
                   </div>
@@ -727,12 +727,12 @@ export default function GeneralLedgerPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="text-left border-b border-white/10">
-                          <th className="pb-2 text-sm font-medium text-white/60">Account</th>
-                          <th className="pb-2 text-sm font-medium text-white/60 text-right">
+                        <tr className="text-left border-b border-border/10">
+                          <th className="pb-2 text-sm font-medium text-foreground/60">Account</th>
+                          <th className="pb-2 text-sm font-medium text-foreground/60 text-right">
                             Debit
                           </th>
-                          <th className="pb-2 text-sm font-medium text-white/60 text-right">
+                          <th className="pb-2 text-sm font-medium text-foreground/60 text-right">
                             Credit
                           </th>
                         </tr>
@@ -742,10 +742,10 @@ export default function GeneralLedgerPage() {
                           <tr key={index}>
                             <td className="py-2">
                               <div>
-                                <span className="font-mono text-sm text-white/60">
+                                <span className="font-mono text-sm text-foreground/60">
                                   {line.accountCode}
                                 </span>
-                                <span className="ml-2 text-white">{line.accountName}</span>
+                                <span className="ml-2 text-foreground">{line.accountName}</span>
                               </div>
                             </td>
                             <td className="py-2 text-right">
@@ -766,8 +766,8 @@ export default function GeneralLedgerPage() {
                         ))}
                       </tbody>
                       <tfoot>
-                        <tr className="border-t border-white/10">
-                          <td className="pt-2 text-sm font-medium text-white">Total</td>
+                        <tr className="border-t border-border/10">
+                          <td className="pt-2 text-sm font-medium text-foreground">Total</td>
                           <td className="pt-2 text-right">
                             <span className="text-emerald-400 font-bold">
                               ₹{(entry.totalDebit / 10000000).toFixed(2)} Cr

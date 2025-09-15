@@ -228,7 +228,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                 <p className="text-sm font-medium text-muted-foreground">Pending Filings</p>
                 <p className="text-2xl font-bold">7</p>
               </div>
-              <FileText className="h-8 w-8 text-blue-600" />
+              <FileText className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -522,7 +522,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">India (GST)</span>
                       <span className="text-sm font-bold">18%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div className="bg-blue-600 h-2 rounded-full" style={{ width: '72%' }}></div>
                     </div>
                   </div>
@@ -531,7 +531,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">EU (VAT)</span>
                       <span className="text-sm font-bold">21%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div className="bg-green-600 h-2 rounded-full" style={{ width: '84%' }}></div>
                     </div>
                   </div>
@@ -540,7 +540,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">US (Sales Tax)</span>
                       <span className="text-sm font-bold">8.5%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div
                         className="bg-purple-600 h-2 rounded-full"
                         style={{ width: '34%' }}
@@ -570,9 +570,9 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                   <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">Exemptions</span>
-                      <Shield className="h-4 w-4 text-blue-600" />
+                      <Shield className="h-4 w-4 text-primary" />
                     </div>
-                    <p className="text-2xl font-bold text-blue-600">{formatCurrency(8000)}</p>
+                    <p className="text-2xl font-bold text-primary">{formatCurrency(8000)}</p>
                     <p className="text-sm text-muted-foreground">Potential savings</p>
                   </div>
                 </div>
@@ -650,7 +650,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div className="w-16 bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
                               <div
                                 className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${anomaly.confidence * 100}%` }}
@@ -676,7 +676,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
               {/* AI Insights */}
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                 <div className="flex items-start gap-3">
-                  <Brain className="h-5 w-5 text-blue-600 mt-0.5" />
+                  <Brain className="h-5 w-5 text-primary mt-0.5" />
                   <div className="space-y-2">
                     <p className="font-medium">AI Recommendations</p>
                     <ul className="space-y-1 text-sm text-muted-foreground">

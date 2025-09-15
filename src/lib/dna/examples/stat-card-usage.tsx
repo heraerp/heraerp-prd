@@ -114,7 +114,7 @@ export function StatCardExample() {
  *   <CardContent className="p-6">
  *     <div className="flex items-center justify-between">
  *       <div>
- *         <p className="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
+ *         <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Revenue</p>
  *         <p className="text-2xl font-bold mt-1">₹1,234,567</p>
  *       </div>
  *       <DollarSign className="w-8 h-8 text-green-500" />

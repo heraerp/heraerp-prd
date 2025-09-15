@@ -117,7 +117,7 @@ export default function FurnitureProduction() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Active Orders</p>
               <p className="text-3xl font-bold text-foreground">{stats.activeOrders}</p>
-              <p className="text-xs text-gray-500 mt-2">In production now</p>
+              <p className="text-xs text-muted-foreground mt-2">In production now</p>
             </div>
           </Card>
 
@@ -131,7 +131,7 @@ export default function FurnitureProduction() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Planned Units</p>
               <p className="text-3xl font-bold text-foreground">{stats.plannedQuantity}</p>
-              <p className="text-xs text-gray-500 mt-2">Total to produce</p>
+              <p className="text-xs text-muted-foreground mt-2">Total to produce</p>
             </div>
           </Card>
 
@@ -147,7 +147,7 @@ export default function FurnitureProduction() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Completed Today</p>
               <p className="text-3xl font-bold text-foreground">{stats.completedToday}</p>
-              <p className="text-xs text-gray-500 mt-2">Units finished</p>
+              <p className="text-xs text-muted-foreground mt-2">Units finished</p>
             </div>
           </Card>
 
@@ -161,7 +161,7 @@ export default function FurnitureProduction() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Utilization</p>
               <p className="text-3xl font-bold text-foreground">{stats.workCenterUtilization}%</p>
-              <p className="text-xs text-gray-500 mt-2">Work center capacity</p>
+              <p className="text-xs text-muted-foreground mt-2">Work center capacity</p>
             </div>
           </Card>
         </div>
@@ -228,7 +228,7 @@ export default function FurnitureProduction() {
                                     {product?.entity_name || 'Unknown Product'} -{' '}
                                     {order.total_amount} units
                                   </p>
-                                  <p className="text-xs text-gray-500 mt-2">
+                                  <p className="text-xs text-muted-foreground mt-2">
                                     Work Center: {workCenter?.entity_name || 'Not assigned'}
                                   </p>
                                 </div>
@@ -256,7 +256,7 @@ export default function FurnitureProduction() {
                                 <Progress value={progress} className="h-2 bg-muted-foreground/10" />
                               </div>
 
-                              <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
                                   Start:{' '}

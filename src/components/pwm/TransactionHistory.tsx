@@ -92,7 +92,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       case 'rebalance':
         return <ArrowUpDown className="h-4 w-4 text-purple-400" />
       default:
-        return <ArrowUpDown className="h-4 w-4 text-slate-400" />
+        return <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
     }
   }
 
@@ -135,32 +135,32 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Transaction History</h2>
-          <p className="text-slate-400 mt-1">Complete record of your portfolio activity</p>
+          <h2 className="text-2xl font-bold text-foreground">Transaction History</h2>
+          <p className="text-muted-foreground mt-1">Complete record of your portfolio activity</p>
         </div>
-        <Button variant="outline" className="bg-slate-800/50 border-slate-700">
+        <Button variant="outline" className="bg-muted/50 border-border">
           <Download className="h-4 w-4 mr-2" />
           Export
         </Button>
       </div>
 
       {/* Filters */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search transactions..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-800/50 border-slate-700"
+              className="pl-10 bg-muted/50 border-border"
             />
           </div>
 
           {/* Type Filter */}
           <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full md:w-48 bg-slate-800/50 border-slate-700">
+            <SelectTrigger className="w-full md:w-48 bg-muted/50 border-border">
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>
             <SelectContent>
@@ -174,7 +174,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-48 bg-slate-800/50 border-slate-700">
+            <SelectTrigger className="w-full md:w-48 bg-muted/50 border-border">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -185,7 +185,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
           </Select>
 
           {/* Date Range */}
-          <Button variant="outline" className="bg-slate-800/50 border-slate-700">
+          <Button variant="outline" className="bg-muted/50 border-border">
             <Calendar className="h-4 w-4 mr-2" />
             Date Range
           </Button>
@@ -193,22 +193,22 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       </Card>
 
       {/* Transaction List */}
-      <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="divide-y divide-slate-800">
           {transactions.map(transaction => (
             <div
               key={transaction.transaction_id}
-              className="p-6 hover:bg-slate-800/30 transition-colors"
+              className="p-6 hover:bg-muted/30 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                  <div className="p-3 rounded-xl bg-muted/50 border border-border/50">
                     {getTransactionIcon(transaction.transaction_type)}
                   </div>
 
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-medium text-white">{transaction.description}</h3>
+                      <h3 className="font-medium text-foreground">{transaction.description}</h3>
                       <Badge
                         variant="outline"
                         className={cn('text-xs', getTransactionColor(transaction.transaction_type))}
@@ -216,7 +216,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
                         {transaction.transaction_type}
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-muted-foreground">
                       {formatDate(transaction.transaction_date)} • Status:{' '}
                       <span className="text-emerald-400">{transaction.status}</span>
                     </p>
@@ -232,7 +232,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
                         ? 'text-emerald-400'
                         : transaction.transaction_type === 'sell'
                           ? 'text-red-400'
-                          : 'text-white'
+                          : 'text-foreground'
                     )}
                   >
                     {transaction.transaction_type === 'sell'
@@ -242,7 +242,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
                         : '+'}
                     {formatCurrency(transaction.total_amount)}
                   </p>
-                  <p className="text-sm text-slate-400">{transaction.currency}</p>
+                  <p className="text-sm text-muted-foreground">{transaction.currency}</p>
                 </div>
               </div>
 
@@ -263,7 +263,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
         <div className="p-6 border-t border-slate-800">
           <Button
             variant="ghost"
-            className="w-full text-slate-400 hover:text-white hover:bg-slate-800/50"
+            className="w-full text-muted-foreground hover:text-foreground hover:bg-muted/50"
           >
             Load More Transactions
           </Button>
@@ -272,16 +272,16 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
 
       {/* Transaction Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-          <p className="text-sm text-slate-400 mb-1">Total Volume (30d)</p>
-          <p className="text-2xl font-bold text-white">$2.4M</p>
+        <Card className="p-4 bg-background/50 backdrop-blur-sm border-slate-800">
+          <p className="text-sm text-muted-foreground mb-1">Total Volume (30d)</p>
+          <p className="text-2xl font-bold text-foreground">$2.4M</p>
         </Card>
-        <Card className="p-4 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-          <p className="text-sm text-slate-400 mb-1">Transactions (30d)</p>
-          <p className="text-2xl font-bold text-white">47</p>
+        <Card className="p-4 bg-background/50 backdrop-blur-sm border-slate-800">
+          <p className="text-sm text-muted-foreground mb-1">Transactions (30d)</p>
+          <p className="text-2xl font-bold text-foreground">47</p>
         </Card>
-        <Card className="p-4 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-          <p className="text-sm text-slate-400 mb-1">AI Optimizations</p>
+        <Card className="p-4 bg-background/50 backdrop-blur-sm border-slate-800">
+          <p className="text-sm text-muted-foreground mb-1">AI Optimizations</p>
           <p className="text-2xl font-bold text-emerald-400">12</p>
         </Card>
       </div>

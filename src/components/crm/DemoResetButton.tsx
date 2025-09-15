@@ -88,7 +88,7 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
               This will reset the CRM demo to its original state with fresh TechVantage Solutions
               data:
             </p>
-            <ul className="list-disc list-inside text-sm space-y-1 text-slate-600">
+            <ul className="list-disc list-inside text-sm space-y-1 text-muted-foreground">
               <li>5 professional contacts with realistic business scenarios</li>
               <li>$1.8M pipeline with enterprise opportunities</li>
               <li>Active tasks and upcoming meetings</li>

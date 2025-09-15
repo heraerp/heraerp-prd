@@ -402,7 +402,7 @@ const DevelopmentMatrix = () => {
                         {item.status === 'progress' && '🔄'}
                         {item.status === 'pending' && '📋'}
                       </div>
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-white text-2xl mx-auto mb-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-foreground text-2xl mx-auto mb-4">
                         <IconComponent className="w-8 h-8" />
                       </div>
                       <h3 className="text-lg font-bold mb-2">{item.title}</h3>
@@ -501,7 +501,7 @@ const DevelopmentMatrix = () => {
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-white">
+                        <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-foreground">
                           <IconComponent className="w-7 h-7" />
                         </div>
                         <div>
@@ -544,7 +544,7 @@ const DevelopmentMatrix = () => {
               {priorityActions.map((action, index) => (
                 <Card key={index} className="border-border/50 text-center">
                   <CardContent className="p-6">
-                    <div className="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
+                    <div className="w-10 h-10 bg-red-500 text-foreground rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
                       {action.number}
                     </div>
                     <h3 className="text-lg font-semibold mb-3">{action.title}</h3>
@@ -579,7 +579,7 @@ const DevelopmentMatrix = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/development/api-testing">
-                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 text-white transition-all transform hover:scale-105">
+                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 text-foreground transition-all transform hover:scale-105">
                   <Play className="w-6 h-6" />
                   <span className="text-sm font-medium">API Testing Lab</span>
                   <span className="text-xs opacity-75">Execute & Validate</span>
@@ -587,7 +587,7 @@ const DevelopmentMatrix = () => {
               </Link>
 
               <Link href="/development/api-monitor">
-                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 hover:from-emerald-500/30 hover:to-blue-500/30 border border-emerald-500/30 text-white transition-all transform hover:scale-105">
+                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 hover:from-emerald-500/30 hover:to-blue-500/30 border border-emerald-500/30 text-foreground transition-all transform hover:scale-105">
                   <Activity className="w-6 h-6" />
                   <span className="text-sm font-medium">Performance Monitor</span>
                   <span className="text-xs opacity-75">Real-time Metrics</span>
@@ -595,7 +595,7 @@ const DevelopmentMatrix = () => {
               </Link>
 
               <Link href="/development/api-docs">
-                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/30 text-white transition-all transform hover:scale-105">
+                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/30 text-foreground transition-all transform hover:scale-105">
                   <Book className="w-6 h-6" />
                   <span className="text-sm font-medium">API Documentation</span>
                   <span className="text-xs opacity-75">Complete Reference</span>
@@ -603,7 +603,7 @@ const DevelopmentMatrix = () => {
               </Link>
 
               <Link href="/development/build">
-                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 text-white transition-all transform hover:scale-105">
+                <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 text-foreground transition-all transform hover:scale-105">
                   <Building className="w-6 h-6" />
                   <span className="text-sm font-medium">Build Management</span>
                   <span className="text-xs opacity-75">Deployment Control</span>
@@ -617,7 +617,7 @@ const DevelopmentMatrix = () => {
                   All tools require developer access:
                 </span>{' '}
                 password{' '}
-                <code className="bg-black/30 px-2 py-1 rounded text-xs">developer@123</code>
+                <code className="bg-background/30 px-2 py-1 rounded text-xs">developer@123</code>
               </p>
             </div>
           </CardContent>
@@ -625,32 +625,32 @@ const DevelopmentMatrix = () => {
 
         {/* Final CTA */}
         <Card className="bg-gradient-to-r from-blue-600/20 to-emerald-600/20 border-none">
-          <CardContent className="p-12 text-center text-white">
+          <CardContent className="p-12 text-center text-foreground">
             <h2 className="text-4xl font-bold mb-6">🎯 We're Ready to Build!</h2>
             <p className="text-xl mb-8 opacity-95">
               <strong>Foundation Complete. Architecture Proven. Time to Implement!</strong>
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <Card className="bg-white/10 border-white/20">
+              <Card className="bg-background/10 border-border/20">
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-2">✅ {overallProgress}% Complete</h3>
                   <p className="text-sm opacity-90">Revolutionary architecture finished</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/10 border-white/20">
+              <Card className="bg-background/10 border-border/20">
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-2">🔥 {100 - overallProgress}% Remaining</h3>
                   <p className="text-sm opacity-90">Business module implementation</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/10 border-white/20">
+              <Card className="bg-background/10 border-border/20">
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-2">🚀 6-8 Weeks</h3>
                   <p className="text-sm opacity-90">To complete MVP demonstrations</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/10 border-white/20">
+              <Card className="bg-background/10 border-border/20">
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-2">🌟 Market Ready</h3>
                   <p className="text-sm opacity-90">Universal ERP platform complete</p>
@@ -658,7 +658,7 @@ const DevelopmentMatrix = () => {
               </Card>
             </div>
 
-            <Card className="bg-white/10 border-white/20">
+            <Card className="bg-background/10 border-border/20">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4">🎯 The Build Strategy:</h3>
                 <p className="text-lg leading-relaxed opacity-95">

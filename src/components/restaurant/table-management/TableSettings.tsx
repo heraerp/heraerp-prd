@@ -169,7 +169,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Table Management Settings</h3>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Configure default settings for table management
             </p>
           </div>
@@ -205,7 +205,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="1"
               max="20"
             />
-            <p className="text-xs text-gray-500 mt-1">Default capacity when creating new tables</p>
+            <p className="text-xs text-muted-foreground mt-1">Default capacity when creating new tables</p>
           </div>
 
           <div>
@@ -221,7 +221,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               max="480"
               step="30"
             />
-            <p className="text-xs text-gray-500 mt-1">How long reservations last by default</p>
+            <p className="text-xs text-muted-foreground mt-1">How long reservations last by default</p>
           </div>
 
           <div>
@@ -236,7 +236,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="0"
               max="1440"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               How far in advance reservations must be made
             </p>
           </div>
@@ -253,7 +253,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="1"
               max="365"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               How far in the future reservations can be made
             </p>
           </div>
@@ -261,7 +261,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="autoConfirm">Auto-confirm Reservations</Label>
-              <p className="text-xs text-gray-500">Automatically confirm new reservations</p>
+              <p className="text-xs text-muted-foreground">Automatically confirm new reservations</p>
             </div>
             <Switch
               id="autoConfirm"
@@ -275,7 +275,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="requireDeposit">Require Deposit</Label>
-              <p className="text-xs text-gray-500">Require deposit for large party reservations</p>
+              <p className="text-xs text-muted-foreground">Require deposit for large party reservations</p>
             </div>
             <Switch
               id="requireDeposit"
@@ -362,7 +362,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                       }
                       className="w-32"
                     />
-                    <span className="text-gray-500">to</span>
+                    <span className="text-muted-foreground">to</span>
                     <Input
                       type="time"
                       value={hours.close}
@@ -379,7 +379,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                     />
                   </>
                 )}
-                {hours.closed && <span className="text-gray-500 text-sm">Closed</span>}
+                {hours.closed && <span className="text-muted-foreground text-sm">Closed</span>}
               </div>
             </div>
           ))}
@@ -396,7 +396,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableTableCombining">Enable Table Combining</Label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Allow tables to be combined for larger parties
               </p>
             </div>
@@ -412,7 +412,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableQRCodeMenus">Enable QR Code Menus</Label>
-              <p className="text-xs text-gray-500">Generate QR codes for digital menus</p>
+              <p className="text-xs text-muted-foreground">Generate QR codes for digital menus</p>
             </div>
             <Switch
               id="enableQRCodeMenus"
@@ -433,7 +433,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="5"
               max="60"
             />
-            <p className="text-xs text-gray-500 mt-1">Release reservation if party doesn't show</p>
+            <p className="text-xs text-muted-foreground mt-1">Release reservation if party doesn't show</p>
           </div>
 
           <div>
@@ -448,7 +448,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="0"
               max="30"
             />
-            <p className="text-xs text-gray-500 mt-1">Allow overbooking to account for no-shows</p>
+            <p className="text-xs text-muted-foreground mt-1">Allow overbooking to account for no-shows</p>
           </div>
 
           <div>
@@ -466,7 +466,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="0"
               max="60"
             />
-            <p className="text-xs text-gray-500 mt-1">Time needed to clean and reset tables</p>
+            <p className="text-xs text-muted-foreground mt-1">Time needed to clean and reset tables</p>
           </div>
         </div>
       </Card>
@@ -481,7 +481,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableSMS">Enable SMS Notifications</Label>
-              <p className="text-xs text-gray-500">Send reservation confirmations via SMS</p>
+              <p className="text-xs text-muted-foreground">Send reservation confirmations via SMS</p>
             </div>
             <Switch
               id="enableSMS"
@@ -495,7 +495,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableEmail">Enable Email Notifications</Label>
-              <p className="text-xs text-gray-500">Send reservation confirmations via email</p>
+              <p className="text-xs text-muted-foreground">Send reservation confirmations via email</p>
             </div>
             <Switch
               id="enableEmail"
@@ -527,7 +527,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="waitlistNotifications">Waitlist Notifications</Label>
-              <p className="text-xs text-gray-500">Notify waitlist when tables become available</p>
+              <p className="text-xs text-muted-foreground">Notify waitlist when tables become available</p>
             </div>
             <Switch
               id="waitlistNotifications"
@@ -556,7 +556,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                       ? 'bg-purple-100 text-purple-800'
                       : tier === 'premium'
                         ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
+                        : 'bg-muted text-gray-800'
                   }
                 >
                   {config.name}
@@ -596,7 +596,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="posIntegration">POS Integration</Label>
-              <p className="text-xs text-gray-500">Sync with point of sale system</p>
+              <p className="text-xs text-muted-foreground">Sync with point of sale system</p>
             </div>
             <Switch
               id="posIntegration"
@@ -608,7 +608,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="kitchenDisplay">Kitchen Display Integration</Label>
-              <p className="text-xs text-gray-500">Show table status in kitchen</p>
+              <p className="text-xs text-muted-foreground">Show table status in kitchen</p>
             </div>
             <Switch
               id="kitchenDisplay"
@@ -622,7 +622,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="loyaltyProgram">Loyalty Program Integration</Label>
-              <p className="text-xs text-gray-500">Track visits for loyalty rewards</p>
+              <p className="text-xs text-muted-foreground">Track visits for loyalty rewards</p>
             </div>
             <Switch
               id="loyaltyProgram"
@@ -636,7 +636,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="thirdParty">Third-party Reservations</Label>
-              <p className="text-xs text-gray-500">Accept reservations from OpenTable, etc.</p>
+              <p className="text-xs text-muted-foreground">Accept reservations from OpenTable, etc.</p>
             </div>
             <Switch
               id="thirdParty"

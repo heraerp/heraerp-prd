@@ -34,7 +34,7 @@ export default function FinancialDashboard() {
       description: 'Enterprise-grade trial balance with hierarchical GL accounts',
       icon: Calculator,
       path: '/trial-balance',
-      color: 'text-blue-600',
+      color: 'text-primary',
       bgColor: 'bg-blue-50'
     },
     {
@@ -103,18 +103,18 @@ export default function FinancialDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Financial Management</h1>
-              <p className="text-gray-600 text-lg">Enterprise financial accounting and reporting</p>
+              <p className="text-muted-foreground text-lg">Enterprise financial accounting and reporting</p>
             </div>
             <div className="flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-gray-500" />
-              <span className="text-gray-600">{currentOrganization?.name || 'HERA ERP'}</span>
+              <Building2 className="w-5 h-5 text-muted-foreground" />
+              <span className="text-muted-foreground">{currentOrganization?.name || 'HERA ERP'}</span>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ export default function FinancialDashboard() {
               <Card key={index}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <stat.icon className="w-8 h-8 text-gray-400" />
+                    <stat.icon className="w-8 h-8 text-muted-foreground" />
                     <span
                       className={`text-sm font-medium ${
                         stat.trend.startsWith('+') ? 'text-green-600' : 'text-red-600'
@@ -133,7 +133,7 @@ export default function FinancialDashboard() {
                       {stat.trend}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
                   <p className="text-2xl font-bold">{stat.value}</p>
                 </CardContent>
               </Card>
@@ -176,51 +176,51 @@ export default function FinancialDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Receipt className="w-5 h-5 text-blue-600" />
+                    <Receipt className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">Journal Entry JE-2025-0089</p>
-                    <p className="text-sm text-gray-500">Monthly depreciation posting</p>
+                    <p className="text-sm text-muted-foreground">Monthly depreciation posting</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-medium">AED 12,450.00</p>
-                  <p className="text-sm text-gray-500">2 hours ago</p>
+                  <p className="text-sm text-muted-foreground">2 hours ago</p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                     <DollarSign className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
                     <p className="font-medium">Sales Revenue Posting</p>
-                    <p className="text-sm text-gray-500">Auto-journal from POS system</p>
+                    <p className="text-sm text-muted-foreground">Auto-journal from POS system</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-medium">AED 45,230.00</p>
-                  <p className="text-sm text-gray-500">3 hours ago</p>
+                  <p className="text-sm text-muted-foreground">3 hours ago</p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
                     <CreditCard className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
                     <p className="font-medium">Supplier Payment PAY-2025-0456</p>
-                    <p className="text-sm text-gray-500">Accounts payable settlement</p>
+                    <p className="text-sm text-muted-foreground">Accounts payable settlement</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-medium">AED 28,900.00</p>
-                  <p className="text-sm text-gray-500">5 hours ago</p>
+                  <p className="text-sm text-muted-foreground">5 hours ago</p>
                 </div>
               </div>
             </div>

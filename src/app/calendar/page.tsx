@@ -104,10 +104,10 @@ function SimpleCalendar() {
           {/* Header */}
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold text-gray-900">HERA Calendar</h1>
             </div>
-            <p className="text-gray-600">Universal scheduling system for all businesses</p>
+            <p className="text-muted-foreground">Universal scheduling system for all businesses</p>
           </div>
 
           {/* Calendar */}
@@ -138,7 +138,7 @@ function SimpleCalendar() {
               {/* Days of week header */}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {daysOfWeek.map(day => (
-                  <div key={day} className="p-2 text-center text-sm font-semibold text-gray-600">
+                  <div key={day} className="p-2 text-center text-sm font-semibold text-muted-foreground">
                     {day}
                   </div>
                 ))}
@@ -156,12 +156,12 @@ function SimpleCalendar() {
                   return (
                     <div
                       key={day}
-                      className={`h-24 p-1 border border-gray-200 cursor-pointer transition-colors ${
+                      className={`h-24 p-1 border border-border cursor-pointer transition-colors ${
                         isToday(day)
                           ? 'bg-blue-100 border-blue-300'
                           : isSelected(day)
                             ? 'bg-blue-50 border-blue-200'
-                            : 'hover:bg-gray-50'
+                            : 'hover:bg-muted'
                       }`}
                       onClick={() => {
                         const newSelected = new Date(
@@ -175,7 +175,7 @@ function SimpleCalendar() {
                       <div className="flex flex-col h-full">
                         <div
                           className={`text-sm font-medium ${
-                            isToday(day) ? 'text-blue-600' : 'text-gray-900'
+                            isToday(day) ? 'text-primary' : 'text-gray-900'
                           }`}
                         >
                           {day}
@@ -198,7 +198,7 @@ function SimpleCalendar() {
                             </div>
                           ))}
                           {events.length > 2 && (
-                            <div className="text-xs text-gray-500">+{events.length - 2} more</div>
+                            <div className="text-xs text-muted-foreground">+{events.length - 2} more</div>
                           )}
                         </div>
                       </div>
@@ -219,13 +219,13 @@ function SimpleCalendar() {
             </CardHeader>
             <CardContent>
               {SAMPLE_EVENTS.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No events scheduled for today</p>
+                <p className="text-muted-foreground text-center py-4">No events scheduled for today</p>
               ) : (
                 <div className="space-y-3">
                   {SAMPLE_EVENTS.map(event => (
                     <div
                       key={event.id}
-                      className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center space-x-3 p-3 bg-muted rounded-lg"
                     >
                       <div
                         className={`w-3 h-3 rounded-full ${
@@ -240,7 +240,7 @@ function SimpleCalendar() {
                       ></div>
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">{event.title}</div>
-                        <div className="text-sm text-gray-600 flex items-center space-x-2">
+                        <div className="text-sm text-muted-foreground flex items-center space-x-2">
                           <Clock className="h-3 w-3" />
                           <span>{event.time}</span>
                           <MapPin className="h-3 w-3" />

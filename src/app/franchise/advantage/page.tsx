@@ -207,36 +207,36 @@ export default function AdvantagePage() {
       />
 
       {/* Comparison Table */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Head-to-Head Comparison
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               See how HERA outperforms SAP, Oracle, and other legacy ERP systems across every metric
             </p>
           </div>
 
           <div className="max-w-7xl mx-auto">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="bg-slate-50 dark:bg-muted rounded-2xl p-8 border border-border dark:border-border overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                    <tr className="border-b border-border dark:border-border">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Feature
                       </th>
                       <th className="text-left py-4 px-4 font-semibold text-green-600 bg-green-50 dark:bg-green-900/20 rounded-t-lg">
                         HERA
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                      <th className="text-left py-4 px-4 font-semibold text-muted-foreground dark:text-muted-foreground">
                         SAP
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                      <th className="text-left py-4 px-4 font-semibold text-muted-foreground dark:text-muted-foreground">
                         Oracle
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                      <th className="text-left py-4 px-4 font-semibold text-muted-foreground dark:text-muted-foreground">
                         Others
                       </th>
                     </tr>
@@ -245,9 +245,9 @@ export default function AdvantagePage() {
                     {comparison.map((row, index) => (
                       <tr
                         key={index}
-                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                        className="border-b border-border dark:border-border last:border-b-0"
                       >
-                        <td className="py-4 px-4 font-medium text-slate-900 dark:text-white">
+                        <td className="py-4 px-4 font-medium text-foreground dark:text-foreground">
                           {row.feature}
                         </td>
                         <td className="py-4 px-4 bg-green-50 dark:bg-green-900/20">
@@ -261,19 +261,19 @@ export default function AdvantagePage() {
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">{row.sap}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">{row.sap}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">{row.oracle}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">{row.oracle}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">{row.others}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">{row.others}</span>
                           </div>
                         </td>
                       </tr>
@@ -287,13 +287,13 @@ export default function AdvantagePage() {
       </section>
 
       {/* Key Advantages */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               HERA's Crushing Advantages
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Six key advantages that make HERA unbeatable in the marketplace
             </p>
           </div>
@@ -302,19 +302,19 @@ export default function AdvantagePage() {
             {advantages.map((advantage, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-sm hover:shadow-md transition-shadow duration-200"
               >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-6">
-                  <advantage.icon className="h-6 w-6 text-white" />
+                  <advantage.icon className="h-6 w-6 text-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-foreground dark:text-foreground mb-3">
                   {advantage.title}
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4 leading-relaxed">
                   {advantage.description}
                 </p>
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-                  <p className="text-sm font-medium text-blue-600">
+                <div className="pt-4 border-t border-border dark:border-border">
+                  <p className="text-sm font-medium text-primary">
                     <strong>Impact:</strong> {advantage.impact}
                   </p>
                 </div>
@@ -328,10 +328,10 @@ export default function AdvantagePage() {
       <section className="py-16 bg-red-50 dark:bg-red-900/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Legacy ERP Horror Stories
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Real companies that lost millions on failed traditional ERP implementations
             </p>
           </div>
@@ -340,11 +340,11 @@ export default function AdvantagePage() {
             {painPoints.map((category, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-red-200 dark:border-red-800 shadow-sm"
+                className="bg-background dark:bg-background rounded-xl p-8 border border-red-200 dark:border-red-800 shadow-sm"
               >
                 <div className="flex items-center mb-6">
                   <AlertCircle className="h-8 w-8 text-red-500 mr-3" />
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-xl font-bold text-foreground dark:text-foreground">
                     {category.title}
                   </h3>
                 </div>
@@ -363,10 +363,10 @@ export default function AdvantagePage() {
           <div className="mt-12 text-center">
             <div className="bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 dark:from-green-900/20 dark:via-blue-900/20 dark:to-purple-900/20 rounded-xl p-8 border border-green-200 dark:border-green-800">
               <ThumbsUp className="h-12 w-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+              <h3 className="text-2xl font-bold text-foreground dark:text-foreground mb-3">
                 HERA's Track Record: 95% Success Rate
               </h3>
-              <p className="text-lg text-slate-600 dark:text-slate-400">
+              <p className="text-lg text-muted-foreground dark:text-muted-foreground">
                 While competitors fail spectacularly, HERA delivers success consistently. Zero
                 failed implementations in our franchise network.
               </p>
@@ -376,13 +376,13 @@ export default function AdvantagePage() {
       </section>
 
       {/* Client Testimonials */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Clients Choose HERA Over Competitors
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Real testimonials from businesses that switched from SAP, Oracle, and other legacy
               systems
             </p>
@@ -396,7 +396,7 @@ export default function AdvantagePage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               The HERA Difference Is Your Competitive Edge
             </h2>
             <p className="text-xl text-blue-100 mb-8">
@@ -404,23 +404,23 @@ export default function AdvantagePage() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Clock className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">24-Hour Miracle</h3>
+                <h3 className="font-semibold text-foreground mb-2">24-Hour Miracle</h3>
                 <p className="text-sm text-blue-100">
                   Clients get results in 24 hours instead of waiting 18+ months
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <DollarSign className="h-8 w-8 text-green-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">90% Savings</h3>
+                <h3 className="font-semibold text-foreground mb-2">90% Savings</h3>
                 <p className="text-sm text-blue-100">
                   Massive cost savings create easy buying decisions
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Award className="h-8 w-8 text-purple-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Guaranteed Success</h3>
+                <h3 className="font-semibold text-foreground mb-2">Guaranteed Success</h3>
                 <p className="text-sm text-blue-100">
                   95% success rate eliminates implementation risk
                 </p>
@@ -430,7 +430,7 @@ export default function AdvantagePage() {
             <Button
               asChild
               size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
+              className="bg-background text-primary hover:bg-muted font-semibold px-8 py-6 text-lg"
             >
               <Link href="/franchise/apply" className="flex items-center">
                 Join the Winning Team
@@ -442,13 +442,13 @@ export default function AdvantagePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Stop Selling Yesterday's Technology
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               While competitors struggle with failed implementations and angry customers, you'll be
               closing deals with revolutionary technology that actually works.
             </p>
@@ -457,7 +457,7 @@ export default function AdvantagePage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Apply for Territory

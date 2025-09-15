@@ -315,7 +315,7 @@ All transactions follow enterprise accounting standards with multi-level approva
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-400 flex items-center justify-center">
-              <Calculator className="h-7 w-7 text-white" />
+              <Calculator className="h-7 w-7 text-foreground" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">HERA Digital Accountant</h1>

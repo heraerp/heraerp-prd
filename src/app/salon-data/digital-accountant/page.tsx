@@ -109,7 +109,7 @@ const SALON_QUICK_PROMPTS: QuickPrompt[] = [
     icon: CreditCard,
     label: 'Card Sale',
     prompt: 'Client paid by card',
-    color: 'text-blue-600',
+    color: 'text-primary',
     category: 'revenue'
   },
   {
@@ -656,7 +656,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
     if (!entry) return null
 
     return (
-      <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
+      <div className="mt-3 p-3 bg-muted dark:bg-muted rounded-lg text-sm">
         <p className="font-medium mb-2 text-gray-700 dark:text-gray-300">
           📚 Accounting Entry (Auto-generated):
         </p>
@@ -681,7 +681,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <Scissors className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading your salon accounts...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading your salon accounts...</p>
         </div>
       </div>
     )
@@ -712,13 +712,13 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg">
-                <Brain className="w-8 h-8 text-white" />
+                <Brain className="w-8 h-8 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   Salon Smart Accountant
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground dark:text-muted-foreground">
                   Just tell me what happened - I'll handle the accounting!
                 </p>
               </div>
@@ -748,11 +748,11 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Today's Sales</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Sales</p>
                   <p className="text-xl font-bold text-green-600">AED 3,850</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-500 opacity-20" />
@@ -760,11 +760,11 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Expenses</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Expenses</p>
                   <p className="text-xl font-bold text-red-600">AED 450</p>
                 </div>
                 <TrendingDown className="w-8 h-8 text-red-500 opacity-20" />
@@ -772,23 +772,23 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Clients Today</p>
-                  <p className="text-xl font-bold text-blue-600">12</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Clients Today</p>
+                  <p className="text-xl font-bold text-primary">12</p>
                 </div>
                 <Users className="w-8 h-8 text-blue-500 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Net Cash</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Cash</p>
                   <p className="text-xl font-bold text-purple-600">AED 3,400</p>
                 </div>
                 <Banknote className="w-8 h-8 text-purple-500 opacity-20" />
@@ -798,7 +798,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
         </div>
 
         {/* Main Interface with Tabs */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-1 flex flex-col">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border flex-1 flex flex-col">
           <CardHeader className="flex-shrink-0">
             <Tabs value={activeView} onValueChange={v => setActiveView(v as any)}>
               <TabsList className="grid grid-cols-4 w-full max-w-lg">
@@ -874,10 +874,10 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                       className={cn(
                                         'max-w-[80%] rounded-lg p-4',
                                         message.type === 'user'
-                                          ? 'bg-purple-600 text-white'
+                                          ? 'bg-purple-600 text-foreground'
                                           : message.type === 'system'
                                             ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'
-                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                                            : 'bg-muted dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground'
                                       )}
                                     >
                                       <p className="whitespace-pre-wrap">{message.content}</p>
@@ -977,7 +977,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                             <Button
                               onClick={scrollToBottomManual}
                               size="sm"
-                              className="absolute bottom-4 right-4 rounded-full shadow-lg bg-purple-600 hover:bg-purple-700 text-white"
+                              className="absolute bottom-4 right-4 rounded-full shadow-lg bg-purple-600 hover:bg-purple-700 text-foreground"
                               style={{ zIndex: 10 }}
                             >
                               <ArrowDown className="w-4 h-4" />
@@ -986,7 +986,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                         </div>
 
                         {/* Input Area - Fixed at bottom */}
-                        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                        <div className="p-4 border-t border-border dark:border-border bg-background dark:bg-muted">
                           {/* Hidden file input */}
                           <input
                             id="receipt-file-input"
@@ -1004,7 +1004,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                 onChange={e => setInput(e.target.value)}
                                 placeholder="Tell me what happened... (e.g., 'Sarah paid 350 for hair color')"
                                 disabled={loading}
-                                className="pr-20 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                                className="pr-20 bg-muted dark:bg-muted-foreground/10 border-border dark:border-border text-gray-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
                               />
                               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                                 <Button
@@ -1065,41 +1065,41 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                   {/* Side Panel */}
                   <div className="space-y-4">
                     {/* Help & Examples */}
-                    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <Card className="bg-background dark:bg-muted border-border dark:border-border">
                       <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
-                          <HelpCircle className="w-5 h-5 text-blue-600" />
+                          <HelpCircle className="w-5 h-5 text-primary" />
                           Example Phrases
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2 text-sm">
                           <div
-                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="p-2 bg-muted dark:bg-muted-foreground/10 rounded cursor-pointer hover:bg-muted dark:hover:bg-gray-600"
                             onClick={() => setInput('Maya paid 450 for coloring and treatment')}
                           >
                             "Maya paid 450 for coloring and treatment"
                           </div>
                           <div
-                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="p-2 bg-muted dark:bg-muted-foreground/10 rounded cursor-pointer hover:bg-muted dark:hover:bg-gray-600"
                             onClick={() => setInput('Bought hair color from Beauty Depot for 320')}
                           >
                             "Bought hair color from Beauty Depot for 320"
                           </div>
                           <div
-                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="p-2 bg-muted dark:bg-muted-foreground/10 rounded cursor-pointer hover:bg-muted dark:hover:bg-gray-600"
                             onClick={() => setInput('Pay Sarah 40% commission on 2000')}
                           >
                             "Pay Sarah 40% commission on 2000"
                           </div>
                           <div
-                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="p-2 bg-muted dark:bg-muted-foreground/10 rounded cursor-pointer hover:bg-muted dark:hover:bg-gray-600"
                             onClick={() => setInput('Paid electricity bill 850')}
                           >
                             "Paid electricity bill 850"
                           </div>
                           <div
-                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="p-2 bg-muted dark:bg-muted-foreground/10 rounded cursor-pointer hover:bg-muted dark:hover:bg-gray-600"
                             onClick={() => setInput("Show me today's total sales")}
                           >
                             "Show me today's total sales"
@@ -1124,7 +1124,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Quick Expense Entry</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-4">
                       Click an expense type, then select or enter the amount
                     </p>
                     <QuickExpenseGrid onExpenseSelect={handleExpenseSelect} />

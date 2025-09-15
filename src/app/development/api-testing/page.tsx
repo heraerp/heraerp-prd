@@ -64,18 +64,18 @@ export default function APITestingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+          <div className="bg-background/10 backdrop-blur-xl rounded-3xl border border-border/20 shadow-2xl p-8">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <Code className="w-8 h-8 text-white" />
+                <Code className="w-8 h-8 text-foreground" />
               </div>
-              <h1 className="text-2xl font-light text-white mb-2">HERA API Laboratory</h1>
+              <h1 className="text-2xl font-light text-foreground mb-2">HERA API Laboratory</h1>
               <p className="text-gray-300 text-sm">Developer Access Portal</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <Label htmlFor="password" className="text-white/80 text-sm font-medium">
+                <Label htmlFor="password" className="text-foreground/80 text-sm font-medium">
                   Access Code
                 </Label>
                 <Input
@@ -84,21 +84,21 @@ export default function APITestingPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                  className="mt-2 bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20 transition-all duration-300"
+                  className="mt-2 bg-background/10 border-border/20 text-foreground placeholder-white/50 focus:bg-background/20 transition-all duration-300"
                   placeholder="Enter developer access code"
                 />
               </div>
 
               <Button
                 onClick={handleLogin}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02]"
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-foreground border-0 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02]"
               >
                 Access API Laboratory
               </Button>
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 "Simplicity is the ultimate sophistication" - Leonardo da Vinci
               </p>
             </div>
@@ -322,18 +322,18 @@ export default function APITestingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-foreground">
       {/* Jobs-inspired header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl">
+      <div className="border-b border-border/10 bg-background/20 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Cpu className="w-5 h-5 text-white" />
+                <Cpu className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <h1 className="text-xl font-light">HERA API Laboratory</h1>
-                <p className="text-sm text-gray-400">Developer Testing Console</p>
+                <p className="text-sm text-muted-foreground">Developer Testing Console</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -358,19 +358,19 @@ export default function APITestingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Panel - API Selection */}
           <div className="space-y-6">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+            <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-foreground flex items-center space-x-2">
                   <Play className="w-5 h-5" />
                   <span>API Test Console</span>
                 </CardTitle>
-                <CardDescription className="text-gray-400">
+                <CardDescription className="text-muted-foreground">
                   Select and execute HERA-SPEAR APIs with precision
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-2 bg-white/10">
+                  <TabsList className="grid w-full grid-cols-2 bg-background/10">
                     <TabsTrigger value="phase1" className="data-[state=active]:bg-blue-500/30">
                       Phase 1: Smart Code
                     </TabsTrigger>
@@ -392,18 +392,18 @@ export default function APITestingPage() {
                             className={`cursor-pointer transition-all duration-300 border ${
                               selectedAPI === test.id
                                 ? 'bg-blue-500/20 border-blue-500/50'
-                                : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                : 'bg-background/5 border-border/10 hover:bg-background/10'
                             }`}
                             onClick={() => executeAPI(test)}
                           >
                             <CardContent className="p-4">
                               <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center">
-                                  <Icon className="w-5 h-5 text-white" />
+                                  <Icon className="w-5 h-5 text-foreground" />
                                 </div>
                                 <div className="flex-1">
-                                  <h3 className="font-medium text-white">{test.name}</h3>
-                                  <p className="text-sm text-gray-400">{test.description}</p>
+                                  <h3 className="font-medium text-foreground">{test.name}</h3>
+                                  <p className="text-sm text-muted-foreground">{test.description}</p>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <Badge variant="outline" className="text-xs">
@@ -434,18 +434,18 @@ export default function APITestingPage() {
                             className={`cursor-pointer transition-all duration-300 border ${
                               selectedAPI === test.id
                                 ? 'bg-purple-500/20 border-purple-500/50'
-                                : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                : 'bg-background/5 border-border/10 hover:bg-background/10'
                             }`}
                             onClick={() => executeAPI(test)}
                           >
                             <CardContent className="p-4">
                               <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
-                                  <Icon className="w-5 h-5 text-white" />
+                                  <Icon className="w-5 h-5 text-foreground" />
                                 </div>
                                 <div className="flex-1">
-                                  <h3 className="font-medium text-white">{test.name}</h3>
-                                  <p className="text-sm text-gray-400">{test.description}</p>
+                                  <h3 className="font-medium text-foreground">{test.name}</h3>
+                                  <p className="text-sm text-muted-foreground">{test.description}</p>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <Badge variant="outline" className="text-xs">
@@ -469,13 +469,13 @@ export default function APITestingPage() {
 
           {/* Right Panel - Results */}
           <div className="space-y-6">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+            <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-foreground flex items-center space-x-2">
                   <BarChart3 className="w-5 h-5" />
                   <span>Execution Results</span>
                 </CardTitle>
-                <CardDescription className="text-gray-400">
+                <CardDescription className="text-muted-foreground">
                   Real-time API response analysis
                 </CardDescription>
               </CardHeader>
@@ -490,7 +490,7 @@ export default function APITestingPage() {
                       className="space-y-4"
                     >
                       {/* Status Bar */}
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+                      <div className="flex items-center justify-between p-3 bg-background/5 rounded-lg border border-border/10">
                         <div className="flex items-center space-x-2">
                           {(() => {
                             const StatusIcon = getStatusIcon(results._metadata?.status || 500)
@@ -507,7 +507,7 @@ export default function APITestingPage() {
                             {results._metadata?.statusText || ''}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <Clock className="w-4 h-4" />
                           <span>{Math.round(results._metadata?.executionTime || 0)}ms</span>
                         </div>
@@ -521,7 +521,7 @@ export default function APITestingPage() {
                               <Gauge className="w-4 h-4 text-emerald-400" />
                               <span className="text-sm text-emerald-400">Execution Time</span>
                             </div>
-                            <p className="text-lg font-mono text-white mt-1">
+                            <p className="text-lg font-mono text-foreground mt-1">
                               {results.total_execution_time_ms ||
                                 results.performance_metrics?.total_time_ms ||
                                 0}
@@ -533,7 +533,7 @@ export default function APITestingPage() {
                               <Zap className="w-4 h-4 text-blue-400" />
                               <span className="text-sm text-blue-400">Cache Performance</span>
                             </div>
-                            <p className="text-lg font-mono text-white mt-1">
+                            <p className="text-lg font-mono text-foreground mt-1">
                               {results.performance_metrics?.cache_hits || 0} hits
                             </p>
                           </div>
@@ -542,7 +542,7 @@ export default function APITestingPage() {
 
                       {/* Results Display */}
                       <div className="relative">
-                        <pre className="bg-black/30 border border-white/10 rounded-lg p-4 text-sm text-gray-300 overflow-auto max-h-96 font-mono">
+                        <pre className="bg-background/30 border border-border/10 rounded-lg p-4 text-sm text-gray-300 overflow-auto max-h-96 font-mono">
                           {JSON.stringify(results, null, 2)}
                         </pre>
                       </div>
@@ -555,10 +555,10 @@ export default function APITestingPage() {
                       className="text-center py-12"
                     >
                       <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                        <Code className="w-8 h-8 text-white" />
+                        <Code className="w-8 h-8 text-foreground" />
                       </div>
-                      <h3 className="text-lg font-medium text-white mb-2">Select an API to test</h3>
-                      <p className="text-gray-400">
+                      <h3 className="text-lg font-medium text-foreground mb-2">Select an API to test</h3>
+                      <p className="text-muted-foreground">
                         Choose from Phase 1 or Phase 2 APIs to see live results
                       </p>
                     </motion.div>
@@ -570,17 +570,17 @@ export default function APITestingPage() {
         </div>
 
         {/* Bottom Status Bar - Jobs would want this */}
-        <div className="mt-8 p-4 bg-black/20 rounded-xl border border-white/10">
+        <div className="mt-8 p-4 bg-background/20 rounded-xl border border-border/10">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-4">
               <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                 All Systems Operational
               </Badge>
-              <span className="text-gray-400">
+              <span className="text-muted-foreground">
                 HERA System Organization: 719dfed1-09b4-4ca8-bfda-f682460de945
               </span>
             </div>
-            <div className="text-gray-500">
+            <div className="text-muted-foreground">
               "Simplicity is the ultimate sophistication" - Steve Jobs
             </div>
           </div>

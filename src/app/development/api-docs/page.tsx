@@ -58,12 +58,12 @@ export default function APIDocsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+          <div className="bg-background/10 backdrop-blur-xl rounded-3xl border border-border/20 shadow-2xl p-8">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <Book className="w-8 h-8 text-white" />
+                <Book className="w-8 h-8 text-foreground" />
               </div>
-              <h1 className="text-2xl font-light text-white mb-2">HERA API Documentation</h1>
+              <h1 className="text-2xl font-light text-foreground mb-2">HERA API Documentation</h1>
               <p className="text-gray-300 text-sm">Developer Reference Portal</p>
             </div>
 
@@ -73,13 +73,13 @@ export default function APIDocsPage() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                className="bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20"
+                className="bg-background/10 border-border/20 text-foreground placeholder-white/50 focus:bg-background/20"
                 placeholder="Enter developer access code"
               />
 
               <Button
                 onClick={handleLogin}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 py-3 rounded-xl font-medium"
+                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-foreground border-0 py-3 rounded-xl font-medium"
               >
                 Access Documentation
               </Button>
@@ -412,28 +412,28 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-foreground">
       {/* Header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl">
+      <div className="border-b border-border/10 bg-background/20 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Book className="w-5 h-5 text-white" />
+                <Book className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <h1 className="text-xl font-light">HERA API Documentation</h1>
-                <p className="text-sm text-gray-400">Complete Developer Reference</p>
+                <p className="text-sm text-muted-foreground">Complete Developer Reference</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   placeholder="Search APIs..."
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder-white/50 w-64"
+                  className="pl-10 bg-background/10 border-border/20 text-foreground placeholder-white/50 w-64"
                 />
               </div>
             </div>
@@ -445,13 +445,13 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar - API List */}
           <div className="lg:col-span-1">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl sticky top-6">
+            <Card className="bg-background/5 border-border/10 backdrop-blur-xl sticky top-6">
               <CardHeader>
-                <CardTitle className="text-white text-lg">API Endpoints</CardTitle>
+                <CardTitle className="text-foreground text-lg">API Endpoints</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Tabs defaultValue="phase1" className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-2 bg-white/10">
+                  <TabsList className="grid w-full grid-cols-2 bg-background/10">
                     <TabsTrigger value="phase1" className="text-xs">
                       Phase 1
                     </TabsTrigger>
@@ -470,14 +470,14 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                           className={`w-full text-left p-3 rounded-lg border transition-all ${
                             selectedEndpoint === doc.id
                               ? 'bg-blue-500/20 border-blue-500/50'
-                              : 'bg-white/5 border-white/10 hover:bg-white/10'
+                              : 'bg-background/5 border-border/10 hover:bg-background/10'
                           }`}
                         >
                           <div className="flex items-center space-x-2">
                             <Icon className="w-4 h-4 text-blue-400" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-white truncate">{doc.name}</p>
-                              <p className="text-xs text-gray-400 font-mono">{doc.method}</p>
+                              <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
+                              <p className="text-xs text-muted-foreground font-mono">{doc.method}</p>
                             </div>
                           </div>
                         </button>
@@ -495,14 +495,14 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                           className={`w-full text-left p-3 rounded-lg border transition-all ${
                             selectedEndpoint === doc.id
                               ? 'bg-purple-500/20 border-purple-500/50'
-                              : 'bg-white/5 border-white/10 hover:bg-white/10'
+                              : 'bg-background/5 border-border/10 hover:bg-background/10'
                           }`}
                         >
                           <div className="flex items-center space-x-2">
                             <Icon className="w-4 h-4 text-purple-400" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-white truncate">{doc.name}</p>
-                              <p className="text-xs text-gray-400 font-mono">{doc.method}</p>
+                              <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
+                              <p className="text-xs text-muted-foreground font-mono">{doc.method}</p>
                             </div>
                           </div>
                         </button>
@@ -519,20 +519,20 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
             {selectedDoc && (
               <div className="space-y-6">
                 {/* API Header */}
-                <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                          <selectedDoc.icon className="w-6 h-6 text-white" />
+                          <selectedDoc.icon className="w-6 h-6 text-foreground" />
                         </div>
                         <div>
-                          <CardTitle className="text-white text-xl">{selectedDoc.name}</CardTitle>
+                          <CardTitle className="text-foreground text-xl">{selectedDoc.name}</CardTitle>
                           <div className="flex items-center space-x-2 mt-1">
                             <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 font-mono text-xs">
                               {selectedDoc.method}
                             </Badge>
-                            <code className="text-sm text-gray-400 bg-white/10 px-2 py-1 rounded">
+                            <code className="text-sm text-muted-foreground bg-background/10 px-2 py-1 rounded">
                               {selectedDoc.endpoint}
                             </code>
                           </div>
@@ -542,7 +542,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                         onClick={() => copyToClipboard(selectedDoc.endpoint, selectedDoc.id)}
                         variant="outline"
                         size="sm"
-                        className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        className="bg-background/10 border-border/20 text-foreground hover:bg-background/20"
                       >
                         {copiedCode === selectedDoc.id ? (
                           <CheckCircle className="w-4 h-4" />
@@ -583,34 +583,34 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                 {/* Request/Response Documentation */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Request */}
-                  <Card className="bg-white/5 border-white/10">
+                  <Card className="bg-background/5 border-border/10">
                     <CardHeader>
-                      <CardTitle className="text-white text-lg">Request Parameters</CardTitle>
+                      <CardTitle className="text-foreground text-lg">Request Parameters</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       {Object.entries(selectedDoc.request).map(([key, value]) => (
-                        <div key={key} className="p-3 bg-white/5 rounded-lg">
+                        <div key={key} className="p-3 bg-background/5 rounded-lg">
                           <div className="flex items-start justify-between mb-1">
                             <code className="text-blue-400 font-mono text-sm">{key}</code>
                           </div>
-                          <p className="text-xs text-gray-400">{value as string}</p>
+                          <p className="text-xs text-muted-foreground">{value as string}</p>
                         </div>
                       ))}
                     </CardContent>
                   </Card>
 
                   {/* Response */}
-                  <Card className="bg-white/5 border-white/10">
+                  <Card className="bg-background/5 border-border/10">
                     <CardHeader>
-                      <CardTitle className="text-white text-lg">Response Fields</CardTitle>
+                      <CardTitle className="text-foreground text-lg">Response Fields</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       {Object.entries(selectedDoc.response).map(([key, value]) => (
-                        <div key={key} className="p-3 bg-white/5 rounded-lg">
+                        <div key={key} className="p-3 bg-background/5 rounded-lg">
                           <div className="flex items-start justify-between mb-1">
                             <code className="text-emerald-400 font-mono text-sm">{key}</code>
                           </div>
-                          <p className="text-xs text-gray-400">{value as string}</p>
+                          <p className="text-xs text-muted-foreground">{value as string}</p>
                         </div>
                       ))}
                     </CardContent>
@@ -618,10 +618,10 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                 </div>
 
                 {/* Code Example */}
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-background/5 border-border/10">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-white text-lg flex items-center space-x-2">
+                      <CardTitle className="text-foreground text-lg flex items-center space-x-2">
                         <Play className="w-5 h-5" />
                         <span>Example Usage</span>
                       </CardTitle>
@@ -631,7 +631,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                         }
                         variant="outline"
                         size="sm"
-                        className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        className="bg-background/10 border-border/20 text-foreground hover:bg-background/20"
                       >
                         {copiedCode === `example-${selectedDoc.id}` ? (
                           <>
@@ -648,7 +648,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <pre className="bg-black/30 border border-white/10 rounded-lg p-4 text-sm text-gray-300 overflow-x-auto font-mono">
+                    <pre className="bg-background/30 border border-border/10 rounded-lg p-4 text-sm text-gray-300 overflow-x-auto font-mono">
                       <code>{selectedDoc.example}</code>
                     </pre>
                   </CardContent>

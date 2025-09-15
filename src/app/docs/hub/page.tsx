@@ -32,9 +32,9 @@ export default function DocsHub() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* GitHub-style Header */}
-      <header className="border-b border-gray-200 bg-white">
+      <header className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -44,17 +44,17 @@ export default function DocsHub() {
               </Badge>
             </div>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" className="text-gray-600">
+              <Button variant="ghost" size="sm" className="text-muted-foreground">
                 <Star className="h-4 w-4 mr-1" />
                 Star
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">
+              <Button variant="ghost" size="sm" className="text-muted-foreground">
                 <GitBranch className="h-4 w-4 mr-1" />
                 Fork
               </Button>
             </div>
           </div>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Enterprise Resource Planning with Revolutionary Universal Architecture
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function DocsHub() {
             <Book className="h-5 w-5" />
             Overview
           </h2>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <div className="bg-muted border border-border rounded-lg p-6">
             <p className="text-gray-700 leading-relaxed">
               HERA is a revolutionary ERP platform built on a universal architecture that handles
               infinite business complexity without schema changes. With AI-powered automation,
@@ -86,7 +86,7 @@ export default function DocsHub() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/quickstart')}
             >
               <CardHeader className="pb-3">
@@ -96,14 +96,14 @@ export default function DocsHub() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                <code className="text-xs bg-muted px-2 py-1 rounded">
                   npm install && npm run dev
                 </code>
               </CardContent>
             </Card>
 
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/architecture')}
             >
               <CardHeader className="pb-3">
@@ -113,7 +113,7 @@ export default function DocsHub() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-muted-foreground">
                   <div>• Universal schema</div>
                   <div>• Smart codes</div>
                   <div>• Multi-tenant</div>
@@ -122,7 +122,7 @@ export default function DocsHub() {
             </Card>
 
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/api/rest')}
             >
               <CardHeader className="pb-3">
@@ -130,7 +130,7 @@ export default function DocsHub() {
                 <CardDescription className="text-sm">Complete API documentation</CardDescription>
               </CardHeader>
               <CardContent>
-                <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                <code className="text-xs bg-muted px-2 py-1 rounded">
                   POST /api/v1/universal
                 </code>
               </CardContent>
@@ -145,15 +145,15 @@ export default function DocsHub() {
             Core Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+            <Card className="border-border hover:border-blue-300 transition-colors cursor-pointer">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Database className="h-4 w-4 text-blue-600" />
+                  <Database className="h-4 w-4 text-primary" />
                   Universal Architecture
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-muted-foreground mb-2">
                   Revolutionary architecture with infinite scalability
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -162,7 +162,7 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+            <Card className="border-border hover:border-blue-300 transition-colors cursor-pointer">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Shield className="h-4 w-4 text-green-600" />
@@ -170,7 +170,7 @@ export default function DocsHub() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-muted-foreground mb-2">
                   Enterprise-grade security with perfect isolation
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -179,7 +179,7 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+            <Card className="border-border hover:border-blue-300 transition-colors cursor-pointer">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Cpu className="h-4 w-4 text-purple-600" />
@@ -187,7 +187,7 @@ export default function DocsHub() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-muted-foreground mb-2">
                   Multi-provider AI with intelligent routing
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -206,12 +206,12 @@ export default function DocsHub() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/chart-of-accounts')}
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-600" />
+                  <FileText className="h-5 w-5 text-primary" />
                   Chart of Accounts
                 </CardTitle>
                 <CardDescription>Universal COA system with 132 industry templates</CardDescription>
@@ -229,7 +229,7 @@ export default function DocsHub() {
             </Card>
 
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/auto-journal')}
             >
               <CardHeader>
@@ -252,7 +252,7 @@ export default function DocsHub() {
             </Card>
 
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/ifrs-compliance')}
             >
               <CardHeader>
@@ -272,7 +272,7 @@ export default function DocsHub() {
             </Card>
 
             <Card
-              className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+              className="border-border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/universal-coa-dna')}
             >
               <CardHeader>
@@ -302,35 +302,35 @@ export default function DocsHub() {
             <Building2 className="h-5 w-5" />
             Industry Solutions
           </h2>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <div className="bg-muted border border-border rounded-lg p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Link
                 href="/docs/industries/restaurant"
-                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+                className="flex items-center justify-between p-3 bg-background rounded border border-border hover:border-blue-300 transition-colors"
               >
                 <span className="text-sm font-medium">Restaurant</span>
-                <ArrowRight className="h-4 w-4 text-gray-400" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
                 href="/docs/industries/healthcare"
-                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+                className="flex items-center justify-between p-3 bg-background rounded border border-border hover:border-blue-300 transition-colors"
               >
                 <span className="text-sm font-medium">Healthcare</span>
-                <ArrowRight className="h-4 w-4 text-gray-400" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
                 href="/docs/industries/retail"
-                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+                className="flex items-center justify-between p-3 bg-background rounded border border-border hover:border-blue-300 transition-colors"
               >
                 <span className="text-sm font-medium">Retail</span>
-                <ArrowRight className="h-4 w-4 text-gray-400" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
                 href="/docs/industries/manufacturing"
-                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+                className="flex items-center justify-between p-3 bg-background rounded border border-border hover:border-blue-300 transition-colors"
               >
                 <span className="text-sm font-medium">Manufacturing</span>
-                <ArrowRight className="h-4 w-4 text-gray-400" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             </div>
           </div>
@@ -343,27 +343,27 @@ export default function DocsHub() {
             Developer Resources
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-gray-200">
+            <Card className="border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">API Reference</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link href="/docs/api/rest" className="text-blue-600 hover:underline">
+                    <Link href="/docs/api/rest" className="text-primary hover:underline">
                       REST API →
                     </Link>
                   </li>
                   <li>
                     <Link
                       href="/docs/api/typescript-client"
-                      className="text-blue-600 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       TypeScript Client →
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/api/webhooks" className="text-blue-600 hover:underline">
+                    <Link href="/docs/api/webhooks" className="text-primary hover:underline">
                       Webhooks →
                     </Link>
                   </li>
@@ -371,7 +371,7 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200">
+            <Card className="border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Integrations</CardTitle>
               </CardHeader>
@@ -380,7 +380,7 @@ export default function DocsHub() {
                   <li>
                     <Link
                       href="/docs/integrations/mcp-server"
-                      className="text-blue-600 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       MCP Server →
                     </Link>
@@ -388,7 +388,7 @@ export default function DocsHub() {
                   <li>
                     <Link
                       href="/docs/integrations/progressive-pwa"
-                      className="text-blue-600 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       Progressive PWA →
                     </Link>
@@ -396,7 +396,7 @@ export default function DocsHub() {
                   <li>
                     <Link
                       href="/docs/integrations/whatsapp"
-                      className="text-blue-600 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       WhatsApp Business →
                     </Link>
@@ -405,24 +405,24 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200">
+            <Card className="border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Tools & Guides</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link href="/docs/claude-md" className="text-blue-600 hover:underline">
+                    <Link href="/docs/claude-md" className="text-primary hover:underline">
                       CLAUDE.md Guide →
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/monitoring" className="text-blue-600 hover:underline">
+                    <Link href="/docs/monitoring" className="text-primary hover:underline">
                       Monitoring Setup →
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/security" className="text-blue-600 hover:underline">
+                    <Link href="/docs/security" className="text-primary hover:underline">
                       Security Guide →
                     </Link>
                   </li>
@@ -433,7 +433,7 @@ export default function DocsHub() {
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-gray-200 pt-8 mt-16 text-sm text-gray-600">
+        <footer className="border-t border-border pt-8 mt-16 text-sm text-muted-foreground">
           <div className="flex justify-between items-center">
             <div>
               <p>Built with HERA Universal Architecture</p>
@@ -444,7 +444,7 @@ export default function DocsHub() {
               <p className="mt-1">
                 <a
                   href="https://github.com/anthropics/claude-code/issues"
-                  className="text-blue-600 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Report Issues
                 </a>

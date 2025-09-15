@@ -195,13 +195,13 @@ LIMIT 10;`
 
   if (!isAuthenticated || contextLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
-          <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">
             Authentication Required
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Please log in to access the SQL editor.
           </p>
         </div>
@@ -210,18 +210,18 @@ LIMIT 10;`
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-muted dark:bg-background p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                <Database className="w-5 h-5 text-white" />
+                <Database className="w-5 h-5 text-foreground" />
               </div>
               Supabase SQL Editor
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-1">
               Execute SQL queries directly against your Supabase database
             </p>
           </div>
@@ -260,7 +260,7 @@ LIMIT 10;`
                     >
                       <div>
                         <div className="font-medium">{sample.name}</div>
-                        <div className="text-xs text-gray-500 mt-1 truncate">
+                        <div className="text-xs text-muted-foreground mt-1 truncate">
                           {sample.query.split('\n')[0].replace('--', '').trim()}
                         </div>
                       </div>
@@ -331,7 +331,7 @@ SELECT * FROM core_entities LIMIT 10;"
                 </CardHeader>
                 <CardContent>
                   {!result ? (
-                    <div className="flex items-center justify-center h-[300px] text-gray-500">
+                    <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                       <div className="text-center">
                         <Table className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>Execute a query to see results</p>
@@ -344,7 +344,7 @@ SELECT * FROM core_entities LIMIT 10;"
                     </Alert>
                   ) : (
                     <div className="space-y-4">
-                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground dark:text-muted-foreground">
                         <Badge variant="outline">
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           {result.rowCount} rows
@@ -371,7 +371,7 @@ SELECT * FROM core_entities LIMIT 10;"
                               {result.data.slice(0, 20).map((row, index) => (
                                 <tr
                                   key={index}
-                                  className="border-b hover:bg-gray-50 dark:hover:bg-gray-800"
+                                  className="border-b hover:bg-muted dark:hover:bg-muted"
                                 >
                                   {Object.values(row).map((value, cellIndex) => (
                                     <td key={cellIndex} className="p-2">
@@ -386,7 +386,7 @@ SELECT * FROM core_entities LIMIT 10;"
                           </table>
                         </div>
                       ) : (
-                        <p className="text-gray-500">No rows returned</p>
+                        <p className="text-muted-foreground">No rows returned</p>
                       )}
                     </div>
                   )}
@@ -402,7 +402,7 @@ SELECT * FROM core_entities LIMIT 10;"
               </CardHeader>
               <CardContent>
                 {queryHistory.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No queries executed yet</p>
                   </div>
@@ -424,7 +424,7 @@ SELECT * FROM core_entities LIMIT 10;"
                                   {entry.result.executionTime}ms
                                 </Badge>
                               </div>
-                              <pre className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-x-auto">
+                              <pre className="text-sm bg-muted dark:bg-muted p-2 rounded overflow-x-auto">
                                 {entry.query.trim()}
                               </pre>
                             </div>

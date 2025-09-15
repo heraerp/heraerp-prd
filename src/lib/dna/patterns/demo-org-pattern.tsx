@@ -73,16 +73,16 @@ export function OrganizationInfo({
   className?: string
 }) {
   const baseClasses =
-    'mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block'
+    'mt-3 p-3 bg-muted dark:bg-muted rounded-lg border border-border dark:border-border inline-block'
   const combinedClasses = className ? `${baseClasses} ${className}` : baseClasses
 
   return (
     <div className={combinedClasses}>
       <p className="text-sm text-gray-700 dark:text-gray-300">
-        <span className="text-gray-500 dark:text-gray-500">Organization:</span>{' '}
-        <span className="font-medium text-gray-900 dark:text-white">{name}</span>
+        <span className="text-muted-foreground dark:text-muted-foreground">Organization:</span>{' '}
+        <span className="font-medium text-gray-900 dark:text-foreground">{name}</span>
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Organization ID: {id}</p>
+      <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Organization ID: {id}</p>
     </div>
   )
 }
@@ -92,11 +92,11 @@ export function OrganizationInfo({
  */
 export function OrganizationLoading({ message = 'Loading organization...' }: { message?: string }) {
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <div className="inline-flex items-center space-x-2">
           <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-400">{message}</p>
+          <p className="text-muted-foreground">{message}</p>
         </div>
       </div>
     </div>

@@ -138,10 +138,10 @@ export function UCRTemplateBrowser() {
         {payload.definitions && (
           <div>
             <h4 className="text-sm font-medium mb-2">Base Definitions</h4>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-1">
+            <div className="bg-muted dark:bg-muted rounded-lg p-3 space-y-1">
               {Object.entries(payload.definitions).map(([key, value]) => (
                 <div key={key} className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-muted-foreground dark:text-muted-foreground">
                     {key.replace(/_/g, ' ')}:
                   </span>
                   <span className="font-mono">{String(value)}</span>
@@ -210,7 +210,7 @@ export function UCRTemplateBrowser() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-              <FileText className="w-6 h-6 text-white" />
+              <FileText className="w-6 h-6 text-foreground" />
             </div>
             <div>
               <CardTitle className="text-2xl">UCR Template Library</CardTitle>
@@ -225,7 +225,7 @@ export function UCRTemplateBrowser() {
       {/* Search and Filters */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search templates..."
             value={searchQuery}
@@ -259,7 +259,7 @@ export function UCRTemplateBrowser() {
                   <div
                     className={`w-10 h-10 rounded-lg bg-gradient-to-r ${gradient} flex items-center justify-center`}
                   >
-                    <Icon className="w-5 h-5 text-white" />
+                    <Icon className="w-5 h-5 text-foreground" />
                   </div>
                   <div className="flex gap-1">
                     <Badge variant="outline" className="text-xs">
@@ -273,10 +273,10 @@ export function UCRTemplateBrowser() {
                 <CardTitle className="text-lg mt-3">{template.title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {template.rule_payload.description}
                 </p>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded p-2">
+                <div className="bg-muted dark:bg-muted rounded p-2">
                   <code className="text-xs break-all">{template.smart_code}</code>
                 </div>
                 <div className="flex gap-2 pt-2">
@@ -295,7 +295,7 @@ export function UCRTemplateBrowser() {
                   <Button
                     size="sm"
                     onClick={() => handleCloneTemplate(template)}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-foreground hover:from-purple-700 hover:to-pink-700"
                   >
                     <Sparkles className="w-4 h-4 mr-1" />
                     Customize
@@ -310,8 +310,8 @@ export function UCRTemplateBrowser() {
       {filteredTemplates.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <Filter className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500">No templates found matching your criteria</p>
+            <Filter className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No templates found matching your criteria</p>
           </CardContent>
         </Card>
       )}
@@ -331,7 +331,7 @@ export function UCRTemplateBrowser() {
                   <Badge>{selectedTemplate.module}</Badge>
                   <Badge variant="outline">Template ID: {selectedTemplate.template_id}</Badge>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded p-3">
+                <div className="bg-muted dark:bg-muted rounded p-3">
                   <code className="text-sm">{selectedTemplate.smart_code}</code>
                 </div>
                 {renderRuleDetails(selectedTemplate.rule_payload)}
@@ -344,7 +344,7 @@ export function UCRTemplateBrowser() {
             </Button>
             <Button
               onClick={() => selectedTemplate && handleCloneTemplate(selectedTemplate)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-foreground"
             >
               <Sparkles className="w-4 h-4 mr-2" />
               Customize This Template

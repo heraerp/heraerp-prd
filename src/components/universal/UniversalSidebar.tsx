@@ -51,7 +51,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
   const mainItems = sidebarItems.slice(0, 4) // Show only 4 items on mobile
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-white/20 z-40 shadow-2xl">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-2xl border-t border-border/20 z-40 shadow-2xl">
       <div className="grid grid-cols-4 gap-0">
         {mainItems.map(item => {
           const Icon = item.icon
@@ -66,15 +66,15 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
                 'flex flex-col items-center justify-center py-3 relative',
                 active
                   ? `bg-gradient-to-t ${moduleColor.from}/10 ${moduleColor.to}/10 text-gray-900`
-                  : 'text-gray-500'
+                  : 'text-muted-foreground'
               )}
             >
               <div className="relative">
-                <Icon className={cn('h-5 w-5', active ? 'text-violet-600' : 'text-gray-400')} />
+                <Icon className={cn('h-5 w-5', active ? 'text-violet-600' : 'text-muted-foreground')} />
                 {item.badge && (
                   <span
                     className={cn(
-                      'absolute -top-1 -right-1 text-[8px] px-1 rounded-full text-white min-w-[14px] text-center',
+                      'absolute -top-1 -right-1 text-[8px] px-1 rounded-full text-foreground min-w-[14px] text-center',
                       item.badgeColor || 'bg-gray-600'
                     )}
                   >
@@ -85,7 +85,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
               <span
                 className={cn(
                   'text-[10px] mt-1 font-medium',
-                  active ? 'text-gray-900' : 'text-gray-500'
+                  active ? 'text-gray-900' : 'text-muted-foreground'
                 )}
               >
                 {item.title}
@@ -132,24 +132,24 @@ const AppsModal = React.memo(function AppsModal({
   return createPortal(
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+      <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div className="bg-white/80 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
+        <div className="bg-background/80 backdrop-blur-2xl border border-border/20 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/20">
+          <div className="flex items-center justify-between p-6 border-b border-border/20">
             <div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                 All {moduleName} Apps
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Access all your {moduleName.toLowerCase()} tools
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-white/20 transition-colors text-gray-600 hover:text-violet-600"
+              className="p-2 rounded-lg hover:bg-background/20 transition-colors text-muted-foreground hover:text-violet-600"
             >
               <X className="h-6 w-6" />
             </button>
@@ -172,10 +172,10 @@ const AppsModal = React.memo(function AppsModal({
                     }}
                     className={cn(
                       'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
-                      'bg-white/50 hover:bg-white/70 backdrop-blur-sm',
-                      'border border-white/20 hover:border-violet-400/30',
+                      'bg-background/50 hover:bg-background/70 backdrop-blur-sm',
+                      'border border-border/20 hover:border-violet-400/30',
                       'hover:shadow-lg hover:scale-[1.02]',
-                      active && 'bg-white/70 border-violet-400/50 shadow-lg'
+                      active && 'bg-background/70 border-violet-400/50 shadow-lg'
                     )}
                   >
                     <div
@@ -187,7 +187,7 @@ const AppsModal = React.memo(function AppsModal({
                           : 'from-violet-500 to-purple-600 group-hover:from-violet-600 group-hover:to-purple-700'
                       )}
                     >
-                      <Icon className="h-6 w-6 text-white" />
+                      <Icon className="h-6 w-6 text-foreground" />
                     </div>
                     <span
                       className={cn(
@@ -245,11 +245,11 @@ function UniversalSidebar({
   return (
     <>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-2xl border-b border-white/20 z-40 flex items-center justify-between px-4 shadow-lg">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-2xl border-b border-border/20 z-40 flex items-center justify-between px-4 shadow-lg">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-lg hover:bg-white/20 transition-colors text-gray-600 hover:text-violet-600"
+            className="p-2 rounded-lg hover:bg-background/20 transition-colors text-muted-foreground hover:text-violet-600"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -261,7 +261,7 @@ function UniversalSidebar({
                 moduleColor.to
               )}
             >
-              <ModuleIcon className="h-5 w-5 text-white" />
+              <ModuleIcon className="h-5 w-5 text-foreground" />
             </div>
             <span className="text-sm font-medium text-gray-900">{moduleName}</span>
           </div>
@@ -271,7 +271,7 @@ function UniversalSidebar({
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30"
+          className="lg:hidden fixed inset-0 bg-background/60 backdrop-blur-sm z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -279,13 +279,13 @@ function UniversalSidebar({
       {/* Sidebar - Desktop always visible, Mobile slide-in */}
       <div
         className={cn(
-          'fixed left-0 top-0 h-full bg-white/80 backdrop-blur-2xl border-r border-white/20 w-64 lg:w-20 z-40 shadow-2xl transition-transform duration-300',
+          'fixed left-0 top-0 h-full bg-background/80 backdrop-blur-2xl border-r border-border/20 w-64 lg:w-20 z-40 shadow-2xl transition-transform duration-300',
           'lg:translate-x-0',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Logo Section */}
-        <div className="h-20 flex flex-col items-center justify-center border-b border-white/20 bg-white/30">
+        <div className="h-20 flex flex-col items-center justify-center border-b border-border/20 bg-background/30">
           <div
             className={cn(
               'w-10 h-10 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg',
@@ -293,7 +293,7 @@ function UniversalSidebar({
               moduleColor.to
             )}
           >
-            <ModuleIcon className="h-6 w-6 text-white" />
+            <ModuleIcon className="h-6 w-6 text-foreground" />
           </div>
           <span className="text-[10px] text-gray-700 mt-1 font-semibold">{moduleName}</span>
         </div>
@@ -314,14 +314,14 @@ function UniversalSidebar({
                     'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                     active
                       ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
+                      : 'text-gray-700 hover:text-foreground hover:bg-background/30 hover:backdrop-blur-sm'
                   )}
                 >
                   <div className="relative">
                     <Icon
                       className={cn(
                         'h-5 w-5',
-                        active ? 'text-violet-600' : 'text-gray-600 group-hover:text-violet-600'
+                        active ? 'text-violet-600' : 'text-muted-foreground group-hover:text-violet-600'
                       )}
                     />
 
@@ -329,7 +329,7 @@ function UniversalSidebar({
                     {item.badge && (
                       <span
                         className={cn(
-                          'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                          'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-foreground min-w-[16px] text-center',
                           item.badgeColor || 'bg-gray-600'
                         )}
                       >
@@ -344,14 +344,14 @@ function UniversalSidebar({
                       'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
                       active
                         ? 'text-gray-900'
-                        : 'text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700'
+                        : 'text-muted-foreground lg:text-muted-foreground group-hover:text-foreground lg:group-hover:text-foreground'
                     )}
                   >
                     {item.title}
                   </span>
 
                   {/* Tooltip for desktop */}
-                  <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-lg">
+                  <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-background text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-lg">
                     <p className="font-medium">{item.title}</p>
                     {item.badge && (
                       <p className="text-xs text-gray-300 mt-1">{item.badge} pending</p>
@@ -366,18 +366,18 @@ function UniversalSidebar({
               onClick={() => setShowAppsModal(true)}
               className={cn(
                 'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-200 group relative',
-                'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
+                'text-gray-700 hover:text-foreground hover:bg-background/30 hover:backdrop-blur-sm'
               )}
             >
-              <Grid3x3 className="h-5 w-5 text-gray-600 group-hover:text-violet-600" />
-              <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700">
+              <Grid3x3 className="h-5 w-5 text-muted-foreground group-hover:text-violet-600" />
+              <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-muted-foreground lg:text-muted-foreground group-hover:text-foreground lg:group-hover:text-foreground">
                 More Apps
               </span>
             </button>
           </div>
 
           {/* Separator */}
-          {bottomItems.length > 0 && <div className="my-2 mx-4 border-t border-white/20" />}
+          {bottomItems.length > 0 && <div className="my-2 mx-4 border-t border-border/20" />}
 
           {/* Bottom Items */}
           {bottomItems.length > 0 && (
@@ -395,13 +395,13 @@ function UniversalSidebar({
                       'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                       active
                         ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
+                        : 'text-gray-700 hover:text-foreground hover:bg-background/30 hover:backdrop-blur-sm'
                     )}
                   >
                     <Icon
                       className={cn(
                         'h-5 w-5',
-                        active ? 'text-violet-600' : 'text-gray-600 group-hover:text-violet-600'
+                        active ? 'text-violet-600' : 'text-muted-foreground group-hover:text-violet-600'
                       )}
                     />
 
@@ -410,7 +410,7 @@ function UniversalSidebar({
                         'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
                         active
                           ? 'text-gray-900'
-                          : 'text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700'
+                          : 'text-muted-foreground lg:text-muted-foreground group-hover:text-foreground lg:group-hover:text-foreground'
                       )}
                     >
                       {item.title}
@@ -424,7 +424,7 @@ function UniversalSidebar({
 
         {/* Status Indicators */}
         {statusIndicators.length > 0 && (
-          <div className="p-2 lg:p-2 px-4 border-t border-white/20 bg-white/20 backdrop-blur-sm">
+          <div className="p-2 lg:p-2 px-4 border-t border-border/20 bg-background/20 backdrop-blur-sm">
             <div className="space-y-2 lg:space-y-1">
               {statusIndicators.map((indicator, index) => {
                 const Icon = indicator.icon
@@ -448,12 +448,12 @@ function UniversalSidebar({
 
         {/* Organization Info - Mobile only */}
         {organizationName && (
-          <div className="lg:hidden p-4 border-t border-white/20 bg-white/30">
-            <div className="bg-white/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <p className="text-xs text-gray-600 mb-1">Organization</p>
+          <div className="lg:hidden p-4 border-t border-border/20 bg-background/30">
+            <div className="bg-background/50 backdrop-blur-sm rounded-lg p-3 border border-border/20">
+              <p className="text-xs text-muted-foreground mb-1">Organization</p>
               <p className="text-sm text-gray-900 font-medium truncate">{organizationName}</p>
               {organizationId && (
-                <p className="text-xs text-gray-600 mt-1 truncate">
+                <p className="text-xs text-muted-foreground mt-1 truncate">
                   ID: {organizationId.slice(0, 8)}...
                 </p>
               )}

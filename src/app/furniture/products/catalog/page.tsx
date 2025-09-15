@@ -157,7 +157,7 @@ export default function FurnitureProductCatalog() {
         const config = {
           active: { color: 'bg-green-500/20 text-green-600 dark:text-green-400', label: 'Active' },
           inactive: {
-            color: 'bg-gray-500/20 text-gray-600 dark:text-muted-foreground',
+            color: 'bg-gray-500/20 text-muted-foreground dark:text-muted-foreground',
             label: 'Inactive'
           },
           discontinued: {

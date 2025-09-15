@@ -64,19 +64,19 @@ const glAccountColumns = [
 
       return (
         <div style={{ paddingLeft: `${indent}px` }} className="flex items-start gap-1">
-          {depth > 0 && <span className="text-gray-500 text-xs mt-1">└─</span>}
+          {depth > 0 && <span className="text-muted-foreground text-xs mt-1">└─</span>}
           <div>
             <p
               className={cn(
                 'font-medium',
-                isHeader && 'text-blue-600 dark:text-blue-400',
+                isHeader && 'text-primary dark:text-blue-400',
                 !isHeader && depth > 0 && 'text-sm'
               )}
             >
               {value}
             </p>
             {(row.metadata as any)?.ifrs_classification && (
-              <p className="text-xs text-gray-500">IFRS: {row.metadata.ifrs_classification}</p>
+              <p className="text-xs text-muted-foreground">IFRS: {row.metadata.ifrs_classification}</p>
             )}
           </div>
         </div>
@@ -90,8 +90,8 @@ const glAccountColumns = [
     render: (_: any, row: any) => {
       const type = (row.metadata as any)?.account_type || 'detail'
       const colors = {
-        header: 'bg-blue-500/20 text-blue-600',
-        detail: 'bg-gray-500/20 text-gray-600'
+        header: 'bg-blue-500/20 text-primary',
+        detail: 'bg-gray-500/20 text-muted-foreground'
       }
       return (
         <Badge variant="outline" className={cn('border-0', colors[type])}>
@@ -126,7 +126,7 @@ const glAccountColumns = [
       const balanceType = row.balance_type || 'Dr'
 
       if (balance === 0) {
-        return <span className="font-mono text-gray-500">-</span>
+        return <span className="font-mono text-muted-foreground">-</span>
       }
 
       return (
@@ -350,7 +350,7 @@ export default function FurnitureFinance() {
                   <stat.icon className={cn('h-4 w-4', stat.color)} />
                 </div>
                 <p className="text-xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-gray-500">{stat.description}</p>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
                 <div className="flex items-center gap-1">
                   {stat.change.startsWith('+') ? (
                     <TrendingUp className="h-3 w-3 text-green-500" />
@@ -463,7 +463,7 @@ export default function FurnitureFinance() {
                 </div>
               ) : filteredAccounts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center p-8 text-center">
-                  <FileText className="h-12 w-12 text-gray-500 mb-3" />
+                  <FileText className="h-12 w-12 text-muted-foreground mb-3" />
                   <h3 className="text-lg font-medium text-gray-300">No GL accounts found</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     {searchTerm
@@ -599,17 +599,17 @@ export default function FurnitureFinance() {
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Output GST</p>
                   <p className="text-2xl font-bold">₹2,45,600</p>
-                  <p className="text-xs text-gray-500">On sales this month</p>
+                  <p className="text-xs text-muted-foreground">On sales this month</p>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Input GST</p>
                   <p className="text-2xl font-bold">₹1,82,300</p>
-                  <p className="text-xs text-gray-500">On purchases this month</p>
+                  <p className="text-xs text-muted-foreground">On purchases this month</p>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">GST Payable</p>
                   <p className="text-2xl font-bold text-amber-500">₹63,300</p>
-                  <p className="text-xs text-gray-500">Due by 20th Jan</p>
+                  <p className="text-xs text-muted-foreground">Due by 20th Jan</p>
                 </div>
               </div>
 
@@ -638,7 +638,7 @@ export default function FurnitureFinance() {
                               ? 'bg-green-500/20 text-green-600'
                               : item.status === 'Pending'
                                 ? 'bg-amber-500/20 text-amber-600'
-                                : 'bg-blue-500/20 text-blue-600'
+                                : 'bg-blue-500/20 text-primary'
                           )}
                         >
                           {item.status}

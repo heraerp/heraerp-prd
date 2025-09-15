@@ -84,7 +84,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
   const getChangeColor = (change: number) => {
     if (change > 0) return 'text-emerald-400'
     if (change < 0) return 'text-red-400'
-    return 'text-gray-400'
+    return 'text-muted-foreground'
   }
 
   const getChangeIcon = (change: number) => {
@@ -100,7 +100,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
 
   if (loading && holdings.length === 0) {
     return (
-      <Card className={`bg-slate-900/50 border-slate-700 ${className}`}>
+      <Card className={`bg-background/50 border-border ${className}`}>
         <CardHeader className="pb-3">
           <CardTitle className="text-slate-200 text-lg flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
@@ -128,7 +128,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
   }
 
   return (
-    <Card className={`bg-slate-900/50 border-slate-700 ${className}`}>
+    <Card className={`bg-background/50 border-border ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-slate-200 text-lg flex items-center gap-2">
@@ -144,14 +144,14 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
               className="p-1 hover:bg-slate-700 rounded"
               disabled={loading}
             >
-              <RefreshCcw className={`h-3 w-3 text-slate-400 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCcw className={`h-3 w-3 text-muted-foreground ${loading ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
 
         {/* Portfolio Summary */}
         <div className="flex items-center gap-4 mt-2">
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-muted-foreground">
             Total Value:{' '}
             <span className="text-slate-200 font-medium">{formatCurrency(totalValue)}</span>
           </div>

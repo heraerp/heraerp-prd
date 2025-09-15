@@ -195,7 +195,7 @@ export default function CreateOrganizationPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/50 shadow-sm">
+      <header className="relative z-10 bg-background/70 dark:bg-background/70 backdrop-blur-xl border-b border-border/20 dark:border-border/50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -203,16 +203,16 @@ export default function CreateOrganizationPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors"
+                  className="hover:bg-background/20 dark:hover:bg-muted/20 transition-colors"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-white/20">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-border/20">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
-                    <Sparkles className="h-6 w-6 text-white" />
+                    <Sparkles className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
                 <div>
@@ -231,14 +231,14 @@ export default function CreateOrganizationPage() {
 
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-12 max-w-2xl">
-        <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl shadow-2xl border border-white/30 dark:border-gray-700/60 overflow-hidden">
+        <Card className="bg-background/90 dark:bg-background/90 backdrop-blur-2xl shadow-2xl border border-white/30 dark:border-border/60 overflow-hidden">
           <CardHeader className="pb-8 pt-10 bg-gradient-to-br from-white/50 to-white/20 dark:from-gray-800/50 dark:to-gray-900/20">
             <div className="flex items-center justify-center mb-6">
               <div className="p-4 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl shadow-lg">
-                <Building2 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                <Building2 className="w-8 h-8 text-primary dark:text-blue-400" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3">
+            <CardTitle className="text-3xl font-bold text-gray-900 dark:text-foreground text-center mb-3">
               Organization Details
             </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-center text-lg leading-relaxed max-w-lg mx-auto">
@@ -275,7 +275,7 @@ export default function CreateOrganizationPage() {
                   onChange={e => setFormData({ ...formData, organization_name: e.target.value })}
                   required
                   disabled={isLoading}
-                  className="h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
                 />
                 <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                   Your business or company name
@@ -296,24 +296,24 @@ export default function CreateOrganizationPage() {
                 >
                   <SelectTrigger
                     id="organization_type"
-                    className="h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100"
+                    className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground"
                   >
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl border-2 border-white/30 dark:border-gray-700/60 shadow-2xl rounded-xl">
+                  <SelectContent className="bg-background/95 dark:bg-muted/95 backdrop-blur-2xl border-2 border-white/30 dark:border-border/60 shadow-2xl rounded-xl">
                     {BUSINESS_TYPES.map(type => {
                       const Icon = type.icon
                       return (
                         <SelectItem
                           key={type.value}
                           value={type.value}
-                          className="py-3 px-4 text-base hover:bg-blue-50/70 dark:hover:bg-blue-900/30 focus:bg-blue-50/70 dark:focus:bg-blue-900/30 rounded-lg"
+                          className="py-3 px-4 text-base hover:bg-primary/10/70 dark:hover:bg-blue-900/30 focus:bg-blue-50/70 dark:focus:bg-blue-900/30 rounded-lg"
                         >
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 rounded-lg">
-                              <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                              <Icon className="h-5 w-5 text-primary dark:text-blue-400" />
                             </div>
-                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                            <span className="font-medium text-gray-900 dark:text-foreground">
                               {type.label}
                             </span>
                           </div>
@@ -345,7 +345,7 @@ export default function CreateOrganizationPage() {
                     }
                     required
                     disabled={isLoading}
-                    className="pr-12 h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                    className="pr-12 h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-4">
                     {isCheckingSubdomain && (
@@ -379,7 +379,7 @@ export default function CreateOrganizationPage() {
               <div className="pt-4">
                 <Button
                   type="submit"
-                  className="w-full h-16 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 rounded-xl"
+                  className="w-full h-16 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-foreground shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 rounded-xl"
                   disabled={isLoading || !subdomainAvailable || isCheckingSubdomain}
                 >
                   {isLoading ? (
@@ -404,18 +404,18 @@ export default function CreateOrganizationPage() {
         <div className="mt-10 grid md:grid-cols-3 gap-6">
           <div className="text-center group">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
-              <Globe className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <Globe className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Custom Domain</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">Custom Domain</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Professional branded URL for your business
             </p>
           </div>
           <div className="text-center group">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
-              <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <Users className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">
               Team Collaboration
             </h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -424,9 +424,9 @@ export default function CreateOrganizationPage() {
           </div>
           <div className="text-center group">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
-              <Zap className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <Zap className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Instant Setup</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">Instant Setup</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Start using your enterprise tools immediately
             </p>

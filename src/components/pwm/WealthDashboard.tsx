@@ -116,7 +116,7 @@ export function WealthDashboard({ organizationId }: WealthDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-foreground">
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -181,16 +181,16 @@ export function WealthDashboard({ organizationId }: WealthDashboardProps) {
 // Loading skeleton
 function DashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-foreground">
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Skeleton className="h-64 bg-slate-800" />
-            <Skeleton className="h-96 bg-slate-800" />
+            <Skeleton className="h-64 bg-muted" />
+            <Skeleton className="h-96 bg-muted" />
           </div>
           <div className="space-y-6">
-            <Skeleton className="h-96 bg-slate-800" />
-            <Skeleton className="h-64 bg-slate-800" />
+            <Skeleton className="h-96 bg-muted" />
+            <Skeleton className="h-64 bg-muted" />
           </div>
         </div>
       </div>

@@ -98,19 +98,19 @@ export function SAPFIModule({
         )
       case 'validated':
         return (
-          <Badge className="bg-blue-500 text-white gap-1">
+          <Badge className="bg-blue-500 text-foreground gap-1">
             <FileCheck className="h-3 w-3" /> Validated
           </Badge>
         )
       case 'posting':
         return (
-          <Badge className="bg-yellow-500 text-white gap-1">
+          <Badge className="bg-yellow-500 text-foreground gap-1">
             <Clock className="h-3 w-3 animate-spin" /> Posting
           </Badge>
         )
       case 'posted':
         return (
-          <Badge className="bg-green-500 text-white gap-1">
+          <Badge className="bg-green-500 text-foreground gap-1">
             <CheckCircle className="h-3 w-3" /> Posted
           </Badge>
         )
@@ -135,7 +135,7 @@ export function SAPFIModule({
               {getSystemIcon()}
               <div>
                 <h3 className="font-semibold">SAP {sapConfig?.systemType || 'Not Connected'}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Company: {sapConfig?.companyCode || 'N/A'} | CoA:{' '}
                   {sapConfig?.chartOfAccounts || 'N/A'}
                 </p>
@@ -143,12 +143,12 @@ export function SAPFIModule({
             </div>
             <div className="flex items-center gap-2">
               {syncStatus === 'syncing' ? (
-                <Badge className="bg-blue-500 text-white">
+                <Badge className="bg-blue-500 text-foreground">
                   <Clock className="h-3 w-3 animate-spin mr-1" />
                   Syncing...
                 </Badge>
               ) : (
-                <Badge className="bg-green-500 text-white">
+                <Badge className="bg-green-500 text-foreground">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Connected
                 </Badge>
@@ -175,19 +175,19 @@ export function SAPFIModule({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Documents Pending
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">23</div>
-                <p className="text-xs text-gray-500">₹2.5M total value</p>
+                <p className="text-xs text-muted-foreground">₹2.5M total value</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Posted Today
                 </CardTitle>
               </CardHeader>
@@ -199,25 +199,25 @@ export function SAPFIModule({
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Sync Errors
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-red-600">3</div>
-                <p className="text-xs text-gray-500">Requires attention</p>
+                <p className="text-xs text-muted-foreground">Requires attention</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Last Sync
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-xl font-semibold">2 min ago</div>
-                <p className="text-xs text-gray-500">Next in 3 min</p>
+                <p className="text-xs text-muted-foreground">Next in 3 min</p>
               </CardContent>
             </Card>
           </div>
@@ -232,21 +232,21 @@ export function SAPFIModule({
                 {pendingDocuments.map(doc => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted dark:bg-muted"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                         {doc.type === 'AP Invoice' ? (
-                          <Receipt className="h-5 w-5 text-blue-600" />
+                          <Receipt className="h-5 w-5 text-primary" />
                         ) : doc.type === 'GL Journal' ? (
-                          <BookOpen className="h-5 w-5 text-blue-600" />
+                          <BookOpen className="h-5 w-5 text-primary" />
                         ) : (
-                          <Users className="h-5 w-5 text-blue-600" />
+                          <Users className="h-5 w-5 text-primary" />
                         )}
                       </div>
                       <div>
                         <p className="font-medium">{doc.type}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {doc.vendor || doc.customer || doc.description}
                         </p>
                       </div>
@@ -254,7 +254,7 @@ export function SAPFIModule({
                     <div className="flex items-center gap-3">
                       <div className="text-right">
                         <p className="font-semibold">₹{doc.amount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">Amount</p>
+                        <p className="text-xs text-muted-foreground">Amount</p>
                       </div>
                       {getStatusBadge(doc.status)}
                     </div>
@@ -317,7 +317,7 @@ export function SAPFIModule({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Last Sync</span>
-                    <span className="text-sm text-gray-500">10 min ago</span>
+                    <span className="text-sm text-muted-foreground">10 min ago</span>
                   </div>
                   <Button size="sm" className="w-full mt-2" variant="outline">
                     Sync GL Accounts
@@ -360,15 +360,15 @@ export function SAPFIModule({
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-bold">₹12.5M</p>
-                    <p className="text-sm text-gray-500">Bank Balance</p>
+                    <p className="text-sm text-muted-foreground">Bank Balance</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold">₹12.3M</p>
-                    <p className="text-sm text-gray-500">SAP Balance</p>
+                    <p className="text-sm text-muted-foreground">SAP Balance</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-yellow-600">₹200K</p>
-                    <p className="text-sm text-gray-500">Difference</p>
+                    <p className="text-sm text-muted-foreground">Difference</p>
                   </div>
                 </div>
                 <Button className="w-full">Start Reconciliation</Button>
@@ -382,16 +382,16 @@ export function SAPFIModule({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <BookOpen className="h-8 w-8 text-blue-600 mb-2" />
+                <BookOpen className="h-8 w-8 text-primary mb-2" />
                 <h3 className="font-semibold">Trial Balance</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Real-time from SAP</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Real-time from SAP</p>
               </CardContent>
             </Card>
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <TrendingUp className="h-8 w-8 text-green-600 mb-2" />
                 <h3 className="font-semibold">Financial Statements</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   P&L, Balance Sheet, Cash Flow
                 </p>
               </CardContent>

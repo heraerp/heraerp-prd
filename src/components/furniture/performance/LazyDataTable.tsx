@@ -132,8 +132,8 @@ export function LazyDataTable<T extends Record<string, any>>({
   if (loading && data.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-        <span className="ml-2 text-gray-600">Loading data...</span>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Loading data...</span>
       </div>
     )
   }
@@ -151,7 +151,7 @@ export function LazyDataTable<T extends Record<string, any>>({
     <div className={cn('flex flex-col h-full', className)}>
       {/* Header with count */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
           {data.length} of {totalCount} items loaded
         </h3>
         {error && (
@@ -165,17 +165,17 @@ export function LazyDataTable<T extends Record<string, any>>({
       {/* Table container with scroll */}
       <div
         ref={tableContainerRef}
-        className="flex-1 overflow-auto border border-gray-200 dark:border-gray-700 rounded-lg"
+        className="flex-1 overflow-auto border border-border dark:border-border rounded-lg"
       >
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0 z-10">
+          <thead className="bg-muted dark:bg-muted sticky top-0 z-10">
             <tr>
               {columns.map(column => (
                 <th
                   key={String(column.key)}
                   className={cn(
-                    'px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider',
-                    column.sortable && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+                    'px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider',
+                    column.sortable && 'cursor-pointer hover:bg-muted dark:hover:bg-muted-foreground/10',
                     column.width
                   )}
                   onClick={() => column.sortable && handleSort(String(column.key))}
@@ -194,23 +194,23 @@ export function LazyDataTable<T extends Record<string, any>>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700">
             {data.map((row, index) => (
               <tr
                 key={String(row[rowKey])}
                 onClick={() => onRowClick?.(row)}
                 className={cn(
-                  'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
+                  'hover:bg-muted dark:hover:bg-muted transition-colors',
                   onRowClick && 'cursor-pointer',
                   index % 2 === 0
-                    ? 'bg-white dark:bg-gray-900'
-                    : 'bg-gray-50/50 dark:bg-gray-800/50'
+                    ? 'bg-background dark:bg-background'
+                    : 'bg-muted/50 dark:bg-muted/50'
                 )}
               >
                 {columns.map(column => (
                   <td
                     key={String(column.key)}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
+                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground"
                   >
                     {column.render
                       ? column.render(row[column.key], row)
@@ -224,22 +224,22 @@ export function LazyDataTable<T extends Record<string, any>>({
 
         {/* Loading more indicator */}
         {loadingMore && (
-          <div className="flex items-center justify-center p-4 border-t border-gray-200 dark:border-gray-700">
-            <Loader2 className="h-5 w-5 animate-spin text-blue-600 mr-2" />
-            <span className="text-sm text-gray-600">Loading more items...</span>
+          <div className="flex items-center justify-center p-4 border-t border-border dark:border-border">
+            <Loader2 className="h-5 w-5 animate-spin text-primary mr-2" />
+            <span className="text-sm text-muted-foreground">Loading more items...</span>
           </div>
         )}
 
         {/* End of data indicator */}
         {!hasMore && data.length > 0 && (
-          <div className="text-center p-4 text-sm text-gray-500 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-center p-4 text-sm text-muted-foreground border-t border-border dark:border-border">
             All {totalCount} items loaded
           </div>
         )}
 
         {/* Empty state */}
         {data.length === 0 && !loading && (
-          <div className="text-center p-8 text-gray-500">No data available</div>
+          <div className="text-center p-8 text-muted-foreground">No data available</div>
         )}
       </div>
     </div>

@@ -389,31 +389,31 @@ export default function NewProductModal({
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-background border-border">
         <DialogHeader className="border-b border-gray-800 pb-4">
-          <DialogTitle className="text-xl font-semibold text-white flex items-center gap-3">
+          <DialogTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-              <Package className="h-5 w-5 text-white" />
+              <Package className="h-5 w-5 text-foreground" />
             </div>
             Create New Product
           </DialogTitle>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-800">
-            <TabsTrigger value="basic" className="data-[state=active]:bg-gray-700">
+          <TabsList className="grid w-full grid-cols-4 bg-muted">
+            <TabsTrigger value="basic" className="data-[state=active]:bg-muted-foreground/10">
               <Info className="h-4 w-4 mr-2" />
               Basic Info
             </TabsTrigger>
-            <TabsTrigger value="pricing" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="pricing" className="data-[state=active]:bg-muted-foreground/10">
               <DollarSign className="h-4 w-4 mr-2" />
               Pricing
             </TabsTrigger>
-            <TabsTrigger value="inventory" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="inventory" className="data-[state=active]:bg-muted-foreground/10">
               <BarChart className="h-4 w-4 mr-2" />
               Inventory
             </TabsTrigger>
-            <TabsTrigger value="specifications" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="specifications" className="data-[state=active]:bg-muted-foreground/10">
               <Ruler className="h-4 w-4 mr-2" />
               Specifications
             </TabsTrigger>
@@ -427,7 +427,7 @@ export default function NewProductModal({
                 <Input
                   value={productData.name}
                   onChange={e => handleChange('name', e.target.value)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="e.g., Executive Office Chair"
                 />
               </div>
@@ -438,14 +438,14 @@ export default function NewProductModal({
                   <Input
                     value={productData.sku}
                     onChange={e => handleChange('sku', e.target.value)}
-                    className="bg-gray-800 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     placeholder="e.g., FRN-OFF-001"
                   />
                   <Button
                     type="button"
                     variant="outline"
                     onClick={generateSKU}
-                    className="border-gray-600 hover:bg-gray-700"
+                    className="border-border hover:bg-muted-foreground/10"
                   >
                     Generate
                   </Button>
@@ -460,7 +460,7 @@ export default function NewProductModal({
                   value={productData.category}
                   onValueChange={value => handleChange('category', value)}
                 >
-                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                  <SelectTrigger className="bg-muted border-border text-foreground">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -481,7 +481,7 @@ export default function NewProductModal({
                 <Input
                   value={productData.subCategory}
                   onChange={e => handleChange('subCategory', e.target.value)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="e.g., Executive Chairs"
                 />
               </div>
@@ -492,7 +492,7 @@ export default function NewProductModal({
               <Input
                 value={productData.brand}
                 onChange={e => handleChange('brand', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="e.g., Kerala Furniture"
               />
             </div>
@@ -502,7 +502,7 @@ export default function NewProductModal({
               <Textarea
                 value={productData.description}
                 onChange={e => handleChange('description', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white min-h-[100px]"
+                className="bg-muted border-border text-foreground min-h-[100px]"
                 placeholder="Detailed product description..."
               />
             </div>
@@ -538,12 +538,12 @@ export default function NewProductModal({
               <div>
                 <Label className="text-gray-300">Cost Price</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                   <Input
                     type="number"
                     value={productData.costPrice}
                     onChange={e => handleChange('costPrice', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-600 text-white pl-8"
+                    className="bg-muted border-border text-foreground pl-8"
                     placeholder="0.00"
                     step="0.01"
                   />
@@ -553,12 +553,12 @@ export default function NewProductModal({
               <div>
                 <Label className="text-gray-300">Selling Price *</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                   <Input
                     type="number"
                     value={productData.sellingPrice}
                     onChange={e => handleChange('sellingPrice', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-600 text-white pl-8"
+                    className="bg-muted border-border text-foreground pl-8"
                     placeholder="0.00"
                     step="0.01"
                   />
@@ -573,7 +573,7 @@ export default function NewProductModal({
                   type="number"
                   value={productData.taxRate}
                   onChange={e => handleChange('taxRate', parseFloat(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="5"
                   step="0.1"
                   min="0"
@@ -587,7 +587,7 @@ export default function NewProductModal({
                   type="number"
                   value={productData.discountPercent}
                   onChange={e => handleChange('discountPercent', parseFloat(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="0"
                   step="0.1"
                   min="0"
@@ -597,14 +597,14 @@ export default function NewProductModal({
             </div>
 
             {/* Pricing Summary */}
-            <Card className="p-4 bg-gray-800 border-gray-700 space-y-3">
-              <h3 className="font-semibold text-white">Pricing Summary</h3>
+            <Card className="p-4 bg-muted border-border space-y-3">
+              <h3 className="font-semibold text-foreground">Pricing Summary</h3>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Cost Price:</span>
                   <span>₹{productData.costPrice.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Margin:</span>
                   <span
                     className={
@@ -614,20 +614,20 @@ export default function NewProductModal({
                     {calculateMargin()}%
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Tax Amount:</span>
                   <span>
                     ₹{((productData.sellingPrice * productData.taxRate) / 100).toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Discount:</span>
                   <span>
                     ₹{((productData.sellingPrice * productData.discountPercent) / 100).toFixed(2)}
                   </span>
                 </div>
-                <div className="h-px bg-gray-700" />
-                <div className="flex justify-between font-semibold text-white">
+                <div className="h-px bg-muted-foreground/10" />
+                <div className="flex justify-between font-semibold text-foreground">
                   <span>Final Price:</span>
                   <span>
                     ₹
@@ -651,7 +651,7 @@ export default function NewProductModal({
                   type="number"
                   value={productData.stockQuantity}
                   onChange={e => handleChange('stockQuantity', parseInt(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="0"
                   min="0"
                 />
@@ -663,7 +663,7 @@ export default function NewProductModal({
                   type="number"
                   value={productData.minStockLevel}
                   onChange={e => handleChange('minStockLevel', parseInt(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="5"
                   min="0"
                 />
@@ -675,7 +675,7 @@ export default function NewProductModal({
                   type="number"
                   value={productData.reorderQuantity}
                   onChange={e => handleChange('reorderQuantity', parseInt(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="10"
                   min="0"
                 />
@@ -687,7 +687,7 @@ export default function NewProductModal({
               <Input
                 value={productData.location}
                 onChange={e => handleChange('location', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="e.g., Warehouse A, Rack 12, Shelf 3"
               />
             </div>
@@ -697,24 +697,24 @@ export default function NewProductModal({
               <Input
                 value={productData.warranty}
                 onChange={e => handleChange('warranty', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="e.g., 1 year"
               />
             </div>
 
             {/* Stock Value Card */}
-            <Card className="p-4 bg-gray-800 border-gray-700">
-              <h3 className="font-semibold text-white mb-3">Stock Valuation</h3>
+            <Card className="p-4 bg-muted border-border">
+              <h3 className="font-semibold text-foreground mb-3">Stock Valuation</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="text-gray-400">
+                <div className="text-muted-foreground">
                   <span className="block">Total Units:</span>
-                  <span className="text-xl font-semibold text-white">
+                  <span className="text-xl font-semibold text-foreground">
                     {productData.stockQuantity}
                   </span>
                 </div>
-                <div className="text-gray-400">
+                <div className="text-muted-foreground">
                   <span className="block">Total Value:</span>
-                  <span className="text-xl font-semibold text-white">
+                  <span className="text-xl font-semibold text-foreground">
                     ₹{(productData.stockQuantity * productData.costPrice).toLocaleString()}
                   </span>
                 </div>
@@ -731,7 +731,7 @@ export default function NewProductModal({
                   value={productData.material}
                   onValueChange={value => handleChange('material', value)}
                 >
-                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                  <SelectTrigger className="bg-muted border-border text-foreground">
                     <SelectValue placeholder="Select material" />
                   </SelectTrigger>
                   <SelectContent>
@@ -750,7 +750,7 @@ export default function NewProductModal({
                   value={productData.finish}
                   onValueChange={value => handleChange('finish', value)}
                 >
-                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                  <SelectTrigger className="bg-muted border-border text-foreground">
                     <SelectValue placeholder="Select finish" />
                   </SelectTrigger>
                   <SelectContent>
@@ -769,7 +769,7 @@ export default function NewProductModal({
               <Input
                 value={productData.color}
                 onChange={e => handleChange('color', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="e.g., Walnut Brown"
               />
             </div>
@@ -778,34 +778,34 @@ export default function NewProductModal({
               <Label className="text-gray-300 mb-2 block">Dimensions (cm)</Label>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label className="text-gray-500 text-sm">Length</Label>
+                  <Label className="text-muted-foreground text-sm">Length</Label>
                   <Input
                     type="number"
                     value={productData.lengthCm}
                     onChange={e => handleChange('lengthCm', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     placeholder="0"
                     step="0.1"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-500 text-sm">Width</Label>
+                  <Label className="text-muted-foreground text-sm">Width</Label>
                   <Input
                     type="number"
                     value={productData.widthCm}
                     onChange={e => handleChange('widthCm', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     placeholder="0"
                     step="0.1"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-500 text-sm">Height</Label>
+                  <Label className="text-muted-foreground text-sm">Height</Label>
                   <Input
                     type="number"
                     value={productData.heightCm}
                     onChange={e => handleChange('heightCm', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     placeholder="0"
                     step="0.1"
                   />
@@ -819,7 +819,7 @@ export default function NewProductModal({
                 type="number"
                 value={productData.weightKg}
                 onChange={e => handleChange('weightKg', parseFloat(e.target.value) || 0)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="0"
                 step="0.1"
               />
@@ -832,14 +832,14 @@ export default function NewProductModal({
                   value={newTag}
                   onChange={e => setNewTag(e.target.value)}
                   onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                  className="bg-gray-800 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                   placeholder="Add a tag..."
                 />
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleAddTag}
-                  className="border-gray-600 hover:bg-gray-700"
+                  className="border-border hover:bg-muted-foreground/10"
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -848,13 +848,13 @@ export default function NewProductModal({
                 {productData.tags.map(tag => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-gray-700 text-gray-300 rounded-full text-sm"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-muted-foreground/10 text-gray-300 rounded-full text-sm"
                   >
                     {tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
-                      className="hover:text-white"
+                      className="hover:text-foreground"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -868,7 +868,7 @@ export default function NewProductModal({
               <Textarea
                 value={productData.notes}
                 onChange={e => handleChange('notes', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
+                className="bg-muted border-border text-foreground"
                 placeholder="Any internal notes about this product..."
                 rows={3}
               />
@@ -881,7 +881,7 @@ export default function NewProductModal({
           <Button
             variant="outline"
             onClick={() => setIsOpen(false)}
-            className="border-gray-600 hover:bg-gray-700"
+            className="border-border hover:bg-muted-foreground/10"
           >
             Cancel
           </Button>

@@ -182,7 +182,7 @@ export default function SeamlessNavigation({
           isMinimized ? 'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
         }`}
       >
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 px-6 py-4 max-w-md">
+        <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/20 px-6 py-4 max-w-md">
           {/* Progress Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -258,7 +258,7 @@ export default function SeamlessNavigation({
       {/* Contextual Hints */}
       {pathname === '/partners' && (
         <div className="fixed top-6 right-6 z-40">
-          <div className="bg-emerald-500 text-white px-4 py-2 rounded-lg shadow-lg animate-pulse">
+          <div className="bg-emerald-500 text-foreground px-4 py-2 rounded-lg shadow-lg animate-pulse">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-semibold">Try the earnings calculator!</span>
@@ -269,7 +269,7 @@ export default function SeamlessNavigation({
 
       {pathname.includes('/register') && navState.progress < 100 && (
         <div className="fixed top-6 left-6 z-40">
-          <div className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+          <div className="bg-blue-500 text-foreground px-4 py-2 rounded-lg shadow-lg">
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4" />
               <span className="text-sm font-semibold">
@@ -285,10 +285,10 @@ export default function SeamlessNavigation({
         <div className="fixed inset-0 pointer-events-none z-30">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 animate-pulse" />
           <div className="flex items-center justify-center h-full">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center animate-bounce">
+            <div className="bg-background rounded-2xl shadow-2xl p-8 text-center animate-bounce">
               <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Congratulations! 🎉</h3>
-              <p className="text-slate-600">You've completed your partner journey!</p>
+              <p className="text-muted-foreground">You've completed your partner journey!</p>
             </div>
           </div>
         </div>

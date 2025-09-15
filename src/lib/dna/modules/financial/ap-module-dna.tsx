@@ -322,15 +322,15 @@ export function APModule({
       <Card
         className={cn(
           'shadow-lg',
-          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-background border-border'
         )}
       >
-        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-border')}>
           <div className="flex items-center justify-between">
             <CardTitle
               className={cn(
                 'text-xl flex items-center gap-2',
-                isDarkMode ? 'text-white' : 'text-gray-900'
+                isDarkMode ? 'text-foreground' : 'text-gray-900'
               )}
             >
               <Receipt className="h-5 w-5" />
@@ -354,7 +354,7 @@ export function APModule({
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
             <TabsList
-              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-muted')}
             >
               <TabsTrigger value="vendors" className="gap-1">
                 <Users className="h-4 w-4" />
@@ -385,7 +385,7 @@ export function APModule({
               <div className="flex justify-between items-center mb-4">
                 <div className="flex gap-2">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search vendors..."
                       className={cn(
@@ -424,7 +424,7 @@ export function APModule({
                   <Card
                     key={vendor.id}
                     className={cn(
-                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                     )}
                   >
                     <CardContent className="p-4">
@@ -450,13 +450,13 @@ export function APModule({
                           </div>
                           <div className="grid grid-cols-3 gap-4 text-sm">
                             <div>
-                              <span className="text-gray-500">Code:</span> {vendor.vendorCode}
+                              <span className="text-muted-foreground">Code:</span> {vendor.vendorCode}
                             </div>
                             <div>
-                              <span className="text-gray-500">Terms:</span> {vendor.paymentTerms}
+                              <span className="text-muted-foreground">Terms:</span> {vendor.paymentTerms}
                             </div>
                             <div>
-                              <span className="text-gray-500">Credit Limit:</span> $
+                              <span className="text-muted-foreground">Credit Limit:</span> $
                               {vendor.creditLimit.toLocaleString()}
                             </div>
                           </div>
@@ -476,7 +476,7 @@ export function APModule({
                           <div className="text-2xl font-semibold">
                             ${vendor.currentBalance.toLocaleString()}
                           </div>
-                          <div className="text-sm text-gray-500">Outstanding</div>
+                          <div className="text-sm text-muted-foreground">Outstanding</div>
                         </div>
                       </div>
                     </CardContent>
@@ -489,7 +489,7 @@ export function APModule({
             <TabsContent value="invoices" className="space-y-4 mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -627,7 +627,7 @@ export function APModule({
                           <tr
                             className={cn(
                               'border-b',
-                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                             )}
                           >
                             <th className="text-left py-2">Description</th>
@@ -642,7 +642,7 @@ export function APModule({
                               key={line.id}
                               className={cn(
                                 'border-b',
-                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                               )}
                             >
                               <td className="py-2 pr-2">
@@ -739,7 +739,7 @@ export function APModule({
             <TabsContent value="payments" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -783,7 +783,7 @@ export function APModule({
             <TabsContent value="aging" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -830,7 +830,7 @@ export function APModule({
               <TabsContent value="approvals" className="mt-4">
                 <Card
                   className={cn(
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                   )}
                 >
                   <CardHeader>
@@ -842,7 +842,7 @@ export function APModule({
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-medium">INV-2024-0145</h4>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               Kerala Dairy Suppliers - $45,000
                             </p>
                           </div>
@@ -860,7 +860,7 @@ export function APModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Freezer Placement - 10 Units</h4>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-muted-foreground">
                                 Cold Chain Solutions Ltd - $25,000
                               </p>
                               <Badge className="mt-1" variant="outline">

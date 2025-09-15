@@ -100,13 +100,13 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
                 <div className="space-y-2">
                   {category.shortcuts.map((shortcut, index) => (
                     <div key={index} className="flex items-center justify-between py-1.5">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                         {shortcut.description}
                       </span>
                       <div className="flex items-center gap-1">
                         {shortcut.keys.map((key, keyIndex) => (
                           <React.Fragment key={keyIndex}>
-                            {keyIndex > 0 && <span className="text-xs text-gray-500">+</span>}
+                            {keyIndex > 0 && <span className="text-xs text-muted-foreground">+</span>}
                             <Kbd>{key}</Kbd>
                           </React.Fragment>
                         ))}
@@ -119,7 +119,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t text-sm text-gray-500">
+        <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
           <p>
             Note: Use <Kbd>Cmd</Kbd> on macOS and <Kbd>Ctrl</Kbd> on Windows/Linux
           </p>
@@ -132,7 +132,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
 // Kbd component if not already available
 export function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-300 rounded dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600">
+    <kbd className="inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-gray-800 bg-muted border border-border rounded dark:bg-muted dark:text-foreground dark:border-border">
       {children}
     </kbd>
   )

@@ -363,8 +363,8 @@ export default function SubscribersPage() {
       case 'inactive':
         return (
           <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-gray-500/10 border border-gray-500/20">
-            <XCircle className="h-3 w-3 text-gray-400" />
-            <span className="text-xs font-medium text-gray-400">Inactive</span>
+            <XCircle className="h-3 w-3 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Inactive</span>
           </div>
         )
       case 'suspended':
@@ -400,12 +400,12 @@ export default function SubscribersPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Subscribers
           </h1>
-          <p className="text-white/60 mt-1">Manage your broadband and cable TV subscribers</p>
+          <p className="text-foreground/60 mt-1">Manage your broadband and cable TV subscribers</p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-foreground rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>Add Subscriber</span>
@@ -416,14 +416,14 @@ export default function SubscribersPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-sm">Total Subscribers</p>
-                <p className="text-2xl font-bold text-white mt-1">45,832</p>
+                <p className="text-foreground/60 text-sm">Total Subscribers</p>
+                <p className="text-2xl font-bold text-foreground mt-1">45,832</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg">
-                <Users className="h-6 w-6 text-white" />
+                <Users className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
@@ -431,14 +431,14 @@ export default function SubscribersPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-sm">Active</p>
-                <p className="text-2xl font-bold text-white mt-1">42,156</p>
+                <p className="text-foreground/60 text-sm">Active</p>
+                <p className="text-2xl font-bold text-foreground mt-1">42,156</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-emerald-500 to-green-500 rounded-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
+                <CheckCircle className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
@@ -446,11 +446,11 @@ export default function SubscribersPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-sm">New This Month</p>
-                <p className="text-2xl font-bold text-white mt-1">1,245</p>
+                <p className="text-foreground/60 text-sm">New This Month</p>
+                <p className="text-2xl font-bold text-foreground mt-1">1,245</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#FFD700] to-[#0099CC] rounded-lg">
                 <TrendingUp className="h-6 w-6 text-[#0049B7]" />
@@ -461,14 +461,14 @@ export default function SubscribersPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-sm">Churn Rate</p>
-                <p className="text-2xl font-bold text-white mt-1">2.3%</p>
+                <p className="text-foreground/60 text-sm">Churn Rate</p>
+                <p className="text-2xl font-bold text-foreground mt-1">2.3%</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-lg">
-                <AlertCircle className="h-6 w-6 text-white" />
+                <AlertCircle className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
@@ -482,8 +482,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('all')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'all'
-                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
-                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-foreground shadow-lg shadow-[#0099CC]/40'
+                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
             }`}
           >
             All
@@ -492,8 +492,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('active')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'active'
-                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/40'
-                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
+                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-foreground shadow-lg shadow-emerald-500/40'
+                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
             }`}
           >
             Active
@@ -502,8 +502,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('suspended')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'suspended'
-                ? 'bg-gradient-to-r from-[#E91E63] to-[#C2185B] text-white shadow-lg shadow-[#E91E63]/40'
-                : 'bg-slate-900/50 text-white/60 hover:bg-white/20 hover:text-white'
+                ? 'bg-gradient-to-r from-[#E91E63] to-[#C2185B] text-foreground shadow-lg shadow-[#E91E63]/40'
+                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
             }`}
           >
             Suspended
@@ -512,19 +512,19 @@ export default function SubscribersPage() {
 
         <div className="flex items-center space-x-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
             <input
               type="text"
               placeholder="Search subscribers..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#0099CC]/50 focus:bg-white/10 transition-all duration-200"
+              className="pl-10 pr-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground placeholder-white/40 focus:outline-none focus:border-[#0099CC]/50 focus:bg-background/10 transition-all duration-200"
             />
           </div>
-          <button className="p-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
+          <button className="p-2 bg-background/50 border border-border/10 rounded-lg text-foreground/60 hover:bg-background/20 hover:text-foreground transition-all duration-200">
             <Filter className="h-5 w-5" />
           </button>
-          <button className="p-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
+          <button className="p-2 bg-background/50 border border-border/10 rounded-lg text-foreground/60 hover:bg-background/20 hover:text-foreground transition-all duration-200">
             <Download className="h-5 w-5" />
           </button>
         </div>
@@ -549,8 +549,8 @@ export default function SubscribersPage() {
               label: 'Customer Info',
               render: item => (
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">{item.name}</p>
-                  <div className="flex items-center space-x-3 text-xs text-white/60">
+                  <p className="text-sm font-medium text-foreground">{item.name}</p>
+                  <div className="flex items-center space-x-3 text-xs text-foreground/60">
                     <div className="flex items-center space-x-1">
                       <Mail className="h-3 w-3" />
                       <span>{item.email}</span>
@@ -560,7 +560,7 @@ export default function SubscribersPage() {
                       <span>{item.phone}</span>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-1 text-xs text-white/60">
+                  <div className="flex items-center space-x-1 text-xs text-foreground/60">
                     <MapPin className="h-3 w-3" />
                     <span>{item.location}</span>
                   </div>
@@ -574,10 +574,10 @@ export default function SubscribersPage() {
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Wifi className="h-4 w-4 text-[#0099CC]" />
-                    <span className="text-sm font-medium text-white">{item.planType}</span>
+                    <span className="text-sm font-medium text-foreground">{item.planType}</span>
                   </div>
-                  <p className="text-xs text-white/60">{item.speed}</p>
-                  <div className="flex items-center space-x-1 text-xs text-white/60">
+                  <p className="text-xs text-foreground/60">{item.speed}</p>
+                  <div className="flex items-center space-x-1 text-xs text-foreground/60">
                     <Calendar className="h-3 w-3" />
                     <span>Since {item.joinDate}</span>
                   </div>
@@ -594,8 +594,8 @@ export default function SubscribersPage() {
               label: 'Usage',
               render: item => (
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">{item.dataUsage} GB</p>
-                  <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                  <p className="text-sm font-medium text-foreground">{item.dataUsage} GB</p>
+                  <div className="w-24 h-2 bg-background/10 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
                       style={{ width: `${(item.dataUsage / 1000) * 100}%` }}
@@ -609,9 +609,9 @@ export default function SubscribersPage() {
               label: 'Billing',
               render: item => (
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">₹{item.billAmount}</p>
+                  <p className="text-sm font-medium text-foreground">₹{item.billAmount}</p>
                   <div className="flex items-center space-x-1">
-                    <CreditCard className="h-3 w-3 text-white/60" />
+                    <CreditCard className="h-3 w-3 text-foreground/60" />
                     {getPaymentBadge(item.paymentStatus)}
                   </div>
                 </div>
@@ -655,7 +655,7 @@ export default function SubscribersPage() {
             value={formData.email}
             onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="customer@example.com"
-            icon={<Mail className="h-4 w-4 text-white/40" />}
+            icon={<Mail className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -665,7 +665,7 @@ export default function SubscribersPage() {
             value={formData.phone}
             onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 9876543210"
-            icon={<Phone className="h-4 w-4 text-white/40" />}
+            icon={<Phone className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -698,7 +698,7 @@ export default function SubscribersPage() {
             value={formData.location}
             onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location"
-            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            icon={<MapPin className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -708,7 +708,7 @@ export default function SubscribersPage() {
             value={formData.billAmount}
             onChange={e => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
             placeholder="Enter amount"
-            icon={<CreditCard className="h-4 w-4 text-white/40" />}
+            icon={<CreditCard className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -760,7 +760,7 @@ export default function SubscribersPage() {
             value={formData.email}
             onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="customer@example.com"
-            icon={<Mail className="h-4 w-4 text-white/40" />}
+            icon={<Mail className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -770,7 +770,7 @@ export default function SubscribersPage() {
             value={formData.phone}
             onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 9876543210"
-            icon={<Phone className="h-4 w-4 text-white/40" />}
+            icon={<Phone className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -803,7 +803,7 @@ export default function SubscribersPage() {
             value={formData.location}
             onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location"
-            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            icon={<MapPin className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -813,7 +813,7 @@ export default function SubscribersPage() {
             value={formData.billAmount}
             onChange={e => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
             placeholder="Enter amount"
-            icon={<CreditCard className="h-4 w-4 text-white/40" />}
+            icon={<CreditCard className="h-4 w-4 text-foreground/40" />}
             required
           />
 

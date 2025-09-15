@@ -550,22 +550,22 @@ export function SalonResourceCalendar({
   return (
     <div
       className={cn(
-        'flex h-[800px] bg-white dark:bg-gray-900 rounded-lg overflow-hidden',
+        'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden',
         className
       )}
     >
       {/* Sidebar */}
       {showSidebar && (
-        <div className="w-80 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex flex-col calendar-sidebar">
+        <div className="w-80 border-r border-border dark:border-border bg-muted dark:bg-muted/50 flex flex-col calendar-sidebar">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-b border-border dark:border-border">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Calendar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Calendar</h3>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowSidebar(false)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -574,7 +574,7 @@ export function SalonResourceCalendar({
             {/* Branch Filter - Show for demo purposes */}
             {organizations.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2">
                   Branch Filter
                 </h4>
                 <div className="space-y-2">
@@ -584,7 +584,7 @@ export function SalonResourceCalendar({
                       'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
                       selectedBranches.includes('all')
                         ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                     )}
                     onClick={() => setSelectedBranches(['all'])}
                   >
@@ -592,8 +592,8 @@ export function SalonResourceCalendar({
                       checked={selectedBranches.includes('all')}
                       className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                     />
-                    <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <MapPin className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                       All Branches
                     </span>
                   </div>
@@ -608,7 +608,7 @@ export function SalonResourceCalendar({
                           'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
                           selectedBranches.includes(org.id)
                             ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                            : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                            : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                         )}
                         onClick={() => {
                           if (selectedBranches.includes('all')) {
@@ -629,8 +629,8 @@ export function SalonResourceCalendar({
                           disabled={selectedBranches.includes('all')}
                           className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                         />
-                        <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-900 dark:text-white">
+                        <MapPin className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
+                        <span className="text-sm text-gray-900 dark:text-foreground">
                           {org.organization_name.split('•')[1]?.trim() || org.organization_name}
                         </span>
                       </div>
@@ -662,9 +662,9 @@ export function SalonResourceCalendar({
             </div>
 
             {/* Mini Calendar */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
+            <div className="bg-background dark:bg-muted rounded-lg p-3 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                   {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <div className="flex gap-1">
@@ -677,7 +677,7 @@ export function SalonResourceCalendar({
                 </div>
               </div>
               {/* Mini calendar grid would go here */}
-              <div className="text-xs text-gray-500 dark:text-gray-400 text-center py-4">
+              <div className="text-xs text-muted-foreground dark:text-muted-foreground text-center py-4">
                 Mini calendar view
               </div>
             </div>
@@ -686,7 +686,7 @@ export function SalonResourceCalendar({
           {/* Team Members */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
                 Team Members
               </h4>
 
@@ -696,7 +696,7 @@ export function SalonResourceCalendar({
                   'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item mb-2',
                   selectedStylists.includes('all')
                     ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                 )}
                 onClick={() => handleStylistToggle('all')}
               >
@@ -705,8 +705,8 @@ export function SalonResourceCalendar({
                   className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">All Stylists</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">View all team members</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-foreground">All Stylists</p>
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">View all team members</p>
                 </div>
               </div>
 
@@ -719,7 +719,7 @@ export function SalonResourceCalendar({
                       'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item',
                       selectedStylists.includes(stylist.id)
                         ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                     )}
                     onClick={() => handleStylistToggle(stylist.id)}
                   >
@@ -730,7 +730,7 @@ export function SalonResourceCalendar({
                     />
                     <div className="relative">
                       <Avatar className={cn('h-10 w-10', stylist.color)}>
-                        <AvatarFallback className="text-white font-semibold">
+                        <AvatarFallback className="text-foreground font-semibold">
                           {stylist.avatar}
                         </AvatarFallback>
                       </Avatar>
@@ -746,12 +746,12 @@ export function SalonResourceCalendar({
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                         {stylist.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{stylist.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
                       {organizations.length > 0 && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-0.5">
                           {organizations
                             .find(org => org.id === (stylist as any).branchId)
                             ?.organization_name.split('•')[1]
@@ -765,7 +765,7 @@ export function SalonResourceCalendar({
                         'text-xs',
                         stylist.available
                           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                          : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                          : 'bg-muted text-muted-foreground dark:bg-muted-foreground/10 dark:text-gray-300'
                       )}
                     >
                       {stylist.available ? 'Available' : 'Away'}
@@ -777,9 +777,9 @@ export function SalonResourceCalendar({
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-border dark:border-border">
             <Button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-foreground"
               onClick={() => {
                 setBookingSlot(null)
                 setIsBookingOpen(true)
@@ -795,7 +795,7 @@ export function SalonResourceCalendar({
       {/* Main Calendar Area */}
       <div className="flex-1 flex flex-col">
         {/* Calendar Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="p-4 border-b border-border dark:border-border bg-background dark:bg-background">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {!showSidebar && (
@@ -803,7 +803,7 @@ export function SalonResourceCalendar({
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowSidebar(true)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
                 >
                   <Grid3x3 className="w-5 h-5" />
                 </Button>
@@ -813,7 +813,7 @@ export function SalonResourceCalendar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   onClick={() => {
                     const newDate = new Date(selectedDate)
                     if (selectedView === 'day') {
@@ -843,7 +843,7 @@ export function SalonResourceCalendar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   onClick={() => {
                     const newDate = new Date(selectedDate)
                     if (selectedView === 'day') {
@@ -866,7 +866,7 @@ export function SalonResourceCalendar({
               </div>
 
               <div className="flex flex-col">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
                   {selectedView === 'day'
                     ? selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long',
@@ -881,7 +881,7 @@ export function SalonResourceCalendar({
                           year: 'numeric'
                         })}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {selectedView.charAt(0).toUpperCase() + selectedView.slice(1)} view •{' '}
                   {viewDates.length} day{viewDates.length > 1 ? 's' : ''} • Hair Talkz Salon
                 </p>
@@ -890,7 +890,7 @@ export function SalonResourceCalendar({
 
             <div className="flex items-center gap-3">
               <Tabs value={selectedView} onValueChange={v => setSelectedView(v as any)}>
-                <TabsList className="bg-gray-100 dark:bg-gray-800">
+                <TabsList className="bg-muted dark:bg-muted">
                   <TabsTrigger value="day" className="text-sm">
                     Day
                   </TabsTrigger>
@@ -904,16 +904,16 @@ export function SalonResourceCalendar({
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Filter className="w-5 h-5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   title="Keyboard Shortcuts: ← → Navigate, Home: Today, 1: Day, 2: Week, 3: Month"
                 >
                   <Settings className="w-5 h-5" />
@@ -927,10 +927,10 @@ export function SalonResourceCalendar({
         <div className="flex-1 overflow-hidden">
           <div className="h-full flex">
             {/* Time Column */}
-            <div className="w-20 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
+            <div className="w-20 border-r border-border dark:border-border bg-muted dark:bg-muted/30">
               <div
                 className={cn(
-                  'border-b border-gray-200 dark:border-gray-700',
+                  'border-b border-border dark:border-border',
                   viewMode === 'resource' ? 'h-20' : 'h-14'
                 )}
               />
@@ -966,7 +966,7 @@ export function SalonResourceCalendar({
                           <div
                             key={dayIdx}
                             className={cn(
-                              'border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-all duration-300',
+                              'border-r border-border dark:border-border last:border-r-0 transition-all duration-300',
                               selectedView === 'day'
                                 ? 'flex-1 min-w-[400px]'
                                 : 'flex-1 min-w-[140px]'
@@ -975,7 +975,7 @@ export function SalonResourceCalendar({
                             {/* Day Header */}
                             <div
                               className={cn(
-                                'h-14 border-b border-gray-200 dark:border-gray-700 px-2 py-2 text-center day-header',
+                                'h-14 border-b border-border dark:border-border px-2 py-2 text-center day-header',
                                 isToday && 'today'
                               )}
                             >
@@ -983,7 +983,7 @@ export function SalonResourceCalendar({
                                 className={cn(
                                   'text-xs font-bold uppercase tracking-wider',
                                   isToday
-                                    ? 'text-blue-600 dark:text-blue-400'
+                                    ? 'text-primary dark:text-blue-400'
                                     : 'text-gray-700 dark:text-gray-300'
                                 )}
                               >
@@ -993,8 +993,8 @@ export function SalonResourceCalendar({
                                 className={cn(
                                   'text-xl font-extrabold',
                                   isToday
-                                    ? 'text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-900 dark:text-white'
+                                    ? 'text-primary dark:text-blue-400'
+                                    : 'text-gray-900 dark:text-foreground'
                                 )}
                               >
                                 {dayNumber}
@@ -1019,7 +1019,7 @@ export function SalonResourceCalendar({
                                     key={`${dayIdx}-${slotIdx}`}
                                     className={cn(
                                       'h-16 border-b border-gray-100 dark:border-gray-800 relative group time-slot',
-                                      'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer'
+                                      'hover:bg-muted dark:hover:bg-muted/50 cursor-pointer'
                                     )}
                                     onClick={() => {
                                       if (!slotAppointments.length) {
@@ -1055,16 +1055,16 @@ export function SalonResourceCalendar({
                                         >
                                           <div className="flex items-start gap-2">
                                             <div
-                                              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                              className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
                                               style={{ backgroundColor: apt.color }}
                                             >
                                               {apt.icon}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                              <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+                                              <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
                                                 {apt.title}
                                               </p>
-                                              <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                                              <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
                                                 {apt.client}
                                               </p>
                                               <div className="flex items-center gap-2 mt-1">
@@ -1080,7 +1080,7 @@ export function SalonResourceCalendar({
                                                   {apt.price}
                                                 </Badge>
                                                 {stylistInfo && (
-                                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                  <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                                                     {stylistInfo.name}
                                                   </span>
                                                 )}
@@ -1108,25 +1108,25 @@ export function SalonResourceCalendar({
                       displayedStylists.map((stylist, stylistIdx) => (
                         <div
                           key={stylist.id}
-                          className="flex-1 min-w-[200px] border-r border-gray-200 dark:border-gray-700 last:border-r-0"
+                          className="flex-1 min-w-[200px] border-r border-border dark:border-border last:border-r-0"
                         >
                           {/* Stylist Header */}
-                          <div className="h-20 border-b border-gray-200 dark:border-gray-700 px-2 py-2 bg-gray-50 dark:bg-gray-800/50">
+                          <div className="h-20 border-b border-border dark:border-border px-2 py-2 bg-muted dark:bg-muted/50">
                             <div className="flex items-center gap-2">
                               <Avatar className={cn('h-10 w-10', stylist.color)}>
-                                <AvatarFallback className="text-white font-semibold">
+                                <AvatarFallback className="text-foreground font-semibold">
                                   {stylist.avatar}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
                                   {stylist.name}
                                 </p>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                   {stylist.title}
                                 </p>
                                 {organizations.length > 0 && (
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                     {organizations
                                       .find(org => org.id === (stylist as any).branchId)
                                       ?.organization_name.split('•')[1]
@@ -1135,7 +1135,7 @@ export function SalonResourceCalendar({
                                 )}
                               </div>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                               {stylist.businessHours
                                 ? `${stylist.businessHours.start}:00 - ${stylist.businessHours.end}:00`
                                 : 'Standard hours'}
@@ -1165,9 +1165,9 @@ export function SalonResourceCalendar({
                                   key={`${stylist.id}-${slotIdx}`}
                                   className={cn(
                                     'h-16 border-b border-gray-100 dark:border-gray-800 relative group time-slot',
-                                    !isBusinessHour && 'bg-gray-100 dark:bg-gray-800/30',
+                                    !isBusinessHour && 'bg-muted dark:bg-muted/30',
                                     isBusinessHour &&
-                                      'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer',
+                                      'hover:bg-muted dark:hover:bg-muted/50 cursor-pointer',
                                     isDropTarget && 'bg-blue-50 dark:bg-blue-900/20'
                                   )}
                                   onClick={() => {
@@ -1192,7 +1192,7 @@ export function SalonResourceCalendar({
                                 >
                                   {/* Non-business hour overlay */}
                                   {!isBusinessHour && (
-                                    <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800/30 z-10" />
+                                    <div className="absolute inset-0 bg-muted dark:bg-muted/30 z-10" />
                                   )}
 
                                   {/* Appointments */}
@@ -1231,7 +1231,7 @@ export function SalonResourceCalendar({
                                   {/* Add appointment hint */}
                                   {!slotAppointments.length && isBusinessHour && (
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <Plus className="w-4 h-4 text-gray-400" />
+                                      <Plus className="w-4 h-4 text-muted-foreground" />
                                     </div>
                                   )}
                                 </div>
@@ -1298,16 +1298,16 @@ function AppointmentCard({
   return (
     <div className="flex items-start gap-2">
       <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+        className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
         style={{ backgroundColor: appointment.color }}
       >
         {appointment.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+        <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
           {appointment.title}
         </p>
-        <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{appointment.client}</p>
+        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">{appointment.client}</p>
         {!compact && (
           <div className="flex items-center gap-2 mt-1">
             <Badge
@@ -1322,7 +1322,7 @@ function AppointmentCard({
               {appointment.price}
             </Badge>
             {stylist && (
-              <span className="text-xs text-gray-500 dark:text-gray-400">{stylist.name}</span>
+              <span className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.name}</span>
             )}
           </div>
         )}

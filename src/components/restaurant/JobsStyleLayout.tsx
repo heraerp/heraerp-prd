@@ -121,7 +121,7 @@ export function JobsStyleLayout({
   return (
     <div
       className={`min-h-screen flex transition-all duration-300 ${
-        darkMode ? 'bg-gray-900' : 'bg-gray-50'
+        darkMode ? 'bg-background' : 'bg-muted'
       }`}
     >
       {/* Sidebar */}
@@ -138,9 +138,9 @@ export function JobsStyleLayout({
 
           {/* Mobile Menu Overlay */}
           {mobileMenuOpen && (
-            <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-              <div className="w-80 h-full bg-white shadow-2xl">
-                <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="lg:hidden fixed inset-0 z-50 bg-background/50 backdrop-blur-sm">
+              <div className="w-80 h-full bg-background shadow-2xl">
+                <div className="p-4 border-b border-border flex items-center justify-between">
                   <h2 className="font-semibold text-gray-900">Menu</h2>
                   <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(false)}>
                     <X className="w-4 h-4" />
@@ -158,7 +158,7 @@ export function JobsStyleLayout({
         {/* Header */}
         <header
           className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-all ${
-            darkMode ? 'bg-gray-900/95 border-gray-800' : 'bg-white/95 border-gray-200'
+            darkMode ? 'bg-background/95 border-gray-800' : 'bg-background/95 border-border'
           }`}
         >
           <div className="px-6 py-4">
@@ -178,17 +178,17 @@ export function JobsStyleLayout({
 
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
-                    <ChefHat className="w-4 h-4 text-white" />
+                    <ChefHat className="w-4 h-4 text-foreground" />
                   </div>
                   <div>
                     <h1
                       className={`text-xl font-semibold ${
-                        darkMode ? 'text-white' : 'text-gray-900'
+                        darkMode ? 'text-foreground' : 'text-gray-900'
                       }`}
                     >
                       {getPageTitle()}
                     </h1>
-                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p className={`text-sm ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
                       {organization?.organization_name} •{' '}
                       {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
                     </p>
@@ -201,7 +201,7 @@ export function JobsStyleLayout({
                 <div className="relative">
                   <Search
                     className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                      darkMode ? 'text-gray-400' : 'text-gray-500'
+                      darkMode ? 'text-muted-foreground' : 'text-muted-foreground'
                     }`}
                   />
                   <Input
@@ -210,8 +210,8 @@ export function JobsStyleLayout({
                     placeholder="Search everything... ⌘K"
                     className={`pl-10 rounded-full border-0 transition-all ${
                       darkMode
-                        ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
-                        : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:shadow-md'
+                        ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
+                        : 'bg-muted text-gray-900 placeholder-gray-500 focus:bg-background focus:shadow-md'
                     }`}
                     onFocus={() => setIsCommandPaletteOpen(true)}
                   />
@@ -236,7 +236,7 @@ export function JobsStyleLayout({
                   />
                   <span
                     className={`text-xs font-medium ${
-                      darkMode ? 'text-gray-300' : 'text-gray-600'
+                      darkMode ? 'text-gray-300' : 'text-muted-foreground'
                     }`}
                   >
                     {connectionStatus === 'connected'
@@ -250,7 +250,7 @@ export function JobsStyleLayout({
                 {/* Notifications */}
                 <Button variant="ghost" size="sm" className="relative">
                   <Bell className="w-4 h-4" />
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-foreground text-xs rounded-full flex items-center justify-center">
                     3
                   </span>
                 </Button>
@@ -287,7 +287,7 @@ export function JobsStyleLayout({
         {/* Status Bar */}
         <div
           className={`border-t px-6 py-2 ${
-            darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+            darkMode ? 'bg-background border-gray-800' : 'bg-background border-border'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
@@ -298,31 +298,31 @@ export function JobsStyleLayout({
                     connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'
                   }`}
                 />
-                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
+                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>
                   {connectionStatus === 'connected' ? 'Connected' : 'Connection issues'}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-3 h-3 text-blue-500" />
-                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
+                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>
                   15 staff online
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-3 h-3 text-purple-500" />
-                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
+                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>
                   Last sync: {isClient ? formatDate(currentTime, 'HH:mm:ss') : '--:--:--'}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>
+              <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>
                 Press ⌘K to search • ⌘B to toggle sidebar
               </span>
               <div className="flex items-center space-x-1">
                 <Zap className="w-3 h-3 text-yellow-500" />
-                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>HERA Platform</span>
+                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>HERA Platform</span>
               </div>
             </div>
           </div>
@@ -331,11 +331,11 @@ export function JobsStyleLayout({
 
       {/* Command Palette */}
       {isCommandPaletteOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-32">
+        <div className="fixed inset-0 z-50 bg-background/50 backdrop-blur-sm flex items-start justify-center pt-32">
           <Card className="w-full max-w-2xl mx-4 overflow-hidden shadow-2xl">
             <div className="p-4 border-b">
               <div className="relative">
-                <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -347,7 +347,7 @@ export function JobsStyleLayout({
             </div>
             <div className="p-2 max-h-96 overflow-y-auto">
               <div className="space-y-1">
-                <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Quick Actions
                 </div>
                 <CommandItem icon={<Zap className="w-4 h-4" />} label="New Order" hotkey="⌘N" />
@@ -386,7 +386,7 @@ function CommandItem({
 }) {
   return (
     <div
-      className="flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded cursor-pointer group"
+      className="flex items-center justify-between px-3 py-2 hover:bg-muted rounded cursor-pointer group"
       onClick={onClick}
     >
       <div className="flex items-center space-x-3">
@@ -394,7 +394,7 @@ function CommandItem({
         <span className="text-sm">{label}</span>
       </div>
       {hotkey && (
-        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-600">{hotkey}</span>
+        <span className="text-xs text-muted-foreground font-mono group-hover:text-muted-foreground">{hotkey}</span>
       )}
     </div>
   )

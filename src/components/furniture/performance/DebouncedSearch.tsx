@@ -173,9 +173,9 @@ export function DebouncedSearch({
         {showSearchIcon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             {isSearching ? (
-              <Loader2 className="h-5 w-5 text-gray-400 animate-spin" />
+              <Loader2 className="h-5 w-5 text-muted-foreground animate-spin" />
             ) : (
-              <Search className="h-5 w-5 text-gray-400" />
+              <Search className="h-5 w-5 text-muted-foreground" />
             )}
           </div>
         )}
@@ -191,10 +191,10 @@ export function DebouncedSearch({
           placeholder={placeholder}
           autoFocus={autoFocus}
           className={cn(
-            'block w-full rounded-lg border border-gray-300 dark:border-gray-600',
-            'bg-white dark:bg-gray-800',
-            'text-gray-900 dark:text-gray-100',
-            'placeholder:text-gray-400 dark:placeholder:text-gray-500',
+            'block w-full rounded-lg border border-border dark:border-border',
+            'bg-background dark:bg-muted',
+            'text-gray-900 dark:text-foreground',
+            'placeholder:text-muted-foreground dark:placeholder:text-muted-foreground',
             'focus:border-blue-500 dark:focus:border-blue-400',
             'focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20',
             'transition-colors duration-200',
@@ -211,7 +211,7 @@ export function DebouncedSearch({
             onClick={handleClear}
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
           >
-            <X className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+            <X className="h-5 w-5 text-muted-foreground hover:text-muted-foreground dark:hover:text-gray-300" />
           </button>
         )}
       </div>
@@ -220,7 +220,7 @@ export function DebouncedSearch({
       {showSuggestions && filteredSuggestions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg"
+          className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-lg border border-border dark:border-border bg-background dark:bg-muted shadow-lg"
         >
           {filteredSuggestions.map((suggestion, index) => (
             <div
@@ -229,11 +229,11 @@ export function DebouncedSearch({
               onMouseEnter={() => setFocusedSuggestion(index)}
               className={cn(
                 'px-4 py-2 cursor-pointer transition-colors',
-                'hover:bg-gray-100 dark:hover:bg-gray-700',
-                focusedSuggestion === index && 'bg-gray-100 dark:bg-gray-700'
+                'hover:bg-muted dark:hover:bg-muted-foreground/10',
+                focusedSuggestion === index && 'bg-muted dark:bg-muted-foreground/10'
               )}
             >
-              <div className="text-sm text-gray-900 dark:text-gray-100">{suggestion}</div>
+              <div className="text-sm text-gray-900 dark:text-foreground">{suggestion}</div>
             </div>
           ))}
         </div>

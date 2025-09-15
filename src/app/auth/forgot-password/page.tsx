@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
               </Alert>
 
               <div className="space-y-3">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Didn't receive the email? Check your spam folder or try again.
                 </p>
 
@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
                   autoComplete="email"
                   autoFocus
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Enter the email address associated with your HERA account
                 </p>
               </div>
@@ -155,15 +155,15 @@ export default function ForgotPasswordPage() {
             </form>
 
             <div className="mt-6 text-center space-y-2">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Remember your password?{' '}
-                <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link href="/auth/login" className="text-primary hover:text-primary font-medium">
                   Sign In
                 </Link>
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Don't have an account?{' '}
-                <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link href="/auth/signup" className="text-primary hover:text-primary font-medium">
                   Create One
                 </Link>
               </p>
@@ -173,7 +173,7 @@ export default function ForgotPasswordPage() {
 
         {/* Security Notice */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500 max-w-sm mx-auto">
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             For security reasons, we'll send a password reset link to your registered email address.
             The link will expire after 1 hour.
           </p>

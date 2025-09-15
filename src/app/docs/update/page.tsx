@@ -292,7 +292,7 @@ export default function DocumentationUpdatePage() {
                                       className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                                         selectedContentType === type.id
                                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
-                                          : 'border-gray-200 hover:border-blue-300 dark:border-gray-700 dark:hover:border-blue-600'
+                                          : 'border-border hover:border-blue-300 dark:border-border dark:hover:border-blue-600'
                                       }`}
                                       onClick={() => setSelectedContentType(type.id)}
                                     >
@@ -300,8 +300,8 @@ export default function DocumentationUpdatePage() {
                                         <Icon
                                           className={`w-5 h-5 ${
                                             selectedContentType === type.id
-                                              ? 'text-blue-600'
-                                              : 'text-gray-500'
+                                              ? 'text-primary'
+                                              : 'text-muted-foreground'
                                           }`}
                                         />
                                         <div className="text-sm font-medium">{type.name}</div>

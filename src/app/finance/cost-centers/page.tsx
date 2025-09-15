@@ -189,7 +189,7 @@ export default function CostCentersPage() {
       case 'over-budget':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
     }
   }
 
@@ -216,17 +216,17 @@ export default function CostCentersPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Cost Centers
           </h1>
-          <p className="text-white/60 mt-1">Monitor and manage departmental costs and budgets</p>
+          <p className="text-foreground/60 mt-1">Monitor and manage departmental costs and budgets</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300">
             <Plus className="h-5 w-5" />
             <span>New Cost Center</span>
           </button>
@@ -234,13 +234,13 @@ export default function CostCentersPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-background/5 backdrop-blur-xl p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'overview'
-              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Overview
@@ -249,8 +249,8 @@ export default function CostCentersPage() {
           onClick={() => setActiveTab('centers')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'centers'
-              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Cost Centers
@@ -259,8 +259,8 @@ export default function CostCentersPage() {
           onClick={() => setActiveTab('analysis')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'analysis'
-              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Analysis
@@ -273,55 +273,55 @@ export default function CostCentersPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600">
-                    <Calculator className="h-6 w-6 text-white" />
+                    <Calculator className="h-6 w-6 text-foreground" />
                   </div>
                   <span className="text-xs text-yellow-400 font-medium">
                     {overviewMetrics.totalCenters} centers
                   </span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Total Budget</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Total Budget</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.totalBudget / 10000000).toFixed(0)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">Annual allocation</p>
+                <p className="text-xs text-foreground/40 mt-1">Annual allocation</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600">
-                    <DollarSign className="h-6 w-6 text-white" />
+                    <DollarSign className="h-6 w-6 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">YTD</span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Actual Spend</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Actual Spend</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.totalSpend / 10000000).toFixed(0)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">90% of budget</p>
+                <p className="text-xs text-foreground/40 mt-1">90% of budget</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-[#00DDFF] to-[#0049B7]">
-                    <Activity className="h-6 w-6 text-white" />
+                    <Activity className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="flex items-center space-x-1 text-sm font-medium text-emerald-400">
                     <TrendingUp className="h-4 w-4" />
                     <span>{overviewMetrics.overallVariance}%</span>
                   </div>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Budget Variance</h3>
-                <p className="text-2xl font-bold text-white">₹3.8 Cr</p>
-                <p className="text-xs text-white/40 mt-1">Under budget</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Budget Variance</h3>
+                <p className="text-2xl font-bold text-foreground">₹3.8 Cr</p>
+                <p className="text-xs text-foreground/40 mt-1">Under budget</p>
               </div>
             </div>
           </div>
@@ -331,8 +331,8 @@ export default function CostCentersPage() {
             {/* Monthly Trend */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Budget vs Actual Spend</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Budget vs Actual Spend</h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={spendTrend}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -362,8 +362,8 @@ export default function CostCentersPage() {
             {/* Efficiency Chart */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Department Efficiency</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Department Efficiency</h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <RadialBarChart
                     cx="50%"
@@ -403,20 +403,20 @@ export default function CostCentersPage() {
           {/* Centers Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search cost centers..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-yellow-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-yellow-500 transition-colors"
               />
             </div>
 
             <select
               value={selectedType}
               onChange={e => setSelectedType(e.target.value)}
-              className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-yellow-500 transition-colors"
+              className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-yellow-500 transition-colors"
             >
               <option value="all">All Types</option>
               <option value="operational">Operational</option>
@@ -425,7 +425,7 @@ export default function CostCentersPage() {
               <option value="r&d">R&D</option>
             </select>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Download className="h-5 w-5" />
               <span>Export</span>
             </button>
@@ -438,13 +438,13 @@ export default function CostCentersPage() {
               return (
                 <div key={center.id} className="relative group">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                  <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <Icon className="h-5 w-5 text-yellow-400" />
-                          <h3 className="text-lg font-semibold text-white">{center.name}</h3>
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60">
+                          <h3 className="text-lg font-semibold text-foreground">{center.name}</h3>
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-background/10 text-foreground/60">
                             {center.code}
                           </span>
                           <span
@@ -456,19 +456,19 @@ export default function CostCentersPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Budget</p>
-                            <p className="text-lg font-semibold text-white">
+                            <p className="text-xs text-foreground/60 mb-1">Budget</p>
+                            <p className="text-lg font-semibold text-foreground">
                               ₹{(center.budget / 10000000).toFixed(1)} Cr
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Actual Spend</p>
-                            <p className="text-lg font-semibold text-white">
+                            <p className="text-xs text-foreground/60 mb-1">Actual Spend</p>
+                            <p className="text-lg font-semibold text-foreground">
                               ₹{(center.actualSpend / 10000000).toFixed(1)} Cr
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Variance</p>
+                            <p className="text-xs text-foreground/60 mb-1">Variance</p>
                             <p
                               className={`text-lg font-semibold ${center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}
                             >
@@ -477,7 +477,7 @@ export default function CostCentersPage() {
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Variance %</p>
+                            <p className="text-xs text-foreground/60 mb-1">Variance %</p>
                             <p
                               className={`text-lg font-semibold ${center.variancePercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}
                             >
@@ -486,13 +486,13 @@ export default function CostCentersPage() {
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Headcount</p>
-                            <p className="text-lg font-semibold text-white">{center.headcount}</p>
+                            <p className="text-xs text-foreground/60 mb-1">Headcount</p>
+                            <p className="text-lg font-semibold text-foreground">{center.headcount}</p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-6 text-sm text-white/60">
+                          <div className="flex items-center space-x-6 text-sm text-foreground/60">
                             <div className="flex items-center space-x-2">
                               <Users className="h-4 w-4" />
                               <span>Manager: {center.manager}</span>
@@ -507,13 +507,13 @@ export default function CostCentersPage() {
 
                           {/* Progress Bar */}
                           <div className="w-48">
-                            <div className="flex justify-between text-xs text-white/60 mb-1">
+                            <div className="flex justify-between text-xs text-foreground/60 mb-1">
                               <span>Budget Used</span>
                               <span>
                                 {((center.actualSpend / center.budget) * 100).toFixed(0)}%
                               </span>
                             </div>
-                            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                            <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-500 ${
                                   center.status === 'on-track'
@@ -531,7 +531,7 @@ export default function CostCentersPage() {
                         </div>
                       </div>
 
-                      <button className="ml-4 text-white/40 hover:text-white transition-colors">
+                      <button className="ml-4 text-foreground/40 hover:text-foreground transition-colors">
                         <MoreVertical className="h-5 w-5" />
                       </button>
                     </div>
@@ -548,18 +548,18 @@ export default function CostCentersPage() {
           {/* Category Breakdown */}
           <div className="relative group mb-6">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Cost Category Analysis</h2>
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">Cost Category Analysis</h2>
               <div className="space-y-4">
                 {categoryBreakdown.map(category => (
                   <div key={category.category}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-white">{category.category}</span>
+                      <span className="text-sm font-medium text-foreground">{category.category}</span>
                       <div className="flex items-center space-x-4">
-                        <span className="text-sm text-white/60">
+                        <span className="text-sm text-foreground/60">
                           Budget: ₹{(category.budget / 10000000).toFixed(0)} Cr
                         </span>
-                        <span className="text-sm text-white/60">
+                        <span className="text-sm text-foreground/60">
                           Actual: ₹{(category.actual / 10000000).toFixed(0)} Cr
                         </span>
                         <span
@@ -572,7 +572,7 @@ export default function CostCentersPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="relative h-8 rounded-lg bg-white/10 overflow-hidden">
+                    <div className="relative h-8 rounded-lg bg-background/10 overflow-hidden">
                       <div
                         className="absolute h-full bg-gradient-to-r from-yellow-500/30 to-amber-600/30"
                         style={{ width: '100%' }}
@@ -582,7 +582,7 @@ export default function CostCentersPage() {
                         style={{ width: `${(category.actual / category.budget) * 100}%` }}
                       />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-xs font-medium text-white">
+                        <span className="text-xs font-medium text-foreground">
                           {((category.actual / category.budget) * 100).toFixed(0)}% utilized
                         </span>
                       </div>
@@ -597,27 +597,27 @@ export default function CostCentersPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Top Savings</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Top Savings</h2>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                     <div>
-                      <p className="font-medium text-white">Network Operations</p>
-                      <p className="text-xs text-white/60">CC-001</p>
+                      <p className="font-medium text-foreground">Network Operations</p>
+                      <p className="text-xs text-foreground/60">CC-001</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-emerald-400">+₹0.8 Cr</p>
-                      <p className="text-xs text-white/60">5.3% saved</p>
+                      <p className="text-xs text-foreground/60">5.3% saved</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                     <div>
-                      <p className="font-medium text-white">Customer Service</p>
-                      <p className="text-xs text-white/60">CC-002</p>
+                      <p className="font-medium text-foreground">Customer Service</p>
+                      <p className="text-xs text-foreground/60">CC-002</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-emerald-400">+₹0.2 Cr</p>
-                      <p className="text-xs text-white/60">2.5% saved</p>
+                      <p className="text-xs text-foreground/60">2.5% saved</p>
                     </div>
                   </div>
                 </div>
@@ -626,17 +626,17 @@ export default function CostCentersPage() {
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Budget Overruns</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Budget Overruns</h2>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-red-500/10 border border-red-500/20">
                     <div>
-                      <p className="font-medium text-white">Field Operations</p>
-                      <p className="text-xs text-white/60">CC-003</p>
+                      <p className="font-medium text-foreground">Field Operations</p>
+                      <p className="text-xs text-foreground/60">CC-003</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-red-400">-₹0.5 Cr</p>
-                      <p className="text-xs text-white/60">5.0% over</p>
+                      <p className="text-xs text-foreground/60">5.0% over</p>
                     </div>
                   </div>
                 </div>

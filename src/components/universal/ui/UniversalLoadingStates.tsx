@@ -65,8 +65,8 @@ export function UniversalSpinner({
 
   const colorClasses = {
     blue: 'border-blue-200 border-t-blue-600',
-    gray: 'border-gray-200 border-t-gray-600',
-    white: 'border-white/20 border-t-white',
+    gray: 'border-border border-t-gray-600',
+    white: 'border-border/20 border-t-white',
     green: 'border-green-200 border-t-green-600',
     red: 'border-red-200 border-t-red-600'
   }
@@ -111,7 +111,7 @@ export function UniversalFullPageLoading({
 
         <h2 className="text-xl font-semibold text-gray-900 mb-2">{title}</h2>
 
-        {subtitle && <p className="text-gray-600 mb-6">{subtitle}</p>}
+        {subtitle && <p className="text-muted-foreground mb-6">{subtitle}</p>}
 
         {showTimeout && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-6">
@@ -122,7 +122,7 @@ export function UniversalFullPageLoading({
           </div>
         )}
 
-        <p className="text-xs text-gray-400 mt-4">If this persists, please contact support</p>
+        <p className="text-xs text-muted-foreground mt-4">If this persists, please contact support</p>
       </div>
     </div>
   )
@@ -135,7 +135,7 @@ export function UniversalInlineLoading({ text = 'Loading...', size = 'md' }: Inl
   return (
     <div className="flex items-center justify-center py-4">
       <UniversalSpinner size={size} className="mr-3" />
-      <span className={`text-gray-600 ${textSize}`}>{text}</span>
+      <span className={`text-muted-foreground ${textSize}`}>{text}</span>
     </div>
   )
 }
@@ -159,7 +159,7 @@ export function UniversalCardSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="bg-white border border-gray-200 rounded-lg p-6 animate-pulse">
+        <div key={index} className="bg-background border border-border rounded-lg p-6 animate-pulse">
           <div className="h-6 bg-gray-200 rounded mb-4 w-3/4"></div>
           <div className="space-y-2 mb-4">
             <div className="h-4 bg-gray-200 rounded"></div>
@@ -238,19 +238,19 @@ export function UniversalErrorDisplay({
       bg: 'bg-red-50',
       border: 'border-red-200',
       text: 'text-red-800',
-      button: 'bg-red-600 hover:bg-red-700 text-white'
+      button: 'bg-red-600 hover:bg-red-700 text-foreground'
     },
     warning: {
       bg: 'bg-amber-50',
       border: 'border-amber-200',
       text: 'text-amber-800',
-      button: 'bg-amber-600 hover:bg-amber-700 text-white'
+      button: 'bg-amber-600 hover:bg-amber-700 text-foreground'
     },
     info: {
       bg: 'bg-blue-50',
       border: 'border-blue-200',
       text: 'text-blue-800',
-      button: 'bg-blue-600 hover:bg-blue-700 text-white'
+      button: 'bg-blue-600 hover:bg-blue-700 text-foreground'
     }
   }
 
@@ -292,7 +292,7 @@ export function UniversalErrorDisplay({
           )}
           {type === 'info' && (
             <svg
-              className="w-6 h-6 text-blue-600"
+              className="w-6 h-6 text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -322,7 +322,7 @@ export function UniversalErrorDisplay({
 
               {showDetails && (
                 <pre
-                  className={`mt-2 p-3 bg-white border rounded text-xs ${styles.text} overflow-auto max-h-40`}
+                  className={`mt-2 p-3 bg-background border rounded text-xs ${styles.text} overflow-auto max-h-40`}
                 >
                   {details}
                 </pre>
@@ -343,7 +343,7 @@ export function UniversalErrorDisplay({
             {onDismiss && (
               <button
                 onClick={onDismiss}
-                className="px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                className="px-4 py-2 border border-border text-gray-700 bg-background rounded-lg hover:bg-muted font-medium transition-colors"
               >
                 Dismiss
               </button>

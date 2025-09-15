@@ -37,7 +37,7 @@ const primaryNavItems: NavItem[] = [
     description: 'Your personalized dashboard and overview',
     icon: Home,
     href: '/',
-    color: 'text-blue-600',
+    color: 'text-primary',
     bgColor: 'bg-blue-50'
   },
   {
@@ -139,8 +139,8 @@ const additionalNavItems: NavItem[] = [
     description: 'System development tools',
     icon: Activity,
     href: '/development',
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-50'
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted'
   }
 ]
 
@@ -157,7 +157,7 @@ export function TeamsSidebar() {
         href={item.href}
         className={cn(
           'group relative flex items-center rounded-lg transition-all duration-200 mb-2',
-          'hover:bg-gray-100 p-3',
+          'hover:bg-muted p-3',
           isActive && 'bg-blue-50 border-l-4 border-blue-600'
         )}
         onClick={() => setActiveItem(item.id)}
@@ -192,20 +192,20 @@ export function TeamsSidebar() {
       {/* Teams-style Sidebar */}
       <div
         className={cn(
-          'fixed left-0 top-0 h-full bg-white/95 backdrop-blur-xl border-r border-gray-200 z-40 transition-all duration-300 shadow-xl',
+          'fixed left-0 top-0 h-full bg-background/95 backdrop-blur-xl border-r border-border z-40 transition-all duration-300 shadow-xl',
           isExpanded ? 'w-64' : 'w-16'
         )}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-border">
           <div className="flex items-center">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-sm">H</span>
+              <span className="text-foreground font-bold text-sm">H</span>
             </div>
             {isExpanded && (
               <div className="ml-3 min-w-0">
                 <p className="font-semibold text-gray-900 text-sm truncate">HERA ERP</p>
-                <p className="text-xs text-gray-500 truncate">Business Platform</p>
+                <p className="text-xs text-muted-foreground truncate">Business Platform</p>
               </div>
             )}
           </div>
@@ -216,7 +216,7 @@ export function TeamsSidebar() {
           {/* Primary Applications */}
           <div className="mb-6">
             {isExpanded && (
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-2">
                 Core Apps
               </h3>
             )}
@@ -228,7 +228,7 @@ export function TeamsSidebar() {
           {/* Additional Applications */}
           <div className="mb-6">
             {isExpanded && (
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-2">
                 Business Modules
               </h3>
             )}
@@ -239,11 +239,11 @@ export function TeamsSidebar() {
 
           {/* More Apps Section */}
           {isExpanded && (
-            <div className="border-t border-gray-200 pt-4">
+            <div className="border-t border-border pt-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full justify-start text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                className="w-full justify-start text-muted-foreground hover:text-gray-800 hover:bg-muted"
               >
                 <MoreHorizontal className="h-4 w-4 mr-3" />
                 More apps
@@ -259,7 +259,7 @@ export function TeamsSidebar() {
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
-              'w-full justify-center hover:bg-gray-100 transition-all duration-200',
+              'w-full justify-center hover:bg-muted transition-all duration-200',
               isExpanded ? 'justify-start' : 'p-2'
             )}
           >
@@ -271,7 +271,7 @@ export function TeamsSidebar() {
             >
               <div className="w-0 h-0 border-l-[4px] border-l-gray-400 border-t-[3px] border-t-transparent border-b-[3px] border-b-transparent ml-0.5" />
             </div>
-            {isExpanded && <span className="ml-3 text-sm text-gray-600">Collapse</span>}
+            {isExpanded && <span className="ml-3 text-sm text-muted-foreground">Collapse</span>}
           </Button>
         </div>
       </div>

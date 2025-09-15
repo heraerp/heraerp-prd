@@ -73,7 +73,7 @@ export default function HowItWorks() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-hera-500 to-hera-cyan-500 rounded-lg flex items-center justify-center">
-                      <Database className="h-5 w-5 text-white" />
+                      <Database className="h-5 w-5 text-foreground" />
                     </div>
                     <h3 className="text-lg font-semibold">Core Tables</h3>
                   </div>
@@ -93,7 +93,7 @@ export default function HowItWorks() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-hera-emerald-500 to-hera-cyan-500 rounded-lg flex items-center justify-center">
-                      <Globe className="h-5 w-5 text-white" />
+                      <Globe className="h-5 w-5 text-foreground" />
                     </div>
                     <h3 className="text-lg font-semibold">Relationships</h3>
                   </div>
@@ -110,7 +110,7 @@ export default function HowItWorks() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-hera-amber-500 to-hera-emerald-500 rounded-lg flex items-center justify-center">
-                      <BarChart3 className="h-5 w-5 text-white" />
+                      <BarChart3 className="h-5 w-5 text-foreground" />
                     </div>
                     <h3 className="text-lg font-semibold">Transactions</h3>
                   </div>

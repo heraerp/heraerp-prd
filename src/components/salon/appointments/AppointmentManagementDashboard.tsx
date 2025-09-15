@@ -146,7 +146,7 @@ export function AppointmentManagementDashboard({
       <div className="relative z-10 p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-white flex items-center gap-3">
+          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-foreground flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
               style={{
@@ -166,11 +166,11 @@ export function AppointmentManagementDashboard({
                 `
               }}
             >
-              <Calendar className="w-6 h-6 text-white drop-shadow-md" />
+              <Calendar className="w-6 h-6 text-foreground drop-shadow-md" />
             </div>
             Appointment Management
           </h1>
-          <p className="!text-gray-600 dark:!text-gray-400 mt-2">
+          <p className="!text-muted-foreground dark:!text-muted-foreground mt-2">
             Manage bookings, schedule services, and track customer appointments
           </p>
         </div>
@@ -202,8 +202,8 @@ export function AppointmentManagementDashboard({
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'list'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               List View
@@ -213,8 +213,8 @@ export function AppointmentManagementDashboard({
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'calendar'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               Calendar
@@ -224,8 +224,8 @@ export function AppointmentManagementDashboard({
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'day'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               Day View
@@ -236,7 +236,7 @@ export function AppointmentManagementDashboard({
           <div className="flex gap-3">
             <Button
               onClick={() => setShowNewAppointment(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-lg"
             >
               <Plus className="h-4 w-4 mr-2" />
               New Appointment
@@ -244,7 +244,7 @@ export function AppointmentManagementDashboard({
             <Button
               variant="outline"
               onClick={refreshAppointments}
-              className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-900/50"
+              className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50"
             >
               <TrendingUp className="h-4 w-4 mr-2" />
               Refresh
@@ -255,12 +255,12 @@ export function AppointmentManagementDashboard({
         {/* Search and Filters */}
         <div className="mb-6 flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by customer, service, or staff..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="pl-10 bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+              className="pl-10 bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
             />
           </div>
 
@@ -273,8 +273,8 @@ export function AppointmentManagementDashboard({
                 onClick={() => setStatusFilter(status)}
                 className={
                   statusFilter === status
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
-                    : 'backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-900/50'
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground'
+                    : 'backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50'
                 }
               >
                 {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
@@ -330,13 +330,13 @@ export function AppointmentManagementDashboard({
             }}
           >
             <div className="p-6">
-              <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white mb-4">
+              <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground mb-4">
                 Day View - {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
               </h3>
               {/* Day view implementation would go here */}
               <div className="text-center py-12">
-                <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-3" />
-                <p className="!text-gray-600 dark:!text-gray-400">Day view coming soon</p>
+                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                <p className="!text-muted-foreground dark:!text-muted-foreground">Day view coming soon</p>
               </div>
             </div>
           </div>

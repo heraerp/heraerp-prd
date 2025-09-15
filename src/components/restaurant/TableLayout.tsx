@@ -156,7 +156,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
       case 'reserved':
         return 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300'
       case 'cleaning':
-        return 'bg-gray-100 hover:bg-gray-200 border-gray-300'
+        return 'bg-muted hover:bg-gray-200 border-border'
     }
   }
 
@@ -197,10 +197,10 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Your Tables</p>
+                <p className="text-sm text-muted-foreground">Your Tables</p>
                 <p className="text-2xl font-bold">{serverStats.tables}</p>
               </div>
-              <Users className="h-8 w-8 text-gray-400" />
+              <Users className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -209,10 +209,10 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Guests</p>
+                <p className="text-sm text-muted-foreground">Total Guests</p>
                 <p className="text-2xl font-bold">{serverStats.guests}</p>
               </div>
-              <Users className="h-8 w-8 text-gray-400" />
+              <Users className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -221,10 +221,10 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Your Sales</p>
+                <p className="text-sm text-muted-foreground">Your Sales</p>
                 <p className="text-2xl font-bold">${serverStats.sales.toFixed(2)}</p>
               </div>
-              <DollarSign className="h-8 w-8 text-gray-400" />
+              <DollarSign className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -233,10 +233,10 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Avg Turn Time</p>
+                <p className="text-sm text-muted-foreground">Avg Turn Time</p>
                 <p className="text-2xl font-bold">52m</p>
               </div>
-              <Clock className="h-8 w-8 text-gray-400" />
+              <Clock className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -293,7 +293,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
                 <span>Reserved</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gray-100 border border-gray-300 rounded"></div>
+                <div className="w-4 h-4 bg-muted border border-border rounded"></div>
                 <span>Cleaning</span>
               </div>
             </div>
@@ -315,7 +315,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
                 <div className="text-2xl font-bold text-center mb-2">{table.number}</div>
 
                 {/* Table Info */}
-                <div className="text-xs text-gray-600 text-center mb-2">{table.seats} seats</div>
+                <div className="text-xs text-muted-foreground text-center mb-2">{table.seats} seats</div>
 
                 {/* Occupied Details */}
                 {table.status === 'occupied' && (
@@ -343,7 +343,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
 
                 {/* Cleaning Status */}
                 {table.status === 'cleaning' && (
-                  <div className="text-xs text-center text-gray-500">Bus & Reset</div>
+                  <div className="text-xs text-center text-muted-foreground">Bus & Reset</div>
                 )}
 
                 {/* Alert Indicators */}

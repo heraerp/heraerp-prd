@@ -68,9 +68,9 @@ export function PerformanceVisualization({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload[0]) {
       return (
-        <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">
-          <p className="text-sm text-slate-400 mb-2">{formatDate(label)}</p>
-          <p className="text-lg font-semibold text-white">{formatCurrency(payload[0].value)}</p>
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+          <p className="text-sm text-muted-foreground mb-2">{formatDate(label)}</p>
+          <p className="text-lg font-semibold text-foreground">{formatCurrency(payload[0].value)}</p>
           {payload[1] && (
             <p className="text-sm text-slate-500 mt-1">
               Benchmark: {formatCurrency(payload[1].value)}
@@ -84,21 +84,21 @@ export function PerformanceVisualization({
 
   if (isLoading) {
     return (
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="animate-pulse">
-          <div className="h-8 w-48 bg-slate-800 rounded mb-4" />
-          <div className="h-64 w-full bg-slate-800 rounded" />
+          <div className="h-8 w-48 bg-muted rounded mb-4" />
+          <div className="h-64 w-full bg-muted rounded" />
         </div>
       </Card>
     )
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-white mb-1">Performance</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-1">Performance</h3>
           <div className="flex items-center gap-3">
             <span
               className={cn('text-2xl font-bold', isPositive ? 'text-emerald-400' : 'text-red-400')}
@@ -106,13 +106,13 @@ export function PerformanceVisualization({
               {isPositive ? '+' : ''}
               {performancePercent.toFixed(2)}%
             </span>
-            <span className="text-sm text-slate-400">{timeframe} Return</span>
+            <span className="text-sm text-muted-foreground">{timeframe} Return</span>
           </div>
         </div>
 
         {/* Timeframe Selector */}
         <Tabs value={timeframe} onValueChange={(v: any) => setTimeframe(v)}>
-          <TabsList className="bg-slate-800/50 border-slate-700">
+          <TabsList className="bg-muted/50 border-border">
             <TabsTrigger value="1D" className="data-[state=active]:bg-slate-700">
               1D
             </TabsTrigger>

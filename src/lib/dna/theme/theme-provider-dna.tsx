@@ -199,8 +199,8 @@ export function ThemeToggle({
       className={`
         inline-flex items-center justify-center
         px-3 py-2 rounded-lg
-        bg-gray-100 dark:bg-gray-800
-        hover:bg-gray-200 dark:hover:bg-gray-700
+        bg-muted dark:bg-muted
+        hover:bg-gray-200 dark:hover:bg-muted-foreground/10
         transition-colors duration-200
         ${className}
       `}

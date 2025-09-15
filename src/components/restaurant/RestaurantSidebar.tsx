@@ -126,7 +126,7 @@ export function RestaurantSidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          'fixed left-0 top-0 h-full bg-gray-900 text-white transition-all duration-300 z-40',
+          'fixed left-0 top-0 h-full bg-background text-foreground transition-all duration-300 z-40',
           'flex flex-col',
           isExpanded ? 'w-64' : 'w-16',
           'md:w-16 hover:w-64 group'
@@ -136,7 +136,7 @@ export function RestaurantSidebar() {
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Utensils className="h-5 w-5 text-white" />
+              <Utensils className="h-5 w-5 text-foreground" />
             </div>
             <span
               className={cn(
@@ -161,8 +161,8 @@ export function RestaurantSidebar() {
                   href={item.href}
                   className={cn(
                     'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative',
-                    'hover:bg-gray-800',
-                    isActive && 'bg-gray-800 text-orange-400'
+                    'hover:bg-muted',
+                    isActive && 'bg-muted text-orange-400'
                   )}
                 >
                   <div className="flex-shrink-0">{item.icon}</div>
@@ -179,7 +179,7 @@ export function RestaurantSidebar() {
                     <div
                       className={cn(
                         'absolute right-2 top-1/2 -translate-y-1/2',
-                        'bg-orange-500 text-white text-xs rounded-full h-5 min-w-[20px] flex items-center justify-center px-1',
+                        'bg-orange-500 text-foreground text-xs rounded-full h-5 min-w-[20px] flex items-center justify-center px-1',
                         item.alert && 'animate-pulse',
                         !isExpanded && 'md:group-hover:opacity-100 md:opacity-0'
                       )}
@@ -199,11 +199,11 @@ export function RestaurantSidebar() {
               !isExpanded && 'md:group-hover:opacity-100 md:opacity-0'
             )}
           >
-            <p className="text-xs text-gray-500 uppercase px-3 mb-2">Quick Actions</p>
+            <p className="text-xs text-muted-foreground uppercase px-3 mb-2">Quick Actions</p>
             {quickActions.map((action, index) => (
               <button
                 key={index}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 w-full text-left"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-muted w-full text-left"
               >
                 {action.icon}
                 <span className="text-sm">{action.label}</span>
@@ -221,15 +221,15 @@ export function RestaurantSidebar() {
         >
           <div className="space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Today's Sales</span>
+              <span className="text-muted-foreground">Today's Sales</span>
               <span className="font-medium">$12,847</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Active Tables</span>
+              <span className="text-muted-foreground">Active Tables</span>
               <span className="font-medium">14/32</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Kitchen Time</span>
+              <span className="text-muted-foreground">Kitchen Time</span>
               <span className="font-medium text-green-400">12m avg</span>
             </div>
           </div>

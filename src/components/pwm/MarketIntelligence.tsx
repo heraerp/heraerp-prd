@@ -127,14 +127,14 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
   return (
     <div className="space-y-6">
       {/* Market Overview */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
             <BarChart3 className="h-5 w-5 text-blue-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Global Market Overview</h3>
-            <p className="text-sm text-slate-400">Real-time market intelligence</p>
+            <h3 className="text-lg font-semibold text-foreground">Global Market Overview</h3>
+            <p className="text-sm text-muted-foreground">Real-time market intelligence</p>
           </div>
         </div>
 
@@ -143,10 +143,10 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
           {marketIndices.map(index => (
             <div
               key={index.name}
-              className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50"
+              className="p-3 rounded-lg bg-muted/50 border border-border/50"
             >
-              <p className="text-xs text-slate-400 mb-1">{index.name}</p>
-              <p className="text-lg font-bold text-white mb-1">{index.value.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground mb-1">{index.name}</p>
+              <p className="text-lg font-bold text-foreground mb-1">{index.value.toLocaleString()}</p>
               <div
                 className={cn(
                   'flex items-center gap-1 text-sm',
@@ -171,7 +171,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
         {/* AI Market Synthesis */}
         <div className="p-4 rounded-xl bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/30">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-medium text-white flex items-center gap-2">
+            <h4 className="font-medium text-foreground flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -188,12 +188,12 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
 
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-slate-400">Market Sentiment</p>
-              <p className="text-lg font-semibold text-white">{aiSynthesis.marketSentiment}</p>
+              <p className="text-sm text-muted-foreground">Market Sentiment</p>
+              <p className="text-lg font-semibold text-foreground">{aiSynthesis.marketSentiment}</p>
             </div>
 
             <div>
-              <p className="text-sm text-slate-400 mb-2">Key Themes</p>
+              <p className="text-sm text-muted-foreground mb-2">Key Themes</p>
               <div className="space-y-1">
                 {aiSynthesis.keyThemes.map((theme, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
@@ -204,7 +204,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-700/50">
+            <div className="pt-3 border-t border-border/50">
               <p className="text-sm font-medium text-emerald-400">
                 💡 {aiSynthesis.recommendation}
               </p>
@@ -214,15 +214,15 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
       </Card>
 
       {/* Market Events Feed */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-        <h3 className="text-lg font-semibold text-white mb-4">Market Events & Impact</h3>
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Market Events & Impact</h3>
 
         <ScrollArea className="h-96">
           <div className="space-y-4">
             {marketEvents.map(event => (
               <div
                 key={event.id}
-                className="p-4 rounded-xl border bg-slate-800/30 border-slate-700/50"
+                className="p-4 rounded-xl border bg-muted/30 border-border/50"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-start gap-3">
@@ -233,14 +233,14 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
                           ? 'bg-emerald-500/20 text-emerald-400'
                           : event.sentiment === 'negative'
                             ? 'bg-red-500/20 text-red-400'
-                            : 'bg-slate-500/20 text-slate-400'
+                            : 'bg-slate-500/20 text-muted-foreground'
                       )}
                     >
                       {getTypeIcon(event.type)}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-white mb-1">{event.title}</h4>
-                      <p className="text-sm text-slate-400">{event.description}</p>
+                      <h4 className="font-medium text-foreground mb-1">{event.title}</h4>
+                      <p className="text-sm text-muted-foreground">{event.description}</p>
                     </div>
                   </div>
                   <Badge variant="outline" className={cn('ml-3', getImpactColor(event.impact))}>
@@ -254,7 +254,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
                       <Badge
                         key={sector}
                         variant="outline"
-                        className="text-xs bg-slate-700/50 text-slate-300 border-slate-600"
+                        className="text-xs bg-slate-700/50 text-slate-300 border-input"
                       >
                         {sector}
                       </Badge>

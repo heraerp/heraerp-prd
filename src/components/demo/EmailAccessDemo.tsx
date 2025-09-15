@@ -56,7 +56,7 @@ export function EmailAccessDemo() {
     <div className="space-y-6 p-6 max-w-2xl mx-auto">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Email Access Demo</h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Shows how email is immediately available after user provides it
         </p>
       </div>
@@ -72,13 +72,13 @@ export function EmailAccessDemo() {
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-600">Status:</p>
+              <p className="text-sm text-muted-foreground">Status:</p>
               <Badge variant={isIdentified ? 'default' : 'secondary'}>
                 {isAnonymous ? 'Anonymous' : isIdentified ? 'Email Verified' : 'Registered'}
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Days Remaining:</p>
+              <p className="text-sm text-muted-foreground">Days Remaining:</p>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 <span className="font-semibold">{daysRemaining}</span>
@@ -120,7 +120,7 @@ export function EmailAccessDemo() {
                 Save Email
               </Button>
             </div>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               Email will be immediately available after saving
             </p>
           </CardContent>
@@ -162,8 +162,8 @@ export function EmailAccessDemo() {
           <CardTitle>Code Example: Accessing Email</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-            <div className="text-gray-400">
+          <div className="bg-background text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+            <div className="text-muted-foreground">
               // Email is immediately available after saveWithEmail()
             </div>
             <div className="mt-2">
@@ -174,9 +174,9 @@ export function EmailAccessDemo() {
               <span className="text-blue-400">const</span> userEmail = user?.email ||
               organization?.email
             </div>
-            <div className="mt-2 text-gray-400">// Current email: </div>
-            <div className="text-white">"{currentEmail || 'Not provided yet'}"</div>
-            <div className="mt-2 text-gray-400">
+            <div className="mt-2 text-muted-foreground">// Current email: </div>
+            <div className="text-foreground">"{currentEmail || 'Not provided yet'}"</div>
+            <div className="mt-2 text-muted-foreground">
               // Available immediately - no waiting for full registration!
             </div>
           </div>
@@ -189,7 +189,7 @@ export function EmailAccessDemo() {
           <CardTitle>Workspace Data Structure</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-muted p-4 rounded-lg">
             <pre className="text-sm overflow-x-auto">
               {JSON.stringify(
                 {

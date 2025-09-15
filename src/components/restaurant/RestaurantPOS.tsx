@@ -355,14 +355,14 @@ export function RestaurantPOS() {
   const { profit, margin } = calculateProfit()
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-muted">
       {/* Left Panel - Menu Items */}
       <div className="flex-1 flex flex-col">
         {/* Search and Filters */}
-        <div className="p-4 bg-white border-b">
+        <div className="p-4 bg-background border-b">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search menu items..."
                 value={searchQuery}
@@ -377,7 +377,7 @@ export function RestaurantPOS() {
         </div>
 
         {/* Category Tabs */}
-        <div className="p-4 bg-white border-b">
+        <div className="p-4 bg-background border-b">
           <div className="flex gap-2 overflow-x-auto">
             {categories.map(category => (
               <Button
@@ -461,7 +461,7 @@ export function RestaurantPOS() {
       </div>
 
       {/* Right Panel - Order Summary */}
-      <div className="w-96 bg-white border-l flex flex-col">
+      <div className="w-96 bg-background border-l flex flex-col">
         {/* Order Type Selection */}
         <div className="p-4 border-b">
           <div className="grid grid-cols-3 gap-2">
@@ -543,7 +543,7 @@ export function RestaurantPOS() {
         {/* Order Items */}
         <ScrollArea className="flex-1 p-4">
           {currentOrder.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-muted-foreground">
               <ShoppingCart className="w-12 h-12 mx-auto mb-3" />
               <p>No items in order</p>
               <p className="text-sm mt-1">Tap menu items to add</p>
@@ -551,11 +551,11 @@ export function RestaurantPOS() {
           ) : (
             <div className="space-y-3">
               {currentOrder.map((item, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium">{item.menuItem.name}</p>
                     {item.modifiers.length > 0 && (
-                      <p className="text-xs text-gray-500">{item.modifiers.join(', ')}</p>
+                      <p className="text-xs text-muted-foreground">{item.modifiers.join(', ')}</p>
                     )}
                     <div className="flex items-center gap-2 mt-2">
                       <Button
@@ -639,10 +639,10 @@ export function RestaurantPOS() {
           {/* Profit Indicator (for manager view) */}
           <div className="p-2 bg-green-50 rounded-lg">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Est. Profit</span>
+              <span className="text-muted-foreground">Est. Profit</span>
               <div className="text-right">
                 <span className="font-semibold text-green-600">${profit.toFixed(2)}</span>
-                <span className="text-xs text-gray-500 ml-1">({margin.toFixed(1)}%)</span>
+                <span className="text-xs text-muted-foreground ml-1">({margin.toFixed(1)}%)</span>
               </div>
             </div>
           </div>

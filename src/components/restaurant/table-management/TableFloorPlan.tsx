@@ -459,7 +459,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
 
             {mode === 'add' && (
               <div className="flex items-center space-x-2 ml-4">
-                <span className="text-sm text-gray-600">Shape:</span>
+                <span className="text-sm text-muted-foreground">Shape:</span>
                 <Button
                   variant={newTableShape === 'square' ? 'default' : 'outline'}
                   size="sm"
@@ -510,7 +510,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
             <Button variant="outline" size="sm" onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}>
               <ZoomOut className="w-4 h-4" />
             </Button>
-            <span className="text-sm text-gray-600 w-12 text-center">
+            <span className="text-sm text-muted-foreground w-12 text-center">
               {Math.round(zoom * 100)}%
             </span>
             <Button variant="outline" size="sm" onClick={() => setZoom(Math.min(2, zoom + 0.1))}>
@@ -556,7 +556,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
 
         {/* Selected table controls */}
         {selectedTable && mode === 'select' && (
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-4 p-4 bg-muted rounded-lg">
             <span className="text-sm font-medium">Table {selectedTable.table_number}</span>
             <Badge
               className={
@@ -566,7 +566,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
                     ? 'bg-red-100 text-red-800'
                     : selectedTable.status === 'reserved'
                       ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-gray-100 text-gray-800'
+                      : 'bg-muted text-gray-800'
               }
             >
               {selectedTable.status}
@@ -604,7 +604,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
       {/* Canvas */}
       <div
         ref={containerRef}
-        className="relative bg-white rounded-lg overflow-hidden"
+        className="relative bg-background rounded-lg overflow-hidden"
         style={{ height: '600px' }}
       >
         <canvas
@@ -619,7 +619,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         />
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg border border-gray-200">
+        <div className="absolute bottom-4 left-4 bg-background p-3 rounded-lg shadow-lg border border-border">
           <h4 className="text-sm font-semibold mb-2">Legend</h4>
           <div className="space-y-1 text-xs">
             <div className="flex items-center space-x-2">

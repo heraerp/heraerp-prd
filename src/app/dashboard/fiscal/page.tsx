@@ -174,7 +174,7 @@ export default function FiscalDashboardPage() {
       case 'failed':
         return <AlertCircle className="w-5 h-5 text-red-600" />
       default:
-        return <Circle className="w-5 h-5 text-gray-400" />
+        return <Circle className="w-5 h-5 text-muted-foreground" />
     }
   }
 
@@ -191,8 +191,8 @@ export default function FiscalDashboardPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading fiscal dashboard...</p>
+          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading fiscal dashboard...</p>
         </div>
       </div>
     )
@@ -204,7 +204,7 @@ export default function FiscalDashboardPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Fiscal Dashboard</h1>
-          <p className="text-gray-600 mt-1">Manage financial periods and closing process</p>
+          <p className="text-muted-foreground mt-1">Manage financial periods and closing process</p>
         </div>
         <div className="flex items-center gap-4">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
@@ -248,7 +248,7 @@ export default function FiscalDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Closing Progress</span>
+              <span className="text-sm text-muted-foreground">Closing Progress</span>
               <span className="text-sm font-medium">{periodStatus.closing_progress}%</span>
             </div>
             <Progress value={periodStatus.closing_progress} className="mt-2" />
@@ -310,7 +310,7 @@ export default function FiscalDashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatCurrency(kpis.net_income)}</div>
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="text-sm text-muted-foreground mt-2">
                       Margin: {kpis.gross_margin?.toFixed(1)}%
                     </div>
                   </CardContent>
@@ -324,7 +324,7 @@ export default function FiscalDashboardPage() {
                     <div className="text-2xl font-bold">
                       {formatCurrency(kpis.retained_earnings)}
                     </div>
-                    <div className="text-sm text-gray-600 mt-2">YTD Accumulation</div>
+                    <div className="text-sm text-muted-foreground mt-2">YTD Accumulation</div>
                   </CardContent>
                 </Card>
               </>
@@ -372,18 +372,18 @@ export default function FiscalDashboardPage() {
                   <div
                     key={step.step_code}
                     className={`flex items-center justify-between p-4 rounded-lg border ${
-                      step.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-gray-50'
+                      step.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-muted'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-background shadow-sm">
                         {getStepIcon(step.status)}
                       </div>
                       <div>
                         <div className="font-medium">{step.description}</div>
-                        <div className="text-sm text-gray-600">Step {step.step_number} of 8</div>
+                        <div className="text-sm text-muted-foreground">Step {step.step_number} of 8</div>
                         {step.completed_at && (
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-muted-foreground mt-1">
                             Completed on {new Date(step.completed_at).toLocaleDateString()}
                           </div>
                         )}
@@ -487,25 +487,25 @@ export default function FiscalDashboardPage() {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="text-center">
-                      <div className="text-sm text-gray-600">Total Revenue</div>
+                      <div className="text-sm text-muted-foreground">Total Revenue</div>
                       <div className="text-2xl font-bold mt-1">
                         {formatCurrency(branchData.consolidated.revenue)}
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm text-gray-600">Total Expenses</div>
+                      <div className="text-sm text-muted-foreground">Total Expenses</div>
                       <div className="text-2xl font-bold mt-1">
                         {formatCurrency(branchData.consolidated.expenses)}
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm text-gray-600">Net Income</div>
+                      <div className="text-sm text-muted-foreground">Net Income</div>
                       <div className="text-2xl font-bold mt-1">
                         {formatCurrency(branchData.consolidated.net_income)}
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm text-gray-600">Profit Margin</div>
+                      <div className="text-sm text-muted-foreground">Profit Margin</div>
                       <div className="text-2xl font-bold mt-1">
                         {branchData.consolidated.gross_margin?.toFixed(1)}%
                       </div>
@@ -527,7 +527,7 @@ export default function FiscalDashboardPage() {
                     <CardTitle className="text-lg">Profit & Loss</CardTitle>
                     <CardDescription>Income statement for {selectedPeriod}</CardDescription>
                   </div>
-                  <BarChart3 className="w-8 h-8 text-blue-600" />
+                  <BarChart3 className="w-8 h-8 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>

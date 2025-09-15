@@ -109,7 +109,7 @@ export default function ControlCenterDashboard() {
       case 'failed':
         return 'text-red-600 dark:text-red-400'
       default:
-        return 'text-gray-600 dark:text-gray-400'
+        return 'text-muted-foreground dark:text-muted-foreground'
     }
   }
 
@@ -124,7 +124,7 @@ export default function ControlCenterDashboard() {
       case 'failed':
         return <XCircle className="h-5 w-5 text-red-600" />
       default:
-        return <Activity className="h-5 w-5 text-gray-600" />
+        return <Activity className="h-5 w-5 text-muted-foreground" />
     }
   }
 
@@ -180,7 +180,7 @@ export default function ControlCenterDashboard() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl font-bold">{mockHealthData.overall}%</span>
-                <Badge className={cn('text-white', getHealthColor(mockHealthData.overall))}>
+                <Badge className={cn('text-foreground', getHealthColor(mockHealthData.overall))}>
                   {mockHealthData.overall >= 90
                     ? 'Excellent'
                     : mockHealthData.overall >= 70
@@ -283,7 +283,7 @@ export default function ControlCenterDashboard() {
                     <span>All guardrails passing</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <Activity className="h-4 w-4 text-blue-600" />
+                    <Activity className="h-4 w-4 text-primary" />
                     <span>System scan completed</span>
                   </div>
                 </div>

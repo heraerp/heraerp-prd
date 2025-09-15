@@ -62,7 +62,7 @@ export function InteractiveMessage({
 
       <div className="text-sm mb-3">{body}</div>
 
-      {footer && <div className="text-xs text-gray-500 mb-3">{footer}</div>}
+      {footer && <div className="text-xs text-muted-foreground mb-3">{footer}</div>}
 
       {type === 'button' && buttons && (
         <div className="space-y-2">
@@ -97,7 +97,7 @@ export function InteractiveMessage({
               {sections.map((section, idx) => (
                 <div key={idx}>
                   {section.title && (
-                    <div className="font-medium text-xs text-gray-600 px-2 py-1">
+                    <div className="font-medium text-xs text-muted-foreground px-2 py-1">
                       {section.title}
                     </div>
                   )}
@@ -105,12 +105,12 @@ export function InteractiveMessage({
                     {section.rows.map(row => (
                       <button
                         key={row.id}
-                        className="w-full text-left px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+                        className="w-full text-left px-2 py-2 hover:bg-muted dark:hover:bg-muted rounded transition-colors"
                         onClick={() => handleListItemClick(row.id)}
                       >
                         <div className="font-medium text-sm">{row.title}</div>
                         {row.description && (
-                          <div className="text-xs text-gray-500">{row.description}</div>
+                          <div className="text-xs text-muted-foreground">{row.description}</div>
                         )}
                       </button>
                     ))}

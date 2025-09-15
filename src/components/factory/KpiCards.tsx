@@ -68,7 +68,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg"
+          className="relative overflow-hidden rounded-2xl bg-background dark:bg-muted shadow-lg"
         >
           {/* Background gradient */}
           <div className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-10`} />
@@ -77,22 +77,22 @@ export function KpiCards({ kpis }: KpiCardsProps) {
           <div className="relative p-4">
             <div className="flex items-start justify-between mb-2">
               <div>
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">
                   {card.title}
                 </h3>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-gray-900 dark:text-foreground mt-1">
                   {card.value}
                 </p>
               </div>
               <div className={`p-2 rounded-lg bg-gradient-to-br ${card.color}`}>
-                <card.icon className="w-5 h-5 text-white" />
+                <card.icon className="w-5 h-5 text-foreground" />
               </div>
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs text-gray-500 dark:text-gray-400">{card.subtitle}</p>
+              <p className="text-xs text-muted-foreground dark:text-muted-foreground">{card.subtitle}</p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                   Target: {card.target}
                 </span>
                 {card.isGood ? (

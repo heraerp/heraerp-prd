@@ -928,9 +928,9 @@ export default function CALearningPlatform() {
     { id: 1, name: '7-Day Streak', icon: Flame, earned: true, color: 'text-orange-500' },
     { id: 2, name: 'GST Master', icon: Crown, earned: true, color: 'text-yellow-500' },
     { id: 3, name: 'Quiz Champion', icon: Trophy, earned: true, color: 'text-blue-500' },
-    { id: 4, name: 'Speed Reader', icon: Zap, earned: false, color: 'text-gray-400' },
-    { id: 5, name: 'Perfect Score', icon: Star, earned: false, color: 'text-gray-400' },
-    { id: 6, name: 'Study Warrior', icon: Shield, earned: false, color: 'text-gray-400' }
+    { id: 4, name: 'Speed Reader', icon: Zap, earned: false, color: 'text-muted-foreground' },
+    { id: 5, name: 'Perfect Score', icon: Star, earned: false, color: 'text-muted-foreground' },
+    { id: 6, name: 'Study Warrior', icon: Shield, earned: false, color: 'text-muted-foreground' }
   ]
 
   const upcomingRevisions = [
@@ -946,24 +946,24 @@ export default function CALearningPlatform() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center">
-              <GraduationCap className="w-8 h-8 text-white" />
+              <GraduationCap className="w-8 h-8 text-foreground" />
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 HERA CA Learning
               </h1>
-              <p className="text-gray-600">AI-Powered Indirect Tax Mastery Platform</p>
+              <p className="text-muted-foreground">AI-Powered Indirect Tax Mastery Platform</p>
             </div>
           </div>
 
           {/* Student Info Banner */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-100 shadow-lg">
+          <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-100 shadow-lg">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
                 <h2 className="text-xl font-semibold text-gray-900">
                   Welcome back, {studentData.name}! 👋
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {studentData.targetExam} • {studentData.daysRemaining} days remaining
                 </p>
               </div>
@@ -972,15 +972,15 @@ export default function CALearningPlatform() {
                   <div className="text-2xl font-bold text-purple-600">
                     {studentData.syllabusCompleted}%
                   </div>
-                  <div className="text-sm text-gray-500">Completed</div>
+                  <div className="text-sm text-muted-foreground">Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">#{studentData.rank}</div>
-                  <div className="text-sm text-gray-500">Rank</div>
+                  <div className="text-2xl font-bold text-primary">#{studentData.rank}</div>
+                  <div className="text-sm text-muted-foreground">Rank</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-indigo-600">{totalPoints}</div>
-                  <div className="text-sm text-gray-500">Points</div>
+                  <div className="text-sm text-muted-foreground">Points</div>
                 </div>
               </div>
             </div>
@@ -988,7 +988,7 @@ export default function CALearningPlatform() {
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-white/50 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-6 bg-background/50 backdrop-blur-sm">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <PieChart className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -1030,7 +1030,7 @@ export default function CALearningPlatform() {
               <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
                 <CardContent className="p-6 text-center">
                   <Clock className="w-12 h-12 text-blue-500 mx-auto mb-3" />
-                  <div className="text-3xl font-bold text-blue-600">{formatTime(studyTime)}</div>
+                  <div className="text-3xl font-bold text-primary">{formatTime(studyTime)}</div>
                   <div className="text-sm text-blue-700">Today's Study</div>
                 </CardContent>
               </Card>
@@ -1104,11 +1104,11 @@ export default function CALearningPlatform() {
                   {upcomingRevisions.map((revision, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
                     >
                       <div>
                         <div className="font-medium">{revision.topic}</div>
-                        <div className="text-sm text-gray-500">{revision.dueDate}</div>
+                        <div className="text-sm text-muted-foreground">{revision.dueDate}</div>
                       </div>
                       <Badge
                         variant={
@@ -1182,11 +1182,11 @@ export default function CALearningPlatform() {
                   <div className="relative">
                     <BookOpen className="w-16 h-16 text-blue-500 mx-auto mb-4" />
                     <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <Brain className="w-3 h-3 text-white" />
+                      <Brain className="w-3 h-3 text-foreground" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Concept Mode</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Master fundamentals with AI-powered explanations and adaptive content
                   </p>
                   <Button className="w-full" disabled={aiLoading}>
@@ -1203,11 +1203,11 @@ export default function CALearningPlatform() {
                   <div className="relative">
                     <Sparkles className="w-16 h-16 text-purple-500 mx-auto mb-4" />
                     <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                      <Brain className="w-3 h-3 text-white" />
+                      <Brain className="w-3 h-3 text-foreground" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Story Mode</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Learn through AI-generated real-world scenarios and engaging cases
                   </p>
                   <Button className="w-full" disabled={aiLoading}>
@@ -1224,11 +1224,11 @@ export default function CALearningPlatform() {
                   <div className="relative">
                     <Target className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                      <Brain className="w-3 h-3 text-white" />
+                      <Brain className="w-3 h-3 text-foreground" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Exam Drill</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Practice with AI-generated ICAI-style questions and adaptive difficulty
                   </p>
                   <Button className="w-full" disabled={aiLoading}>
@@ -1243,13 +1243,13 @@ export default function CALearningPlatform() {
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                    <Brain className="w-6 h-6 text-white" />
+                    <Brain className="w-6 h-6 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">
                       HERA AI Learning Assistant
                     </h3>
-                    <p className="text-gray-600 text-sm mb-3">
+                    <p className="text-muted-foreground text-sm mb-3">
                       Ask me anything about CA Final Indirect Tax. I can explain concepts, create
                       practice questions, and provide personalized guidance using advanced AI.
                     </p>
@@ -1280,9 +1280,9 @@ export default function CALearningPlatform() {
                       </Button>
                     </div>
                     {aiResponse && (
-                      <div className="mt-4 p-3 bg-white rounded-lg border text-sm">
+                      <div className="mt-4 p-3 bg-background rounded-lg border text-sm">
                         <p className="text-gray-700">{aiResponse.substring(0, 200)}...</p>
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                           Powered by HERA Universal AI
                         </div>
                       </div>
@@ -1297,7 +1297,7 @@ export default function CALearningPlatform() {
           <TabsContent value="practice" className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Practice Arena</h2>
-              <p className="text-gray-600 mb-8">
+              <p className="text-muted-foreground mb-8">
                 Choose your practice mode and start improving your scores
               </p>
             </div>
@@ -1308,10 +1308,10 @@ export default function CALearningPlatform() {
                   <CardTitle>Quick Quiz</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600">10 random questions from your weak areas</p>
+                  <p className="text-muted-foreground">10 random questions from your weak areas</p>
                   <div className="space-y-2">
                     <Button
-                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-foreground"
                       onClick={handleQuickQuiz}
                       disabled={aiLoading}
                     >
@@ -1412,7 +1412,7 @@ export default function CALearningPlatform() {
                   <CardTitle>Mock Test</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600">Full-length practice test (3 hours)</p>
+                  <p className="text-muted-foreground">Full-length practice test (3 hours)</p>
                   <Button className="w-full" onClick={handleMockTest} disabled={aiLoading}>
                     {aiLoading ? 'Creating Test...' : 'Take Mock Test'}
                   </Button>
@@ -1445,7 +1445,7 @@ export default function CALearningPlatform() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>
                         Questions:{' '}
                         {quizData.questions?.length || quizData.config?.total_questions || '10'}
@@ -1453,21 +1453,21 @@ export default function CALearningPlatform() {
                       <span>Time: {quizData.config?.time_limit_minutes || '15'} minutes</span>
                       <span>Difficulty: Mixed</span>
                     </div>
-                    <div className="p-4 bg-white rounded-lg">
+                    <div className="p-4 bg-background rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">Sample Question:</h4>
                       {quizData.questions?.[0] ? (
                         <div>
                           <p className="mb-3">{quizData.questions[0].question}</p>
                           <div className="space-y-1">
                             {quizData.questions[0].options?.map((option, idx) => (
-                              <div key={idx} className="p-2 bg-gray-50 rounded text-sm">
+                              <div key={idx} className="p-2 bg-muted rounded text-sm">
                                 {String.fromCharCode(65 + idx)}. {option}
                               </div>
                             ))}
                           </div>
                         </div>
                       ) : (
-                        <p className="text-gray-600">
+                        <p className="text-muted-foreground">
                           Quiz questions generated successfully! Check console for full details.
                         </p>
                       )}
@@ -1486,7 +1486,7 @@ export default function CALearningPlatform() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span className="flex items-center gap-2">
-                      <Trophy className="h-5 w-5 text-blue-600" />
+                      <Trophy className="h-5 w-5 text-primary" />
                       CA Final Mock Test - Full Length
                     </span>
                     <Button variant="outline" size="sm" onClick={() => setShowMockTest(false)}>
@@ -1497,30 +1497,30 @@ export default function CALearningPlatform() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="font-bold text-primary">
                           {mockTestData.questions?.length ||
                             mockTestData.config?.total_questions ||
                             '50'}
                         </div>
-                        <div className="text-gray-600">Questions</div>
+                        <div className="text-muted-foreground">Questions</div>
                       </div>
-                      <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="font-bold text-primary">
                           {mockTestData.config?.time_limit_minutes || '180'}
                         </div>
-                        <div className="text-gray-600">Minutes</div>
+                        <div className="text-muted-foreground">Minutes</div>
                       </div>
-                      <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">4</div>
-                        <div className="text-gray-600">Topics</div>
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="font-bold text-primary">4</div>
+                        <div className="text-muted-foreground">Topics</div>
                       </div>
-                      <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">100</div>
-                        <div className="text-gray-600">Marks</div>
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="font-bold text-primary">100</div>
+                        <div className="text-muted-foreground">Marks</div>
                       </div>
                     </div>
-                    <div className="p-4 bg-white rounded-lg">
+                    <div className="p-4 bg-background rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">Test Coverage:</h4>
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline">GST Basics</Badge>
@@ -1528,7 +1528,7 @@ export default function CALearningPlatform() {
                         <Badge variant="outline">FTP Schemes</Badge>
                         <Badge variant="outline">Export Benefits</Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mt-3">
+                      <p className="text-sm text-muted-foreground mt-3">
                         Full-length CA Final practice test generated with questions across all major
                         topics. Questions include cross-domain universal concepts for comprehensive
                         learning.
@@ -1544,12 +1544,12 @@ export default function CALearningPlatform() {
 
             {/* Active Quiz Interface */}
             {activeQuiz && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white modal-scroll">
+              <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-background modal-scroll">
                   <CardHeader className="border-b">
                     <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-2">
-                        <Target className="h-6 w-6 text-blue-600" />
+                        <Target className="h-6 w-6 text-primary" />
                         CA Final Quick Quiz
                       </CardTitle>
                       <div className="flex items-center gap-4">
@@ -1573,7 +1573,7 @@ export default function CALearningPlatform() {
                         </Button>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-gray-600">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>
                         Question {currentQuestion + 1} of {getQuizQuestions().length}
                       </span>
@@ -1626,26 +1626,26 @@ export default function CALearningPlatform() {
                                     // Always show correct answer in green when feedback is shown
                                     buttonClass +=
                                       'border-green-500 bg-green-100 text-green-900 ring-2 ring-green-200'
-                                    circleClass += 'border-green-500 bg-green-500 text-white'
+                                    circleClass += 'border-green-500 bg-green-500 text-foreground'
                                     circleContent = '✓'
                                   } else if (isSelected && !isCorrectAnswer) {
                                     // Show selected wrong answer in red
                                     buttonClass +=
                                       'border-red-500 bg-red-100 text-red-900 ring-2 ring-red-200'
-                                    circleClass += 'border-red-500 bg-red-500 text-white'
+                                    circleClass += 'border-red-500 bg-red-500 text-foreground'
                                     circleContent = '✗'
                                   } else {
                                     // Other options stay neutral
-                                    buttonClass += 'border-gray-200 bg-gray-50 text-gray-600'
-                                    circleClass += 'border-gray-300 text-gray-500'
+                                    buttonClass += 'border-border bg-muted text-muted-foreground'
+                                    circleClass += 'border-border text-muted-foreground'
                                   }
                                 } else if (isSelected) {
                                   buttonClass += 'border-blue-500 bg-blue-100 text-blue-900'
-                                  circleClass += 'border-blue-500 bg-blue-500 text-white'
+                                  circleClass += 'border-blue-500 bg-blue-500 text-foreground'
                                 } else {
                                   buttonClass +=
-                                    'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-                                  circleClass += 'border-gray-300 text-gray-500'
+                                    'border-border bg-background hover:border-border hover:bg-muted'
+                                  circleClass += 'border-border text-muted-foreground'
                                 }
 
                                 return (
@@ -1682,8 +1682,8 @@ export default function CALearningPlatform() {
                                 <div
                                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                                     isAnswerCorrect
-                                      ? 'bg-green-500 text-white'
-                                      : 'bg-red-500 text-white'
+                                      ? 'bg-green-500 text-foreground'
+                                      : 'bg-red-500 text-foreground'
                                   }`}
                                 >
                                   {isAnswerCorrect ? '✓' : '✗'}
@@ -1768,7 +1768,7 @@ export default function CALearningPlatform() {
                                 disabled={lifelinesUsed.fiftyFifty}
                                 className={`flex items-center gap-1 ${
                                   lifelinesUsed.fiftyFifty
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    ? 'bg-muted text-muted-foreground cursor-not-allowed'
                                     : 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100'
                                 }`}
                               >
@@ -1783,7 +1783,7 @@ export default function CALearningPlatform() {
                                 disabled={lifelinesUsed.askExpert}
                                 className={`flex items-center gap-1 ${
                                   lifelinesUsed.askExpert
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    ? 'bg-muted text-muted-foreground cursor-not-allowed'
                                     : 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100'
                                 }`}
                               >
@@ -1798,7 +1798,7 @@ export default function CALearningPlatform() {
                                 disabled={lifelinesUsed.phoneFriend}
                                 className={`flex items-center gap-1 ${
                                   lifelinesUsed.phoneFriend
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    ? 'bg-muted text-muted-foreground cursor-not-allowed'
                                     : 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100'
                                 }`}
                               >
@@ -1813,7 +1813,7 @@ export default function CALearningPlatform() {
                                 disabled={lifelinesUsed.skipQuestion}
                                 className={`flex items-center gap-1 ${
                                   lifelinesUsed.skipQuestion
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    ? 'bg-muted text-muted-foreground cursor-not-allowed'
                                     : 'bg-orange-50 border-orange-300 text-orange-700 hover:bg-orange-100'
                                 }`}
                               >
@@ -1834,7 +1834,7 @@ export default function CALearningPlatform() {
                             </Button>
 
                             <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-600">
+                              <span className="text-sm text-muted-foreground">
                                 {Object.keys(selectedAnswers).length} of {getQuizQuestions().length}{' '}
                                 answered
                               </span>
@@ -1893,10 +1893,10 @@ export default function CALearningPlatform() {
                                   onClick={() => setCurrentQuestion(index)}
                                   className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
                                     index === currentQuestion
-                                      ? 'bg-blue-600 text-white'
+                                      ? 'bg-blue-600 text-foreground'
                                       : selectedAnswers[index] !== undefined
                                         ? 'bg-green-100 text-green-800 border border-green-300'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-muted text-muted-foreground hover:bg-gray-200'
                                   }`}
                                 >
                                   {index + 1}
@@ -1948,9 +1948,9 @@ export default function CALearningPlatform() {
 
             {/* Lifelines Modal */}
             {showLifelineModal && (
-              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-                <Card className="w-full max-w-md bg-white">
-                  <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+              <div className="fixed inset-0 bg-background bg-opacity-75 flex items-center justify-center z-50 p-4">
+                <Card className="w-full max-w-md bg-background">
+                  <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-600 text-foreground">
                     <CardTitle className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         {activeLifeline === 'expert' && (
@@ -1968,7 +1968,7 @@ export default function CALearningPlatform() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowLifelineModal(false)}
-                        className="text-white hover:bg-white hover:bg-opacity-20"
+                        className="text-foreground hover:bg-background hover:bg-opacity-20"
                       >
                         ✕
                       </Button>
@@ -1979,11 +1979,11 @@ export default function CALearningPlatform() {
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <GraduationCap className="h-6 w-6 text-blue-600" />
+                            <GraduationCap className="h-6 w-6 text-primary" />
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">CA Expert</h3>
-                            <p className="text-sm text-gray-600">Professional guidance</p>
+                            <p className="text-sm text-muted-foreground">Professional guidance</p>
                           </div>
                         </div>
                         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -2005,7 +2005,7 @@ export default function CALearningPlatform() {
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">Study Buddy</h3>
-                            <p className="text-sm text-gray-600">Your virtual friend</p>
+                            <p className="text-sm text-muted-foreground">Your virtual friend</p>
                           </div>
                         </div>
                         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
@@ -2026,7 +2026,7 @@ export default function CALearningPlatform() {
           <TabsContent value="compete" className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Competition Zone</h2>
-              <p className="text-gray-600 mb-8">
+              <p className="text-muted-foreground mb-8">
                 Challenge other students and climb the leaderboard
               </p>
             </div>
@@ -2040,7 +2040,7 @@ export default function CALearningPlatform() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600">Challenge a friend to a quick knowledge duel</p>
+                  <p className="text-muted-foreground">Challenge a friend to a quick knowledge duel</p>
                   <Button className="w-full">Find Opponent</Button>
                 </CardContent>
               </Card>
@@ -2056,16 +2056,16 @@ export default function CALearningPlatform() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-foreground font-bold">
                           1
                         </div>
                         <span>Rahul Kumar</span>
                       </div>
                       <span className="font-bold">3,240 pts</span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-2 bg-muted rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-foreground font-bold">
                           2
                         </div>
                         <span>Anita Sharma</span>
@@ -2074,7 +2074,7 @@ export default function CALearningPlatform() {
                     </div>
                     <div className="flex items-center justify-between p-2 bg-orange-50 rounded-lg border-2 border-orange-200">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-foreground font-bold">
                           23
                         </div>
                         <span className="font-semibold">You</span>
@@ -2111,12 +2111,12 @@ export default function CALearningPlatform() {
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-4 bg-blue-50 rounded-lg">
-                          <div className="text-2xl font-bold text-blue-600">8</div>
-                          <div className="text-sm text-gray-600">Total Papers</div>
+                          <div className="text-2xl font-bold text-primary">8</div>
+                          <div className="text-sm text-muted-foreground">Total Papers</div>
                         </div>
                         <div className="text-center p-4 bg-green-50 rounded-lg">
                           <div className="text-2xl font-bold text-green-600">3×</div>
-                          <div className="text-sm text-gray-600">Yearly Attempts</div>
+                          <div className="text-sm text-muted-foreground">Yearly Attempts</div>
                         </div>
                       </div>
 
@@ -2125,7 +2125,7 @@ export default function CALearningPlatform() {
                           <h4 className="font-semibold text-purple-700 mb-2">
                             📅 2025 Exam Schedule
                           </h4>
-                          <div className="text-sm text-gray-600 space-y-1">
+                          <div className="text-sm text-muted-foreground space-y-1">
                             <p>
                               <strong>Frequency:</strong>{' '}
                               {examSchedule.frequency?.replace('_', ' ') || 'Thrice yearly'}
@@ -2167,7 +2167,7 @@ export default function CALearningPlatform() {
                       <h4 className="font-semibold text-orange-700 mb-2">
                         Paper 8 - Indirect Tax Laws
                       </h4>
-                      <div className="text-sm text-gray-600 space-y-1">
+                      <div className="text-sm text-muted-foreground space-y-1">
                         <p>
                           <strong>Max Marks:</strong> 100
                         </p>
@@ -2199,25 +2199,25 @@ export default function CALearningPlatform() {
                           <span className="font-medium text-blue-700">
                             GST (Goods & Services Tax)
                           </span>
-                          <Badge className="bg-blue-600 text-white">60%</Badge>
+                          <Badge className="bg-blue-600 text-foreground">60%</Badge>
                         </div>
-                        <div className="text-sm text-gray-600">60 marks • High priority</div>
+                        <div className="text-sm text-muted-foreground">60 marks • High priority</div>
                       </div>
 
                       <div className="p-3 bg-green-50 rounded-lg">
                         <div className="flex justify-between items-center mb-1">
                           <span className="font-medium text-green-700">Customs Law</span>
-                          <Badge className="bg-green-600 text-white">25%</Badge>
+                          <Badge className="bg-green-600 text-foreground">25%</Badge>
                         </div>
-                        <div className="text-sm text-gray-600">25 marks • Calculation heavy</div>
+                        <div className="text-sm text-muted-foreground">25 marks • Calculation heavy</div>
                       </div>
 
                       <div className="p-3 bg-purple-50 rounded-lg">
                         <div className="flex justify-between items-center mb-1">
                           <span className="font-medium text-purple-700">Foreign Trade Policy</span>
-                          <Badge className="bg-purple-600 text-white">15%</Badge>
+                          <Badge className="bg-purple-600 text-foreground">15%</Badge>
                         </div>
-                        <div className="text-sm text-gray-600">15 marks • Easy scoring</div>
+                        <div className="text-sm text-muted-foreground">15 marks • Easy scoring</div>
                       </div>
                     </div>
                   </div>
@@ -2238,17 +2238,17 @@ export default function CALearningPlatform() {
                   <div className="p-4 bg-green-50 rounded-lg text-center">
                     <div className="text-2xl mb-2">✅</div>
                     <div className="font-semibold text-green-700">Core Entities</div>
-                    <div className="text-sm text-gray-600">CA frameworks stored</div>
+                    <div className="text-sm text-muted-foreground">CA frameworks stored</div>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg text-center">
                     <div className="text-2xl mb-2">✅</div>
                     <div className="font-semibold text-green-700">Dynamic Data</div>
-                    <div className="text-sm text-gray-600">Syllabus loaded</div>
+                    <div className="text-sm text-muted-foreground">Syllabus loaded</div>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg text-center">
                     <div className="text-2xl mb-2">✅</div>
                     <div className="font-semibold text-green-700">Smart Codes</div>
-                    <div className="text-sm text-gray-600">AI classification</div>
+                    <div className="text-sm text-muted-foreground">AI classification</div>
                   </div>
                 </div>
 
@@ -2283,7 +2283,7 @@ export default function CALearningPlatform() {
                   {achievements.map(achievement => (
                     <div
                       key={achievement.id}
-                      className={`text-center p-4 rounded-lg border-2 ${achievement.earned ? 'bg-gradient-to-b from-yellow-50 to-orange-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}
+                      className={`text-center p-4 rounded-lg border-2 ${achievement.earned ? 'bg-gradient-to-b from-yellow-50 to-orange-50 border-yellow-200' : 'bg-muted border-border'}`}
                     >
                       <achievement.icon className={`w-12 h-12 mx-auto mb-2 ${achievement.color}`} />
                       <div className="text-sm font-medium">{achievement.name}</div>

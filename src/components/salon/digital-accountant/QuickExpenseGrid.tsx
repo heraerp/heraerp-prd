@@ -68,7 +68,7 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
     name: 'Shop Rent',
     category: 'Rent',
     icon: Home,
-    color: 'text-blue-600',
+    color: 'text-primary',
     commonAmounts: [5000, 8000, 10000]
   },
   {
@@ -116,7 +116,7 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
     name: 'Towels & Capes',
     category: 'Operating Supplies',
     icon: ShoppingBag,
-    color: 'text-gray-600',
+    color: 'text-muted-foreground',
     commonAmounts: [100, 200, 300]
   },
   {
@@ -175,14 +175,14 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
               <expense.icon className={cn('w-8 h-8', expense.color)} />
               <div className="text-center">
                 <p className="font-medium text-sm">{expense.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{expense.category}</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">{expense.category}</p>
               </div>
             </Button>
 
             {/* Quick amount selection */}
             {expandedCategory === expense.id && expense.commonAmounts && (
-              <div className="absolute z-10 top-full mt-2 left-0 right-0 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Common amounts:</p>
+              <div className="absolute z-10 top-full mt-2 left-0 right-0 bg-background dark:bg-muted rounded-lg shadow-lg border border-border dark:border-border p-2">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground mb-2">Common amounts:</p>
                 <div className="grid grid-cols-3 gap-1">
                   {expense.commonAmounts.map(amount => (
                     <Button
@@ -220,7 +220,7 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.icon && (
-                  <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
+                  <div className="p-2 bg-background dark:bg-muted rounded-lg">
                     {React.createElement(
                       EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)!.icon,
                       {
@@ -236,7 +236,7 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
                   <p className="font-medium">
                     {EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.name}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     Ready to record expense
                   </p>
                 </div>

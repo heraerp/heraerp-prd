@@ -147,7 +147,7 @@ export function UniversalSidebar({
               <div
                 className={`w-8 h-8 bg-gradient-to-br ${brandGradient} rounded-lg flex items-center justify-center`}
               >
-                <Icon className="w-5 h-5 text-white" />
+                <Icon className="w-5 h-5 text-foreground" />
               </div>
               {isExpanded && (
                 <div className="ml-3">
@@ -156,7 +156,7 @@ export function UniversalSidebar({
                   >
                     {title}
                   </h1>
-                  <p className="text-xs text-gray-600">{subtitle}</p>
+                  <p className="text-xs text-muted-foreground">{subtitle}</p>
                 </div>
               )}
             </div>
@@ -169,7 +169,7 @@ export function UniversalSidebar({
             {isExpanded && (
               <Button
                 onClick={() => setShowQuickActionsModal(true)}
-                className={`w-full bg-gradient-to-r ${brandGradient} hover:from-pink-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200`}
+                className={`w-full bg-gradient-to-r ${brandGradient} hover:from-pink-600 hover:to-purple-600 text-foreground shadow-lg hover:shadow-xl transition-all duration-200`}
                 size="sm"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -181,7 +181,7 @@ export function UniversalSidebar({
                 <TooltipTrigger asChild>
                   <Button
                     onClick={() => setShowQuickActionsModal(true)}
-                    className={`w-10 h-10 p-0 bg-gradient-to-r ${brandGradient} hover:from-pink-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200`}
+                    className={`w-10 h-10 p-0 bg-gradient-to-r ${brandGradient} hover:from-pink-600 hover:to-purple-600 text-foreground shadow-lg hover:shadow-xl transition-all duration-200`}
                     size="sm"
                   >
                     <Plus className="w-5 h-5" />
@@ -210,7 +210,7 @@ export function UniversalSidebar({
                     ${
                       active
                         ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50'
-                        : 'bg-white/50 hover:bg-white/80 text-gray-700'
+                        : 'bg-background/50 hover:bg-background/80 text-gray-700'
                     }
                     ${item.color}
                     transition-all 
@@ -223,7 +223,7 @@ export function UniversalSidebar({
                   size={isExpanded ? 'sm' : 'icon'}
                 >
                   <div
-                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-gray-600'}`}
+                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-muted-foreground'}`}
                   >
                     {item.icon}
                   </div>
@@ -232,7 +232,7 @@ export function UniversalSidebar({
                       <span className="font-medium">{item.label}</span>
                       {item.badge && (
                         <Badge
-                          className={`ml-auto bg-gradient-to-r ${brandGradient} text-white border-0`}
+                          className={`ml-auto bg-gradient-to-r ${brandGradient} text-foreground border-0`}
                           variant="secondary"
                         >
                           {item.badge}
@@ -274,7 +274,7 @@ export function UniversalSidebar({
               <TooltipTrigger asChild>
                 <Button
                   size="sm"
-                  className="w-10 h-10 p-0 bg-white/50 hover:bg-white/80 text-slate-600 hover:text-slate-800 border border-pink-200/50 hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
+                  className="w-10 h-10 p-0 bg-background/50 hover:bg-background/80 text-muted-foreground hover:text-slate-800 border border-pink-200/50 hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
                 >
                   <Bell className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
@@ -291,7 +291,7 @@ export function UniversalSidebar({
               <TooltipTrigger asChild>
                 <Button
                   size="sm"
-                  className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
+                  className="w-10 h-10 p-0 bg-background/20 hover:bg-background/40 text-muted-foreground hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
                   onClick={() => handleNavigation(`${baseUrl}/settings`)}
                 >
                   <Settings className="w-5 h-5" />
@@ -323,12 +323,12 @@ export function UniversalSidebar({
                 <Button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
-                  className={`h-24 flex flex-col items-center justify-center gap-2 bg-white/80 hover:bg-white text-gray-700 hover:shadow-lg transition-all duration-200 border border-purple-200/50 ${item.color}`}
+                  className={`h-24 flex flex-col items-center justify-center gap-2 bg-background/80 hover:bg-background text-gray-700 hover:shadow-lg transition-all duration-200 border border-purple-200/50 ${item.color}`}
                   variant="outline"
                 >
                   <div className="text-purple-600">{item.icon}</div>
                   <span className="font-medium text-sm">{item.label}</span>
-                  <span className="text-xs text-gray-500 text-center">{item.description}</span>
+                  <span className="text-xs text-muted-foreground text-center">{item.description}</span>
                 </Button>
               ))}
             </div>

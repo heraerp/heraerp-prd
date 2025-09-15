@@ -484,7 +484,7 @@ export function RolePermissionManager() {
       case 'critical':
         return 'text-red-600 bg-red-50 border-red-200'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -676,7 +676,7 @@ export function RolePermissionManager() {
                 {roles.map(role => (
                   <div
                     key={role.id}
-                    className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                    className="p-4 border rounded-lg hover:bg-muted transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -684,7 +684,7 @@ export function RolePermissionManager() {
                           {role.id === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
                           {role.name}
                         </h4>
-                        <p className="text-sm text-gray-600">{role.description}</p>
+                        <p className="text-sm text-muted-foreground">{role.description}</p>
                       </div>
                       <Badge variant="outline">{role.permissions.length} permissions</Badge>
                     </div>
@@ -699,7 +699,7 @@ export function RolePermissionManager() {
                           </span>
                         ))}
                         {role.permissions.length > 3 && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             +{role.permissions.length - 3} more
                           </span>
                         )}
@@ -727,8 +727,8 @@ export function RolePermissionManager() {
               <CardContent>
                 {customRoles.length === 0 ? (
                   <div className="text-center py-8">
-                    <Lock className="h-8 w-8 mx-auto mb-4 text-gray-400" />
-                    <p className="text-gray-500 mb-4">No custom roles created</p>
+                    <Lock className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground mb-4">No custom roles created</p>
                     <Button onClick={() => setShowCreateRole(true)} size="sm">
                       <Plus className="h-4 w-4 mr-2" />
                       Create First Custom Role
@@ -739,12 +739,12 @@ export function RolePermissionManager() {
                     {customRoles.map(role => (
                       <div
                         key={role.id}
-                        className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                        className="p-4 border rounded-lg hover:bg-muted transition-colors"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h4 className="font-medium">{role.name}</h4>
-                            <p className="text-sm text-gray-600">{role.description}</p>
+                            <p className="text-sm text-muted-foreground">{role.description}</p>
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm">
@@ -757,7 +757,7 @@ export function RolePermissionManager() {
                         </div>
                         <div className="flex items-center justify-between">
                           <Badge variant="outline">{role.permissions.length} permissions</Badge>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             Created: {new Date(role.created_at).toLocaleDateString()}
                           </span>
                         </div>
@@ -777,7 +777,7 @@ export function RolePermissionManager() {
             <Card>
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold">{permissionStats.total}</div>
-                <p className="text-xs text-gray-500">Total Permissions</p>
+                <p className="text-xs text-muted-foreground">Total Permissions</p>
               </CardContent>
             </Card>
             <Card>
@@ -785,7 +785,7 @@ export function RolePermissionManager() {
                 <div className="text-2xl font-bold text-green-600">
                   {permissionStats.by_risk.low}
                 </div>
-                <p className="text-xs text-gray-500">Low Risk</p>
+                <p className="text-xs text-muted-foreground">Low Risk</p>
               </CardContent>
             </Card>
             <Card>
@@ -793,7 +793,7 @@ export function RolePermissionManager() {
                 <div className="text-2xl font-bold text-orange-600">
                   {permissionStats.by_risk.high}
                 </div>
-                <p className="text-xs text-gray-500">High Risk</p>
+                <p className="text-xs text-muted-foreground">High Risk</p>
               </CardContent>
             </Card>
             <Card>
@@ -801,7 +801,7 @@ export function RolePermissionManager() {
                 <div className="text-2xl font-bold text-red-600">
                   {permissionStats.by_risk.critical}
                 </div>
-                <p className="text-xs text-gray-500">Critical Risk</p>
+                <p className="text-xs text-muted-foreground">Critical Risk</p>
               </CardContent>
             </Card>
           </div>
@@ -844,8 +844,8 @@ export function RolePermissionManager() {
                                 {permission.risk_level}
                               </Badge>
                             </div>
-                            <p className="text-xs text-gray-600 mb-2">{permission.description}</p>
-                            <code className="text-xs bg-gray-100 px-1 rounded">
+                            <p className="text-xs text-muted-foreground mb-2">{permission.description}</p>
+                            <code className="text-xs bg-muted px-1 rounded">
                               {permission.id}
                             </code>
                           </div>
@@ -872,9 +872,9 @@ export function RolePermissionManager() {
             <CardContent>
               {auditLogs.length === 0 ? (
                 <div className="text-center py-8">
-                  <History className="h-8 w-8 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-500">No audit entries yet</p>
-                  <p className="text-sm text-gray-400">Permission changes will appear here</p>
+                  <History className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">No audit entries yet</p>
+                  <p className="text-sm text-muted-foreground">Permission changes will appear here</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -885,8 +885,8 @@ export function RolePermissionManager() {
                           <p className="font-medium text-sm">
                             {entry.user_name} {entry.action.replace('_', ' ')} {entry.target_type}
                           </p>
-                          <p className="text-xs text-gray-600">{entry.reason}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground">{entry.reason}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
                             {new Date(entry.timestamp).toLocaleString()}
                           </p>
                         </div>
@@ -898,7 +898,7 @@ export function RolePermissionManager() {
                         entry.permissions_after.length > 0) && (
                         <div className="mt-3 grid gap-2 md:grid-cols-2">
                           <div>
-                            <p className="text-xs font-medium text-gray-600">Before:</p>
+                            <p className="text-xs font-medium text-muted-foreground">Before:</p>
                             <div className="flex flex-wrap gap-1">
                               {entry.permissions_before.map(perm => (
                                 <span
@@ -911,7 +911,7 @@ export function RolePermissionManager() {
                             </div>
                           </div>
                           <div>
-                            <p className="text-xs font-medium text-gray-600">After:</p>
+                            <p className="text-xs font-medium text-muted-foreground">After:</p>
                             <div className="flex flex-wrap gap-1">
                               {entry.permissions_after.map(perm => (
                                 <span
@@ -982,7 +982,7 @@ export function RolePermissionManager() {
                           <RiskIcon className={`h-5 w-5 ${getRiskColor(risk).split(' ')[0]}`} />
                           <div>
                             <p className="font-medium capitalize">{risk} Risk</p>
-                            <p className="text-sm text-gray-600">{count} permissions</p>
+                            <p className="text-sm text-muted-foreground">{count} permissions</p>
                           </div>
                         </div>
                         <Badge className={getRiskColor(risk)}>
@@ -1006,17 +1006,17 @@ export function RolePermissionManager() {
                 <div className="text-center p-4 border rounded-lg">
                   <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
                   <p className="font-medium">Security Status</p>
-                  <p className="text-sm text-gray-600">All permissions properly configured</p>
+                  <p className="text-sm text-muted-foreground">All permissions properly configured</p>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
                   <Shield className="h-8 w-8 text-blue-500 mx-auto mb-2" />
                   <p className="font-medium">Role Coverage</p>
-                  <p className="text-sm text-gray-600">100% of users have roles assigned</p>
+                  <p className="text-sm text-muted-foreground">100% of users have roles assigned</p>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
                   <History className="h-8 w-8 text-purple-500 mx-auto mb-2" />
                   <p className="font-medium">Audit Trail</p>
-                  <p className="text-sm text-gray-600">{auditLogs.length} recent actions logged</p>
+                  <p className="text-sm text-muted-foreground">{auditLogs.length} recent actions logged</p>
                 </div>
               </div>
             </CardContent>

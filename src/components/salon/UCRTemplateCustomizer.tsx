@@ -211,7 +211,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
             onChange={e => setCustomizedRule({ ...customizedRule, title: e.target.value })}
             className="mt-2"
           />
-          <p className="text-sm text-gray-500 mt-1">Give your rule a descriptive name</p>
+          <p className="text-sm text-muted-foreground mt-1">Give your rule a descriptive name</p>
         </div>
 
         <div>
@@ -232,10 +232,10 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
         <div>
           <Label>Smart Code</Label>
-          <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="mt-2 p-3 bg-muted dark:bg-muted rounded-lg">
             <code className="text-sm">{customizedRule.smart_code}</code>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Automatically generated based on your organization
           </p>
         </div>
@@ -275,7 +275,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
               />
               <span className="w-12 text-right font-medium">{definitions.grace_minutes || 15}</span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Time after appointment start before marking as late
             </p>
           </div>
@@ -295,7 +295,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.no_show_fee_pct || 100}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Percentage of service price charged for no-shows
             </p>
           </div>
@@ -317,7 +317,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {(definitions.late_cancel_threshold_minutes || 120) / 60}h
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Minimum notice required for free cancellation
             </p>
           </div>
@@ -337,7 +337,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.late_cancel_fee_pct || 50}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">Fee charged for late cancellations</p>
+            <p className="text-sm text-muted-foreground mt-1">Fee charged for late cancellations</p>
           </div>
         </div>
 
@@ -345,10 +345,10 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
         <div>
           <h4 className="text-sm font-medium mb-3">Calendar Effects</h4>
-          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-muted dark:bg-muted rounded-lg">
             <div>
               <Label htmlFor="block_future">Block Future Bookings on No-Show</Label>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Prevent repeat no-shows by blocking future appointments
               </p>
             </div>
@@ -426,7 +426,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.max_discount_pct || 30}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">Maximum discount allowed without approval</p>
+            <p className="text-sm text-muted-foreground mt-1">Maximum discount allowed without approval</p>
           </div>
 
           <div>
@@ -440,7 +440,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
               min={0}
               step={50}
             />
-            <p className="text-sm text-gray-500 mt-1">Absolute maximum discount in currency</p>
+            <p className="text-sm text-muted-foreground mt-1">Absolute maximum discount in currency</p>
           </div>
 
           <div>
@@ -458,7 +458,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.requires_approval_above || 20}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Manager approval required for discounts above this percentage
             </p>
           </div>
@@ -477,7 +477,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold">Exceptions</h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Special rules for specific customer types or conditions
             </p>
           </div>
@@ -492,7 +492,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
             <Card key={index} className="p-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Badge variant="outline" className="text-blue-600 dark:text-blue-400">
+                  <Badge variant="outline" className="text-primary dark:text-blue-400">
                     Exception {index + 1}
                   </Badge>
                   <Button
@@ -620,7 +620,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold">Rule Validation</h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Check your customized rule for errors before saving
             </p>
           </div>
@@ -649,7 +649,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                   <h4 className="font-medium">
                     {validationResult.ok ? 'Validation Passed' : 'Validation Failed'}
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                     {validationResult.ok
                       ? 'Your rule is valid and ready to deploy'
                       : 'Please fix the errors below before saving'}
@@ -688,7 +688,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
         <div>
           <h4 className="font-medium mb-3">Rule Preview</h4>
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+          <div className="bg-muted dark:bg-muted rounded-lg p-4">
             <pre className="text-xs overflow-x-auto">
               {JSON.stringify(customizedRule?.rule_payload, null, 2)}
             </pre>
@@ -705,7 +705,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
       <CardHeader className="bg-gradient-to-r from-purple-500/10 to-pink-500/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+            <Sparkles className="w-5 h-5 text-foreground" />
           </div>
           <div>
             <CardTitle>Customize Template</CardTitle>
@@ -774,7 +774,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
             <Button
               onClick={handleSave}
               disabled={saving || !validationResult?.ok}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-foreground"
             >
               <Save className="w-4 h-4 mr-2" />
               {saving ? 'Saving...' : 'Save Customization'}

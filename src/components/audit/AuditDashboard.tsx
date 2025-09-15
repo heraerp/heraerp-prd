@@ -331,7 +331,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       case 'very_high':
         return 'text-red-600 bg-red-50 border-red-200'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -371,9 +371,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       case 'reporting':
         return 'bg-green-100 text-green-800'
       case 'completed':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -396,11 +396,11 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               </Badge>
             )}
           </div>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Friday, February 2, 2025 • 5 items need your attention
           </p>
           {user && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Welcome back, {user.name} ({user.role})
               {auditFirm && (
                 <span className="text-emerald-600 ml-2">
@@ -417,7 +417,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           <Button
             variant="outline"
             onClick={() => router.push('/audit/engagements')}
-            className="border-black text-black hover:bg-black hover:text-white"
+            className="border-black text-black hover:bg-background hover:text-foreground"
           >
             <Briefcase className="w-4 h-4 mr-2" />
             Engagements
@@ -425,7 +425,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           <Button
             variant="outline"
             onClick={() => router.push('/audit/workpapers')}
-            className="border-black text-black hover:bg-black hover:text-white"
+            className="border-black text-black hover:bg-background hover:text-foreground"
           >
             <FileText className="w-4 h-4 mr-2" />
             Working Papers
@@ -449,14 +449,14 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-background rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 <div>
                   <p className="font-medium text-gray-900">
                     ABC Trading - Bank confirmations overdue
                   </p>
-                  <p className="text-sm text-gray-600">Due 3 days ago • Partner: Michael Brown</p>
+                  <p className="text-sm text-muted-foreground">Due 3 days ago • Partner: Michael Brown</p>
                 </div>
               </div>
               <Button
@@ -477,14 +477,14 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               </Button>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-background rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 <div>
                   <p className="font-medium text-gray-900">
                     Tech Solutions - Partner review needed
                   </p>
-                  <p className="text-sm text-gray-600">Waiting 2 days • Manager: David Wilson</p>
+                  <p className="text-sm text-muted-foreground">Waiting 2 days • Manager: David Wilson</p>
                 </div>
               </div>
               <Button
@@ -512,19 +512,19 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="text-center p-4">
           <div className="text-2xl font-bold text-gray-900">5</div>
-          <div className="text-sm text-gray-600">Due This Week</div>
+          <div className="text-sm text-muted-foreground">Due This Week</div>
         </Card>
         <Card className="text-center p-4">
-          <div className="text-2xl font-bold text-blue-600">12</div>
-          <div className="text-sm text-gray-600">In Progress</div>
+          <div className="text-2xl font-bold text-primary">12</div>
+          <div className="text-sm text-muted-foreground">In Progress</div>
         </Card>
         <Card className="text-center p-4">
           <div className="text-2xl font-bold text-green-600">3</div>
-          <div className="text-sm text-gray-600">Ready to Sign</div>
+          <div className="text-sm text-muted-foreground">Ready to Sign</div>
         </Card>
         <Card className="text-center p-4">
           <div className="text-2xl font-bold text-orange-600">7</div>
-          <div className="text-sm text-gray-600">Awaiting Docs</div>
+          <div className="text-sm text-muted-foreground">Awaiting Docs</div>
         </Card>
       </div>
 
@@ -561,9 +561,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               {clients.length === 0 ? (
                 <Card className="p-8 text-center">
                   <div className="space-y-3">
-                    <Building2 className="w-12 h-12 text-gray-400 mx-auto" />
+                    <Building2 className="w-12 h-12 text-muted-foreground mx-auto" />
                     <h3 className="text-lg font-medium text-gray-900">No audit clients found</h3>
-                    <p className="text-gray-600">Start by creating a new engagement</p>
+                    <p className="text-muted-foreground">Start by creating a new engagement</p>
                   </div>
                 </Card>
               ) : (
@@ -595,7 +595,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                             )}
                           </div>
 
-                          <div className="flex items-center gap-6 text-sm text-gray-600">
+                          <div className="flex items-center gap-6 text-sm text-muted-foreground">
                             <div>
                               <span className="font-medium">Partner:</span> {client.partner}
                             </div>
@@ -607,7 +607,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                               <span className="font-medium">Progress:</span> {client.completion}%
                             </div>
                           </div>
-                          <div className="mt-2 text-xs text-gray-600 font-mono">
+                          <div className="mt-2 text-xs text-muted-foreground font-mono">
                             <span className="font-medium">Org ID:</span> {client.organization_id}
                           </div>
                         </div>
@@ -667,40 +667,40 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-bold text-blue-600">SJ</span>
+                        <span className="text-xs font-bold text-primary">SJ</span>
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Sarah Johnson</p>
-                        <p className="text-sm text-gray-600">Manager • XYZ Manufacturing</p>
+                        <p className="text-sm text-muted-foreground">Manager • XYZ Manufacturing</p>
                       </div>
                     </div>
                     <Badge className="bg-green-100 text-green-800">Available</Badge>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                         <span className="text-xs font-bold text-green-600">ED</span>
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Emily Davis</p>
-                        <p className="text-sm text-gray-600">Manager • ABC Trading</p>
+                        <p className="text-sm text-muted-foreground">Manager • ABC Trading</p>
                       </div>
                     </div>
                     <Badge className="bg-orange-100 text-orange-800">Busy</Badge>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                         <span className="text-xs font-bold text-purple-600">DW</span>
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">David Wilson</p>
-                        <p className="text-sm text-gray-600">Manager • Tech Solutions</p>
+                        <p className="text-sm text-muted-foreground">Manager • Tech Solutions</p>
                       </div>
                     </div>
                     <Badge className="bg-blue-100 text-blue-800">In Review</Badge>
@@ -721,7 +721,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <div className="space-y-3">
                   <div className="p-3 border rounded-lg">
                     <p className="font-medium text-gray-900">Tech Solutions - Revenue Testing</p>
-                    <p className="text-sm text-gray-600">Submitted by David Wilson • 2 days ago</p>
+                    <p className="text-sm text-muted-foreground">Submitted by David Wilson • 2 days ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
                       <Button size="sm" variant="outline">
@@ -732,7 +732,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
                   <div className="p-3 border rounded-lg">
                     <p className="font-medium text-gray-900">XYZ Manufacturing - Inventory Count</p>
-                    <p className="text-sm text-gray-600">Submitted by Sarah Johnson • 1 day ago</p>
+                    <p className="text-sm text-muted-foreground">Submitted by Sarah Johnson • 1 day ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
                       <Button size="sm" variant="outline">
@@ -792,22 +792,22 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
                         XYZ Manufacturing - Planning Complete
                       </p>
-                      <p className="text-sm text-gray-600">Due: March 15, 2025</p>
+                      <p className="text-sm text-muted-foreground">Due: March 15, 2025</p>
                     </div>
                     <Button size="sm" variant="outline">
                       Scheduled
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">Healthcare Corp - Risk Assessment</p>
-                      <p className="text-sm text-gray-600">Due: March 20, 2025</p>
+                      <p className="text-sm text-muted-foreground">Due: March 20, 2025</p>
                     </div>
                     <Button size="sm" variant="outline">
                       Scheduled

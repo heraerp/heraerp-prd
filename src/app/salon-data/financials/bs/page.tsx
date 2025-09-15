@@ -522,7 +522,7 @@ const formatRatio = (value: number): string => {
 const getVarianceIcon = (variance: number) => {
   if (variance > 0) return <ArrowUp className="w-4 h-4 text-green-600" />
   if (variance < 0) return <ArrowDown className="w-4 h-4 text-red-600" />
-  return <Minus className="w-4 h-4 text-gray-400" />
+  return <Minus className="w-4 h-4 text-muted-foreground" />
 }
 
 const getSectionIcon = (section: string) => {
@@ -532,9 +532,9 @@ const getSectionIcon = (section: string) => {
     case 'LIABILITY':
       return <CreditCard className="w-5 h-5 text-orange-600" />
     case 'EQUITY':
-      return <PiggyBank className="w-5 h-5 text-blue-600" />
+      return <PiggyBank className="w-5 h-5 text-primary" />
     default:
-      return <CircleDollarSign className="w-5 h-5 text-gray-600" />
+      return <CircleDollarSign className="w-5 h-5 text-muted-foreground" />
   }
 }
 
@@ -542,7 +542,7 @@ const getSectionColor = (section: string) => {
   const colors = {
     ASSET: 'text-emerald-600',
     LIABILITY: 'text-orange-600',
-    EQUITY: 'text-blue-600'
+    EQUITY: 'text-primary'
   }
   return colors[section as keyof typeof colors] || 'text-gray-900'
 }
@@ -640,7 +640,7 @@ export default function SalonBalanceSheetPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading balance sheet data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading balance sheet data...</p>
         </div>
       </div>
     )
@@ -652,11 +652,11 @@ export default function SalonBalanceSheetPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
               <Scale className="w-8 h-8 text-purple-600" />
               Balance Sheet
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-1">
               Statement of Financial Position (Classified)
             </p>
           </div>
@@ -664,7 +664,7 @@ export default function SalonBalanceSheetPage() {
             <Button
               variant="outline"
               onClick={runBalanceCheck}
-              className="bg-white dark:bg-gray-800"
+              className="bg-background dark:bg-muted"
             >
               <Calculator className="w-4 h-4 mr-2" />
               Check Balance
@@ -672,14 +672,14 @@ export default function SalonBalanceSheetPage() {
             <Button
               variant="outline"
               onClick={() => exportReport('pdf')}
-              className="bg-white dark:bg-gray-800"
+              className="bg-background dark:bg-muted"
             >
               <Printer className="w-4 h-4 mr-2" />
               Print
             </Button>
             <Button
               onClick={() => exportReport('csv')}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
             >
               <Download className="w-4 h-4 mr-2" />
               Export
@@ -688,7 +688,7 @@ export default function SalonBalanceSheetPage() {
         </div>
 
         {/* Controls */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Date Selection */}
@@ -706,7 +706,7 @@ export default function SalonBalanceSheetPage() {
                       className={cn(
                         'flex-1 text-xs',
                         selectedDate === date
-                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground'
                           : ''
                       )}
                     >
@@ -728,7 +728,7 @@ export default function SalonBalanceSheetPage() {
                 <select
                   value={selectedBranch}
                   onChange={e => setSelectedBranch(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground"
                 >
                   <option value="all">All Branches (Consolidated)</option>
                   <option value="branch1">Park Regis Kris Kin</option>
@@ -749,7 +749,7 @@ export default function SalonBalanceSheetPage() {
                     className={cn(
                       'flex-1',
                       presentation === 'CLASSIFIED'
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground'
                         : ''
                     )}
                   >
@@ -762,7 +762,7 @@ export default function SalonBalanceSheetPage() {
                     className={cn(
                       'flex-1',
                       presentation === 'UNCLASSIFIED'
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground'
                         : ''
                     )}
                   >
@@ -792,12 +792,12 @@ export default function SalonBalanceSheetPage() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Assets</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Assets</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(balanceSheet.totals.total_assets)}
                   </p>
                 </div>
@@ -806,12 +806,12 @@ export default function SalonBalanceSheetPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Working Capital</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Working Capital</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(balanceSheet.kpis.working_capital)}
                   </p>
                 </div>
@@ -820,15 +820,15 @@ export default function SalonBalanceSheetPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Current Ratio</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Current Ratio</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.current_ratio)}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                     {balanceSheet.kpis.current_ratio >= 1.5 ? 'Healthy' : 'Monitor'}
                   </p>
                 </div>
@@ -837,15 +837,15 @@ export default function SalonBalanceSheetPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Debt to Equity</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Debt to Equity</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.debt_to_equity)}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                     {balanceSheet.kpis.debt_to_equity <= 1 ? 'Low Risk' : 'Moderate'}
                   </p>
                 </div>
@@ -854,12 +854,12 @@ export default function SalonBalanceSheetPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Equity Ratio</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Equity Ratio</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatPercent(balanceSheet.kpis.equity_ratio * 100)}
                   </p>
                 </div>
@@ -870,7 +870,7 @@ export default function SalonBalanceSheetPage() {
         </div>
 
         {/* Balance Sheet Table */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -909,7 +909,7 @@ export default function SalonBalanceSheetPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                <thead className="bg-muted dark:bg-background border-y border-border dark:border-border">
                   <tr>
                     <th className="text-left px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
                       Account
@@ -960,11 +960,11 @@ export default function SalonBalanceSheetPage() {
                         key={index}
                         className={cn(
                           'border-b border-gray-100 dark:border-gray-800',
-                          line.isTotal && 'bg-gray-50 dark:bg-gray-900 font-bold',
-                          line.isSectionTotal && 'bg-gray-50 dark:bg-gray-900 font-semibold',
+                          line.isTotal && 'bg-muted dark:bg-background font-bold',
+                          line.isSectionTotal && 'bg-muted dark:bg-background font-semibold',
                           line.isSubtotal && 'font-medium',
                           (line.isSubtotal || line.isSectionTotal) &&
-                            'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900'
+                            'cursor-pointer hover:bg-muted dark:hover:bg-background'
                         )}
                         onClick={() =>
                           (line.isSubtotal || line.isSectionTotal) && toggleSection(line.section)
@@ -996,7 +996,7 @@ export default function SalonBalanceSheetPage() {
                         </td>
                         {showComparison && (
                           <>
-                            <td className="text-right px-6 py-3 text-gray-600 dark:text-gray-400">
+                            <td className="text-right px-6 py-3 text-muted-foreground dark:text-muted-foreground">
                               {line.compareAmount !== undefined
                                 ? formatCurrency(Math.abs(line.compareAmount))
                                 : '-'}
@@ -1044,23 +1044,23 @@ export default function SalonBalanceSheetPage() {
 
         {/* Financial Health Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Info className="w-5 h-5 text-blue-600" />
+                <Info className="w-5 h-5 text-primary" />
                 Liquidity Analysis
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">Current Assets</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Current Assets</span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_current_assets)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">Current Liabilities</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Current Liabilities</span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_current_liabilities)}
                   </span>
@@ -1101,7 +1101,7 @@ export default function SalonBalanceSheetPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
@@ -1111,13 +1111,13 @@ export default function SalonBalanceSheetPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">Total Debt</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Total Debt</span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_liabilities)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">Total Equity</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Total Equity</span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_equity)}
                   </span>
@@ -1136,7 +1136,7 @@ export default function SalonBalanceSheetPage() {
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="font-medium">Equity Ratio</span>
-                    <span className="font-bold text-blue-600">
+                    <span className="font-bold text-primary">
                       {formatPercent(balanceSheet.kpis.equity_ratio * 100)}
                     </span>
                   </div>
@@ -1147,7 +1147,7 @@ export default function SalonBalanceSheetPage() {
         </div>
 
         {/* Report Metadata */}
-        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Building className="w-4 h-4" />

@@ -28,20 +28,20 @@ export default function UniversalCOADNAPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-muted p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#0066CC] via-[#0084FF] to-[#00AAFF] rounded-lg p-6 text-white">
+        <div className="bg-gradient-to-r from-[#0066CC] via-[#0084FF] to-[#00AAFF] rounded-lg p-6 text-foreground">
           <div className="flex justify-between items-start mb-4">
             <Button
               onClick={() => router.push('/docs')}
               variant="ghost"
-              className="text-white hover:bg-white/20"
+              className="text-foreground hover:bg-background/20"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Docs
             </Button>
-            <Badge variant="secondary" className="bg-white/20 text-white">
+            <Badge variant="secondary" className="bg-background/20 text-foreground">
               HERA DNA System
             </Badge>
           </div>
@@ -100,7 +100,7 @@ export default function UniversalCOADNAPage() {
               </TabsList>
 
               <TabsContent value="structure" className="space-y-4 mt-4">
-                <div className="bg-gray-900 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
+                <div className="bg-background text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
                   <pre>{`// HERA DNA COA Structure
 const UniversalCOADNA = {
   // Base DNA Strands
@@ -155,19 +155,19 @@ const UniversalCOADNA = {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-blue-600" />
+                        <Globe className="h-4 w-4 text-primary" />
                         <span className="font-medium">Tax Compliance</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-blue-600" />
+                        <Globe className="h-4 w-4 text-primary" />
                         <span className="font-medium">Regulatory Standards</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-blue-600" />
+                        <Globe className="h-4 w-4 text-primary" />
                         <span className="font-medium">Currency & Format</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-blue-600" />
+                        <Globe className="h-4 w-4 text-primary" />
                         <span className="font-medium">Local GAAP Rules</span>
                       </div>
                     </CardContent>
@@ -204,7 +204,7 @@ const UniversalCOADNA = {
                   <h3 className="text-lg font-semibold mb-4">30-Second COA Generation Process</h3>
                   <ol className="space-y-3">
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      <span className="bg-purple-600 text-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                         1
                       </span>
                       <div>
@@ -215,7 +215,7 @@ const UniversalCOADNA = {
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      <span className="bg-purple-600 text-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                         2
                       </span>
                       <div>
@@ -226,7 +226,7 @@ const UniversalCOADNA = {
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      <span className="bg-purple-600 text-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                         3
                       </span>
                       <div>
@@ -237,7 +237,7 @@ const UniversalCOADNA = {
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      <span className="bg-purple-600 text-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                         4
                       </span>
                       <div>
@@ -248,7 +248,7 @@ const UniversalCOADNA = {
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      <span className="bg-purple-600 text-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                         5
                       </span>
                       <div>
@@ -331,7 +331,7 @@ const UniversalCOADNA = {
               <Card className="border-2 hover:border-purple-400 transition-colors">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Factory className="h-5 w-5 text-gray-600" />
+                    <Factory className="h-5 w-5 text-muted-foreground" />
                     Manufacturing DNA
                   </CardTitle>
                 </CardHeader>
@@ -358,7 +358,7 @@ const UniversalCOADNA = {
               <Card className="border-2 hover:border-purple-400 transition-colors">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <ShoppingBag className="h-5 w-5 text-blue-600" />
+                    <ShoppingBag className="h-5 w-5 text-primary" />
                     Retail DNA
                   </CardTitle>
                 </CardHeader>
@@ -449,7 +449,7 @@ const UniversalCOADNA = {
               <div>
                 <h3 className="text-lg font-semibold mb-3">DNA Components Used</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-muted p-4 rounded-lg">
                     <h4 className="font-medium mb-2">Core DNA Strands</h4>
                     <ul className="space-y-1 text-sm">
                       <li>• Universal 6-Table Architecture</li>
@@ -458,7 +458,7 @@ const UniversalCOADNA = {
                       <li>• Dynamic Field Management</li>
                     </ul>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-muted p-4 rounded-lg">
                     <h4 className="font-medium mb-2">DNA Evolution Features</h4>
                     <ul className="space-y-1 text-sm">
                       <li>• AI-Powered Account Suggestions</li>
@@ -472,7 +472,7 @@ const UniversalCOADNA = {
 
               <div>
                 <h3 className="text-lg font-semibold mb-3">Implementation Example</h3>
-                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                <div className="bg-background text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
                   <pre>{`// Universal COA Generation via HERA DNA
 const coa = await heraDNA.generateCOA({
   // DNA Selection
@@ -527,37 +527,37 @@ const coa = await heraDNA.generateCOA({
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">30-Second Setup</h4>
                 <p className="text-sm text-muted-foreground">
                   Complete COA ready instantly vs 3-6 months traditional
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">$50K+ Savings</h4>
                 <p className="text-sm text-muted-foreground">
                   No consultant fees or implementation costs
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">100% Compliance</h4>
                 <p className="text-sm text-muted-foreground">
                   IFRS, local GAAP, and tax requirements built-in
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">Auto-Evolution</h4>
                 <p className="text-sm text-muted-foreground">
                   COA adapts as regulations and business change
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">Smart Integration</h4>
                 <p className="text-sm text-muted-foreground">
                   Works with Auto-Journal Engine automatically
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
+              <div className="bg-background p-4 rounded-lg shadow">
                 <h4 className="font-semibold mb-2">Multi-Entity</h4>
                 <p className="text-sm text-muted-foreground">
                   Consolidation and elimination accounts included
@@ -568,7 +568,7 @@ const coa = await heraDNA.generateCOA({
         </Card>
 
         {/* Call to Action */}
-        <Card className="shadow-lg border-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+        <Card className="shadow-lg border-0 bg-gradient-to-r from-purple-600 to-blue-600 text-foreground">
           <CardContent className="pt-6 text-center">
             <h3 className="text-2xl font-bold mb-2">Experience Universal COA DNA</h3>
             <p className="mb-4 opacity-90">
@@ -577,7 +577,7 @@ const coa = await heraDNA.generateCOA({
             <Button
               size="lg"
               variant="secondary"
-              className="bg-white text-purple-600 hover:bg-gray-100"
+              className="bg-background text-purple-600 hover:bg-muted"
             >
               Try COA Generator
             </Button>

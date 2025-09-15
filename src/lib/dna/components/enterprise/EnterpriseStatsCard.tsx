@@ -249,8 +249,8 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
     // Variant styles
     const variantStyles = {
       default: {
-        icon: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
-        accent: 'text-blue-600',
+        icon: 'text-primary bg-blue-100 dark:bg-blue-900/30',
+        accent: 'text-primary',
         glow: 'rgba(59, 130, 246, 0.3)'
       },
       success: {
@@ -362,7 +362,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
                       badge.variant === 'success' && 'bg-green-100 text-green-800',
                       badge.variant === 'warning' && 'bg-amber-100 text-amber-800',
                       badge.variant === 'danger' && 'bg-red-100 text-red-800',
-                      (!badge.variant || badge.variant === 'default') && 'bg-gray-100 text-gray-800'
+                      (!badge.variant || badge.variant === 'default') && 'bg-muted text-gray-800'
                     )}
                   >
                     {badge.text}
@@ -400,7 +400,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
                     ? 'text-green-600'
                     : calculatedTrend < 0
                       ? 'text-red-600'
-                      : 'text-gray-500'
+                      : 'text-muted-foreground'
                 )}
               >
                 {trend?.showArrow !== false && <TrendIcon className="w-3 h-3" />}
@@ -428,7 +428,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
                   'text-xs font-medium',
                   comparison.type === 'positive' && 'text-green-600',
                   comparison.type === 'negative' && 'text-red-600',
-                  comparison.type === 'neutral' && 'text-gray-600'
+                  comparison.type === 'neutral' && 'text-muted-foreground'
                 )}
               >
                 {comparison.value}

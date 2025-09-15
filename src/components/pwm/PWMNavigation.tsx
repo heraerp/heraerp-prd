@@ -76,13 +76,13 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
                 <Diamond className="h-6 w-6 text-emerald-400" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">HERA Wealth</h1>
-                <p className="text-xs text-slate-400">Private Client Portal</p>
+                <h1 className="text-xl font-bold text-foreground">HERA Wealth</h1>
+                <p className="text-xs text-muted-foreground">Private Client Portal</p>
               </div>
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex items-center gap-1 p-1 bg-slate-900/50 rounded-2xl border border-slate-800">
+            <div className="flex items-center gap-1 p-1 bg-background/50 rounded-2xl border border-slate-800">
               {tabs.map(tab => {
                 const Icon = tab.icon
                 const isActive = activeTab === tab.id
@@ -93,10 +93,10 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
                     onClick={() => onTabChange(tab.id)}
                     className={cn(
                       'relative flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200',
-                      'hover:bg-slate-800/50',
+                      'hover:bg-muted/50',
                       isActive
-                        ? 'bg-slate-800 text-white shadow-lg'
-                        : 'text-slate-400 hover:text-slate-300'
+                        ? 'bg-muted text-foreground shadow-lg'
+                        : 'text-muted-foreground hover:text-slate-300'
                     )}
                   >
                     <Icon className="h-4 w-4" />
@@ -114,7 +114,7 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
             {/* Right Actions */}
             <div className="flex items-center gap-3">
               {/* Notifications */}
-              <button className="relative p-2 text-slate-400 hover:text-white transition-colors">
+              <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
                 <Bell className="h-5 w-5" />
                 {notifications > 0 && (
                   <Badge
@@ -130,25 +130,25 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 p-2 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-center gap-2 p-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
+                    <User className="h-4 w-4 text-foreground" />
                   </div>
                   <ChevronDown className="h-4 w-4" />
                 </button>
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-xl p-4">
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-background border border-border rounded-xl shadow-xl p-4">
                     <div className="text-center mb-4">
                       <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center mx-auto mb-2">
-                        <User className="h-6 w-6 text-white" />
+                        <User className="h-6 w-6 text-foreground" />
                       </div>
-                      <p className="text-white font-medium">Valued Client</p>
-                      <p className="text-xs text-slate-400">Private Wealth Management</p>
+                      <p className="text-foreground font-medium">Valued Client</p>
+                      <p className="text-xs text-muted-foreground">Private Wealth Management</p>
                     </div>
-                    <Button variant="outline" className="w-full text-slate-300 border-slate-700">
+                    <Button variant="outline" className="w-full text-slate-300 border-border">
                       Account Settings
                     </Button>
                   </div>
@@ -197,13 +197,13 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
               <Diamond className="h-4 w-4 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">HERA Wealth</h1>
+              <h1 className="text-lg font-bold text-foreground">HERA Wealth</h1>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Notifications */}
-            <button className="relative p-2 text-slate-400 hover:text-white transition-colors touch-target">
+            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors touch-target">
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
                 <Badge
@@ -217,7 +217,7 @@ export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWM
 
             {/* Profile */}
             <button className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center touch-target">
-              <User className="h-4 w-4 text-white" />
+              <User className="h-4 w-4 text-foreground" />
             </button>
           </div>
         </div>

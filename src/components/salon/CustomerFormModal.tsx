@@ -84,9 +84,9 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
 
   // Consistent input styling
   const inputClassName =
-    'bg-gray-50/50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 transition-colors'
+    'bg-muted/50 dark:bg-background/50 border-border dark:border-border focus:bg-background dark:focus:bg-background transition-colors'
   const selectClassName =
-    'bg-gray-50/50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900'
+    'bg-muted/50 dark:bg-background/50 border-border dark:border-border focus:bg-background dark:focus:bg-background'
 
   const [formData, setFormData] = useState<CustomerFormData>({
     entity_name: '',
@@ -223,21 +223,21 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
   return (
     <ModalPortal>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+        className="fixed inset-0 bg-background/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
         onClick={onClose}
       >
         <div
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+          className="bg-background dark:bg-muted rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
+          <div className="border-b border-border dark:border-border bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   {mode === 'create' ? 'Add New Customer' : 'Pencil Customer'}
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                   Fill in the customer information below
                 </p>
               </div>
@@ -245,7 +245,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="hover:bg-muted dark:hover:bg-muted-foreground/10"
               >
                 <X className="w-5 h-5" />
               </Button>
@@ -300,7 +300,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                           Email <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                          <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input
                             id="email"
                             type="email"
@@ -324,7 +324,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                           Phone <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                          <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input
                             id="phone"
                             value={formData.phone}
@@ -346,7 +346,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                     <div>
                       <Label htmlFor="whatsapp">WhatsApp</Label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                        <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="whatsapp"
                           value={formData.whatsapp}
@@ -367,7 +367,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                     <div>
                       <Label htmlFor="address">Address</Label>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                        <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Textarea
                           id="address"
                           value={formData.address}
@@ -561,7 +561,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                             onCheckedChange={checked =>
                               handleInputChange('marketing_consent', checked)
                             }
-                            className="border-gray-300 dark:border-gray-600"
+                            className="border-border dark:border-border"
                           />
                           <Label
                             htmlFor="marketing_consent"
@@ -576,7 +576,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                             id="sms_consent"
                             checked={formData.sms_consent}
                             onCheckedChange={checked => handleInputChange('sms_consent', checked)}
-                            className="border-gray-300 dark:border-gray-600"
+                            className="border-border dark:border-border"
                           />
                           <Label
                             htmlFor="sms_consent"
@@ -593,7 +593,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                             onCheckedChange={checked =>
                               handleInputChange('whatsapp_consent', checked)
                             }
-                            className="border-gray-300 dark:border-gray-600"
+                            className="border-border dark:border-border"
                           />
                           <Label
                             htmlFor="whatsapp_consent"
@@ -606,7 +606,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                     </div>
 
                     <Alert className="bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                      <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <AlertCircle className="h-4 w-4 text-primary dark:text-blue-400" />
                       <AlertDescription className="text-blue-700 dark:text-blue-300">
                         Marketing consents can be updated by the customer at any time. We'll respect
                         their preferences for all communications.
@@ -618,9 +618,9 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-6">
+            <div className="border-t border-border dark:border-border bg-muted dark:bg-background p-6">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   <span className="text-red-500">*</span> indicates required fields
                 </p>
                 <div className="flex items-center gap-2">
@@ -630,7 +630,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     {isSubmitting

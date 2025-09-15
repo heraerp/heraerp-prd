@@ -69,7 +69,7 @@ export function TotalWealthCard({
       <div className="relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-medium text-slate-400">Total Net Worth</h2>
+          <h2 className="text-lg font-medium text-muted-foreground">Total Net Worth</h2>
           <div className="text-sm text-slate-500">
             {new Date(lastUpdated).toLocaleTimeString([], {
               hour: '2-digit',
@@ -81,11 +81,11 @@ export function TotalWealthCard({
         {/* Wealth Display */}
         <div className="mb-8">
           <div className="flex items-baseline gap-4">
-            <span className="text-5xl md:text-7xl font-bold text-white tracking-tight">
+            <span className="text-5xl md:text-7xl font-bold text-foreground tracking-tight">
               {formatCurrency(totalWealth).split('.')[0]}
             </span>
           </div>
-          <div className="text-sm text-slate-400 mt-2">
+          <div className="text-sm text-muted-foreground mt-2">
             {formatLargeNumber(totalWealth)} {currency}
           </div>
         </div>
@@ -117,7 +117,7 @@ export function TotalWealthCard({
               {isPositive ? '+' : ''}
               {formatCurrency(dailyChange)}
             </div>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-muted-foreground">
               {isPositive ? '+' : ''}
               {dailyChangePercent.toFixed(2)}% today
             </div>
@@ -126,19 +126,19 @@ export function TotalWealthCard({
 
         {/* Performance Indicators */}
         <div className="grid grid-cols-3 gap-4 mt-6">
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <div className="text-xs text-slate-500 mb-1">24h High</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(totalWealth * 1.002)}
             </div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <div className="text-xs text-slate-500 mb-1">24h Low</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(totalWealth * 0.998)}
             </div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <div className="text-xs text-slate-500 mb-1">24h Volume</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(Math.abs(dailyChange) * 10)}

@@ -127,13 +127,13 @@ export function PurchaseOrderManager() {
 
   // Status configurations
   const statusConfig = {
-    draft: { color: 'bg-gray-100 text-gray-800', icon: Edit },
+    draft: { color: 'bg-muted text-gray-800', icon: Edit },
     submitted: { color: 'bg-blue-100 text-blue-800', icon: Send },
     approved: { color: 'bg-green-100 text-green-800', icon: CheckCircle },
     rejected: { color: 'bg-red-100 text-red-800', icon: XCircle },
     processing: { color: 'bg-yellow-100 text-yellow-800', icon: Clock },
     completed: { color: 'bg-emerald-100 text-emerald-800', icon: CheckCircle },
-    cancelled: { color: 'bg-gray-100 text-gray-800', icon: XCircle }
+    cancelled: { color: 'bg-muted text-gray-800', icon: XCircle }
   }
 
   // Load purchase orders from API
@@ -371,8 +371,8 @@ export function PurchaseOrderManager() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-3">
-            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-lg text-gray-600">Loading purchase orders...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg text-muted-foreground">Loading purchase orders...</span>
           </div>
         </div>
       </div>
@@ -385,13 +385,13 @@ export function PurchaseOrderManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Purchase Orders</h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Universal procurement workflow powered by HERA's transaction architecture
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Create PO</span>
@@ -403,13 +403,13 @@ export function PurchaseOrderManager() {
         <div className="flex flex-wrap items-center gap-4">
           {/* Search */}
           <div className="flex items-center space-x-2 flex-1 min-w-80">
-            <Search className="w-5 h-5 text-gray-400" />
+            <Search className="w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search by PO number or supplier..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -417,7 +417,7 @@ export function PurchaseOrderManager() {
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Status</option>
             <option value="draft">Draft</option>
@@ -433,7 +433,7 @@ export function PurchaseOrderManager() {
           <select
             value={supplierFilter}
             onChange={e => setSupplierFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">All Suppliers</option>
             {suppliers.map(supplier => (
@@ -445,7 +445,7 @@ export function PurchaseOrderManager() {
 
           <button
             onClick={loadPurchaseOrders}
-            className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-800 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -475,7 +475,7 @@ export function PurchaseOrderManager() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-white" />
+                    <FileText className="w-6 h-6 text-foreground" />
                   </div>
                   <div>
                     <div className="flex items-center space-x-3 mb-1">
@@ -485,7 +485,7 @@ export function PurchaseOrderManager() {
                         {po.status}
                       </Badge>
                     </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-1">
                         <Building2 className="w-4 h-4" />
                         <span>{po.supplier?.name || 'No Supplier'}</span>
@@ -510,7 +510,7 @@ export function PurchaseOrderManager() {
                       {formatCurrency(po.total_amount)}
                     </p>
                     {po.expected_delivery && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Due: {formatDate(po.expected_delivery)}
                       </p>
                     )}
@@ -519,7 +519,7 @@ export function PurchaseOrderManager() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => viewPODetails(po)}
-                      className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                      className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
                     >
                       <Eye className="w-4 h-4 mr-1 inline" />
                       View
@@ -565,16 +565,16 @@ export function PurchaseOrderManager() {
       {/* Empty State */}
       {filteredPOs.length === 0 && !isLoading && !error && (
         <Card className="p-12 text-center">
-          <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <FileText className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No Purchase Orders Found</h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'all' || supplierFilter
               ? 'Try adjusting your filters to see more purchase orders.'
               : 'Get started by creating your first purchase order.'}
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             Create Purchase Order
           </button>
@@ -583,11 +583,11 @@ export function PurchaseOrderManager() {
 
       {/* Create PO Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-900">Create Purchase Order</h2>
-              <p className="text-gray-600 mt-1">Create a new purchase order for your supplier</p>
+              <p className="text-muted-foreground mt-1">Create a new purchase order for your supplier</p>
             </div>
 
             <form onSubmit={handleCreatePO} className="p-6 space-y-6">
@@ -606,7 +606,7 @@ export function PurchaseOrderManager() {
                     required
                     value={formData.supplier_id}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   >
                     <option value="">Select Supplier</option>
                     {suppliers.map(supplier => (
@@ -630,7 +630,7 @@ export function PurchaseOrderManager() {
                     type="date"
                     value={formData.expected_delivery}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
               </div>
@@ -642,7 +642,7 @@ export function PurchaseOrderManager() {
                   <button
                     type="button"
                     onClick={addLineItem}
-                    className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-blue-600 text-foreground rounded-md hover:bg-blue-700"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Item</span>
@@ -653,12 +653,12 @@ export function PurchaseOrderManager() {
                   {formData.lines.map((line, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center space-x-3 p-3 bg-muted rounded-lg"
                     >
                       <select
                         value={line.product_id}
                         onChange={e => updateLineItem(index, 'product_id', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       >
                         <option value="">Select Product</option>
                         {products.map(product => (
@@ -676,7 +676,7 @@ export function PurchaseOrderManager() {
                         onChange={e =>
                           updateLineItem(index, 'quantity', parseInt(e.target.value) || 0)
                         }
-                        className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-20 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       />
 
                       <input
@@ -688,7 +688,7 @@ export function PurchaseOrderManager() {
                         onChange={e =>
                           updateLineItem(index, 'unit_price', parseFloat(e.target.value) || 0)
                         }
-                        className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-24 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       />
 
                       <span className="w-20 text-sm font-medium text-gray-900">
@@ -706,7 +706,7 @@ export function PurchaseOrderManager() {
                   ))}
 
                   {formData.lines.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-muted-foreground">
                       <Package className="w-12 h-12 mx-auto mb-2" />
                       <p>No items added yet. Click "Add Item" to get started.</p>
                     </div>
@@ -715,9 +715,9 @@ export function PurchaseOrderManager() {
 
                 {/* Total */}
                 {formData.lines.length > 0 && (
-                  <div className="flex justify-end pt-4 border-t border-gray-200 mt-4">
+                  <div className="flex justify-end pt-4 border-t border-border mt-4">
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Total Amount</p>
+                      <p className="text-sm text-muted-foreground">Total Amount</p>
                       <p className="text-xl font-semibold text-gray-900">
                         {formatCurrency(
                           formData.lines.reduce(
@@ -742,26 +742,26 @@ export function PurchaseOrderManager() {
                   rows={3}
                   value={formData.notes}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => {
                     setShowCreateModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || formData.lines.length === 0}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -783,13 +783,13 @@ export function PurchaseOrderManager() {
 
       {/* View PO Modal */}
       {showViewModal && viewingPO && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">{viewingPO.po_number}</h2>
-                  <p className="text-gray-600 mt-1">Purchase Order Details</p>
+                  <p className="text-muted-foreground mt-1">Purchase Order Details</p>
                 </div>
                 <Badge className={statusConfig[viewingPO.status]?.color}>{viewingPO.status}</Badge>
               </div>
@@ -802,22 +802,22 @@ export function PurchaseOrderManager() {
                   <h3 className="font-semibold text-gray-900 mb-3">Order Information</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">PO Number:</span>
+                      <span className="text-muted-foreground">PO Number:</span>
                       <span className="font-medium">{viewingPO.po_number}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Status:</span>
+                      <span className="text-muted-foreground">Status:</span>
                       <Badge className={statusConfig[viewingPO.status]?.color}>
                         {viewingPO.status}
                       </Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Created:</span>
+                      <span className="text-muted-foreground">Created:</span>
                       <span>{formatDate(viewingPO.created_at)}</span>
                     </div>
                     {viewingPO.expected_delivery && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Expected Delivery:</span>
+                        <span className="text-muted-foreground">Expected Delivery:</span>
                         <span>{formatDate(viewingPO.expected_delivery)}</span>
                       </div>
                     )}
@@ -829,16 +829,16 @@ export function PurchaseOrderManager() {
                   {viewingPO.supplier ? (
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Name:</span>
+                        <span className="text-muted-foreground">Name:</span>
                         <span className="font-medium">{viewingPO.supplier.name}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Code:</span>
+                        <span className="text-muted-foreground">Code:</span>
                         <span>{viewingPO.supplier.code}</span>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No supplier information</p>
+                    <p className="text-muted-foreground text-sm">No supplier information</p>
                   )}
                 </div>
               </div>
@@ -853,26 +853,26 @@ export function PurchaseOrderManager() {
                     {viewingPO.lines.map(line => (
                       <div
                         key={line.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div className="flex-1">
                           <p className="font-medium text-gray-900">{line.product_name}</p>
-                          <p className="text-sm text-gray-600">{line.product_code}</p>
+                          <p className="text-sm text-muted-foreground">{line.product_code}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-medium text-gray-900">
                             {line.quantity} × {formatCurrency(line.unit_price)}
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             = {formatCurrency(line.line_amount)}
                           </p>
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-end pt-4 border-t border-gray-200 mt-4">
+                  <div className="flex justify-end pt-4 border-t border-border mt-4">
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Total Amount</p>
+                      <p className="text-sm text-muted-foreground">Total Amount</p>
                       <p className="text-xl font-semibold text-gray-900">
                         {formatCurrency(viewingPO.total_amount)}
                       </p>
@@ -890,10 +890,10 @@ export function PurchaseOrderManager() {
               )}
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border">
                 <button
                   onClick={() => setShowViewModal(false)}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Close
                 </button>
@@ -913,17 +913,17 @@ export function PurchaseOrderManager() {
             This purchase order system demonstrates HERA's universal transaction workflow in action:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-purple-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>universal_transactions</strong>
               <br />
               Purchase orders stored as standardized business transactions
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>universal_transaction_lines</strong>
               <br />
               Line items with product relationships and flexible metadata
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_relationships</strong>
               <br />
               Supplier-PO and Product-PO relationships with smart workflows

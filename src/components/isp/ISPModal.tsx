@@ -38,7 +38,7 @@ export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPM
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={onClose} />
 
       {/* Modal */}
       <div
@@ -48,17 +48,17 @@ export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPM
         <div className="absolute -inset-1 bg-gradient-to-r from-[#00DDFF] via-[#0049B7] to-[#ff1d58] rounded-2xl blur-lg opacity-30" />
 
         {/* Content */}
-        <div className="relative bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-[#0049B7]/20 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl">
+        <div className="relative bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-[#0049B7]/20 backdrop-blur-2xl rounded-2xl border border-border/10 shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <div className="flex items-center justify-between p-6 border-b border-border/10">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+              className="p-2 rounded-lg bg-background/5 hover:bg-background/10 transition-all duration-300 group"
             >
-              <X className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
+              <X className="h-5 w-5 text-foreground/60 group-hover:text-foreground transition-colors" />
             </button>
           </div>
 

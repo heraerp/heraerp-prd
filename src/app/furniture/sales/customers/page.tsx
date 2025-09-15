@@ -162,12 +162,12 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Customers</h1>
-          <p className="text-gray-600 dark:text-gray-400">Manage your customer relationships</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">Customers</h1>
+          <p className="text-muted-foreground dark:text-muted-foreground">Manage your customer relationships</p>
         </div>
         <Link
           href="/furniture/sales/customers/new"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Customer
@@ -176,19 +176,19 @@ export default function CustomersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                <Building2 className="h-6 w-6 text-white" />
+                <Building2 className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Total Customers
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.total}
                     </div>
                   </dd>
@@ -198,22 +198,22 @@ export default function CustomersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                <TrendingUp className="h-6 w-6 text-white" />
+                <TrendingUp className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Active Customers
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.active}
                     </div>
-                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span className="ml-2 text-sm text-muted-foreground dark:text-muted-foreground">
                       ({Math.round((stats.active / stats.total) * 100) || 0}%)
                     </span>
                   </dd>
@@ -223,19 +223,19 @@ export default function CustomersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-amber-500 rounded-md p-3">
-                <IndianRupee className="h-6 w-6 text-white" />
+                <IndianRupee className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Total Revenue
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {formatCurrency(stats.totalRevenue)}
                     </div>
                   </dd>
@@ -247,18 +247,18 @@ export default function CustomersPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-background dark:bg-muted shadow rounded-lg">
+        <div className="p-4 border-b border-border dark:border-border">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-border rounded-md leading-5 bg-background dark:bg-muted-foreground/10 dark:border-border placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 placeholder="Search customers..."
               />
             </div>
@@ -268,7 +268,7 @@ export default function CustomersPage() {
                 className={`px-4 py-2 text-sm font-medium rounded-md ${
                   filterType === 'all'
                     ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200'
-                    : 'text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    : 'text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600'
                 }`}
               >
                 All
@@ -278,7 +278,7 @@ export default function CustomersPage() {
                 className={`px-4 py-2 text-sm font-medium rounded-md ${
                   filterType === 'active'
                     ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200'
-                    : 'text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    : 'text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600'
                 }`}
               >
                 Active
@@ -288,7 +288,7 @@ export default function CustomersPage() {
                 className={`px-4 py-2 text-sm font-medium rounded-md ${
                   filterType === 'inactive'
                     ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200'
-                    : 'text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    : 'text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600'
                 }`}
               >
                 Inactive
@@ -300,24 +300,24 @@ export default function CustomersPage() {
         {/* Customers Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+            <thead className="bg-muted dark:bg-background">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Contact
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Orders
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Revenue
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Last Order
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Credit Limit
                 </th>
                 <th className="relative px-6 py-3">
@@ -325,7 +325,7 @@ export default function CustomersPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-background dark:bg-muted divide-y divide-gray-200 dark:divide-gray-700">
               {customersLoading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 text-center">
@@ -336,7 +336,7 @@ export default function CustomersPage() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                    className="px-6 py-4 text-center text-muted-foreground dark:text-muted-foreground"
                   >
                     {searchTerm || filterType !== 'all'
                       ? 'No customers found matching your criteria.'
@@ -351,13 +351,13 @@ export default function CustomersPage() {
                   const creditLimit = getCustomerField(customer.id, 'credit_limit')
 
                   return (
-                    <tr key={customer.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={customer.id} className="hover:bg-muted dark:hover:bg-muted-foreground/10">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          <div className="text-sm font-medium text-gray-900 dark:text-foreground">
                             {customer.entity_name}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {customer.entity_code}
                           </div>
                         </div>
@@ -365,13 +365,13 @@ export default function CustomersPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm">
                           {email && (
-                            <div className="flex items-center text-gray-600 dark:text-gray-300">
+                            <div className="flex items-center text-muted-foreground dark:text-gray-300">
                               <Mail className="h-3 w-3 mr-1" />
                               {email}
                             </div>
                           )}
                           {phone && (
-                            <div className="flex items-center text-gray-600 dark:text-gray-300">
+                            <div className="flex items-center text-muted-foreground dark:text-gray-300">
                               <Phone className="h-3 w-3 mr-1" />
                               {phone}
                             </div>
@@ -379,24 +379,24 @@ export default function CustomersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-gray-900 dark:text-foreground">
                           {metrics.orderCount}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900 dark:text-foreground">
                           {formatCurrency(metrics.totalRevenue)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {metrics.lastOrderDate
                             ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy')
                             : 'No orders yet'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-gray-900 dark:text-foreground">
                           {creditLimit ? formatCurrency(Number(creditLimit)) : '-'}
                         </div>
                       </td>
@@ -430,10 +430,10 @@ export default function CustomersPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Customer</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-background dark:bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-background dark:bg-muted rounded-lg max-w-md w-full p-6 space-y-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">Delete Customer</h3>
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Are you sure you want to delete <strong>{customerToDelete?.entity_name}</strong>? This
               action cannot be undone.
             </p>
@@ -443,14 +443,14 @@ export default function CustomersPage() {
                   setShowDeleteModal(false)
                   setCustomerToDelete(null)
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 border border-border dark:border-border rounded-md hover:bg-muted dark:hover:bg-gray-600"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteCustomer}
                 disabled={deleteLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-foreground bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {deleteLoading ? 'Deleting...' : 'Delete'}
               </button>

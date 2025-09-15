@@ -122,7 +122,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
   return (
     <div className={cn('space-y-4', className)}>
       {/* Modern Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-background dark:bg-muted rounded-xl border border-border dark:border-border p-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Left Section */}
           <div className="flex items-center gap-4">
@@ -131,10 +131,10 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                 <ChevronLeft className="w-5 h-5" />
               </Button>
               <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
                   {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric' })}
                 </p>
               </div>
@@ -145,24 +145,24 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
             {/* View Switcher */}
             <Tabs value={selectedView} onValueChange={(v: any) => setSelectedView(v)}>
-              <TabsList className="bg-gray-100 dark:bg-gray-900">
+              <TabsList className="bg-muted dark:bg-background">
                 <TabsTrigger
                   value="day"
-                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                  className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
                 >
                   <CalendarDays className="w-4 h-4 mr-2" />
                   Day
                 </TabsTrigger>
                 <TabsTrigger
                   value="week"
-                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                  className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
                 >
                   <Grid3x3 className="w-4 h-4 mr-2" />
                   Week
                 </TabsTrigger>
                 <TabsTrigger
                   value="month"
-                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                  className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted"
                 >
                   <Calendar className="w-4 h-4 mr-2" />
                   Month
@@ -175,7 +175,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search appointments..."
                 value={searchQuery}
@@ -200,7 +200,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             {/* New Appointment Button */}
             <Button
               onClick={onNewBooking}
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg"
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-foreground rounded-lg"
             >
               <Plus className="w-4 h-4 mr-2" />
               New Booking
@@ -210,7 +210,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
         {/* Filters Section */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="mt-4 pt-4 border-t border-border dark:border-border">
             <div className="flex flex-wrap items-center gap-4">
               {/* Stylist Filter */}
               <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                       <SelectItem key={stylist.id} value={stylist.id}>
                         <div className="flex items-center gap-2">
                           <Avatar className="w-5 h-5">
-                            <AvatarFallback className={cn(stylist.color, 'text-white text-xs')}>
+                            <AvatarFallback className={cn(stylist.color, 'text-foreground text-xs')}>
                               {stylist.avatar}
                             </AvatarFallback>
                           </Avatar>
@@ -238,7 +238,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                                 'ml-auto text-xs',
                                 stylist.available
                                   ? 'border-green-500 text-green-700'
-                                  : 'border-gray-400 text-gray-600'
+                                  : 'border-gray-400 text-muted-foreground'
                               )}
                             >
                               {stylist.available ? 'Available' : 'Busy'}
@@ -388,24 +388,24 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
       </div>
 
       {/* Main Calendar */}
-      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 overflow-hidden">
+      <Card className="bg-background dark:bg-muted border-border dark:border-border overflow-hidden">
         <CardContent className="p-0">
           <SimpleCalendar events={events} className="modern-salon-calendar" />
         </CardContent>
       </Card>
 
       {/* Quick Actions Footer */}
-      <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+      <div className="flex items-center justify-between bg-background dark:bg-muted rounded-xl border border-border dark:border-border p-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
             <Clock className="w-4 h-4 mr-2" />
             Working Hours
           </Button>
-          <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
             <MapPin className="w-4 h-4 mr-2" />
             Salon Location
           </Button>
-          <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
             <List className="w-4 h-4 mr-2" />
             Export Schedule
           </Button>

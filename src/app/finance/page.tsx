@@ -83,7 +83,7 @@ const financeModules: FinanceModule[] = [
     description: 'View and analyze financial documents (Similar to SAP FB03)',
     icon: FileSearch,
     href: '/finance/document-viewer',
-    color: 'text-blue-600',
+    color: 'text-primary',
     bgColor: 'bg-blue-50 dark:bg-blue-900/20',
     badge: 'New',
     stats: {
@@ -198,8 +198,8 @@ const financeModules: FinanceModule[] = [
     description: 'Asset register, depreciation, and disposal management',
     icon: Building2,
     href: '/finance/fixed-assets',
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-50 dark:bg-gray-900/20',
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted dark:bg-background/20',
     stats: {
       value: 'AED 1.2M',
       trend: 'neutral',
@@ -369,7 +369,7 @@ export default function FinanceDashboard() {
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-700 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text flex items-center gap-4 mb-3">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                <CircleDollarSign className="w-7 h-7 text-white" />
+                <CircleDollarSign className="w-7 h-7 text-foreground" />
               </div>
               Finance Dashboard
             </h1>
@@ -383,7 +383,7 @@ export default function FinanceDashboard() {
               variant="outline"
               size="lg"
               onClick={() => setShowFinanceSettings(true)}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700 border-0"
+              className="bg-gradient-to-r from-blue-600 to-cyan-600 text-foreground hover:from-blue-700 hover:to-cyan-700 border-0"
             >
               <Sparkles className="w-5 h-5 mr-2" />
               Finance Setup
@@ -392,7 +392,7 @@ export default function FinanceDashboard() {
               variant="outline"
               size="lg"
               onClick={() => router.push('/')}
-              className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30"
+              className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30"
             >
               <Home className="w-5 h-5 mr-2" />
               Home
@@ -401,7 +401,7 @@ export default function FinanceDashboard() {
               variant="outline"
               size="lg"
               onClick={() => router.push('/finance/settings')}
-              className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30"
+              className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30"
             >
               <Settings className="w-5 h-5 mr-2" />
               Settings
@@ -411,17 +411,17 @@ export default function FinanceDashboard() {
 
         {/* Current Organization */}
         {currentOrganization && (
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50">
+          <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50">
             <CardContent className="flex items-center justify-between p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
-                  <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <Briefcase className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                     Current Organization
                   </p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xl font-bold text-gray-900 dark:text-foreground">
                     {currentOrganization.organization_name}
                   </p>
                 </div>
@@ -429,7 +429,7 @@ export default function FinanceDashboard() {
               <div className="flex items-center gap-8 text-sm">
                 <div className="text-center">
                   <p className="text-gray-700 dark:text-gray-300 font-medium">Fiscal Year</p>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">2025</p>
+                  <p className="text-2xl font-bold text-primary dark:text-blue-400">2025</p>
                 </div>
                 <div className="text-center">
                   <p className="text-gray-700 dark:text-gray-300 font-medium">Period</p>
@@ -470,10 +470,10 @@ export default function FinanceDashboard() {
                     <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                       Finance Setup Required
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       Set up your Chart of Accounts and Fiscal Year to start using financial
                       features
                     </p>
@@ -481,7 +481,7 @@ export default function FinanceDashboard() {
                 </div>
                 <Button
                   onClick={() => setShowFinanceSettings(true)}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  className="bg-amber-600 hover:bg-amber-700 text-foreground"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Start Setup
@@ -500,7 +500,7 @@ export default function FinanceDashboard() {
           </Alert>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -522,7 +522,7 @@ export default function FinanceDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -544,17 +544,17 @@ export default function FinanceDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">
                       Net Profit
                     </p>
-                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    <p className="text-3xl font-bold text-primary dark:text-blue-400">
                       AED {(financeData?.netProfit || 0).toLocaleString()}
                     </p>
-                    <p className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-1 mt-2 font-medium">
+                    <p className="text-sm text-primary dark:text-blue-400 flex items-center gap-1 mt-2 font-medium">
                       {financeData?.netProfit >= 0 ? (
                         <>
                           <ArrowUpRight className="w-4 h-4" />
@@ -569,13 +569,13 @@ export default function FinanceDashboard() {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-                    <PieChart className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    <PieChart className="w-8 h-8 text-primary dark:text-blue-400" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -660,12 +660,12 @@ export default function FinanceDashboard() {
             return (
               <Card
                 key={module.id}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 cursor-pointer hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 group"
+                className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 cursor-pointer hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 group"
                 onClick={() => router.push(module.href)}
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-white/80 to-gray-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-white/40 dark:border-gray-700/40">
+                    <div className="w-14 h-14 bg-gradient-to-br from-white/80 to-gray-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-white/40 dark:border-border/40">
                       <updatedModule.icon className={cn('w-8 h-8', updatedModule.color)} />
                     </div>
                     {updatedModule.badge && (
@@ -677,7 +677,7 @@ export default function FinanceDashboard() {
                       </Badge>
                     )}
                   </div>
-                  <CardTitle className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  <CardTitle className="text-xl font-bold text-gray-900 dark:text-foreground mb-2">
                     {updatedModule.title}
                   </CardTitle>
                   <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -686,12 +686,12 @@ export default function FinanceDashboard() {
                 </CardHeader>
                 <CardContent className="pt-0 pb-6">
                   {updatedModule.stats && (
-                    <div className="flex items-center justify-between mb-4 p-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-200/30 dark:border-gray-700/30">
+                    <div className="flex items-center justify-between mb-4 p-4 bg-muted/50 dark:bg-muted/50 backdrop-blur-sm rounded-lg border border-border/30 dark:border-border/30">
                       <div>
                         <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                           Current
                         </p>
-                        <p className="text-lg font-bold text-gray-900 dark:text-white">
+                        <p className="text-lg font-bold text-gray-900 dark:text-foreground">
                           {updatedModule.stats.value}
                         </p>
                       </div>
@@ -703,7 +703,7 @@ export default function FinanceDashboard() {
                           <ArrowDownRight className="w-5 h-5 text-red-600 dark:text-red-400" />
                         )}
                         {updatedModule.stats.trend === 'neutral' && (
-                          <Activity className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                          <Activity className="w-5 h-5 text-muted-foreground dark:text-muted-foreground" />
                         )}
                         <span
                           className={cn(
@@ -713,7 +713,7 @@ export default function FinanceDashboard() {
                             updatedModule.stats.trend === 'down' &&
                               'text-red-600 dark:text-red-400',
                             updatedModule.stats.trend === 'neutral' &&
-                              'text-gray-600 dark:text-gray-400'
+                              'text-muted-foreground dark:text-muted-foreground'
                           )}
                         >
                           {updatedModule.stats.change}
@@ -725,7 +725,7 @@ export default function FinanceDashboard() {
                     <Button
                       variant="ghost"
                       size="lg"
-                      className="gap-3 text-blue-600 dark:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 font-semibold"
+                      className="gap-3 text-primary dark:text-blue-400 hover:bg-primary/10/50 dark:hover:bg-blue-900/30 font-semibold"
                     >
                       Open Module
                       <ChevronRight className="w-5 h-5" />
@@ -738,9 +738,9 @@ export default function FinanceDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50">
+        <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-foreground">
               Quick Actions
             </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-base">
@@ -753,7 +753,7 @@ export default function FinanceDashboard() {
                 variant="outline"
                 size="lg"
                 onClick={() => router.push('/finance/document-viewer')}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
+                className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <FileText className="w-5 h-5 mr-3" />
                 View Documents
@@ -762,7 +762,7 @@ export default function FinanceDashboard() {
                 variant="outline"
                 size="lg"
                 onClick={() => router.push('/digital-accountant')}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
+                className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <Calculator className="w-5 h-5 mr-3" />
                 Digital Accountant
@@ -771,7 +771,7 @@ export default function FinanceDashboard() {
                 variant="outline"
                 size="lg"
                 onClick={() => router.push('/financial-integration')}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
+                className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <FileSpreadsheet className="w-5 h-5 mr-3" />
                 GL Integration
@@ -780,7 +780,7 @@ export default function FinanceDashboard() {
                 variant="outline"
                 size="lg"
                 onClick={() => router.push('/cashflow')}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
+                className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <DollarSign className="w-5 h-5 mr-3" />
                 Cash Flow Analysis
@@ -789,7 +789,7 @@ export default function FinanceDashboard() {
                 variant="outline"
                 size="lg"
                 onClick={() => router.push('/trial-balance')}
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
+                className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <BarChart3 className="w-5 h-5 mr-3" />
                 Trial Balance
@@ -804,7 +804,7 @@ export default function FinanceDashboard() {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-blue-600" />
+              <Sparkles className="w-6 h-6 text-primary" />
               Finance Setup Wizard
             </DialogTitle>
             <DialogDescription>

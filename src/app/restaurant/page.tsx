@@ -345,10 +345,10 @@ export default function RestaurantPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="mt-2 text-muted-foreground dark:text-muted-foreground">Loading...</p>
           </div>
         </div>
       }

@@ -242,8 +242,8 @@ export function CalendarAnalytics({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold">{computedMetrics.totalAppointments}</div>
-            <div className="text-sm text-gray-600">Total Appointments</div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-sm text-muted-foreground">Total Appointments</div>
+            <div className="text-xs text-muted-foreground mt-1">
               Last{' '}
               {Math.ceil(
                 (date_range.end.getTime() - date_range.start.getTime()) / (1000 * 60 * 60 * 24)
@@ -260,10 +260,10 @@ export function CalendarAnalytics({
             >
               {Math.round(computedMetrics.averageUtilization)}%
             </div>
-            <div className="text-sm text-gray-600">Average Utilization</div>
+            <div className="text-sm text-muted-foreground">Average Utilization</div>
             <div className="flex items-center justify-center mt-1">
               {getPerformanceIndicator(computedMetrics.averageUtilization, benchmark.utilization)}
-              <span className="text-xs text-gray-500 ml-1">vs {benchmark.utilization}% target</span>
+              <span className="text-xs text-muted-foreground ml-1">vs {benchmark.utilization}% target</span>
             </div>
           </CardContent>
         </Card>
@@ -271,10 +271,10 @@ export function CalendarAnalytics({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold">{Math.round(computedMetrics.completionRate)}%</div>
-            <div className="text-sm text-gray-600">Completion Rate</div>
+            <div className="text-sm text-muted-foreground">Completion Rate</div>
             <div className="flex items-center justify-center mt-1">
               {getPerformanceIndicator(computedMetrics.completionRate, benchmark.completionRate)}
-              <span className="text-xs text-gray-500 ml-1">
+              <span className="text-xs text-muted-foreground ml-1">
                 vs {benchmark.completionRate}% target
               </span>
             </div>
@@ -286,8 +286,8 @@ export function CalendarAnalytics({
             <div className="text-2xl font-bold">
               ${computedMetrics.totalRevenue.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Total Revenue</div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-sm text-muted-foreground">Total Revenue</div>
+            <div className="text-xs text-muted-foreground mt-1">
               {computedMetrics.totalRevenue > 0 ? 'Tracked revenue' : 'Revenue tracking off'}
             </div>
           </CardContent>
@@ -314,7 +314,7 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.averageUtilization)}%</div>
-                <div className="text-sm text-gray-500">Target: {benchmark.utilization}%</div>
+                <div className="text-sm text-muted-foreground">Target: {benchmark.utilization}%</div>
               </div>
             </div>
             <Progress value={computedMetrics.averageUtilization} className="h-2" />
@@ -328,7 +328,7 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.noShowRate)}%</div>
-                <div className="text-sm text-gray-500">Target: ≤{benchmark.noShowRate}%</div>
+                <div className="text-sm text-muted-foreground">Target: ≤{benchmark.noShowRate}%</div>
               </div>
             </div>
             <Progress value={Math.min(computedMetrics.noShowRate, 50)} className="h-2" />
@@ -342,7 +342,7 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.completionRate)}%</div>
-                <div className="text-sm text-gray-500">Target: {benchmark.completionRate}%</div>
+                <div className="text-sm text-muted-foreground">Target: {benchmark.completionRate}%</div>
               </div>
             </div>
             <Progress value={computedMetrics.completionRate} className="h-2" />
@@ -382,7 +382,7 @@ export function CalendarAnalytics({
               <span className="font-medium">{computedMetrics.completedAppointments}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-blue-600">Confirmed:</span>
+              <span className="text-primary">Confirmed:</span>
               <span className="font-medium">{computedMetrics.confirmedAppointments}</span>
             </div>
             <div className="flex items-center justify-between">
@@ -411,7 +411,7 @@ export function CalendarAnalytics({
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <h3 className="font-medium">{resource.resource_name}</h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {resource.appointments_count} appointments •{' '}
                         {Math.round(resource.total_booked_hours)} hours
                       </p>
@@ -422,7 +422,7 @@ export function CalendarAnalytics({
                       >
                         {Math.round(resource.utilization_percentage)}%
                       </div>
-                      <div className="text-sm text-gray-500">Utilization</div>
+                      <div className="text-sm text-muted-foreground">Utilization</div>
                     </div>
                   </div>
 
@@ -430,18 +430,18 @@ export function CalendarAnalytics({
 
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-600">Available:</span>
+                      <span className="text-muted-foreground">Available:</span>
                       <div className="font-medium">
                         {Math.round(resource.total_available_hours)}h
                       </div>
                     </div>
                     <div>
-                      <span className="text-gray-600">Booked:</span>
+                      <span className="text-muted-foreground">Booked:</span>
                       <div className="font-medium">{Math.round(resource.total_booked_hours)}h</div>
                     </div>
                     {resource.revenue_generated && (
                       <div>
-                        <span className="text-gray-600">Revenue:</span>
+                        <span className="text-muted-foreground">Revenue:</span>
                         <div className="font-medium">
                           ${resource.revenue_generated.toLocaleString()}
                         </div>
@@ -452,13 +452,13 @@ export function CalendarAnalytics({
                   {(resource.no_show_rate > 0 || resource.cancellation_rate > 0) && (
                     <div className="grid grid-cols-2 gap-4 text-sm mt-3 pt-3 border-t">
                       <div>
-                        <span className="text-gray-600">No-show rate:</span>
+                        <span className="text-muted-foreground">No-show rate:</span>
                         <div className="font-medium text-orange-600">
                           {Math.round(resource.no_show_rate)}%
                         </div>
                       </div>
                       <div>
-                        <span className="text-gray-600">Cancellation rate:</span>
+                        <span className="text-muted-foreground">Cancellation rate:</span>
                         <div className="font-medium text-red-600">
                           {Math.round(resource.cancellation_rate)}%
                         </div>
@@ -470,8 +470,8 @@ export function CalendarAnalytics({
             ))
         ) : (
           <div className="text-center py-8">
-            <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600">No resource utilization data available</p>
+            <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No resource utilization data available</p>
           </div>
         )}
       </div>
@@ -495,7 +495,7 @@ export function CalendarAnalytics({
 
         <div className="mt-6">
           <div className="flex items-center justify-between mb-6">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               Analysis period: {date_range.start.toLocaleDateString()} -{' '}
               {date_range.end.toLocaleDateString()}
             </div>

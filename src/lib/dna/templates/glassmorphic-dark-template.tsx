@@ -132,7 +132,7 @@ export function generateGlassmorphicCard(theme: GlassmorphicDarkTheme) {
     {/* Glassmorphic Card */}
     <div className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[${theme.colors.secondary}] to-[${theme.colors.primary}] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
         {/* Card Content */}
       </div>
     </div>
@@ -153,7 +153,7 @@ export function generateGlassmorphicButton(
   return `
     <button className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r ${gradients[variant]} rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-      <div className="relative flex items-center space-x-2 px-4 py-2 bg-gradient-to-r ${gradients[variant]} text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[${theme.colors.secondary}]/40 transition-all duration-300">
+      <div className="relative flex items-center space-x-2 px-4 py-2 bg-gradient-to-r ${gradients[variant]} text-foreground rounded-lg font-medium hover:shadow-lg hover:shadow-[${theme.colors.secondary}]/40 transition-all duration-300">
         {/* Button Content */}
       </div>
     </button>
@@ -166,11 +166,11 @@ export function generateGlassmorphicStatCard(theme: GlassmorphicDarkTheme) {
     {/* Stat Card */}
     <div className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[${theme.colors.secondary}] to-[${theme.colors.primary}] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white/60 text-sm">{label}</p>
-            <p className="text-2xl font-bold text-white mt-1">{value}</p>
+            <p className="text-foreground/60 text-sm">{label}</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
           </div>
           <div className="p-2 bg-gradient-to-br from-[${theme.colors.secondary}] to-[${theme.colors.primary}] rounded-lg">
             {icon}
@@ -185,7 +185,7 @@ export function generateGlassmorphicStatCard(theme: GlassmorphicDarkTheme) {
 export function generateGlassmorphicInput(theme: GlassmorphicDarkTheme) {
   return `
     <input
-      className="w-full px-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[${theme.colors.secondary}]/50 focus:bg-white/10 transition-all duration-200"
+      className="w-full px-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground placeholder-white/40 focus:outline-none focus:border-[${theme.colors.secondary}]/50 focus:bg-background/10 transition-all duration-200"
     />
   `
 }

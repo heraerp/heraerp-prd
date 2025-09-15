@@ -228,16 +228,16 @@ export default function DiscoverPage() {
 
       <div className="relative z-10">
         {/* Header - Match Home Page */}
-        <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
+        <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 dark:bg-background/70 border-b border-border dark:border-slate-800">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex items-center gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center hover:scale-110 transform transition-all duration-300">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900 dark:text-white">HERA</h1>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                  <h1 className="text-xl font-bold text-foreground dark:text-foreground">HERA</h1>
+                  <p className="text-xs text-muted-foreground dark:text-slate-300 font-medium">
                     Discover Live Demos
                   </p>
                 </div>
@@ -245,7 +245,7 @@ export default function DiscoverPage() {
 
               <Button
                 onClick={() => router.push('/validate')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground shadow-lg"
               >
                 Continue to Validate
                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -261,7 +261,7 @@ export default function DiscoverPage() {
         <main className="px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-foreground dark:text-foreground mb-4">
               See HERA in Action
             </h2>
             <p className="text-lg text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
@@ -275,10 +275,10 @@ export default function DiscoverPage() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="relative overflow-hidden rounded-xl p-6 text-center group transition-all duration-700 hover:-translate-y-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:shadow-lg"
+                className="relative overflow-hidden rounded-xl p-6 text-center group transition-all duration-700 hover:-translate-y-2 bg-background/60 dark:bg-muted/60 backdrop-blur-sm border border-border/60 dark:border-border/60 hover:bg-background/80 dark:hover:bg-muted/80 hover:shadow-lg"
               >
-                <stat.icon className="w-8 h-8 mx-auto mb-2 text-blue-600 dark:text-blue-400" />
-                <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                <stat.icon className="w-8 h-8 mx-auto mb-2 text-primary dark:text-blue-400" />
+                <p className="text-2xl font-bold text-foreground dark:text-foreground">{stat.value}</p>
                 <p className="text-sm text-slate-700 dark:text-slate-300">{stat.label}</p>
               </div>
             ))}
@@ -289,7 +289,7 @@ export default function DiscoverPage() {
             {industries.map(industry => (
               <Card
                 key={industry.id}
-                className="relative overflow-hidden group transition-all duration-700 hover:-translate-y-2 cursor-pointer bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:shadow-xl"
+                className="relative overflow-hidden group transition-all duration-700 hover:-translate-y-2 cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm border border-border/60 dark:border-border/60 hover:bg-background/90 dark:hover:bg-muted/90 hover:shadow-xl"
                 onClick={() => handleDemoClick(industry)}
               >
                 <CardHeader className="relative z-10">
@@ -301,13 +301,13 @@ export default function DiscoverPage() {
                           industry.gradient
                         )}
                       >
-                        <industry.icon className="w-6 h-6 text-white" />
+                        <industry.icon className="w-6 h-6 text-foreground" />
                       </div>
                       <div>
-                        <CardTitle className="text-xl text-slate-900 dark:text-white">
+                        <CardTitle className="text-xl text-foreground dark:text-foreground">
                           {industry.name}
                         </CardTitle>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {industry.liveBusinesses.length} live businesses
                         </p>
                       </div>
@@ -328,22 +328,22 @@ export default function DiscoverPage() {
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      <p className="text-2xl font-bold text-primary dark:text-blue-400">
                         {industry.metrics.setupTime}
                       </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">Setup Time</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Setup Time</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                         {industry.metrics.costSavings}
                       </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">Cost Savings</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Cost Savings</p>
                     </div>
                   </div>
 
                   {/* Popular Features */}
                   <div className="mb-4">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                    <p className="text-sm font-semibold text-foreground dark:text-foreground mb-2">
                       Popular Features:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -351,14 +351,14 @@ export default function DiscoverPage() {
                         <Badge
                           key={idx}
                           variant="outline"
-                          className="text-xs border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300"
+                          className="text-xs border-input text-slate-700 dark:border-input dark:text-slate-300"
                         >
                           {feature}
                         </Badge>
                       ))}
                       <Badge
                         variant="outline"
-                        className="text-xs border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300"
+                        className="text-xs border-input text-slate-700 dark:border-input dark:text-slate-300"
                       >
                         +{industry.metrics.features - 3} more
                       </Badge>
@@ -366,13 +366,13 @@ export default function DiscoverPage() {
                   </div>
 
                   {/* Testimonial */}
-                  <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                    <p className="text-sm italic text-slate-600 dark:text-slate-400 mb-2">
+                  <div className="border-t border-border dark:border-border pt-4">
+                    <p className="text-sm italic text-muted-foreground dark:text-muted-foreground mb-2">
                       "{industry.testimonial.quote}"
                     </p>
                     <p className="text-xs text-slate-700 dark:text-slate-300">
                       — {industry.testimonial.author},{' '}
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-muted-foreground dark:text-muted-foreground">
                         {industry.testimonial.role}
                       </span>
                     </p>
@@ -383,8 +383,8 @@ export default function DiscoverPage() {
                     className={cn(
                       'w-full mt-4 group',
                       industry.id === 'salon'
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
-                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground'
+                        : 'bg-gray-200 text-muted-foreground cursor-not-allowed'
                     )}
                     disabled={industry.id !== 'salon'}
                   >
@@ -406,15 +406,15 @@ export default function DiscoverPage() {
           {/* Selected Industry Modal */}
           {selectedIndustry && (
             <div
-              className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+              className="fixed inset-0 bg-background/50 flex items-center justify-center p-4 z-50"
               onClick={() => setSelectedIndustry(null)}
             >
               <div
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full"
+                className="bg-background dark:bg-muted rounded-xl p-6 max-w-md w-full"
                 onClick={e => e.stopPropagation()}
               >
                 <h3 className="text-lg font-semibold mb-2">Coming Soon!</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4">
                   The {industries.find(i => i.id === selectedIndustry)?.name} demo is being
                   prepared. Try our Beauty & Wellness demo for now!
                 </p>
@@ -427,9 +427,9 @@ export default function DiscoverPage() {
 
           {/* Next Steps */}
           <div className="mt-16 text-center">
-            <div className="inline-block p-8 rounded-2xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:shadow-xl transition-all duration-300">
-              <Zap className="w-12 h-12 mx-auto mb-4 text-blue-600 dark:text-blue-400" />
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            <div className="inline-block p-8 rounded-2xl bg-background/70 dark:bg-muted/70 backdrop-blur-sm border border-border/60 dark:border-border/60 hover:bg-background/90 dark:hover:bg-muted/90 hover:shadow-xl transition-all duration-300">
+              <Zap className="w-12 h-12 mx-auto mb-4 text-primary dark:text-blue-400" />
+              <h3 className="text-2xl font-bold text-foreground dark:text-foreground mb-2">
                 Ready to validate?
               </h3>
               <p className="text-slate-700 dark:text-slate-300 mb-6 max-w-md">
@@ -439,7 +439,7 @@ export default function DiscoverPage() {
               <Button
                 size="lg"
                 onClick={() => router.push('/validate')}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-foreground shadow-lg"
               >
                 Continue to Validation
                 <ArrowRight className="w-5 h-5 ml-2" />

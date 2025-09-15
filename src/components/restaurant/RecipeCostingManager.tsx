@@ -537,7 +537,7 @@ export function RecipeCostingManager() {
                       <Package className="w-4 h-4 mr-2" />
                       <div className="text-left">
                         <p className="font-medium">{ing.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           ${ing.unitCost}/{ing.unit}
                         </p>
                       </div>
@@ -588,7 +588,7 @@ export function RecipeCostingManager() {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-muted-foreground">
               No ingredients added yet. Click "Add Ingredient" to start.
             </div>
           )}
@@ -602,17 +602,17 @@ export function RecipeCostingManager() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-sm text-gray-600">Total Cost</p>
+                <p className="text-sm text-muted-foreground">Total Cost</p>
                 <p className="text-xl font-bold text-orange-600">
                   ${formData.totalCost.toFixed(2)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Cost per Serving</p>
+                <p className="text-sm text-muted-foreground">Cost per Serving</p>
                 <p className="text-xl font-bold">${formData.costPerServing.toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Actual Margin</p>
+                <p className="text-sm text-muted-foreground">Actual Margin</p>
                 <p
                   className={cn(
                     'text-xl font-bold',
@@ -623,8 +623,8 @@ export function RecipeCostingManager() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Suggested Price</p>
-                <p className="text-xl font-bold text-blue-600">
+                <p className="text-sm text-muted-foreground">Suggested Price</p>
+                <p className="text-xl font-bold text-primary">
                   $
                   {calculateSuggestedPrice(formData.costPerServing, formData.targetMargin).toFixed(
                     2
@@ -676,7 +676,7 @@ export function RecipeCostingManager() {
           <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             Recipe Costing Manager
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Calculate costs, set prices, and maximize profitability
           </p>
         </div>
@@ -704,7 +704,7 @@ export function RecipeCostingManager() {
               <Target className="w-6 h-6 text-orange-500" />
               <div>
                 <p className="font-medium">Global Target Margin</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Set your desired profit margin for all recipes
                 </p>
               </div>
@@ -759,7 +759,7 @@ export function RecipeCostingManager() {
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="text-lg">{recipe.name}</CardTitle>
-                        <p className="text-sm text-gray-500">{recipe.category}</p>
+                        <p className="text-sm text-muted-foreground">{recipe.category}</p>
                       </div>
                       {getStatusBadge(recipe.status)}
                     </div>
@@ -767,17 +767,17 @@ export function RecipeCostingManager() {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Cost per Serving</span>
+                        <span className="text-sm text-muted-foreground">Cost per Serving</span>
                         <span className="font-semibold">${recipe.costPerServing.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Selling Price</span>
+                        <span className="text-sm text-muted-foreground">Selling Price</span>
                         <span className="font-semibold text-orange-600">
                           ${recipe.sellingPrice.toFixed(2)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Margin</span>
+                        <span className="text-sm text-muted-foreground">Margin</span>
                         <span
                           className={cn(
                             'font-semibold',
@@ -789,10 +789,10 @@ export function RecipeCostingManager() {
                       </div>
                       <div className="pt-2 border-t">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-gray-500">
+                          <span className="text-muted-foreground">
                             {recipe.ingredients.length} ingredients
                           </span>
-                          <span className="text-gray-500">{recipe.servings} serving(s)</span>
+                          <span className="text-muted-foreground">{recipe.servings} serving(s)</span>
                         </div>
                       </div>
                     </div>
@@ -855,10 +855,10 @@ export function RecipeCostingManager() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-lg">{recipe.name}</h3>
-                          <p className="text-sm text-gray-500">{recipe.category}</p>
+                          <p className="text-sm text-muted-foreground">{recipe.category}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-600">Current Margin</p>
+                          <p className="text-sm text-muted-foreground">Current Margin</p>
                           <p className="text-2xl font-bold text-red-600">
                             {recipe.actualMargin.toFixed(1)}%
                           </p>
@@ -867,12 +867,12 @@ export function RecipeCostingManager() {
                       <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm text-gray-600">Current Price</p>
+                            <p className="text-sm text-muted-foreground">Current Price</p>
                             <p className="font-semibold">${recipe.sellingPrice.toFixed(2)}</p>
                           </div>
-                          <ArrowRight className="w-5 h-5 text-gray-400" />
+                          <ArrowRight className="w-5 h-5 text-muted-foreground" />
                           <div>
-                            <p className="text-sm text-gray-600">Suggested Price</p>
+                            <p className="text-sm text-muted-foreground">Suggested Price</p>
                             <p className="font-semibold text-green-600">
                               $
                               {calculateSuggestedPrice(recipe.costPerServing, targetMargin).toFixed(
@@ -962,7 +962,7 @@ export function RecipeCostingManager() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                       <div>
-                        <p className="text-sm text-gray-600">High Margin Items</p>
+                        <p className="text-sm text-muted-foreground">High Margin Items</p>
                         <p className="text-xl font-bold text-green-600">
                           {recipes.filter(r => r.actualMargin >= targetMargin).length}
                         </p>
@@ -971,7 +971,7 @@ export function RecipeCostingManager() {
                     </div>
                     <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                       <div>
-                        <p className="text-sm text-gray-600">Need Review</p>
+                        <p className="text-sm text-muted-foreground">Need Review</p>
                         <p className="text-xl font-bold text-yellow-600">
                           {
                             recipes.filter(
@@ -985,7 +985,7 @@ export function RecipeCostingManager() {
                     </div>
                     <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
                       <div>
-                        <p className="text-sm text-gray-600">Low Margin</p>
+                        <p className="text-sm text-muted-foreground">Low Margin</p>
                         <p className="text-xl font-bold text-red-600">
                           {recipes.filter(r => r.actualMargin < targetMargin - 10).length}
                         </p>

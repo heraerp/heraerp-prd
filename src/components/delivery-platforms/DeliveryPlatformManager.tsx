@@ -249,11 +249,11 @@ export function DeliveryPlatformManager() {
       case 'active':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'inactive':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
       case 'configuring':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -266,7 +266,7 @@ export function DeliveryPlatformManager() {
       case 'error':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -294,8 +294,8 @@ export function DeliveryPlatformManager() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-3">
-            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-lg text-gray-600">Loading delivery platforms...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg text-muted-foreground">Loading delivery platforms...</span>
           </div>
         </div>
       </div>
@@ -310,10 +310,10 @@ export function DeliveryPlatformManager() {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Unable to Load Delivery Platforms
           </h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <button
             onClick={loadPlatforms}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             Try Again
           </button>
@@ -330,25 +330,25 @@ export function DeliveryPlatformManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Delivery Platform Integration</h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Universal integration with delivery platforms powered by HERA's flexible architecture
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Clock className="w-4 h-4" />
             <span>Updated: {lastUpdated.toLocaleTimeString()}</span>
           </div>
           <button
             onClick={loadPlatforms}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-muted text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
           </button>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add Platform</span>
@@ -364,7 +364,7 @@ export function DeliveryPlatformManager() {
               <p className="text-sm font-medium text-blue-800">Total Platforms</p>
               <p className="text-2xl font-bold text-blue-900">{stats.total_platforms}</p>
             </div>
-            <Globe className="w-8 h-8 text-blue-600" />
+            <Globe className="w-8 h-8 text-primary" />
           </div>
         </Card>
 
@@ -415,23 +415,23 @@ export function DeliveryPlatformManager() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Connected Platforms</h3>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-muted-foreground">
             {platforms.length} of {supported_platforms.length} supported platforms
           </div>
         </div>
 
         {platforms.length === 0 ? (
           <div className="text-center py-12">
-            <Truck className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <Truck className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               No Delivery Platforms Connected
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Connect with delivery platforms like Deliveroo, Uber Eats, Swiggy to expand your reach
             </p>
             <button
               onClick={() => setShowAddForm(true)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-3 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Plus className="w-5 h-5 inline mr-2" />
               Connect Your First Platform
@@ -449,12 +449,12 @@ export function DeliveryPlatformManager() {
                         <span>{platform.name}</span>
                         <Badge className={getStatusColor(platform.status)}>{platform.status}</Badge>
                       </h4>
-                      <p className="text-sm text-gray-600 capitalize">{platform.platform_type}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{platform.platform_type}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => startEdit(platform)}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted rounded-lg transition-colors"
                   >
                     <Settings className="w-4 h-4" />
                   </button>
@@ -463,12 +463,12 @@ export function DeliveryPlatformManager() {
                 {/* Platform Stats */}
                 {platform.stats && (
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <p className="text-xs text-gray-600">Orders Today</p>
+                    <div className="bg-muted p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Orders Today</p>
                       <p className="font-semibold text-gray-900">{platform.stats.total_orders}</p>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <p className="text-xs text-gray-600">Revenue</p>
+                    <div className="bg-muted p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Revenue</p>
                       <p className="font-semibold text-gray-900">
                         {formatCurrency(platform.stats.total_revenue)}
                       </p>
@@ -479,14 +479,14 @@ export function DeliveryPlatformManager() {
                 {/* Configuration Status */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Sync Status</span>
+                    <span className="text-sm text-muted-foreground">Sync Status</span>
                     <Badge className={getSyncStatusColor(platform.sync_status)}>
                       {platform.sync_status.replace('_', ' ')}
                     </Badge>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Webhook</span>
+                    <span className="text-sm text-muted-foreground">Webhook</span>
                     <div className="flex items-center space-x-2">
                       {platform.webhook_verified ? (
                         <CheckCircle className="w-4 h-4 text-green-500" />
@@ -500,7 +500,7 @@ export function DeliveryPlatformManager() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Commission</span>
+                    <span className="text-sm text-muted-foreground">Commission</span>
                     <span className="text-sm font-medium text-gray-900">
                       {formatPercent(platform.commission_rate)}
                     </span>
@@ -508,7 +508,7 @@ export function DeliveryPlatformManager() {
 
                   {platform.last_sync_at && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Last Sync</span>
+                      <span className="text-sm text-muted-foreground">Last Sync</span>
                       <span className="text-sm text-gray-900">
                         {new Date(platform.last_sync_at).toLocaleString()}
                       </span>
@@ -517,21 +517,21 @@ export function DeliveryPlatformManager() {
                 </div>
 
                 {/* Webhook URL */}
-                <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">Webhook URL</span>
+                    <span className="text-xs text-muted-foreground">Webhook URL</span>
                     <button
                       onClick={() =>
                         copyToClipboard(
                           `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/delivery-platforms/${platform.id}/webhook`
                         )
                       }
-                      className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                      className="p-1 text-muted-foreground hover:text-muted-foreground rounded"
                     >
                       <Copy className="w-3 h-3" />
                     </button>
                   </div>
-                  <p className="text-xs font-mono text-gray-700 bg-gray-50 p-2 rounded mt-1 break-all">
+                  <p className="text-xs font-mono text-gray-700 bg-muted p-2 rounded mt-1 break-all">
                     {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}
                     /api/v1/delivery-platforms/{platform.id}/webhook
                   </p>
@@ -544,9 +544,9 @@ export function DeliveryPlatformManager() {
 
       {/* Add/Pencil Platform Modal */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white text-gray-900 rounded-lg shadow-xl border border-gray-200">
-            <div className="p-6 bg-white">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-gray-900 rounded-lg shadow-xl border border-border">
+            <div className="p-6 bg-background">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {editingPlatform ? 'Pencil Platform' : 'Add New Delivery Platform'}
@@ -557,7 +557,7 @@ export function DeliveryPlatformManager() {
                     setEditingPlatform(null)
                     resetForm()
                   }}
-                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+                  className="p-2 text-muted-foreground hover:text-muted-foreground rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -565,7 +565,7 @@ export function DeliveryPlatformManager() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Basic Information */}
-                <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                <div className="space-y-4 bg-muted p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">Basic Information</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -580,7 +580,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.name}
                         onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         placeholder="Mario's Deliveroo"
                         required
                       />
@@ -597,7 +597,7 @@ export function DeliveryPlatformManager() {
                         id="platform_type"
                         value={formData.platform_type}
                         onChange={e => setFormData({ ...formData, platform_type: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         required
                       >
                         {supported_platforms.map(platform => (
@@ -611,7 +611,7 @@ export function DeliveryPlatformManager() {
                 </div>
 
                 {/* API Configuration */}
-                <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                <div className="space-y-4 bg-muted p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">API Configuration</h4>
 
                   <div>
@@ -626,7 +626,7 @@ export function DeliveryPlatformManager() {
                       type="url"
                       value={formData.api_endpoint}
                       onChange={e => setFormData({ ...formData, api_endpoint: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       placeholder="https://api.deliveroo.com/v1/"
                       required
                     />
@@ -645,7 +645,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.api_key}
                         onChange={e => setFormData({ ...formData, api_key: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         placeholder="Your API key"
                       />
                     </div>
@@ -662,7 +662,7 @@ export function DeliveryPlatformManager() {
                         type="password"
                         value={formData.secret_key}
                         onChange={e => setFormData({ ...formData, secret_key: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         placeholder="Your secret key"
                       />
                     </div>
@@ -681,7 +681,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.restaurant_id}
                         onChange={e => setFormData({ ...formData, restaurant_id: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         placeholder="Platform restaurant ID"
                       />
                     </div>
@@ -698,7 +698,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.store_id}
                         onChange={e => setFormData({ ...formData, store_id: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                         placeholder="Platform store ID"
                       />
                     </div>
@@ -706,7 +706,7 @@ export function DeliveryPlatformManager() {
                 </div>
 
                 {/* Business Configuration */}
-                <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                <div className="space-y-4 bg-muted p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">Business Configuration</h4>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -718,7 +718,7 @@ export function DeliveryPlatformManager() {
                         Commission Rate (%)
                       </label>
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <input
                           id="commission_rate"
                           type="number"
@@ -732,7 +732,7 @@ export function DeliveryPlatformManager() {
                               commission_rate: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                           placeholder="0.15"
                         />
                       </div>
@@ -746,7 +746,7 @@ export function DeliveryPlatformManager() {
                         Delivery Fee ($)
                       </label>
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <input
                           id="delivery_fee"
                           type="number"
@@ -759,7 +759,7 @@ export function DeliveryPlatformManager() {
                               delivery_fee: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                           placeholder="2.99"
                         />
                       </div>
@@ -773,7 +773,7 @@ export function DeliveryPlatformManager() {
                         Minimum Order Value ($)
                       </label>
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <input
                           id="minimum_order"
                           type="number"
@@ -786,7 +786,7 @@ export function DeliveryPlatformManager() {
                               minimum_order_value: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                           placeholder="15.00"
                         />
                       </div>
@@ -800,7 +800,7 @@ export function DeliveryPlatformManager() {
                         Max Delivery Distance (km)
                       </label>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <input
                           id="max_distance"
                           type="number"
@@ -813,7 +813,7 @@ export function DeliveryPlatformManager() {
                               max_delivery_distance: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                           placeholder="10.0"
                         />
                       </div>
@@ -822,7 +822,7 @@ export function DeliveryPlatformManager() {
                 </div>
 
                 {/* Operational Settings */}
-                <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                <div className="space-y-4 bg-muted p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">Operational Settings</h4>
 
                   <div className="space-y-3">
@@ -833,7 +833,7 @@ export function DeliveryPlatformManager() {
                         onChange={e =>
                           setFormData({ ...formData, auto_accept_orders: e.target.checked })
                         }
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         Auto-accept incoming orders
@@ -845,7 +845,7 @@ export function DeliveryPlatformManager() {
                         type="checkbox"
                         checked={formData.sync_menu}
                         onChange={e => setFormData({ ...formData, sync_menu: e.target.checked })}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         Sync menu items with platform
@@ -859,7 +859,7 @@ export function DeliveryPlatformManager() {
                         onChange={e =>
                           setFormData({ ...formData, sync_inventory: e.target.checked })
                         }
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         Sync inventory levels
@@ -869,7 +869,7 @@ export function DeliveryPlatformManager() {
                 </div>
 
                 {/* Form Actions */}
-                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
                   <button
                     type="button"
                     onClick={() => {
@@ -877,13 +877,13 @@ export function DeliveryPlatformManager() {
                       setEditingPlatform(null)
                       resetForm()
                     }}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border border-gray-300"
+                    className="px-4 py-2 text-gray-700 bg-muted rounded-lg hover:bg-gray-200 transition-colors border border-border"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                    className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                   >
                     <span>{editingPlatform ? 'Update Platform' : 'Add Platform'}</span>
                   </button>
@@ -905,24 +905,24 @@ export function DeliveryPlatformManager() {
             without custom development:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Universal Entities</strong>
               <br />
               Each platform stored as flexible entity with unlimited custom properties
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Webhook Architecture</strong>
               <br />
               Universal webhook handler transforms any platform order format to HERA transactions
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Steve Jobs Philosophy</strong>
               <br />
               "Innovation distinguishes between a leader and a follower" - leading integration
               design
             </div>
           </div>
-          <p className="text-xs text-blue-600 mt-4">
+          <p className="text-xs text-primary mt-4">
             Same integration pattern works for e-commerce platforms, payment gateways, and
             third-party services
           </p>

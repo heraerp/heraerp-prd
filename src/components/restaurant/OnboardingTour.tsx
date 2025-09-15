@@ -68,11 +68,11 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
-              <Utensils className="h-8 w-8 text-white" />
+              <Utensils className="h-8 w-8 text-foreground" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900">Welcome to the Future of Dining</h3>
-              <p className="text-gray-600 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Experience our revolutionary platform that brings together customers, kitchen staff,
                 and management in perfect harmony.
               </p>
@@ -111,7 +111,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-900">Grilled Salmon</h4>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     Fresh Atlantic salmon with herb butter
                   </p>
                   <div className="flex items-center gap-2 text-xs">
@@ -130,7 +130,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                 </div>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p className="mb-2">
                 <strong>💡 Pro Tips:</strong>
               </p>
@@ -176,7 +176,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               </div>
               <Button className="w-full mt-3 bg-green-600">Proceed to Checkout</Button>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p className="mb-2">
                 <strong>🛡️ Secure Checkout Features:</strong>
               </p>
@@ -199,7 +199,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         id: 'order-tracking',
         title: 'Track Your Order Live',
         description: 'Watch your order progress in real-time',
-        icon: <CheckCircle className="h-6 w-6 text-blue-600" />,
+        icon: <CheckCircle className="h-6 w-6 text-primary" />,
         content: (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-lg border-blue-200 border">
@@ -207,34 +207,34 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-4 w-4 text-white" />
+                    <CheckCircle className="h-4 w-4 text-foreground" />
                   </div>
                   <div>
                     <div className="font-medium">Order Confirmed</div>
-                    <div className="text-xs text-gray-500">2:34 PM</div>
+                    <div className="text-xs text-muted-foreground">2:34 PM</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                    <ChefHat className="h-4 w-4 text-white" />
+                    <ChefHat className="h-4 w-4 text-foreground" />
                   </div>
                   <div>
                     <div className="font-medium">Being Prepared</div>
-                    <div className="text-xs text-gray-500">Est. ready: 2:52 PM</div>
+                    <div className="text-xs text-muted-foreground">Est. ready: 2:52 PM</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-2 h-2 bg-background rounded-full"></div>
                   </div>
                   <div>
-                    <div className="font-medium text-gray-500">Ready for Pickup</div>
-                    <div className="text-xs text-gray-500">Estimated: 2:55 PM</div>
+                    <div className="font-medium text-muted-foreground">Ready for Pickup</div>
+                    <div className="text-xs text-muted-foreground">Estimated: 2:55 PM</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p className="mb-2">
                 <strong>🔔 Notifications:</strong>
               </p>
@@ -258,22 +258,22 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
             <div className="bg-gradient-to-br from-yellow-50 to-amber-50 p-4 rounded-lg border-yellow-200 border">
               <div className="text-center mb-4">
                 <div className="text-3xl font-bold text-yellow-600">2,840</div>
-                <div className="text-sm text-gray-600">Available Points</div>
+                <div className="text-sm text-muted-foreground">Available Points</div>
                 <Progress value={75} className="mt-2" />
-                <div className="text-xs text-gray-500 mt-1">725 points to Gold tier</div>
+                <div className="text-xs text-muted-foreground mt-1">725 points to Gold tier</div>
               </div>
               <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="bg-white p-2 rounded">
+                <div className="bg-background p-2 rounded">
                   <div className="font-semibold text-yellow-600">Silver</div>
                   <div className="text-xs">Current Tier</div>
                 </div>
-                <div className="bg-white p-2 rounded">
+                <div className="bg-background p-2 rounded">
                   <div className="font-semibold text-yellow-600">5%</div>
                   <div className="text-xs">Cashback Rate</div>
                 </div>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p className="mb-2">
                 <strong>🎁 Member Benefits:</strong>
               </p>
@@ -301,11 +301,11 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <h4 className="font-semibold text-gray-900 mb-3">Active Orders</h4>
               <div className="space-y-2">
                 {['ORD-001', 'ORD-002'].map(order => (
-                  <div key={order} className="bg-white p-3 rounded border-l-4 border-l-orange-500">
+                  <div key={order} className="bg-background p-3 rounded border-l-4 border-l-orange-500">
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="font-medium">{order}</div>
-                        <div className="text-sm text-gray-600">Table 7 • 3 items</div>
+                        <div className="text-sm text-muted-foreground">Table 7 • 3 items</div>
                       </div>
                       <Badge className="bg-orange-100 text-orange-700">Preparing</Badge>
                     </div>
@@ -331,7 +331,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                     <span className="font-medium">Tomatoes</span>
                     <Badge variant="destructive">Low Stock</Badge>
                   </div>
-                  <div className="text-sm text-gray-600">3 lbs remaining</div>
+                  <div className="text-sm text-muted-foreground">3 lbs remaining</div>
                 </div>
               </div>
             </div>
@@ -345,19 +345,19 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         id: 'analytics-dashboard',
         title: 'Real-time Analytics',
         description: 'Monitor performance with comprehensive insights',
-        icon: <TrendingUp className="h-6 w-6 text-blue-600" />,
+        icon: <TrendingUp className="h-6 w-6 text-primary" />,
         content: (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-lg border-blue-200 border">
               <h4 className="font-semibold text-gray-900 mb-3">Today's Performance</h4>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white p-3 rounded text-center">
-                  <div className="text-xl font-bold text-blue-600">$2,850</div>
-                  <div className="text-sm text-gray-600">Revenue</div>
+                <div className="bg-background p-3 rounded text-center">
+                  <div className="text-xl font-bold text-primary">$2,850</div>
+                  <div className="text-sm text-muted-foreground">Revenue</div>
                 </div>
-                <div className="bg-white p-3 rounded text-center">
-                  <div className="text-xl font-bold text-blue-600">47</div>
-                  <div className="text-sm text-gray-600">Orders</div>
+                <div className="bg-background p-3 rounded text-center">
+                  <div className="text-xl font-bold text-primary">47</div>
+                  <div className="text-sm text-muted-foreground">Orders</div>
                 </div>
               </div>
             </div>
@@ -374,13 +374,13 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
             <div className="bg-green-50 p-4 rounded-lg border-green-200 border">
               <h4 className="font-semibold text-gray-900 mb-3">Staff on Duty</h4>
               <div className="space-y-2">
-                <div className="flex items-center gap-3 bg-white p-2 rounded">
+                <div className="flex items-center gap-3 bg-background p-2 rounded">
                   <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold">
                     EW
                   </div>
                   <div className="flex-1">
                     <div className="font-medium">Emma Wilson</div>
-                    <div className="text-sm text-gray-600">Head Chef</div>
+                    <div className="text-sm text-muted-foreground">Head Chef</div>
                   </div>
                   <Badge variant="default">On Duty</Badge>
                 </div>
@@ -467,7 +467,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               variant="ghost"
               size="sm"
               onClick={skipTour}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -475,7 +475,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
 
           <div className="space-y-2">
             <Progress value={progress} className="h-2" />
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>
                 Step {currentStep + 1} of {tourSteps.length}
               </span>
@@ -490,7 +490,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
           {currentStepData.tips && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
-                <Lightbulb className="h-4 w-4 text-blue-600" />
+                <Lightbulb className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-blue-900">Pro Tips</span>
               </div>
               <ul className="text-sm text-blue-800 space-y-1">

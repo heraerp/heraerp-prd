@@ -130,9 +130,9 @@ export default function AutoJournalPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center animate-pulse">
-            <Bot className="w-8 h-8 text-white" />
+            <Bot className="w-8 h-8 text-foreground" />
           </div>
-          <p className="text-gray-600">Loading Auto-Journal Dashboard...</p>
+          <p className="text-muted-foreground">Loading Auto-Journal Dashboard...</p>
         </div>
       </div>
     )
@@ -141,16 +141,16 @@ export default function AutoJournalPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <header className="border-b bg-white/90 backdrop-blur-sm">
+      <header className="border-b bg-background/90 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
-                <Bot className="h-7 w-7 text-white" />
+                <Bot className="h-7 w-7 text-foreground" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">HERA Auto-Journal Engine</h1>
-                <p className="text-sm text-slate-600">
+                <h1 className="text-3xl font-bold text-foreground">HERA Auto-Journal Engine</h1>
+                <p className="text-sm text-muted-foreground">
                   Intelligent journal entry automation with AI integration
                 </p>
               </div>
@@ -158,7 +158,7 @@ export default function AutoJournalPage() {
 
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
+                <Calendar className="w-4 h-4 text-muted-foreground" />
                 <select
                   value={selectedPeriod}
                   onChange={e => setSelectedPeriod(Number(e.target.value) as 7 | 30 | 90)}
@@ -203,7 +203,7 @@ export default function AutoJournalPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600">Automation Rate</p>
+                  <p className="text-sm font-medium text-primary">Automation Rate</p>
                   <p className="text-3xl font-bold text-blue-900">
                     {stats?.automation_rate || '85.7%'}
                   </p>
@@ -212,7 +212,7 @@ export default function AutoJournalPage() {
                     <span className="text-sm text-green-600">+12.3% this period</span>
                   </div>
                 </div>
-                <Bot className="w-8 h-8 text-blue-600" />
+                <Bot className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -227,7 +227,7 @@ export default function AutoJournalPage() {
                   </p>
                   <div className="flex items-center mt-2">
                     <FileText className="w-4 h-4 text-blue-500 mr-1" />
-                    <span className="text-sm text-blue-600">
+                    <span className="text-sm text-primary">
                       {stats?.immediate_journals || 89} immediate
                     </span>
                   </div>
@@ -287,10 +287,10 @@ export default function AutoJournalPage() {
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Processing Modes Breakdown */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                    <BarChart3 className="w-5 h-5 text-primary" />
                     Processing Modes
                   </CardTitle>
                   <CardDescription>
@@ -308,7 +308,7 @@ export default function AutoJournalPage() {
                         <div className="font-semibold">
                           {stats?.processing_modes.immediate || 89}
                         </div>
-                        <div className="text-xs text-gray-500">Large transactions</div>
+                        <div className="text-xs text-muted-foreground">Large transactions</div>
                       </div>
                     </div>
                     <Progress value={65} className="h-2" />
@@ -322,7 +322,7 @@ export default function AutoJournalPage() {
                         <div className="font-semibold">
                           {stats?.processing_modes.batched || 156}
                         </div>
-                        <div className="text-xs text-gray-500">Small transactions</div>
+                        <div className="text-xs text-muted-foreground">Small transactions</div>
                       </div>
                     </div>
                     <Progress value={85} className="h-2" />
@@ -334,7 +334,7 @@ export default function AutoJournalPage() {
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">{stats?.processing_modes.skipped || 12}</div>
-                        <div className="text-xs text-gray-500">No journal needed</div>
+                        <div className="text-xs text-muted-foreground">No journal needed</div>
                       </div>
                     </div>
                     <Progress value={10} className="h-2" />
@@ -343,7 +343,7 @@ export default function AutoJournalPage() {
               </Card>
 
               {/* AI Intelligence Insights */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Brain className="w-5 h-5 text-purple-600" />
@@ -368,7 +368,7 @@ export default function AutoJournalPage() {
 
                     <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <Target className="w-4 h-4 text-blue-600" />
+                        <Target className="w-4 h-4 text-primary" />
                         <span className="font-medium text-blue-900">Accuracy Improvement</span>
                       </div>
                       <p className="text-sm text-blue-700">
@@ -392,7 +392,7 @@ export default function AutoJournalPage() {
             </div>
 
             {/* System Architecture Overview */}
-            <Card className="bg-white/80 backdrop-blur-sm">
+            <Card className="bg-background/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-indigo-600" />
@@ -405,7 +405,7 @@ export default function AutoJournalPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-                    <Building className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                    <Building className="w-8 h-8 mx-auto mb-2 text-primary" />
                     <h4 className="font-semibold text-blue-900 mb-1">Zero New Tables</h4>
                     <p className="text-sm text-blue-700">
                       Uses existing universal tables - no schema changes required
@@ -434,7 +434,7 @@ export default function AutoJournalPage() {
           <TabsContent value="processing" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Recent Processing Activity */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="w-5 h-5 text-green-600" />
@@ -485,7 +485,7 @@ export default function AutoJournalPage() {
                     ].map((activity, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div className="flex items-center gap-3">
                           <div
@@ -493,7 +493,7 @@ export default function AutoJournalPage() {
                           ></div>
                           <div>
                             <div className="font-medium text-sm">{activity.type}</div>
-                            <div className="text-xs text-gray-500">{activity.time}</div>
+                            <div className="text-xs text-muted-foreground">{activity.time}</div>
                           </div>
                         </div>
                         <div className="text-right">
@@ -509,10 +509,10 @@ export default function AutoJournalPage() {
               </Card>
 
               {/* Processing Rules & Settings */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-gray-600" />
+                    <Settings className="w-5 h-5 text-muted-foreground" />
                     Processing Rules
                   </CardTitle>
                   <CardDescription>
@@ -564,7 +564,7 @@ export default function AutoJournalPage() {
 
           {/* Batch Queue Tab */}
           <TabsContent value="batches" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm">
+            <Card className="bg-background/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <RefreshCw className="w-5 h-5 text-orange-600" />
@@ -585,7 +585,7 @@ export default function AutoJournalPage() {
                           {batch.ready_for_batch ? 'Ready' : 'Pending'}
                         </Badge>
                       </div>
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-muted-foreground">
                         <div>Count: {batch.count} transactions</div>
                         <div>Total: {formatCurrency(batch.total_amount)}</div>
                         <div>Average: {formatCurrency(batch.avg_amount)}</div>
@@ -606,7 +606,7 @@ export default function AutoJournalPage() {
                   <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">All Caught Up!</h3>
-                    <p className="text-gray-600">No transactions pending batch processing</p>
+                    <p className="text-muted-foreground">No transactions pending batch processing</p>
                   </div>
                 )}
               </CardContent>
@@ -617,7 +617,7 @@ export default function AutoJournalPage() {
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Efficiency Metrics */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-green-600" />
@@ -635,7 +635,7 @@ export default function AutoJournalPage() {
                         </span>
                       </div>
                       <Progress value={85} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">85% automation rate achieved</p>
+                      <p className="text-xs text-muted-foreground mt-1">85% automation rate achieved</p>
                     </div>
 
                     <div>
@@ -646,7 +646,7 @@ export default function AutoJournalPage() {
                         </span>
                       </div>
                       <Progress value={92} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">92% efficiency improvement</p>
+                      <p className="text-xs text-muted-foreground mt-1">92% efficiency improvement</p>
                     </div>
 
                     <div>
@@ -655,14 +655,14 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">$2,880/month</span>
                       </div>
                       <Progress value={88} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">$34,560 annual savings</p>
+                      <p className="text-xs text-muted-foreground mt-1">$34,560 annual savings</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* AI Performance */}
-              <Card className="bg-white/80 backdrop-blur-sm">
+              <Card className="bg-background/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Brain className="w-5 h-5 text-purple-600" />
@@ -680,7 +680,7 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">94.2%</span>
                       </div>
                       <Progress value={94} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">Improved +8.3% this period</p>
+                      <p className="text-xs text-muted-foreground mt-1">Improved +8.3% this period</p>
                     </div>
 
                     <div>
@@ -689,7 +689,7 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">96.1%</span>
                       </div>
                       <Progress value={96} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">High reliability threshold</p>
+                      <p className="text-xs text-muted-foreground mt-1">High reliability threshold</p>
                     </div>
 
                     <div>
@@ -698,7 +698,7 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">3.8%</span>
                       </div>
                       <Progress value={96} className="h-2" />
-                      <p className="text-xs text-gray-500 mt-1">Low intervention needed</p>
+                      <p className="text-xs text-muted-foreground mt-1">Low intervention needed</p>
                     </div>
                   </div>
                 </CardContent>
@@ -706,7 +706,7 @@ export default function AutoJournalPage() {
             </div>
 
             {/* Competitive Comparison */}
-            <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground">
               <CardContent className="p-8">
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold mb-2">HERA vs Traditional ERP</h3>
@@ -740,10 +740,10 @@ export default function AutoJournalPage() {
 
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm">
+            <Card className="bg-background/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5 text-gray-600" />
+                  <Settings className="w-5 h-5 text-muted-foreground" />
                   Auto-Journal Configuration
                 </CardTitle>
                 <CardDescription>Configure processing rules and thresholds</CardDescription>
@@ -757,14 +757,14 @@ export default function AutoJournalPage() {
                         <div>
                           <label className="text-sm font-medium">Immediate Processing Amount</label>
                           <div className="flex items-center gap-2 mt-1">
-                            <DollarSign className="w-4 h-4 text-gray-400" />
+                            <DollarSign className="w-4 h-4 text-muted-foreground" />
                             <input
                               type="number"
                               defaultValue={1000}
                               className="border rounded px-3 py-1 text-sm"
                             />
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Transactions above this amount processed immediately
                           </p>
                         </div>
@@ -772,14 +772,14 @@ export default function AutoJournalPage() {
                         <div>
                           <label className="text-sm font-medium">Batch Minimum Amount</label>
                           <div className="flex items-center gap-2 mt-1">
-                            <DollarSign className="w-4 h-4 text-gray-400" />
+                            <DollarSign className="w-4 h-4 text-muted-foreground" />
                             <input
                               type="number"
                               defaultValue={300}
                               className="border rounded px-3 py-1 text-sm"
                             />
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Minimum total for batch processing
                           </p>
                         </div>
@@ -791,7 +791,7 @@ export default function AutoJournalPage() {
                             defaultValue={3}
                             className="border rounded px-3 py-1 text-sm w-20"
                           />
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Minimum transactions to create batch
                           </p>
                         </div>
@@ -813,7 +813,7 @@ export default function AutoJournalPage() {
                             />
                             <span className="text-sm font-medium w-12">95%</span>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Minimum AI confidence for auto-processing
                           </p>
                         </div>
@@ -821,7 +821,7 @@ export default function AutoJournalPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <label className="text-sm font-medium">Enable AI Analysis</label>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               Use AI for complex transaction patterns
                             </p>
                           </div>
@@ -838,10 +838,10 @@ export default function AutoJournalPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">Schedule Settings</h4>
-                        <p className="text-sm text-gray-600">Automated batch processing schedule</p>
+                        <p className="text-sm text-muted-foreground">Automated batch processing schedule</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
+                        <Clock className="w-4 h-4 text-muted-foreground" />
                         <select className="border rounded px-3 py-1 text-sm">
                           <option>End of Day (6:00 PM)</option>
                           <option>Every 4 hours</option>

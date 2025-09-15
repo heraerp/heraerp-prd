@@ -151,7 +151,7 @@ export default function OrganizationDashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 Total Users
@@ -159,17 +159,17 @@ export default function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
                   {stats.totalUsers}
                 </p>
                 <div className="p-3 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-xl shadow-lg">
-                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <Users className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 Active Apps
@@ -177,17 +177,17 @@ export default function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
                   {stats.activeApps}
                 </p>
                 <div className="p-3 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-xl shadow-lg">
-                  <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <Package className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 Monthly Spend
@@ -205,7 +205,7 @@ export default function OrganizationDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 Data Usage
@@ -227,14 +227,14 @@ export default function OrganizationDashboard() {
         {/* Installed Apps */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
               Installed Applications
             </h2>
             <Button
               variant="outline"
               size="lg"
               asChild
-              className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30"
+              className="bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/60 dark:border-border/60 hover:bg-primary/10/70 dark:hover:bg-blue-900/30"
             >
               <Link href={`/~${subdomain}/apps`}>
                 View All Apps
@@ -244,12 +244,12 @@ export default function OrganizationDashboard() {
           </div>
 
           {installedApps.length === 0 ? (
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border-2 border-dashed border-gray-300/50 dark:border-gray-600/50">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border-2 border-dashed border-border/50 dark:border-border/50">
               <CardContent className="py-16 text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <Package className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                  <Package className="w-10 h-10 text-primary dark:text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-3">
                   No apps installed yet
                 </h3>
                 <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-md mx-auto">
@@ -258,7 +258,7 @@ export default function OrganizationDashboard() {
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-foreground shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <Link href={`/~${subdomain}/apps`}>
                     <Plus className="w-5 h-5 mr-2" />
@@ -275,25 +275,25 @@ export default function OrganizationDashboard() {
                 return (
                   <Card
                     key={app.id}
-                    className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer"
+                    className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer"
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
-                          <Icon className="w-8 h-8 text-white" />
+                          <Icon className="w-8 h-8 text-foreground" />
                         </div>
                         <Badge
                           variant={app.status === 'active' ? 'default' : 'secondary'}
                           className={
                             app.status === 'active'
                               ? 'bg-green-100/80 dark:bg-green-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 border-green-200/50 dark:border-green-700/50'
-                              : 'bg-gray-100/80 dark:bg-gray-800/50 backdrop-blur-sm'
+                              : 'bg-muted/80 dark:bg-muted/50 backdrop-blur-sm'
                           }
                         >
                           {app.status}
                         </Badge>
                       </div>
-                      <CardTitle className="mt-4 text-xl text-gray-900 dark:text-white">
+                      <CardTitle className="mt-4 text-xl text-gray-900 dark:text-foreground">
                         {app.name || app.id.toUpperCase()}
                       </CardTitle>
                       <CardDescription className="text-gray-700 dark:text-gray-300 text-base">
@@ -303,11 +303,11 @@ export default function OrganizationDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                        <div className="text-sm text-muted-foreground dark:text-muted-foreground font-medium">
                           Installed {new Date(app.installed_at || Date.now()).toLocaleDateString()}
                         </div>
                         <Button
-                          className="w-full h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                          className="w-full h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-foreground font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                           asChild
                         >
                           <Link href={`/~${subdomain}/${app.id}`}>
@@ -326,19 +326,19 @@ export default function OrganizationDashboard() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card
-              className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
               onClick={() => router.push(`/~${subdomain}/users`)}
             >
               <CardHeader className="pb-6 pt-8">
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    <Users className="w-8 h-8 text-primary dark:text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">
+                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
                       Invite Team Members
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -350,7 +350,7 @@ export default function OrganizationDashboard() {
             </Card>
 
             <Card
-              className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
               onClick={() => router.push(`/~${subdomain}/settings`)}
             >
               <CardHeader className="pb-6 pt-8">
@@ -359,7 +359,7 @@ export default function OrganizationDashboard() {
                     <Settings className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">
+                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
                       Organization Settings
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -371,7 +371,7 @@ export default function OrganizationDashboard() {
             </Card>
 
             <Card
-              className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
               onClick={() => router.push(`/~${subdomain}/billing`)}
             >
               <CardHeader className="pb-6 pt-8">
@@ -380,7 +380,7 @@ export default function OrganizationDashboard() {
                     <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-white mb-2">
+                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
                       Billing & Subscription
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">

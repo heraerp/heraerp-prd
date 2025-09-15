@@ -223,11 +223,11 @@ export function ActivityHistory({
       case 'high':
         return 'text-orange-600 bg-orange-50 border-orange-200'
       case 'medium':
-        return 'text-blue-600 bg-blue-50 border-blue-200'
+        return 'text-primary bg-blue-50 border-blue-200'
       case 'low':
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -257,10 +257,10 @@ export function ActivityHistory({
   // Render activity change details
   const renderChanges = (changes: Array<{ field: string; old_value: any; new_value: any }>) => {
     return (
-      <div className="mt-2 text-xs text-gray-600">
+      <div className="mt-2 text-xs text-muted-foreground">
         <details className="cursor-pointer">
           <summary className="hover:text-gray-800">View changes ({changes.length})</summary>
-          <div className="mt-2 space-y-1 pl-4 border-l-2 border-gray-200">
+          <div className="mt-2 space-y-1 pl-4 border-l-2 border-border">
             {changes.map((change, index) => (
               <div key={index} className="flex justify-between">
                 <span className="font-medium">{change.field}:</span>
@@ -280,12 +280,12 @@ export function ActivityHistory({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-blue-600" />
+              <Activity className="h-5 w-5 text-primary" />
               Activity History & Audit Trail
               {entityFilter && (
                 <Badge variant="outline" className="ml-2">
@@ -411,7 +411,7 @@ export function ActivityHistory({
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-muted-foreground">
                       {totalCount > 0 ? `${totalCount} activities found` : 'No activities found'}
                     </div>
                     <div className="flex gap-2">
@@ -440,14 +440,14 @@ export function ActivityHistory({
               <div className="space-y-2">
                 {isLoading && activities.length === 0 ? (
                   <div className="text-center py-8">
-                    <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
-                    <p className="text-gray-600">Loading activities...</p>
+                    <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Loading activities...</p>
                   </div>
                 ) : activities.length === 0 ? (
                   <Card className="p-8 text-center">
-                    <Activity className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                    <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No activities found</h3>
-                    <p className="text-gray-600">No activities match your current filters</p>
+                    <p className="text-muted-foreground">No activities match your current filters</p>
                   </Card>
                 ) : (
                   <>
@@ -481,7 +481,7 @@ export function ActivityHistory({
                                   </Badge>
                                 </div>
 
-                                <div className="mt-1 flex items-center space-x-4 text-xs text-gray-600">
+                                <div className="mt-1 flex items-center space-x-4 text-xs text-muted-foreground">
                                   <span className="flex items-center">
                                     <User className="h-3 w-3 mr-1" />
                                     {activity.user_name}
@@ -542,10 +542,10 @@ export function ActivityHistory({
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-gray-600">Total Activities</p>
+                          <p className="text-sm font-medium text-muted-foreground">Total Activities</p>
                           <p className="text-2xl font-bold">{summary.total_activities}</p>
                         </div>
-                        <Activity className="h-8 w-8 text-blue-600" />
+                        <Activity className="h-8 w-8 text-primary" />
                       </div>
                     </CardContent>
                   </Card>
@@ -611,7 +611,7 @@ export function ActivityHistory({
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="truncate">{activity.description}</p>
-                              <p className="text-xs text-gray-600">
+                              <p className="text-xs text-muted-foreground">
                                 {activity.user_name} • {formatTimestamp(activity.timestamp)}
                               </p>
                             </div>
@@ -632,13 +632,13 @@ export function ActivityHistory({
                             className="flex justify-between items-center text-sm"
                           >
                             <div className="flex items-center space-x-2">
-                              <span className="text-gray-500">#{index + 1}</span>
+                              <span className="text-muted-foreground">#{index + 1}</span>
                               <Badge variant="outline" className="text-xs">
                                 {entity.entity_type}
                               </Badge>
                               <span className="truncate">{entity.entity_name}</span>
                             </div>
-                            <span className="font-medium text-blue-600">
+                            <span className="font-medium text-primary">
                               {entity.activity_count}
                             </span>
                           </div>

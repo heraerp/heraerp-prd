@@ -1096,19 +1096,19 @@ export function HeraDnaUniversalResourceCalendar({
   return (
     <div
       className={cn(
-        'flex h-[800px] bg-white dark:bg-gray-900 rounded-lg overflow-hidden',
+        'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden',
         className
       )}
     >
       {/* Sidebar */}
       {showSidebar && (
-        <div className="w-80 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex flex-col calendar-sidebar">
+        <div className="w-80 border-r border-border dark:border-border bg-muted dark:bg-muted/50 flex flex-col calendar-sidebar">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-b border-border dark:border-border">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 {config.icon}
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   {config.resourceNamePlural} Calendar
                 </h3>
               </div>
@@ -1116,7 +1116,7 @@ export function HeraDnaUniversalResourceCalendar({
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowSidebar(false)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -1125,7 +1125,7 @@ export function HeraDnaUniversalResourceCalendar({
             {/* Branch Filter */}
             {organizations.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2">
                   Branch Filter
                 </h4>
                 <div className="space-y-2">
@@ -1135,7 +1135,7 @@ export function HeraDnaUniversalResourceCalendar({
                       'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
                       selectedBranches.includes('all')
                         ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                     )}
                     onClick={() => handleBranchToggle('all')}
                   >
@@ -1143,8 +1143,8 @@ export function HeraDnaUniversalResourceCalendar({
                       checked={selectedBranches.includes('all')}
                       className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                     />
-                    <Building2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <Building2 className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                       All Branches
                     </span>
                   </div>
@@ -1159,7 +1159,7 @@ export function HeraDnaUniversalResourceCalendar({
                           'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
                           selectedBranches.includes(org.id)
                             ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                            : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                            : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                         )}
                         onClick={() => handleBranchToggle(org.id)}
                       >
@@ -1168,8 +1168,8 @@ export function HeraDnaUniversalResourceCalendar({
                           disabled={selectedBranches.includes('all')}
                           className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                         />
-                        <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-900 dark:text-white">
+                        <MapPin className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
+                        <span className="text-sm text-gray-900 dark:text-foreground">
                           {org.organization_name.split('•')[1]?.trim() || org.organization_name}
                         </span>
                       </div>
@@ -1204,7 +1204,7 @@ export function HeraDnaUniversalResourceCalendar({
           {/* Resources List */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
                 {config.resourceNamePlural}
               </h4>
 
@@ -1214,7 +1214,7 @@ export function HeraDnaUniversalResourceCalendar({
                   'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item mb-2',
                   selectedResources.includes('all')
                     ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                 )}
                 onClick={() => handleResourceToggle('all')}
               >
@@ -1223,10 +1223,10 @@ export function HeraDnaUniversalResourceCalendar({
                   className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                     All {config.resourceNamePlural}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">View all team members</p>
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">View all team members</p>
                 </div>
               </div>
 
@@ -1239,7 +1239,7 @@ export function HeraDnaUniversalResourceCalendar({
                       'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item',
                       selectedResources.includes(resource.id)
                         ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                     )}
                     onClick={() => handleResourceToggle(resource.id)}
                   >
@@ -1250,7 +1250,7 @@ export function HeraDnaUniversalResourceCalendar({
                     />
                     <div className="relative">
                       <Avatar className={cn('h-10 w-10', resource.color)}>
-                        <AvatarFallback className="text-white font-semibold">
+                        <AvatarFallback className="text-foreground font-semibold">
                           {resource.avatar}
                         </AvatarFallback>
                       </Avatar>
@@ -1266,12 +1266,12 @@ export function HeraDnaUniversalResourceCalendar({
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                         {resource.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{resource.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{resource.title}</p>
                       {organizations.length > 0 && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-0.5">
                           {organizations
                             .find(org => org.id === resource.branchId)
                             ?.organization_name.split('•')[1]
@@ -1285,7 +1285,7 @@ export function HeraDnaUniversalResourceCalendar({
                         'text-xs',
                         resource.available
                           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                          : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                          : 'bg-muted text-muted-foreground dark:bg-muted-foreground/10 dark:text-gray-300'
                       )}
                     >
                       {resource.available ? 'Available' : 'Busy'}
@@ -1297,7 +1297,7 @@ export function HeraDnaUniversalResourceCalendar({
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+          <div className="p-4 border-t border-border dark:border-border space-y-3">
             <Button
               className="w-full"
               style={{ backgroundColor: config.colors.primary }}
@@ -1317,7 +1317,7 @@ export function HeraDnaUniversalResourceCalendar({
               variant={isSelectingDateRange ? 'default' : 'outline'}
               className={cn(
                 'w-full',
-                isSelectingDateRange && 'bg-orange-500 hover:bg-orange-600 text-white'
+                isSelectingDateRange && 'bg-orange-500 hover:bg-orange-600 text-foreground'
               )}
               onClick={() => {
                 if (isSelectingDateRange) {
@@ -1356,7 +1356,7 @@ export function HeraDnaUniversalResourceCalendar({
       {/* Main Calendar Area */}
       <div className="flex-1 flex flex-col">
         {/* Calendar Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="p-4 border-b border-border dark:border-border bg-background dark:bg-background">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {!showSidebar && (
@@ -1364,7 +1364,7 @@ export function HeraDnaUniversalResourceCalendar({
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowSidebar(true)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
                 >
                   <Grid3x3 className="w-5 h-5" />
                 </Button>
@@ -1374,7 +1374,7 @@ export function HeraDnaUniversalResourceCalendar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   onClick={() => {
                     const newDate = new Date(selectedDate)
                     if (selectedView === 'day') {
@@ -1404,7 +1404,7 @@ export function HeraDnaUniversalResourceCalendar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   onClick={() => {
                     const newDate = new Date(selectedDate)
                     if (selectedView === 'day') {
@@ -1427,7 +1427,7 @@ export function HeraDnaUniversalResourceCalendar({
               </div>
 
               <div className="flex flex-col">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
                   {selectedView === 'day'
                     ? selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long',
@@ -1442,7 +1442,7 @@ export function HeraDnaUniversalResourceCalendar({
                           year: 'numeric'
                         })}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {selectedView.charAt(0).toUpperCase() + selectedView.slice(1)} view •{' '}
                   {viewDates.length} day{viewDates.length > 1 ? 's' : ''}
                 </p>
@@ -1451,7 +1451,7 @@ export function HeraDnaUniversalResourceCalendar({
 
             <div className="flex items-center gap-3">
               <Tabs value={selectedView} onValueChange={v => setSelectedView(v as any)}>
-                <TabsList className="bg-gray-100 dark:bg-gray-800">
+                <TabsList className="bg-muted dark:bg-muted">
                   <TabsTrigger value="day" className="text-sm">
                     Day
                   </TabsTrigger>
@@ -1465,16 +1465,16 @@ export function HeraDnaUniversalResourceCalendar({
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Filter className="w-5 h-5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 dark:text-gray-300"
+                  className="text-muted-foreground dark:text-gray-300"
                   title="Keyboard Shortcuts: ← → Navigate, Home: Today, 1: Day, 2: Week, 3: Month"
                 >
                   <Settings className="w-5 h-5" />
@@ -1488,10 +1488,10 @@ export function HeraDnaUniversalResourceCalendar({
         <div className="flex-1 overflow-hidden">
           <div className="h-full flex">
             {/* Time Column */}
-            <div className="w-20 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
+            <div className="w-20 border-r border-border dark:border-border bg-muted dark:bg-muted/30">
               <div
                 className={cn(
-                  'border-b border-gray-200 dark:border-gray-700',
+                  'border-b border-border dark:border-border',
                   viewMode === 'resource' ? 'h-20' : 'h-14'
                 )}
               />
@@ -1527,7 +1527,7 @@ export function HeraDnaUniversalResourceCalendar({
                           <div
                             key={dayIdx}
                             className={cn(
-                              'border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-all duration-300',
+                              'border-r border-border dark:border-border last:border-r-0 transition-all duration-300',
                               selectedView === 'day'
                                 ? 'flex-1 min-w-[400px]'
                                 : 'flex-1 min-w-[140px]'
@@ -1536,7 +1536,7 @@ export function HeraDnaUniversalResourceCalendar({
                             {/* Day Header */}
                             <div
                               className={cn(
-                                'h-14 border-b border-gray-200 dark:border-gray-700 px-2 py-2 text-center day-header cursor-pointer transition-all',
+                                'h-14 border-b border-border dark:border-border px-2 py-2 text-center day-header cursor-pointer transition-all',
                                 isToday && 'today',
                                 isSelectingDateRange &&
                                   'hover:bg-orange-50 dark:hover:bg-orange-900/20',
@@ -1553,7 +1553,7 @@ export function HeraDnaUniversalResourceCalendar({
                                 className={cn(
                                   'text-xs font-bold uppercase tracking-wider',
                                   isToday
-                                    ? 'text-blue-600 dark:text-blue-400'
+                                    ? 'text-primary dark:text-blue-400'
                                     : isDateInRange(date)
                                       ? 'text-orange-700 dark:text-orange-300'
                                       : 'text-gray-700 dark:text-gray-300'
@@ -1565,10 +1565,10 @@ export function HeraDnaUniversalResourceCalendar({
                                 className={cn(
                                   'text-xl font-extrabold',
                                   isToday
-                                    ? 'text-blue-600 dark:text-blue-400'
+                                    ? 'text-primary dark:text-blue-400'
                                     : isDateInRange(date)
                                       ? 'text-orange-700 dark:text-orange-300'
-                                      : 'text-gray-900 dark:text-white'
+                                      : 'text-gray-900 dark:text-foreground'
                                 )}
                               >
                                 {dayNumber}
@@ -1597,7 +1597,7 @@ export function HeraDnaUniversalResourceCalendar({
                                     key={`${dayIdx}-${slotIdx}`}
                                     className={cn(
                                       'h-16 border-b border-gray-100 dark:border-gray-800 relative group time-slot',
-                                      'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer'
+                                      'hover:bg-muted dark:hover:bg-muted/50 cursor-pointer'
                                     )}
                                     onClick={() => {
                                       if (!slotAppointments.length) {
@@ -1633,16 +1633,16 @@ export function HeraDnaUniversalResourceCalendar({
                                         >
                                           <div className="flex items-start gap-2">
                                             <div
-                                              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                              className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
                                               style={{ backgroundColor: apt.color }}
                                             >
                                               {apt.icon}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                              <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+                                              <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
                                                 {apt.title}
                                               </p>
-                                              <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                                              <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
                                                 {apt.client}
                                               </p>
                                               <div className="flex items-center gap-2 mt-1">
@@ -1658,7 +1658,7 @@ export function HeraDnaUniversalResourceCalendar({
                                                   {apt.price}
                                                 </Badge>
                                                 {resourceInfo && (
-                                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                  <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                                                     {resourceInfo.name}
                                                   </span>
                                                 )}
@@ -1679,7 +1679,7 @@ export function HeraDnaUniversalResourceCalendar({
                                     {/* Add appointment hint */}
                                     {!slotAppointments.length && (
                                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Plus className="w-4 h-4 text-gray-400" />
+                                        <Plus className="w-4 h-4 text-muted-foreground" />
                                       </div>
                                     )}
                                   </div>
@@ -1693,25 +1693,25 @@ export function HeraDnaUniversalResourceCalendar({
                       displayedResources.map((resource, resourceIdx) => (
                         <div
                           key={resource.id}
-                          className="flex-1 min-w-[200px] border-r border-gray-200 dark:border-gray-700 last:border-r-0"
+                          className="flex-1 min-w-[200px] border-r border-border dark:border-border last:border-r-0"
                         >
                           {/* Resource Header */}
-                          <div className="h-20 border-b border-gray-200 dark:border-gray-700 px-2 py-2 bg-gray-50 dark:bg-gray-800/50">
+                          <div className="h-20 border-b border-border dark:border-border px-2 py-2 bg-muted dark:bg-muted/50">
                             <div className="flex items-center gap-2">
                               <Avatar className={cn('h-10 w-10', resource.color)}>
-                                <AvatarFallback className="text-white font-semibold">
+                                <AvatarFallback className="text-foreground font-semibold">
                                   {resource.avatar}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
                                   {resource.name}
                                 </p>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                   {resource.title}
                                 </p>
                                 {organizations.length > 0 && (
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                     {organizations
                                       .find(org => org.id === resource.branchId)
                                       ?.organization_name.split('•')[1]
@@ -1720,7 +1720,7 @@ export function HeraDnaUniversalResourceCalendar({
                                 )}
                               </div>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                               {resource.businessHours
                                 ? `${resource.businessHours.start}:00 - ${resource.businessHours.end}:00`
                                 : 'Standard hours'}
@@ -1751,9 +1751,9 @@ export function HeraDnaUniversalResourceCalendar({
                                   key={`${resource.id}-${slotIdx}`}
                                   className={cn(
                                     'h-16 border-b border-gray-100 dark:border-gray-800 relative group time-slot',
-                                    !isBusinessHour && 'bg-gray-100 dark:bg-gray-800/30',
+                                    !isBusinessHour && 'bg-muted dark:bg-muted/30',
                                     isBusinessHour &&
-                                      'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer',
+                                      'hover:bg-muted dark:hover:bg-muted/50 cursor-pointer',
                                     isDropTarget && 'bg-blue-50 dark:bg-blue-900/20'
                                   )}
                                   onClick={() => {
@@ -1789,7 +1789,7 @@ export function HeraDnaUniversalResourceCalendar({
                                 >
                                   {/* Non-business hour overlay */}
                                   {!isBusinessHour && (
-                                    <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800/30 z-10" />
+                                    <div className="absolute inset-0 bg-muted dark:bg-muted/30 z-10" />
                                   )}
 
                                   {/* Appointments */}
@@ -1828,7 +1828,7 @@ export function HeraDnaUniversalResourceCalendar({
                                   {/* Add appointment hint */}
                                   {!slotAppointments.length && isBusinessHour && (
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <Plus className="w-4 h-4 text-gray-400" />
+                                      <Plus className="w-4 h-4 text-muted-foreground" />
                                     </div>
                                   )}
                                 </div>
@@ -1876,20 +1876,20 @@ function AppointmentCard({
       <div className="space-y-2">
         <div className="flex items-start gap-2">
           <div
-            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+            className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
             style={{ backgroundColor: appointment.color }}
           >
             {appointment.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+            <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
               {appointment.title}
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+            <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
               {resource?.name || 'Employee'} • {appointment.reason || 'No reason provided'}
             </p>
             {appointment.description && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
+              <p className="text-xs text-muted-foreground dark:text-muted-foreground truncate mt-1">
                 {appointment.description}
               </p>
             )}
@@ -1943,16 +1943,16 @@ function AppointmentCard({
   return (
     <div className="flex items-start gap-2">
       <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+        className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
         style={{ backgroundColor: appointment.color }}
       >
         {appointment.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+        <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
           {appointment.title}
         </p>
-        <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{appointment.client}</p>
+        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">{appointment.client}</p>
         {!compact && (
           <div className="flex items-center gap-2 mt-1">
             <Badge
@@ -1967,7 +1967,7 @@ function AppointmentCard({
               {appointment.price}
             </Badge>
             {resource && (
-              <span className="text-xs text-gray-500 dark:text-gray-400">{resource.name}</span>
+              <span className="text-xs text-muted-foreground dark:text-muted-foreground">{resource.name}</span>
             )}
           </div>
         )}
@@ -2080,17 +2080,17 @@ function LeaveRequestModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-background/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-background dark:bg-muted rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-border dark:border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center">
-              <UserX className="w-5 h-5 text-white" />
+              <UserX className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Request Leave</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Request Leave</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 {startDate && endDate
                   ? daysSelected === 1
                     ? `For ${startDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`
@@ -2103,7 +2103,7 @@ function LeaveRequestModal({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="w-5 h-5" />
           </Button>
@@ -2113,7 +2113,7 @@ function LeaveRequestModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Leave Type Selection */}
           <div>
-            <label className="text-sm font-semibold text-gray-900 dark:text-white mb-3 block">
+            <label className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3 block">
               Leave Type
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -2124,7 +2124,7 @@ function LeaveRequestModal({
                     'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all',
                     selectedType === type.id
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'border-border dark:border-border hover:bg-muted dark:hover:bg-muted-foreground/10'
                   )}
                 >
                   <input
@@ -2133,15 +2133,15 @@ function LeaveRequestModal({
                     value={type.id}
                     checked={selectedType === type.id}
                     onChange={e => setSelectedType(e.target.value)}
-                    className="text-blue-600"
+                    className="text-primary"
                   />
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-foreground text-sm"
                     style={{ backgroundColor: type.color }}
                   >
                     {type.icon}
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                     {type.name}
                   </span>
                 </label>
@@ -2153,7 +2153,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="resource"
-              className="text-sm font-semibold text-gray-900 dark:text-white mb-2 block"
+              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
             >
               Employee
             </label>
@@ -2167,7 +2167,7 @@ function LeaveRequestModal({
                     <div className="flex items-center gap-2">
                       <div
                         className={cn(
-                          'w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold',
+                          'w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold',
                           resource.color
                         )}
                       >
@@ -2185,7 +2185,7 @@ function LeaveRequestModal({
 
           {/* Duration Selection */}
           <div>
-            <label className="text-sm font-semibold text-gray-900 dark:text-white mb-3 block">
+            <label className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3 block">
               Duration
             </label>
 
@@ -2239,7 +2239,7 @@ function LeaveRequestModal({
                     'flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all',
                     duration === option.value
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'border-border dark:border-border hover:bg-muted dark:hover:bg-muted-foreground/10'
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -2249,16 +2249,16 @@ function LeaveRequestModal({
                       value={option.value}
                       checked={duration === option.value}
                       onChange={e => setDuration(e.target.value)}
-                      className="text-blue-600"
+                      className="text-primary"
                     />
                     <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                         {option.label}
                       </span>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{option.hours}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{option.hours}</p>
                     </div>
                   </div>
-                  <Clock className="w-4 h-4 text-gray-400" />
+                  <Clock className="w-4 h-4 text-muted-foreground" />
                 </label>
               ))}
             </div>
@@ -2268,7 +2268,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="reason"
-              className="text-sm font-semibold text-gray-900 dark:text-white mb-2 block"
+              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
             >
               Reason
             </label>
@@ -2303,7 +2303,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="description"
-              className="text-sm font-semibold text-gray-900 dark:text-white mb-2 block"
+              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
             >
               Additional Notes (Optional)
             </label>
@@ -2312,25 +2312,25 @@ function LeaveRequestModal({
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Provide any additional details..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               rows={3}
             />
           </div>
 
           {/* Modal Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex gap-3 pt-4 border-t border-border dark:border-border">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-gray-300 dark:border-gray-600"
+              className="flex-1 border-border dark:border-border"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={!selectedType || !selectedResource || !reason}
-              className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white"
+              className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-foreground"
             >
               <UserX className="w-4 h-4 mr-2" />
               Submit Request

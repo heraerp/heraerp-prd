@@ -291,13 +291,13 @@ export default function ISPAIManagerPage() {
   const renderMetricCard = (metric: BusinessMetric) => (
     <Card
       key={metric.id}
-      className="bg-slate-900/70 border-white/15 hover:border-white/30 transition-all"
+      className="bg-background/70 border-white/15 hover:border-white/30 transition-all"
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-white/80">{metric.label}</p>
-            <p className="text-2xl font-bold text-white/95">{metric.value}</p>
+            <p className="text-xs text-foreground/80">{metric.label}</p>
+            <p className="text-2xl font-bold text-foreground/95">{metric.value}</p>
             <div
               className={cn(
                 'flex items-center gap-1 text-xs',
@@ -305,7 +305,7 @@ export default function ISPAIManagerPage() {
                   ? 'text-emerald-300'
                   : metric.trend === 'down'
                     ? 'text-red-300'
-                    : 'text-white/70'
+                    : 'text-foreground/70'
               )}
             >
               {metric.trend === 'up' ? (
@@ -351,12 +351,12 @@ export default function ISPAIManagerPage() {
           className={cn(
             'max-w-[80%] rounded-lg p-4',
             isUser
-              ? 'bg-[#0099CC] text-white'
+              ? 'bg-[#0099CC] text-foreground'
               : isInsight
                 ? 'bg-amber-500/10 border border-amber-500/40'
                 : isSystem
                   ? 'bg-pink-500/10 border border-pink-500/40'
-                  : 'bg-slate-900/70 border border-white/20'
+                  : 'bg-background/70 border border-border/20'
           )}
         >
           {m.priority && !isUser && (
@@ -374,15 +374,15 @@ export default function ISPAIManagerPage() {
               {m.priority.toUpperCase()} PRIORITY
             </Badge>
           )}
-          <p className={cn('whitespace-pre-wrap text-white/95', isInsight && 'font-semibold')}>
+          <p className={cn('whitespace-pre-wrap text-foreground/95', isInsight && 'font-semibold')}>
             {m.content}
           </p>
           {m.metrics && m.metrics.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-3">
               {m.metrics.map((met, i) => (
-                <div key={i} className="bg-black/30 rounded p-3">
-                  <p className="text-xs text-white/80">{met.label}</p>
-                  <p className="text-lg font-bold text-white/95 flex items-center gap-2">
+                <div key={i} className="bg-background/30 rounded p-3">
+                  <p className="text-xs text-foreground/80">{met.label}</p>
+                  <p className="text-lg font-bold text-foreground/95 flex items-center gap-2">
                     {met.value}
                     {met.trend === 'up' ? (
                       <TrendingUp className="h-4 w-4 text-emerald-300" />
@@ -396,8 +396,8 @@ export default function ISPAIManagerPage() {
           )}
         </div>
         {isUser && (
-          <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0">
-            <Users className="h-4 w-4 text-white/80" />
+          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+            <Users className="h-4 w-4 text-foreground/80" />
           </div>
         )}
       </div>
@@ -418,7 +418,7 @@ export default function ISPAIManagerPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent">
             ISP AI Manager
           </h1>
-          <p className="text-white/90 mt-1">
+          <p className="text-foreground/90 mt-1">
             Real-time insights and recommendations for broadband operations
           </p>
         </div>
@@ -427,7 +427,7 @@ export default function ISPAIManagerPage() {
             variant="outline"
             size="sm"
             onClick={() => setShowMetrics(!showMetrics)}
-            className="gap-2 text-white border-white/20 bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/30"
+            className="gap-2 text-foreground border-border/20 bg-background/10 hover:bg-background/20 hover:text-foreground hover:border-white/30"
           >
             <Activity className="h-4 w-4" /> {showMetrics ? 'Hide' : 'Show'} Metrics
           </Button>
@@ -457,7 +457,7 @@ export default function ISPAIManagerPage() {
                     onClick={() => setActiveCategory(cat.id)}
                     className={cn(
                       'gap-2 whitespace-nowrap',
-                      activeCategory === cat.id ? 'text-white' : 'text-white'
+                      activeCategory === cat.id ? 'text-foreground' : 'text-foreground'
                     )}
                   >
                     <cat.icon className="h-4 w-4" /> {cat.label}
@@ -475,10 +475,10 @@ export default function ISPAIManagerPage() {
                     <div className="w-8 h-8 rounded-full bg-cyan-500/30 flex items-center justify-center">
                       <Brain className="h-4 w-4 text-cyan-300" />
                     </div>
-                    <div className="rounded-lg p-4 bg-slate-900/70 border border-white/20">
+                    <div className="rounded-lg p-4 bg-background/70 border border-border/20">
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm text-white/95">Analyzing…</span>
+                        <span className="text-sm text-foreground/95">Analyzing…</span>
                       </div>
                     </div>
                   </div>
@@ -494,7 +494,7 @@ export default function ISPAIManagerPage() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder="Ask about uptime, ARPU, churn, revenue…"
-                  className="bg-slate-900/70 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
+                  className="bg-background/70 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
                 />
                 <Button type="submit" disabled={loading || !input.trim()}>
                   {loading ? (
@@ -511,9 +511,9 @@ export default function ISPAIManagerPage() {
         {/* Side panel */}
         <div className="space-y-4">
           {/* Quick insights */}
-          <Card className="bg-slate-900/80 backdrop-blur-xl border-white/20">
+          <Card className="bg-background/80 backdrop-blur-xl border-border/20">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-white">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
                 <Sparkles className="h-4 w-4" /> Quick Insights
               </CardTitle>
             </CardHeader>
@@ -524,23 +524,23 @@ export default function ISPAIManagerPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => processAIQuery(ins.query)}
-                  className="w-full justify-start gap-2 bg-slate-900/70 hover:bg-slate-900/90 text-white border border-white/20"
+                  className="w-full justify-start gap-2 bg-background/70 hover:bg-background/90 text-foreground border border-border/20"
                 >
                   <ins.icon className={cn('h-4 w-4', ins.color)} />
-                  <span className="text-sm text-white/95">{ins.label}</span>
+                  <span className="text-sm text-foreground/95">{ins.label}</span>
                 </Button>
               ))}
             </CardContent>
           </Card>
 
           {/* Active alerts */}
-          <Card className="bg-slate-900/80 backdrop-blur-xl border-white/20">
+          <Card className="bg-background/80 backdrop-blur-xl border-border/20">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-white">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
                 <AlertTriangle className="h-4 w-4" /> Active Alerts
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-white">
+            <CardContent className="space-y-2 text-sm text-foreground">
               <div className="bg-red-600/30 border border-red-500/60 rounded p-3">
                 High churn in Kozhikode segment M-200 (last 7 days)
               </div>
@@ -554,14 +554,14 @@ export default function ISPAIManagerPage() {
           </Card>
 
           {/* Help */}
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+          <Card className="bg-background/10 backdrop-blur-xl border-border/20">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-white">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
                 <HelpCircle className="h-4 w-4" /> How to Use
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm text-white/95">
+              <div className="space-y-2 text-sm text-foreground/95">
                 <p>• Ask in natural language (uptime, outages, ARPU, churn)</p>
                 <p>• Request trend analysis and recommendations</p>
                 <p>• Get actionable insights for agents and NOC</p>

@@ -383,18 +383,18 @@ const formatPercent = (value: number): string => {
 const getVarianceIcon = (variance: number) => {
   if (variance > 0) return <ArrowUp className="w-4 h-4 text-green-600" />
   if (variance < 0) return <ArrowDown className="w-4 h-4 text-red-600" />
-  return <Minus className="w-4 h-4 text-gray-400" />
+  return <Minus className="w-4 h-4 text-muted-foreground" />
 }
 
 const getSectionColor = (section: string) => {
   const colors = {
     REVENUE: 'text-emerald-600',
     COGS: 'text-orange-600',
-    OPEX: 'text-blue-600',
+    OPEX: 'text-primary',
     OTHER_INCOME: 'text-green-600',
     OTHER_EXPENSE: 'text-red-600',
     FINANCE_COST: 'text-purple-600',
-    TAX: 'text-gray-600',
+    TAX: 'text-muted-foreground',
     KPI: 'text-indigo-600'
   }
   return colors[section as keyof typeof colors] || 'text-gray-900'
@@ -495,7 +495,7 @@ export default function SalonProfitLossPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading financial data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading financial data...</p>
         </div>
       </div>
     )
@@ -507,10 +507,10 @@ export default function SalonProfitLossPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">
               Profit & Loss Statement
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-1">
               VAT-compliant financial reporting for UAE entities
             </p>
           </div>
@@ -518,14 +518,14 @@ export default function SalonProfitLossPage() {
             <Button
               variant="outline"
               onClick={() => exportReport('pdf')}
-              className="bg-white dark:bg-gray-800"
+              className="bg-background dark:bg-muted"
             >
               <Printer className="w-4 h-4 mr-2" />
               Print
             </Button>
             <Button
               onClick={() => exportReport('csv')}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
             >
               <Download className="w-4 h-4 mr-2" />
               Export
@@ -534,7 +534,7 @@ export default function SalonProfitLossPage() {
         </div>
 
         {/* Controls */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Period Selection */}
@@ -552,7 +552,7 @@ export default function SalonProfitLossPage() {
                       className={cn(
                         'flex-1',
                         selectedPeriod === period
-                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground'
                           : ''
                       )}
                     >
@@ -570,7 +570,7 @@ export default function SalonProfitLossPage() {
                 <select
                   value={selectedBranch}
                   onChange={e => setSelectedBranch(e.target.value as BranchType)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground"
                 >
                   <option value="all">All Branches (Consolidated)</option>
                   <option value="branch1">Park Regis Kris Kin</option>
@@ -583,7 +583,7 @@ export default function SalonProfitLossPage() {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                   Date Range
                 </label>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground">
                   <Calendar className="w-4 h-4" />
                   <span>
                     {new Date(periodStart).toLocaleDateString('en-AE')} -{' '}
@@ -613,12 +613,12 @@ export default function SalonProfitLossPage() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Net Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.revenue_net)}
                   </p>
                 </div>
@@ -627,12 +627,12 @@ export default function SalonProfitLossPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Gross Margin</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Gross Margin</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatPercent(currentReport.kpis.gross_margin)}
                   </p>
                 </div>
@@ -641,12 +641,12 @@ export default function SalonProfitLossPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">EBITDA</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">EBITDA</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.ebitda)}
                   </p>
                 </div>
@@ -655,15 +655,15 @@ export default function SalonProfitLossPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Net Profit</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Profit</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.net_profit)}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {formatPercent(currentReport.kpis.net_margin)} margin
                   </p>
                 </div>
@@ -674,7 +674,7 @@ export default function SalonProfitLossPage() {
         </div>
 
         {/* P&L Statement Table */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -701,7 +701,7 @@ export default function SalonProfitLossPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                <thead className="bg-muted dark:bg-background border-y border-border dark:border-border">
                   <tr>
                     <th className="text-left px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
                       Account
@@ -739,9 +739,9 @@ export default function SalonProfitLossPage() {
                         key={index}
                         className={cn(
                           'border-b border-gray-100 dark:border-gray-800',
-                          line.isTotal && 'bg-gray-50 dark:bg-gray-900 font-semibold',
+                          line.isTotal && 'bg-muted dark:bg-background font-semibold',
                           line.isSubtotal &&
-                            'font-medium cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900',
+                            'font-medium cursor-pointer hover:bg-muted dark:hover:bg-background',
                           line.indent && 'text-sm'
                         )}
                         onClick={() => isSection && toggleSection(line.section)}
@@ -773,7 +773,7 @@ export default function SalonProfitLossPage() {
                         </td>
                         {showComparison && (
                           <>
-                            <td className="text-right px-6 py-3 text-gray-600 dark:text-gray-400">
+                            <td className="text-right px-6 py-3 text-muted-foreground dark:text-muted-foreground">
                               {formatCurrency(Math.abs(line.amount * 0.9))}
                             </td>
                             <td className="text-right px-6 py-3">
@@ -790,7 +790,7 @@ export default function SalonProfitLossPage() {
                             </td>
                           </>
                         )}
-                        <td className="text-right px-6 py-3 text-gray-600 dark:text-gray-400">
+                        <td className="text-right px-6 py-3 text-muted-foreground dark:text-muted-foreground">
                           {line.percentage ? formatPercent(line.percentage) : '-'}
                         </td>
                       </tr>
@@ -803,24 +803,24 @@ export default function SalonProfitLossPage() {
         </Card>
 
         {/* VAT Summary */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Info className="w-5 h-5 text-blue-600" />
+              <Info className="w-5 h-5 text-primary" />
               VAT Summary
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Output VAT (Sales)</p>
-                <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <div className="bg-muted dark:bg-background rounded-lg p-4">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Output VAT (Sales)</p>
+                <p className="text-xl font-semibold text-gray-900 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_sales)}
                 </p>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Input VAT (Purchases)</p>
-                <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <div className="bg-muted dark:bg-background rounded-lg p-4">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Input VAT (Purchases)</p>
+                <p className="text-xl font-semibold text-gray-900 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_purchases)}
                 </p>
               </div>
@@ -835,7 +835,7 @@ export default function SalonProfitLossPage() {
         </Card>
 
         {/* Report Metadata */}
-        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Building className="w-4 h-4" />

@@ -64,7 +64,7 @@ export function QuickActions({ className }: QuickActionsProps) {
       <CardHeader className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center">
-            <Zap className="h-4 w-4 text-white" />
+            <Zap className="h-4 w-4 text-foreground" />
           </div>
           Quick Actions
         </CardTitle>
@@ -85,7 +85,7 @@ export function QuickActions({ className }: QuickActionsProps) {
                   action.color
                 )}
               >
-                <Icon className="h-4 w-4 text-white" />
+                <Icon className="h-4 w-4 text-foreground" />
               </div>
               <span className="text-sm font-medium">{action.label}</span>
               <span className="text-xs text-muted-foreground mt-0.5">{action.description}</span>

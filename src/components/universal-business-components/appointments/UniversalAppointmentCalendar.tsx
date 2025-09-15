@@ -207,14 +207,14 @@ export function UniversalAppointmentCalendar({
   // Get status color
   const getStatusColor = (status: string) => {
     const colors = {
-      draft: 'bg-gray-100 text-gray-800',
+      draft: 'bg-muted text-gray-800',
       scheduled: 'bg-blue-100 text-blue-800',
       confirmed: 'bg-green-100 text-green-800',
       completed: 'bg-purple-100 text-purple-800',
       cancelled: 'bg-red-100 text-red-800',
       no_show: 'bg-orange-100 text-orange-800'
     }
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+    return colors[status as keyof typeof colors] || 'bg-muted text-gray-800'
   }
 
   return (
@@ -227,7 +227,7 @@ export function UniversalAppointmentCalendar({
             <h1 className="text-2xl font-bold text-gray-900">
               {customization?.brandName || config.name} {config.appointmentLabels.plural}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Universal appointment management for {config.name.toLowerCase()}
             </p>
           </div>
@@ -237,7 +237,7 @@ export function UniversalAppointmentCalendar({
           <button
             onClick={() => onSlotClick?.('', '')}
             style={{ backgroundColor: primaryColor }}
-            className="px-4 py-2 text-white rounded-lg hover:opacity-90 flex items-center space-x-2"
+            className="px-4 py-2 text-foreground rounded-lg hover:opacity-90 flex items-center space-x-2"
           >
             <Plus className="w-4 h-4" />
             <span>New {config.appointmentLabels.singular}</span>
@@ -247,33 +247,33 @@ export function UniversalAppointmentCalendar({
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <input
           type="text"
           placeholder="Search appointments..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       {/* Appointments Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <div className="bg-white rounded-lg border p-4 animate-pulse">
+          <div className="bg-background rounded-lg border p-4 animate-pulse">
             <div className="h-4 bg-gray-200 rounded mb-2"></div>
             <div className="h-3 bg-gray-200 rounded"></div>
           </div>
         ) : filteredAppointments.length === 0 ? (
-          <div className="col-span-full bg-white rounded-lg border p-8 text-center">
-            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <div className="col-span-full bg-background rounded-lg border p-8 text-center">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No {config.appointmentLabels.plural} Found
             </h3>
             {!readonly && (
               <button
                 onClick={() => onSlotClick?.('', '')}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center space-x-2 mx-auto"
+                className="px-4 py-2 bg-blue-500 text-foreground rounded-lg hover:bg-blue-600 flex items-center space-x-2 mx-auto"
               >
                 <Plus className="w-4 h-4" />
                 <span>Schedule {config.appointmentLabels.singular}</span>
@@ -284,7 +284,7 @@ export function UniversalAppointmentCalendar({
           filteredAppointments.map(appointment => (
             <div
               key={appointment.id}
-              className="bg-white rounded-lg border p-4 cursor-pointer hover:shadow-md transition-shadow"
+              className="bg-background rounded-lg border p-4 cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => onAppointmentClick?.(appointment)}
             >
               <div className="flex items-start justify-between mb-3">
@@ -296,7 +296,7 @@ export function UniversalAppointmentCalendar({
                 </span>
               </div>
 
-              <div className="space-y-2 text-sm text-gray-600">
+              <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-2 flex-shrink-0" />
                   <span className="truncate">{appointment.client_name}</span>
@@ -310,7 +310,7 @@ export function UniversalAppointmentCalendar({
               </div>
 
               {appointment.notes && (
-                <div className="mt-3 p-2 bg-gray-50 rounded text-xs text-gray-600">
+                <div className="mt-3 p-2 bg-muted rounded text-xs text-muted-foreground">
                   <span className="line-clamp-2">{appointment.notes}</span>
                 </div>
               )}
@@ -320,17 +320,17 @@ export function UniversalAppointmentCalendar({
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-white rounded-lg border p-4">
+      <div className="bg-background rounded-lg border p-4">
         <div className="grid gap-4 md:grid-cols-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-blue-600">{filteredAppointments.length}</div>
-            <div className="text-sm text-gray-600">Total {config.appointmentLabels.plural}</div>
+            <div className="text-2xl font-bold text-primary">{filteredAppointments.length}</div>
+            <div className="text-sm text-muted-foreground">Total {config.appointmentLabels.plural}</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">
               {filteredAppointments.filter(a => a.status === 'confirmed').length}
             </div>
-            <div className="text-sm text-gray-600">Confirmed</div>
+            <div className="text-sm text-muted-foreground">Confirmed</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-orange-600">
@@ -339,13 +339,13 @@ export function UniversalAppointmentCalendar({
                   .length
               }
             </div>
-            <div className="text-sm text-gray-600">High Priority</div>
+            <div className="text-sm text-muted-foreground">High Priority</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-purple-600">
               {filteredAppointments.filter(a => a.status === 'completed').length}
             </div>
-            <div className="text-sm text-gray-600">Completed</div>
+            <div className="text-sm text-muted-foreground">Completed</div>
           </div>
         </div>
       </div>

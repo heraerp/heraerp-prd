@@ -60,7 +60,7 @@ export function ChatHistory({
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-              <History className="h-4 w-4 text-white" />
+              <History className="h-4 w-4 text-foreground" />
             </div>
             Chat History
           </CardTitle>

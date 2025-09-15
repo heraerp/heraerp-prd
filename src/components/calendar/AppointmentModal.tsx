@@ -664,7 +664,7 @@ export function AppointmentModal({
                   <Card
                     key={resource.entity_id}
                     className={`cursor-pointer transition-all ${
-                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
                     }`}
                     onClick={() => handleResourceToggle(resource)}
                   >
@@ -672,7 +672,7 @@ export function AppointmentModal({
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">{resource.entity_name}</h4>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {resource.resource_type} • {resource.status}
                           </p>
                           {resource.skills && (
@@ -729,11 +729,11 @@ export function AppointmentModal({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Smart Code:</span>
-                      <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                      <code className="text-xs bg-muted px-2 py-1 rounded">
                         {smartCodeSuggestion.smartCode}
                       </code>
                     </div>
-                    <p className="text-xs text-gray-600">{smartCodeSuggestion.reasoning}</p>
+                    <p className="text-xs text-muted-foreground">{smartCodeSuggestion.reasoning}</p>
                   </div>
                 </CardContent>
               </Card>

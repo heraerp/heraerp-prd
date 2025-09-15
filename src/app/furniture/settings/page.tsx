@@ -84,7 +84,7 @@ const settingSections = [
 
 export default function FurnitureSettingsPage() {
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div>
@@ -99,18 +99,18 @@ export default function FurnitureSettingsPage() {
         {/* Setting Sections */}
         {settingSections.map(section => (
           <div key={section.title} className="space-y-4">
-            <h2 className="text-xl font-semibold text-white">{section.title}</h2>
+            <h2 className="text-xl font-semibold text-foreground">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {section.items.map(item => (
                 <Link key={item.name} href={item.href}>
-                  <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-gray-800/70 border-gray-700 backdrop-blur-sm h-full">
+                  <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-muted/70 border-border backdrop-blur-sm h-full">
                     <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-lg bg-gray-700/50 ${item.color}`}>
+                      <div className={`p-3 rounded-lg bg-muted-foreground/10/50 ${item.color}`}>
                         <item.icon className="h-6 w-6" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-white mb-1">{item.name}</h3>
-                        <p className="text-sm text-gray-400">{item.description}</p>
+                        <h3 className="font-semibold text-foreground mb-1">{item.name}</h3>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
                       </div>
                     </div>
                   </Card>
@@ -127,7 +127,7 @@ export default function FurnitureSettingsPage() {
               <Code className="h-8 w-8 text-amber-500" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-1">
+              <h3 className="text-lg font-semibold text-foreground mb-1">
                 Revolutionary: Universal Configuration Rules (UCR)
               </h3>
               <p className="text-gray-300 mb-3">

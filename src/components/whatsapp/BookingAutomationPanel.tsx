@@ -303,7 +303,7 @@ export default function BookingAutomationPanel({
                     </div>
                     <Button
                       onClick={() => onFlowStart?.(flow)}
-                      className="bg-[#00a884] hover:bg-[#00957a] text-white"
+                      className="bg-[#00a884] hover:bg-[#00957a] text-foreground"
                       size="sm"
                     >
                       <Play className="w-4 h-4 mr-2" />

@@ -79,7 +79,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
         </Badge>
       )
     } else {
-      return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Pending</Badge>
+      return <Badge className="bg-muted text-gray-700 border-border">Pending</Badge>
     }
   }
 
@@ -103,11 +103,11 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
 
   if (entries.length === 0) {
     return (
-      <Card className="bg-white/80 backdrop-blur-sm">
+      <Card className="bg-background/80 backdrop-blur-sm">
         <CardContent className="p-12 text-center">
           <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Journal Entries</h3>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Journal entries will appear here as transactions are processed
           </p>
         </CardContent>
@@ -120,7 +120,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
       {entries.map(entry => (
         <Card
           key={entry.id}
-          className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-shadow"
+          className="bg-background/80 backdrop-blur-sm hover:shadow-md transition-shadow"
         >
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
@@ -170,22 +170,22 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
             {/* Journal Lines */}
             <div className="border rounded-lg overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b">
+                <thead className="bg-muted border-b">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Account</th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Description</th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-600">Debit</th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-600">Credit</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Account</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Description</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Debit</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Credit</th>
                   </tr>
                 </thead>
                 <tbody>
                   {entry.lines
                     .sort((a, b) => a.line_order - b.line_order)
                     .map((line, index) => (
-                      <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}>
+                      <tr key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-gray-25'}>
                         <td className="px-4 py-3">
                           <div className="font-medium">{line.gl_account_code}</div>
-                          <div className="text-xs text-gray-500">{line.account_name}</div>
+                          <div className="text-xs text-muted-foreground">{line.account_name}</div>
                         </td>
                         <td className="px-4 py-3">{line.description}</td>
                         <td className="px-4 py-3 text-right font-mono">
@@ -197,7 +197,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
                       </tr>
                     ))}
                 </tbody>
-                <tfoot className="bg-gray-50 border-t">
+                <tfoot className="bg-muted border-t">
                   <tr className="font-medium">
                     <td className="px-4 py-3" colSpan={2}>
                       Total
@@ -218,7 +218,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
             </div>
 
             {/* Entry Metadata */}
-            <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+            <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-4">
                 {entry.auto_generated && entry.ai_confidence && (
                   <span>AI Confidence: {Math.round(entry.ai_confidence * 100)}%</span>

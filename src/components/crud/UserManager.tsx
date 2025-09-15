@@ -687,7 +687,7 @@ export function UserManager() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Users className="h-6 w-6 text-blue-600" />
+              <Users className="h-6 w-6 text-primary" />
               User Management
               <Badge variant="secondary">{organization?.name}</Badge>
             </div>
@@ -784,15 +784,15 @@ export function UserManager() {
           {/* Users List */}
           {loading && users.length === 0 && (
             <div className="text-center py-8">
-              <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-500">Loading users...</p>
+              <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">Loading users...</p>
             </div>
           )}
 
           {!loading && filteredUsers.length === 0 && (
             <div className="text-center py-8">
-              <Users className="h-8 w-8 mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-500 mb-4">No users found</p>
+              <Users className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground mb-4">No users found</p>
               <Button onClick={() => setShowForm(true)}>
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add First User
@@ -807,7 +807,7 @@ export function UserManager() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-foreground font-medium">
                           {userData.entity_name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -839,36 +839,36 @@ export function UserManager() {
                   </CardHeader>
                   <CardContent className="pt-0 space-y-3">
                     {(userData.metadata as any)?.email && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Mail className="h-4 w-4" />
                         {userData.metadata.email}
                       </div>
                     )}
                     {(userData.metadata as any)?.phone && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Phone className="h-4 w-4" />
                         {userData.metadata.phone}
                       </div>
                     )}
                     {(userData.metadata as any)?.department && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Briefcase className="h-4 w-4" />
                         {userData.metadata.department}
                       </div>
                     )}
                     {(userData.metadata as any)?.job_title && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Settings className="h-4 w-4" />
                         {userData.metadata.job_title}
                       </div>
                     )}
                     {(userData.metadata as any)?.location && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <MapPin className="h-4 w-4" />
                         {userData.metadata.location}
                       </div>
                     )}
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4" />
                       Created: {new Date(userData.created_at).toLocaleDateString()}
                     </div>
@@ -946,7 +946,7 @@ export function UserManager() {
                               )}
                               {role.label}
                             </h4>
-                            <p className="text-sm text-gray-600">{role.description}</p>
+                            <p className="text-sm text-muted-foreground">{role.description}</p>
                           </div>
                           <Badge variant="outline">{role.permissions.length} permissions</Badge>
                         </div>
@@ -954,7 +954,7 @@ export function UserManager() {
                           {role.permissions.map(permission => (
                             <div
                               key={permission}
-                              className="text-xs bg-gray-50 px-2 py-1 rounded inline-block mr-1 mb-1"
+                              className="text-xs bg-muted px-2 py-1 rounded inline-block mr-1 mb-1"
                             >
                               {permission}
                             </div>
@@ -978,12 +978,12 @@ export function UserManager() {
                           ).map(permission => (
                             <div
                               key={permission.id}
-                              className="flex items-start gap-3 p-2 bg-gray-50 rounded"
+                              className="flex items-start gap-3 p-2 bg-muted rounded"
                             >
-                              <Key className="h-4 w-4 mt-0.5 text-gray-400" />
+                              <Key className="h-4 w-4 mt-0.5 text-muted-foreground" />
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-sm">{permission.name}</p>
-                                <p className="text-xs text-gray-600">{permission.description}</p>
+                                <p className="text-xs text-muted-foreground">{permission.description}</p>
                                 <code className="text-xs bg-gray-200 px-1 rounded">
                                   {permission.id}
                                 </code>
@@ -1005,50 +1005,50 @@ export function UserManager() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Total Users</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{users.length}</div>
-                <p className="text-xs text-gray-500">Active organization users</p>
+                <p className="text-xs text-muted-foreground">Active organization users</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Active Users</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Active Users</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-600">
                   {users.filter(u => u.status === 'active').length}
                 </div>
-                <p className="text-xs text-gray-500">Currently active</p>
+                <p className="text-xs text-muted-foreground">Currently active</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Administrators</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Administrators</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-primary">
                   {
                     users.filter(u => ['owner', 'admin'].includes((u.metadata as any)?.role || ''))
                       .length
                   }
                 </div>
-                <p className="text-xs text-gray-500">Admin level access</p>
+                <p className="text-xs text-muted-foreground">Admin level access</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Departments</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Departments</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-purple-600">
                   {new Set(users.map(u => (u.metadata as any)?.department).filter(Boolean)).size}
                 </div>
-                <p className="text-xs text-gray-500">Active departments</p>
+                <p className="text-xs text-muted-foreground">Active departments</p>
               </CardContent>
             </Card>
           </div>
@@ -1324,7 +1324,7 @@ export function UserManager() {
                               )}
                               <div>
                                 <div className="font-medium">{role.label}</div>
-                                <div className="text-xs text-gray-500">{role.description}</div>
+                                <div className="text-xs text-muted-foreground">{role.description}</div>
                               </div>
                             </div>
                           </SelectItem>
@@ -1338,7 +1338,7 @@ export function UserManager() {
                     <div className="space-y-4">
                       <div>
                         <h4 className="font-medium mb-2">Custom Permissions</h4>
-                        <p className="text-sm text-gray-600 mb-4">
+                        <p className="text-sm text-muted-foreground mb-4">
                           Select specific permissions for this user
                         </p>
                       </div>
@@ -1362,7 +1362,7 @@ export function UserManager() {
                                   <Label htmlFor={permission.id} className="font-medium text-sm">
                                     {permission.name}
                                   </Label>
-                                  <p className="text-xs text-gray-600">{permission.description}</p>
+                                  <p className="text-xs text-muted-foreground">{permission.description}</p>
                                 </div>
                               </div>
                             ))}

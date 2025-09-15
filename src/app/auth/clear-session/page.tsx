@@ -61,8 +61,8 @@ export default function ClearSessionPage() {
         <Card className="w-full max-w-md">
           <CardContent className="py-12">
             <div className="flex flex-col items-center justify-center space-y-4">
-              <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-              <p className="text-gray-600">Clearing session...</p>
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              <p className="text-muted-foreground">Clearing session...</p>
             </div>
           </CardContent>
         </Card>

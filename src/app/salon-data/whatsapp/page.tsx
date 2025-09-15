@@ -64,9 +64,9 @@ const BookingAutomationPanel = dynamicImport(
     import('@/components/whatsapp/BookingAutomationPanel').then(mod => mod.BookingAutomationPanel),
   {
     loading: () => (
-      <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg animate-pulse">
-        <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+      <div className="p-4 bg-muted/50 border border-border rounded-lg animate-pulse">
+        <div className="h-4 bg-muted-foreground/10 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-muted-foreground/10 rounded w-1/2"></div>
       </div>
     ),
     ssr: false
@@ -80,9 +80,9 @@ const WhatsAppCampaignManager = dynamicImport(
     ),
   {
     loading: () => (
-      <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg animate-pulse">
-        <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+      <div className="p-4 bg-muted/50 border border-border rounded-lg animate-pulse">
+        <div className="h-4 bg-muted-foreground/10 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-muted-foreground/10 rounded w-1/2"></div>
       </div>
     ),
     ssr: false
@@ -428,8 +428,8 @@ export default function SalonWhatsAppPage() {
     }
     return {
       text: 'Closed',
-      color: 'text-gray-600',
-      bgColor: 'bg-gray-50'
+      color: 'text-muted-foreground',
+      bgColor: 'bg-muted'
     }
   }
 
@@ -552,20 +552,20 @@ export default function SalonWhatsAppPage() {
   )
 
   return (
-    <div className="h-screen bg-gray-900 flex flex-col overflow-hidden">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header with Menu Button */}
-      <header className="bg-gray-800/90 backdrop-blur-lg border-b border-gray-700 flex-shrink-0 z-50">
+      <header className="bg-muted/90 backdrop-blur-lg border-b border-border flex-shrink-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
               {/* Logo */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-                  <Scissors className="w-5 h-5 text-white" />
+                  <Scissors className="w-5 h-5 text-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-white">Hair Talkz WhatsApp</h1>
-                  <p className="text-xs text-gray-400">Business Messaging</p>
+                  <h1 className="text-lg font-semibold text-foreground">Hair Talkz WhatsApp</h1>
+                  <p className="text-xs text-muted-foreground">Business Messaging</p>
                 </div>
               </div>
             </div>
@@ -578,7 +578,7 @@ export default function SalonWhatsAppPage() {
                 disabled={isProcessing}
                 variant="outline"
                 size="sm"
-                className="text-xs bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                className="text-xs bg-blue-600 hover:bg-blue-700 text-foreground border-blue-600"
               >
                 {isProcessing ? (
                   <>
@@ -599,7 +599,7 @@ export default function SalonWhatsAppPage() {
                 disabled={isProcessing}
                 variant="outline"
                 size="sm"
-                className="text-xs bg-green-600 hover:bg-green-700 text-white border-green-600"
+                className="text-xs bg-green-600 hover:bg-green-700 text-foreground border-green-600"
               >
                 {isProcessing ? (
                   <>
@@ -645,8 +645,8 @@ export default function SalonWhatsAppPage() {
                 className={cn(
                   'text-xs',
                   costMetrics.dailySpend / costMetrics.dailyBudget > 0.8
-                    ? 'bg-red-500 text-white'
-                    : 'bg-green-500 text-white'
+                    ? 'bg-red-500 text-foreground'
+                    : 'bg-green-500 text-foreground'
                 )}
               >
                 {((costMetrics.dailySpend / costMetrics.dailyBudget) * 100).toFixed(0)}% used
@@ -667,7 +667,7 @@ export default function SalonWhatsAppPage() {
                 placeholder="Search or start new chat"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-9 bg-[#202c33] border-0 text-white placeholder:text-[#8696a0] focus:ring-0 focus:outline-none"
+                className="pl-9 bg-[#202c33] border-0 text-foreground placeholder:text-[#8696a0] focus:ring-0 focus:outline-none"
               />
             </div>
           </div>
@@ -737,7 +737,7 @@ export default function SalonWhatsAppPage() {
                         )}
                       >
                         <Avatar className="w-12 h-12 flex-shrink-0">
-                          <AvatarFallback className="bg-[#6a7175] text-white">
+                          <AvatarFallback className="bg-[#6a7175] text-foreground">
                             {contact.name.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
@@ -783,7 +783,7 @@ export default function SalonWhatsAppPage() {
                               )}
                             </div>
                             {contact.unreadCount > 0 && (
-                              <Badge className="bg-[#00a884] text-white text-xs rounded-full min-w-[20px] h-5">
+                              <Badge className="bg-[#00a884] text-foreground text-xs rounded-full min-w-[20px] h-5">
                                 {contact.unreadCount}
                               </Badge>
                             )}
@@ -921,7 +921,7 @@ export default function SalonWhatsAppPage() {
             <div className="bg-[#202c33] p-4 border-b border-[#2a3942] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <Avatar className="w-10 h-10">
-                  <AvatarFallback className="bg-[#6a7175] text-white">
+                  <AvatarFallback className="bg-[#6a7175] text-foreground">
                     {selectedContact.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -1055,10 +1055,10 @@ export default function SalonWhatsAppPage() {
                                 </Badge>
                               )}
                               {message.status === 'sent' && (
-                                <Check className="w-3 h-3 text-gray-400" />
+                                <Check className="w-3 h-3 text-muted-foreground" />
                               )}
                               {message.status === 'delivered' && (
-                                <CheckCheck className="w-3 h-3 text-gray-400" />
+                                <CheckCheck className="w-3 h-3 text-muted-foreground" />
                               )}
                               {message.status === 'read' && (
                                 <CheckCheck className="w-3 h-3 text-blue-500" />
@@ -1106,7 +1106,7 @@ export default function SalonWhatsAppPage() {
                       sendMessage()
                     }
                   }}
-                  className="flex-1 bg-[#2a3942] border-0 text-white placeholder:text-[#8696a0] focus:ring-0"
+                  className="flex-1 bg-[#2a3942] border-0 text-foreground placeholder:text-[#8696a0] focus:ring-0"
                 />
                 <Button variant="ghost" size="icon" className="text-[#aebac1] hover:bg-[#2a3942]">
                   <Mic className="w-5 h-5" />
@@ -1114,7 +1114,7 @@ export default function SalonWhatsAppPage() {
                 <Button
                   onClick={sendMessage}
                   disabled={!messageInput.trim() || isProcessing}
-                  className="bg-[#00a884] hover:bg-[#00957a] text-white"
+                  className="bg-[#00a884] hover:bg-[#00957a] text-foreground"
                 >
                   {isProcessing ? (
                     <Bot className="w-5 h-5 animate-pulse" />
@@ -1125,7 +1125,7 @@ export default function SalonWhatsAppPage() {
               </div>
 
               {isProcessing && (
-                <div className="mt-2 text-xs text-gray-500 flex items-center gap-2">
+                <div className="mt-2 text-xs text-muted-foreground flex items-center gap-2">
                   <Bot className="w-3 h-3 animate-pulse" />
                   Processing with Claude + MCP tools...
                 </div>
@@ -1138,7 +1138,7 @@ export default function SalonWhatsAppPage() {
               {contacts.length === 0 ? (
                 <>
                   <MessageCircle className="w-16 h-16 text-[#8696a0] mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-white mb-2">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
                     No WhatsApp Conversations Yet
                   </h3>
                   <p className="text-[#8696a0] mb-6">
@@ -1148,7 +1148,7 @@ export default function SalonWhatsAppPage() {
                   <Alert className="mb-4 bg-[#202c33] border-[#2a3942]">
                     <Info className="w-4 h-4 text-[#00a884]" />
                     <AlertDescription className="text-left">
-                      <strong className="text-white">Quick Setup:</strong>
+                      <strong className="text-foreground">Quick Setup:</strong>
                       <ol className="mt-2 space-y-1 text-sm text-[#8696a0]">
                         <li>1. Go to Meta Business Manager → WhatsApp → Configuration</li>
                         <li>
@@ -1189,7 +1189,7 @@ export default function SalonWhatsAppPage() {
                         }
                       }}
                       variant="outline"
-                      className="bg-[#202c33] border-[#2a3942] text-white hover:bg-[#2a3942]"
+                      className="bg-[#202c33] border-[#2a3942] text-foreground hover:bg-[#2a3942]"
                     >
                       <Info className="w-4 h-4 mr-2" />
                       Check Webhook Status
@@ -1202,7 +1202,7 @@ export default function SalonWhatsAppPage() {
                           '_blank'
                         )
                       }
-                      className="bg-[#00a884] hover:bg-[#00957a] text-white"
+                      className="bg-[#00a884] hover:bg-[#00957a] text-foreground"
                     >
                       <Settings className="w-4 h-4 mr-2" />
                       Open Meta Business

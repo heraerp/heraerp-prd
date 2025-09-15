@@ -103,7 +103,7 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
 
   const getPriorityBadge = (priority: string) => {
     const priorityConfig = {
-      low: { bg: 'bg-gray-100 dark:bg-gray-900/30', text: 'text-gray-800 dark:text-gray-200' },
+      low: { bg: 'bg-muted dark:bg-background/30', text: 'text-gray-800 dark:text-gray-200' },
       normal: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-800 dark:text-blue-200' },
       high: {
         bg: 'bg-orange-100 dark:bg-orange-900/30',
@@ -138,44 +138,44 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
         <div className="flex items-center space-x-4">
           <Link
             href="/furniture/production/orders"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+            className="p-2 hover:bg-muted dark:hover:bg-muted rounded-md transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                 {order.transaction_code}
               </h1>
               {getStatusBadge(order.metadata?.status || 'pending')}
               {getPriorityBadge(order.metadata?.priority || 'normal')}
             </div>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground dark:text-muted-foreground">
               Created on {format(new Date(order.created_at), 'MMM dd, yyyy')}
             </p>
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+          <button className="inline-flex items-center px-4 py-2 border border-border dark:border-border text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
             <Edit2 className="h-4 w-4 mr-2" />
             Edit
           </button>
-          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
             Update Status
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
+      <div className="border-b border-border dark:border-border">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('details')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'details'
                 ? 'border-amber-500 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:text-muted-foreground dark:hover:text-gray-300'
             }`}
           >
             Order Details
@@ -185,7 +185,7 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'production'
                 ? 'border-amber-500 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:text-muted-foreground dark:hover:text-gray-300'
             }`}
           >
             Production Progress
@@ -195,7 +195,7 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'timeline'
                 ? 'border-amber-500 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:text-muted-foreground dark:hover:text-gray-300'
             }`}
           >
             Timeline
@@ -208,38 +208,38 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Order Information */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">
                 Order Information
               </h3>
 
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center">
                     <User className="h-4 w-4 mr-1" />
                     Customer
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-foreground">
                     {getEntityName(order.from_entity_id || '')}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
                     Order Date
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-foreground">
                     {format(new Date(order.transaction_date), 'MMM dd, yyyy')}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center">
                     <Truck className="h-4 w-4 mr-1" />
                     Delivery Date
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-foreground">
                     {order.metadata?.delivery_date
                       ? format(new Date(order.metadata.delivery_date), 'MMM dd, yyyy')
                       : 'Not set'}
@@ -247,10 +247,10 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                     Total Amount
                   </dt>
-                  <dd className="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                  <dd className="mt-1 text-2xl font-semibold text-gray-900 dark:text-foreground">
                     {formatCurrency(order.total_amount)}
                   </dd>
                 </div>
@@ -258,11 +258,11 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
 
               {order.metadata?.notes && (
                 <div className="mt-6">
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center mb-2">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center mb-2">
                     <FileText className="h-4 w-4 mr-1" />
                     Notes
                   </dt>
-                  <dd className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 rounded-md p-3">
+                  <dd className="text-sm text-gray-900 dark:text-foreground bg-muted dark:bg-background rounded-md p-3">
                     {order.metadata.notes}
                   </dd>
                 </div>
@@ -270,8 +270,8 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
             </div>
 
             {/* Order Items */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">
                 Order Items
               </h3>
 
@@ -279,16 +279,16 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                         Product
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                         Quantity
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                         Unit Price
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                         Total
                       </th>
                     </tr>
@@ -296,16 +296,16 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {transactionLines?.map(line => (
                       <tr key={line.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                           {getEntityName(line.line_entity_id || '')}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                           {line.quantity}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                           {formatCurrency(line.unit_price)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-foreground">
                           {formatCurrency(line.line_amount)}
                         </td>
                       </tr>
@@ -315,11 +315,11 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
                     <tr>
                       <td
                         colSpan={3}
-                        className="px-6 py-4 text-right text-sm font-medium text-gray-900 dark:text-white"
+                        className="px-6 py-4 text-right text-sm font-medium text-gray-900 dark:text-foreground"
                       >
                         Total
                       </td>
-                      <td className="px-6 py-4 text-lg font-bold text-gray-900 dark:text-white">
+                      <td className="px-6 py-4 text-lg font-bold text-gray-900 dark:text-foreground">
                         {formatCurrency(order.total_amount)}
                       </td>
                     </tr>
@@ -332,18 +332,18 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">
                 Quick Actions
               </h3>
               <div className="space-y-3">
-                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-muted dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 rounded-md">
                   Start Production
                 </button>
-                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-muted dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 rounded-md">
                   Update Progress
                 </button>
-                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                <button className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-muted dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 rounded-md">
                   Generate Invoice
                 </button>
                 <button className="w-full text-left px-4 py-2 text-sm font-medium text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-md">
@@ -353,8 +353,8 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
             </div>
 
             {/* Related Links */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Related</h3>
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">Related</h3>
               <div className="space-y-2">
                 <Link
                   href={`/furniture/customers/${order.from_entity_id}`}
@@ -381,20 +381,20 @@ export default function ProductionOrderDetailPage({ params }: { params: Promise<
       )}
 
       {activeTab === 'production' && (
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">
             Production Progress
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Production tracking details would be displayed here.
           </p>
         </div>
       )}
 
       {activeTab === 'timeline' && (
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Order Timeline</h3>
-          <p className="text-gray-600 dark:text-gray-400">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">Order Timeline</h3>
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Order history and timeline would be displayed here.
           </p>
         </div>

@@ -233,16 +233,16 @@ export default function ProvisioningDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <Building2 className="w-8 h-8 text-blue-600" />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-3">
+              <Building2 className="w-8 h-8 text-primary" />
               Tenant Provisioning
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-1">
               Manage multi-tenant provisioning and module entitlements
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Tenants</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Tenants</p>
                   <p className="text-2xl font-bold">{mockTenants.length}</p>
                 </div>
                 <Building2 className="w-8 h-8 text-blue-500 opacity-20" />
@@ -268,7 +268,7 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active</p>
                   <p className="text-2xl font-bold text-green-600">
                     {mockTenants.filter(t => t.status === 'active').length}
                   </p>
@@ -282,7 +282,7 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Trial</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Trial</p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {mockTenants.filter(t => t.status === 'trial').length}
                   </p>
@@ -296,7 +296,7 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Revenue/Month</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Revenue/Month</p>
                   <p className="text-2xl font-bold text-purple-600">$45,230</p>
                 </div>
                 <CreditCard className="w-8 h-8 text-purple-500 opacity-20" />
@@ -322,7 +322,7 @@ export default function ProvisioningDashboard() {
               <TabsContent value="tenants" className="space-y-4">
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     placeholder="Search tenants..."
                     value={searchQuery}
@@ -344,7 +344,7 @@ export default function ProvisioningDashboard() {
                           <div className="space-y-2">
                             <div>
                               <h3 className="font-semibold text-lg">{tenant.name}</h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 {tenant.subdomain}.heraerp.com
                               </p>
                             </div>
@@ -390,7 +390,7 @@ export default function ProvisioningDashboard() {
                               {tenant.status}
                             </Badge>
 
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                               {tenant.plan}
                             </p>
 
@@ -449,7 +449,7 @@ export default function ProvisioningDashboard() {
                           )}
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                         {newTenant.subdomain}.heraerp.com
                       </p>
                     </div>
@@ -536,7 +536,7 @@ export default function ProvisioningDashboard() {
                         )
                         return modules.length > 0 ? (
                           <div key={category} className="space-y-2">
-                            <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase">
+                            <h4 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground uppercase">
                               {category}
                             </h4>
 
@@ -544,7 +544,7 @@ export default function ProvisioningDashboard() {
                               {modules.map(module => (
                                 <div
                                   key={module.smartCode}
-                                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800"
+                                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted dark:hover:bg-muted"
                                 >
                                   <Checkbox
                                     checked={newTenant.modules.includes(module.smartCode)}
@@ -568,11 +568,11 @@ export default function ProvisioningDashboard() {
 
                                   <div className="flex-1">
                                     <div className="font-medium text-sm">{module.name}</div>
-                                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                                    <div className="text-xs text-muted-foreground dark:text-muted-foreground">
                                       {module.description}
                                     </div>
                                     {module.dependencies.length > 0 && (
-                                      <div className="text-xs text-gray-500 mt-1">
+                                      <div className="text-xs text-muted-foreground mt-1">
                                         Requires: {module.dependencies.join(', ')}
                                       </div>
                                     )}
@@ -643,13 +643,13 @@ export default function ProvisioningDashboard() {
                               </div>
                             </CardHeader>
                             <CardContent>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
                                 {module.description}
                               </p>
 
                               <div className="space-y-2">
                                 <div>
-                                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                  <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground mb-1">
                                     Features:
                                   </p>
                                   <div className="flex flex-wrap gap-1">
@@ -663,7 +663,7 @@ export default function ProvisioningDashboard() {
 
                                 {module.dependencies.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                    <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground">
                                       Dependencies: {module.dependencies.join(', ')}
                                     </p>
                                   </div>
@@ -671,7 +671,7 @@ export default function ProvisioningDashboard() {
 
                                 {module.permissions.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                    <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground">
                                       Required Permissions: {module.permissions.length}
                                     </p>
                                   </div>
@@ -705,7 +705,7 @@ export default function ProvisioningDashboard() {
                 <div>
                   <h4 className="font-medium mb-2">Access URL</h4>
                   <div className="flex items-center gap-2">
-                    <code className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                    <code className="text-sm bg-muted dark:bg-muted px-2 py-1 rounded">
                       {selectedTenant.subdomain}.heraerp.com
                     </code>
                     <Button size="sm" variant="ghost">

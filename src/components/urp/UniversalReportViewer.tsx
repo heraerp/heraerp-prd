@@ -209,7 +209,7 @@ export function UniversalReportViewer({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {selectedRecipeDetails.parameters.map(param => (
                   <div key={param.name} className="space-y-1">
-                    <label className="text-sm text-gray-600 dark:text-gray-400">
+                    <label className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {param.description || param.name}
                       {param.required && <span className="text-red-500">*</span>}
                     </label>
@@ -234,7 +234,7 @@ export function UniversalReportViewer({
                     ) : (
                       <input
                         type={param.type === 'number' ? 'number' : 'text'}
-                        className="w-full px-3 py-2 text-sm border rounded-md dark:bg-gray-800"
+                        className="w-full px-3 py-2 text-sm border rounded-md dark:bg-muted"
                         value={parameters[param.name] || ''}
                         onChange={e =>
                           setParameters({

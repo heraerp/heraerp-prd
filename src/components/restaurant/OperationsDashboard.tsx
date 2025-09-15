@@ -138,9 +138,9 @@ export function OperationsDashboard() {
       case 'approved':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'completed':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -153,7 +153,7 @@ export function OperationsDashboard() {
       case 'info':
         return <Activity className="w-4 h-4 text-blue-500" />
       default:
-        return <Activity className="w-4 h-4 text-gray-500" />
+        return <Activity className="w-4 h-4 text-muted-foreground" />
     }
   }
 
@@ -166,7 +166,7 @@ export function OperationsDashboard() {
       case 'info':
         return 'bg-blue-50 border-blue-200 text-blue-800'
       default:
-        return 'bg-gray-50 border-gray-200 text-gray-800'
+        return 'bg-muted border-border text-gray-800'
     }
   }
 
@@ -175,8 +175,8 @@ export function OperationsDashboard() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-3">
-            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-lg text-gray-600">Loading operations dashboard...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg text-muted-foreground">Loading operations dashboard...</span>
           </div>
         </div>
       </div>
@@ -191,10 +191,10 @@ export function OperationsDashboard() {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Unable to Load Operations Data
           </h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <button
             onClick={loadOperationsData}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             Try Again
           </button>
@@ -211,18 +211,18 @@ export function OperationsDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Operations Dashboard</h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Real-time restaurant operations powered by HERA's universal architecture
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Clock className="w-4 h-4" />
             <span>Updated: {lastUpdated.toLocaleTimeString()}</span>
           </div>
           <button
             onClick={loadOperationsData}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -243,7 +243,7 @@ export function OperationsDashboard() {
               </p>
             </div>
             <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <Utensils className="w-6 h-6 text-blue-600" />
+              <Utensils className="w-6 h-6 text-primary" />
             </div>
           </div>
         </Card>
@@ -310,8 +310,8 @@ export function OperationsDashboard() {
             onClick={() => setSelectedView('overview')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'overview'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-foreground'
+                : 'bg-muted text-gray-700 hover:bg-gray-200'
             }`}
           >
             <BarChart3 className="w-4 h-4 inline mr-2" />
@@ -321,8 +321,8 @@ export function OperationsDashboard() {
             onClick={() => setSelectedView('tables')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'tables'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-foreground'
+                : 'bg-muted text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Home className="w-4 h-4 inline mr-2" />
@@ -332,8 +332,8 @@ export function OperationsDashboard() {
             onClick={() => setSelectedView('delivery')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'delivery'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-foreground'
+                : 'bg-muted text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Truck className="w-4 h-4 inline mr-2" />
@@ -343,8 +343,8 @@ export function OperationsDashboard() {
             onClick={() => setSelectedView('pickup')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'pickup'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-foreground'
+                : 'bg-muted text-gray-700 hover:bg-gray-200'
             }`}
           >
             <ShoppingBag className="w-4 h-4 inline mr-2" />
@@ -392,7 +392,7 @@ export function OperationsDashboard() {
               </div>
               <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center space-x-3">
-                  <Activity className="w-5 h-5 text-blue-600" />
+                  <Activity className="w-5 h-5 text-primary" />
                   <span className="font-medium text-blue-900">Processing</span>
                 </div>
                 <Badge className="bg-blue-100 text-blue-800">{metrics.processing_orders}</Badge>
@@ -404,12 +404,12 @@ export function OperationsDashboard() {
                 </div>
                 <Badge className="bg-green-100 text-green-800">{metrics.ready_orders}</Badge>
               </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border">
                 <div className="flex items-center space-x-3">
-                  <Target className="w-5 h-5 text-gray-600" />
+                  <Target className="w-5 h-5 text-muted-foreground" />
                   <span className="font-medium text-gray-900">Completed</span>
                 </div>
-                <Badge className="bg-gray-100 text-gray-800">{metrics.completed_orders}</Badge>
+                <Badge className="bg-muted text-gray-800">{metrics.completed_orders}</Badge>
               </div>
             </div>
           </Card>
@@ -509,7 +509,7 @@ export function OperationsDashboard() {
                     {table.status}
                   </Badge>
                 </div>
-                <div className="space-y-1 text-sm text-gray-600">
+                <div className="space-y-1 text-sm text-muted-foreground">
                   <div className="flex items-center space-x-2">
                     <Users className="w-4 h-4" />
                     <span>Capacity: {table.capacity}</span>
@@ -549,7 +549,7 @@ export function OperationsDashboard() {
               {drivers.map(driver => (
                 <div
                   key={driver.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between p-4 bg-muted rounded-lg"
                 >
                   <div className="flex items-center space-x-3">
                     <div
@@ -557,7 +557,7 @@ export function OperationsDashboard() {
                     ></div>
                     <div>
                       <p className="font-medium text-gray-900">{driver.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {driver.vehicle_type} • {driver.phone}
                       </p>
                     </div>
@@ -574,7 +574,7 @@ export function OperationsDashboard() {
                     </Badge>
                     <div className="flex items-center space-x-1 mt-1">
                       <Star className="w-3 h-3 text-yellow-500" />
-                      <span className="text-xs text-gray-600">{driver.rating.toFixed(1)}</span>
+                      <span className="text-xs text-muted-foreground">{driver.rating.toFixed(1)}</span>
                     </div>
                   </div>
                 </div>
@@ -591,7 +591,7 @@ export function OperationsDashboard() {
                   ['pending', 'processing', 'approved'].includes(order.status)
                 )
                 .map((order: any) => (
-                  <div key={order.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div key={order.id} className="p-4 border border-border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-3">
                         <span className="font-medium text-gray-900">{order.order_number}</span>
@@ -601,7 +601,7 @@ export function OperationsDashboard() {
                         {formatCurrency(order.total_amount)}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-600 space-y-1">
+                    <div className="text-sm text-muted-foreground space-y-1">
                       <div className="flex items-center space-x-2">
                         <Users className="w-4 h-4" />
                         <span>{order.customer.name}</span>
@@ -641,7 +641,7 @@ export function OperationsDashboard() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Pick-Up Orders</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {orders.by_type.pickup.map((order: any) => (
-              <div key={order.id} className="p-4 border border-gray-200 rounded-lg">
+              <div key={order.id} className="p-4 border border-border rounded-lg">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
                     <span className="font-medium text-gray-900">{order.order_number}</span>
@@ -651,7 +651,7 @@ export function OperationsDashboard() {
                     {formatCurrency(order.total_amount)}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 space-y-2">
+                <div className="text-sm text-muted-foreground space-y-2">
                   <div className="flex items-center space-x-2">
                     <Users className="w-4 h-4" />
                     <span>{order.customer.name}</span>
@@ -679,8 +679,8 @@ export function OperationsDashboard() {
                     </div>
                   )}
                 </div>
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="text-xs text-gray-500">
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="text-xs text-muted-foreground">
                     {order.items.length} items:{' '}
                     {order.items.map((item: any) => `${item.quantity}× ${item.name}`).join(', ')}
                   </div>
@@ -702,17 +702,17 @@ export function OperationsDashboard() {
             powering real-time restaurant operations:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-indigo-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Real-Time Operations</strong>
               <br />
               Unified view of dine-in, pickup, and delivery orders from universal transactions
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Dynamic Entity Management</strong>
               <br />
               Tables and drivers as flexible entities with unlimited custom properties
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Steve Jobs Excellence</strong>
               <br />
               "Focus and simplicity" - omniscient control through elegant interface design

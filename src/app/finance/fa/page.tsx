@@ -187,9 +187,9 @@ export default function FixedAssetsPage() {
       case 'disposed':
         return 'bg-red-500/20 text-red-400'
       case 'inactive':
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-muted-foreground'
     }
   }
 
@@ -218,17 +218,17 @@ export default function FixedAssetsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Fixed Assets
           </h1>
-          <p className="text-white/60 mt-1">Manage and track company assets and depreciation</p>
+          <p className="text-foreground/60 mt-1">Manage and track company assets and depreciation</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300">
             <Plus className="h-5 w-5" />
             <span>New Asset</span>
           </button>
@@ -236,13 +236,13 @@ export default function FixedAssetsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-background/5 backdrop-blur-xl p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'overview'
-              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Overview
@@ -251,8 +251,8 @@ export default function FixedAssetsPage() {
           onClick={() => setActiveTab('assets')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'assets'
-              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Asset Register
@@ -261,8 +261,8 @@ export default function FixedAssetsPage() {
           onClick={() => setActiveTab('depreciation')}
           className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
             activeTab === 'depreciation'
-              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-foreground'
+              : 'text-foreground/60 hover:text-foreground'
           }`}
         >
           Depreciation
@@ -275,52 +275,52 @@ export default function FixedAssetsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
-                    <Building2 className="h-6 w-6 text-white" />
+                    <Building2 className="h-6 w-6 text-foreground" />
                   </div>
                   <span className="text-xs text-purple-400 font-medium">
                     {assetMetrics.totalAssets} assets
                   </span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Total Asset Value</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Total Asset Value</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(assetMetrics.totalValue / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">Purchase value</p>
+                <p className="text-xs text-foreground/40 mt-1">Purchase value</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-[#00DDFF] to-[#0049B7]">
-                    <Activity className="h-6 w-6 text-white" />
+                    <Activity className="h-6 w-6 text-foreground" />
                   </div>
                   <TrendingDown className="h-4 w-4 text-red-400" />
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Current Value</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Current Value</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(assetMetrics.currentValue / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-white/40 mt-1">After depreciation</p>
+                <p className="text-xs text-foreground/40 mt-1">After depreciation</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600">
-                    <Wrench className="h-6 w-6 text-white" />
+                    <Wrench className="h-6 w-6 text-foreground" />
                   </div>
                   <span className="text-xs text-yellow-400 font-medium">Due soon</span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Maintenance Due</h3>
-                <p className="text-2xl font-bold text-white">{assetMetrics.maintenanceDue}</p>
-                <p className="text-xs text-white/40 mt-1">Assets need service</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Maintenance Due</h3>
+                <p className="text-2xl font-bold text-foreground">{assetMetrics.maintenanceDue}</p>
+                <p className="text-xs text-foreground/40 mt-1">Assets need service</p>
               </div>
             </div>
           </div>
@@ -330,8 +330,8 @@ export default function FixedAssetsPage() {
             {/* Asset Categories */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Asset Categories</h2>
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">Asset Categories</h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <RePieChart>
                     <Pie
@@ -365,11 +365,11 @@ export default function FixedAssetsPage() {
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: item.color }}
                         />
-                        <span className="text-sm text-white/80">{item.name}</span>
+                        <span className="text-sm text-foreground/80">{item.name}</span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <span className="text-xs text-white/60">{item.count} items</span>
-                        <span className="text-sm font-medium text-white">
+                        <span className="text-xs text-foreground/60">{item.count} items</span>
+                        <span className="text-sm font-medium text-foreground">
                           ₹{(item.value / 10000000).toFixed(1)} Cr
                         </span>
                       </div>
@@ -382,8 +382,8 @@ export default function FixedAssetsPage() {
             {/* New Acquisitions */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   New Acquisitions (6 Months)
                 </h2>
                 <ResponsiveContainer width="100%" height={250}>
@@ -416,20 +416,20 @@ export default function FixedAssetsPage() {
           {/* Assets Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
               <input
                 type="text"
                 placeholder="Search assets..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-purple-500 transition-colors"
               />
             </div>
 
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
+              className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-purple-500 transition-colors"
             >
               <option value="all">All Categories</option>
               <option value="network">Network Equipment</option>
@@ -439,7 +439,7 @@ export default function FixedAssetsPage() {
               <option value="furniture">Office Furniture</option>
             </select>
 
-            <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+            <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
               <Download className="h-5 w-5" />
               <span>Export</span>
             </button>
@@ -452,13 +452,13 @@ export default function FixedAssetsPage() {
               return (
                 <div key={asset.id} className="relative group">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                  <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <Icon className="h-5 w-5 text-purple-400" />
-                          <h3 className="text-lg font-semibold text-white">{asset.assetName}</h3>
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60">
+                          <h3 className="text-lg font-semibold text-foreground">{asset.assetName}</h3>
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-background/10 text-foreground/60">
                             {asset.assetCode}
                           </span>
                           <span
@@ -470,33 +470,33 @@ export default function FixedAssetsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Purchase Value</p>
-                            <p className="text-lg font-semibold text-white">
+                            <p className="text-xs text-foreground/60 mb-1">Purchase Value</p>
+                            <p className="text-lg font-semibold text-foreground">
                               ₹{(asset.purchaseValue / 100000).toFixed(2)} L
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Current Value</p>
+                            <p className="text-xs text-foreground/60 mb-1">Current Value</p>
                             <p className="text-lg font-semibold text-emerald-400">
                               ₹{(asset.currentValue / 100000).toFixed(2)} L
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Depreciation</p>
+                            <p className="text-xs text-foreground/60 mb-1">Depreciation</p>
                             <p className="text-lg font-semibold text-red-400">
                               ₹{(asset.depreciation / 100000).toFixed(2)} L
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-white/60 mb-1">Location</p>
-                            <p className="text-lg font-semibold text-white flex items-center">
-                              <MapPin className="h-4 w-4 mr-1 text-white/40" />
+                            <p className="text-xs text-foreground/60 mb-1">Location</p>
+                            <p className="text-lg font-semibold text-foreground flex items-center">
+                              <MapPin className="h-4 w-4 mr-1 text-foreground/40" />
                               {asset.location}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center space-x-6 text-sm text-white/60">
+                        <div className="flex items-center space-x-6 text-sm text-foreground/60">
                           <div className="flex items-center space-x-2">
                             <Calendar className="h-4 w-4" />
                             <span>
@@ -521,7 +521,7 @@ export default function FixedAssetsPage() {
                         </div>
                       </div>
 
-                      <button className="ml-4 text-white/40 hover:text-white transition-colors">
+                      <button className="ml-4 text-foreground/40 hover:text-foreground transition-colors">
                         <MoreVertical className="h-5 w-5" />
                       </button>
                     </div>
@@ -539,13 +539,13 @@ export default function FixedAssetsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <TrendingDown className="h-8 w-8 text-red-400" />
                   <span className="text-xs text-red-400 font-medium">YTD</span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Total Depreciation</h3>
-                <p className="text-2xl font-bold text-white">
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Total Depreciation</h3>
+                <p className="text-2xl font-bold text-foreground">
                   ₹{(assetMetrics.ytdDepreciation / 10000000).toFixed(1)} Cr
                 </p>
               </div>
@@ -553,25 +553,25 @@ export default function FixedAssetsPage() {
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <BarChart3 className="h-8 w-8 text-yellow-400" />
                   <span className="text-xs text-yellow-400 font-medium">Monthly</span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Avg Monthly Rate</h3>
-                <p className="text-2xl font-bold text-white">₹{(2833333 / 100000).toFixed(1)} L</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Avg Monthly Rate</h3>
+                <p className="text-2xl font-bold text-foreground">₹{(2833333 / 100000).toFixed(1)} L</p>
               </div>
             </div>
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <PieChart className="h-8 w-8 text-purple-400" />
                   <span className="text-xs text-purple-400 font-medium">Rate</span>
                 </div>
-                <h3 className="text-white/60 text-sm font-medium mb-1">Depreciation %</h3>
-                <p className="text-2xl font-bold text-white">20.7%</p>
+                <h3 className="text-foreground/60 text-sm font-medium mb-1">Depreciation %</h3>
+                <p className="text-2xl font-bold text-foreground">20.7%</p>
               </div>
             </div>
           </div>
@@ -579,8 +579,8 @@ export default function FixedAssetsPage() {
           {/* Depreciation Chart */}
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 Asset Value & Depreciation Trend
               </h2>
               <ResponsiveContainer width="100%" height={300}>

@@ -151,7 +151,7 @@ export function PerformanceDashboard({
       case 'critical':
         return 'text-red-600 dark:text-red-400'
       default:
-        return 'text-gray-600 dark:text-gray-400'
+        return 'text-muted-foreground dark:text-muted-foreground'
     }
   }
 
@@ -168,7 +168,7 @@ export function PerformanceDashboard({
       case 'down':
         return <TrendingDown className="h-4 w-4 text-red-600" />
       default:
-        return <Activity className="h-4 w-4 text-gray-400" />
+        return <Activity className="h-4 w-4 text-muted-foreground" />
     }
   }
 
@@ -177,10 +177,10 @@ export function PerformanceDashboard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
             Performance Monitoring
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
             Last updated: {lastUpdate.toLocaleTimeString()}
           </p>
         </div>
@@ -189,7 +189,7 @@ export function PerformanceDashboard({
           disabled={loading}
           className={cn(
             'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-            'bg-blue-600 text-white hover:bg-blue-700',
+            'bg-blue-600 text-foreground hover:bg-blue-700',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >
@@ -219,10 +219,10 @@ export function PerformanceDashboard({
         {metrics.map((metric, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+            className="bg-background dark:bg-muted rounded-lg p-6 shadow-sm border border-border dark:border-border"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                 {metric.label}
               </span>
               {getTrendIcon(metric.trend)}
@@ -231,10 +231,10 @@ export function PerformanceDashboard({
               <span className={cn('text-3xl font-bold', getStatusColor(metric.status))}>
                 {metric.value}
               </span>
-              <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{metric.unit}</span>
+              <span className="ml-2 text-sm text-muted-foreground dark:text-muted-foreground">{metric.unit}</span>
             </div>
             {metric.threshold && (
-              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2 text-xs text-muted-foreground dark:text-muted-foreground">
                 Threshold: {metric.threshold}
                 {metric.unit}
               </div>
@@ -244,19 +244,19 @@ export function PerformanceDashboard({
       </div>
 
       {/* System Health */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+      <div className="bg-background dark:bg-muted rounded-lg p-6 shadow-sm border border-border dark:border-border">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4 flex items-center">
           <Gauge className="h-5 w-5 mr-2" />
           System Health
         </h3>
         <div className="space-y-3">
           {Object.entries(systemHealth).map(([key, value]) => (
             <div key={key} className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400 capitalize">
+              <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground capitalize">
                 {key}
               </span>
               <div className="flex items-center space-x-2 flex-1 ml-4">
-                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                <div className="flex-1 bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2 overflow-hidden">
                   <div
                     className={cn('h-full transition-all duration-500', getHealthColor(value))}
                     style={{ width: `${value}%` }}
@@ -272,15 +272,15 @@ export function PerformanceDashboard({
       </div>
 
       {/* API Performance */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+      <div className="bg-background dark:bg-muted rounded-lg p-6 shadow-sm border border-border dark:border-border">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4 flex items-center">
           <Zap className="h-5 w-5 mr-2" />
           API Performance
         </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>
-              <tr className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <tr className="text-xs text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                 <th className="text-left py-2">Endpoint</th>
                 <th className="text-right py-2">Avg Response</th>
                 <th className="text-right py-2">P95</th>
@@ -291,22 +291,22 @@ export function PerformanceDashboard({
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {apiEndpoints.map((endpoint, index) => (
                 <tr key={index}>
-                  <td className="py-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <td className="py-2 text-sm font-medium text-gray-900 dark:text-foreground">
                     {endpoint.name}
                   </td>
-                  <td className="py-2 text-sm text-right text-gray-600 dark:text-gray-400">
+                  <td className="py-2 text-sm text-right text-muted-foreground dark:text-muted-foreground">
                     {endpoint.avgResponseTime}ms
                   </td>
-                  <td className="py-2 text-sm text-right text-gray-600 dark:text-gray-400">
+                  <td className="py-2 text-sm text-right text-muted-foreground dark:text-muted-foreground">
                     {endpoint.p95ResponseTime}ms
                   </td>
-                  <td className="py-2 text-sm text-right text-gray-600 dark:text-gray-400">
+                  <td className="py-2 text-sm text-right text-muted-foreground dark:text-muted-foreground">
                     {endpoint.calls.toLocaleString()}
                   </td>
                   <td
                     className={cn(
                       'py-2 text-sm text-right',
-                      endpoint.errorRate > 1 ? 'text-red-600' : 'text-gray-600 dark:text-gray-400'
+                      endpoint.errorRate > 1 ? 'text-red-600' : 'text-muted-foreground dark:text-muted-foreground'
                     )}
                   >
                     {endpoint.errorRate}%
@@ -319,8 +319,8 @@ export function PerformanceDashboard({
       </div>
 
       {/* Database Performance */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+      <div className="bg-background dark:bg-muted rounded-lg p-6 shadow-sm border border-border dark:border-border">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4 flex items-center">
           <Database className="h-5 w-5 mr-2" />
           Database Performance
         </h3>
@@ -328,13 +328,13 @@ export function PerformanceDashboard({
           {queryPerformance.map((query, index) => (
             <div
               key={index}
-              className="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0 last:pb-0"
+              className="border-b border-border dark:border-border pb-3 last:border-0 last:pb-0"
             >
               <div className="flex items-start justify-between">
-                <code className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                <code className="text-xs text-muted-foreground dark:text-muted-foreground font-mono">
                   {query.query.substring(0, 50)}...
                 </code>
-                <span className="text-xs text-gray-500 ml-2">{query.count} calls</span>
+                <span className="text-xs text-muted-foreground ml-2">{query.count} calls</span>
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm text-gray-700 dark:text-gray-300">

@@ -202,15 +202,15 @@ export default function NewProductionOrderPage() {
         <div className="flex items-center space-x-4">
           <Link
             href="/furniture/production/orders"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+            className="p-2 hover:bg-muted dark:hover:bg-muted rounded-md transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
               New Production Order
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">Create a new manufacturing order</p>
+            <p className="text-muted-foreground dark:text-muted-foreground">Create a new manufacturing order</p>
           </div>
         </div>
       </div>
@@ -230,8 +230,8 @@ export default function NewProductionOrderPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Order Details Card */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Order Details</h2>
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-foreground mb-4">Order Details</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Customer Selection */}
@@ -243,7 +243,7 @@ export default function NewProductionOrderPage() {
               <select
                 value={formData.customerId}
                 onChange={e => setFormData({ ...formData, customerId: e.target.value })}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                 required
               >
                 <option value="">Select a customer</option>
@@ -265,7 +265,7 @@ export default function NewProductionOrderPage() {
                 type="date"
                 value={formData.deliveryDate}
                 onChange={e => setFormData({ ...formData, deliveryDate: e.target.value })}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                 required
               />
             </div>
@@ -278,7 +278,7 @@ export default function NewProductionOrderPage() {
               <select
                 value={formData.priority}
                 onChange={e => setFormData({ ...formData, priority: e.target.value })}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               >
                 <option value="low">Low</option>
                 <option value="normal">Normal</option>
@@ -297,7 +297,7 @@ export default function NewProductionOrderPage() {
                 value={formData.notes}
                 onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 rows={3}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                 placeholder="Special instructions or notes..."
               />
             </div>
@@ -305,13 +305,13 @@ export default function NewProductionOrderPage() {
         </div>
 
         {/* Order Items Card */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Order Items</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">Order Items</h2>
             <button
               type="button"
               onClick={addOrderLine}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+              className="inline-flex items-center px-3 py-2 border border-border dark:border-border text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add Item
@@ -319,9 +319,9 @@ export default function NewProductionOrderPage() {
           </div>
 
           {orderLines.length === 0 ? (
-            <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
-              <Package className="mx-auto h-12 w-12 text-gray-400" />
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">No items added yet</p>
+            <div className="text-center py-8 border-2 border-dashed border-border dark:border-border rounded-lg">
+              <Package className="mx-auto h-12 w-12 text-muted-foreground" />
+              <p className="mt-2 text-sm text-muted-foreground dark:text-muted-foreground">No items added yet</p>
               <button
                 type="button"
                 onClick={addOrderLine}
@@ -335,16 +335,16 @@ export default function NewProductionOrderPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                       Product
                     </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                       Quantity
                     </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                       Unit Price
                     </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                       Total
                     </th>
                     <th className="px-3 py-3"></th>
@@ -357,7 +357,7 @@ export default function NewProductionOrderPage() {
                         <select
                           value={line.productId}
                           onChange={e => updateOrderLine(index, 'productId', e.target.value)}
-                          className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
+                          className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground text-sm"
                           required
                         >
                           <option value="">Select product</option>
@@ -376,17 +376,17 @@ export default function NewProductionOrderPage() {
                           onChange={e =>
                             updateOrderLine(index, 'quantity', parseInt(e.target.value) || 1)
                           }
-                          className="block w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
+                          className="block w-24 px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground text-sm"
                           required
                         />
                       </td>
                       <td className="px-3 py-4">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-gray-900 dark:text-foreground">
                           {formatCurrency(line.unitPrice)}
                         </div>
                       </td>
                       <td className="px-3 py-4">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900 dark:text-foreground">
                           {formatCurrency(line.totalPrice)}
                         </div>
                       </td>
@@ -406,11 +406,11 @@ export default function NewProductionOrderPage() {
                   <tr>
                     <td
                       colSpan={3}
-                      className="px-3 py-4 text-right text-sm font-medium text-gray-900 dark:text-white"
+                      className="px-3 py-4 text-right text-sm font-medium text-gray-900 dark:text-foreground"
                     >
                       Total
                     </td>
-                    <td className="px-3 py-4 text-lg font-bold text-gray-900 dark:text-white">
+                    <td className="px-3 py-4 text-lg font-bold text-gray-900 dark:text-foreground">
                       {formatCurrency(calculateTotal())}
                     </td>
                     <td></td>
@@ -425,14 +425,14 @@ export default function NewProductionOrderPage() {
         <div className="flex justify-end space-x-4">
           <Link
             href="/furniture/production/orders"
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="px-4 py-2 border border-border dark:border-border text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

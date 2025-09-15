@@ -127,7 +127,7 @@ function FurnitureDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -152,7 +152,7 @@ function FurnitureDashboard() {
         />
 
         {/* Debug info - temporary */}
-        <div className="bg-gray-800/50 rounded-lg p-4 text-sm text-gray-400">
+        <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
           <p>Organization ID: {organizationId || 'Not loaded'}</p>
           <p>Organization Name: {organizationName || 'Not loaded'}</p>
           <p>Loading: {orgLoading ? 'Yes' : 'No'}</p>
@@ -175,7 +175,7 @@ function FurnitureDashboard() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
-                    <Brain className="h-8 w-8 text-white" />
+                    <Brain className="h-8 w-8 text-foreground" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -199,7 +199,7 @@ function FurnitureDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-background/50 dark:bg-muted/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="production">Production</TabsTrigger>
             <TabsTrigger value="finance">Finance</TabsTrigger>
@@ -213,7 +213,7 @@ function FurnitureDashboard() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {quickActions.map(action => (
                   <Link key={action.label} href={action.href}>
-                    <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+                    <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                       <div className="flex flex-col items-center text-center gap-2">
                         <action.icon className="h-8 w-8 text-primary" />
                         <span className="text-sm font-medium">{action.label}</span>
@@ -227,12 +227,12 @@ function FurnitureDashboard() {
             {/* Recent Activities */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Recent Activities</h3>
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="space-y-4">
                   {recentActivities.map(activity => (
                     <div
                       key={activity.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted dark:hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex-1">
                         <p className="font-medium">{activity.title}</p>
@@ -259,7 +259,7 @@ function FurnitureDashboard() {
                 {productionKPIs.map(kpi => (
                   <Card
                     key={kpi.label}
-                    className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm"
+                    className="p-4 bg-background/70 dark:bg-muted/70 backdrop-blur-sm"
                   >
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{kpi.label}</p>
@@ -275,7 +275,7 @@ function FurnitureDashboard() {
                             {kpi.value >= kpi.target ? '✓' : '↓'}
                           </span>
                         </div>
-                        <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-2 bg-gray-200 dark:bg-muted-foreground/10 rounded-full overflow-hidden">
                           <div
                             className={`h-full bg-${kpi.color}-500 transition-all`}
                             style={{ width: `${kpi.value}%` }}
@@ -290,7 +290,7 @@ function FurnitureDashboard() {
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Work Center Status</h3>
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="space-y-4">
                   {[
                     { label: 'Cutting Station', value: 85, icon: Factory },
@@ -306,7 +306,7 @@ function FurnitureDashboard() {
                         </div>
                         <span className="text-sm font-medium">{center.value}%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-200 dark:bg-muted-foreground/10 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-primary transition-all"
                           style={{ width: `${center.value}%` }}
@@ -321,7 +321,7 @@ function FurnitureDashboard() {
 
           <TabsContent value="finance" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Outstanding Receivables</p>
@@ -332,7 +332,7 @@ function FurnitureDashboard() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">GST Payable</p>
@@ -343,12 +343,12 @@ function FurnitureDashboard() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Cash Position</p>
                     <p className="text-2xl font-bold">₹8.5L</p>
-                    <p className="text-sm text-blue-600">Healthy</p>
+                    <p className="text-sm text-primary">Healthy</p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-blue-500" />
                 </div>
@@ -358,7 +358,7 @@ function FurnitureDashboard() {
 
           <TabsContent value="hr" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
@@ -369,7 +369,7 @@ function FurnitureDashboard() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-primary" />
@@ -380,7 +380,7 @@ function FurnitureDashboard() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary" />
@@ -391,7 +391,7 @@ function FurnitureDashboard() {
                 </div>
               </Card>
 
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Truck className="h-5 w-5 text-primary" />
@@ -436,7 +436,7 @@ const ModuleLink = React.memo(function ModuleLink({
 }) {
   return (
     <Link href={href}>
-      <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+      <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
         <div className="flex flex-col items-center text-center gap-2">
           <Icon className="h-8 w-8 text-primary" />
           <span className="text-sm font-medium">{label}</span>

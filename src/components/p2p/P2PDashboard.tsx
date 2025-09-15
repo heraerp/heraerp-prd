@@ -142,7 +142,7 @@ export function P2PDashboard() {
     value,
     icon: Icon,
     trend,
-    color = 'text-blue-600'
+    color = 'text-primary'
   }: {
     title: string
     value: string | number
@@ -154,7 +154,7 @@ export function P2PDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
             <p className="text-2xl font-bold mt-1">{value}</p>
             {trend && (
               <p className="text-xs text-green-600 mt-1 flex items-center">
@@ -173,7 +173,7 @@ export function P2PDashboard() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4 animate-spin" />
+          <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4 animate-spin" />
           <p>Loading P2P metrics...</p>
         </div>
       </div>
@@ -186,7 +186,7 @@ export function P2PDashboard() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Procure-to-Pay Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Complete P2P cycle management on HERA's 6 universal tables
           </p>
         </div>
@@ -261,13 +261,13 @@ export function P2PDashboard() {
                   <div key={stage.stage} className="text-center">
                     <div className="relative">
                       <div className="w-16 h-16 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <stage.icon className="w-8 h-8 text-blue-600" />
+                        <stage.icon className="w-8 h-8 text-primary" />
                       </div>
                       {index < 4 && (
-                        <div className="absolute top-8 left-16 w-full h-0.5 bg-gray-300 dark:bg-gray-700" />
+                        <div className="absolute top-8 left-16 w-full h-0.5 bg-gray-300 dark:bg-muted-foreground/10" />
                       )}
                       {stage.count > 0 && (
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-foreground rounded-full flex items-center justify-center text-xs font-bold">
                           {stage.count}
                         </div>
                       )}
@@ -315,7 +315,7 @@ export function P2PDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Requisition list would be displayed here using UniversalTable component
               </p>
             </CardContent>
@@ -331,7 +331,7 @@ export function P2PDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Purchase order list would be displayed here
               </p>
             </CardContent>
@@ -347,7 +347,7 @@ export function P2PDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Invoice list with 3-way matching would be displayed here
               </p>
             </CardContent>
@@ -363,7 +363,7 @@ export function P2PDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Payment list and processing would be displayed here
               </p>
             </CardContent>

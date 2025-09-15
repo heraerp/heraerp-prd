@@ -360,9 +360,9 @@ export function SalonBookingWorkflow({
       case 'senior':
         return 'bg-blue-100 text-blue-800 border-blue-200'
       case 'junior':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -488,7 +488,7 @@ export function SalonBookingWorkflow({
                   key={step.id}
                   className={cn(
                     'flex items-center gap-1',
-                    index <= currentStepIndex ? 'text-blue-600' : 'text-gray-400'
+                    index <= currentStepIndex ? 'text-primary' : 'text-muted-foreground'
                   )}
                 >
                   {step.icon}
@@ -522,7 +522,7 @@ export function SalonBookingWorkflow({
                         </div>
                         <div className="text-right">
                           <div className="font-bold text-lg">AED {service.price}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             {Math.floor(service.duration / 60)}h {service.duration % 60}m
                           </div>
                         </div>
@@ -543,7 +543,7 @@ export function SalonBookingWorkflow({
                         )}
                       </div>
                       {service.addons && service.addons.length > 0 && (
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-muted-foreground">
                           + {service.addons.length} optional add-ons available
                         </div>
                       )}
@@ -579,7 +579,7 @@ export function SalonBookingWorkflow({
                           <label htmlFor={addon.id} className="font-medium">
                             {addon.name}
                           </label>
-                          <span className="text-sm text-gray-500">(+{addon.duration}min)</span>
+                          <span className="text-sm text-muted-foreground">(+{addon.duration}min)</span>
                         </div>
                         <div className="font-semibold">+AED {addon.price}</div>
                       </div>
@@ -607,7 +607,7 @@ export function SalonBookingWorkflow({
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
                         <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                          <span className="text-white font-bold text-xl">
+                          <span className="text-foreground font-bold text-xl">
                             {stylist.name.charAt(0)}
                           </span>
                         </div>
@@ -615,18 +615,18 @@ export function SalonBookingWorkflow({
                           <div className="flex items-start justify-between">
                             <div>
                               <h4 className="font-semibold text-lg">{stylist.name}</h4>
-                              <p className="text-gray-600">{stylist.title}</p>
+                              <p className="text-muted-foreground">{stylist.title}</p>
                               {stylist.bio && (
-                                <p className="text-sm text-gray-500 mt-1">{stylist.bio}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{stylist.bio}</p>
                               )}
                             </div>
                             <div className="text-right">
                               <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
                                 <span className="font-semibold">{stylist.rating}</span>
-                                <span className="text-sm text-gray-500">({stylist.reviews})</span>
+                                <span className="text-sm text-muted-foreground">({stylist.reviews})</span>
                               </div>
-                              <div className="text-sm text-gray-600 mt-1">
+                              <div className="text-sm text-muted-foreground mt-1">
                                 AED {stylist.hourlyRate}/hour
                               </div>
                             </div>
@@ -645,7 +645,7 @@ export function SalonBookingWorkflow({
                           </div>
 
                           <div className="mt-2">
-                            <div className="text-sm text-gray-600">Specializes in:</div>
+                            <div className="text-sm text-muted-foreground">Specializes in:</div>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {stylist.specializations.map(spec => (
                                 <Badge key={spec} variant="secondary" className="text-xs">
@@ -700,7 +700,7 @@ export function SalonBookingWorkflow({
                                 </Badge>
                               )}
                             </div>
-                            <div className="space-y-1 mt-2 text-sm text-gray-600">
+                            <div className="space-y-1 mt-2 text-sm text-muted-foreground">
                               <div className="flex items-center gap-2">
                                 <Phone className="w-3 h-3" />
                                 {client.phone}
@@ -718,7 +718,7 @@ export function SalonBookingWorkflow({
                               )}
                             </div>
                           </div>
-                          <div className="text-right text-sm text-gray-500">
+                          <div className="text-right text-sm text-muted-foreground">
                             <div>{client.visitHistory} visits</div>
                             {client.lastVisit && (
                               <div>Last: {client.lastVisit.toLocaleDateString()}</div>
@@ -856,7 +856,7 @@ export function SalonBookingWorkflow({
                       <span>Total</span>
                       <span>AED {calculateTotalPrice()}</span>
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-muted-foreground">
                       Duration: {Math.floor(calculateTotalDuration() / 60)}h{' '}
                       {calculateTotalDuration() % 60}m
                     </div>
@@ -869,19 +869,19 @@ export function SalonBookingWorkflow({
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <span className="text-sm text-gray-600">Client:</span>
+                      <span className="text-sm text-muted-foreground">Client:</span>
                       <div className="font-medium">
                         {selectedClient?.name || newClientData.name}
                       </div>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-600">Stylist:</span>
+                      <span className="text-sm text-muted-foreground">Stylist:</span>
                       <div className="font-medium">
                         {stylists.find(s => s.id === selectedStylistId)?.name}
                       </div>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-600">Date & Time:</span>
+                      <span className="text-sm text-muted-foreground">Date & Time:</span>
                       <div className="font-medium">
                         {selectedTimeSlot?.date} at {selectedTimeSlot?.time}
                       </div>

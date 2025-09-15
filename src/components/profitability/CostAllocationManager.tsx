@@ -130,7 +130,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 <SelectItem value="activity_based">
                   <div>
                     <div className="font-medium">Activity-Based Costing (ABC)</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Most accurate for complex operations
                     </div>
                   </div>
@@ -138,7 +138,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 <SelectItem value="step_down">
                   <div>
                     <div className="font-medium">Step-Down Method</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Good for service department allocation
                     </div>
                   </div>
@@ -146,7 +146,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 <SelectItem value="direct">
                   <div>
                     <div className="font-medium">Direct Method</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Simple, ignores interdepartmental services
                     </div>
                   </div>
@@ -154,18 +154,18 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 <SelectItem value="reciprocal">
                   <div>
                     <div className="font-medium">Reciprocal Method</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Most accurate but computationally intensive
                     </div>
                   </div>
                 </SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-sm text-gray-600 mt-2">{getMethodDescription(allocationMethod)}</p>
+            <p className="text-sm text-muted-foreground mt-2">{getMethodDescription(allocationMethod)}</p>
           </div>
 
           <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-            <Info className="w-4 h-4 text-blue-600" />
+            <Info className="w-4 h-4 text-primary" />
             <p className="text-sm text-blue-800">
               Using Smart Code:{' '}
               <Badge variant="outline" className="ml-1">
@@ -199,15 +199,15 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-600">Total Cost</p>
+                    <p className="text-muted-foreground">Total Cost</p>
                     <p className="font-medium">${pool.total_cost.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Cost Driver</p>
+                    <p className="text-muted-foreground">Cost Driver</p>
                     <p className="font-medium">{pool.cost_driver}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Rate</p>
+                    <p className="text-muted-foreground">Rate</p>
                     <p className="font-medium">
                       ${pool.rate_per_unit}/{pool.cost_driver}
                     </p>
@@ -226,10 +226,10 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
           <CardDescription>Execute cost allocation for the current period</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
             <div>
               <p className="font-medium">Current Period</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </p>
             </div>
@@ -266,7 +266,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                     <span className="text-gray-700">{alloc.cost_pool}</span>
                     <div className="text-right">
                       <span className="font-medium">${alloc.total_allocated.toLocaleString()}</span>
-                      <span className="text-gray-500 ml-2">
+                      <span className="text-muted-foreground ml-2">
                         ({alloc.allocation_count} allocations)
                       </span>
                     </div>
@@ -285,17 +285,17 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <div className="px-3 py-1 bg-blue-100 rounded">Machine Hours Pool</div>
-                <ArrowRight className="w-4 h-4 text-gray-400" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 <div className="px-3 py-1 bg-green-100 rounded">Products (by machine usage)</div>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <div className="px-3 py-1 bg-blue-100 rounded">Setup Costs Pool</div>
-                <ArrowRight className="w-4 h-4 text-gray-400" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 <div className="px-3 py-1 bg-green-100 rounded">Products (by setup count)</div>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <div className="px-3 py-1 bg-blue-100 rounded">Admin Costs Pool</div>
-                <ArrowRight className="w-4 h-4 text-gray-400" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 <div className="px-3 py-1 bg-green-100 rounded">Profit Centers (by headcount)</div>
               </div>
             </div>

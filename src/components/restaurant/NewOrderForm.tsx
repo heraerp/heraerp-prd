@@ -236,11 +236,11 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-background rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex h-[90vh]">
           {/* Left Panel - Menu Items */}
-          <div className="flex-1 p-6 overflow-y-auto border-r border-gray-200">
+          <div className="flex-1 p-6 overflow-y-auto border-r border-border">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">New Order</h2>
               <Button variant="outline" size="sm" onClick={onClose}>
@@ -252,7 +252,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
             <div className="mb-6">
               <div className="flex gap-4 mb-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     placeholder="Search menu items..."
                     value={searchTerm}
@@ -263,7 +263,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                 <select
                   value={selectedCategory}
                   onChange={e => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+                  className="px-3 py-2 border border-border rounded-lg bg-background text-sm"
                 >
                   {categories.map(category => (
                     <option key={category} value={category}>
@@ -288,9 +288,9 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                       ${item.price.toFixed(2)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <Clock className="w-3 h-3" />
                       <span>{item.prep_time} min</span>
                     </div>
@@ -304,7 +304,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
           </div>
 
           {/* Right Panel - Order Details */}
-          <div className="w-96 p-6 overflow-y-auto bg-gray-50">
+          <div className="w-96 p-6 overflow-y-auto bg-muted">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
               Order Details
@@ -340,7 +340,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   const customer = customers.find(c => c.id === e.target.value)
                   setSelectedCustomer(customer || null)
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-sm"
               >
                 <option value="">Walk-in Customer</option>
                 {customers.map(customer => (
@@ -382,11 +382,11 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                 {cart.map(item => (
                   <div
                     key={item.menu_item_id}
-                    className="flex items-center justify-between p-2 bg-white rounded border"
+                    className="flex items-center justify-between p-2 bg-background rounded border"
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">{item.menu_item_name}</p>
-                      <p className="text-xs text-gray-500">${item.unit_price.toFixed(2)} each</p>
+                      <p className="text-xs text-muted-foreground">${item.unit_price.toFixed(2)} each</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button
@@ -418,7 +418,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   </div>
                 ))}
                 {cart.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">No items added yet</p>
+                  <p className="text-sm text-muted-foreground text-center py-4">No items added yet</p>
                 )}
               </div>
             </div>
@@ -430,13 +430,13 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                 placeholder="Any special instructions..."
                 value={specialNotes}
                 onChange={e => setSpecialNotes(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
+                className="w-full px-3 py-2 border border-border rounded-lg text-sm resize-none"
                 rows={2}
               />
             </div>
 
             {/* Order Summary */}
-            <div className="border-t border-gray-200 pt-4">
+            <div className="border-t border-border pt-4">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
@@ -446,7 +446,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   <span>Tax (8%):</span>
                   <span>${tax.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between font-semibold text-lg border-t border-gray-200 pt-2">
+                <div className="flex justify-between font-semibold text-lg border-t border-border pt-2">
                   <span>Total:</span>
                   <span>${total.toFixed(2)}</span>
                 </div>

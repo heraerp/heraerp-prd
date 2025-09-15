@@ -18,8 +18,8 @@ export default function PartnersPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto mb-8"></div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Redirecting to HERA Franchise</h1>
-        <p className="text-slate-600">We've upgraded our partnership model...</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Redirecting to HERA Franchise</h1>
+        <p className="text-muted-foreground">We've upgraded our partnership model...</p>
       </div>
     </div>
   )
@@ -32,7 +32,7 @@ function OldPartnersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 text-foreground">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
           <div className="text-center">
@@ -62,7 +62,7 @@ function OldPartnersPage() {
                 onClick={() =>
                   document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })
                 }
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-background/10 backdrop-blur border border-border/20 rounded-lg font-semibold text-lg hover:bg-background/20 transition-all"
               >
                 Calculate My Earnings
               </button>
@@ -70,19 +70,19 @@ function OldPartnersPage() {
 
             {/* Key Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur rounded-lg p-6 border border-border/20">
                 <div className="text-3xl font-bold text-emerald-400">$2.9M</div>
                 <div className="text-sm text-slate-300">Avg SAP Cost Saved</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur rounded-lg p-6 border border-border/20">
                 <div className="text-3xl font-bold text-blue-400">48 hrs</div>
                 <div className="text-sm text-slate-300">vs 18 months SAP</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur rounded-lg p-6 border border-border/20">
                 <div className="text-3xl font-bold text-purple-400">50%</div>
                 <div className="text-sm text-slate-300">Partner Revenue Share</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur rounded-lg p-6 border border-border/20">
                 <div className="text-3xl font-bold text-amber-400">∞</div>
                 <div className="text-sm text-slate-300">Market Opportunity</div>
               </div>
@@ -96,7 +96,7 @@ function OldPartnersPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">See Your Potential</h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-muted-foreground">
               Every customer you help becomes recurring revenue. Forever.
             </p>
           </div>
@@ -106,11 +106,11 @@ function OldPartnersPage() {
       </section>
 
       {/* Strategic Vision Section */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-background">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">The HERA Strategy: Start Small, Win Big</h2>
-            <p className="text-xl text-slate-600">Why HERA beats SAP at every level</p>
+            <p className="text-xl text-muted-foreground">Why HERA beats SAP at every level</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -118,7 +118,7 @@ function OldPartnersPage() {
             <div className="relative">
               <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-8 h-full border border-emerald-200">
                 <div className="w-16 h-16 bg-emerald-500 rounded-xl flex items-center justify-center mb-6">
-                  <Store className="h-8 w-8 text-white" />
+                  <Store className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">1. Dominate SMB Market</h3>
                 <p className="text-slate-700 mb-6">
@@ -141,7 +141,7 @@ function OldPartnersPage() {
                 </ul>
               </div>
               <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-10 hidden md:block">
-                <ArrowRight className="h-8 w-8 text-slate-400" />
+                <ArrowRight className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
 
@@ -149,7 +149,7 @@ function OldPartnersPage() {
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 h-full border border-blue-200">
                 <div className="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center mb-6">
-                  <Building className="h-8 w-8 text-white" />
+                  <Building className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">2. Scale to Mid-Market</h3>
                 <p className="text-slate-700 mb-6">
@@ -172,7 +172,7 @@ function OldPartnersPage() {
                 </ul>
               </div>
               <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-10 hidden md:block">
-                <ArrowRight className="h-8 w-8 text-slate-400" />
+                <ArrowRight className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
 
@@ -180,7 +180,7 @@ function OldPartnersPage() {
             <div className="relative">
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 h-full border border-purple-200">
                 <div className="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mb-6">
-                  <Factory className="h-8 w-8 text-white" />
+                  <Factory className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">3. Disrupt Enterprise</h3>
                 <p className="text-slate-700 mb-6">
@@ -212,18 +212,18 @@ function OldPartnersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Why Partners Choose HERA Over SAP</h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-muted-foreground">
               Deliver more value, earn more revenue, with less complexity
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-background rounded-2xl shadow-xl overflow-hidden">
             <div className="grid md:grid-cols-2">
               {/* HERA Column */}
               <div className="p-8 md:p-12">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg flex items-center justify-center">
-                    <Zap className="h-6 w-6 text-white" />
+                    <Zap className="h-6 w-6 text-foreground" />
                   </div>
                   <h3 className="text-2xl font-bold">HERA Partner Benefits</h3>
                 </div>
@@ -267,46 +267,46 @@ function OldPartnersPage() {
               </div>
 
               {/* SAP Column */}
-              <div className="p-8 md:p-12 bg-slate-50 border-l border-slate-200">
+              <div className="p-8 md:p-12 bg-slate-50 border-l border-border">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-12 bg-slate-400 rounded-lg flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-white" />
+                    <Shield className="h-6 w-6 text-foreground" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-700">SAP Partner Reality</h3>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="font-semibold text-slate-600 mb-2">Implementation Speed</h4>
-                    <p className="text-slate-600">
+                    <h4 className="font-semibold text-muted-foreground mb-2">Implementation Speed</h4>
+                    <p className="text-muted-foreground">
                       12-24 months. Massive upfront investment. Risk of failure.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-slate-600 mb-2">Revenue Model</h4>
-                    <p className="text-slate-600">
+                    <h4 className="font-semibold text-muted-foreground mb-2">Revenue Model</h4>
+                    <p className="text-muted-foreground">
                       One-time implementation fees. Compete with Accenture, Deloitte.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-slate-600 mb-2">Market Reach</h4>
-                    <p className="text-slate-600">
+                    <h4 className="font-semibold text-muted-foreground mb-2">Market Reach</h4>
+                    <p className="text-muted-foreground">
                       Enterprise only. SMBs can't afford. Limited addressable market.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-slate-600 mb-2">Support Required</h4>
-                    <p className="text-slate-600">
+                    <h4 className="font-semibold text-muted-foreground mb-2">Support Required</h4>
+                    <p className="text-muted-foreground">
                       Enormous. Constant hand-holding. Expensive consultants needed.
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-slate-600 mb-2">Competitive Edge</h4>
-                    <p className="text-slate-600">
+                    <h4 className="font-semibold text-muted-foreground mb-2">Competitive Edge</h4>
+                    <p className="text-muted-foreground">
                       None. Competing with thousands of SAP partners globally.
                     </p>
                   </div>
@@ -318,11 +318,11 @@ function OldPartnersPage() {
       </section>
 
       {/* Feature Comparison */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-background">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Enterprise Features for Everyone</h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-muted-foreground">
               What took SAP 50 years to build, HERA delivers on day one
             </p>
           </div>
@@ -464,7 +464,7 @@ function OldPartnersPage() {
             </div>
 
             {/* Compliance */}
-            <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-8 border border-slate-200">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-8 border border-border">
               <h3 className="text-xl font-bold mb-4">Compliance & Control</h3>
               <ul className="space-y-3 text-slate-700">
                 <li className="flex items-start gap-2">
@@ -492,7 +492,7 @@ function OldPartnersPage() {
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-lg text-slate-600 mb-6">
+            <p className="text-lg text-muted-foreground mb-6">
               Every feature above is available to every customer from day one. <br />
               No modules to buy. No upgrades to purchase. No limits.
             </p>
@@ -509,15 +509,15 @@ function OldPartnersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Partner Success Program</h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-muted-foreground">
               Everything you need to build a thriving HERA practice
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl p-8 shadow-lg">
+            <div className="bg-background rounded-xl p-8 shadow-lg">
               <div className="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center mb-6">
-                <TrendingUp className="h-6 w-6 text-white" />
+                <TrendingUp className="h-6 w-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-3">Revenue & Growth</h3>
               <ul className="space-y-2 text-slate-700">
@@ -529,9 +529,9 @@ function OldPartnersPage() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-lg">
+            <div className="bg-background rounded-xl p-8 shadow-lg">
               <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-6">
-                <Users className="h-6 w-6 text-white" />
+                <Users className="h-6 w-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-3">Sales Support</h3>
               <ul className="space-y-2 text-slate-700">
@@ -543,9 +543,9 @@ function OldPartnersPage() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-lg">
+            <div className="bg-background rounded-xl p-8 shadow-lg">
               <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
-                <Globe className="h-6 w-6 text-white" />
+                <Globe className="h-6 w-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-3">Marketing Power</h3>
               <ul className="space-y-2 text-slate-700">
@@ -558,7 +558,7 @@ function OldPartnersPage() {
             </div>
           </div>
 
-          <div className="mt-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl p-8 md:p-12 text-white">
+          <div className="mt-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl p-8 md:p-12 text-foreground">
             <div className="text-center">
               <h3 className="text-3xl font-bold mb-4">Ready to Disrupt the ERP Market?</h3>
               <p className="text-xl mb-8 text-emerald-50">
@@ -568,14 +568,14 @@ function OldPartnersPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/auth?type=partner"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold hover:shadow-xl transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-background text-foreground rounded-lg font-semibold hover:shadow-xl transition-all"
                 >
                   Apply Now
                   <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-background/20 backdrop-blur border border-white/30 rounded-lg font-semibold hover:bg-background/30 transition-all"
                 >
                   Schedule a Call
                 </Link>
@@ -586,7 +586,7 @@ function OldPartnersPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-background">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16">Partner Questions Answered</h2>
 

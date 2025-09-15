@@ -120,7 +120,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
     <div className="max-w-2xl space-y-6">
       {/* Current Status */}
       {currentUrl && (
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base !text-gray-900 dark:!text-gray-100">
               Current Subdomain
@@ -129,14 +129,14 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <code className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded !text-gray-900 dark:!text-gray-100">
+              <code className="text-sm bg-muted dark:bg-muted px-2 py-1 rounded !text-gray-900 dark:!text-gray-100">
                 {current.subdomain}
               </code>
               <a
                 href={currentUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="!text-blue-600 dark:!text-blue-400 hover:!text-blue-800 dark:hover:!text-blue-300 flex items-center gap-1"
+                className="!text-primary dark:!text-blue-400 hover:!text-blue-800 dark:hover:!text-blue-300 flex items-center gap-1"
               >
                 <ExternalLink className="h-4 w-4" />
                 Visit
@@ -147,10 +147,10 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
       )}
 
       {/* Subdomain Settings */}
-      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+      <Card className="bg-background dark:bg-muted border-border dark:border-border">
         <CardHeader>
           <CardTitle className="!text-gray-900 dark:!text-gray-100">Subdomain Settings</CardTitle>
-          <CardDescription className="!text-gray-600 dark:!text-gray-400">
+          <CardDescription className="!text-muted-foreground dark:!text-muted-foreground">
             Configure your organization's subdomain for branded access to {current.organizationName}
           </CardDescription>
         </CardHeader>
@@ -166,16 +166,16 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 value={subdomain}
                 onChange={e => handleSubdomainChange(e.target.value)}
                 placeholder="my-organization"
-                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
               />
-              <span className="text-sm !text-gray-500 dark:!text-gray-400 whitespace-nowrap">
+              <span className="text-sm !text-muted-foreground dark:!text-muted-foreground whitespace-nowrap">
                 .{current.previewBase}
               </span>
             </div>
             {previewUrl && (
-              <p className="text-xs !text-gray-500 dark:!text-gray-400 mt-1">
+              <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                 Preview:{' '}
-                <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded !text-gray-900 dark:!text-gray-100">
+                <code className="bg-muted dark:bg-muted px-1 rounded !text-gray-900 dark:!text-gray-100">
                   {previewUrl}
                 </code>
               </p>
@@ -190,7 +190,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 value={domainDraft}
                 onChange={e => setDomainDraft(e.target.value)}
                 placeholder="salon.mycompany.com"
-                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -203,7 +203,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 variant="outline"
                 onClick={handleAddDomain}
                 disabled={!domainDraft.trim()}
-                className="!text-gray-900 dark:!text-gray-100 border-gray-300 dark:border-gray-600"
+                className="!text-gray-900 dark:!text-gray-100 border-border dark:border-border"
               >
                 <Plus className="h-4 w-4 !text-gray-900 dark:!text-gray-100" />
               </Button>
@@ -214,7 +214,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 {domains.map((domain, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded p-2"
+                    className="flex items-center justify-between bg-muted dark:bg-muted rounded p-2"
                   >
                     <code className="text-sm !text-gray-900 dark:!text-gray-100">{domain}</code>
                     <Button
@@ -229,7 +229,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 ))}
               </div>
             )}
-            <p className="text-xs !text-gray-500 dark:!text-gray-400">
+            <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
               Custom domains require DNS configuration. Contact support for setup assistance.
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
         <Button
           onClick={handleSave}
           disabled={saving || !isChanged || !subdomain.trim()}
-          className="min-w-24 bg-blue-600 hover:bg-blue-700 !text-white"
+          className="min-w-24 bg-blue-600 hover:bg-blue-700 !text-foreground"
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
@@ -271,7 +271,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
               setSuccess(false)
             }}
             disabled={saving}
-            className="!text-gray-900 dark:!text-gray-100 border-gray-300 dark:border-gray-600"
+            className="!text-gray-900 dark:!text-gray-100 border-border dark:border-border"
           >
             Reset
           </Button>

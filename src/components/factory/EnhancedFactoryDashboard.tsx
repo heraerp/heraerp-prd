@@ -214,10 +214,10 @@ export default function EnhancedFactoryDashboard() {
   // Prevent rendering until data is loaded
   if (loading && !isInitialized) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-gray-500" />
-          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
     )
@@ -236,20 +236,20 @@ export default function EnhancedFactoryDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Enhanced Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40">
+      <header className="bg-background dark:bg-muted shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                <Factory className="w-6 h-6 text-white" />
+                <Factory className="w-6 h-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   HERA Universal Factory
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Pipeline Monitor • {baseFilters.organization_id}
                 </p>
               </div>
@@ -358,9 +358,9 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Lead Time</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Lead Time</p>
                   <p className="text-2xl font-bold">{kpis.leadTimeDays}d</p>
-                  <p className="text-xs text-gray-500">PLAN → RELEASE</p>
+                  <p className="text-xs text-muted-foreground">PLAN → RELEASE</p>
                 </div>
                 <Clock
                   className={cn(
@@ -377,7 +377,7 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Coverage</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Coverage</p>
                   <div className="flex items-center gap-2">
                     <p className="text-2xl font-bold">{kpis.coverageAvg.toFixed(1)}%</p>
                     {kpis.coverageAvg < 60 ? (
@@ -404,7 +404,7 @@ export default function EnhancedFactoryDashboard() {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                <TrendingUp className="w-8 h-8 text-gray-400" />
+                <TrendingUp className="w-8 h-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -417,9 +417,9 @@ export default function EnhancedFactoryDashboard() {
                 onClick={() => setGuardrailDialog({ open: true })}
               >
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Guardrail Pass</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Guardrail Pass</p>
                   <p className="text-2xl font-bold">{kpis.guardrailPassRate.toFixed(1)}%</p>
-                  <p className="text-xs text-blue-600 hover:underline">View details →</p>
+                  <p className="text-xs text-primary hover:underline">View details →</p>
                 </div>
                 <Shield
                   className={cn(
@@ -436,7 +436,7 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Audit Ready</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Audit Ready</p>
                   <p
                     className={cn(
                       'text-2xl font-bold',
@@ -445,7 +445,7 @@ export default function EnhancedFactoryDashboard() {
                   >
                     {kpis.auditReady ? 'YES' : 'NO'}
                   </p>
-                  <p className="text-xs text-gray-500">SBOM + Attestations</p>
+                  <p className="text-xs text-muted-foreground">SBOM + Attestations</p>
                 </div>
                 <FileCheck
                   className={cn('w-8 h-8', kpis.auditReady ? 'text-green-500' : 'text-red-500')}
@@ -459,7 +459,7 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Fiscal Period</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Fiscal Period</p>
                   <p
                     className={cn(
                       'text-2xl font-bold',

@@ -236,7 +236,7 @@ export default function UniversalAPIDNAIntegration() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
             HERA Universal API + DNA Integration
           </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground dark:text-slate-300 max-w-3xl mx-auto">
             Demonstrating enterprise-grade ecosystem: Universal API (100% coverage) + DNA
             Auto-Enforcement + WCAG AAA Colors + Real-time Components
           </p>
@@ -256,7 +256,7 @@ export default function UniversalAPIDNAIntegration() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="font-medium">Selected Components:</span>
-                    <div className="text-slate-600 dark:text-slate-300">
+                    <div className="text-muted-foreground dark:text-slate-300">
                       {dnaEnforcement.selectedComponents?.join(', ') || 'Enterprise Suite'}
                     </div>
                   </div>
@@ -337,7 +337,7 @@ export default function UniversalAPIDNAIntegration() {
             onClick={fetchEnterpriseData}
             disabled={loading}
             className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
-                     text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105
+                     text-foreground rounded-lg font-medium transition-all duration-200 transform hover:scale-105
                      disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             style={{
               background: `var(--color-primary)`,
@@ -358,7 +358,7 @@ export default function UniversalAPIDNAIntegration() {
             onClick={executeComplexWorkflow}
             disabled={loading}
             className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 
-                     text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105
+                     text-foreground rounded-lg font-medium transition-all duration-200 transform hover:scale-105
                      disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             style={{
               background: `var(--color-success)`,
@@ -381,7 +381,7 @@ export default function UniversalAPIDNAIntegration() {
             <div className="p-6">
               <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">🏪</span>
+                  <span className="text-foreground text-sm font-bold">🏪</span>
                 </div>
                 Restaurant Locations
                 <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
@@ -394,7 +394,7 @@ export default function UniversalAPIDNAIntegration() {
                   {enterprises.map((restaurant, idx) => (
                     <div
                       key={idx}
-                      className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700
+                      className="bg-background dark:bg-muted rounded-lg p-4 border border-border dark:border-border
                                hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
                     >
                       <h4 className="font-semibold text-lg mb-2">
@@ -402,19 +402,19 @@ export default function UniversalAPIDNAIntegration() {
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">Status:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Status:</span>
                           <span className="font-medium text-green-600 dark:text-green-400">
                             {restaurant.status || 'Active'}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">Code:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Code:</span>
                           <span className="font-mono text-xs">
                             {restaurant.entity_code || `REST-${idx + 1}`}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">Created:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Created:</span>
                           <span className="text-xs">
                             {new Date(restaurant.created_at).toLocaleDateString()}
                           </span>
@@ -428,7 +428,7 @@ export default function UniversalAPIDNAIntegration() {
                   <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <span className="text-2xl">🏪</span>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400">
+                  <p className="text-slate-500 dark:text-muted-foreground">
                     No restaurant data loaded. Click "Fetch Enterprise Data" to load sample data.
                   </p>
                 </div>
@@ -446,7 +446,7 @@ export default function UniversalAPIDNAIntegration() {
             <div className="p-6">
               <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">💳</span>
+                  <span className="text-foreground text-sm font-bold">💳</span>
                 </div>
                 Recent Transactions
                 <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 rounded-full text-sm">
@@ -460,7 +460,7 @@ export default function UniversalAPIDNAIntegration() {
                     <div
                       key={idx}
                       className="flex items-center justify-between p-4 bg-gradient-to-r from-white to-slate-50 
-                               dark:from-slate-800 dark:to-slate-750 rounded-lg border border-slate-200 dark:border-slate-700
+                               dark:from-slate-800 dark:to-slate-750 rounded-lg border border-border dark:border-border
                                hover:shadow-md transition-all duration-200"
                     >
                       <div className="flex items-center gap-4">
@@ -472,7 +472,7 @@ export default function UniversalAPIDNAIntegration() {
                         </div>
                         <div>
                           <div className="font-medium">Transaction #{transaction.index + 1}</div>
-                          <div className="text-sm text-slate-500 dark:text-slate-400">
+                          <div className="text-sm text-slate-500 dark:text-muted-foreground">
                             {transaction.success ? 'Completed successfully' : 'Processing failed'}
                           </div>
                         </div>
@@ -491,7 +491,7 @@ export default function UniversalAPIDNAIntegration() {
                   <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <span className="text-2xl">💳</span>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400">
+                  <p className="text-slate-500 dark:text-muted-foreground">
                     No transactions available. Execute bulk operations to see live transaction data.
                   </p>
                 </div>
@@ -501,7 +501,7 @@ export default function UniversalAPIDNAIntegration() {
         </EnterpriseDashboard>
 
         {/* System Status Footer */}
-        <div className="text-center space-y-4 pt-8 border-t border-slate-200 dark:border-slate-700">
+        <div className="text-center space-y-4 pt-8 border-t border-border dark:border-border">
           <div className="flex items-center justify-center gap-6 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -516,7 +516,7 @@ export default function UniversalAPIDNAIntegration() {
               <span>WCAG AAA Colors Validated</span>
             </div>
           </div>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500 dark:text-muted-foreground">
             🧬 HERA DNA: Most modern, enterprise-grade components way ahead of time
           </p>
         </div>

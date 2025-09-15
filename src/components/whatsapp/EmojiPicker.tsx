@@ -426,7 +426,7 @@ export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
                     <button
                       key={index}
                       onClick={() => handleEmojiClick(emoji)}
-                      className="w-9 h-9 flex items-center justify-center text-xl hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+                      className="w-9 h-9 flex items-center justify-center text-xl hover:bg-muted dark:hover:bg-muted rounded transition-colors"
                     >
                       {emoji}
                     </button>

@@ -118,7 +118,7 @@ export function EncryptionControls({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+            <Shield className="h-5 w-5 text-primary" />
             Data Encryption Status
           </CardTitle>
         </CardHeader>
@@ -127,7 +127,7 @@ export function EncryptionControls({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-base font-medium">Enable Encryption</Label>
-              <div className="text-sm text-slate-600">
+              <div className="text-sm text-muted-foreground">
                 Encrypt sensitive financial data using AES-256-GCM
               </div>
             </div>
@@ -147,7 +147,7 @@ export function EncryptionControls({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-blue-600" />
+              <Lock className="h-4 w-4 text-primary" />
               <span className="text-sm">
                 {encryptionStatus.encryptedFieldsCount} encrypted fields
               </span>
@@ -207,7 +207,7 @@ export function EncryptionControls({
             {/* Key Management */}
             <div className="space-y-3">
               <Label className="text-base font-medium">Master Key Management</Label>
-              <div className="text-sm text-slate-600 mb-3">
+              <div className="text-sm text-muted-foreground mb-3">
                 Master keys should be managed through secure environment variables in production.
               </div>
 
@@ -262,7 +262,7 @@ export function EncryptionControls({
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="show-sensitive">Show Sensitive Data</Label>
-                  <div className="text-sm text-slate-600">
+                  <div className="text-sm text-muted-foreground">
                     Temporarily reveal encrypted data for debugging
                   </div>
                 </div>
@@ -318,7 +318,7 @@ export function EncryptionControls({
               </div>
             ))}
           </div>
-          <div className="mt-4 text-sm text-slate-600">
+          <div className="mt-4 text-sm text-muted-foreground">
             These fields are automatically encrypted using AES-256-GCM with organization-specific
             keys.
           </div>

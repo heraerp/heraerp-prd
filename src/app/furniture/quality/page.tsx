@@ -72,7 +72,7 @@ const inspectionStatuses = {
   in_progress: {
     label: 'In Progress',
     icon: Activity,
-    color: 'text-blue-600 dark:text-blue-400',
+    color: 'text-primary dark:text-blue-400',
     bgColor: 'bg-blue-500/20'
   }
 }
@@ -80,7 +80,7 @@ const inspectionStatuses = {
 // Quality issue types
 const issueTypes = {
   dimension: { label: 'Dimension Issue', color: 'text-purple-600', icon: Package },
-  finish: { label: 'Finish Defect', color: 'text-blue-600', icon: Shield },
+  finish: { label: 'Finish Defect', color: 'text-primary', icon: Shield },
   material: { label: 'Material Defect', color: 'text-red-600', icon: AlertTriangle },
   assembly: { label: 'Assembly Issue', color: 'text-amber-600', icon: AlertCircle },
   packaging: { label: 'Packaging Issue', color: 'text-green-600', icon: Package }
@@ -102,7 +102,7 @@ const inspectionColumns = [
     render: (value: string, row: any) => (
       <div>
         <p className="font-medium">{value}</p>
-        <p className="text-sm text-gray-400">{row.product_code}</p>
+        <p className="text-sm text-muted-foreground">{row.product_code}</p>
       </div>
     )
   },
@@ -132,7 +132,7 @@ const inspectionColumns = [
     sortable: true,
     render: (value: string) => (
       <div className="flex items-center gap-2">
-        <User className="h-4 w-4 text-gray-400" />
+        <User className="h-4 w-4 text-muted-foreground" />
         <span>{value}</span>
       </div>
     )
@@ -143,7 +143,7 @@ const inspectionColumns = [
     sortable: true,
     render: (value: string) => (
       <div className="flex items-center gap-2">
-        <Calendar className="h-4 w-4 text-gray-400" />
+        <Calendar className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm">{new Date(value).toLocaleDateString()}</span>
       </div>
     )
@@ -185,7 +185,7 @@ const inspectionColumns = [
     align: 'center' as const,
     render: (_: any, row: any) => (
       <div className="flex gap-1 justify-center">
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-700">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted-foreground/10">
           <FileCheck className="h-4 w-4" />
         </Button>
       </div>
@@ -209,7 +209,7 @@ const issueColumns = [
     render: (value: string, row: any) => (
       <div>
         <p className="font-medium">{value}</p>
-        <p className="text-sm text-gray-400">Batch: {row.batch_number}</p>
+        <p className="text-sm text-muted-foreground">Batch: {row.batch_number}</p>
       </div>
     )
   },
@@ -220,7 +220,7 @@ const issueColumns = [
     render: (value: string) => {
       const config = issueTypes[value as keyof typeof issueTypes] || {
         label: value,
-        color: 'text-gray-600',
+        color: 'text-muted-foreground',
         icon: AlertCircle
       }
       const Icon = config.icon
@@ -459,8 +459,8 @@ export default function FurnitureQuality() {
   if (isAuthenticated) {
     if (!isAuthenticated) {
       return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-          <Alert className="max-w-md bg-gray-800/50 border-gray-700">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6">
+          <Alert className="max-w-md bg-muted/50 border-border">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>Please log in to access quality management.</AlertDescription>
           </Alert>
@@ -470,7 +470,7 @@ export default function FurnitureQuality() {
 
     if (contextLoading) {
       return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-background p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <Skeleton className="h-10 w-64" />
             <div className="grid grid-cols-4 gap-4">
@@ -532,7 +532,7 @@ export default function FurnitureQuality() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -557,13 +557,13 @@ export default function FurnitureQuality() {
           {statCards.map((stat, index) => (
             <Card
               key={index}
-              className="p-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors"
+              className="p-4 bg-muted/50 border-border hover:bg-muted/70 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm text-gray-400">{stat.label}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-gray-500">{stat.description}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground">{stat.description}</p>
                   <div
                     className={cn(
                       'flex items-center gap-1 text-sm',
@@ -585,18 +585,18 @@ export default function FurnitureQuality() {
         </div>
 
         {/* Quality Standards */}
-        <Card className="p-6 bg-gray-800/50 border-gray-700">
-          <h3 className="text-lg font-semibold mb-4 text-white">Quality Certifications</h3>
+        <Card className="p-6 bg-muted/50 border-border">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Quality Certifications</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {qualityStandards.map((cert, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 rounded-lg bg-gray-900/50"
+                className="flex items-center justify-between p-4 rounded-lg bg-background/50"
               >
                 <div>
-                  <p className="font-medium text-white">{cert.standard}</p>
-                  <p className="text-sm text-gray-400">Status: {cert.status}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-medium text-foreground">{cert.standard}</p>
+                  <p className="text-sm text-muted-foreground">Status: {cert.status}</p>
+                  <p className="text-xs text-muted-foreground">
                     Expires: {new Date(cert.expiry).toLocaleDateString()}
                   </p>
                 </div>
@@ -609,16 +609,16 @@ export default function FurnitureQuality() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <div className="flex justify-between items-center">
-            <TabsList className="bg-gray-800 border-gray-700">
-              <TabsTrigger value="inspections" className="data-[state=active]:bg-gray-700">
+            <TabsList className="bg-muted border-border">
+              <TabsTrigger value="inspections" className="data-[state=active]:bg-muted-foreground/10">
                 <ClipboardCheck className="h-4 w-4 mr-2" />
                 Inspections
               </TabsTrigger>
-              <TabsTrigger value="issues" className="data-[state=active]:bg-gray-700">
+              <TabsTrigger value="issues" className="data-[state=active]:bg-muted-foreground/10">
                 <AlertTriangle className="h-4 w-4 mr-2" />
                 Quality Issues
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="data-[state=active]:bg-gray-700">
+              <TabsTrigger value="analytics" className="data-[state=active]:bg-muted-foreground/10">
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Analytics
               </TabsTrigger>
@@ -627,22 +627,22 @@ export default function FurnitureQuality() {
             {/* Search and Filters */}
             <div className="flex gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search quality records..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-400 w-64"
+                  className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground w-64"
                 />
               </div>
 
               {activeTab === 'inspections' && (
                 <>
                   <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger className="w-40 bg-gray-900/50 border-gray-600 text-white">
+                    <SelectTrigger className="w-40 bg-background/50 border-border text-foreground">
                       <SelectValue placeholder="Type" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-muted border-border">
                       <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="incoming">Incoming</SelectItem>
                       <SelectItem value="in_process">In-Process</SelectItem>
@@ -652,10 +652,10 @@ export default function FurnitureQuality() {
                   </Select>
 
                   <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                    <SelectTrigger className="w-40 bg-gray-900/50 border-gray-600 text-white">
+                    <SelectTrigger className="w-40 bg-background/50 border-border text-foreground">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-muted border-border">
                       <SelectItem value="all">All Status</SelectItem>
                       <SelectItem value="passed">Passed</SelectItem>
                       <SelectItem value="failed">Failed</SelectItem>
@@ -684,7 +684,7 @@ export default function FurnitureQuality() {
                   ? 'Try adjusting your search or filters.'
                   : 'Quality inspections will appear here when products are tested.'
               }}
-              className="bg-gray-800/50 border-gray-700"
+              className="bg-muted/50 border-border"
             />
           </TabsContent>
 
@@ -702,22 +702,22 @@ export default function FurnitureQuality() {
                 title: 'No quality issues found',
                 description: 'Quality issues will be tracked here when defects are identified.'
               }}
-              className="bg-gray-800/50 border-gray-700"
+              className="bg-muted/50 border-border"
             />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-4">
             <div className="grid grid-cols-2 gap-6">
-              <Card className="p-6 bg-gray-800/50 border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-white">Quality Trend</h3>
-                <div className="h-64 flex items-center justify-center text-gray-400">
+              <Card className="p-6 bg-muted/50 border-border">
+                <h3 className="text-lg font-semibold mb-4 text-foreground">Quality Trend</h3>
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   <BarChart3 className="h-16 w-16 opacity-20" />
                   <p className="ml-4">Quality trend chart would go here</p>
                 </div>
               </Card>
 
-              <Card className="p-6 bg-gray-800/50 border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-white">Defect Analysis</h3>
+              <Card className="p-6 bg-muted/50 border-border">
+                <h3 className="text-lg font-semibold mb-4 text-foreground">Defect Analysis</h3>
                 <div className="space-y-3">
                   {Object.entries(issueTypes).map(([key, config]) => {
                     const Icon = config.icon
@@ -742,8 +742,8 @@ export default function FurnitureQuality() {
               </Card>
             </div>
 
-            <Card className="p-6 bg-gray-800/50 border-gray-700">
-              <h3 className="text-lg font-semibold mb-4 text-white">Inspector Performance</h3>
+            <Card className="p-6 bg-muted/50 border-border">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Inspector Performance</h3>
               <div className="space-y-3">
                 {['Inspector 1', 'Inspector 2', 'Inspector 3'].map((inspector, index) => {
                   const inspectorData = inspections.filter(i => i.inspector_name === inspector)
@@ -758,20 +758,20 @@ export default function FurnitureQuality() {
                   return (
                     <div
                       key={inspector}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50"
+                      className="flex items-center justify-between p-3 rounded-lg bg-background/50"
                     >
                       <div className="flex items-center gap-3">
-                        <User className="h-5 w-5 text-gray-400" />
+                        <User className="h-5 w-5 text-muted-foreground" />
                         <div>
                           <p className="font-medium">{inspector}</p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             {inspectorData.length} inspections
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-mono font-medium">{avgPassRate}%</p>
-                        <p className="text-sm text-gray-400">avg pass rate</p>
+                        <p className="text-sm text-muted-foreground">avg pass rate</p>
                       </div>
                     </div>
                   )

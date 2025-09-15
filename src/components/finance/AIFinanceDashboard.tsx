@@ -93,11 +93,11 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 flex items-center">
-            <Brain className="w-8 h-8 mr-3 text-blue-600" />
+          <h1 className="text-3xl font-bold text-foreground flex items-center">
+            <Brain className="w-8 h-8 mr-3 text-primary" />
             AI Finance Integration
           </h1>
-          <p className="text-slate-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Automated journal posting with PostgreSQL AI intelligence
           </p>
         </div>
@@ -105,7 +105,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
           <select
             value={selectedPeriod}
             onChange={e => setSelectedPeriod(parseInt(e.target.value))}
-            className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value={7}>Last 7 days</option>
             <option value={30}>Last 30 days</option>
@@ -126,7 +126,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
+                  <Zap className="w-6 h-6 text-foreground" />
                 </div>
                 <Badge
                   className={`${getMetricColor(metrics.auto_posting_rate, { good: 85, warning: 70 })}`}
@@ -139,7 +139,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </Badge>
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium text-blue-600">Auto-Posting Rate</p>
+                <p className="text-sm font-medium text-primary">Auto-Posting Rate</p>
                 <p className="text-3xl font-bold text-blue-900">{metrics.auto_posting_rate}%</p>
                 <Progress
                   value={metrics.auto_posting_rate}
@@ -155,7 +155,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
-                  <Target className="w-6 h-6 text-white" />
+                  <Target className="w-6 h-6 text-foreground" />
                 </div>
                 <Badge className="bg-emerald-100 text-emerald-800">
                   {getConfidenceDescription(metrics.average_confidence_score)}
@@ -179,7 +179,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-white" />
+                  <BarChart3 className="w-6 h-6 text-foreground" />
                 </div>
                 <Badge className="bg-purple-100 text-purple-800">{selectedPeriod} days</Badge>
               </div>
@@ -201,7 +201,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-white" />
+                  <Clock className="w-6 h-6 text-foreground" />
                 </div>
                 <Badge
                   className={
@@ -231,7 +231,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
         <Card className="border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Award className="w-5 h-5 mr-2 text-blue-600" />
+              <Award className="w-5 h-5 mr-2 text-primary" />
               Smart Code Performance
             </CardTitle>
           </CardHeader>
@@ -244,7 +244,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 >
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="font-medium text-slate-900">{code.smart_code}</p>
+                      <p className="font-medium text-foreground">{code.smart_code}</p>
                       <Badge
                         className={`ml-2 ${
                           code.auto_posting_rate >= 85
@@ -258,10 +258,10 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-muted-foreground">
                         {code.transaction_count} transactions
                       </p>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-muted-foreground">
                         Conf: {(code.avg_confidence * 100).toFixed(0)}%
                       </p>
                     </div>
@@ -300,13 +300,13 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 >
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="font-medium text-slate-900">{transaction.reference_number}</p>
-                      <span className="text-sm font-medium text-slate-900">
+                      <p className="font-medium text-foreground">{transaction.reference_number}</p>
+                      <span className="text-sm font-medium text-foreground">
                         {formatCurrency(transaction.total_amount)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <p className="text-sm text-slate-600">{transaction.smart_code}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.smart_code}</p>
                       <Badge className="bg-blue-100 text-blue-800">
                         {(transaction.ai_confidence_score * 100).toFixed(0)}% confidence
                       </Badge>
@@ -348,7 +348,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
               {/* Auto Posted */}
               <div className="text-center">
                 <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle className="w-8 h-8 text-white" />
+                  <CheckCircle className="w-8 h-8 text-foreground" />
                 </div>
                 <p className="text-2xl font-bold text-emerald-900">{metrics.auto_posted_count}</p>
                 <p className="text-sm text-emerald-600 font-medium">Auto Posted</p>
@@ -358,7 +358,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
               {/* Pending Review */}
               <div className="text-center">
                 <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Clock className="w-8 h-8 text-white" />
+                  <Clock className="w-8 h-8 text-foreground" />
                 </div>
                 <p className="text-2xl font-bold text-amber-900">{metrics.pending_review_count}</p>
                 <p className="text-sm text-amber-600 font-medium">Pending Review</p>
@@ -368,7 +368,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
               {/* Manual Required */}
               <div className="text-center">
                 <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <AlertTriangle className="w-8 h-8 text-white" />
+                  <AlertTriangle className="w-8 h-8 text-foreground" />
                 </div>
                 <p className="text-2xl font-bold text-red-900">{metrics.manual_required_count}</p>
                 <p className="text-sm text-red-600 font-medium">Manual Required</p>
@@ -383,7 +383,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <p className="text-2xl font-bold text-blue-900">{metrics.ai_effectiveness}%</p>
               </div>
               <Progress value={metrics.ai_effectiveness} className="h-3 bg-blue-200" />
-              <p className="text-sm text-blue-600 mt-2">
+              <p className="text-sm text-primary mt-2">
                 AI successfully handles {metrics.ai_effectiveness}% of all transactions
               </p>
             </div>
@@ -395,7 +395,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
       <Card className="border-0 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Settings className="w-5 h-5 mr-2 text-slate-600" />
+            <Settings className="w-5 h-5 mr-2 text-muted-foreground" />
             Quick Actions
           </CardTitle>
         </CardHeader>

@@ -253,7 +253,7 @@ export default function AppsPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-4 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="text-sm text-gray-600">Loading apps...</p>
+          <p className="text-sm text-muted-foreground">Loading apps...</p>
         </div>
       </div>
     )
@@ -266,7 +266,7 @@ export default function AppsPage() {
         <Card className="w-full max-w-md">
           <CardContent className="py-8">
             <div className="text-center space-y-4">
-              <p className="text-gray-600">Redirecting to login...</p>
+              <p className="text-muted-foreground">Redirecting to login...</p>
               <Button onClick={() => router.push('/auth/login')} variant="outline">
                 Go to Login Now
               </Button>
@@ -280,13 +280,13 @@ export default function AppsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                  <span className="text-sm font-bold text-white">H</span>
+                <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center">
+                  <span className="text-sm font-bold text-foreground">H</span>
                 </div>
                 <span className="text-xl font-light">HERA Apps</span>
               </Link>
@@ -294,7 +294,7 @@ export default function AppsPage() {
 
             <div className="flex items-center gap-4">
               {currentOrganization && (
-                <span className="text-sm text-gray-600">{currentOrganization.name}</span>
+                <span className="text-sm text-muted-foreground">{currentOrganization.name}</span>
               )}
               <Button
                 variant="outline"
@@ -313,7 +313,7 @@ export default function AppsPage() {
         {/* Page Title */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Select an industry-specific solution or universal business application. All apps include
             sample data to help you get started immediately.
           </p>
@@ -389,7 +389,7 @@ export default function AppsPage() {
                     className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
                       app.status === 'beta'
                         ? 'bg-blue-100 text-blue-700'
-                        : 'bg-gray-100 text-gray-700'
+                        : 'bg-muted text-gray-700'
                     }`}
                   >
                     {app.status === 'beta' ? 'Beta' : 'Coming Soon'}
@@ -400,7 +400,7 @@ export default function AppsPage() {
                   <div
                     className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${app.gradient} flex items-center justify-center mb-4`}
                   >
-                    <Icon className="w-8 h-8 text-white" />
+                    <Icon className="w-8 h-8 text-foreground" />
                   </div>
                   <CardTitle className="text-xl">{app.title}</CardTitle>
                   <CardDescription className="text-sm">{app.description}</CardDescription>
@@ -409,7 +409,7 @@ export default function AppsPage() {
                 <CardContent>
                   <div className="space-y-2 mb-4">
                     {app.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                      <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                         {feature}
                       </div>
@@ -419,7 +419,7 @@ export default function AppsPage() {
                   {!isDisabled && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-900">Open App</span>
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     </div>
                   )}
                 </CardContent>
@@ -430,9 +430,9 @@ export default function AppsPage() {
 
         {/* Footer Info */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
-            <Shield className="w-4 h-4 text-gray-600" />
-            <span className="text-sm text-gray-600">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-full">
+            <Shield className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
               All apps include enterprise-grade security and multi-tenant isolation
             </span>
           </div>

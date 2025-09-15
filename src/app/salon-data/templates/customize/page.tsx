@@ -84,10 +84,10 @@ function CustomizeTemplateContent() {
 
   if (loadingTemplate) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading template...</p>
+          <p className="mt-2 text-muted-foreground dark:text-muted-foreground">Loading template...</p>
         </div>
       </div>
     )
@@ -95,7 +95,7 @@ function CustomizeTemplateContent() {
 
   if (!template) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-muted dark:bg-background">
         <div className="px-4 py-6">
           <Alert className="max-w-2xl mx-auto">
             <AlertDescription>
@@ -116,9 +116,9 @@ function CustomizeTemplateContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Page Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <div className="border-b border-border dark:border-border bg-background dark:bg-muted">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/salon-data/templates">
@@ -128,10 +128,10 @@ function CustomizeTemplateContent() {
               </Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
                 Customize Template
               </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 Personalize the template for {currentOrganization?.name || 'your salon'}
               </p>
             </div>
@@ -155,10 +155,10 @@ export default function CustomizeTemplatePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="mt-2 text-muted-foreground dark:text-muted-foreground">Loading...</p>
           </div>
         </div>
       }

@@ -124,10 +124,10 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
       <div
         className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
       />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6 hover:bg-background/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-foreground" />
           </div>
           {change !== undefined && (
             <div
@@ -142,9 +142,9 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
             </div>
           )}
         </div>
-        <h3 className="text-white/60 text-sm font-medium mb-1">{title}</h3>
-        <p className="text-2xl font-bold text-white mb-1">{value}</p>
-        {subValue && <p className="text-xs text-white/40">{subValue}</p>}
+        <h3 className="text-foreground/60 text-sm font-medium mb-1">{title}</h3>
+        <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
+        {subValue && <p className="text-xs text-foreground/40">{subValue}</p>}
       </div>
     </div>
   )
@@ -277,17 +277,17 @@ export default function BillingPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Billing & Revenue
           </h1>
-          <p className="text-white/60 mt-1">Manage invoices, payments, and revenue tracking</p>
+          <p className="text-foreground/60 mt-1">Manage invoices, payments, and revenue tracking</p>
         </div>
 
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground/60 hover:bg-background/20 hover:text-foreground transition-all duration-200">
             <Calendar className="h-5 w-5" />
             <span>Jun 2024</span>
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-foreground rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
           >
             <Plus className="h-5 w-5" />
             <span>Generate Invoice</span>
@@ -336,17 +336,17 @@ export default function BillingPage() {
         <div className="lg:col-span-2">
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">Billing & Collection Trend</h2>
+                <h2 className="text-xl font-semibold text-foreground">Billing & Collection Trend</h2>
                 <div className="flex items-center space-x-4 text-xs">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
-                    <span className="text-white/60">Billed</span>
+                    <span className="text-foreground/60">Billed</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="text-white/60">Collected</span>
+                    <span className="text-foreground/60">Collected</span>
                   </div>
                 </div>
               </div>
@@ -400,18 +400,18 @@ export default function BillingPage() {
         <div>
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Payment Methods</h2>
+            <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">Payment Methods</h2>
 
               <div className="space-y-4">
                 {paymentMethods.map((method, index) => (
                   <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-white/80">{method.method}</span>
-                      <span className="text-sm font-medium text-white">{method.percentage}%</span>
+                      <span className="text-sm text-foreground/80">{method.method}</span>
+                      <span className="text-sm font-medium text-foreground">{method.percentage}%</span>
                     </div>
                     <div className="relative">
-                      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-1000"
                           style={{ width: `${method.percentage}%` }}
@@ -419,7 +419,7 @@ export default function BillingPage() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/40">
+                      <span className="text-foreground/40">
                         ₹{(method.amount / 100000).toFixed(1)} L
                       </span>
                     </div>
@@ -427,10 +427,10 @@ export default function BillingPage() {
                 ))}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="mt-6 pt-6 border-t border-border/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-white/60">Total Collected</span>
-                  <span className="text-lg font-bold text-white">₹42 L</span>
+                  <span className="text-sm text-foreground/60">Total Collected</span>
+                  <span className="text-lg font-bold text-foreground">₹42 L</span>
                 </div>
               </div>
             </div>
@@ -440,7 +440,7 @@ export default function BillingPage() {
 
       {/* Recent Invoices */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-6">Recent Invoices</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-6">Recent Invoices</h2>
         <ISPTable
           data={filteredInvoices}
           columns={[
@@ -454,8 +454,8 @@ export default function BillingPage() {
               label: 'Customer',
               render: item => (
                 <div>
-                  <p className="text-sm font-medium text-white">{item.customer}</p>
-                  {item.description && <p className="text-xs text-white/60">{item.description}</p>}
+                  <p className="text-sm font-medium text-foreground">{item.customer}</p>
+                  {item.description && <p className="text-xs text-foreground/60">{item.description}</p>}
                 </div>
               )
             },
@@ -463,7 +463,7 @@ export default function BillingPage() {
               key: 'amount',
               label: 'Amount',
               render: item => (
-                <span className="text-sm font-medium text-white">
+                <span className="text-sm font-medium text-foreground">
                   ₹{item.amount.toLocaleString()}
                 </span>
               )
@@ -478,7 +478,7 @@ export default function BillingPage() {
               label: 'Due Date',
               render: item => (
                 <div className="space-y-1">
-                  <p className="text-sm text-white/80">{item.dueDate}</p>
+                  <p className="text-sm text-foreground/80">{item.dueDate}</p>
                   {item.paidDate && (
                     <p className="text-xs text-emerald-400">Paid: {item.paidDate}</p>
                   )}
@@ -496,39 +496,39 @@ export default function BillingPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+          <div className="relative flex items-center space-x-3 bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4 hover:bg-background/20 transition-all duration-300">
             <div className="p-2 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg">
-              <FileText className="h-5 w-5 text-white" />
+              <FileText className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">Bulk Invoice Generation</p>
-              <p className="text-xs text-white/60">Generate monthly invoices</p>
+              <p className="text-sm font-medium text-foreground">Bulk Invoice Generation</p>
+              <p className="text-xs text-foreground/60">Generate monthly invoices</p>
             </div>
           </div>
         </button>
 
         <button className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+          <div className="relative flex items-center space-x-3 bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4 hover:bg-background/20 transition-all duration-300">
             <div className="p-2 bg-gradient-to-br from-[#FFD700] to-[#0099CC] rounded-lg">
               <CreditCard className="h-5 w-5 text-[#0049B7]" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">Payment Reminders</p>
-              <p className="text-xs text-white/60">Send automated reminders</p>
+              <p className="text-sm font-medium text-foreground">Payment Reminders</p>
+              <p className="text-xs text-foreground/60">Send automated reminders</p>
             </div>
           </div>
         </button>
 
         <button className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative flex items-center space-x-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+          <div className="relative flex items-center space-x-3 bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4 hover:bg-background/20 transition-all duration-300">
             <div className="p-2 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-lg">
-              <BarChart3 className="h-5 w-5 text-white" />
+              <BarChart3 className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">Revenue Report</p>
-              <p className="text-xs text-white/60">Generate detailed report</p>
+              <p className="text-sm font-medium text-foreground">Revenue Report</p>
+              <p className="text-xs text-foreground/60">Generate detailed report</p>
             </div>
           </div>
         </button>
@@ -565,7 +565,7 @@ export default function BillingPage() {
             value={formData.amount}
             onChange={e => setFormData({ ...formData, amount: parseInt(e.target.value) })}
             placeholder="Enter invoice amount"
-            icon={<DollarSign className="h-4 w-4 text-white/40" />}
+            icon={<DollarSign className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -574,7 +574,7 @@ export default function BillingPage() {
             type="date"
             value={formData.dueDate}
             onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-            icon={<Calendar className="h-4 w-4 text-white/40" />}
+            icon={<Calendar className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -602,7 +602,7 @@ export default function BillingPage() {
             value={formData.description}
             onChange={e => setFormData({ ...formData, description: e.target.value })}
             placeholder="Enter invoice description"
-            icon={<FileText className="h-4 w-4 text-white/40" />}
+            icon={<FileText className="h-4 w-4 text-foreground/40" />}
           />
 
           <div className="flex justify-end space-x-3 pt-4">
@@ -653,7 +653,7 @@ export default function BillingPage() {
             value={formData.amount}
             onChange={e => setFormData({ ...formData, amount: parseInt(e.target.value) })}
             placeholder="Enter invoice amount"
-            icon={<DollarSign className="h-4 w-4 text-white/40" />}
+            icon={<DollarSign className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -662,7 +662,7 @@ export default function BillingPage() {
             type="date"
             value={formData.dueDate}
             onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-            icon={<Calendar className="h-4 w-4 text-white/40" />}
+            icon={<Calendar className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -690,7 +690,7 @@ export default function BillingPage() {
             value={formData.description}
             onChange={e => setFormData({ ...formData, description: e.target.value })}
             placeholder="Enter invoice description"
-            icon={<FileText className="h-4 w-4 text-white/40" />}
+            icon={<FileText className="h-4 w-4 text-foreground/40" />}
           />
 
           <div className="flex justify-end space-x-3 pt-4">

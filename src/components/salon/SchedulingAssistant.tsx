@@ -273,7 +273,7 @@ export function SchedulingAssistant({
     const dayHours = workingHours.find(wh => wh.dow === viewDate.getDay())
     if (!dayHours) {
       return (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           <AlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
           <p>Salon closed on this day</p>
         </div>
@@ -292,20 +292,20 @@ export function SchedulingAssistant({
     const showHalfHours = timelineZoom === 'detailed'
 
     return (
-      <div className="relative bg-white dark:bg-gray-800 rounded-lg">
+      <div className="relative bg-background dark:bg-muted rounded-lg">
         {/* Hour labels */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gray-50 dark:bg-gray-900 rounded-l-lg">
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-muted dark:bg-background rounded-l-lg">
           {hours.map((hour, idx) => (
             <div key={hour}>
               <div
-                className="border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 font-medium pt-1 pr-2 text-right"
+                className="border-t border-border dark:border-border text-sm text-gray-700 dark:text-gray-300 font-medium pt-1 pr-2 text-right"
                 style={{ height: `${pixelsPerHour}px` }}
               >
                 {formatDate(new Date().setHours(hour, 0), 'h:mm a')}
               </div>
               {showHalfHours && idx < hours.length - 1 && (
                 <div
-                  className="text-xs text-gray-400 dark:text-gray-500 pr-2 text-right"
+                  className="text-xs text-muted-foreground dark:text-muted-foreground pr-2 text-right"
                   style={{ height: `${pixelsPerHour / 2}px`, marginTop: `-${pixelsPerHour / 2}px` }}
                 >
                   {formatDate(new Date().setHours(hour, 30), 'h:mm')}
@@ -320,7 +320,7 @@ export function SchedulingAssistant({
           {hours.map((hour, idx) => (
             <div key={hour}>
               <div
-                className="border-t-2 border-gray-200 dark:border-gray-700"
+                className="border-t-2 border-border dark:border-border"
                 style={{ height: `${pixelsPerHour}px` }}
               >
                 {/* Half-hour line */}
@@ -359,7 +359,7 @@ export function SchedulingAssistant({
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-red-500 rounded-full" />
                 <div className="flex-1 h-0.5 bg-red-500" />
-                <span className="text-xs text-red-500 font-medium px-2 bg-white dark:bg-gray-900">
+                <span className="text-xs text-red-500 font-medium px-2 bg-background dark:bg-background">
                   {formatDate(currentTime, 'h:mm a')}
                 </span>
               </div>
@@ -395,7 +395,7 @@ export function SchedulingAssistant({
                   {block.reason === 'existing_appointment' ? 'Busy' : 'Prayer Time'}
                 </p>
                 {timelineZoom === 'detailed' && (
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p className="text-muted-foreground dark:text-muted-foreground">
                     {formatDate(blockStart, 'h:mm a')} - {formatDate(blockEnd, 'h:mm a')}
                   </p>
                 )}
@@ -447,7 +447,7 @@ export function SchedulingAssistant({
                   )}
                 </div>
                 {timelineZoom === 'detailed' && (
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-muted-foreground dark:text-muted-foreground mt-1">
                     {formatDate(slotStart, 'h:mm a')} - {formatDate(slotEnd, 'h:mm a')}
                   </p>
                 )}
@@ -498,7 +498,7 @@ export function SchedulingAssistant({
                       : preSelectedTime &&
                           formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 animate-pulse'
-                        : 'hover:border-gray-300'
+                        : 'hover:border-border'
                   )}
                   onClick={() => handleSlotSelect(slot)}
                 >
@@ -509,7 +509,7 @@ export function SchedulingAssistant({
                           {formatDate(parseISO(slot.start), 'h:mm a')} -{' '}
                           {formatDate(parseISO(slot.end), 'h:mm a')}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                           {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
                         </p>
                       </div>
@@ -519,7 +519,7 @@ export function SchedulingAssistant({
                         </Badge>
                         {preSelectedTime &&
                         formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime ? (
-                          <p className="text-xs text-blue-600 mt-1">Requested time</p>
+                          <p className="text-xs text-primary mt-1">Requested time</p>
                         ) : (
                           idx === 0 && <p className="text-xs text-green-600 mt-1">Next available</p>
                         )}
@@ -531,8 +531,8 @@ export function SchedulingAssistant({
             </div>
           ) : (
             <div className="text-center py-8">
-              <CalendarX className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm text-gray-600 dark:text-gray-400">No available slots today</p>
+              <CalendarX className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">No available slots today</p>
             </div>
           )}
         </ScrollArea>
@@ -552,7 +552,7 @@ export function SchedulingAssistant({
         {/* Pre-selected time indicator */}
         {preSelectedTime && (
           <Alert className="mb-4 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
-            <Clock className="h-4 w-4 text-blue-600" />
+            <Clock className="h-4 w-4 text-primary" />
             <AlertDescription className="text-blue-800 dark:text-blue-200">
               <strong>Looking for availability around:</strong> {preSelectedTime} on{' '}
               {formatDate(selectedDate, 'MMM d, yyyy')}
@@ -632,10 +632,10 @@ export function SchedulingAssistant({
       {/* Main Content */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Timeline View */}
-        <Card className="lg:col-span-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-white">
-              <Clock className="w-4 h-4 text-blue-600" />
+        <Card className="lg:col-span-2 bg-background dark:bg-muted border-border dark:border-border">
+          <CardHeader className="border-b border-border dark:border-border">
+            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-foreground">
+              <Clock className="w-4 h-4 text-primary" />
               Timeline View
             </CardTitle>
           </CardHeader>
@@ -655,10 +655,10 @@ export function SchedulingAssistant({
         </Card>
 
         {/* Suggestions Panel */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-white">
-              <Star className="w-4 h-4 text-blue-600" />
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
+          <CardHeader className="border-b border-border dark:border-border">
+            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-foreground">
+              <Star className="w-4 h-4 text-primary" />
               Top Suggestions
             </CardTitle>
           </CardHeader>
@@ -676,7 +676,7 @@ export function SchedulingAssistant({
                     <Card
                       key={idx}
                       className={cn(
-                        'cursor-pointer transition-all bg-white dark:bg-gray-700',
+                        'cursor-pointer transition-all bg-background dark:bg-muted-foreground/10',
                         selectedSlot?.start === slot.start
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : preSelectedTime &&
@@ -689,11 +689,11 @@ export function SchedulingAssistant({
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
+                            <p className="font-medium text-gray-900 dark:text-foreground">
                               {formatDate(parseISO(slot.start), 'h:mm a')} -{' '}
                               {formatDate(parseISO(slot.end), 'h:mm a')}
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                               {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
                             </p>
                           </div>
@@ -736,8 +736,8 @@ export function SchedulingAssistant({
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <CalendarX className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <CalendarX className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-4">
                     No available slots found
                   </p>
                   <Button variant="outline" size="sm" onClick={() => navigateDate('next')}>
@@ -754,19 +754,19 @@ export function SchedulingAssistant({
       <div className="mt-6 flex flex-wrap items-center gap-4 text-sm">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 rounded" />
-          <span className="text-gray-600 dark:text-gray-400">Available</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Available</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-red-100 dark:bg-red-900/30 border border-red-300 rounded" />
-          <span className="text-gray-600 dark:text-gray-400">Busy</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Busy</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 border border-green-300 rounded" />
-          <span className="text-gray-600 dark:text-gray-400">Prayer Time</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Prayer Time</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-purple-200 dark:bg-purple-800 border-2 border-purple-500 rounded" />
-          <span className="text-gray-600 dark:text-gray-400">Selected</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Selected</span>
         </div>
       </div>
     </div>

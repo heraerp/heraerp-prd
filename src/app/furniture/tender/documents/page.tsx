@@ -87,8 +87,8 @@ const getFileIcon = (fileType: string) => {
     return <FileSpreadsheet className="h-5 w-5 text-green-500" />
   if (fileType.includes('image')) return <FileImage className="h-5 w-5 text-blue-500" />
   if (fileType.includes('word') || fileType.includes('doc'))
-    return <FileText className="h-5 w-5 text-blue-600" />
-  return <File className="h-5 w-5 text-gray-500" />
+    return <FileText className="h-5 w-5 text-primary" />
+  return <File className="h-5 w-5 text-muted-foreground" />
 }
 
 const formatFileSize = (bytes: number) => {

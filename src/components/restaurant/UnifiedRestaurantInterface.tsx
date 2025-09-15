@@ -124,7 +124,7 @@ export function UnifiedRestaurantInterface() {
       subtitle: 'Restaurant pulse',
       icon: <Home className="w-6 h-6" />,
       color: 'from-slate-600 to-slate-800',
-      gradient: 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200',
+      gradient: 'bg-gradient-to-br from-slate-50 to-slate-100 border-border',
       isActive: true
     },
     {
@@ -213,13 +213,13 @@ export function UnifiedRestaurantInterface() {
   return (
     <div
       className={`min-h-screen transition-all duration-300 ${
-        darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
+        darkMode ? 'bg-background' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
       }`}
     >
       {/* Header - Jobs-inspired minimal header */}
       <header
         className={`sticky top-0 z-50 backdrop-blur-xl ${
-          darkMode ? 'bg-gray-900/80 border-gray-800' : 'bg-white/80 border-gray-200/50'
+          darkMode ? 'bg-background/80 border-gray-800' : 'bg-background/80 border-border/50'
         } border-b`}
       >
         <div className="max-w-7xl mx-auto px-6">
@@ -227,15 +227,15 @@ export function UnifiedRestaurantInterface() {
             {/* Left: Restaurant branding */}
             <div className="flex items-center space-x-4">
               <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-                <ChefHat className="w-5 h-5 text-white" />
+                <ChefHat className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <h1
-                  className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}
+                  className={`text-lg font-semibold ${darkMode ? 'text-foreground' : 'text-gray-900'}`}
                 >
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
-                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p className={`text-xs ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
                   {isClient ? formatDate(currentTime, 'EEEE, MMM d · h:mm a') : 'Loading...'}
                 </p>
               </div>
@@ -246,7 +246,7 @@ export function UnifiedRestaurantInterface() {
               <div className="relative">
                 <Search
                   className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                    darkMode ? 'text-muted-foreground' : 'text-muted-foreground'
                   }`}
                 />
                 <Input
@@ -255,8 +255,8 @@ export function UnifiedRestaurantInterface() {
                   placeholder="Search everything... ⌘K"
                   className={`pl-10 pr-4 py-2 rounded-full border-0 shadow-sm transition-all ${
                     darkMode
-                      ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
-                      : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:shadow-md'
+                      ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
+                      : 'bg-muted text-gray-900 placeholder-gray-500 focus:bg-background focus:shadow-md'
                   }`}
                   onFocus={() => setIsCommandPaletteOpen(true)}
                 />
@@ -269,7 +269,7 @@ export function UnifiedRestaurantInterface() {
               <div className="flex items-center space-x-2">
                 <PulseIndicator active={true} color="green" size="sm" />
                 <span
-                  className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                  className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}
                 >
                   Live
                 </span>
@@ -280,7 +280,7 @@ export function UnifiedRestaurantInterface() {
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="w-4 h-4" />
                 {liveStats.activeOrders > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-foreground text-xs rounded-full flex items-center justify-center">
                     {liveStats.activeOrders}
                   </span>
                 )}
@@ -324,7 +324,7 @@ export function UnifiedRestaurantInterface() {
               value={`${liveStats.tablesOccupied}/${liveStats.totalTables}`}
               change={5.2}
               trend="up"
-              icon={<MapPin className="w-6 h-6 text-white" />}
+              icon={<MapPin className="w-6 h-6 text-foreground" />}
               color="from-blue-500 to-indigo-600"
               animated={true}
             />
@@ -334,7 +334,7 @@ export function UnifiedRestaurantInterface() {
               value={liveStats.todayRevenue}
               change={12.8}
               trend="up"
-              icon={<DollarSign className="w-6 h-6 text-white" />}
+              icon={<DollarSign className="w-6 h-6 text-foreground" />}
               color="from-green-500 to-emerald-600"
               animated={true}
             />
@@ -344,7 +344,7 @@ export function UnifiedRestaurantInterface() {
               value={liveStats.activeOrders}
               change={-2.1}
               trend="down"
-              icon={<Utensils className="w-6 h-6 text-white" />}
+              icon={<Utensils className="w-6 h-6 text-foreground" />}
               color="from-orange-500 to-red-600"
               animated={true}
             />
@@ -354,7 +354,7 @@ export function UnifiedRestaurantInterface() {
               value={liveStats.customerSatisfaction}
               change={0.3}
               trend="up"
-              icon={<Star className="w-6 h-6 text-white" />}
+              icon={<Star className="w-6 h-6 text-foreground" />}
               color="from-purple-500 to-violet-600"
               animated={true}
             />
@@ -390,10 +390,10 @@ export function UnifiedRestaurantInterface() {
                   className={`w-14 h-14 bg-gradient-to-br ${view.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
                 >
                   {view.icon}
-                  <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-background/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 {view.notifications && (
-                  <Badge className="bg-red-500 text-white animate-pulse">
+                  <Badge className="bg-red-500 text-foreground animate-pulse">
                     {view.notifications}
                   </Badge>
                 )}
@@ -403,7 +403,7 @@ export function UnifiedRestaurantInterface() {
                 <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-800">
                   {view.title}
                 </h3>
-                <p className="text-gray-600 group-hover:text-gray-700">{view.subtitle}</p>
+                <p className="text-muted-foreground group-hover:text-foreground">{view.subtitle}</p>
               </div>
 
               {/* Quick Actions */}
@@ -411,7 +411,7 @@ export function UnifiedRestaurantInterface() {
                 {getQuickActions(view.id).map((action, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-white/50 rounded-lg hover:bg-white/70 transition-colors group/action"
+                    className="flex items-center justify-between p-3 bg-background/50 rounded-lg hover:bg-background/70 transition-colors group/action"
                     onClick={e => {
                       e.stopPropagation()
                       action.action()
@@ -421,7 +421,7 @@ export function UnifiedRestaurantInterface() {
                       {action.icon}
                       <span className="text-sm font-medium text-gray-700">{action.label}</span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover/action:text-gray-600 group-hover/action:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/action:text-muted-foreground group-hover/action:translate-x-1 transition-all" />
                   </div>
                 ))}
               </div>
@@ -435,30 +435,30 @@ export function UnifiedRestaurantInterface() {
         {/* Bottom Status Bar - Minimal but informative */}
         <div
           className={`mt-12 p-4 rounded-2xl ${
-            darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white/50 border-gray-200'
+            darkMode ? 'bg-muted/50 border-border' : 'bg-background/50 border-border'
           } backdrop-blur-xl border`}
         >
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <StatusIndicator status="success" size="sm" animated={true} />
-                <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>Connected</span>
+                <span className={darkMode ? 'text-gray-300' : 'text-muted-foreground'}>Connected</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-blue-500" />
-                <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+                <span className={darkMode ? 'text-gray-300' : 'text-muted-foreground'}>
                   <AnimatedCounter value={liveStats.staffOnDuty} /> staff on duty
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-purple-500" />
-                <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+                <span className={darkMode ? 'text-gray-300' : 'text-muted-foreground'}>
                   <AnimatedCounter value={liveStats.avgWaitTime} />
                   min avg wait
                 </span>
               </div>
             </div>
-            <div className="flex items-center space-x-2 text-xs text-gray-400">
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
               <span>Powered by HERA</span>
               <div className="w-1 h-1 bg-gray-400 rounded-full" />
               <span>Press ⌘K to search</span>
@@ -469,11 +469,11 @@ export function UnifiedRestaurantInterface() {
 
       {/* Command Palette - Jobs loved keyboard shortcuts */}
       {isCommandPaletteOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-32">
+        <div className="fixed inset-0 z-50 bg-background/50 backdrop-blur-sm flex items-start justify-center pt-32">
           <Card className="w-full max-w-2xl mx-4 p-0 overflow-hidden shadow-2xl">
             <div className="p-4 border-b">
               <div className="relative">
-                <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -486,13 +486,13 @@ export function UnifiedRestaurantInterface() {
             <div className="p-2 max-h-96 overflow-y-auto">
               {/* Quick navigation options would go here */}
               <div className="space-y-1">
-                <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Navigate
                 </div>
                 {unifiedViews.map(view => (
                   <div
                     key={view.id}
-                    className="flex items-center space-x-3 px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                    className="flex items-center space-x-3 px-3 py-2 hover:bg-muted rounded cursor-pointer"
                     onClick={() => {
                       setIsCommandPaletteOpen(false)
                       setSearchQuery('')

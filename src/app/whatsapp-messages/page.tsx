@@ -194,9 +194,9 @@ export default function WhatsAppMessagesPage() {
     if (status === 'read') {
       return <CheckCheck className="w-4 h-4 text-blue-500" />
     } else if (status === 'delivered') {
-      return <CheckCheck className="w-4 h-4 text-gray-400" />
+      return <CheckCheck className="w-4 h-4 text-muted-foreground" />
     } else if (status === 'sent') {
-      return <Check className="w-4 h-4 text-gray-400" />
+      return <Check className="w-4 h-4 text-muted-foreground" />
     } else if (status === 'failed') {
       return <AlertCircle className="w-4 h-4 text-red-500" />
     }
@@ -239,14 +239,14 @@ export default function WhatsAppMessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3 !text-white">
+            <h1 className="text-3xl font-bold flex items-center gap-3 !text-foreground">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md">
-                <MessageCircle className="w-6 h-6 text-white" />
+                <MessageCircle className="w-6 h-6 text-foreground" />
               </div>
               WhatsApp Business Hub
             </h1>
@@ -258,7 +258,7 @@ export default function WhatsAppMessagesPage() {
             <Button
               variant="outline"
               onClick={() => setShowSetup(!showSetup)}
-              className="border-gray-700 !text-gray-300 hover:!bg-gray-800"
+              className="border-border !text-gray-300 hover:!bg-muted"
             >
               <Settings className="w-4 h-4 mr-2" />
               Setup
@@ -269,7 +269,7 @@ export default function WhatsAppMessagesPage() {
                 fetchAnalytics()
               }}
               disabled={loading}
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-foreground"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
@@ -282,82 +282,82 @@ export default function WhatsAppMessagesPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
+          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-border shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 opacity-20 blur-2xl" />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center mb-4">
-                <MessageCircle className="w-6 h-6 text-white" />
+                <MessageCircle className="w-6 h-6 text-foreground" />
               </div>
               <div className="flex items-baseline justify-between">
-                <p className="text-3xl font-bold !text-white">{stats.totalConversations}</p>
+                <p className="text-3xl font-bold !text-foreground">{stats.totalConversations}</p>
                 {stats.unreadMessages > 0 && (
-                  <Badge className="bg-red-500 text-white border-0">
+                  <Badge className="bg-red-500 text-foreground border-0">
                     {stats.unreadMessages} new
                   </Badge>
                 )}
               </div>
               <p className="text-sm !text-gray-300 mt-1 font-medium">conversations</p>
-              <p className="text-xs !text-gray-400 mt-2">Active Chats</p>
+              <p className="text-xs !text-muted-foreground mt-2">Active Chats</p>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
+          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-border shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 opacity-20 blur-2xl" />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center mb-4">
-                <Activity className="w-6 h-6 text-white" />
+                <Activity className="w-6 h-6 text-foreground" />
               </div>
-              <p className="text-3xl font-bold !text-white">{stats.totalMessages}</p>
+              <p className="text-3xl font-bold !text-foreground">{stats.totalMessages}</p>
               <p className="text-sm !text-gray-300 mt-1 font-medium">all time</p>
-              <p className="text-xs !text-gray-400 mt-2">Total Messages</p>
+              <p className="text-xs !text-muted-foreground mt-2">Total Messages</p>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
+          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-border shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 opacity-20 blur-2xl" />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-white" />
+                <TrendingUp className="w-6 h-6 text-foreground" />
               </div>
-              <p className="text-3xl font-bold !text-white">
+              <p className="text-3xl font-bold !text-foreground">
                 {analytics ? `${analytics.engagementRate}%` : '-'}
               </p>
               <p className="text-sm !text-gray-300 mt-1 font-medium">engagement</p>
-              <p className="text-xs !text-gray-400 mt-2">Response Rate</p>
+              <p className="text-xs !text-muted-foreground mt-2">Response Rate</p>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
+          <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-border shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 opacity-20 blur-2xl" />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center mb-4">
-                <Clock className="w-6 h-6 text-white" />
+                <Clock className="w-6 h-6 text-foreground" />
               </div>
-              <p className="text-3xl font-bold !text-white">{analytics?.avgResponseTime || '-'}</p>
+              <p className="text-3xl font-bold !text-foreground">{analytics?.avgResponseTime || '-'}</p>
               <p className="text-sm !text-gray-300 mt-1 font-medium">time</p>
-              <p className="text-xs !text-gray-400 mt-2">Avg Response</p>
+              <p className="text-xs !text-muted-foreground mt-2">Avg Response</p>
             </div>
           </div>
         </div>
 
         {/* Main Content with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-gray-800 border border-gray-700">
+          <TabsList className="bg-muted border border-border">
             <TabsTrigger
               value="messages"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-foreground"
             >
               Messages
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-foreground"
             >
               Analytics
             </TabsTrigger>
             <TabsTrigger
               value="automation"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-foreground"
             >
               Automation
             </TabsTrigger>
@@ -367,17 +367,17 @@ export default function WhatsAppMessagesPage() {
           <TabsContent value="messages" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Conversations List */}
-              <Card className="lg:col-span-1 bg-gray-800 border-gray-700">
+              <Card className="lg:col-span-1 bg-muted border-border">
                 <CardHeader>
-                  <CardTitle className="!text-white">Conversations</CardTitle>
+                  <CardTitle className="!text-foreground">Conversations</CardTitle>
                   <div className="mt-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
                         placeholder="Search conversations..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                        className="w-full pl-10 bg-muted-foreground/10 border-border text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
                   </div>
@@ -388,7 +388,7 @@ export default function WhatsAppMessagesPage() {
                       <div
                         key={conversation.id}
                         onClick={() => setSelectedConversation(conversation)}
-                        className={`p-4 border-b border-gray-700 cursor-pointer hover:bg-gray-700/50 transition-colors ${
+                        className={`p-4 border-b border-border cursor-pointer hover:bg-muted-foreground/10/50 transition-colors ${
                           selectedConversation?.id === conversation.id
                             ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20'
                             : ''
@@ -396,17 +396,17 @@ export default function WhatsAppMessagesPage() {
                       >
                         <div className="flex items-start gap-3">
                           <Avatar className="bg-gradient-to-br from-violet-600 to-cyan-600">
-                            <AvatarFallback className="bg-transparent text-white">
+                            <AvatarFallback className="bg-transparent text-foreground">
                               {conversation.entity_name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="font-medium truncate !text-white">
+                              <p className="font-medium truncate !text-foreground">
                                 {conversation.entity_name}
                               </p>
-                              <span className="text-xs !text-gray-400">
+                              <span className="text-xs !text-muted-foreground">
                                 {formatMessageTime(conversation.updated_at)}
                               </span>
                             </div>
@@ -415,7 +415,7 @@ export default function WhatsAppMessagesPage() {
                               <div className="flex items-center gap-1 mt-1">
                                 {conversation.lastMessage.source_entity_id === null &&
                                   getMessageStatusIcon(conversation.lastMessage)}
-                                <p className="text-sm !text-gray-400 truncate">
+                                <p className="text-sm !text-muted-foreground truncate">
                                   {(conversation.lastMessage.metadata as any)?.text ||
                                     (conversation.lastMessage.metadata as any)?.caption ||
                                     `[${(conversation.lastMessage.metadata as any)?.type || 'message'}]`}
@@ -438,7 +438,7 @@ export default function WhatsAppMessagesPage() {
                                 )}
                               </div>
                               {conversation.unreadCount > 0 && (
-                                <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">
+                                <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-foreground border-0">
                                   {conversation.unreadCount}
                                 </Badge>
                               )}
@@ -452,22 +452,22 @@ export default function WhatsAppMessagesPage() {
               </Card>
 
               {/* Messages View */}
-              <Card className="lg:col-span-2 bg-gray-800 border-gray-700">
+              <Card className="lg:col-span-2 bg-muted border-border">
                 {selectedConversation ? (
                   <>
-                    <CardHeader className="border-b border-gray-700">
+                    <CardHeader className="border-b border-border">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Avatar className="bg-gradient-to-br from-violet-600 to-cyan-600">
-                            <AvatarFallback className="bg-transparent text-white">
+                            <AvatarFallback className="bg-transparent text-foreground">
                               {selectedConversation.entity_name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h3 className="font-semibold !text-white">
+                            <h3 className="font-semibold !text-foreground">
                               {selectedConversation.entity_name}
                             </h3>
-                            <p className="text-sm !text-gray-400">
+                            <p className="text-sm !text-muted-foreground">
                               {selectedConversation.entity_code}
                               {(selectedConversation.metadata as any)?.is_online && (
                                 <span className="text-green-500 ml-2">● Online</span>
@@ -483,7 +483,7 @@ export default function WhatsAppMessagesPage() {
                             onClick={() =>
                               togglePin(selectedConversation.id, selectedConversation.isPinned)
                             }
-                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10"
                           >
                             <Pin
                               className={`w-4 h-4 ${selectedConversation.isPinned ? 'fill-current text-violet-400' : ''}`}
@@ -498,14 +498,14 @@ export default function WhatsAppMessagesPage() {
                                 selectedConversation.isArchived
                               )
                             }
-                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10"
                           >
                             <Archive className="w-4 h-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10"
                           >
                             <MoreVertical className="w-4 h-4" />
                           </Button>
@@ -514,7 +514,7 @@ export default function WhatsAppMessagesPage() {
                     </CardHeader>
 
                     <CardContent className="p-0">
-                      <ScrollArea className="h-[500px] p-4 bg-gray-900/50">
+                      <ScrollArea className="h-[500px] p-4 bg-background/50">
                         <div className="space-y-4">
                           {selectedConversation.messages.map(message => {
                             const isOutbound = message.source_entity_id === null
@@ -527,8 +527,8 @@ export default function WhatsAppMessagesPage() {
                                 <div
                                   className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
                                     isOutbound
-                                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white'
-                                      : 'bg-gray-700 text-white'
+                                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-foreground'
+                                      : 'bg-muted-foreground/10 text-foreground'
                                   }`}
                                 >
                                   {message.isStarred && (
@@ -555,29 +555,29 @@ export default function WhatsAppMessagesPage() {
                       </ScrollArea>
 
                       {/* Message Input */}
-                      <div className="p-4 border-t border-gray-700 bg-gray-800">
+                      <div className="p-4 border-t border-border bg-muted">
                         <div className="flex items-center gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10"
                           >
                             <Paperclip className="w-5 h-5" />
                           </Button>
                           <Input
                             placeholder="Type a message..."
-                            className="flex-1 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                            className="flex-1 bg-muted-foreground/10 border-border text-foreground placeholder:text-muted-foreground"
                           />
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10"
                           >
                             <Smile className="w-5 h-5" />
                           </Button>
                           <Button
                             size="sm"
-                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-foreground"
                           >
                             <Send className="w-5 h-5" />
                           </Button>
@@ -589,9 +589,9 @@ export default function WhatsAppMessagesPage() {
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mx-auto mb-4">
-                        <MessageCircle className="w-10 h-10 text-white" />
+                        <MessageCircle className="w-10 h-10 text-foreground" />
                       </div>
-                      <p className="!text-gray-400">Select a conversation to view messages</p>
+                      <p className="!text-muted-foreground">Select a conversation to view messages</p>
                     </div>
                   </div>
                 )}
@@ -603,9 +603,9 @@ export default function WhatsAppMessagesPage() {
           <TabsContent value="analytics" className="mt-6">
             {analytics ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-muted border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 !text-white">
+                    <CardTitle className="flex items-center gap-2 !text-foreground">
                       <BarChart3 className="w-5 h-5 text-violet-400" />
                       Message Activity by Hour
                     </CardTitle>
@@ -614,8 +614,8 @@ export default function WhatsAppMessagesPage() {
                     <div className="space-y-2">
                       {analytics.popularTimeSlots.map(slot => (
                         <div key={slot.hour} className="flex items-center gap-2">
-                          <span className="text-sm w-16 !text-gray-400">{slot.hour}:00</span>
-                          <div className="flex-1 bg-gray-700 rounded-full h-4">
+                          <span className="text-sm w-16 !text-muted-foreground">{slot.hour}:00</span>
+                          <div className="flex-1 bg-muted-foreground/10 rounded-full h-4">
                             <div
                               className="bg-gradient-to-r from-green-500 to-emerald-600 h-4 rounded-full"
                               style={{
@@ -632,9 +632,9 @@ export default function WhatsAppMessagesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-muted border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 !text-white">
+                    <CardTitle className="flex items-center gap-2 !text-foreground">
                       <Users className="w-5 h-5 text-cyan-400" />
                       Top Contacts
                     </CardTitle>
@@ -645,13 +645,13 @@ export default function WhatsAppMessagesPage() {
                         <div key={idx} className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-8 h-8 bg-gradient-to-br from-violet-600 to-cyan-600">
-                              <AvatarFallback className="bg-transparent text-white text-sm">
+                              <AvatarFallback className="bg-transparent text-foreground text-sm">
                                 {contact.name.charAt(0).toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
-                            <span className="font-medium !text-white">{contact.name}</span>
+                            <span className="font-medium !text-foreground">{contact.name}</span>
                           </div>
-                          <Badge className="bg-gray-700 text-gray-300 border-gray-600">
+                          <Badge className="bg-muted-foreground/10 text-gray-300 border-border">
                             {contact.messageCount} msgs
                           </Badge>
                         </div>
@@ -670,15 +670,15 @@ export default function WhatsAppMessagesPage() {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-600">Average Response Time</p>
+                        <p className="text-sm text-muted-foreground">Average Response Time</p>
                         <p className="text-2xl font-bold">{analytics.avgResponseTime}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Unique Contacts</p>
+                        <p className="text-sm text-muted-foreground">Unique Contacts</p>
                         <p className="text-2xl font-bold">{analytics.uniqueContacts}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Engagement Rate</p>
+                        <p className="text-sm text-muted-foreground">Engagement Rate</p>
                         <p className="text-2xl font-bold">{analytics.engagementRate}%</p>
                       </div>
                     </div>
@@ -695,15 +695,15 @@ export default function WhatsAppMessagesPage() {
 
           {/* Automation Tab */}
           <TabsContent value="automation" className="mt-6">
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-muted border-border">
               <CardHeader>
-                <CardTitle className="!text-white">Booking Automation</CardTitle>
-                <p className="text-sm !text-gray-400 mt-1">
+                <CardTitle className="!text-foreground">Booking Automation</CardTitle>
+                <p className="text-sm !text-muted-foreground mt-1">
                   Set up automated booking flows for WhatsApp conversations
                 </p>
               </CardHeader>
               <CardContent>
-                <Alert className="bg-gray-700 border-gray-600">
+                <Alert className="bg-muted-foreground/10 border-border">
                   <Activity className="w-4 h-4 text-violet-400" />
                   <AlertDescription className="!text-gray-300">
                     Configure automatic booking responses, appointment confirmations, and reminder
@@ -713,7 +713,7 @@ export default function WhatsAppMessagesPage() {
                 <div className="mt-4">
                   <Button
                     onClick={() => setShowSetup(true)}
-                    className="bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 text-white"
+                    className="bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 text-foreground"
                   >
                     <Settings className="w-4 h-4 mr-2" />
                     Configure Automation

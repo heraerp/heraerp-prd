@@ -408,7 +408,7 @@ export function PurchaseOrderForm() {
           {/* Expected Delivery */}
           {expectedDelivery && (
             <Alert className="border-blue-200 bg-blue-50">
-              <Package className="h-4 w-4 text-blue-600" />
+              <Package className="h-4 w-4 text-primary" />
               <AlertDescription className="text-blue-800">
                 <strong>Expected Delivery:</strong> {formatDate(expectedDelivery, 'PPP')}
                 <span className="text-sm ml-2">

@@ -524,7 +524,7 @@ export function InventoryMovementTracker() {
                               <Minus className="w-3 h-3 text-red-600" />
                             )}
                             {movement.movement_type === 'transfer' && (
-                              <ArrowRight className="w-3 h-3 text-blue-600" />
+                              <ArrowRight className="w-3 h-3 text-primary" />
                             )}
                             <span className="font-medium">{movement.quantity}</span>
                           </div>

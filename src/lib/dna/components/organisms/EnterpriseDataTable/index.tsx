@@ -199,13 +199,13 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
   return (
     <div className={cn('relative rounded-2xl p-1', glassClassName)}>
       {/* Table Header Bar */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <div className="flex items-center justify-between p-4 border-b border-border/10">
         <div className="flex items-center gap-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Data Table</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Data Table</h3>
 
           {advancedFiltering && (
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search..."
@@ -213,11 +213,11 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                 onChange={e => setFilterValue(e.target.value)}
                 className={cn(
                   'pl-10 pr-4 py-2 rounded-lg',
-                  'bg-white/10 border border-white/20',
+                  'bg-background/10 border border-border/20',
                   'backdrop-blur-xl',
                   'focus:outline-none focus:ring-2 focus:ring-blue-500/50',
-                  'placeholder:text-gray-500',
-                  'text-gray-900 dark:text-white'
+                  'placeholder:text-muted-foreground',
+                  'text-gray-900 dark:text-foreground'
                 )}
               />
             </div>
@@ -230,8 +230,8 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               onClick={() => onExport?.('excel')}
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'hover:bg-white/20 active:bg-white/10',
+                'bg-background/10 border border-border/20',
+                'hover:bg-background/20 active:bg-background/10',
                 'transition-all duration-200'
               )}
             >
@@ -245,8 +245,8 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               onClick={() => setShowColumnSettings(!showColumnSettings)}
               className={cn(
                 'p-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'hover:bg-white/20 active:bg-white/10',
+                'bg-background/10 border border-border/20',
+                'hover:bg-background/20 active:bg-background/10',
                 'transition-all duration-200'
               )}
             >
@@ -259,13 +259,13 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-white/5 border-b border-white/10">
+          <thead className="bg-background/5 border-b border-border/10">
             <tr>
               {multiSelection && (
                 <th className="px-4 py-3 text-left">
                   <button
                     onClick={handleSelectAll}
-                    className="p-1 rounded hover:bg-white/10 transition-colors"
+                    className="p-1 rounded hover:bg-background/10 transition-colors"
                   >
                     {selectedRows.size === paginatedData.length ? (
                       <CheckSquare className="w-4 h-4" />
@@ -286,7 +286,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                       'text-gray-700 dark:text-gray-300',
                       column.align === 'center' && 'text-center',
                       column.align === 'right' && 'text-right',
-                      column.sortable && 'cursor-pointer hover:bg-white/10 transition-colors'
+                      column.sortable && 'cursor-pointer hover:bg-background/10 transition-colors'
                     )}
                     style={{ width: column.width }}
                     onClick={() => column.sortable && handleSort(column.id)}
@@ -315,7 +315,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               <tr>
                 <td
                   colSpan={columns.length + (multiSelection ? 2 : 1)}
-                  className="px-6 py-12 text-center text-gray-500"
+                  className="px-6 py-12 text-center text-muted-foreground"
                 >
                   <div className="inline-flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -327,7 +327,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               <tr>
                 <td
                   colSpan={columns.length + (multiSelection ? 2 : 1)}
-                  className="px-6 py-12 text-center text-gray-500"
+                  className="px-6 py-12 text-center text-muted-foreground"
                 >
                   {emptyMessage}
                 </td>
@@ -337,15 +337,15 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                 <tr
                   key={String(row[rowKey])}
                   className={cn(
-                    'hover:bg-white/5 transition-colors',
-                    index % 2 === 0 && 'bg-white/[0.02]'
+                    'hover:bg-background/5 transition-colors',
+                    index % 2 === 0 && 'bg-background/[0.02]'
                   )}
                 >
                   {multiSelection && (
                     <td className="px-4 py-4">
                       <button
                         onClick={() => handleSelectRow(String(row[rowKey]))}
-                        className="p-1 rounded hover:bg-white/10 transition-colors"
+                        className="p-1 rounded hover:bg-background/10 transition-colors"
                       >
                         {selectedRows.has(String(row[rowKey])) ? (
                           <CheckSquare className="w-4 h-4" />
@@ -369,7 +369,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                           key={column.id}
                           className={cn(
                             'px-6 py-4 whitespace-nowrap text-sm',
-                            'text-gray-900 dark:text-white',
+                            'text-gray-900 dark:text-foreground',
                             column.align === 'center' && 'text-center',
                             column.align === 'right' && 'text-right'
                           )}
@@ -380,7 +380,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
                     })}
 
                   <td className="px-4 py-4 text-right">
-                    <button className="p-1 rounded hover:bg-white/10 transition-colors">
+                    <button className="p-1 rounded hover:bg-background/10 transition-colors">
                       <MoreVertical className="w-4 h-4" />
                     </button>
                   </td>
@@ -393,7 +393,7 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
 
       {/* Pagination */}
       {showPagination && totalPages > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-border/10">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {(currentPage - 1) * pageSize + 1} to{' '}
             {Math.min(currentPage * pageSize, processedData.length)} of {processedData.length}{' '}
@@ -406,8 +406,8 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               disabled={currentPage === 1}
               className={cn(
                 'p-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'hover:bg-white/20 active:bg-white/10',
+                'bg-background/10 border border-border/20',
+                'hover:bg-background/20 active:bg-background/10',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 'transition-all duration-200'
               )}
@@ -424,8 +424,8 @@ function EnterpriseDataTableInner<T extends Record<string, any>>({
               disabled={currentPage === totalPages}
               className={cn(
                 'p-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'hover:bg-white/20 active:bg-white/10',
+                'bg-background/10 border border-border/20',
+                'hover:bg-background/20 active:bg-background/10',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 'transition-all duration-200'
               )}

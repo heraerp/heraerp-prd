@@ -239,7 +239,7 @@ export default function ReadinessQuestionnairePage() {
   /*
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center p-4">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -252,7 +252,7 @@ export default function ReadinessQuestionnairePage() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
@@ -260,7 +260,7 @@ export default function ReadinessQuestionnairePage() {
 
   if (!currentOrganization) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center p-4">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -277,13 +277,13 @@ export default function ReadinessQuestionnairePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Back Navigation */}
       <div className="container mx-auto px-4 pt-8">
         <Button
           variant="ghost"
           onClick={() => router.back()}
-          className="flex items-center gap-2 mb-8 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium"
+          className="flex items-center gap-2 mb-8 text-gray-700 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -299,10 +299,10 @@ export default function ReadinessQuestionnairePage() {
             className="text-center mb-12"
           >
             <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <BarChart3 className="w-10 h-10 text-white" />
+              <BarChart3 className="w-10 h-10 text-foreground" />
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-foreground mb-4">
               ERP Readiness Assessment
             </h1>
 
@@ -320,7 +320,7 @@ export default function ReadinessQuestionnairePage() {
             className="mb-12"
           >
             <Card
-              className="bg-white dark:bg-gray-800 shadow-2xl border-0"
+              className="bg-background dark:bg-muted shadow-2xl border-0"
               style={{
                 background: `
                   linear-gradient(135deg, 
@@ -344,9 +344,9 @@ export default function ReadinessQuestionnairePage() {
                 <div className="grid md:grid-cols-3 gap-8 mb-8">
                   <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
-                      <Clock className="w-6 h-6 text-white" />
+                      <Clock className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">15 mins</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">15 mins</div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                       Assessment Time
                     </div>
@@ -354,9 +354,9 @@ export default function ReadinessQuestionnairePage() {
 
                   <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
-                      <Target className="w-6 h-6 text-white" />
+                      <Target className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">
                       12 Sections
                     </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -366,9 +366,9 @@ export default function ReadinessQuestionnairePage() {
 
                   <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
-                      <Lightbulb className="w-6 h-6 text-white" />
+                      <Lightbulb className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">
                       AI Insights
                     </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -378,7 +378,7 @@ export default function ReadinessQuestionnairePage() {
                 </div>
 
                 <Alert className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                  <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <Lightbulb className="h-5 w-5 text-primary dark:text-blue-400" />
                   <AlertDescription className="text-gray-700 dark:text-gray-300 font-medium">
                     This assessment will evaluate your organization across 12 key areas including
                     sales, procurement, finance, HR, and technology readiness. You'll receive
@@ -396,7 +396,7 @@ export default function ReadinessQuestionnairePage() {
             transition={{ delay: 0.4 }}
             className="mb-12"
           >
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-6 text-center">
               What We'll Assess
             </h2>
 
@@ -418,14 +418,14 @@ export default function ReadinessQuestionnairePage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
+                  className="flex items-center gap-3 p-4 bg-background dark:bg-muted rounded-xl border border-border dark:border-border shadow-sm hover:shadow-md transition-all"
                 >
                   <div
                     className={`w-10 h-10 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center shadow-sm`}
                   >
-                    <section.icon className="w-5 h-5 text-white" />
+                    <section.icon className="w-5 h-5 text-foreground" />
                   </div>
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold text-gray-900 dark:text-foreground">
                     {section.title}
                   </span>
                 </motion.div>
@@ -444,7 +444,7 @@ export default function ReadinessQuestionnairePage() {
               size="lg"
               onClick={startAssessment}
               disabled={loading}
-              className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+              className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-foreground font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
             >
               {loading ? (
                 <>
@@ -465,7 +465,7 @@ export default function ReadinessQuestionnairePage() {
               )}
             </Button>
 
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 font-medium">
+            <p className="text-sm text-slate-500 dark:text-muted-foreground mt-4 font-medium">
               <span className="text-slate-700 dark:text-slate-300">Free assessment</span> •
               <span className="text-slate-700 dark:text-slate-300">No registration required</span> •
               <span className="text-slate-700 dark:text-slate-300">Instant results</span>

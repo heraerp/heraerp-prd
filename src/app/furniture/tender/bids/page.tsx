@@ -346,7 +346,7 @@ export default function BidsPage() {
                       <TableCell>
                         <Link
                           href={`/furniture/tender/${bid.metadata.tender_code}`}
-                          className="text-blue-600 hover:underline"
+                          className="text-primary hover:underline"
                         >
                           {bid.metadata.tender_code}
                         </Link>

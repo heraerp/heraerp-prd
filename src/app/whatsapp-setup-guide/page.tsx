@@ -52,7 +52,7 @@ export default function WhatsAppSetupGuide() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+    <div className="min-h-screen bg-muted dark:bg-background p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center">
@@ -60,7 +60,7 @@ export default function WhatsAppSetupGuide() {
             <MessageCircle className="w-8 h-8 text-green-500" />
             WhatsApp Real Messages Setup
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Follow these steps to receive real WhatsApp messages in HERA
           </p>
         </div>
@@ -126,14 +126,14 @@ export default function WhatsAppSetupGuide() {
                 <Badge className="w-6 h-6 rounded-full">1</Badge>
                 Expose Your Local Webhook (for testing)
               </h3>
-              <p className="text-sm text-gray-600 ml-8">
+              <p className="text-sm text-muted-foreground ml-8">
                 Since WhatsApp needs a public URL, use ngrok to expose your local server:
               </p>
               <div className="ml-8 space-y-2">
-                <code className="block p-3 bg-gray-100 dark:bg-gray-800 rounded">
+                <code className="block p-3 bg-muted dark:bg-muted rounded">
                   ngrok http 3002
                 </code>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   This will give you a URL like: https://abc123.ngrok.io
                 </p>
               </div>
@@ -159,7 +159,7 @@ export default function WhatsAppSetupGuide() {
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Open Meta Business Manager
                 </Button>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Navigate to: WhatsApp Business Account → Settings → Webhooks
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function WhatsAppSetupGuide() {
               </h3>
               <div className="ml-8 space-y-2">
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
+                  <code className="flex-1 p-3 bg-muted dark:bg-muted rounded text-sm">
                     {webhookUrl}
                   </code>
                   <Button
@@ -188,7 +188,7 @@ export default function WhatsAppSetupGuide() {
                     )}
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   For local testing, replace localhost:3002 with your ngrok URL
                 </p>
               </div>
@@ -202,7 +202,7 @@ export default function WhatsAppSetupGuide() {
               </h3>
               <div className="ml-8 space-y-2">
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
+                  <code className="flex-1 p-3 bg-muted dark:bg-muted rounded text-sm">
                     {verifyToken}
                   </code>
                   <Button
@@ -227,7 +227,7 @@ export default function WhatsAppSetupGuide() {
                 Subscribe to Webhook Fields
               </h3>
               <div className="ml-8">
-                <p className="text-sm text-gray-600 mb-2">Enable these fields:</p>
+                <p className="text-sm text-muted-foreground mb-2">Enable these fields:</p>
                 <div className="space-y-1">
                   <Badge variant="secondary">messages</Badge>
                   <Badge variant="secondary">message_status</Badge>
@@ -243,7 +243,7 @@ export default function WhatsAppSetupGuide() {
                 Test the Integration
               </h3>
               <div className="ml-8 space-y-2">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Send a WhatsApp message to your business number:
                 </p>
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded">
@@ -270,8 +270,8 @@ export default function WhatsAppSetupGuide() {
             <CardTitle>Production Setup</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-gray-600">For production deployment:</p>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">For production deployment:</p>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
               <li>Deploy your HERA app to a public server (Vercel, Railway, etc.)</li>
               <li>
                 Use your production URL for the webhook:
@@ -291,7 +291,7 @@ export default function WhatsAppSetupGuide() {
           <CardContent className="space-y-3">
             <div className="space-y-2">
               <p className="font-medium">Webhook not receiving messages?</p>
-              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                 <li>Check ngrok is running and URL is correct</li>
                 <li>Verify webhook is "Verified" in Meta Business Manager</li>
                 <li>Ensure you subscribed to "messages" field</li>
@@ -301,7 +301,7 @@ export default function WhatsAppSetupGuide() {
 
             <div className="space-y-2">
               <p className="font-medium">Messages not appearing in UI?</p>
-              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                 <li>Check database connection is working</li>
                 <li>Verify organization ID matches in webhook handler</li>
                 <li>Look for errors in browser console</li>

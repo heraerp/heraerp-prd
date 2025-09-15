@@ -249,7 +249,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen bg-white border-r border-gray-200 transition-all duration-300',
+          'fixed left-0 top-0 z-40 h-screen bg-background border-r border-border transition-all duration-300',
           isExpanded ? 'w-64' : 'w-16',
           'lg:relative lg:block',
           !isExpanded && 'hidden lg:block'
@@ -259,11 +259,11 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="h-16 flex items-center justify-center border-b border-gray-200 px-3">
+          <div className="h-16 flex items-center justify-center border-b border-border px-3">
             {isExpanded ? (
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-white" />
+                  <Shield className="w-5 h-5 text-foreground" />
                 </div>
                 <span className="font-semibold text-gray-900">
                   {isClient ? 'Client Portal' : 'GSPU Audit'}
@@ -271,17 +271,17 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
               </div>
             ) : (
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+                <Shield className="w-5 h-5 text-foreground" />
               </div>
             )}
           </div>
 
           {/* User Profile (when expanded) */}
           {isExpanded && user && (
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-border">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-medium text-sm">
+                  <span className="text-foreground font-medium text-sm">
                     {user.name
                       .split(' ')
                       .map(n => n[0])
@@ -291,7 +291,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                  <p className="text-xs text-gray-500">{user.role}</p>
+                  <p className="text-xs text-muted-foreground">{user.role}</p>
                 </div>
               </div>
             </div>
@@ -314,7 +314,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                         'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group',
                         isItemActive
                           ? 'bg-gradient-to-r from-emerald-50 to-blue-50 text-emerald-700 shadow-sm'
-                          : 'hover:bg-gray-100 text-gray-700 hover:text-gray-900',
+                          : 'hover:bg-muted text-gray-700 hover:text-foreground',
                         !isExpanded && 'justify-center'
                       )}
                     >
@@ -323,7 +323,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                           'flex-shrink-0 transition-colors',
                           isItemActive
                             ? 'w-5 h-5 text-emerald-600'
-                            : 'w-5 h-5 text-gray-500 group-hover:text-gray-700'
+                            : 'w-5 h-5 text-muted-foreground group-hover:text-foreground'
                         )}
                       />
 
@@ -336,18 +336,18 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                               className={cn(
                                 'ml-auto',
                                 isItemActive
-                                  ? 'bg-emerald-600 text-white'
+                                  ? 'bg-emerald-600 text-foreground'
                                   : 'bg-gray-200 text-gray-700'
                               )}
                             >
                               {item.badge}
                             </Badge>
                           )}
-                          {item.subItems && <ChevronRight className="w-4 h-4 text-gray-400" />}
+                          {item.subItems && <ChevronRight className="w-4 h-4 text-muted-foreground" />}
                         </>
                       )}
                       {!isExpanded && item.badge && item.badge > 0 && (
-                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-foreground text-xs rounded-full flex items-center justify-center">
                           {item.badge}
                         </span>
                       )}
@@ -359,7 +359,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
           </nav>
 
           {/* Bottom Navigation */}
-          <div className="border-t border-gray-200 py-2">
+          <div className="border-t border-border py-2">
             <ul className="space-y-1 px-2">
               {bottomNavItems.map(item => (
                 <li key={item.id}>
@@ -368,14 +368,14 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                     title={!isExpanded ? item.label : ''}
                     className={cn(
                       'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group',
-                      'hover:bg-gray-100 text-gray-700 hover:text-gray-900',
+                      'hover:bg-muted text-gray-700 hover:text-foreground',
                       !isExpanded && 'justify-center'
                     )}
                   >
                     <div className="relative">
-                      <item.icon className="w-5 h-5 text-gray-500 group-hover:text-gray-700" />
+                      <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
                       {item.badge && item.badge > 0 && !isExpanded && (
-                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-foreground text-xs rounded-full flex items-center justify-center">
                           {item.badge}
                         </span>
                       )}
@@ -398,7 +398,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
           </div>
 
           {/* Expand/Collapse Toggle for Desktop */}
-          <div className="hidden lg:block border-t border-gray-200 p-2">
+          <div className="hidden lg:block border-t border-border p-2">
             <Button
               variant="ghost"
               size="sm"
@@ -421,7 +421,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
       {/* Mobile Overlay */}
       {isExpanded && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-background bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsExpanded(false)}
         />
       )}

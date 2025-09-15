@@ -41,10 +41,10 @@ function TestRuleContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading rule...</p>
+          <p className="mt-2 text-muted-foreground dark:text-muted-foreground">Loading rule...</p>
         </div>
       </div>
     )
@@ -52,7 +52,7 @@ function TestRuleContent() {
 
   if (!ruleId || !rule) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-muted dark:bg-background">
         <div className="px-4 py-6">
           <Alert className="max-w-2xl mx-auto">
             <AlertDescription>
@@ -73,9 +73,9 @@ function TestRuleContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Page Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <div className="border-b border-border dark:border-border bg-background dark:bg-muted">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/salon-data/config?tab=rules">
@@ -85,8 +85,8 @@ function TestRuleContent() {
               </Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Test Rule</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">Test Rule</h1>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 Validate your rule with real-world scenarios
               </p>
             </div>
@@ -110,10 +110,10 @@ export default function TestRulePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="mt-2 text-muted-foreground dark:text-muted-foreground">Loading...</p>
           </div>
         </div>
       }

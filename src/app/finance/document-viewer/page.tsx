@@ -247,9 +247,9 @@ export default function FinancialDocumentViewer() {
       purchase: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
       payment: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       receipt: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      transfer: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      transfer: 'bg-muted text-gray-800 dark:bg-background dark:text-gray-200'
     }
-    return colors[type] || 'bg-gray-100 text-gray-800'
+    return colors[type] || 'bg-muted text-gray-800'
   }
 
   // Get status badge
@@ -257,7 +257,7 @@ export default function FinancialDocumentViewer() {
     switch (status) {
       case 'posted':
         return (
-          <Badge className="bg-green-500 text-white">
+          <Badge className="bg-green-500 text-foreground">
             <CheckCircle className="w-3 h-3 mr-1" />
             Posted
           </Badge>
@@ -283,10 +283,10 @@ export default function FinancialDocumentViewer() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading financial documents...</p>
+          <RefreshCw className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading financial documents...</p>
         </div>
       </div>
     )
@@ -294,7 +294,7 @@ export default function FinancialDocumentViewer() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -306,16 +306,16 @@ export default function FinancialDocumentViewer() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       <div className="max-w-[1600px] mx-auto p-4 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <FileText className="w-7 h-7 text-blue-600" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
+              <FileText className="w-7 h-7 text-primary" />
               Financial Document Display
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground text-sm mt-1">
               View and analyze financial documents across organizations and fiscal years
             </p>
           </div>
@@ -565,14 +565,14 @@ export default function FinancialDocumentViewer() {
                       <div
                         key={doc.id}
                         className={cn(
-                          'p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
+                          'p-4 cursor-pointer hover:bg-muted dark:hover:bg-muted transition-colors',
                           selectedDocument?.id === doc.id && 'bg-blue-50 dark:bg-blue-900/20'
                         )}
                         onClick={() => setSelectedDocument(doc)}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="font-medium text-sm text-gray-900 dark:text-white">
+                            <p className="font-medium text-sm text-gray-900 dark:text-foreground">
                               {doc.transaction_code}
                             </p>
                             <Badge
@@ -585,15 +585,15 @@ export default function FinancialDocumentViewer() {
                         </div>
 
                         <div className="space-y-1 text-sm">
-                          <p className="text-gray-600 dark:text-gray-400">
+                          <p className="text-muted-foreground dark:text-muted-foreground">
                             <CalendarDays className="w-3 h-3 inline mr-1" />
                             {formatDate(new Date(doc.transaction_date), 'dd MMM yyyy')}
                           </p>
-                          <p className="font-medium text-gray-900 dark:text-white">
+                          <p className="font-medium text-gray-900 dark:text-foreground">
                             {formatCurrency(doc.total_amount, doc.currency)}
                           </p>
                           {doc.description && (
-                            <p className="text-gray-600 dark:text-gray-400 truncate">
+                            <p className="text-muted-foreground dark:text-muted-foreground truncate">
                               {doc.description}
                             </p>
                           )}
@@ -638,11 +638,11 @@ export default function FinancialDocumentViewer() {
                       <TabsContent value="header" className="space-y-4 mt-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <Label className="text-xs text-gray-500">Document Number</Label>
+                            <Label className="text-xs text-muted-foreground">Document Number</Label>
                             <p className="font-medium">{selectedDocument.transaction_code}</p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Document Type</Label>
+                            <Label className="text-xs text-muted-foreground">Document Type</Label>
                             <Badge
                               className={getDocumentTypeBadge(selectedDocument.transaction_type)}
                             >
@@ -650,7 +650,7 @@ export default function FinancialDocumentViewer() {
                             </Badge>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Transaction Date</Label>
+                            <Label className="text-xs text-muted-foreground">Transaction Date</Label>
                             <p className="font-medium">
                               {formatDate(
                                 new Date(selectedDocument.transaction_date),
@@ -659,7 +659,7 @@ export default function FinancialDocumentViewer() {
                             </p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Posting Date</Label>
+                            <Label className="text-xs text-muted-foreground">Posting Date</Label>
                             <p className="font-medium">
                               {selectedDocument.posting_date
                                 ? formatDate(new Date(selectedDocument.posting_date), 'dd MMM yyyy')
@@ -670,7 +670,7 @@ export default function FinancialDocumentViewer() {
                             </p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Total Amount</Label>
+                            <Label className="text-xs text-muted-foreground">Total Amount</Label>
                             <p className="font-medium text-lg">
                               {formatCurrency(
                                 selectedDocument.total_amount,
@@ -679,19 +679,19 @@ export default function FinancialDocumentViewer() {
                             </p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Status</Label>
+                            <Label className="text-xs text-muted-foreground">Status</Label>
                             <div className="mt-1">
                               {getStatusBadge(selectedDocument.status || 'draft')}
                             </div>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Reference Number</Label>
+                            <Label className="text-xs text-muted-foreground">Reference Number</Label>
                             <p className="font-medium">
                               {selectedDocument.reference_number || '-'}
                             </p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Fiscal Period</Label>
+                            <Label className="text-xs text-muted-foreground">Fiscal Period</Label>
                             <p className="font-medium">
                               {selectedDocument.fiscal_year ||
                                 new Date(selectedDocument.transaction_date).getFullYear()}{' '}
@@ -704,18 +704,18 @@ export default function FinancialDocumentViewer() {
 
                         {selectedDocument.description && (
                           <div>
-                            <Label className="text-xs text-gray-500">Description</Label>
+                            <Label className="text-xs text-muted-foreground">Description</Label>
                             <p className="font-medium mt-1">{selectedDocument.description}</p>
                           </div>
                         )}
 
                         <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                           <div>
-                            <Label className="text-xs text-gray-500">Created By</Label>
+                            <Label className="text-xs text-muted-foreground">Created By</Label>
                             <p className="font-medium">{selectedDocument.created_by || 'System'}</p>
                           </div>
                           <div>
-                            <Label className="text-xs text-gray-500">Created At</Label>
+                            <Label className="text-xs text-muted-foreground">Created At</Label>
                             <p className="font-medium">
                               {formatDate(
                                 new Date(selectedDocument.created_at),
@@ -746,7 +746,7 @@ export default function FinancialDocumentViewer() {
                                   <TableCell>
                                     <div>
                                       <p className="font-medium">{line.account_code}</p>
-                                      <p className="text-xs text-gray-500">{line.account_name}</p>
+                                      <p className="text-xs text-muted-foreground">{line.account_name}</p>
                                     </div>
                                   </TableCell>
                                   <TableCell>{line.description || '-'}</TableCell>
@@ -766,7 +766,7 @@ export default function FinancialDocumentViewer() {
                                   <TableCell>{line.cost_center || '-'}</TableCell>
                                 </TableRow>
                               ))}
-                              <TableRow className="font-medium bg-gray-50 dark:bg-gray-800">
+                              <TableRow className="font-medium bg-muted dark:bg-muted">
                                 <TableCell colSpan={3} className="text-right">
                                   Total
                                 </TableCell>
@@ -793,7 +793,7 @@ export default function FinancialDocumentViewer() {
                             </TableBody>
                           </Table>
                         ) : (
-                          <div className="text-center py-8 text-gray-500">
+                          <div className="text-center py-8 text-muted-foreground">
                             No line items available
                           </div>
                         )}
@@ -803,7 +803,7 @@ export default function FinancialDocumentViewer() {
                         <div className="space-y-4">
                           {selectedDocument.smart_code && (
                             <div>
-                              <Label className="text-xs text-gray-500">Smart Code</Label>
+                              <Label className="text-xs text-muted-foreground">Smart Code</Label>
                               <p className="font-mono text-sm mt-1">
                                 {selectedDocument.smart_code}
                               </p>
@@ -812,8 +812,8 @@ export default function FinancialDocumentViewer() {
 
                           {selectedDocument.metadata && (
                             <div>
-                              <Label className="text-xs text-gray-500">Additional Metadata</Label>
-                              <pre className="mt-2 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs overflow-auto">
+                              <Label className="text-xs text-muted-foreground">Additional Metadata</Label>
+                              <pre className="mt-2 p-4 bg-muted dark:bg-muted rounded-lg text-xs overflow-auto">
                                 {JSON.stringify(selectedDocument.metadata, null, 2)}
                               </pre>
                             </div>
@@ -824,7 +824,7 @@ export default function FinancialDocumentViewer() {
                   </CardContent>
                 </>
               ) : (
-                <CardContent className="flex items-center justify-center h-[600px] text-gray-500">
+                <CardContent className="flex items-center justify-center h-[600px] text-muted-foreground">
                   <div className="text-center">
                     <FileText className="w-12 h-12 mx-auto mb-4 opacity-20" />
                     <p>Select a document to view details</p>
@@ -838,7 +838,7 @@ export default function FinancialDocumentViewer() {
         {/* No Results */}
         {documents.length === 0 && !loading && searchCriteria.organizationId && (
           <Card>
-            <CardContent className="flex items-center justify-center h-64 text-gray-500">
+            <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
               <div className="text-center">
                 <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
                 <p>No documents found</p>

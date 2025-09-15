@@ -210,31 +210,31 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
   return (
     <div
       className={cn(
-        'flex h-[800px] bg-white dark:bg-gray-900 rounded-lg overflow-hidden',
+        'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden',
         className
       )}
     >
       {/* Sidebar */}
       {showSidebar && (
-        <div className="w-80 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex flex-col calendar-sidebar">
+        <div className="w-80 border-r border-border dark:border-border bg-muted dark:bg-muted/50 flex flex-col calendar-sidebar">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-b border-border dark:border-border">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Calendar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Calendar</h3>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowSidebar(false)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
 
             {/* Mini Calendar */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
+            <div className="bg-background dark:bg-muted rounded-lg p-3 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                   {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <div className="flex gap-1">
@@ -247,7 +247,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                 </div>
               </div>
               {/* Mini calendar grid would go here */}
-              <div className="text-xs text-gray-500 dark:text-gray-400 text-center py-4">
+              <div className="text-xs text-muted-foreground dark:text-muted-foreground text-center py-4">
                 Mini calendar view
               </div>
             </div>
@@ -256,7 +256,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
           {/* Team Members */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
                 Team Members
               </h4>
               <div className="space-y-2">
@@ -267,13 +267,13 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                       'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item',
                       selectedStylist === stylist.id
                         ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
                     )}
                     onClick={() => setSelectedStylist(stylist.id)}
                   >
                     <div className="relative">
                       <Avatar className={cn('h-10 w-10', stylist.color)}>
-                        <AvatarFallback className="text-white font-semibold">
+                        <AvatarFallback className="text-foreground font-semibold">
                           {stylist.avatar}
                         </AvatarFallback>
                       </Avatar>
@@ -289,10 +289,10 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                         {stylist.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{stylist.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
                     </div>
                     <Badge
                       variant="secondary"
@@ -300,7 +300,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                         'text-xs',
                         stylist.available
                           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                          : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                          : 'bg-muted text-muted-foreground dark:bg-muted-foreground/10 dark:text-gray-300'
                       )}
                     >
                       {stylist.available ? 'Available' : 'Away'}
@@ -311,15 +311,15 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
             </div>
 
             {/* Upcoming Appointments */}
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+            <div className="p-4 border-t border-border dark:border-border">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
                 Today's Appointments
               </h4>
               <div className="space-y-2">
                 {appointments.slice(0, 3).map(apt => (
                   <div
                     key={apt.id}
-                    className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                    className="p-3 bg-background dark:bg-muted rounded-lg border border-border dark:border-border"
                   >
                     <div className="flex items-start gap-3">
                       <div
@@ -327,17 +327,17 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                         style={{ backgroundColor: apt.color }}
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                           {apt.title}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{apt.client}</p>
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground">{apt.client}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <Clock className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-600 dark:text-gray-300">
+                          <Clock className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground dark:text-gray-300">
                             {apt.time}
                           </span>
-                          <span className="text-xs text-gray-400">•</span>
-                          <span className="text-xs text-gray-600 dark:text-gray-300">
+                          <span className="text-xs text-muted-foreground">•</span>
+                          <span className="text-xs text-muted-foreground dark:text-gray-300">
                             {apt.price}
                           </span>
                         </div>
@@ -350,9 +350,9 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-border dark:border-border">
             <Button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-foreground"
               onClick={() => {
                 setBookingSlot(null)
                 setIsBookingOpen(true)
@@ -368,7 +368,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
       {/* Main Calendar Area */}
       <div className="flex-1 flex flex-col">
         {/* Calendar Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="p-4 border-b border-border dark:border-border bg-background dark:bg-background">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {!showSidebar && (
@@ -376,14 +376,14 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowSidebar(true)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200"
                 >
                   <Grid3x3 className="w-5 h-5" />
                 </Button>
               )}
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
                 <Button
@@ -392,19 +392,19 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                 >
                   Today
                 </Button>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <ChevronRight className="w-5 h-5" />
                 </Button>
               </div>
 
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
                 {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </h2>
             </div>
 
             <div className="flex items-center gap-3">
               <Tabs value={selectedView} onValueChange={v => setSelectedView(v as any)}>
-                <TabsList className="bg-gray-100 dark:bg-gray-800">
+                <TabsList className="bg-muted dark:bg-muted">
                   <TabsTrigger value="day" className="text-sm">
                     Day
                   </TabsTrigger>
@@ -418,13 +418,13 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Filter className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
                   <Settings className="w-5 h-5" />
                 </Button>
               </div>
@@ -436,8 +436,8 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
         <div className="flex-1 overflow-hidden">
           <div className="h-full flex">
             {/* Time Column */}
-            <div className="w-20 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
-              <div className="h-14 border-b border-gray-200 dark:border-gray-700" />
+            <div className="w-20 border-r border-border dark:border-border bg-muted dark:bg-muted/30">
+              <div className="h-14 border-b border-border dark:border-border" />
               <ScrollArea className="h-[calc(100%-3.5rem)] calendar-scrollbar">
                 {timeSlots.map((slot, idx) => (
                   <div
@@ -462,12 +462,12 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                     return (
                       <div
                         key={dayIdx}
-                        className="flex-1 min-w-[140px] border-r border-gray-200 dark:border-gray-700 last:border-r-0"
+                        className="flex-1 min-w-[140px] border-r border-border dark:border-border last:border-r-0"
                       >
                         {/* Day Header */}
                         <div
                           className={cn(
-                            'h-14 border-b border-gray-200 dark:border-gray-700 px-2 py-2 text-center day-header',
+                            'h-14 border-b border-border dark:border-border px-2 py-2 text-center day-header',
                             isToday && 'today'
                           )}
                         >
@@ -475,7 +475,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                             className={cn(
                               'text-xs font-bold uppercase tracking-wider',
                               isToday
-                                ? 'text-blue-600 dark:text-blue-400'
+                                ? 'text-primary dark:text-blue-400'
                                 : 'text-gray-700 dark:text-gray-300'
                             )}
                           >
@@ -485,8 +485,8 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                             className={cn(
                               'text-xl font-extrabold',
                               isToday
-                                ? 'text-blue-600 dark:text-blue-400'
-                                : 'text-gray-900 dark:text-white'
+                                ? 'text-primary dark:text-blue-400'
+                                : 'text-gray-900 dark:text-foreground'
                             )}
                           >
                             {dayNumber}
@@ -508,7 +508,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                                 key={`${dayIdx}-${slotIdx}`}
                                 className={cn(
                                   'h-16 border-b border-gray-100 dark:border-gray-800 relative group time-slot',
-                                  'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer'
+                                  'hover:bg-muted dark:hover:bg-muted/50 cursor-pointer'
                                 )}
                                 onClick={() => {
                                   if (!slotAppointments.length) {
@@ -549,16 +549,16 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                                     >
                                       <div className="flex items-start gap-2">
                                         <div
-                                          className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                          className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
                                           style={{ backgroundColor: apt.color }}
                                         >
                                           {apt.icon}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+                                          <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
                                             {apt.title}
                                           </p>
-                                          <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                                          <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
                                             {apt.client}
                                           </p>
                                           <div className="flex items-center gap-2 mt-1">
@@ -573,7 +573,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                                             >
                                               {apt.price}
                                             </Badge>
-                                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                                            <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                                               {stylistInfo?.name}
                                             </span>
                                           </div>
@@ -593,7 +593,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                                 {/* Add appointment hint */}
                                 {!slotAppointments.length && (
                                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Plus className="w-4 h-4 text-gray-400" />
+                                    <Plus className="w-4 h-4 text-muted-foreground" />
                                   </div>
                                 )}
                               </div>

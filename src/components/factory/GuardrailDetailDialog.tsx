@@ -147,7 +147,7 @@ export function GuardrailDetailDialog({
       case 'info':
         return 'text-blue-500'
       default:
-        return 'text-gray-500'
+        return 'text-muted-foreground'
     }
   }
 
@@ -187,10 +187,10 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">Total Checks</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Total Checks</p>
                           <p className="text-xl font-bold">{guardrailData.stats.total}</p>
                         </div>
-                        <Shield className="w-8 h-8 text-gray-400" />
+                        <Shield className="w-8 h-8 text-muted-foreground" />
                       </div>
                     </CardContent>
                   </Card>
@@ -199,7 +199,7 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">Passed</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Passed</p>
                           <p className="text-xl font-bold text-green-600">
                             {guardrailData.stats.passed}
                           </p>
@@ -213,7 +213,7 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">Warnings</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Warnings</p>
                           <p className="text-xl font-bold text-orange-600">
                             {guardrailData.stats.warnings}
                           </p>
@@ -227,7 +227,7 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">Failed</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Failed</p>
                           <p className="text-xl font-bold text-red-600">
                             {guardrailData.stats.failed}
                           </p>
@@ -253,7 +253,7 @@ export function GuardrailDetailDialog({
                               />
                               <div>
                                 <h3 className="font-semibold">{policyName}</h3>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                   {policy.description}
                                 </p>
                               </div>
@@ -284,20 +284,20 @@ export function GuardrailDetailDialog({
                             {policy.violations.slice(0, 3).map((violation, idx) => (
                               <div
                                 key={idx}
-                                className="text-sm p-2 bg-gray-50 dark:bg-gray-900 rounded"
+                                className="text-sm p-2 bg-muted dark:bg-background rounded"
                               >
                                 <div className="flex items-center justify-between">
                                   <span className="text-gray-700 dark:text-gray-300">
                                     {violation.message || 'Policy violation detected'}
                                   </span>
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-muted-foreground">
                                     {violation.transaction?.smart_code}
                                   </span>
                                 </div>
                               </div>
                             ))}
                             {policy.violations.length > 3 && (
-                              <p className="text-xs text-gray-500 text-center pt-1">
+                              <p className="text-xs text-muted-foreground text-center pt-1">
                                 +{policy.violations.length - 3} more violations
                               </p>
                             )}
@@ -319,7 +319,7 @@ export function GuardrailDetailDialog({
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">Overall Coverage</span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           {guardrailData.stats.coverageAvg.toFixed(1)}%
                         </span>
                       </div>
@@ -336,7 +336,7 @@ export function GuardrailDetailDialog({
                             <div className="flex-1">
                               <Progress value={stageCoverage} className="h-2" />
                             </div>
-                            <span className="text-sm text-gray-600 w-12 text-right">
+                            <span className="text-sm text-muted-foreground w-12 text-right">
                               {stageCoverage.toFixed(0)}%
                             </span>
                           </div>
@@ -347,7 +347,7 @@ export function GuardrailDetailDialog({
                     {/* Coverage Recommendations */}
                     <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <div className="flex items-start gap-2">
-                        <Info className="w-4 h-4 text-blue-600 mt-0.5" />
+                        <Info className="w-4 h-4 text-primary mt-0.5" />
                         <div className="text-sm text-blue-700 dark:text-blue-300">
                           <p className="font-medium">Recommendation</p>
                           <p className="mt-1">
@@ -366,7 +366,7 @@ export function GuardrailDetailDialog({
                     <CardTitle>Coverage Trends</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-48 flex items-center justify-center text-gray-500">
+                    <div className="h-48 flex items-center justify-center text-muted-foreground">
                       {/* Chart would go here */}
                       <TrendingUp className="w-8 h-8" />
                       <span className="ml-2">Coverage trending upward</span>
@@ -388,7 +388,7 @@ export function GuardrailDetailDialog({
                     <CardContent className="space-y-3">
                       <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                         <p className="font-medium text-sm">Security Vulnerability Detected</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                           CORS policy violations found in 3 endpoints. Update security headers
                           immediately.
                         </p>
@@ -408,21 +408,21 @@ export function GuardrailDetailDialog({
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-start gap-3">
-                        <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5" />
+                        <ChevronRight className="w-4 h-4 text-muted-foreground mt-0.5" />
                         <div className="flex-1">
                           <p className="text-sm font-medium">
                             Add integration tests for API endpoints
                           </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                             Current coverage: 45% → Target: 85%
                           </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5" />
+                        <ChevronRight className="w-4 h-4 text-muted-foreground mt-0.5" />
                         <div className="flex-1">
                           <p className="text-sm font-medium">Implement performance benchmarks</p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                             Establish baseline metrics for critical paths
                           </p>
                         </div>
@@ -438,7 +438,7 @@ export function GuardrailDetailDialog({
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                         3 dependencies have security updates available. Run `npm audit fix` to apply
                         patches.
                       </p>

@@ -398,15 +398,15 @@ export function FAModule({
       <Card
         className={cn(
           'shadow-lg',
-          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-background border-border'
         )}
       >
-        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-border')}>
           <div className="flex items-center justify-between">
             <CardTitle
               className={cn(
                 'text-xl flex items-center gap-2',
-                isDarkMode ? 'text-white' : 'text-gray-900'
+                isDarkMode ? 'text-foreground' : 'text-gray-900'
               )}
             >
               <Building className="h-5 w-5" />
@@ -433,7 +433,7 @@ export function FAModule({
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
             <TabsList
-              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-muted')}
             >
               <TabsTrigger value="assets" className="gap-1">
                 <Building className="h-4 w-4" />
@@ -462,7 +462,7 @@ export function FAModule({
               {/* Asset Registration Form */}
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -715,7 +715,7 @@ export function FAModule({
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search assets..."
                       className={cn(
@@ -765,7 +765,7 @@ export function FAModule({
                     <Card
                       key={asset.id}
                       className={cn(
-                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                       )}
                     >
                       <CardContent className="p-4">
@@ -799,14 +799,14 @@ export function FAModule({
                             </div>
                             <div className="grid grid-cols-4 gap-4 text-sm">
                               <div>
-                                <span className="text-gray-500">Code:</span> {asset.assetCode}
+                                <span className="text-muted-foreground">Code:</span> {asset.assetCode}
                               </div>
                               <div>
-                                <span className="text-gray-500">Location:</span>{' '}
+                                <span className="text-muted-foreground">Location:</span>{' '}
                                 {asset.location || 'N/A'}
                               </div>
                               <div>
-                                <span className="text-gray-500">Age:</span>{' '}
+                                <span className="text-muted-foreground">Age:</span>{' '}
                                 {Math.floor(
                                   (Date.now() - asset.acquisitionDate.getTime()) /
                                     (1000 * 60 * 60 * 24 * 365)
@@ -814,7 +814,7 @@ export function FAModule({
                                 years
                               </div>
                               <div>
-                                <span className="text-gray-500">Depreciation:</span> ₹
+                                <span className="text-muted-foreground">Depreciation:</span> ₹
                                 {asset.accumulatedDepreciation.toLocaleString()}
                               </div>
                             </div>
@@ -841,8 +841,8 @@ export function FAModule({
                             <div className="text-2xl font-semibold">
                               ₹{asset.currentValue.toLocaleString()}
                             </div>
-                            <div className="text-sm text-gray-500">Current Value</div>
-                            <div className="text-xs text-gray-400 mt-1">
+                            <div className="text-sm text-muted-foreground">Current Value</div>
+                            <div className="text-xs text-muted-foreground mt-1">
                               Cost: ₹{asset.acquisitionCost.toLocaleString()}
                             </div>
                           </div>
@@ -857,7 +857,7 @@ export function FAModule({
             <TabsContent value="maintenance" className="space-y-4 mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -1023,7 +1023,7 @@ export function FAModule({
               {/* Upcoming Maintenance */}
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -1050,7 +1050,7 @@ export function FAModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">{asset.assetName}</h4>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-muted-foreground">
                                 Due:{' '}
                                 {(asset.metadata as any)?.nextMaintenance &&
                                   new Date(asset.metadata.nextMaintenance).toLocaleDateString()}
@@ -1079,7 +1079,7 @@ export function FAModule({
             <TabsContent value="depreciation" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -1092,7 +1092,7 @@ export function FAModule({
                         <tr
                           className={cn(
                             'border-b',
-                            isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                            isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                           )}
                         >
                           <th className="text-left py-2">Asset</th>
@@ -1110,13 +1110,13 @@ export function FAModule({
                               key={asset.id}
                               className={cn(
                                 'border-b',
-                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                               )}
                             >
                               <td className="py-2">
                                 <div>
                                   <div className="font-medium">{asset.assetCode}</div>
-                                  <div className="text-xs text-gray-500">{asset.assetName}</div>
+                                  <div className="text-xs text-muted-foreground">{asset.assetName}</div>
                                 </div>
                               </td>
                               <td className="py-2 text-right">
@@ -1157,7 +1157,7 @@ export function FAModule({
             <TabsContent value="transfers" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -1186,7 +1186,7 @@ export function FAModule({
                               <div className="flex items-center justify-between">
                                 <div>
                                   <span className="font-medium">{asset.assetCode}</span>
-                                  <span className="text-sm text-gray-500 ml-2">
+                                  <span className="text-sm text-muted-foreground ml-2">
                                     at Customer Location
                                   </span>
                                 </div>
@@ -1218,7 +1218,7 @@ export function FAModule({
                       <FileText className="h-8 w-8 text-blue-500" />
                       <div>
                         <h3 className="font-semibold">Asset Register</h3>
-                        <p className="text-sm text-gray-500">Complete asset listing</p>
+                        <p className="text-sm text-muted-foreground">Complete asset listing</p>
                       </div>
                     </div>
                   </CardContent>
@@ -1235,7 +1235,7 @@ export function FAModule({
                       <TrendingDown className="h-8 w-8 text-green-500" />
                       <div>
                         <h3 className="font-semibold">Depreciation Report</h3>
-                        <p className="text-sm text-gray-500">Asset value analysis</p>
+                        <p className="text-sm text-muted-foreground">Asset value analysis</p>
                       </div>
                     </div>
                   </CardContent>
@@ -1253,7 +1253,7 @@ export function FAModule({
                         <Zap className="h-8 w-8 text-yellow-500" />
                         <div>
                           <h3 className="font-semibold">Energy Efficiency</h3>
-                          <p className="text-sm text-gray-500">Freezer energy analysis</p>
+                          <p className="text-sm text-muted-foreground">Freezer energy analysis</p>
                         </div>
                       </div>
                       {calculateMetrics().avgEnergyRating > 0 && (
@@ -1262,7 +1262,7 @@ export function FAModule({
                             value={(calculateMetrics().avgEnergyRating / 7) * 100}
                             className="h-2"
                           />
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Average Rating: {calculateMetrics().avgEnergyRating.toFixed(1)}/7
                           </p>
                         </div>
@@ -1283,7 +1283,7 @@ export function FAModule({
                         <Thermometer className="h-8 w-8 text-red-500" />
                         <div>
                           <h3 className="font-semibold">Cold Chain Assets</h3>
-                          <p className="text-sm text-gray-500">Temperature compliance</p>
+                          <p className="text-sm text-muted-foreground">Temperature compliance</p>
                         </div>
                       </div>
                     </CardContent>

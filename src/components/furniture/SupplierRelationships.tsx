@@ -132,7 +132,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
   }
 
   const getQualityColor = (rating?: number) => {
-    if (!rating) return 'text-gray-400'
+    if (!rating) return 'text-muted-foreground'
     if (rating >= 4.5) return 'text-green-500'
     if (rating >= 3.5) return 'text-yellow-500'
     return 'text-red-500'
@@ -147,7 +147,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
   if (loading) {
     return (
       <div className={cn('grid gap-6', className)}>
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardHeader>
             <CardTitle>Supplier Relationships</CardTitle>
           </CardHeader>
@@ -164,14 +164,14 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
 
   if (error) {
     return (
-      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
+      <Card className={cn('bg-muted/50 border-border', className)}>
         <CardHeader>
           <CardTitle>Supplier Relationships</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-3" />
-            <p className="text-gray-400">{error}</p>
+            <p className="text-muted-foreground">{error}</p>
           </div>
         </CardContent>
       </Card>
@@ -188,7 +188,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
           <Card
             key={supplier.id}
             className={cn(
-              'bg-gray-800/50 border-gray-700 cursor-pointer transition-all hover:scale-[1.02]',
+              'bg-muted/50 border-border cursor-pointer transition-all hover:scale-[1.02]',
               selectedSupplier === supplier.id && 'ring-2 ring-amber-500'
             )}
             onClick={() => setSelectedSupplier(supplier.id)}
@@ -198,8 +198,8 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                 <div className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-amber-500" />
                   <div>
-                    <h4 className="font-medium text-white">{supplier.name}</h4>
-                    <p className="text-xs text-gray-400">{supplier.code}</p>
+                    <h4 className="font-medium text-foreground">{supplier.name}</h4>
+                    <p className="text-xs text-muted-foreground">{supplier.code}</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="text-xs">
@@ -209,11 +209,11 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-gray-400">Products</p>
-                  <p className="font-semibold text-white">{supplier.totalProducts}</p>
+                  <p className="text-muted-foreground">Products</p>
+                  <p className="font-semibold text-foreground">{supplier.totalProducts}</p>
                 </div>
                 <div>
-                  <p className="text-gray-400">Avg Lead Time</p>
+                  <p className="text-muted-foreground">Avg Lead Time</p>
                   <p className={cn('font-semibold', getLeadTimeColor(supplier.avgLeadTime))}>
                     {supplier.avgLeadTime} days
                   </p>
@@ -223,7 +223,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
               {supplier.products[0]?.qualityRating && (
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="text-gray-400">Quality Rating</span>
+                    <span className="text-muted-foreground">Quality Rating</span>
                     <span
                       className={cn(
                         'font-semibold',
@@ -235,7 +235,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                   </div>
                   <Progress
                     value={supplier.products[0].qualityRating * 20}
-                    className="h-2 bg-gray-700"
+                    className="h-2 bg-muted-foreground/10"
                   />
                 </div>
               )}
@@ -246,7 +246,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
 
       {/* Supplier Details */}
       {selectedSupplierData && (
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Package className="h-5 w-5" />
@@ -257,21 +257,21 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700">
-                    <TableHead className="text-gray-400">Product</TableHead>
-                    <TableHead className="text-gray-400">Type</TableHead>
-                    <TableHead className="text-gray-400">Lead Time</TableHead>
-                    <TableHead className="text-gray-400">Unit Price</TableHead>
-                    <TableHead className="text-gray-400">Min Order</TableHead>
+                  <TableRow className="border-border">
+                    <TableHead className="text-muted-foreground">Product</TableHead>
+                    <TableHead className="text-muted-foreground">Type</TableHead>
+                    <TableHead className="text-muted-foreground">Lead Time</TableHead>
+                    <TableHead className="text-muted-foreground">Unit Price</TableHead>
+                    <TableHead className="text-muted-foreground">Min Order</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {selectedSupplierData.products.map(product => (
-                    <TableRow key={product.id} className="border-gray-700">
+                    <TableRow key={product.id} className="border-border">
                       <TableCell>
                         <div>
-                          <p className="font-medium text-white">{product.name}</p>
-                          <p className="text-xs text-gray-400">{product.code}</p>
+                          <p className="font-medium text-foreground">{product.name}</p>
+                          <p className="text-xs text-muted-foreground">{product.code}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -281,7 +281,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-gray-400" />
+                          <Clock className="h-4 w-4 text-muted-foreground" />
                           <span className={getLeadTimeColor(product.leadTime)}>
                             {product.leadTime} days
                           </span>
@@ -289,7 +289,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4 text-gray-400" />
+                          <DollarSign className="h-4 w-4 text-muted-foreground" />
                           <span>
                             ₹{product.unitPrice.toLocaleString()}/{product.priceUnit}
                           </span>
@@ -305,27 +305,27 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
             </div>
 
             {/* Supplier Insights */}
-            <div className="mt-6 pt-4 border-t border-gray-700">
-              <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
+            <div className="mt-6 pt-4 border-t border-border">
+              <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Supplier Insights
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="bg-gray-900/50 rounded-lg p-3">
-                  <p className="text-gray-400 mb-1">Total Products Sourced</p>
-                  <p className="text-xl font-semibold text-white">
+                <div className="bg-background/50 rounded-lg p-3">
+                  <p className="text-muted-foreground mb-1">Total Products Sourced</p>
+                  <p className="text-xl font-semibold text-foreground">
                     {selectedSupplierData.totalProducts}
                   </p>
                 </div>
-                <div className="bg-gray-900/50 rounded-lg p-3">
-                  <p className="text-gray-400 mb-1">Average Lead Time</p>
-                  <p className="text-xl font-semibold text-white">
+                <div className="bg-background/50 rounded-lg p-3">
+                  <p className="text-muted-foreground mb-1">Average Lead Time</p>
+                  <p className="text-xl font-semibold text-foreground">
                     {selectedSupplierData.avgLeadTime} days
                   </p>
                 </div>
-                <div className="bg-gray-900/50 rounded-lg p-3">
-                  <p className="text-gray-400 mb-1">Payment Terms</p>
-                  <p className="text-xl font-semibold text-white">
+                <div className="bg-background/50 rounded-lg p-3">
+                  <p className="text-muted-foreground mb-1">Payment Terms</p>
+                  <p className="text-xl font-semibold text-foreground">
                     {selectedSupplierData.paymentTerms}
                   </p>
                 </div>

@@ -55,7 +55,7 @@ const ruleTypeConfig = {
   approval: { icon: CheckCircle, color: 'text-purple-500', bgColor: 'bg-purple-500/20' },
   sla: { icon: Calendar, color: 'text-amber-500', bgColor: 'bg-amber-500/20' },
   calculation: { icon: Calculator, color: 'text-cyan-500', bgColor: 'bg-cyan-500/20' },
-  defaulting: { icon: Settings, color: 'text-gray-500', bgColor: 'bg-gray-500/20' }
+  defaulting: { icon: Settings, color: 'text-muted-foreground', bgColor: 'bg-gray-500/20' }
 }
 
 export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProps) {
@@ -190,8 +190,8 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Universal Configuration Rules</h2>
-          <p className="text-gray-400 mt-1">Business logic as data - zero code changes required</p>
+          <h2 className="text-2xl font-bold text-foreground">Universal Configuration Rules</h2>
+          <p className="text-muted-foreground mt-1">Business logic as data - zero code changes required</p>
         </div>
         <Button className="gap-2 bg-gradient-to-r from-amber-500 to-orange-600">
           <Plus className="h-4 w-4" />
@@ -201,24 +201,24 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Total Rules</p>
-                <p className="text-2xl font-bold text-white">{rules.length}</p>
+                <p className="text-sm text-muted-foreground">Total Rules</p>
+                <p className="text-2xl font-bold text-foreground">{rules.length}</p>
               </div>
               <Settings className="h-8 w-8 text-amber-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Active</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-sm text-muted-foreground">Active</p>
+                <p className="text-2xl font-bold text-foreground">
                   {rules.filter(r => r.status === 'active').length}
                 </p>
               </div>
@@ -227,12 +227,12 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Rule Types</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-sm text-muted-foreground">Rule Types</p>
+                <p className="text-2xl font-bold text-foreground">
                   {new Set(rules.map(r => r.type)).size}
                 </p>
               </div>
@@ -241,12 +241,12 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-muted/50 border-border">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Executions Today</p>
-                <p className="text-2xl font-bold text-white">{executionResults.length}</p>
+                <p className="text-sm text-muted-foreground">Executions Today</p>
+                <p className="text-2xl font-bold text-foreground">{executionResults.length}</p>
               </div>
               <Play className="h-8 w-8 text-purple-500" />
             </div>
@@ -257,7 +257,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Rule List */}
-        <Card className="bg-gray-800/50 border-gray-700 lg:col-span-1">
+        <Card className="bg-muted/50 border-border lg:col-span-1">
           <CardHeader>
             <CardTitle className="text-lg">Configured Rules</CardTitle>
           </CardHeader>
@@ -267,8 +267,8 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                 <div
                   key={rule.id}
                   className={cn(
-                    'p-3 rounded-lg cursor-pointer transition-all hover:bg-gray-700/50',
-                    selectedRule?.id === rule.id && 'bg-gray-700/50 ring-1 ring-amber-500'
+                    'p-3 rounded-lg cursor-pointer transition-all hover:bg-muted-foreground/10/50',
+                    selectedRule?.id === rule.id && 'bg-muted-foreground/10/50 ring-1 ring-amber-500'
                   )}
                   onClick={() => setSelectedRule(rule)}
                 >
@@ -276,8 +276,8 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                     <div className="flex items-center gap-3">
                       {getRuleIcon(rule.type)}
                       <div>
-                        <p className="font-medium text-white text-sm">{rule.name}</p>
-                        <p className="text-xs text-gray-400">Priority: {rule.priority}</p>
+                        <p className="font-medium text-foreground text-sm">{rule.name}</p>
+                        <p className="text-xs text-muted-foreground">Priority: {rule.priority}</p>
                       </div>
                     </div>
                     {getRuleBadge(rule.type)}
@@ -290,7 +290,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
         {/* Rule Details */}
         {selectedRule && (
-          <Card className="bg-gray-800/50 border-gray-700 lg:col-span-2">
+          <Card className="bg-muted/50 border-border lg:col-span-2">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
@@ -311,7 +311,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="logic">
-                <TabsList className="grid w-full grid-cols-3 bg-gray-700">
+                <TabsList className="grid w-full grid-cols-3 bg-muted-foreground/10">
                   <TabsTrigger value="logic">Rule Logic</TabsTrigger>
                   <TabsTrigger value="parameters">Parameters</TabsTrigger>
                   <TabsTrigger value="execution">Execution History</TabsTrigger>
@@ -320,9 +320,9 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                 <TabsContent value="logic" className="space-y-4 mt-4">
                   {/* Scope */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-400 mb-2">Scope</h4>
-                    <div className="bg-gray-900/50 rounded-lg p-3">
-                      <pre className="text-xs text-white overflow-x-auto">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Scope</h4>
+                    <div className="bg-background/50 rounded-lg p-3">
+                      <pre className="text-xs text-foreground overflow-x-auto">
                         {JSON.stringify(selectedRule.scope, null, 2)}
                       </pre>
                     </div>
@@ -330,9 +330,9 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
                   {/* Condition */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-400 mb-2">Condition (WHEN)</h4>
-                    <div className="bg-gray-900/50 rounded-lg p-3">
-                      <pre className="text-xs text-white overflow-x-auto">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Condition (WHEN)</h4>
+                    <div className="bg-background/50 rounded-lg p-3">
+                      <pre className="text-xs text-foreground overflow-x-auto">
                         {JSON.stringify(selectedRule.condition, null, 2)}
                       </pre>
                     </div>
@@ -340,9 +340,9 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
                   {/* Action */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-400 mb-2">Action (THEN)</h4>
-                    <div className="bg-gray-900/50 rounded-lg p-3">
-                      <pre className="text-xs text-white overflow-x-auto">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Action (THEN)</h4>
+                    <div className="bg-background/50 rounded-lg p-3">
+                      <pre className="text-xs text-foreground overflow-x-auto">
                         {JSON.stringify(selectedRule.action, null, 2)}
                       </pre>
                     </div>
@@ -350,8 +350,8 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                 </TabsContent>
 
                 <TabsContent value="parameters" className="mt-4">
-                  <div className="bg-gray-900/50 rounded-lg p-3">
-                    <pre className="text-xs text-white overflow-x-auto">
+                  <div className="bg-background/50 rounded-lg p-3">
+                    <pre className="text-xs text-foreground overflow-x-auto">
                       {JSON.stringify(selectedRule.parameters, null, 2)}
                     </pre>
                   </div>
@@ -359,7 +359,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
                 <TabsContent value="execution" className="mt-4">
                   {executionResults.length === 0 ? (
-                    <Alert className="bg-gray-900/50 border-gray-700">
+                    <Alert className="bg-background/50 border-border">
                       <AlertTriangle className="h-4 w-4" />
                       <AlertDescription>
                         No execution history available. Click "Test" to run this rule.
@@ -383,12 +383,12 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                               <Badge variant={result.success ? 'default' : 'destructive'}>
                                 {result.success ? 'Success' : 'Failed'}
                               </Badge>
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-muted-foreground">
                                 {new Date(result.timestamp).toLocaleTimeString()}(
                                 {result.executionTime}ms)
                               </span>
                             </div>
-                            <pre className="text-xs text-white">
+                            <pre className="text-xs text-foreground">
                               {JSON.stringify(result.result, null, 2)}
                             </pre>
                           </div>

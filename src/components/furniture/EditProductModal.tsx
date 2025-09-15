@@ -264,7 +264,7 @@ export default function EditProductModal({
             </Label>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="length" className="text-xs text-gray-500">
+                <Label htmlFor="length" className="text-xs text-muted-foreground">
                   Length
                 </Label>
                 <Input
@@ -279,7 +279,7 @@ export default function EditProductModal({
                 />
               </div>
               <div>
-                <Label htmlFor="width" className="text-xs text-gray-500">
+                <Label htmlFor="width" className="text-xs text-muted-foreground">
                   Width
                 </Label>
                 <Input
@@ -294,7 +294,7 @@ export default function EditProductModal({
                 />
               </div>
               <div>
-                <Label htmlFor="height" className="text-xs text-gray-500">
+                <Label htmlFor="height" className="text-xs text-muted-foreground">
                   Height
                 </Label>
                 <Input

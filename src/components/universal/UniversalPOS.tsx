@@ -372,12 +372,12 @@ export function UniversalPOS({
 
   const getItemIcon = (item: POSItem) => {
     if (config.theme.icon) {
-      return <config.theme.icon className="h-6 w-6 text-white drop-shadow-sm" />
+      return <config.theme.icon className="h-6 w-6 text-foreground drop-shadow-sm" />
     }
     return item.type === 'service' ? (
-      <Star className="h-6 w-6 text-white drop-shadow-sm" />
+      <Star className="h-6 w-6 text-foreground drop-shadow-sm" />
     ) : (
-      <ShoppingCart className="h-6 w-6 text-white drop-shadow-sm" />
+      <ShoppingCart className="h-6 w-6 text-foreground drop-shadow-sm" />
     )
   }
 
@@ -388,7 +388,7 @@ export function UniversalPOS({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Search and Filters */}
-      <Card className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl">
+      <Card className="bg-background/40 backdrop-blur-xl border border-border/20 shadow-xl">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
@@ -396,11 +396,11 @@ export function UniversalPOS({
                 placeholder={`Search ${config.businessType} items...`}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="bg-white/60 backdrop-blur-sm border-white/30 text-slate-800 placeholder:text-slate-500 focus:bg-white/80 transition-all"
+                className="bg-background/60 backdrop-blur-sm border-white/30 text-slate-800 placeholder:text-slate-500 focus:bg-background/80 transition-all"
               />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-48 bg-white/60 backdrop-blur-sm border-white/30 text-slate-800 hover:bg-white/80 transition-all">
+              <SelectTrigger className="w-48 bg-background/60 backdrop-blur-sm border-white/30 text-slate-800 hover:bg-background/80 transition-all">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
@@ -425,7 +425,7 @@ export function UniversalPOS({
             {filteredItems.map(item => (
               <Card
                 key={item.id}
-                className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+                className="bg-background/40 backdrop-blur-xl border border-border/20 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer"
                 onClick={() => addToCart(item)}
               >
                 <CardContent className="p-4">
@@ -454,7 +454,7 @@ export function UniversalPOS({
                             {item.type}
                           </Badge>
                         </div>
-                        <p className="text-sm text-slate-600 mb-2 font-medium">
+                        <p className="text-sm text-muted-foreground mb-2 font-medium">
                           {item.description}
                         </p>
                         <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -481,7 +481,7 @@ export function UniversalPOS({
                                   Stock: {item.stock}
                                 </span>
                               )}
-                              {item.brand && <span className="text-slate-600">{item.brand}</span>}
+                              {item.brand && <span className="text-muted-foreground">{item.brand}</span>}
                             </>
                           )}
                         </div>
@@ -492,7 +492,7 @@ export function UniversalPOS({
                         {config.currency}
                         {item.price}
                       </p>
-                      <Button size="sm" className={`${config.theme.accentColor} text-white mt-2`}>
+                      <Button size="sm" className={`${config.theme.accentColor} text-foreground mt-2`}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
@@ -506,7 +506,7 @@ export function UniversalPOS({
         {/* Cart & Checkout */}
         <div className="space-y-6">
           {/* Cart */}
-          <Card className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl">
+          <Card className="bg-background/40 backdrop-blur-xl border border-border/20 shadow-xl">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-slate-800">
                 <div className={`p-2 ${config.theme.primaryColor}/20 rounded-lg`}>
@@ -521,19 +521,19 @@ export function UniversalPOS({
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {cart.length === 0 ? (
                   <div className="text-center py-8">
-                    <ShoppingCart className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                    <p className="text-slate-600 font-medium">Cart is empty</p>
+                    <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                    <p className="text-muted-foreground font-medium">Cart is empty</p>
                     <p className="text-sm text-slate-500">Add items to start</p>
                   </div>
                 ) : (
                   cart.map(item => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-3 bg-white/50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-background/50 rounded-lg"
                     >
                       <div className="flex-1">
                         <p className="font-semibold text-slate-800 text-sm">{item.name}</p>
-                        <p className="text-xs text-slate-600">
+                        <p className="text-xs text-muted-foreground">
                           {config.currency}
                           {item.price} each
                         </p>
@@ -584,14 +584,14 @@ export function UniversalPOS({
                   <Separator className="my-4" />
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Subtotal:</span>
+                      <span className="text-muted-foreground">Subtotal:</span>
                       <span className="font-medium text-slate-800">
                         {config.currency}
                         {getCartTotal().toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">
+                      <span className="text-muted-foreground">
                         Tax ({(config.taxRate * 100).toFixed(1)}%):
                       </span>
                       <span className="font-medium text-slate-800">
@@ -615,7 +615,7 @@ export function UniversalPOS({
 
           {/* Payment Section - Only show if cart has items */}
           {cart.length > 0 && (
-            <Card className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl">
+            <Card className="bg-background/40 backdrop-blur-xl border border-border/20 shadow-xl">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-3 text-slate-800">
@@ -680,7 +680,7 @@ export function UniversalPOS({
                           value={pm.method}
                           onValueChange={value => updatePaymentMethodType(index, value)}
                         >
-                          <SelectTrigger className="w-32 bg-white/60 backdrop-blur-sm border-white/30">
+                          <SelectTrigger className="w-32 bg-background/60 backdrop-blur-sm border-white/30">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="hera-select-content">
@@ -706,14 +706,14 @@ export function UniversalPOS({
                             placeholder="Amount"
                             value={pm.amount || ''}
                             onChange={e => updatePaymentMethodAmount(index, e.target.value)}
-                            className="bg-white/60 backdrop-blur-sm border-white/30 pr-10"
+                            className="bg-background/60 backdrop-blur-sm border-white/30 pr-10"
                           />
                           {getRemainingAmount() > 0 && pm.amount === 0 && (
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => autoFillRemaining(index)}
-                              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+                              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-primary hover:text-primary hover:bg-blue-100"
                               title={`Fill remaining ${config.currency}${getRemainingAmount().toFixed(2)}`}
                             >
                               <Calculator className="h-3 w-3" />
@@ -742,7 +742,7 @@ export function UniversalPOS({
                       Add Payment Method
                     </Button>
                     {splitPayment && (
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+                      <div className="bg-slate-50 border border-border rounded-lg p-3 space-y-2">
                         <div className="flex justify-between text-sm font-medium">
                           <span>Total Entered:</span>
                           <span
@@ -790,7 +790,7 @@ export function UniversalPOS({
                     disabled={
                       splitPayment && Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01
                     }
-                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-foreground shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Receipt className="h-5 w-5 mr-2" />
                     {splitPayment
@@ -832,7 +832,7 @@ export function UniversalPOS({
         <div className="fixed bottom-4 right-4">
           <Button
             onClick={handleSaveProgress}
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg hover:shadow-xl"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-foreground shadow-lg hover:shadow-xl"
           >
             <Save className="h-4 w-4 mr-2" />
             Save Progress

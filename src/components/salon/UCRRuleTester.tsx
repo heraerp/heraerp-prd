@@ -375,7 +375,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                     <XCircle className="w-4 h-4 text-red-500" />
                   ))}
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
                 {scenario.description}
               </p>
 
@@ -388,7 +388,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                       <Badge variant="outline" className="text-xs">
                         {key.replace(/_/g, ' ')}
                       </Badge>
-                      <span className="text-gray-600 dark:text-gray-400">{String(value)}</span>
+                      <span className="text-muted-foreground dark:text-muted-foreground">{String(value)}</span>
                     </div>
                   ))}
               </div>
@@ -435,7 +435,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
         <CardContent className="space-y-4">
           <div>
             <h4 className="font-medium mb-2">Test Context</h4>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+            <div className="bg-muted dark:bg-muted rounded-lg p-3">
               <pre className="text-xs">{JSON.stringify(scenario.context, null, 2)}</pre>
             </div>
           </div>
@@ -460,7 +460,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2 text-blue-600 dark:text-blue-400">Actual Result</h4>
+              <h4 className="font-medium mb-2 text-primary dark:text-blue-400">Actual Result</h4>
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
                 <pre className="text-xs">{JSON.stringify(result.actual, null, 2)}</pre>
               </div>
@@ -613,7 +613,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
         <div>
           <h4 className="font-medium mb-2">Custom Context (JSON)</h4>
           <textarea
-            className="w-full p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 font-mono text-sm"
+            className="w-full p-3 bg-muted dark:bg-muted rounded-lg border border-border dark:border-border font-mono text-sm"
             rows={6}
             value={JSON.stringify(customContext, null, 2)}
             onChange={e => {
@@ -658,7 +658,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Pass Rate</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Pass Rate</p>
                 <p className="text-2xl font-bold">{passRate.toFixed(0)}%</p>
               </div>
               <TrendingUp
@@ -672,7 +672,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Passed</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Passed</p>
                 <p className="text-2xl font-bold text-green-600">{testResults.passed}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-500" />
@@ -684,7 +684,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Failed</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Failed</p>
                 <p className="text-2xl font-bold text-red-600">{testResults.failed}</p>
               </div>
               <XCircle className="w-8 h-8 text-red-500" />
@@ -696,7 +696,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Coverage</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Coverage</p>
                 <p className="text-2xl font-bold">{testResults.coverage?.toFixed(0) || 0}%</p>
               </div>
               <Zap className="w-8 h-8 text-purple-500" />
@@ -712,7 +712,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <TestTube className="w-12 h-12 animate-pulse mx-auto text-purple-600 mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading rule...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading rule...</p>
         </div>
       </div>
     )
@@ -735,7 +735,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center">
-                <TestTube className="w-5 h-5 text-white" />
+                <TestTube className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <CardTitle>Test Rule: {currentRule.title}</CardTitle>
@@ -758,7 +758,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
               <Button
                 onClick={runAllScenarios}
                 disabled={running}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
               >
                 <Play className="w-4 h-4 mr-2" />
                 Run All Tests
@@ -827,7 +827,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
               </CardHeader>
               <CardContent>
                 {testResults ? (
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="bg-muted dark:bg-muted rounded-lg p-4">
                     <pre className="text-xs overflow-x-auto">
                       {JSON.stringify(testResults, null, 2)}
                     </pre>

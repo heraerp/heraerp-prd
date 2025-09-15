@@ -483,7 +483,7 @@ export function HeraDnaUniversalCalendar({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                <Calendar className="w-6 h-6 text-blue-600" />
+                <Calendar className="w-6 h-6 text-primary" />
                 {industryType === 'salon' ? 'Salon Calendar' : 'Universal Calendar'}
                 <Badge className="bg-blue-100 text-blue-700">HERA DNA</Badge>
               </CardTitle>
@@ -534,7 +534,7 @@ export function HeraDnaUniversalCalendar({
       </Card>
 
       {/* Calendar */}
-      <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+      <Card className="shadow-xl border-0 bg-background/80 backdrop-blur-sm">
         <CardContent className="p-6">
           {loading && (
             <div className="flex items-center justify-center py-8">

@@ -28,7 +28,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   return (
     <div className={`flex items-center justify-center gap-2 ${className}`}>
       <Loader2 className={`animate-spin ${sizeClasses[size]}`} />
-      {text && <span className="text-sm text-gray-600">{text}</span>}
+      {text && <span className="text-sm text-muted-foreground">{text}</span>}
     </div>
   )
 }
@@ -109,17 +109,17 @@ interface KPIDashboardSkeletonProps {}
 
 export const KPIDashboardSkeleton: React.FC<KPIDashboardSkeletonProps> = () => {
   return (
-    <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-6">
+    <div className="bg-gradient-to-r from-red-500 to-orange-500 text-foreground py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {Array.from({ length: 8 }).map((_, index) => (
-            <Card key={index} className="bg-white/10 backdrop-blur border-white/20">
+            <Card key={index} className="bg-background/10 backdrop-blur border-border/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2">
-                  <Skeleton className="h-4 w-4 bg-white/20" />
+                  <Skeleton className="h-4 w-4 bg-background/20" />
                   <div className="space-y-1">
-                    <Skeleton className="h-3 w-16 bg-white/20" />
-                    <Skeleton className="h-4 w-12 bg-white/20" />
+                    <Skeleton className="h-3 w-16 bg-background/20" />
+                    <Skeleton className="h-4 w-12 bg-background/20" />
                   </div>
                 </div>
               </CardContent>
@@ -139,7 +139,7 @@ interface TableSkeletonProps {
 export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns = 4 }) => {
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-4 gap-4 p-3 bg-gray-50 rounded-lg">
+      <div className="grid grid-cols-4 gap-4 p-3 bg-muted rounded-lg">
         {Array.from({ length: columns }).map((_, index) => (
           <Skeleton key={index} className="h-4 w-20" />
         ))}
@@ -163,7 +163,7 @@ export const InventorySkeleton: React.FC<InventorySkeletonProps> = ({ count = 4 
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="p-3 rounded-lg border border-gray-200 bg-gray-50">
+        <div key={index} className="p-3 rounded-lg border border-border bg-muted">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Skeleton className="h-4 w-24" />
@@ -224,7 +224,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
       <div className="text-center">
         <LoadingSpinner size="lg" />
         <h2 className="mt-4 text-xl font-semibold text-gray-900">{title}</h2>
-        <p className="mt-2 text-gray-600">{description}</p>
+        <p className="mt-2 text-muted-foreground">{description}</p>
       </div>
     </div>
   )

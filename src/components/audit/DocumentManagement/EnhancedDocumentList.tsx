@@ -264,7 +264,7 @@ export function EnhancedDocumentList({
   const getStatusStyling = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       case 'received':
         return 'bg-blue-100 text-blue-800'
       case 'under_review':
@@ -276,7 +276,7 @@ export function EnhancedDocumentList({
       case 'resubmission_required':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -291,7 +291,7 @@ export function EnhancedDocumentList({
       case 'low':
         return 'text-green-600 bg-green-50 border-green-200'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -303,7 +303,7 @@ export function EnhancedDocumentList({
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="text-gray-600 mt-4">Loading documents...</p>
+        <p className="text-muted-foreground mt-4">Loading documents...</p>
       </div>
     )
   }
@@ -316,7 +316,7 @@ export function EnhancedDocumentList({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-blue-600 mb-1">Total Documents</p>
+                <p className="text-xs font-medium text-primary mb-1">Total Documents</p>
                 <p className="text-2xl font-bold text-blue-900">{statistics.total}</p>
               </div>
               <FileText className="w-8 h-8 text-blue-500" />
@@ -366,12 +366,12 @@ export function EnhancedDocumentList({
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Overall Progress</h3>
-            <span className="text-2xl font-bold text-blue-600">
+            <span className="text-2xl font-bold text-primary">
               {statistics.completion_percentage}%
             </span>
           </div>
           <Progress value={statistics.completion_percentage} className="w-full h-3" />
-          <div className="flex justify-between text-sm text-gray-600 mt-2">
+          <div className="flex justify-between text-sm text-muted-foreground mt-2">
             <span>{statistics.approved} completed</span>
             <span>{statistics.total - statistics.approved} remaining</span>
           </div>
@@ -383,7 +383,7 @@ export function EnhancedDocumentList({
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search documents..."
                 value={searchTerm}
@@ -462,7 +462,7 @@ export function EnhancedDocumentList({
                       <CardTitle className="text-lg font-bold text-gray-900 mb-1">
                         {document.document_name}
                       </CardTitle>
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-sm text-muted-foreground mb-2">
                         Due: {new Date(document.due_date).toLocaleDateString()}
                         {overdue && (
                           <span className="text-red-600 font-medium ml-2">(OVERDUE)</span>
@@ -473,7 +473,7 @@ export function EnhancedDocumentList({
                           {document.status.replace('_', ' ').toUpperCase()}
                         </Badge>
                         {document.files.length > 0 && (
-                          <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <Paperclip className="w-4 h-4" />
                             <span>
                               {document.files.length} file{document.files.length !== 1 ? 's' : ''}
@@ -620,7 +620,7 @@ export function EnhancedDocumentList({
                       {document.review_notes && (
                         <div className="mt-4">
                           <label className="text-sm font-medium text-gray-700">Review Notes</label>
-                          <div className="mt-1 p-3 bg-gray-50 rounded-lg">
+                          <div className="mt-1 p-3 bg-muted rounded-lg">
                             <p className="text-sm text-gray-900">{document.review_notes}</p>
                           </div>
                         </div>
@@ -631,14 +631,14 @@ export function EnhancedDocumentList({
                       <div className="space-y-3">
                         <div className="flex items-center gap-3 text-sm">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <span className="text-gray-600">
+                          <span className="text-muted-foreground">
                             Created: {new Date(document.created_at).toLocaleString()}
                           </span>
                         </div>
                         {document.received_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span className="text-gray-600">
+                            <span className="text-muted-foreground">
                               Received: {new Date(document.received_date).toLocaleString()}
                             </span>
                           </div>
@@ -646,7 +646,7 @@ export function EnhancedDocumentList({
                         {document.reviewed_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                            <span className="text-gray-600">
+                            <span className="text-muted-foreground">
                               Reviewed: {new Date(document.reviewed_date).toLocaleString()}
                             </span>
                           </div>
@@ -654,7 +654,7 @@ export function EnhancedDocumentList({
                         {document.approved_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                            <span className="text-gray-600">
+                            <span className="text-muted-foreground">
                               Approved: {new Date(document.approved_date).toLocaleString()}
                             </span>
                           </div>
@@ -671,9 +671,9 @@ export function EnhancedDocumentList({
 
       {filteredDocuments.length === 0 && (
         <div className="text-center py-12">
-          <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
               ? 'Try adjusting your search or filter criteria'
               : 'No documents have been created yet'}

@@ -184,7 +184,7 @@ export function NewAppointmentModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div
@@ -207,7 +207,7 @@ export function NewAppointmentModal({
         }}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-800 bg-gray-900/50 backdrop-blur-xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-800 bg-background/50 backdrop-blur-xl">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
@@ -223,14 +223,14 @@ export function NewAppointmentModal({
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
             >
-              <Calendar className="w-5 h-5 text-white" />
+              <Calendar className="w-5 h-5 text-foreground" />
             </div>
-            <h2 className="text-xl font-semibold !text-gray-900 dark:!text-white">
+            <h2 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
               New Appointment
             </h2>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
-            <X className="w-5 h-5 text-gray-400" />
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted transition-colors">
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
@@ -248,16 +248,16 @@ export function NewAppointmentModal({
             <Select value={customerId} onValueChange={setCustomerId} disabled={formLoading}>
               <SelectTrigger
                 id="customer"
-                className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+                className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
               >
                 <SelectValue placeholder="Select a customer" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-background border-border">
                 {customers.map(customer => (
                   <SelectItem key={customer.id} value={customer.id} className="!text-gray-300">
                     {customer.name}
                     {customer.phone && (
-                      <span className="text-sm text-gray-500 ml-2">({customer.phone})</span>
+                      <span className="text-sm text-muted-foreground ml-2">({customer.phone})</span>
                     )}
                   </SelectItem>
                 ))}
@@ -277,16 +277,16 @@ export function NewAppointmentModal({
             <Select value={serviceId} onValueChange={setServiceId} disabled={formLoading}>
               <SelectTrigger
                 id="service"
-                className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+                className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
               >
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-background border-border">
                 {services.map(service => (
                   <SelectItem key={service.id} value={service.id} className="!text-gray-300">
                     <div className="flex items-center justify-between w-full">
                       <span>{service.name}</span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-muted-foreground">
                         {service.duration} min • AED {service.price}
                       </span>
                     </div>
@@ -308,11 +308,11 @@ export function NewAppointmentModal({
             <Select value={staffId} onValueChange={setStaffId} disabled={formLoading}>
               <SelectTrigger
                 id="staff"
-                className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+                className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
               >
                 <SelectValue placeholder="Select a staff member" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-background border-border">
                 {staff.map(member => (
                   <SelectItem key={member.id} value={member.id} className="!text-gray-300">
                     {member.name}
@@ -339,7 +339,7 @@ export function NewAppointmentModal({
                 onChange={e => setAppointmentDate(e.target.value)}
                 min={formatDate(new Date(), 'yyyy-MM-dd')}
                 max={formatDate(addDays(new Date(), 90), 'yyyy-MM-dd')}
-                className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+                className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
                 disabled={formLoading}
               />
             </div>
@@ -359,11 +359,11 @@ export function NewAppointmentModal({
               >
                 <SelectTrigger
                   id="time"
-                  className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
+                  className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
                 >
                   <SelectValue placeholder="Select a time" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-700">
+                <SelectContent className="bg-background border-border">
                   {availableSlots.map(slot => (
                     <SelectItem key={slot} value={slot} className="!text-gray-300">
                       {slot}
@@ -424,7 +424,7 @@ export function NewAppointmentModal({
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Add any special requests or notes..."
-              className="bg-gray-800/50 border-gray-700 !text-white placeholder:text-gray-500 focus:border-indigo-500 hover:bg-gray-700/50 min-h-[80px]"
+              className="bg-muted/50 border-border !text-foreground placeholder:text-muted-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50 min-h-[80px]"
               disabled={formLoading}
             />
           </div>
@@ -436,7 +436,7 @@ export function NewAppointmentModal({
               variant="outline"
               onClick={onClose}
               disabled={loading || formLoading}
-              className="flex-1 backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-900/50"
+              className="flex-1 backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50"
             >
               Cancel
             </Button>
@@ -445,7 +445,7 @@ export function NewAppointmentModal({
               disabled={
                 loading || formLoading || !customerId || !serviceId || !staffId || !appointmentTime
               }
-              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg disabled:opacity-50"
+              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-lg disabled:opacity-50"
             >
               {loading || formLoading ? (
                 <>

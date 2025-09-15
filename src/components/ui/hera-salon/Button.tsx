@@ -10,12 +10,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-hera-primary-600 text-white hover:bg-hera-primary-700 focus-visible:ring-hera-primary-400',
+          'bg-hera-primary-600 text-foreground hover:bg-hera-primary-700 focus-visible:ring-hera-primary-400',
         secondary:
-          'bg-white text-hera-primary-600 border border-hera-primary-600 hover:bg-hera-primary-50 focus-visible:ring-hera-primary-400',
+          'bg-background text-hera-primary-600 border border-hera-primary-600 hover:bg-hera-primary-50 focus-visible:ring-hera-primary-400',
         ghost:
           'bg-transparent text-hera-primary-600 hover:bg-hera-primary-50 focus-visible:ring-hera-primary-400',
-        destructive: 'bg-red-500 text-white hover:bg-red-600 focus-visible:ring-red-400',
+        destructive: 'bg-red-500 text-foreground hover:bg-red-600 focus-visible:ring-red-400',
         link: 'bg-transparent text-hera-primary-600 underline-offset-4 hover:underline focus-visible:ring-hera-primary-400 h-auto p-0'
       },
       size: {

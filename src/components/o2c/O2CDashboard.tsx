@@ -496,7 +496,7 @@ export function O2CDashboard() {
                   {overdueInvoices.map(invoice => (
                     <div
                       key={invoice.id}
-                      className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-gray-900"
+                      className="flex items-center justify-between p-2 rounded-lg bg-background dark:bg-background"
                     >
                       <div className="flex items-center gap-4">
                         <div>
@@ -537,7 +537,7 @@ export function O2CDashboard() {
                 {recentTransactions.map(transaction => (
                   <div key={transaction.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800">
+                      <div className="p-2 rounded-full bg-muted dark:bg-muted">
                         {transaction.transaction_type === 'sales_order' && (
                           <ShoppingCart className="h-4 w-4" />
                         )}

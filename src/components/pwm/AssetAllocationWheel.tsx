@@ -124,19 +124,19 @@ export function AssetAllocationWheel({
     if (active && payload && payload[0]) {
       const data = payload[0].payload
       return (
-        <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">
-          <p className="font-semibold text-white mb-2">{data.category}</p>
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+          <p className="font-semibold text-foreground mb-2">{data.category}</p>
           <div className="space-y-1">
             <p className="text-sm">
-              <span className="text-slate-400">Value:</span>
-              <span className="ml-2 font-medium text-white">{formatCurrency(data.value)}</span>
+              <span className="text-muted-foreground">Value:</span>
+              <span className="ml-2 font-medium text-foreground">{formatCurrency(data.value)}</span>
             </p>
             <p className="text-sm">
-              <span className="text-slate-400">Allocation:</span>
-              <span className="ml-2 font-medium text-white">{data.percentage.toFixed(1)}%</span>
+              <span className="text-muted-foreground">Allocation:</span>
+              <span className="ml-2 font-medium text-foreground">{data.percentage.toFixed(1)}%</span>
             </p>
             <p className="text-sm">
-              <span className="text-slate-400">24h Change:</span>
+              <span className="text-muted-foreground">24h Change:</span>
               <span
                 className={cn(
                   'ml-2 font-medium',
@@ -148,8 +148,8 @@ export function AssetAllocationWheel({
               </span>
             </p>
             <p className="text-sm">
-              <span className="text-slate-400">Risk Score:</span>
-              <span className="ml-2 font-medium text-white">{data.riskScore}/10</span>
+              <span className="text-muted-foreground">Risk Score:</span>
+              <span className="ml-2 font-medium text-foreground">{data.riskScore}/10</span>
             </p>
           </div>
         </div>
@@ -167,10 +167,10 @@ export function AssetAllocationWheel({
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white mb-2">Portfolio Allocation</h3>
-        <p className="text-sm text-slate-400">
+        <h3 className="text-lg font-semibold text-foreground mb-2">Portfolio Allocation</h3>
+        <p className="text-sm text-muted-foreground">
           Interactive breakdown of your {formatCurrency(totalValue)} portfolio
         </p>
       </div>
@@ -210,7 +210,7 @@ export function AssetAllocationWheel({
           <button
             key={allocation.category}
             onClick={() => onCategoryClick?.(allocation.category)}
-            className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800/50 transition-colors text-left"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors text-left"
           >
             <div
               className="w-3 h-3 rounded-full flex-shrink-0"

@@ -77,7 +77,7 @@ export default function FurnitureSales() {
       case 'ready_for_delivery':
         return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
       case 'delivered':
-        return 'bg-gray-100 dark:bg-muted/30 text-gray-700 dark:text-gray-300'
+        return 'bg-muted dark:bg-muted/30 text-gray-700 dark:text-gray-300'
       case 'paid':
         return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
       case 'unpaid':
@@ -199,7 +199,7 @@ export default function FurnitureSales() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Active Orders</p>
               <p className="text-3xl font-bold text-foreground">{stats.activeOrders}</p>
-              <p className="text-xs text-gray-500 mt-2">{stats.todayOrders} new today</p>
+              <p className="text-xs text-muted-foreground mt-2">{stats.todayOrders} new today</p>
             </div>
           </Card>
 
@@ -215,7 +215,7 @@ export default function FurnitureSales() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Pending Quotes</p>
               <p className="text-3xl font-bold text-foreground">{stats.pendingQuotes}</p>
-              <p className="text-xs text-gray-500 mt-2">Awaiting approval</p>
+              <p className="text-xs text-muted-foreground mt-2">Awaiting approval</p>
             </div>
           </Card>
 
@@ -231,7 +231,7 @@ export default function FurnitureSales() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Ready to Dispatch</p>
               <p className="text-3xl font-bold text-foreground">{stats.readyToDispatch}</p>
-              <p className="text-xs text-gray-500 mt-2">Awaiting delivery</p>
+              <p className="text-xs text-muted-foreground mt-2">Awaiting delivery</p>
             </div>
           </Card>
 
@@ -261,7 +261,7 @@ export default function FurnitureSales() {
               <p className="text-3xl font-bold text-foreground">
                 ₹{(stats.monthlyRevenue / 100000).toFixed(1)}L
               </p>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 ₹{(stats.todayRevenue / 1000).toFixed(1)}K today
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function FurnitureSales() {
                               <p className="text-sm text-muted-foreground mt-1">
                                 {order.customerName}
                               </p>
-                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
                                   {order.orderDate}
@@ -361,14 +361,14 @@ export default function FurnitureSales() {
                           </div>
                           <div>
                             <p className="text-sm font-medium text-foreground">{product.name}</p>
-                            <p className="text-xs text-gray-500">{product.category}</p>
+                            <p className="text-xs text-muted-foreground">{product.category}</p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-medium text-foreground">
                             ₹{(product.revenue / 1000).toFixed(1)}K
                           </p>
-                          <p className="text-xs text-gray-500">{product.soldUnits} units</p>
+                          <p className="text-xs text-muted-foreground">{product.soldUnits} units</p>
                         </div>
                       </div>
                     ))

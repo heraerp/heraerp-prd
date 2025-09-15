@@ -82,12 +82,12 @@ export function AIInsightsFeed({
 
   if (isLoading) {
     return (
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="animate-pulse">
-          <div className="h-6 w-32 bg-slate-800 rounded mb-4" />
+          <div className="h-6 w-32 bg-muted rounded mb-4" />
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-24 bg-slate-800 rounded" />
+              <div key={i} className="h-24 bg-muted rounded" />
             ))}
           </div>
         </div>
@@ -96,15 +96,15 @@ export function AIInsightsFeed({
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30">
           <Brain className="h-5 w-5 text-purple-400" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-white">AI Intelligence</h3>
-          <p className="text-sm text-slate-400">Powered by advanced pattern recognition</p>
+          <h3 className="text-lg font-semibold text-foreground">AI Intelligence</h3>
+          <p className="text-sm text-muted-foreground">Powered by advanced pattern recognition</p>
         </div>
       </div>
 
@@ -115,7 +115,7 @@ export function AIInsightsFeed({
             key={insight.id}
             className={cn(
               'p-4 rounded-xl border transition-all duration-200 hover:shadow-lg',
-              'bg-slate-800/30 border-slate-700/50 hover:border-slate-600'
+              'bg-muted/30 border-border/50 hover:border-input'
             )}
           >
             {/* Insight Header */}
@@ -125,8 +125,8 @@ export function AIInsightsFeed({
                   {getInsightIcon(insight.type)}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-white mb-1">{insight.title}</h4>
-                  <p className="text-sm text-slate-400 leading-relaxed">{insight.description}</p>
+                  <h4 className="font-semibold text-foreground mb-1">{insight.title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{insight.description}</p>
                 </div>
               </div>
               <Badge variant="outline" className={cn('ml-3', getPriorityColor(insight.priority))}>
@@ -139,7 +139,7 @@ export function AIInsightsFeed({
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm">
-                  <span className="text-slate-400">Impact:</span>
+                  <span className="text-muted-foreground">Impact:</span>
                   <span
                     className={cn(
                       'ml-1 font-semibold',
@@ -153,8 +153,8 @@ export function AIInsightsFeed({
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-blue-400" />
                 <span className="text-sm">
-                  <span className="text-slate-400">Confidence:</span>
-                  <span className="ml-1 font-semibold text-white">
+                  <span className="text-muted-foreground">Confidence:</span>
+                  <span className="ml-1 font-semibold text-foreground">
                     {(insight.confidence * 100).toFixed(0)}%
                   </span>
                 </span>
@@ -163,13 +163,13 @@ export function AIInsightsFeed({
 
             {/* Actions */}
             {insight.actions && insight.actions.length > 0 && (
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-700/50">
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
                 {insight.actions.map(action => (
                   <Button
                     key={action.id}
                     size="sm"
                     variant="outline"
-                    className="bg-slate-800/50 border-slate-700 hover:bg-slate-700/50 hover:border-slate-600"
+                    className="bg-muted/50 border-border hover:bg-slate-700/50 hover:border-input"
                     onClick={() => onActionClick?.(insight, action.id)}
                   >
                     {action.description}
@@ -185,7 +185,7 @@ export function AIInsightsFeed({
       {/* View All Link */}
       <Button
         variant="ghost"
-        className="w-full mt-4 text-slate-400 hover:text-white hover:bg-slate-800/50"
+        className="w-full mt-4 text-muted-foreground hover:text-foreground hover:bg-muted/50"
       >
         View All Insights
         <ChevronRight className="h-4 w-4 ml-1" />

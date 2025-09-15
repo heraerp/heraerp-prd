@@ -10,7 +10,7 @@ export default function OfflinePage() {
         <div className="space-y-4">
           <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
             <svg
-              className="w-12 h-12 text-white"
+              className="w-12 h-12 text-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -28,15 +28,15 @@ export default function OfflinePage() {
             You&apos;re Offline
           </h1>
 
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             HERA is currently unavailable without an internet connection.
           </p>
         </div>
 
         <div className="space-y-4">
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-            <h2 className="text-xl font-semibold text-white mb-2">What you can do:</h2>
-            <ul className="text-left text-gray-400 space-y-2">
+          <div className="bg-background rounded-lg p-6 border border-gray-800">
+            <h2 className="text-xl font-semibold text-foreground mb-2">What you can do:</h2>
+            <ul className="text-left text-muted-foreground space-y-2">
               <li className="flex items-start">
                 <span className="text-cyan-500 mr-2">•</span>
                 Check your internet connection
@@ -60,7 +60,7 @@ export default function OfflinePage() {
           </button>
         </div>
 
-        <p className="text-sm text-gray-500">HERA Universal ERP • Offline Mode</p>
+        <p className="text-sm text-muted-foreground">HERA Universal ERP • Offline Mode</p>
       </div>
     </div>
   )

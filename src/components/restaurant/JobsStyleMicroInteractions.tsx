@@ -66,7 +66,7 @@ export function StatusIndicator({
           animated && status === 'success' ? 'animate-pulse' : ''
         } ${animated && status === 'loading' ? 'animate-spin' : ''}`}
       />
-      {showText && text && <span className="text-sm text-gray-600">{text}</span>}
+      {showText && text && <span className="text-sm text-muted-foreground">{text}</span>}
     </div>
   )
 }
@@ -306,7 +306,7 @@ export function LoadingSpinner({ size = 'md', color = '#3b82f6', message }: Load
           />
         </svg>
       </div>
-      {message && <p className="text-sm text-gray-600 animate-pulse">{message}</p>}
+      {message && <p className="text-sm text-muted-foreground animate-pulse">{message}</p>}
     </div>
   )
 }
@@ -340,7 +340,7 @@ export function MetricCard({
 
   return (
     <motion.div
-      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 cursor-pointer"
+      className="bg-background rounded-2xl p-6 shadow-sm border border-gray-100 cursor-pointer"
       whileHover={{
         scale: animated ? 1.02 : 1,
         boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
@@ -361,7 +361,7 @@ export function MetricCard({
       </div>
 
       <div className="space-y-2">
-        <p className="text-sm font-medium text-gray-600">{title}</p>
+        <p className="text-sm font-medium text-muted-foreground">{title}</p>
         <div className="flex items-end space-x-2">
           {typeof value === 'number' ? (
             <AnimatedCounter value={value} className="text-3xl font-bold text-gray-900" />
@@ -375,7 +375,7 @@ export function MetricCard({
                   ? 'text-green-600'
                   : trend === 'down'
                     ? 'text-red-600'
-                    : 'text-gray-600'
+                    : 'text-muted-foreground'
               }`}
             >
               {change > 0 ? '+' : ''}
@@ -473,7 +473,7 @@ export function GlowButton({
 
   return (
     <motion.button
-      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl transition-all duration-200 ${className} ${
+      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-foreground font-semibold rounded-xl transition-all duration-200 ${className} ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'
       }`}
       onClick={disabled ? undefined : onClick}

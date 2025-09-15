@@ -227,11 +227,11 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       pending: 'bg-yellow-100 text-yellow-800',
       confirmed: 'bg-blue-100 text-blue-800',
       seated: 'bg-green-100 text-green-800',
-      completed: 'bg-gray-100 text-gray-800',
+      completed: 'bg-muted text-gray-800',
       cancelled: 'bg-red-100 text-red-800',
       no_show: 'bg-orange-100 text-orange-800'
     }
-    return styles[status as keyof typeof styles] || 'bg-gray-100 text-gray-800'
+    return styles[status as keyof typeof styles] || 'bg-muted text-gray-800'
   }
 
   const getAvailableTables = (date: string, time: string, duration: number) => {
@@ -264,7 +264,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
           {/* Time slots */}
           {Array.from({ length: 14 }, (_, i) => i + 9).map(hour => (
             <div key={hour} className="flex items-start space-x-4">
-              <div className="w-16 text-sm text-gray-500 pt-2">{hour}:00</div>
+              <div className="w-16 text-sm text-muted-foreground pt-2">{hour}:00</div>
               <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
                 {filteredReservations
                   .filter(res => parseInt(res.reservation_time.split(':')[0]) === hour)
@@ -278,7 +278,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                             ? 'bg-green-50 border-green-200'
                             : reservation.status === 'cancelled'
                               ? 'bg-red-50 border-red-200'
-                              : 'bg-gray-50 border-gray-200'
+                              : 'bg-muted border-border'
                       }`}
                       onClick={() => {
                         setSelectedReservation(reservation)
@@ -294,11 +294,11 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         </Badge>
                       </div>
                       <div className="space-y-1">
-                        <div className="flex items-center space-x-1 text-xs text-gray-600">
+                        <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                           <Users className="w-3 h-3" />
                           <span>{reservation.party_size} guests</span>
                         </div>
-                        <div className="flex items-center space-x-1 text-xs text-gray-600">
+                        <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                           <Clock className="w-3 h-3" />
                           <span>
                             {reservation.reservation_time} ({reservation.duration_minutes}min)
@@ -327,28 +327,28 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Reservations</h3>
-            <p className="text-sm text-gray-600 mt-1">Manage table reservations and bookings</p>
+            <p className="text-sm text-muted-foreground mt-1">Manage table reservations and bookings</p>
           </div>
 
           <div className="flex items-center space-x-3">
             <Button
               variant="outline"
               onClick={() => setViewMode('day')}
-              className={viewMode === 'day' ? 'bg-gray-100' : ''}
+              className={viewMode === 'day' ? 'bg-muted' : ''}
             >
               Day
             </Button>
             <Button
               variant="outline"
               onClick={() => setViewMode('week')}
-              className={viewMode === 'week' ? 'bg-gray-100' : ''}
+              className={viewMode === 'week' ? 'bg-muted' : ''}
             >
               Week
             </Button>
             <Button
               variant="outline"
               onClick={() => setViewMode('month')}
-              className={viewMode === 'month' ? 'bg-gray-100' : ''}
+              className={viewMode === 'month' ? 'bg-muted' : ''}
             >
               Month
             </Button>
@@ -428,7 +428,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                       id="table_id"
                       value={formData.table_id}
                       onChange={e => setFormData({ ...formData, table_id: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select a table</option>
                       {getAvailableTables(
@@ -548,7 +548,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -580,7 +580,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
 
             <div className="space-y-4 py-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Status</span>
+                <span className="text-sm text-muted-foreground">Status</span>
                 <Badge className={getStatusBadge(selectedReservation.status)}>
                   {selectedReservation.status}
                 </Badge>
@@ -588,40 +588,40 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
 
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Users className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="font-medium">{selectedReservation.customer_name}</p>
-                    <p className="text-sm text-gray-600">{selectedReservation.party_size} guests</p>
+                    <p className="text-sm text-muted-foreground">{selectedReservation.party_size} guests</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Phone className="w-4 h-4 text-gray-400" />
+                  <Phone className="w-4 h-4 text-muted-foreground" />
                   <p className="text-sm">{selectedReservation.customer_phone}</p>
                 </div>
 
                 {selectedReservation.customer_email && (
                   <div className="flex items-center space-x-3">
-                    <Mail className="w-4 h-4 text-gray-400" />
+                    <Mail className="w-4 h-4 text-muted-foreground" />
                     <p className="text-sm">{selectedReservation.customer_email}</p>
                   </div>
                 )}
 
                 <div className="flex items-center space-x-3">
-                  <Timer className="w-4 h-4 text-gray-400" />
+                  <Timer className="w-4 h-4 text-muted-foreground" />
                   <p className="text-sm">{selectedReservation.duration_minutes} minutes</p>
                 </div>
 
                 {selectedReservation.special_requests && (
                   <div className="flex items-start space-x-3">
-                    <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5" />
                     <p className="text-sm">{selectedReservation.special_requests}</p>
                   </div>
                 )}
 
                 {(selectedReservation.deposit_amount || 0) > 0 && (
                   <div className="flex items-center space-x-3">
-                    <DollarSign className="w-4 h-4 text-gray-400" />
+                    <DollarSign className="w-4 h-4 text-muted-foreground" />
                     <p className="text-sm">
                       Deposit: ${selectedReservation.deposit_amount}
                       {selectedReservation.deposit_paid && (

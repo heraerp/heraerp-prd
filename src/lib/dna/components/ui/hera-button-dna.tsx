@@ -30,10 +30,10 @@ export function HeraButtonDNA({
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-violet-600 to-sky-600 hover:from-violet-700 hover:to-sky-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800',
+      'bg-gradient-to-r from-violet-600 to-sky-600 hover:from-violet-700 hover:to-sky-700 text-foreground shadow-lg hover:shadow-xl transform hover:-translate-y-0.5',
+    secondary: 'bg-muted hover:bg-gray-200 text-gray-800',
     outline: 'border-2 border-violet-600 text-violet-600 hover:bg-violet-50',
-    ghost: 'text-gray-700 hover:bg-gray-100'
+    ghost: 'text-gray-700 hover:bg-muted'
   }
 
   const sizeClasses = {

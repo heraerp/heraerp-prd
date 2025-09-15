@@ -531,7 +531,7 @@ export function CreateAppointmentModal({
       <div className="text-center">
         <div className="text-4xl mb-2">{config.icon}</div>
         <h3 className="text-lg font-semibold">Select or Create {config.customerTitle}</h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Choose an existing {config.customerTitle.toLowerCase()} or create a new one
         </p>
       </div>
@@ -551,14 +551,14 @@ export function CreateAppointmentModal({
               className={`p-3 rounded-lg border cursor-pointer transition-all ${
                 customer.id === cust.id
                   ? 'border-purple-300 bg-purple-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  : 'border-border hover:border-border'
               }`}
               onClick={() => setCustomer(cust)}
             >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">{cust.name}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {cust.phone} • {cust.email}
                   </p>
                 </div>
@@ -632,7 +632,7 @@ export function CreateAppointmentModal({
     <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-lg font-semibold">Select {config.serviceTitle}</h3>
-        <p className="text-sm text-gray-600">Choose the service for this appointment</p>
+        <p className="text-sm text-muted-foreground">Choose the service for this appointment</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -642,7 +642,7 @@ export function CreateAppointmentModal({
             className={`cursor-pointer transition-all ${
               selectedService?.id === service.id
                 ? 'border-purple-300 bg-purple-50'
-                : 'border-gray-200 hover:border-gray-300'
+                : 'border-border hover:border-border'
             }`}
             onClick={() => setSelectedService(service)}
           >
@@ -650,7 +650,7 @@ export function CreateAppointmentModal({
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold">{service.name}</h4>
-                  <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
                 </div>
                 {selectedService?.id === service.id && (
                   <CheckCircle className="w-5 h-5 text-purple-600" />
@@ -660,18 +660,18 @@ export function CreateAppointmentModal({
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4 text-gray-500" />
+                    <Clock className="w-4 h-4 text-muted-foreground" />
                     <span>{service.duration} min</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4 text-gray-500" />
+                    <DollarSign className="w-4 h-4 text-muted-foreground" />
                     <span>{formatCurrency(service.price)}</span>
                   </div>
                 </div>
               </div>
 
               <div className="mt-3">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Requirements: {service.requirements.join(', ')}
                 </p>
               </div>
@@ -686,7 +686,7 @@ export function CreateAppointmentModal({
     <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-lg font-semibold">Select Date & Time</h3>
-        <p className="text-sm text-gray-600">Choose when you'd like to schedule the appointment</p>
+        <p className="text-sm text-muted-foreground">Choose when you'd like to schedule the appointment</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -771,7 +771,7 @@ export function CreateAppointmentModal({
 
               <div>
                 <h5 className="font-medium mb-2">{config.customerTitle} Insights</h5>
-                <div className="text-sm text-gray-600 space-y-1">
+                <div className="text-sm text-muted-foreground space-y-1">
                   <p>
                     • Prefers {aiSuggestions.customerInsights.preferredTimeSlots.join(', ')}{' '}
                     appointments
@@ -793,7 +793,7 @@ export function CreateAppointmentModal({
 
               <div>
                 <h5 className="font-medium mb-2">{config.name} Best Practices</h5>
-                <div className="text-xs text-gray-600 space-y-1">
+                <div className="text-xs text-muted-foreground space-y-1">
                   {aiSuggestions.industrySpecific.bestPractices.map(
                     (practice: string, index: number) => (
                       <p key={index}>• {practice}</p>
@@ -813,7 +813,7 @@ export function CreateAppointmentModal({
       <div className="text-center">
         <div className="text-4xl mb-2">✅</div>
         <h3 className="text-lg font-semibold">Confirm Appointment</h3>
-        <p className="text-sm text-gray-600">Review the details before creating the appointment</p>
+        <p className="text-sm text-muted-foreground">Review the details before creating the appointment</p>
       </div>
 
       <Card>
@@ -823,16 +823,16 @@ export function CreateAppointmentModal({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-sm font-medium text-gray-600">{config.customerTitle}</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{config.customerTitle}</Label>
               <p className="font-semibold">{customer.name}</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {customer.phone} • {customer.email}
               </p>
             </div>
             <div>
-              <Label className="text-sm font-medium text-gray-600">Service</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Service</Label>
               <p className="font-semibold">{selectedService?.name}</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {selectedService?.duration} minutes • {formatCurrency(selectedService?.price || 0)}
               </p>
             </div>
@@ -840,19 +840,19 @@ export function CreateAppointmentModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-sm font-medium text-gray-600">Date</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Date</Label>
               <p className="font-semibold">{appointmentDate.toLocaleDateString()}</p>
             </div>
             <div>
-              <Label className="text-sm font-medium text-gray-600">Time</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Time</Label>
               <p className="font-semibold">{appointmentTime}</p>
             </div>
           </div>
 
           {specialRequests && (
             <div>
-              <Label className="text-sm font-medium text-gray-600">Special Requests</Label>
-              <p className="text-sm bg-gray-50 p-2 rounded">{specialRequests}</p>
+              <Label className="text-sm font-medium text-muted-foreground">Special Requests</Label>
+              <p className="text-sm bg-muted p-2 rounded">{specialRequests}</p>
             </div>
           )}
 
@@ -860,7 +860,7 @@ export function CreateAppointmentModal({
             <p className="text-sm text-blue-800">
               <strong>Smart Code:</strong> {selectedService?.smartCode}
             </p>
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="text-xs text-primary mt-1">
               This appointment will be processed using HERA's Universal 6-Table Architecture
             </p>
           </div>
@@ -886,13 +886,13 @@ export function CreateAppointmentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white border border-gray-200 shadow-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background border border-border shadow-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <span className="text-2xl">{config.icon}</span>
             <div>
               <div className="text-xl font-bold">New {config.name} Appointment</div>
-              <div className="text-sm text-gray-600 font-normal">
+              <div className="text-sm text-muted-foreground font-normal">
                 Step {step} of 4:{' '}
                 {step === 1
                   ? config.customerTitle
@@ -927,7 +927,7 @@ export function CreateAppointmentModal({
             <div key={stepNumber} className="flex items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  stepNumber <= step ? 'text-white' : 'bg-gray-200 text-gray-600'
+                  stepNumber <= step ? 'text-foreground' : 'bg-gray-200 text-muted-foreground'
                 }`}
                 style={{
                   backgroundColor: stepNumber <= step ? config.color : undefined
@@ -958,7 +958,7 @@ export function CreateAppointmentModal({
               <Button
                 onClick={() => setStep(step + 1)}
                 disabled={!canProceedToNextStep()}
-                className="text-white"
+                className="text-foreground"
                 style={{
                   background: `linear-gradient(135deg, ${config.color} 0%, ${config.color}CC 100%)`
                 }}
@@ -969,7 +969,7 @@ export function CreateAppointmentModal({
               <Button
                 onClick={handleCreateAppointment}
                 disabled={isLoading}
-                className="text-white"
+                className="text-foreground"
                 style={{
                   background: `linear-gradient(135deg, ${config.color} 0%, ${config.color}CC 100%)`
                 }}

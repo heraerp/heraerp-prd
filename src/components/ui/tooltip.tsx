@@ -71,7 +71,7 @@ const TooltipContent = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'z-50 overflow-hidden rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white shadow-md',
+        'z-50 overflow-hidden rounded-md bg-background px-3 py-1.5 text-sm text-foreground shadow-md',
         'absolute pointer-events-none opacity-0 transition-opacity duration-300',
         'group-hover:opacity-100',
         side === 'right' && 'left-full top-1/2 -translate-y-1/2 ml-2',

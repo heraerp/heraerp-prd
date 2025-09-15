@@ -207,7 +207,7 @@ export default function ReportsPage() {
       case 'scheduled':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -251,17 +251,17 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Reports & Analytics</h1>
-          <p className="text-white/60 mt-1">Generate insights from your CRM data</p>
+          <h1 className="text-3xl font-bold text-foreground">Reports & Analytics</h1>
+          <p className="text-foreground/60 mt-1">Generate insights from your CRM data</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300">
             <Calendar className="h-5 w-5" />
             <span>Schedule Report</span>
           </button>
           <button
             onClick={() => setIsGenerating(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
           >
             <FileText className="h-5 w-5" />
             <span>Custom Report</span>
@@ -276,15 +276,15 @@ export default function ReportsPage() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">{stat.change}</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/60 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
               </div>
             </div>
           )
@@ -296,7 +296,7 @@ export default function ReportsPage() {
         <select
           value={selectedCategory}
           onChange={e => setSelectedCategory(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Categories</option>
           <option value="sales">Sales Reports</option>
@@ -309,7 +309,7 @@ export default function ReportsPage() {
         <select
           value={selectedPeriod}
           onChange={e => setSelectedPeriod(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="week">Last Week</option>
           <option value="month">Last Month</option>
@@ -318,7 +318,7 @@ export default function ReportsPage() {
           <option value="custom">Custom Period</option>
         </select>
 
-        <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
           <Filter className="h-5 w-5" />
           <span>More Filters</span>
         </button>
@@ -331,17 +331,17 @@ export default function ReportsPage() {
           return (
             <div key={report.id} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
                     <div
                       className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}
                     >
-                      <Icon className="h-6 w-6 text-white" />
+                      <Icon className="h-6 w-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">{report.name}</h3>
-                      <p className="text-sm text-white/60 mt-1">{report.description}</p>
+                      <h3 className="text-lg font-semibold text-foreground">{report.name}</h3>
+                      <p className="text-sm text-foreground/60 mt-1">{report.description}</p>
                     </div>
                   </div>
                   {report.status && (
@@ -358,13 +358,13 @@ export default function ReportsPage() {
                   <div className="flex items-center justify-between text-sm">
                     <div className="space-y-1">
                       {report.lastRun && (
-                        <div className="flex items-center space-x-2 text-white/60">
+                        <div className="flex items-center space-x-2 text-foreground/60">
                           <Clock className="h-4 w-4" />
                           <span>Last run: {report.lastRun}</span>
                         </div>
                       )}
                       {report.frequency && (
-                        <div className="flex items-center space-x-2 text-white/60">
+                        <div className="flex items-center space-x-2 text-foreground/60">
                           <Calendar className="h-4 w-4" />
                           <span>Frequency: {report.frequency}</span>
                         </div>
@@ -373,15 +373,15 @@ export default function ReportsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                  <div className="flex items-center justify-between pt-4 border-t border-border/10">
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                         <FileSpreadsheet className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                         <Mail className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                      <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                         <Download className="h-4 w-4" />
                       </button>
                     </div>
@@ -400,23 +400,23 @@ export default function ReportsPage() {
       {/* Quick Insights */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">Quick Insights</h3>
+            <h3 className="text-lg font-semibold text-foreground">Quick Insights</h3>
             <AlertCircle className="h-5 w-5 text-[#FF5A09]" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white/5 rounded-lg p-4">
+            <div className="bg-background/5 rounded-lg p-4">
               <p className="text-2xl font-bold text-[#FF5A09]">68%</p>
-              <p className="text-sm text-white/60 mt-1">Pipeline coverage for Q3 target</p>
+              <p className="text-sm text-foreground/60 mt-1">Pipeline coverage for Q3 target</p>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
+            <div className="bg-background/5 rounded-lg p-4">
               <p className="text-2xl font-bold text-emerald-400">24 days</p>
-              <p className="text-sm text-white/60 mt-1">Average sales cycle</p>
+              <p className="text-sm text-foreground/60 mt-1">Average sales cycle</p>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
+            <div className="bg-background/5 rounded-lg p-4">
               <p className="text-2xl font-bold text-[#ec7f37]">₹42L</p>
-              <p className="text-sm text-white/60 mt-1">Average deal size</p>
+              <p className="text-sm text-foreground/60 mt-1">Average deal size</p>
             </div>
           </div>
         </div>
@@ -425,9 +425,9 @@ export default function ReportsPage() {
       {/* Empty State */}
       {filteredReports.length === 0 && (
         <div className="text-center py-12">
-          <FileText className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No reports found</h3>
-          <p className="text-white/60">Try adjusting your filters or create a custom report</p>
+          <FileText className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No reports found</h3>
+          <p className="text-foreground/60">Try adjusting your filters or create a custom report</p>
         </div>
       )}
     </div>

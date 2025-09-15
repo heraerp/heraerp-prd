@@ -264,7 +264,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
   return (
     <div className={cn('max-w-6xl mx-auto space-y-6', className)}>
       {/* Header */}
-      <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+      <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -272,7 +272,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                 {getTypeIcon(formData.type)}
                 {rule ? 'Pencil Configuration Rule' : 'Create Configuration Rule'}
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Define rules that control system behavior and business logic
               </CardDescription>
             </div>
@@ -284,7 +284,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               <Button
                 onClick={handleSave}
                 disabled={isValidating}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-foreground shadow-lg"
               >
                 {isValidating ? (
                   <>
@@ -322,28 +322,28 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
       {/* Main Form */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl">
+        <TabsList className="grid w-full grid-cols-4 bg-background/50 dark:bg-background/50 backdrop-blur-xl">
           <TabsTrigger
             value="basic"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted data-[state=active]:text-primary dark:data-[state=active]:text-blue-400"
           >
             Basic Info
           </TabsTrigger>
           <TabsTrigger
             value="conditions"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted data-[state=active]:text-primary dark:data-[state=active]:text-blue-400"
           >
             Conditions
           </TabsTrigger>
           <TabsTrigger
             value="actions"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted data-[state=active]:text-primary dark:data-[state=active]:text-blue-400"
           >
             Actions
           </TabsTrigger>
           <TabsTrigger
             value="config"
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
+            className="data-[state=active]:bg-background dark:data-[state=active]:bg-muted data-[state=active]:text-primary dark:data-[state=active]:text-blue-400"
           >
             Configuration
           </TabsTrigger>
@@ -351,7 +351,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
         {/* Basic Information Tab */}
         <TabsContent value="basic" className="space-y-6">
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Column */}
@@ -368,7 +368,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.name}
                       onChange={e => handleInputChange('name', e.target.value)}
                       placeholder="e.g., Customer Credit Limit Validation"
-                      className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                   </div>
 
@@ -384,7 +384,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.category}
                       onChange={e => handleInputChange('category', e.target.value)}
                       placeholder="e.g., Customer Management"
-                      className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                   </div>
 
@@ -400,7 +400,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={formData.type}
                         onValueChange={value => handleInputChange('type', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -443,7 +443,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={formData.scope}
                         onValueChange={value => handleInputChange('scope', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -468,7 +468,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={formData.status}
                         onValueChange={value => handleInputChange('status', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -478,7 +478,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                             </Badge>
                           </SelectItem>
                           <SelectItem value="inactive">
-                            <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-300">
+                            <Badge className="bg-muted text-gray-800 dark:bg-muted/30 dark:text-gray-300">
                               Inactive
                             </Badge>
                           </SelectItem>
@@ -505,7 +505,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         max="10"
                         value={formData.priority}
                         onChange={e => handleInputChange('priority', parseInt(e.target.value) || 1)}
-                        className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                        className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                       />
                     </div>
                   </div>
@@ -525,7 +525,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.description}
                       onChange={e => handleInputChange('description', e.target.value)}
                       placeholder="Describe what this rule does and when it should be applied..."
-                      className="min-h-[100px] bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="min-h-[100px] bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                   </div>
 
@@ -541,15 +541,15 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.smart_code}
                       onChange={e => handleInputChange('smart_code', e.target.value)}
                       placeholder="HERA.CATEGORY.TYPE.NAME.v1"
-                      className="font-mono text-sm bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="font-mono text-sm bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
-                    <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">
+                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                       Auto-generated based on name, type, and category
                     </p>
                   </div>
 
                   <Alert className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <Info className="h-4 w-4 text-primary dark:text-blue-400" />
                     <AlertDescription className="text-blue-800 dark:text-blue-300">
                       <div className="font-semibold">Rule Priority Guide:</div>
                       <div className="text-sm mt-1">
@@ -568,13 +568,13 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
         {/* Conditions Tab */}
         <TabsContent value="conditions" className="space-y-6">
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                 <TestTube className="w-5 h-5" />
                 Rule Conditions
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Define when this rule should be triggered based on data conditions
               </CardDescription>
             </CardHeader>
@@ -582,7 +582,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               {formData.conditions.map((condition, index) => (
                 <div
                   key={index}
-                  className="p-4 border border-white/30 dark:border-gray-600/30 rounded-lg bg-white/30 dark:bg-gray-800/30"
+                  className="p-4 border border-white/30 dark:border-border/30 rounded-lg bg-background/30 dark:bg-muted/30"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-medium !text-gray-900 dark:!text-gray-100">
@@ -609,7 +609,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={condition.field}
                         onChange={e => handleConditionChange(index, 'field', e.target.value)}
                         placeholder="entity.field_name"
-                        className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                        className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                       />
                     </div>
 
@@ -621,7 +621,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={condition.operator}
                         onValueChange={value => handleConditionChange(index, 'operator', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -642,7 +642,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={condition.value}
                         onChange={e => handleConditionChange(index, 'value', e.target.value)}
                         placeholder="comparison value"
-                        className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                        className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                       />
                     </div>
 
@@ -654,7 +654,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={condition.logic}
                         onValueChange={value => handleConditionChange(index, 'logic', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -670,7 +670,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               <Button
                 variant="outline"
                 onClick={addCondition}
-                className="w-full border-dashed border-2 border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                className="w-full border-dashed border-2 border-blue-300 dark:border-blue-700 text-primary dark:text-blue-400 hover:bg-primary/10 dark:hover:bg-blue-900/30"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Condition
@@ -681,13 +681,13 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
         {/* Actions Tab */}
         <TabsContent value="actions" className="space-y-6">
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                 <Zap className="w-5 h-5" />
                 Rule Actions
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Define what happens when the rule conditions are met
               </CardDescription>
             </CardHeader>
@@ -695,7 +695,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               {formData.actions.map((action, index) => (
                 <div
                   key={index}
-                  className="p-4 border border-white/30 dark:border-gray-600/30 rounded-lg bg-white/30 dark:bg-gray-800/30"
+                  className="p-4 border border-white/30 dark:border-border/30 rounded-lg bg-background/30 dark:bg-muted/30"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-medium !text-gray-900 dark:!text-gray-100">
@@ -722,7 +722,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={action.type}
                         onValueChange={value => handleActionChange(index, 'type', value)}
                       >
-                        <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                        <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -746,7 +746,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={action.target}
                         onChange={e => handleActionChange(index, 'target', e.target.value)}
                         placeholder="field or method to target"
-                        className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                        className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                       />
                     </div>
 
@@ -758,7 +758,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         value={action.value}
                         onChange={e => handleActionChange(index, 'value', e.target.value)}
                         placeholder="action value or expression"
-                        className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                        className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                       />
                     </div>
                   </div>
@@ -779,13 +779,13 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
         {/* Configuration Tab */}
         <TabsContent value="config" className="space-y-6">
-          <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border-white/20 dark:border-gray-700/30">
+          <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
                 <Settings className="w-5 h-5" />
                 Advanced Configuration
               </CardTitle>
-              <CardDescription className="!text-gray-600 dark:!text-gray-300">
+              <CardDescription className="!text-muted-foreground dark:!text-gray-300">
                 Configure execution settings and error handling
               </CardDescription>
             </CardHeader>
@@ -807,7 +807,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       onChange={e =>
                         handleConfigurationChange('timeout_ms', parseInt(e.target.value))
                       }
-                      className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                   </div>
 
@@ -823,7 +823,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       onChange={e =>
                         handleConfigurationChange('retry_count', parseInt(e.target.value))
                       }
-                      className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
+                      className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                   </div>
 
@@ -835,7 +835,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.configuration.failure_action}
                       onValueChange={value => handleConfigurationChange('failure_action', value)}
                     >
-                      <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                      <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -858,7 +858,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
                         Enable Notifications
                       </Label>
-                      <p className="text-xs !text-gray-500 dark:!text-gray-500">
+                      <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                         Send notifications on rule failures
                       </p>
                     </div>
@@ -878,7 +878,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       value={formData.configuration.logging_level}
                       onValueChange={value => handleConfigurationChange('logging_level', value)}
                     >
-                      <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
+                      <SelectTrigger className="bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -891,7 +891,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div className="flex items-start gap-3">
-                      <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                      <Info className="w-5 h-5 text-primary dark:text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-medium text-blue-800 dark:text-blue-300">
                           Performance Impact

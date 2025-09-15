@@ -385,15 +385,15 @@ export function ARModule({
       <Card
         className={cn(
           'shadow-lg',
-          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-background border-border'
         )}
       >
-        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-border')}>
           <div className="flex items-center justify-between">
             <CardTitle
               className={cn(
                 'text-xl flex items-center gap-2',
-                isDarkMode ? 'text-white' : 'text-gray-900'
+                isDarkMode ? 'text-foreground' : 'text-gray-900'
               )}
             >
               <Users className="h-5 w-5" />
@@ -417,7 +417,7 @@ export function ARModule({
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
             <TabsList
-              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-muted')}
             >
               <TabsTrigger value="customers" className="gap-1">
                 <Users className="h-4 w-4" />
@@ -448,7 +448,7 @@ export function ARModule({
               <div className="flex justify-between items-center mb-4">
                 <div className="flex gap-2">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search customers..."
                       className={cn(
@@ -490,7 +490,7 @@ export function ARModule({
                     <Card
                       key={channel}
                       className={cn(
-                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                       )}
                     >
                       <CardContent className="p-4">
@@ -508,7 +508,7 @@ export function ARModule({
                         <div className="text-2xl font-bold">
                           ₹{(stats.amount / 1000).toFixed(0)}K
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {stats.count} customers ({stats.percentage}%)
                         </div>
                       </CardContent>
@@ -522,7 +522,7 @@ export function ARModule({
                   <Card
                     key={customer.id}
                     className={cn(
-                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                     )}
                   >
                     <CardContent className="p-4">
@@ -554,17 +554,17 @@ export function ARModule({
                           </div>
                           <div className="grid grid-cols-4 gap-4 text-sm">
                             <div>
-                              <span className="text-gray-500">Code:</span> {customer.customerCode}
+                              <span className="text-muted-foreground">Code:</span> {customer.customerCode}
                             </div>
                             <div>
-                              <span className="text-gray-500">Terms:</span> {customer.paymentTerms}
+                              <span className="text-muted-foreground">Terms:</span> {customer.paymentTerms}
                             </div>
                             <div>
-                              <span className="text-gray-500">Credit Limit:</span> ₹
+                              <span className="text-muted-foreground">Credit Limit:</span> ₹
                               {customer.creditLimit.toLocaleString()}
                             </div>
                             <div>
-                              <span className="text-gray-500">Available:</span> ₹
+                              <span className="text-muted-foreground">Available:</span> ₹
                               {(customer.creditLimit - customer.currentBalance).toLocaleString()}
                             </div>
                           </div>
@@ -583,7 +583,7 @@ export function ARModule({
                           <div className="text-2xl font-semibold">
                             ₹{customer.currentBalance.toLocaleString()}
                           </div>
-                          <div className="text-sm text-gray-500">Outstanding</div>
+                          <div className="text-sm text-muted-foreground">Outstanding</div>
                           {customer.currentBalance > customer.creditLimit * 0.8 && (
                             <Badge variant="destructive" className="mt-1">
                               <AlertTriangle className="h-3 w-3 mr-1" />
@@ -602,7 +602,7 @@ export function ARModule({
             <TabsContent value="invoices" className="space-y-4 mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -736,7 +736,7 @@ export function ARModule({
                           <tr
                             className={cn(
                               'border-b',
-                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                             )}
                           >
                             <th className="text-left py-2">Product</th>
@@ -753,7 +753,7 @@ export function ARModule({
                               key={line.id}
                               className={cn(
                                 'border-b',
-                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                               )}
                             >
                               <td className="py-2 pr-2">
@@ -904,7 +904,7 @@ export function ARModule({
             <TabsContent value="payments" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -932,7 +932,7 @@ export function ARModule({
 
                   {industrySpecific.seasonalCreditTerms && (
                     <Alert className="mt-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                      <Calendar className="h-4 w-4 text-blue-600" />
+                      <Calendar className="h-4 w-4 text-primary" />
                       <AlertDescription className="text-blue-700 dark:text-blue-400">
                         Summer season credit terms active: Extended 45-day terms for wholesale
                         customers
@@ -947,7 +947,7 @@ export function ARModule({
             <TabsContent value="collections" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -992,7 +992,7 @@ export function ARModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Metro Cash & Carry</h4>
-                              <p className="text-sm text-gray-500">90+ days overdue - ₹43,000</p>
+                              <p className="text-sm text-muted-foreground">90+ days overdue - ₹43,000</p>
                               <div className="flex gap-2 mt-2">
                                 <Badge variant="destructive">High Priority</Badge>
                                 {industrySpecific.freezerDepositTracking && (
@@ -1031,7 +1031,7 @@ export function ARModule({
               <TabsContent value="returns" className="mt-4">
                 <Card
                   className={cn(
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                   )}
                 >
                   <CardHeader>

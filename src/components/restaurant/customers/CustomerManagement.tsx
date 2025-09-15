@@ -237,7 +237,7 @@ export function CustomerManagement() {
         }
       default:
         return {
-          color: 'bg-gray-100 text-gray-800',
+          color: 'bg-muted text-gray-800',
           icon: <User className="w-3 h-3" />,
           label: 'Regular'
         }
@@ -260,7 +260,7 @@ export function CustomerManagement() {
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-green-200 border-t-green-500 rounded-full" />
           </div>
-          <p className="text-gray-600">Loading customers...</p>
+          <p className="text-muted-foreground">Loading customers...</p>
         </div>
       </div>
     )
@@ -275,7 +275,7 @@ export function CustomerManagement() {
           value={stats.totalCustomers}
           change={12.5}
           trend="up"
-          icon={<Users className="w-5 h-5 text-white" />}
+          icon={<Users className="w-5 h-5 text-foreground" />}
           color="from-blue-500 to-indigo-600"
         />
 
@@ -284,7 +284,7 @@ export function CustomerManagement() {
           value={stats.newThisMonth}
           change={24.3}
           trend="up"
-          icon={<UserPlus className="w-5 h-5 text-white" />}
+          icon={<UserPlus className="w-5 h-5 text-foreground" />}
           color="from-green-500 to-emerald-600"
         />
 
@@ -293,7 +293,7 @@ export function CustomerManagement() {
           value={stats.vipCustomers}
           change={5.1}
           trend="up"
-          icon={<Crown className="w-5 h-5 text-white" />}
+          icon={<Crown className="w-5 h-5 text-foreground" />}
           color="from-purple-500 to-violet-600"
         />
 
@@ -302,7 +302,7 @@ export function CustomerManagement() {
           value={`$${stats.averageSpent}`}
           change={8.7}
           trend="up"
-          icon={<DollarSign className="w-5 h-5 text-white" />}
+          icon={<DollarSign className="w-5 h-5 text-foreground" />}
           color="from-orange-500 to-red-600"
         />
 
@@ -311,7 +311,7 @@ export function CustomerManagement() {
           value={`${stats.retentionRate}%`}
           change={-2.1}
           trend="down"
-          icon={<Heart className="w-5 h-5 text-white" />}
+          icon={<Heart className="w-5 h-5 text-foreground" />}
           color="from-pink-500 to-rose-600"
         />
 
@@ -320,7 +320,7 @@ export function CustomerManagement() {
           value={stats.satisfaction}
           change={0.3}
           trend="up"
-          icon={<ThumbsUp className="w-5 h-5 text-white" />}
+          icon={<ThumbsUp className="w-5 h-5 text-foreground" />}
           color="from-yellow-500 to-amber-600"
         />
       </div>
@@ -330,7 +330,7 @@ export function CustomerManagement() {
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search customers..."
                 value={searchQuery}
@@ -342,7 +342,7 @@ export function CustomerManagement() {
             <select
               value={filterTier}
               onChange={e => setFilterTier(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Tiers</option>
               <option value="regular">Regular</option>
@@ -353,7 +353,7 @@ export function CustomerManagement() {
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as any)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="lastVisit">Last Visit</option>
               <option value="name">Name</option>
@@ -362,7 +362,7 @@ export function CustomerManagement() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <div className="flex items-center bg-muted rounded-lg p-1">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
@@ -418,7 +418,7 @@ export function CustomerManagement() {
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-12 h-12">
                       <AvatarImage src={customer.avatar} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-foreground">
                         {customer.name
                           .split(' ')
                           .map(n => n[0])
@@ -426,10 +426,10 @@ export function CustomerManagement() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
                         {customer.name}
                       </h3>
-                      <p className="text-sm text-gray-500">{customer.email}</p>
+                      <p className="text-sm text-muted-foreground">{customer.email}</p>
                     </div>
                   </div>
                   <Badge className={tierConfig.color}>
@@ -440,14 +440,14 @@ export function CustomerManagement() {
 
                 {/* Customer Stats */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Total Spent</p>
+                  <div className="text-center p-3 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Total Spent</p>
                     <p className="font-semibold text-gray-900">
                       $<AnimatedCounter value={customer.totalSpent} />
                     </p>
                   </div>
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Visits</p>
+                  <div className="text-center p-3 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Visits</p>
                     <p className="font-semibold text-gray-900">
                       <AnimatedCounter value={customer.visitCount} />
                     </p>
@@ -457,7 +457,7 @@ export function CustomerManagement() {
                 {/* Last Visit */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Last visit:</span>
+                    <span className="text-muted-foreground">Last visit:</span>
                     <span className={`font-medium ${getLastVisitColor(customer.lastVisit)}`}>
                       {daysSinceLastVisit === 0
                         ? 'Today'
@@ -471,7 +471,7 @@ export function CustomerManagement() {
                 {/* Loyalty Points */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Loyalty Points:</span>
+                    <span className="text-muted-foreground">Loyalty Points:</span>
                     <div className="flex items-center space-x-1">
                       <Sparkles className="w-4 h-4 text-yellow-500" />
                       <span className="font-medium text-yellow-600">
@@ -484,7 +484,7 @@ export function CustomerManagement() {
                 {/* Satisfaction */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Satisfaction:</span>
+                    <span className="text-muted-foreground">Satisfaction:</span>
                     <div className="flex items-center space-x-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -540,32 +540,32 @@ export function CustomerManagement() {
         <Card>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Customer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Tier
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Total Spent
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Visits
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Last Visit
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Satisfaction
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-background divide-y divide-gray-200">
                 {filteredCustomers.map(customer => {
                   const tierConfig = getTierConfig(customer.tier)
                   const daysSinceLastVisit = Math.floor(
@@ -573,12 +573,12 @@ export function CustomerManagement() {
                   )
 
                   return (
-                    <tr key={customer.id} className="hover:bg-gray-50">
+                    <tr key={customer.id} className="hover:bg-muted">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-3">
                           <Avatar className="w-10 h-10">
                             <AvatarImage src={customer.avatar} />
-                            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-foreground">
                               {customer.name
                                 .split(' ')
                                 .map(n => n[0])
@@ -587,7 +587,7 @@ export function CustomerManagement() {
                           </Avatar>
                           <div>
                             <p className="font-medium text-gray-900">{customer.name}</p>
-                            <p className="text-sm text-gray-500">{customer.email}</p>
+                            <p className="text-sm text-muted-foreground">{customer.email}</p>
                           </div>
                         </div>
                       </td>
@@ -600,7 +600,7 @@ export function CustomerManagement() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         ${customer.totalSpent.toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {customer.visitCount}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">

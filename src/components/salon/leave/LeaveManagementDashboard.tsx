@@ -148,7 +148,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
       <div className="relative z-10 p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-white flex items-center gap-3">
+          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-foreground flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
               style={{
@@ -168,11 +168,11 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
                 `
               }}
             >
-              <CalendarOff className="w-6 h-6 text-white drop-shadow-md" />
+              <CalendarOff className="w-6 h-6 text-foreground drop-shadow-md" />
             </div>
             Leave Management
           </h1>
-          <p className="!text-gray-600 dark:!text-gray-400 mt-2">
+          <p className="!text-muted-foreground dark:!text-muted-foreground mt-2">
             Manage time off requests, balances, and team coverage for {currentOrganization?.name}
           </p>
         </div>
@@ -203,8 +203,8 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'dashboard'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               Dashboard
@@ -214,8 +214,8 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'calendar'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               Calendar
@@ -225,8 +225,8 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               className={cn(
                 'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'reports'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                  : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-foreground shadow-lg'
+                  : '!text-gray-700 dark:!text-gray-300 hover:bg-background/10'
               )}
             >
               Reports
@@ -238,21 +238,21 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
         <div className="mb-6 flex gap-4">
           <Button
             onClick={() => setShowRequestForm(true)}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-lg"
           >
             <Plus className="h-4 w-4 mr-2" />
             Request Leave
           </Button>
           <Button
             variant="outline"
-            className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-900/50"
+            className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50"
           >
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
           <Button
             variant="outline"
-            className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-900/50"
+            className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -300,13 +300,13 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm !text-gray-600 dark:!text-gray-400">Upcoming Leave</p>
-                    <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Upcoming Leave</p>
+                    <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                       {leaveStats.upcomingLeave}
                     </p>
-                    <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">Next 30 days</p>
+                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Next 30 days</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white">
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-foreground">
                     <TrendingUp className="h-5 w-5" />
                   </div>
                 </div>
@@ -332,13 +332,13 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm !text-gray-600 dark:!text-gray-400">Team on Leave</p>
-                    <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Team on Leave</p>
+                    <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                       {leaveStats.teamOnLeave}
                     </p>
-                    <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">Today</p>
+                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Today</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-foreground">
                     <Users className="h-5 w-5" />
                   </div>
                 </div>

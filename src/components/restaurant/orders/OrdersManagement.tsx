@@ -244,7 +244,7 @@ export function OrdersManagement() {
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-orange-200 border-t-orange-500 rounded-full" />
           </div>
-          <p className="text-gray-600">Loading orders...</p>
+          <p className="text-muted-foreground">Loading orders...</p>
         </div>
       </div>
     )
@@ -259,14 +259,14 @@ export function OrdersManagement() {
           value={stats.totalOrders}
           change={8.2}
           trend="up"
-          icon={<Utensils className="w-5 h-5 text-white" />}
+          icon={<Utensils className="w-5 h-5 text-foreground" />}
           color="from-blue-500 to-indigo-600"
         />
 
         <MetricCard
           title="Active Orders"
           value={stats.activeOrders}
-          icon={<Activity className="w-5 h-5 text-white" />}
+          icon={<Activity className="w-5 h-5 text-foreground" />}
           color="from-orange-500 to-red-600"
         />
 
@@ -275,7 +275,7 @@ export function OrdersManagement() {
           value={`${stats.averageTime}m`}
           change={-2.1}
           trend="down"
-          icon={<Clock className="w-5 h-5 text-white" />}
+          icon={<Clock className="w-5 h-5 text-foreground" />}
           color="from-green-500 to-emerald-600"
         />
 
@@ -284,13 +284,13 @@ export function OrdersManagement() {
           value={stats.totalRevenue}
           change={15.3}
           trend="up"
-          icon={<DollarSign className="w-5 h-5 text-white" />}
+          icon={<DollarSign className="w-5 h-5 text-foreground" />}
           color="from-purple-500 to-violet-600"
         />
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-background rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-gray-600">Completion Rate</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">Completion Rate</h3>
             <ProgressRing progress={stats.completionRate} size={40} showPercentage={true} />
           </div>
         </div>
@@ -300,7 +300,7 @@ export function OrdersManagement() {
           value={stats.customerSatisfaction}
           change={0.2}
           trend="up"
-          icon={<Star className="w-5 h-5 text-white" />}
+          icon={<Star className="w-5 h-5 text-foreground" />}
           color="from-yellow-500 to-amber-600"
         />
       </div>
@@ -310,7 +310,7 @@ export function OrdersManagement() {
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search orders..."
                 value={searchQuery}
@@ -322,7 +322,7 @@ export function OrdersManagement() {
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -334,7 +334,7 @@ export function OrdersManagement() {
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Types</option>
               <option value="dine_in">Dine In</option>
@@ -344,7 +344,7 @@ export function OrdersManagement() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <div className="flex items-center bg-muted rounded-lg p-1">
               <Button
                 variant={viewMode === 'board' ? 'default' : 'ghost'}
                 size="sm"
@@ -388,16 +388,16 @@ export function OrdersManagement() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold text-gray-900">{order.reference_number}</h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {order.table_number ? `Table ${order.table_number}` : order.transaction_type}
                   </p>
                   {order.smart_code && (
-                    <p className="text-xs text-blue-600 font-mono">{order.smart_code}</p>
+                    <p className="text-xs text-primary font-mono">{order.smart_code}</p>
                   )}
                 </div>
                 <div className="text-right">
                   <Badge
-                    className={statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'}
+                    className={statusConfig[order.status]?.color || 'bg-muted text-gray-800'}
                   >
                     {statusConfig[order.status]?.label || order.status}
                   </Badge>
@@ -422,7 +422,7 @@ export function OrdersManagement() {
               {/* Customer Info */}
               {order.customer_name && (
                 <div className="flex items-center space-x-2 mb-3">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Users className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-gray-700">{order.customer_name}</span>
                 </div>
               )}
@@ -438,7 +438,7 @@ export function OrdersManagement() {
                   </div>
                 ))}
                 {order.items.length > 2 && (
-                  <p className="text-xs text-gray-500">+{order.items.length - 2} more items</p>
+                  <p className="text-xs text-muted-foreground">+{order.items.length - 2} more items</p>
                 )}
               </div>
 
@@ -454,8 +454,8 @@ export function OrdersManagement() {
               {/* Time and Total */}
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
                     {isClient ? (
                       <>
                         <AnimatedCounter value={getTimeElapsed(order.order_time)} />m ago
@@ -572,60 +572,60 @@ export function OrdersManagement() {
         <Card>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Order
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Customer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Items
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Time
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Total
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-background divide-y divide-gray-200">
                 {filteredOrders.map(order => (
-                  <tr key={order.id} className="hover:bg-gray-50">
+                  <tr key={order.id} className="hover:bg-muted">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <p className="font-medium text-gray-900">{order.reference_number}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                           {order.table_number
                             ? `Table ${order.table_number}`
                             : order.transaction_type}
                         </p>
                         {order.smart_code && (
-                          <p className="text-xs text-blue-600 font-mono">{order.smart_code}</p>
+                          <p className="text-xs text-primary font-mono">{order.smart_code}</p>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-sm text-gray-900">{order.customer_name || 'Walk-in'}</p>
-                      {order.phone && <p className="text-sm text-gray-500">{order.phone}</p>}
+                      {order.phone && <p className="text-sm text-muted-foreground">{order.phone}</p>}
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-900">{order.items.length} items</p>
-                      <p className="text-sm text-gray-500">{order.items[0]?.menu_item_name}...</p>
+                      <p className="text-sm text-muted-foreground">{order.items[0]?.menu_item_name}...</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <Badge
                           className={
-                            statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'
+                            statusConfig[order.status]?.color || 'bg-muted text-gray-800'
                           }
                         >
                           {statusConfig[order.status]?.label || order.status}
@@ -647,7 +647,7 @@ export function OrdersManagement() {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {isClient ? (
                         <>
                           <AnimatedCounter value={getTimeElapsed(order.order_time)} />m ago

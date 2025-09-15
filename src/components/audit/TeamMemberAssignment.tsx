@@ -256,11 +256,11 @@ export function TeamMemberAssignment({
       case 'partner':
         return <Crown className="w-4 h-4 text-yellow-600" />
       case 'manager':
-        return <Briefcase className="w-4 h-4 text-blue-600" />
+        return <Briefcase className="w-4 h-4 text-primary" />
       case 'senior':
         return <GraduationCap className="w-4 h-4 text-green-600" />
       case 'staff':
-        return <Users className="w-4 h-4 text-gray-600" />
+        return <Users className="w-4 h-4 text-muted-foreground" />
       case 'intern':
         return <Star className="w-4 h-4 text-purple-600" />
       default:
@@ -287,8 +287,8 @@ export function TeamMemberAssignment({
         <CardContent>
           {currentMembers.length === 0 ? (
             <div className="text-center py-8">
-              <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-600">No team members assigned yet</p>
+              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No team members assigned yet</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -301,9 +301,9 @@ export function TeamMemberAssignment({
                     {getRoleIcon(member.role)}
                     <div>
                       <p className="font-medium text-gray-900">{member.member_name}</p>
-                      <p className="text-sm text-gray-600 capitalize">{member.role}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                       {member.specialization.length > 0 && (
-                        <p className="text-xs text-gray-600">{member.specialization.join(', ')}</p>
+                        <p className="text-xs text-muted-foreground">{member.specialization.join(', ')}</p>
                       )}
                     </div>
                   </div>
@@ -340,12 +340,12 @@ export function TeamMemberAssignment({
             <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
               {showAssignDialog && (
                 <div
-                  className="fixed inset-0 bg-black/60 z-[90]"
+                  className="fixed inset-0 bg-background/60 z-[90]"
                   onClick={() => setShowAssignDialog(false)}
                 />
               )}
               <DialogContent
-                className="max-w-lg bg-white border border-gray-200 shadow-2xl z-[100]
+                className="max-w-lg bg-background border border-border shadow-2xl z-[100]
                            fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
                            rounded-lg p-6"
                 style={{
@@ -383,7 +383,7 @@ export function TeamMemberAssignment({
             <div>
               <Label htmlFor="search">Search</Label>
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-gray-600" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
                 <Input
                   id="search"
                   placeholder="Search members..."
@@ -455,23 +455,23 @@ export function TeamMemberAssignment({
             </div>
           ) : filteredMembers.length === 0 ? (
             <div className="text-center py-8">
-              <UserPlus className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-600">No available members match your criteria</p>
+              <UserPlus className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No available members match your criteria</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredMembers.map(member => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
                       <p className="font-medium text-gray-900">{member.name}</p>
-                      <p className="text-sm text-gray-600 capitalize">{member.role}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                       {member.specializations.length > 0 && (
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-muted-foreground">
                           {member.specializations.slice(0, 2).join(', ')}
                         </p>
                       )}
@@ -485,7 +485,7 @@ export function TeamMemberAssignment({
                         {member.availability}% available
                       </p>
                       {member.current_assignments && (
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-muted-foreground">
                           {member.current_assignments} assignments
                         </p>
                       )}
@@ -535,11 +535,11 @@ function AssignmentForm({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+      <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
         {getRoleIcon(member.role)}
         <div>
           <p className="font-medium text-gray-900">{member.name}</p>
-          <p className="text-sm text-gray-600 capitalize">
+          <p className="text-sm text-muted-foreground capitalize">
             {member.role} • {member.availability}% available
           </p>
         </div>
@@ -629,11 +629,11 @@ function getRoleIcon(role: string) {
     case 'partner':
       return <Crown className="w-4 h-4 text-yellow-600" />
     case 'manager':
-      return <Briefcase className="w-4 h-4 text-blue-600" />
+      return <Briefcase className="w-4 h-4 text-primary" />
     case 'senior':
       return <GraduationCap className="w-4 h-4 text-green-600" />
     case 'staff':
-      return <Users className="w-4 h-4 text-gray-600" />
+      return <Users className="w-4 h-4 text-muted-foreground" />
     case 'intern':
       return <Star className="w-4 h-4 text-purple-600" />
     default:

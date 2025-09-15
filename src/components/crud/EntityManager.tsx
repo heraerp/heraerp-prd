@@ -281,14 +281,14 @@ export function EntityManager() {
 
           {loading && entities.length === 0 && (
             <div className="text-center py-8">
-              <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-500">Loading entities...</p>
+              <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">Loading entities...</p>
             </div>
           )}
 
           {!loading && entities.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No entities found</p>
+              <p className="text-muted-foreground mb-4">No entities found</p>
               <Button onClick={() => setShowForm(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create First Entity
@@ -309,7 +309,7 @@ export function EntityManager() {
                             {entity.entity_type}
                           </Badge>
                           {entity.entity_code && (
-                            <span className="ml-2 text-xs text-gray-500">{entity.entity_code}</span>
+                            <span className="ml-2 text-xs text-muted-foreground">{entity.entity_code}</span>
                           )}
                         </CardDescription>
                       </div>
@@ -320,16 +320,16 @@ export function EntityManager() {
                   </CardHeader>
                   <CardContent className="pt-0">
                     {entity.description && (
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                         {entity.description}
                       </p>
                     )}
                     {entity.entity_category && (
-                      <p className="text-xs text-gray-500 mb-2">
+                      <p className="text-xs text-muted-foreground mb-2">
                         Category: {entity.entity_category}
                       </p>
                     )}
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       Created: {new Date(entity.created_at).toLocaleDateString()}
                     </p>
                   </CardContent>

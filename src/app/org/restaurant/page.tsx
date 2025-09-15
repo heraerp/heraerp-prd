@@ -152,10 +152,10 @@ export default function AuthenticatedRestaurantDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-gray-600 dark:text-gray-400">Redirecting to login...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Redirecting to login...</p>
         </div>
       </div>
     )
@@ -163,10 +163,10 @@ export default function AuthenticatedRestaurantDashboard() {
 
   if (isLoading || isLoadingOrgs) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-gray-600 dark:text-gray-400">Loading restaurant dashboard...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading restaurant dashboard...</p>
         </div>
       </div>
     )
@@ -174,7 +174,7 @@ export default function AuthenticatedRestaurantDashboard() {
 
   if (!currentOrganization) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -191,18 +191,18 @@ export default function AuthenticatedRestaurantDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-red-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <header className="sticky top-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-md">
-                <UtensilsCrossed className="w-5 h-5 text-white" />
+                <UtensilsCrossed className="w-5 h-5 text-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
                   {currentOrganization?.organization_name}
                 </h1>
-                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">
+                <p className="text-xs text-muted-foreground dark:text-gray-300 font-medium">
                   {isHeadOffice ? (
                     <span className="flex items-center gap-1">
                       <Crown className="w-3 h-3 text-yellow-600" />
@@ -223,7 +223,7 @@ export default function AuthenticatedRestaurantDashboard() {
                 <Shield className="w-3 h-3 mr-1" />
                 Authenticated
               </Badge>
-              <div className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">{user?.email}</div>
             </div>
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function AuthenticatedRestaurantDashboard() {
 
         {/* Navigation Tabs */}
         <Tabs value={selectedTab} onValueChange={v => setSelectedTab(v as any)}>
-          <TabsList className="bg-gray-100 dark:bg-gray-800 mb-6">
+          <TabsList className="bg-muted dark:bg-muted mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             {isHeadOffice && <TabsTrigger value="branches">Locations</TabsTrigger>}
@@ -258,14 +258,14 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Today's Orders</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Orders</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {stats.todayOrders}
                       </p>
                     </div>
                     <Receipt className="w-8 h-8 text-orange-600" />
                   </div>
-                  {isHeadOffice && <p className="text-xs text-gray-500 mt-2">All locations</p>}
+                  {isHeadOffice && <p className="text-xs text-muted-foreground mt-2">All locations</p>}
                 </CardContent>
               </Card>
 
@@ -273,8 +273,8 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Revenue</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         ${stats.todayRevenue}
                       </p>
                     </div>
@@ -287,8 +287,8 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Active Tables</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active Tables</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {isHeadOffice ? '23' : '8'}
                       </p>
                     </div>
@@ -301,10 +301,10 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Avg Order Time</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">18 min</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg Order Time</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">18 min</p>
                     </div>
-                    <Clock className="w-8 h-8 text-blue-600" />
+                    <Clock className="w-8 h-8 text-primary" />
                   </div>
                 </CardContent>
               </Card>
@@ -320,21 +320,21 @@ export default function AuthenticatedRestaurantDashboard() {
                   {stats.popularDishes.map((dish: any, idx: number) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted dark:bg-muted"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center">
-                          <Utensils className="w-5 h-5 text-white" />
+                          <Utensils className="w-5 h-5 text-foreground" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">{dish.name}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="font-medium text-gray-900 dark:text-foreground">{dish.name}</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {dish.orders} orders
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900 dark:text-white">
+                        <p className="font-semibold text-gray-900 dark:text-foreground">
                           ${dish.revenue}
                         </p>
                       </div>
@@ -357,7 +357,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   {stats.kitchenOrders.map((order: any) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700"
+                      className="flex items-center justify-between p-3 rounded-lg border border-border dark:border-border"
                     >
                       <div className="flex items-center gap-3">
                         <Badge
@@ -367,13 +367,13 @@ export default function AuthenticatedRestaurantDashboard() {
                           {order.status}
                         </Badge>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">{order.id}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="font-medium text-gray-900 dark:text-foreground">{order.id}</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Table {order.table} • {order.items} items
                           </p>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">{order.time}</div>
+                      <div className="text-sm text-muted-foreground dark:text-muted-foreground">{order.time}</div>
                     </div>
                   ))}
                 </div>
@@ -383,7 +383,7 @@ export default function AuthenticatedRestaurantDashboard() {
 
           {/* Orders Tab */}
           <TabsContent value="orders">
-            <Card className="bg-white dark:bg-gray-800">
+            <Card className="bg-background dark:bg-muted">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5 text-orange-600" />
@@ -392,8 +392,8 @@ export default function AuthenticatedRestaurantDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12">
-                  <ShoppingCart className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <ShoppingCart className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground dark:text-muted-foreground">
                     Order management system coming soon
                   </p>
                   <Button className="mt-4">
@@ -426,16 +426,16 @@ export default function AuthenticatedRestaurantDashboard() {
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 Today's Revenue
                               </p>
-                              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                              <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                                 $1,625
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">Orders</p>
-                              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Orders</p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                                 23
                               </p>
                             </div>
@@ -468,20 +468,20 @@ export default function AuthenticatedRestaurantDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+                  <div className="p-4 rounded-lg bg-muted dark:bg-muted">
+                    <h3 className="font-medium text-gray-900 dark:text-foreground mb-2">
                       Organization Type
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {isHeadOffice
                         ? 'Restaurant Group (Head Office)'
                         : 'Restaurant Location (Branch)'}
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <h3 className="font-medium text-gray-900 dark:text-white mb-2">Access Level</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="p-4 rounded-lg bg-muted dark:bg-muted">
+                    <h3 className="font-medium text-gray-900 dark:text-foreground mb-2">Access Level</h3>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {isHeadOffice
                         ? 'Full access to all restaurant locations and consolidated reporting'
                         : 'Access limited to this restaurant location only'}

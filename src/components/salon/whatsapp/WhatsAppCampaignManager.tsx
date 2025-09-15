@@ -129,7 +129,7 @@ export function WhatsAppCampaignManager({
         )
       case 'completed':
         return (
-          <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400">
+          <Badge className="bg-muted text-gray-700 dark:bg-background/30 dark:text-muted-foreground">
             Completed
           </Badge>
         )
@@ -155,17 +155,17 @@ export function WhatsAppCampaignManager({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-white flex items-center gap-2">
+          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-foreground flex items-center gap-2">
             <MessageCircle className="w-6 h-6 text-green-500" />
             WhatsApp Campaign Manager
           </h2>
-          <p className="text-sm !text-gray-600 dark:!text-gray-400">
+          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
             Automated marketing and notification campaigns
           </p>
         </div>
         <Button
           onClick={() => onCampaignCreate?.({ type: 'new' })}
-          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
         >
           Create Campaign
         </Button>
@@ -173,11 +173,11 @@ export function WhatsAppCampaignManager({
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gray-800/50 border-gray-700">
+        <Card className="p-4 bg-muted/50 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400">Messages Sent</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Messages Sent</p>
+              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                 {totalStats.totalSent.toLocaleString()}
               </p>
             </div>
@@ -185,11 +185,11 @@ export function WhatsAppCampaignManager({
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/50 border-gray-700">
+        <Card className="p-4 bg-muted/50 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400">Failed</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Failed</p>
+              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                 {totalStats.totalFailed}
               </p>
             </div>
@@ -197,11 +197,11 @@ export function WhatsAppCampaignManager({
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/50 border-gray-700">
+        <Card className="p-4 bg-muted/50 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400">Total Cost</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Total Cost</p>
+              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                 AED {totalStats.totalCost.toFixed(2)}
               </p>
             </div>
@@ -209,11 +209,11 @@ export function WhatsAppCampaignManager({
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/50 border-gray-700">
+        <Card className="p-4 bg-muted/50 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm !text-gray-600 dark:!text-gray-400">Active Campaigns</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-white">
+              <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Active Campaigns</p>
+              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
                 {totalStats.activeCampaigns}
               </p>
             </div>
@@ -224,9 +224,9 @@ export function WhatsAppCampaignManager({
 
       {/* Campaign Filter */}
       <div className="flex items-center gap-2">
-        <Filter className="w-4 h-4 text-gray-400" />
+        <Filter className="w-4 h-4 text-muted-foreground" />
         <Select value={selectedCampaignType} onValueChange={setSelectedCampaignType}>
-          <SelectTrigger className="w-48 bg-gray-800/50 border-gray-700">
+          <SelectTrigger className="w-48 bg-muted/50 border-border">
             <SelectValue placeholder="Filter campaigns" />
           </SelectTrigger>
           <SelectContent>
@@ -253,7 +253,7 @@ export function WhatsAppCampaignManager({
           return (
             <Card
               key={campaign.id}
-              className="p-6 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors cursor-pointer"
+              className="p-6 bg-muted/50 border-border hover:bg-muted/70 transition-colors cursor-pointer"
               style={{
                 backdropFilter: 'blur(10px) saturate(120%)',
                 WebkitBackdropFilter: 'blur(10px) saturate(120%)'
@@ -263,7 +263,7 @@ export function WhatsAppCampaignManager({
                 <div className="flex items-start gap-4">
                   <div
                     className={cn(
-                      'w-12 h-12 rounded-xl flex items-center justify-center bg-gray-800',
+                      'w-12 h-12 rounded-xl flex items-center justify-center bg-muted',
                       campaignType.color.replace('text-', 'bg-').replace('500', '500/20')
                     )}
                   >
@@ -272,19 +272,19 @@ export function WhatsAppCampaignManager({
 
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-semibold text-lg !text-gray-900 dark:!text-white">
+                      <h3 className="font-semibold text-lg !text-gray-900 dark:!text-foreground">
                         {campaign.name}
                       </h3>
                       {getStatusBadge(campaign.status)}
                     </div>
 
-                    <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-3">
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mb-3">
                       {campaign.targetAudience}
                     </p>
 
                     <div className="flex items-center gap-6 text-sm">
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-gray-400" />
+                        <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="!text-gray-700 dark:!text-gray-300">
                           {campaign.totalRecipients} recipients
                         </span>
@@ -292,7 +292,7 @@ export function WhatsAppCampaignManager({
 
                       {campaign.sent > 0 && (
                         <div className="flex items-center gap-2">
-                          <Send className="w-4 h-4 text-gray-400" />
+                          <Send className="w-4 h-4 text-muted-foreground" />
                           <span className="!text-gray-700 dark:!text-gray-300">
                             {campaign.sent} sent ({successRate}% success)
                           </span>
@@ -301,7 +301,7 @@ export function WhatsAppCampaignManager({
 
                       {campaign.cost > 0 && (
                         <div className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-gray-400" />
+                          <DollarSign className="w-4 h-4 text-muted-foreground" />
                           <span className="!text-gray-700 dark:!text-gray-300">
                             AED {campaign.cost.toFixed(2)}
                           </span>
@@ -310,7 +310,7 @@ export function WhatsAppCampaignManager({
 
                       {campaign.scheduled && campaign.status === 'scheduled' && (
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <Calendar className="w-4 h-4 text-muted-foreground" />
                           <span className="!text-gray-700 dark:!text-gray-300">
                             Scheduled: {formatDate(campaign.scheduled, 'MMM d, yyyy')}
                           </span>
@@ -319,7 +319,7 @@ export function WhatsAppCampaignManager({
 
                       {campaign.lastRun && campaign.status === 'active' && (
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <Calendar className="w-4 h-4 text-muted-foreground" />
                           <span className="!text-gray-700 dark:!text-gray-300">
                             Last run: {formatDate(campaign.lastRun, 'MMM d, h:mm a')}
                           </span>
@@ -336,7 +336,7 @@ export function WhatsAppCampaignManager({
                     e.stopPropagation()
                     onCampaignRun?.(campaign.id)
                   }}
-                  className="text-gray-400 hover:text-white"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </Button>
@@ -347,21 +347,21 @@ export function WhatsAppCampaignManager({
       </div>
 
       {filteredCampaigns.length === 0 && (
-        <Card className="p-12 bg-gray-800/50 border-gray-700 text-center">
-          <MessageCircle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <p className="text-lg !text-gray-600 dark:!text-gray-400">
+        <Card className="p-12 bg-muted/50 border-border text-center">
+          <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-lg !text-muted-foreground dark:!text-muted-foreground">
             No{' '}
             {selectedCampaignType === 'all'
               ? ''
               : campaignTypes[selectedCampaignType]?.label.toLowerCase()}{' '}
             campaigns found
           </p>
-          <p className="text-sm !text-gray-500 dark:!text-gray-500 mt-2">
+          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
             Create your first campaign to start engaging with customers
           </p>
           <Button
             onClick={() => onCampaignCreate?.({ type: selectedCampaignType })}
-            className="mt-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+            className="mt-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
           >
             Create Campaign
           </Button>

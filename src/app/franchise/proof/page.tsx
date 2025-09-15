@@ -187,13 +187,13 @@ export default function ProofPage() {
       />
 
       {/* Transformation Metrics */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Before vs After HERA
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               The dramatic improvements our clients experience compared to traditional ERP
             </p>
           </div>
@@ -202,9 +202,9 @@ export default function ProofPage() {
             {transformationMetrics.map((item, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center"
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-border dark:border-border text-center"
               >
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{item.metric}</h3>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-4">{item.metric}</h3>
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-red-600">Before:</span>
@@ -214,7 +214,7 @@ export default function ProofPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-green-600">After:</span>
-                    <span className="font-medium text-slate-900 dark:text-white">{item.after}</span>
+                    <span className="font-medium text-foreground dark:text-foreground">{item.after}</span>
                   </div>
                 </div>
                 <div className="text-xl font-bold text-green-600">{item.improvement}</div>
@@ -225,13 +225,13 @@ export default function ProofPage() {
       </section>
 
       {/* Case Studies */}
-      <section id="case-studies" className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section id="case-studies" className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Detailed Success Stories
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Complete transformation case studies with measurable results
             </p>
           </div>
@@ -240,18 +240,18 @@ export default function ProofPage() {
             {caseStudies.map((study, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-sm hover:shadow-md transition-shadow duration-200"
               >
                 {/* Header */}
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-4">
-                    <study.icon className="h-6 w-6 text-white" />
+                    <study.icon className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-xl font-bold text-foreground dark:text-foreground">
                       {study.company}
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {study.industry} • {study.employees} employees • {study.revenue} revenue
                     </p>
                   </div>
@@ -259,32 +259,32 @@ export default function ProofPage() {
 
                 {/* Challenge */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Challenge</h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <h4 className="font-semibold text-foreground dark:text-foreground mb-2">Challenge</h4>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
                     {study.challenge}
                   </p>
                 </div>
 
                 {/* Solution */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
+                  <h4 className="font-semibold text-foreground dark:text-foreground mb-2">
                     HERA Solution
                   </h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
                     {study.solution}
                   </p>
                 </div>
 
                 {/* Results */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Results</h4>
+                  <h4 className="font-semibold text-foreground dark:text-foreground mb-3">Results</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {Object.entries(study.results).map(([key, value]) => (
-                      <div key={key} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
-                        <p className="text-xs text-slate-600 dark:text-slate-400 capitalize">
+                      <div key={key} className="bg-slate-50 dark:bg-muted rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground capitalize">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </p>
-                        <p className="font-semibold text-slate-900 dark:text-white">{value}</p>
+                        <p className="font-semibold text-foreground dark:text-foreground">{value}</p>
                       </div>
                     ))}
                   </div>
@@ -295,14 +295,14 @@ export default function ProofPage() {
                   <blockquote className="text-sm italic text-slate-700 dark:text-slate-300 border-l-4 border-blue-500 pl-4">
                     "{study.testimonial}"
                   </blockquote>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-2">
                     — {study.contact}
                   </p>
                 </div>
 
                 {/* Download */}
                 {study.downloadable && (
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground">
                     <Download className="h-4 w-4 mr-2" />
                     Download Full Case Study
                   </Button>
@@ -314,33 +314,33 @@ export default function ProofPage() {
       </section>
 
       {/* Industry Success Rates */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Success Across All Industries
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               HERA delivers results regardless of industry complexity
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-slate-50 dark:bg-muted rounded-2xl p-8 border border-border dark:border-border">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                    <tr className="border-b border-border dark:border-border">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Industry
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Clients
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Avg Savings
                       </th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <th className="text-left py-4 px-4 font-semibold text-foreground dark:text-foreground">
                         Satisfaction
                       </th>
                     </tr>
@@ -349,9 +349,9 @@ export default function ProofPage() {
                     {industrySuccess.map((row, index) => (
                       <tr
                         key={index}
-                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                        className="border-b border-border dark:border-border last:border-b-0"
                       >
-                        <td className="py-4 px-4 font-medium text-slate-900 dark:text-white">
+                        <td className="py-4 px-4 font-medium text-foreground dark:text-foreground">
                           {row.industry}
                         </td>
                         <td className="py-4 px-4 text-slate-700 dark:text-slate-300">
@@ -382,13 +382,13 @@ export default function ProofPage() {
       </section>
 
       {/* Partner Success Stories */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Partner Success Stories
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               How franchise partners use these success stories to close more deals
             </p>
           </div>
@@ -405,7 +405,7 @@ export default function ProofPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Hear It Directly From Our Clients
             </h2>
             <p className="text-xl text-blue-100 mb-8">
@@ -415,12 +415,12 @@ export default function ProofPage() {
             {/* Video Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="relative">
-                <div className="aspect-video bg-slate-900 rounded-xl shadow-2xl overflow-hidden">
+                <div className="aspect-video bg-background rounded-xl shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-center h-full bg-gradient-to-br from-slate-800 to-slate-900">
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
+                      className="bg-background/20 backdrop-blur-sm hover:bg-background/30 text-foreground border-white/30"
                     >
                       <Play className="h-6 w-6 mr-2" />
                       Manufacturing CEO
@@ -431,12 +431,12 @@ export default function ProofPage() {
               </div>
 
               <div className="relative">
-                <div className="aspect-video bg-slate-900 rounded-xl shadow-2xl overflow-hidden">
+                <div className="aspect-video bg-background rounded-xl shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-center h-full bg-gradient-to-br from-slate-800 to-slate-900">
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
+                      className="bg-background/20 backdrop-blur-sm hover:bg-background/30 text-foreground border-white/30"
                     >
                       <Play className="h-6 w-6 mr-2" />
                       Healthcare CIO
@@ -450,7 +450,7 @@ export default function ProofPage() {
             <Button
               asChild
               size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
+              className="bg-background text-primary hover:bg-muted font-semibold px-8 py-6 text-lg"
             >
               <Link href="/franchise/apply" className="flex items-center">
                 Get Access to All Success Stories
@@ -462,43 +462,43 @@ export default function ProofPage() {
       </section>
 
       {/* ROI Calculator */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-6">
               Calculate Your Success
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground mb-8">
               Use our ROI calculator to project potential savings for your prospects
             </p>
 
-            <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-2xl p-8 border border-border dark:border-border">
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
-                  <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
+                  <BarChart3 className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <h3 className="font-semibold text-foreground dark:text-foreground mb-2">
                     Average Savings
                   </h3>
                   <p className="text-3xl font-bold text-green-600">$2.8M</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">per implementation</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">per implementation</p>
                 </div>
                 <div className="text-center">
                   <Clock className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Time Saved</h3>
+                  <h3 className="font-semibold text-foreground dark:text-foreground mb-2">Time Saved</h3>
                   <p className="text-3xl font-bold text-purple-600">17.5</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">months average</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">months average</p>
                 </div>
                 <div className="text-center">
                   <TrendingUp className="h-8 w-8 text-orange-600 mx-auto mb-3" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">ROI</h3>
+                  <h3 className="font-semibold text-foreground dark:text-foreground mb-2">ROI</h3>
                   <p className="text-3xl font-bold text-orange-600">847%</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">average return</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">average return</p>
                 </div>
               </div>
 
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-4"
               >
                 <FileText className="h-5 w-5 mr-2" />
                 Download ROI Calculator
@@ -509,13 +509,13 @@ export default function ProofPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Ready to Create Your Own Success Stories?
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               These case studies become your sales tools. Show prospects how HERA delivers results
               while competitors fail, and deals will close themselves.
             </p>
@@ -524,7 +524,7 @@ export default function ProofPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Apply for Territory

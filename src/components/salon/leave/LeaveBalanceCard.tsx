@@ -52,26 +52,26 @@ export function LeaveBalanceCard({
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-sm !text-gray-600 dark:!text-gray-400">{type}</p>
-          <p className="text-2xl font-bold !text-gray-900 dark:!text-white">{remaining} days</p>
+          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">{type}</p>
+          <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">{remaining} days</p>
         </div>
-        <div className={`p-3 rounded-lg bg-gradient-to-r ${color} text-white`}>{icon}</div>
+        <div className={`p-3 rounded-lg bg-gradient-to-r ${color} text-foreground`}>{icon}</div>
       </div>
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="!text-gray-600 dark:!text-gray-400">Used</span>
-          <span className="font-medium !text-gray-900 dark:!text-white">{used} days</span>
+          <span className="!text-muted-foreground dark:!text-muted-foreground">Used</span>
+          <span className="font-medium !text-gray-900 dark:!text-foreground">{used} days</span>
         </div>
 
-        <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-muted-foreground/10/50 rounded-full h-2 overflow-hidden">
           <div
             className={`h-2 rounded-full bg-gradient-to-r ${color} transition-all duration-300`}
             style={{ width: `${Math.min(percentage, 100)}%` }}
           />
         </div>
 
-        <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">
+        <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
           {remaining} of {balance} days remaining
         </p>
       </div>

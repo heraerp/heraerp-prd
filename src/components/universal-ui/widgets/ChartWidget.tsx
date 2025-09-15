@@ -280,7 +280,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
       <Card>
         <CardContent className="p-6">
           <div className="animate-pulse">
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-64 bg-gray-200 dark:bg-muted-foreground/10 rounded"></div>
           </div>
         </CardContent>
       </Card>

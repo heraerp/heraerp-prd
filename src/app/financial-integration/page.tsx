@@ -85,7 +85,7 @@ export default function FinancialIntegrationPage() {
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
-                  <Zap className="h-5 w-5 text-blue-600" />
+                  <Zap className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="font-medium">Real-time Sync</p>

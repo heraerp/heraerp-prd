@@ -203,7 +203,7 @@ const QUICK_INSIGHTS: QuickInsight[] = [
     icon: Target,
     label: 'Goal Progress',
     query: 'How are we performing against monthly targets?',
-    color: 'text-blue-600',
+    color: 'text-primary',
     category: 'operations'
   },
   {
@@ -407,12 +407,12 @@ What would you like to know about your business today?`,
   const renderMetricCard = (metric: BusinessMetric) => (
     <Card
       key={metric.id}
-      className="bg-gray-800/50 border-gray-700 hover:border-gray-600 transition-all"
+      className="bg-muted/50 border-border hover:border-border transition-all"
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-gray-400">{metric.label}</p>
+            <p className="text-xs text-muted-foreground">{metric.label}</p>
             <p className="text-2xl font-bold">{metric.value}</p>
             <div
               className={cn(
@@ -421,7 +421,7 @@ What would you like to know about your business today?`,
                   ? 'text-green-500'
                   : metric.trend === 'down'
                     ? 'text-red-500'
-                    : 'text-gray-500'
+                    : 'text-muted-foreground'
               )}
             >
               {metric.trend === 'up' ? (
@@ -473,12 +473,12 @@ What would you like to know about your business today?`,
           className={cn(
             'max-w-[80%] rounded-lg p-4',
             isUser
-              ? 'bg-blue-600 text-white'
+              ? 'bg-blue-600 text-foreground'
               : isInsight
                 ? 'bg-yellow-500/10 border border-yellow-500/30'
                 : isSystem
                   ? 'bg-purple-500/10 border border-purple-500/30'
-                  : 'bg-gray-700'
+                  : 'bg-muted-foreground/10'
           )}
         >
           {message.priority && !isUser && (
@@ -502,8 +502,8 @@ What would you like to know about your business today?`,
           {message.metrics && message.metrics.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-3">
               {message.metrics.map((metric, i) => (
-                <div key={i} className="bg-black/20 rounded p-3">
-                  <p className="text-xs text-gray-400">{metric.label}</p>
+                <div key={i} className="bg-background/20 rounded p-3">
+                  <p className="text-xs text-muted-foreground">{metric.label}</p>
                   <p className="text-lg font-bold flex items-center gap-2">
                     {metric.value}
                     {metric.trend &&
@@ -524,12 +524,12 @@ What would you like to know about your business today?`,
               {message.recommendations.map((rec, i) => (
                 <div
                   key={i}
-                  className="bg-black/20 rounded p-3 hover:bg-black/30 transition-colors cursor-pointer"
+                  className="bg-background/20 rounded p-3 hover:bg-background/30 transition-colors cursor-pointer"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <p className="text-sm font-medium">{rec.title}</p>
-                      <p className="text-xs text-gray-400 mt-1">{rec.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{rec.description}</p>
                     </div>
                     <Badge
                       variant="outline"
@@ -539,7 +539,7 @@ What would you like to know about your business today?`,
                           ? 'border-green-500 text-green-500'
                           : rec.impact === 'medium'
                             ? 'border-yellow-500 text-yellow-500'
-                            : 'border-gray-500 text-gray-500'
+                            : 'border-gray-500 text-muted-foreground'
                       )}
                     >
                       {rec.impact} impact
@@ -551,10 +551,10 @@ What would you like to know about your business today?`,
           )}
 
           {message.visualData && (
-            <div className="mt-4 bg-black/20 rounded p-3">
-              <p className="text-xs text-gray-400 mb-2">Data Visualization</p>
+            <div className="mt-4 bg-background/20 rounded p-3">
+              <p className="text-xs text-muted-foreground mb-2">Data Visualization</p>
               {/* Here you would render actual charts/visualizations */}
-              <div className="h-32 flex items-center justify-center text-gray-500">
+              <div className="h-32 flex items-center justify-center text-muted-foreground">
                 <BarChart3 className="h-8 w-8" />
               </div>
             </div>
@@ -562,7 +562,7 @@ What would you like to know about your business today?`,
         </div>
 
         {isUser && (
-          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-muted-foreground/10 flex items-center justify-center flex-shrink-0">
             <Users className="h-4 w-4" />
           </div>
         )}
@@ -578,17 +578,17 @@ What would you like to know about your business today?`,
   // Authorization checks
   if (isAuthenticated && contextLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading AI Manager...</p>
+          <p className="text-muted-foreground">Loading AI Manager...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -629,9 +629,9 @@ What would you like to know about your business today?`,
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Area */}
           <div className="lg:col-span-3">
-            <Card className="h-[600px] flex flex-col bg-gray-800/50 border-gray-700">
+            <Card className="h-[600px] flex flex-col bg-muted/50 border-border">
               {/* Category Tabs */}
-              <div className="p-4 border-b border-gray-700">
+              <div className="p-4 border-b border-border">
                 <div className="flex gap-2 overflow-x-auto">
                   {MANAGEMENT_CATEGORIES.map(cat => (
                     <Button
@@ -658,7 +658,7 @@ What would you like to know about your business today?`,
                       <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
                         <Brain className="h-4 w-4 text-blue-500" />
                       </div>
-                      <div className="rounded-lg p-4 bg-gray-700">
+                      <div className="rounded-lg p-4 bg-muted-foreground/10">
                         <div className="flex items-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           <span className="text-sm">Analyzing your business data...</span>
@@ -670,7 +670,7 @@ What would you like to know about your business today?`,
               </ScrollArea>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-gray-700">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-border">
                 <div className="flex gap-2">
                   <Input
                     ref={inputRef}
@@ -678,7 +678,7 @@ What would you like to know about your business today?`,
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     disabled={loading}
-                    className="flex-1 bg-gray-900/50 border-gray-600"
+                    className="flex-1 bg-background/50 border-border"
                   />
                   <Button type="submit" disabled={loading || !input.trim()}>
                     {loading ? (
@@ -695,7 +695,7 @@ What would you like to know about your business today?`,
           {/* Side Panel */}
           <div className="space-y-4">
             {/* Quick Insights */}
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Sparkles className="h-4 w-4" />
@@ -709,7 +709,7 @@ What would you like to know about your business today?`,
                     variant="ghost"
                     size="sm"
                     onClick={() => handleQuickInsight(insight.query)}
-                    className="w-full justify-start gap-2 hover:bg-gray-700"
+                    className="w-full justify-start gap-2 hover:bg-muted-foreground/10"
                   >
                     <insight.icon className={cn('h-4 w-4', insight.color)} />
                     <span className="text-xs">{insight.label}</span>
@@ -719,7 +719,7 @@ What would you like to know about your business today?`,
             </Card>
 
             {/* AI Capabilities */}
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Bot className="h-4 w-4" />
@@ -753,7 +753,7 @@ What would you like to know about your business today?`,
             </Card>
 
             {/* Active Alerts */}
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <AlertCircle className="h-4 w-4" />
@@ -783,7 +783,7 @@ What would you like to know about your business today?`,
             </Card>
 
             {/* Help */}
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" />
@@ -791,7 +791,7 @@ What would you like to know about your business today?`,
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2 text-xs text-gray-400">
+                <div className="space-y-2 text-xs text-muted-foreground">
                   <p>• Ask questions in natural language</p>
                   <p>• Request specific analysis or reports</p>
                   <p>• Get predictions and forecasts</p>

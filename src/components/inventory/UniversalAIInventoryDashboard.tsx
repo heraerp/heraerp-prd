@@ -160,7 +160,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       medium: 'bg-yellow-100 text-yellow-800',
       low: 'bg-green-100 text-green-800'
     }
-    return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+    return colors[urgency as keyof typeof colors] || 'bg-muted text-gray-800'
   }
 
   if (!metrics) {
@@ -168,7 +168,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <Brain className="w-12 h-12 text-purple-600 mx-auto mb-4 animate-pulse" />
-          <p className="text-gray-600">Loading AI Inventory System...</p>
+          <p className="text-muted-foreground">Loading AI Inventory System...</p>
         </div>
       </div>
     )
@@ -183,14 +183,14 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
             <Brain className="w-8 h-8 text-purple-600" />
             Universal AI Inventory System
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Powered by HERA's 6-Table Universal Architecture • Smart Code: HERA.INV.AI.SYSTEM.v1
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-sm text-gray-600">AI Confidence</p>
+            <p className="text-sm text-muted-foreground">AI Confidence</p>
             <div className="flex items-center gap-2">
               <Progress value={metrics.aiConfidence} className="w-24 h-2" />
               <span className="text-sm font-semibold">{metrics.aiConfidence}%</span>
@@ -218,7 +218,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       </div>
 
       {/* View Selector */}
-      <div className="flex gap-2 p-1 bg-gray-100 rounded-lg w-fit">
+      <div className="flex gap-2 p-1 bg-muted rounded-lg w-fit">
         {(['overview', 'ai-insights', 'predictions'] as const).map(view => (
           <Button
             key={view}
@@ -244,7 +244,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metrics.totalItems}</div>
-                <p className="text-xs text-gray-600 mt-1">AI-classified items</p>
+                <p className="text-xs text-muted-foreground mt-1">AI-classified items</p>
               </CardContent>
             </Card>
 
@@ -255,14 +255,14 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">${metrics.totalValue.toLocaleString()}</div>
-                <p className="text-xs text-gray-600 mt-1">AI-optimized pricing</p>
+                <p className="text-xs text-muted-foreground mt-1">AI-optimized pricing</p>
               </CardContent>
             </Card>
 
             <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Demand Score</CardTitle>
-                <Activity className="h-4 w-4 text-blue-600" />
+                <Activity className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metrics.aiPredictions.demandScore}%</div>
@@ -277,7 +277,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{alerts.length}</div>
-                <p className="text-xs text-gray-600 mt-1">Active recommendations</p>
+                <p className="text-xs text-muted-foreground mt-1">Active recommendations</p>
               </CardContent>
             </Card>
           </div>
@@ -295,7 +295,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Optimal Stock</span>
-                    <span className="text-sm text-gray-600">{metrics.stockHealth.optimal}%</span>
+                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.optimal}%</span>
                   </div>
                   <Progress value={metrics.stockHealth.optimal} className="h-2 bg-green-100" />
                 </div>
@@ -303,7 +303,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Warning Level</span>
-                    <span className="text-sm text-gray-600">{metrics.stockHealth.warning}%</span>
+                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.warning}%</span>
                   </div>
                   <Progress value={metrics.stockHealth.warning} className="h-2 bg-yellow-100" />
                 </div>
@@ -311,7 +311,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Critical Level</span>
-                    <span className="text-sm text-gray-600">{metrics.stockHealth.critical}%</span>
+                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.critical}%</span>
                   </div>
                   <Progress value={metrics.stockHealth.critical} className="h-2 bg-red-100" />
                 </div>
@@ -332,16 +332,16 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 {alerts.map(alert => (
                   <div
                     key={alert.id}
-                    className="flex items-start justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                    className="flex items-start justify-between p-4 rounded-lg bg-muted hover:bg-muted transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-white">{getAlertIcon(alert.alertType)}</div>
+                      <div className="p-2 rounded-lg bg-background">{getAlertIcon(alert.alertType)}</div>
                       <div>
                         <h4 className="font-medium text-gray-900">{alert.itemName}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{alert.aiRecommendation}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{alert.aiRecommendation}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge className={getUrgencyColor(alert.urgency)}>{alert.urgency}</Badge>
-                          <span className="text-xs text-gray-500">{alert.smartCode}</span>
+                          <span className="text-xs text-muted-foreground">{alert.smartCode}</span>
                         </div>
                       </div>
                     </div>
@@ -370,9 +370,9 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 bg-white rounded-lg">
+                <div className="p-4 bg-background rounded-lg">
                   <h4 className="font-medium mb-2">Wedding Season Impact</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     AI predicts 45% increase in engagement ring demand over next 2 months
                   </p>
                   <div className="mt-2 flex items-center gap-2">
@@ -381,14 +381,14 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-lg">
+                <div className="p-4 bg-background rounded-lg">
                   <h4 className="font-medium mb-2">Precious Metal Trends</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Gold jewelry showing steady demand, platinum experiencing luxury growth
                   </p>
                   <div className="mt-2 flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-600">Market Analysis</span>
+                    <Activity className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">Market Analysis</span>
                   </div>
                 </div>
               </div>
@@ -398,15 +398,15 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
           <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-blue-600" />
+                <Crown className="w-5 h-5 text-primary" />
                 Price Optimization Insights
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 bg-white rounded-lg">
+                <div className="p-4 bg-background rounded-lg">
                   <h4 className="font-medium mb-2">Dynamic Pricing Opportunities</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     12 items identified for price optimization with average 18% margin improvement
                   </p>
                   <div className="mt-2 flex items-center gap-2">
@@ -417,9 +417,9 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-lg">
+                <div className="p-4 bg-background rounded-lg">
                   <h4 className="font-medium mb-2">Competitive Positioning</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Your pricing is 5% below market average with room for premium positioning
                   </p>
                   <div className="mt-2 flex items-center gap-2">
@@ -446,8 +446,8 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   'Price Optimize': INVENTORY_SMART_CODES.AI_PRICE_OPTIMIZATION,
                   'Quality Score': INVENTORY_SMART_CODES.AI_QUALITY_SCORE
                 }).map(([name, code]) => (
-                  <div key={code} className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-600 mb-1">{name}</p>
+                  <div key={code} className="p-3 bg-muted rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-1">{name}</p>
                     <p className="text-xs font-mono text-purple-600">{code}</p>
                   </div>
                 ))}
@@ -479,11 +479,11 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Gold Items</span>
-                        <span className="font-medium text-blue-600">+15%</span>
+                        <span className="font-medium text-primary">+15%</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Silver Collection</span>
-                        <span className="font-medium text-gray-600">+8%</span>
+                        <span className="font-medium text-muted-foreground">+8%</span>
                       </div>
                     </div>
                   </div>
@@ -501,7 +501,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Custom Orders</span>
-                        <span className="font-medium text-blue-600">+20%</span>
+                        <span className="font-medium text-primary">+20%</span>
                       </div>
                     </div>
                   </div>
@@ -533,7 +533,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               <div className="text-center">
                 <Brain className="w-12 h-12 text-purple-600 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">AI-Powered Inventory Intelligence</h3>
-                <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+                <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
                   HERA's Universal AI system continuously learns from your inventory patterns,
                   market trends, and customer behavior to provide actionable insights and
                   predictions.

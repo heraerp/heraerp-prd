@@ -29,15 +29,15 @@ export function FurnitureNavigationLink({
       onClick={onClick}
       className={cn(
         'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 group relative',
-        'text-gray-400 hover:text-white hover:bg-gray-700/50'
+        'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50'
       )}
-      activeClassName="!bg-gradient-to-r from-amber-600/20 to-orange-600/20 !text-white"
+      activeClassName="!bg-gradient-to-r from-amber-600/20 to-orange-600/20 !text-foreground"
     >
       <div className="relative">
         <Icon
           className={cn(
             'h-5 w-5 transition-colors duration-300',
-            active ? 'text-amber-400' : 'text-gray-400 group-hover:text-amber-400'
+            active ? 'text-amber-400' : 'text-muted-foreground group-hover:text-amber-400'
           )}
         />
 
@@ -45,7 +45,7 @@ export function FurnitureNavigationLink({
         {badge && (
           <span
             className={cn(
-              'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+              'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-foreground min-w-[16px] text-center',
               badgeColor || 'bg-gray-600'
             )}
           >
@@ -60,17 +60,17 @@ export function FurnitureNavigationLink({
           'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight transition-colors duration-300',
           active
             ? 'text-amber-400'
-            : 'text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300'
+            : 'text-gray-300 lg:text-muted-foreground group-hover:text-gray-100 lg:group-hover:text-gray-300'
         )}
       >
         {title}
       </span>
 
       {/* Tooltip for full title - desktop only */}
-      <div className="hidden lg:block absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+      <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
         <p className="font-medium">{title}</p>
         {badge && (
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {badge}{' '}
             {title === 'Sales' ? 'active orders' : title === 'Production' ? 'in queue' : 'alerts'}
           </p>

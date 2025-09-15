@@ -103,8 +103,8 @@ export default function OrganizationLayout({ children }: { children: React.React
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Loading organization...</p>
+          <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading organization...</p>
         </div>
       </div>
     )
@@ -118,29 +118,29 @@ export default function OrganizationLayout({ children }: { children: React.React
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-background shadow-sm border-b">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Org Name */}
             <div className="flex items-center">
               <button
-                className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                className="md:hidden p-2 rounded-md text-muted-foreground hover:text-muted-foreground hover:bg-muted"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
 
               <div className="flex items-center ml-4 md:ml-0">
-                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center mr-3">
-                  <span className="text-sm font-bold text-white">H</span>
+                <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-sm font-bold text-foreground">H</span>
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-gray-900">
                     {currentOrganization.name}
                   </h1>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {currentOrganization.subdomain}.heraerp.com
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default function OrganizationLayout({ children }: { children: React.React
                     key={item.href}
                     href={href}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      isActive ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900'
+                      isActive ? 'text-primary' : 'text-gray-700 hover:text-foreground'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -188,12 +188,12 @@ export default function OrganizationLayout({ children }: { children: React.React
                       <DropdownMenuItem
                         key={org.id}
                         onClick={() => switchOrganization(org.id)}
-                        className={org.id === currentOrganization.id ? 'bg-gray-100' : ''}
+                        className={org.id === currentOrganization.id ? 'bg-muted' : ''}
                       >
                         <Building2 className="w-4 h-4 mr-2" />
                         <div className="flex-1">
                           <div className="font-medium">{org.name}</div>
-                          <div className="text-xs text-gray-500">{org.subdomain}.heraerp.com</div>
+                          <div className="text-xs text-muted-foreground">{org.subdomain}.heraerp.com</div>
                         </div>
                       </DropdownMenuItem>
                     ))}
@@ -217,7 +217,7 @@ export default function OrganizationLayout({ children }: { children: React.React
                   <DropdownMenuLabel>
                     <div>
                       <div className="font-medium">{user?.name || 'User'}</div>
-                      <div className="text-xs text-gray-500">{user?.email}</div>
+                      <div className="text-xs text-muted-foreground">{user?.email}</div>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -250,8 +250,8 @@ export default function OrganizationLayout({ children }: { children: React.React
                     href={href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium ${
                       isActive
-                        ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'text-primary bg-blue-50'
+                        : 'text-gray-700 hover:text-foreground hover:bg-muted'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >

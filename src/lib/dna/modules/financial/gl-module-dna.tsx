@@ -290,15 +290,15 @@ export function GLModule({
       <Card
         className={cn(
           'shadow-lg',
-          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-background border-border'
         )}
       >
-        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-border')}>
           <div className="flex items-center justify-between">
             <CardTitle
               className={cn(
                 'text-xl flex items-center gap-2',
-                isDarkMode ? 'text-white' : 'text-gray-900'
+                isDarkMode ? 'text-foreground' : 'text-gray-900'
               )}
             >
               <BookOpen className="h-5 w-5" />
@@ -322,7 +322,7 @@ export function GLModule({
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
             <TabsList
-              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-muted')}
             >
               <TabsTrigger value="journal" className="gap-1">
                 <FileText className="h-4 w-4" />
@@ -352,7 +352,7 @@ export function GLModule({
             <TabsContent value="journal" className="space-y-4 mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -463,7 +463,7 @@ export function GLModule({
                           <tr
                             className={cn(
                               'border-b',
-                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                             )}
                           >
                             <th className="text-left py-2">Account</th>
@@ -478,7 +478,7 @@ export function GLModule({
                               key={line.id}
                               className={cn(
                                 'border-b',
-                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-border'
                               )}
                             >
                               <td className="py-2 pr-2">
@@ -627,7 +627,7 @@ export function GLModule({
             <TabsContent value="coa" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -652,15 +652,15 @@ export function GLModule({
                         <div
                           key={account.id}
                           className={cn(
-                            'flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800',
-                            isDarkMode ? 'bg-[#1f1f1f]' : 'bg-white'
+                            'flex items-center justify-between p-3 rounded-lg hover:bg-muted dark:hover:bg-muted',
+                            isDarkMode ? 'bg-[#1f1f1f]' : 'bg-background'
                           )}
                         >
                           <div className="flex items-center gap-3">
-                            <DollarSign className="h-4 w-4 text-gray-400" />
+                            <DollarSign className="h-4 w-4 text-muted-foreground" />
                             <div>
                               <div className="font-medium">{account.accountCode}</div>
-                              <div className="text-sm text-gray-500">{account.accountName}</div>
+                              <div className="text-sm text-muted-foreground">{account.accountName}</div>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -693,7 +693,7 @@ export function GLModule({
                       <FileCheck className="h-8 w-8 text-blue-500" />
                       <div>
                         <h3 className="font-semibold">Trial Balance</h3>
-                        <p className="text-sm text-gray-500">Account balances summary</p>
+                        <p className="text-sm text-muted-foreground">Account balances summary</p>
                       </div>
                     </div>
                   </CardContent>
@@ -710,7 +710,7 @@ export function GLModule({
                       <TrendingUp className="h-8 w-8 text-green-500" />
                       <div>
                         <h3 className="font-semibold">General Ledger</h3>
-                        <p className="text-sm text-gray-500">Detailed transactions</p>
+                        <p className="text-sm text-muted-foreground">Detailed transactions</p>
                       </div>
                     </div>
                   </CardContent>
@@ -728,7 +728,7 @@ export function GLModule({
                         <Calculator className="h-8 w-8 text-purple-500" />
                         <div>
                           <h3 className="font-semibold">Cold Chain Analysis</h3>
-                          <p className="text-sm text-gray-500">Temperature impact on costs</p>
+                          <p className="text-sm text-muted-foreground">Temperature impact on costs</p>
                         </div>
                       </div>
                     </CardContent>
@@ -747,7 +747,7 @@ export function GLModule({
                         <Calendar className="h-8 w-8 text-orange-500" />
                         <div>
                           <h3 className="font-semibold">Seasonal Variance</h3>
-                          <p className="text-sm text-gray-500">Seasonal performance analysis</p>
+                          <p className="text-sm text-muted-foreground">Seasonal performance analysis</p>
                         </div>
                       </div>
                     </CardContent>
@@ -760,7 +760,7 @@ export function GLModule({
             <TabsContent value="period" className="mt-4">
               <Card
                 className={cn(
-                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                 )}
               >
                 <CardHeader>
@@ -802,7 +802,7 @@ export function GLModule({
               <TabsContent value="auto" className="mt-4">
                 <Card
                   className={cn(
-                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-muted border-border'
                   )}
                 >
                   <CardHeader>
@@ -815,7 +815,7 @@ export function GLModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Temperature Excursion</h4>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-muted-foreground">
                                 Auto-post wastage when temperature exceeds -15°C
                               </p>
                             </div>
@@ -829,7 +829,7 @@ export function GLModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Batch Production Completion</h4>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-muted-foreground">
                                 Auto-post production costs to finished goods
                               </p>
                             </div>
@@ -842,7 +842,7 @@ export function GLModule({
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-medium">Sales Transaction</h4>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               Auto-post revenue and COGS entries
                             </p>
                           </div>

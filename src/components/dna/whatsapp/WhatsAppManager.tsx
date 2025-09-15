@@ -305,9 +305,9 @@ export function WhatsAppManager({
   const getStatusIcon = (status: Message['status']) => {
     switch (status) {
       case 'sent':
-        return <Check className="w-3 h-3 text-gray-400" />
+        return <Check className="w-3 h-3 text-muted-foreground" />
       case 'delivered':
-        return <CheckCheck className="w-3 h-3 text-gray-400" />
+        return <CheckCheck className="w-3 h-3 text-muted-foreground" />
       case 'read':
         return <CheckCheck className="w-3 h-3 text-blue-500" />
       case 'failed':
@@ -375,14 +375,14 @@ export function WhatsAppManager({
   return (
     <div
       className={cn(
-        'h-full flex flex-col lg:flex-row bg-white dark:bg-gray-900 rounded-lg border overflow-hidden',
+        'h-full flex flex-col lg:flex-row bg-background dark:bg-background rounded-lg border overflow-hidden',
         className
       )}
     >
       {/* Conversations Sidebar */}
-      <div className="w-full lg:w-1/3 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+      <div className="w-full lg:w-1/3 border-r border-border dark:border-border flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold flex items-center gap-2">
               <MessageCircle className="w-5 h-5 text-green-500" />
@@ -395,7 +395,7 @@ export function WhatsAppManager({
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
@@ -419,12 +419,12 @@ export function WhatsAppManager({
                   'p-3 rounded-lg cursor-pointer transition-colors mb-2',
                   selectedConversation?.id === conversation.id
                     ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                    : 'hover:bg-muted dark:hover:bg-muted'
                 )}
               >
                 <div className="flex items-start gap-3">
                   <Avatar className="w-10 h-10">
-                    <AvatarFallback className="bg-green-500 text-white">
+                    <AvatarFallback className="bg-green-500 text-foreground">
                       {conversation.customerName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
@@ -432,14 +432,14 @@ export function WhatsAppManager({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <p className="font-medium truncate">{conversation.customerName}</p>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {conversation.lastMessageAt.toLocaleTimeString('en-US', {
                           hour: 'numeric',
                           minute: '2-digit'
                         })}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground truncate">
                       {conversation.lastMessage}
                     </p>
 
@@ -452,7 +452,7 @@ export function WhatsAppManager({
                         ))}
                       </div>
                       {conversation.unreadCount > 0 && (
-                        <Badge className="bg-green-500 text-white">
+                        <Badge className="bg-green-500 text-foreground">
                           {conversation.unreadCount}
                         </Badge>
                       )}
@@ -470,16 +470,16 @@ export function WhatsAppManager({
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <div className="p-4 border-b border-border dark:border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarFallback className="bg-green-500 text-white">
+                  <AvatarFallback className="bg-green-500 text-foreground">
                     {selectedConversation.customerName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{selectedConversation.customerName}</p>
-                  <p className="text-sm text-gray-500">{selectedConversation.customerPhone}</p>
+                  <p className="text-sm text-muted-foreground">{selectedConversation.customerPhone}</p>
                 </div>
               </div>
 
@@ -509,8 +509,8 @@ export function WhatsAppManager({
                       className={cn(
                         'max-w-xs lg:max-w-md px-4 py-2 rounded-2xl',
                         message.direction === 'outbound'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-100 dark:bg-gray-800'
+                          ? 'bg-blue-500 text-foreground'
+                          : 'bg-muted dark:bg-muted'
                       )}
                     >
                       {message.type === 'template' && (
@@ -537,7 +537,7 @@ export function WhatsAppManager({
             </ScrollArea>
 
             {/* Message Input */}
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-4 border-t border-border dark:border-border">
               <Tabs defaultValue="message" className="w-full">
                 <TabsList className="mb-4">
                   <TabsTrigger value="message" className="text-xs">
@@ -606,8 +606,8 @@ export function WhatsAppManager({
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">Select a conversation to start messaging</p>
+              <MessageCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Select a conversation to start messaging</p>
             </div>
           </div>
         )}

@@ -83,9 +83,9 @@ export function AppointmentList({
         }}
       >
         <div className="p-12 text-center">
-          <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-          <p className="text-lg !text-gray-600 dark:!text-gray-400">No appointments found</p>
-          <p className="text-sm !text-gray-500 dark:!text-gray-500 mt-2">
+          <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-lg !text-muted-foreground dark:!text-muted-foreground">No appointments found</p>
+          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
             Create your first appointment to get started
           </p>
         </div>
@@ -121,13 +121,13 @@ export function AppointmentList({
               <div className="flex-1">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                    <User className="h-6 w-6 text-white" />
+                    <User className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg !text-gray-900 dark:!text-white">
+                    <h3 className="font-semibold text-lg !text-gray-900 dark:!text-foreground">
                       {appointment.customerName}
                     </h3>
-                    <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                       {appointment.serviceName}
                     </p>
                   </div>
@@ -144,21 +144,21 @@ export function AppointmentList({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-400" />
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm !text-gray-700 dark:!text-gray-300">
                       {formatDate(appointment.appointmentDate, 'MMMM d, yyyy')}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-400" />
+                    <Clock className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm !text-gray-700 dark:!text-gray-300">
                       {appointment.appointmentTime} ({appointment.duration} min)
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-gray-400" />
+                    <User className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm !text-gray-700 dark:!text-gray-300">
                       {appointment.staffName}
                     </span>
@@ -167,8 +167,8 @@ export function AppointmentList({
 
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-gray-400" />
-                    <span className="text-lg font-semibold !text-gray-900 dark:!text-white">
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-lg font-semibold !text-gray-900 dark:!text-foreground">
                       AED {appointment.price.toFixed(2)}
                     </span>
                   </div>
@@ -187,7 +187,7 @@ export function AppointmentList({
                       <Button
                         size="sm"
                         onClick={() => onConfirm(appointment.id)}
-                        className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-foreground"
                         disabled={loading}
                       >
                         Confirm
@@ -197,8 +197,8 @@ export function AppointmentList({
                 </div>
 
                 {appointment.notes && (
-                  <div className="mt-3 p-3 rounded-lg bg-gray-800/50">
-                    <p className="text-sm !text-gray-600 dark:!text-gray-400">
+                  <div className="mt-3 p-3 rounded-lg bg-muted/50">
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                       <span className="font-medium">Notes:</span> {appointment.notes}
                     </p>
                   </div>

@@ -124,10 +124,10 @@ function NetworkCard({ title, value, subtitle, icon: Icon, status, gradient }: N
       <div
         className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
       />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-foreground" />
           </div>
           <div
             className={`flex items-center space-x-1 text-xs font-medium ${statusColors[status]}`}
@@ -140,9 +140,9 @@ function NetworkCard({ title, value, subtitle, icon: Icon, status, gradient }: N
             <span className="capitalize">{status}</span>
           </div>
         </div>
-        <h3 className="text-white/60 text-sm font-medium mb-1">{title}</h3>
-        <p className="text-2xl font-bold text-white mb-1">{value}</p>
-        <p className="text-xs text-white/40">{subtitle}</p>
+        <h3 className="text-foreground/60 text-sm font-medium mb-1">{title}</h3>
+        <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
+        <p className="text-xs text-foreground/40">{subtitle}</p>
       </div>
     </div>
   )
@@ -511,7 +511,7 @@ export default function NetworkPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Network Operations Center
           </h1>
-          <p className="text-white/60 mt-1">
+          <p className="text-foreground/60 mt-1">
             Real-time network monitoring and infrastructure management
           </p>
         </div>
@@ -527,7 +527,7 @@ export default function NetworkPage() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-foreground rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
           >
             <Plus className="h-5 w-5" />
             <span>Add Tower</span>
@@ -576,45 +576,45 @@ export default function NetworkPage() {
         {regionalData.map((region, index) => (
           <div key={region.code} className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-lg bg-gradient-to-br from-[#0099CC] to-[#0049B7]">
-                    <Map className="h-5 w-5 text-white" />
+                    <Map className="h-5 w-5 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">{region.name}</h3>
-                    <p className="text-xs text-white/60">Region {region.code}</p>
+                    <h3 className="text-lg font-semibold text-foreground">{region.name}</h3>
+                    <p className="text-xs text-foreground/60">Region {region.code}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent">
                     {region.uptime}%
                   </p>
-                  <p className="text-xs text-white/60">Uptime</p>
+                  <p className="text-xs text-foreground/60">Uptime</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-white/60">Subscribers</span>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm text-foreground/60">Subscribers</span>
+                  <span className="text-sm font-medium text-foreground">
                     {region.subscribers.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-white/60">Towers</span>
-                  <span className="text-sm font-medium text-white">{region.towers}</span>
+                  <span className="text-sm text-foreground/60">Towers</span>
+                  <span className="text-sm font-medium text-foreground">{region.towers}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-white/60">Bandwidth Usage</span>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm text-foreground/60">Bandwidth Usage</span>
+                  <span className="text-sm font-medium text-foreground">
                     {region.bandwidth_utilization}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-white/60">Avg Latency</span>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm text-foreground/60">Avg Latency</span>
+                  <span className="text-sm font-medium text-foreground">
                     {region.latency.toFixed(1)}ms
                   </span>
                 </div>
@@ -638,8 +638,8 @@ export default function NetworkPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">24-Hour Bandwidth Usage</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">24-Hour Bandwidth Usage</h2>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={performanceData}>
                 <defs>
@@ -673,51 +673,51 @@ export default function NetworkPage() {
 
         <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Infrastructure Status</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Infrastructure Status</h2>
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
                     <Server className="h-5 w-5 text-emerald-400" />
-                    <span className="font-medium text-white">Core Servers</span>
+                    <span className="font-medium text-foreground">Core Servers</span>
                   </div>
                   <span className="text-sm font-medium text-emerald-400">Operational</span>
                 </div>
-                <p className="text-sm text-white/60">12 servers online • 0 issues detected</p>
+                <p className="text-sm text-foreground/60">12 servers online • 0 issues detected</p>
               </div>
 
               <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
                     <Network className="h-5 w-5 text-blue-400" />
-                    <span className="font-medium text-white">Network Switches</span>
+                    <span className="font-medium text-foreground">Network Switches</span>
                   </div>
                   <span className="text-sm font-medium text-blue-400">Operational</span>
                 </div>
-                <p className="text-sm text-white/60">156 switches active • 99.9% health</p>
+                <p className="text-sm text-foreground/60">156 switches active • 99.9% health</p>
               </div>
 
               <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
                     <Wifi className="h-5 w-5 text-yellow-400" />
-                    <span className="font-medium text-white">Access Points</span>
+                    <span className="font-medium text-foreground">Access Points</span>
                   </div>
                   <span className="text-sm font-medium text-yellow-400">3 Warnings</span>
                 </div>
-                <p className="text-sm text-white/60">523 APs online • 3 require maintenance</p>
+                <p className="text-sm text-foreground/60">523 APs online • 3 require maintenance</p>
               </div>
 
               <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
                     <Globe className="h-5 w-5 text-purple-400" />
-                    <span className="font-medium text-white">BGP Sessions</span>
+                    <span className="font-medium text-foreground">BGP Sessions</span>
                   </div>
                   <span className="text-sm font-medium text-purple-400">All Active</span>
                 </div>
-                <p className="text-sm text-white/60">8 upstream providers • 0ms avg latency</p>
+                <p className="text-sm text-foreground/60">8 upstream providers • 0ms avg latency</p>
               </div>
             </div>
           </div>
@@ -726,7 +726,7 @@ export default function NetworkPage() {
 
       {/* Network Towers Table */}
       <div className="mt-8">
-        <h2 className="text-xl font-semibold text-white mb-6">Network Towers</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-6">Network Towers</h2>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0099CC]"></div>
@@ -747,12 +747,12 @@ export default function NetworkPage() {
                 label: 'Tower Info',
                 render: item => (
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-white">{item.name}</p>
-                    <div className="flex items-center space-x-1 text-xs text-white/60">
+                    <p className="text-sm font-medium text-foreground">{item.name}</p>
+                    <div className="flex items-center space-x-1 text-xs text-foreground/60">
                       <MapPin className="h-3 w-3" />
                       <span>{item.location}</span>
                     </div>
-                    <p className="text-xs text-white/60">Region: {item.region}</p>
+                    <p className="text-xs text-foreground/60">Region: {item.region}</p>
                   </div>
                 )
               },
@@ -762,7 +762,7 @@ export default function NetworkPage() {
                 render: item => (
                   <div className="flex items-center space-x-2">
                     <Radio className="h-4 w-4 text-[#0099CC]" />
-                    <span className="text-sm text-white capitalize">{item.type}</span>
+                    <span className="text-sm text-foreground capitalize">{item.type}</span>
                   </div>
                 )
               },
@@ -776,7 +776,7 @@ export default function NetworkPage() {
                 label: 'Capacity',
                 render: item => (
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {item.currentLoad} / {item.capacity}
                     </p>
                     <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
@@ -785,14 +785,14 @@ export default function NetworkPage() {
                         style={{ width: `${(item.currentLoad / item.capacity) * 100}%` }}
                       />
                     </div>
-                    <p className="text-xs text-white/60">{item.subscribers} subscribers</p>
+                    <p className="text-xs text-foreground/60">{item.subscribers} subscribers</p>
                   </div>
                 )
               },
               {
                 key: 'lastMaintenance',
                 label: 'Last Maintenance',
-                render: item => <p className="text-sm text-white/80">{item.lastMaintenance}</p>
+                render: item => <p className="text-sm text-foreground/80">{item.lastMaintenance}</p>
               }
             ]}
             onEdit={handleEdit}
@@ -832,7 +832,7 @@ export default function NetworkPage() {
             value={formData.location}
             onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location details"
-            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            icon={<MapPin className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -897,7 +897,7 @@ export default function NetworkPage() {
             value={formData.capacity}
             onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
             placeholder="Enter capacity"
-            icon={<Users className="h-4 w-4 text-white/40" />}
+            icon={<Users className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -948,7 +948,7 @@ export default function NetworkPage() {
             value={formData.location}
             onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location details"
-            icon={<MapPin className="h-4 w-4 text-white/40" />}
+            icon={<MapPin className="h-4 w-4 text-foreground/40" />}
             required
           />
 
@@ -1013,7 +1013,7 @@ export default function NetworkPage() {
             value={formData.capacity}
             onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
             placeholder="Enter capacity"
-            icon={<Users className="h-4 w-4 text-white/40" />}
+            icon={<Users className="h-4 w-4 text-foreground/40" />}
             required
           />
 

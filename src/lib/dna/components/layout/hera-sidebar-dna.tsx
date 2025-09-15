@@ -86,11 +86,11 @@ export function HeraSidebar({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-background/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -113,7 +113,7 @@ export function HeraSidebar({
                   theme.primary
                 )}
               >
-                <Logo className="w-6 h-6 text-white" />
+                <Logo className="w-6 h-6 text-foreground" />
               </div>
               {bottomWidget && (
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />
@@ -121,12 +121,12 @@ export function HeraSidebar({
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-100">{title}</h2>
-              {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
+              {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
             </div>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-800 text-gray-300 hover:text-gray-100"
+            className="lg:hidden p-2 rounded-lg hover:bg-muted text-gray-300 hover:text-gray-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -146,20 +146,20 @@ export function HeraSidebar({
                   className={cn(
                     'group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                     active
-                      ? cn('bg-gradient-to-r text-white shadow-lg', theme.accent)
-                      : 'text-gray-300 hover:text-gray-100 hover:bg-gray-800'
+                      ? cn('bg-gradient-to-r text-foreground shadow-lg', theme.accent)
+                      : 'text-gray-300 hover:text-gray-100 hover:bg-muted'
                   )}
                 >
                   <div
                     className={cn(
                       'mr-3 p-1.5 rounded-md transition-all duration-200',
-                      active ? 'bg-white/20' : 'bg-gray-800 group-hover:bg-gray-700'
+                      active ? 'bg-background/20' : 'bg-muted group-hover:bg-muted-foreground/10'
                     )}
                   >
                     <item.icon
                       className={cn(
                         'h-4 w-4 transition-all duration-200',
-                        active ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'
+                        active ? 'text-foreground' : 'text-muted-foreground group-hover:text-gray-200'
                       )}
                     />
                   </div>
@@ -177,10 +177,10 @@ export function HeraSidebar({
             {additionalApps.length > 0 && (
               <button
                 onClick={() => setShowAppsModal(true)}
-                className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-300 hover:text-gray-100 hover:bg-gray-800 w-full"
+                className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-300 hover:text-gray-100 hover:bg-muted w-full"
               >
-                <div className="mr-3 p-1.5 rounded-md transition-all duration-200 bg-gray-800 group-hover:bg-gray-700">
-                  <Plus className="h-4 w-4 transition-all duration-200 text-gray-400 group-hover:text-gray-200" />
+                <div className="mr-3 p-1.5 rounded-md transition-all duration-200 bg-muted group-hover:bg-muted-foreground/10">
+                  <Plus className="h-4 w-4 transition-all duration-200 text-muted-foreground group-hover:text-gray-200" />
                 </div>
                 More Apps
               </button>
@@ -193,14 +193,14 @@ export function HeraSidebar({
           <div className="absolute bottom-6 left-4 right-4">
             <div
               className={cn(
-                'bg-gradient-to-r rounded-lg p-4 text-white shadow-lg',
+                'bg-gradient-to-r rounded-lg p-4 text-foreground shadow-lg',
                 bottomWidget.gradient || theme.primary
               )}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">{bottomWidget.title}</span>
                 {bottomWidget.icon && (
-                  <div className="p-1 bg-white/20 rounded">
+                  <div className="p-1 bg-background/20 rounded">
                     <bottomWidget.icon className="w-4 h-4" />
                   </div>
                 )}
@@ -217,11 +217,11 @@ export function HeraSidebar({
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <header className="sticky top-0 z-30 bg-background dark:bg-background border-b border-border dark:border-gray-800">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="lg:hidden p-2 rounded-lg hover:bg-muted dark:hover:bg-muted"
             >
               <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
             </button>
@@ -229,7 +229,7 @@ export function HeraSidebar({
             {headerContent || (
               <div className="flex items-center space-x-4">
                 <div className="hidden sm:block">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">{title}</p>
                 </div>
               </div>
             )}
@@ -252,12 +252,12 @@ export function HeraSidebar({
 
             {/* Search */}
             <div className="relative mt-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search apps..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-10 bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500"
+                className="pl-10 bg-muted border-border text-gray-100 placeholder-gray-500"
               />
             </div>
 
@@ -271,7 +271,7 @@ export function HeraSidebar({
                     setShowAppsModal(false)
                     setSidebarOpen(false)
                   }}
-                  className="group p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-200 text-left border border-gray-700 hover:border-gray-600"
+                  className="group p-4 bg-muted hover:bg-muted-foreground/10 rounded-lg transition-all duration-200 text-left border border-border hover:border-border"
                 >
                   <div
                     className={cn(
@@ -279,16 +279,16 @@ export function HeraSidebar({
                       app.color
                     )}
                   >
-                    <app.icon className="h-6 w-6 text-white" />
+                    <app.icon className="h-6 w-6 text-foreground" />
                   </div>
-                  <h3 className="font-semibold text-gray-100 group-hover:text-white">{app.name}</h3>
-                  <p className="text-sm text-gray-400 mt-1">{app.description}</p>
+                  <h3 className="font-semibold text-gray-100 group-hover:text-foreground">{app.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{app.description}</p>
                 </button>
               ))}
             </div>
 
             {filteredApps.length === 0 && (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-muted-foreground">
                 No apps found matching "{searchQuery}"
               </div>
             )}

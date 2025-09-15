@@ -196,7 +196,7 @@ export default function DailyCashClose() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             Daily Cash Close
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground dark:text-muted-foreground mt-1">
             {new Date().toLocaleDateString('en-AE', {
               weekday: 'long',
               year: 'numeric',
@@ -226,11 +226,11 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Total Sales</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Total Sales</span>
               <DollarSign className="w-4 h-4 text-purple-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(totalDaySales)}</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               <TrendingUp className="w-3 h-3 inline mr-1 text-green-500" />
               +12.5% from yesterday
             </p>
@@ -240,11 +240,11 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Transactions</span>
-              <ShoppingCart className="w-4 h-4 text-blue-600" />
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Transactions</span>
+              <ShoppingCart className="w-4 h-4 text-primary" />
             </div>
             <p className="text-2xl font-bold">{totalTransactions}</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Avg: {formatCurrency(totalDaySales / totalTransactions)}
             </p>
           </CardContent>
@@ -253,22 +253,22 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Active Shifts</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Active Shifts</span>
               <Users className="w-4 h-4 text-green-600" />
             </div>
             <p className="text-2xl font-bold">{openShift ? 1 : 0}</p>
-            <p className="text-xs text-gray-500 mt-1">{closedShifts.length} closed today</p>
+            <p className="text-xs text-muted-foreground mt-1">{closedShifts.length} closed today</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Card Batches</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Card Batches</span>
               <CreditCard className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{cardBatches.length}</p>
-            <p className="text-xs text-gray-500 mt-1">Ready to submit</p>
+            <p className="text-xs text-muted-foreground mt-1">Ready to submit</p>
           </CardContent>
         </Card>
       </div>
@@ -320,19 +320,19 @@ export default function DailyCashClose() {
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Open Time</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Open Time</p>
                       <p className="font-medium">{shift.openTime.toLocaleTimeString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Sales</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Sales</p>
                       <p className="font-medium">{shift.salesCount} transactions</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total</p>
                       <p className="font-medium">{formatCurrency(shift.totalSales)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Cash Expected</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Cash Expected</p>
                       <p className="font-medium">{formatCurrency(shift.cashExpected)}</p>
                     </div>
                   </div>
@@ -344,7 +344,7 @@ export default function DailyCashClose() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           {denominations.map((denom, index) => (
                             <div key={denom.denomination} className="space-y-1">
-                              <label className="text-sm text-gray-600 dark:text-gray-400">
+                              <label className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 AED {denom.denomination}
                               </label>
                               <Input
@@ -356,7 +356,7 @@ export default function DailyCashClose() {
                                 }
                                 className="h-9"
                               />
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-muted-foreground">
                                 = {formatCurrency(denom.total)}
                               </p>
                             </div>
@@ -366,7 +366,7 @@ export default function DailyCashClose() {
 
                       <div className="border-t pt-4 flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Total Counted</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Counted</p>
                           <p className="text-2xl font-bold">{formatCurrency(cashCounted)}</p>
                           {cashCounted !== 0 && (
                             <p
@@ -376,7 +376,7 @@ export default function DailyCashClose() {
                                   ? 'text-green-600'
                                   : cashCounted < shift.cashExpected
                                     ? 'text-red-600'
-                                    : 'text-gray-600'
+                                    : 'text-muted-foreground'
                               )}
                             >
                               {cashCounted > shift.cashExpected ? (
@@ -418,7 +418,7 @@ export default function DailyCashClose() {
                     <div className="border-t pt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Cash Variance</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Cash Variance</p>
                           <p
                             className={cn(
                               'text-lg font-semibold',
@@ -426,7 +426,7 @@ export default function DailyCashClose() {
                                 ? 'text-green-600'
                                 : shift.variance && shift.variance < 0
                                   ? 'text-red-600'
-                                  : 'text-gray-600'
+                                  : 'text-muted-foreground'
                             )}
                           >
                             {shift.variance && shift.variance > 0 ? '+' : ''}
@@ -434,7 +434,7 @@ export default function DailyCashClose() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Closed at</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Closed at</p>
                           <p className="font-medium">{shift.closeTime?.toLocaleTimeString()}</p>
                         </div>
                       </div>
@@ -475,12 +475,12 @@ export default function DailyCashClose() {
                       </div>
                       <div>
                         <p className="font-medium">{payment.method}</p>
-                        <p className="text-sm text-gray-500">{payment.count} transactions</p>
+                        <p className="text-sm text-muted-foreground">{payment.count} transactions</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">{formatCurrency(payment.amount)}</p>
-                      <p className="text-sm text-gray-500">{payment.percentage.toFixed(1)}%</p>
+                      <p className="text-sm text-muted-foreground">{payment.percentage.toFixed(1)}%</p>
                     </div>
                   </div>
                 ))}
@@ -525,15 +525,15 @@ export default function DailyCashClose() {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Authorizations</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Authorizations</p>
                       <p className="text-xl font-semibold">{batch.authCount}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Total Amount</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Amount</p>
                       <p className="text-xl font-semibold">{formatCurrency(batch.totalAmount)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Settlement Date</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Settlement Date</p>
                       <p className="text-xl font-semibold">Tomorrow</p>
                     </div>
                   </div>
@@ -570,10 +570,10 @@ export default function DailyCashClose() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <Receipt className="w-8 h-8 text-purple-600" />
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">Z Report</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Daily sales summary report
                 </p>
               </CardContent>
@@ -582,11 +582,11 @@ export default function DailyCashClose() {
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <FileText className="w-8 h-8 text-blue-600" />
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <FileText className="w-8 h-8 text-primary" />
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">VAT Report</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Tax collection summary</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Tax collection summary</p>
               </CardContent>
             </Card>
 
@@ -594,10 +594,10 @@ export default function DailyCashClose() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <Calculator className="w-8 h-8 text-green-600" />
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">Cash Reconciliation</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Detailed cash movement report
                 </p>
               </CardContent>
@@ -607,10 +607,10 @@ export default function DailyCashClose() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <TrendingUp className="w-8 h-8 text-orange-600" />
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">Sales Analytics</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Performance insights</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Performance insights</p>
               </CardContent>
             </Card>
           </div>
@@ -619,7 +619,7 @@ export default function DailyCashClose() {
 
       {/* End of Day Modal */}
       {showEODModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle>End of Day Process</CardTitle>
@@ -652,7 +652,7 @@ export default function DailyCashClose() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-blue-600" />
+                    <Clock className="w-4 h-4 text-primary" />
                     Generate Z Report
                   </span>
                   <Badge variant="outline">Pending</Badge>

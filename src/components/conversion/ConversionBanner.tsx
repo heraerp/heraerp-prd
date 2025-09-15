@@ -74,21 +74,21 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
       <div className="relative p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl text-white shadow-lg">
+            <div className="p-2 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl text-foreground shadow-lg">
               <Rocket className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                 Ready to Go Live? 🚀
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
+              <p className="text-muted-foreground dark:text-gray-300 mt-1">
                 Transform your {getModuleDisplayName(demoModule)} demo into a production system
               </p>
             </div>
           </div>
 
           <Badge
-            className={`${getReadinessColor(metrics.conversionReadiness)} text-white px-3 py-1`}
+            className={`${getReadinessColor(metrics.conversionReadiness)} text-foreground px-3 py-1`}
           >
             {metrics.conversionReadiness.toUpperCase()} READINESS
           </Badge>
@@ -96,42 +96,42 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
               {metrics.sessionDuration}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Time Spent</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Time Spent</div>
           </div>
 
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
               {metrics.featuresUsed.length}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Features Explored</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Features Explored</div>
           </div>
 
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <Database className="w-5 h-5 text-purple-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
               {metrics.dataCreated}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Records Created</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Records Created</div>
           </div>
 
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <TrendingUp className="w-5 h-5 text-orange-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
               {metrics.returnVisits}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Return Visits</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Return Visits</div>
           </div>
         </div>
 
         {/* Value Proposition */}
         <div className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/30 dark:to-blue-900/30 rounded-lg p-4 mb-6">
-          <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+          <h4 className="font-semibold text-gray-900 dark:text-foreground mb-2 flex items-center gap-2">
             <Users className="w-4 h-4" />
             What You Get with Production Conversion:
           </h4>
@@ -166,12 +166,12 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
         {/* Conversion CTA */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-muted-foreground dark:text-muted-foreground text-sm">
               <strong>{metrics.featuresUsed.length} features</strong> explored in demo •
               <strong>Fresh production</strong> environment •<strong> Zero downtime</strong>{' '}
               conversion
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
               Conversion takes ~3 minutes • 30-day money-back guarantee
             </p>
           </div>
@@ -181,7 +181,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             size="lg"
             className={`
               bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 
-              text-white font-semibold px-8 py-3 shadow-lg hover:shadow-xl 
+              text-foreground font-semibold px-8 py-3 shadow-lg hover:shadow-xl 
               transition-all duration-200 transform hover:-translate-y-0.5
               ${isHovered ? 'scale-105' : ''}
             `}

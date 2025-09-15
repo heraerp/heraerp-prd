@@ -108,11 +108,11 @@ export default function TenderDetailPage() {
 
   if (orgLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2">
             <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400">Loading tender details...</p>
+            <p className="text-muted-foreground">Loading tender details...</p>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export default function TenderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -147,52 +147,52 @@ export default function TenderDetailPage() {
 
         {/* Key Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-amber-600/20">
                 <Clock className="h-5 w-5 text-amber-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-400">Closing In</p>
-                <p className="text-lg font-semibold text-white">{mockTenderDetail.daysLeft} days</p>
+                <p className="text-xs text-muted-foreground">Closing In</p>
+                <p className="text-lg font-semibold text-foreground">{mockTenderDetail.daysLeft} days</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-green-600/20">
                 <DollarSign className="h-5 w-5 text-green-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-400">Estimated Value</p>
-                <p className="text-lg font-semibold text-white">
+                <p className="text-xs text-muted-foreground">Estimated Value</p>
+                <p className="text-lg font-semibold text-foreground">
                   {mockTenderDetail.estimatedValue}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-600/20">
                 <Shield className="h-5 w-5 text-blue-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-400">EMD Amount</p>
-                <p className="text-lg font-semibold text-white">{mockTenderDetail.emdAmount}</p>
+                <p className="text-xs text-muted-foreground">EMD Amount</p>
+                <p className="text-lg font-semibold text-foreground">{mockTenderDetail.emdAmount}</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-purple-600/20">
                 <Brain className="h-5 w-5 text-purple-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-400">AI Strategy</p>
-                <p className="text-lg font-semibold text-white capitalize">
+                <p className="text-xs text-muted-foreground">AI Strategy</p>
+                <p className="text-lg font-semibold text-foreground capitalize">
                   {mockTenderDetail.bidStrategy.recommendation}
                 </p>
               </div>
@@ -202,7 +202,7 @@ export default function TenderDetailPage() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-muted/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="lots">Lots & Pricing</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
@@ -212,30 +212,30 @@ export default function TenderDetailPage() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Tender Details</h3>
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Tender Details</h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-400">Description</p>
-                  <p className="text-white mt-1">{mockTenderDetail.description}</p>
+                  <p className="text-sm text-muted-foreground">Description</p>
+                  <p className="text-foreground mt-1">{mockTenderDetail.description}</p>
                 </div>
-                <Separator className="bg-gray-700/50" />
+                <Separator className="bg-muted-foreground/10/50" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-400">Location</p>
+                    <p className="text-sm text-muted-foreground">Location</p>
                     <div className="flex items-start gap-2 mt-1">
                       <MapPin className="h-4 w-4 text-amber-400 mt-0.5" />
-                      <p className="text-white">{mockTenderDetail.location}</p>
+                      <p className="text-foreground">{mockTenderDetail.location}</p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-400">Tender Fee</span>
-                      <span className="text-white">{mockTenderDetail.tenderFee}</span>
+                      <span className="text-sm text-muted-foreground">Tender Fee</span>
+                      <span className="text-foreground">{mockTenderDetail.tenderFee}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-400">Processing Fee</span>
-                      <span className="text-white">{mockTenderDetail.processingFee}</span>
+                      <span className="text-sm text-muted-foreground">Processing Fee</span>
+                      <span className="text-foreground">{mockTenderDetail.processingFee}</span>
                     </div>
                   </div>
                 </div>
@@ -243,19 +243,19 @@ export default function TenderDetailPage() {
             </Card>
 
             {/* Document Status */}
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Document Status</h3>
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Document Status</h3>
               <div className="space-y-3">
                 {mockTenderDetail.documents.map(doc => (
                   <div
                     key={doc.name}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30"
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted-foreground/10/30"
                   >
                     <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-gray-400" />
+                      <FileText className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-white font-medium">{doc.name}</p>
-                        {doc.date && <p className="text-xs text-gray-400">{doc.date}</p>}
+                        <p className="text-foreground font-medium">{doc.name}</p>
+                        {doc.date && <p className="text-xs text-muted-foreground">{doc.date}</p>}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -283,39 +283,39 @@ export default function TenderDetailPage() {
           </TabsContent>
 
           <TabsContent value="lots" className="space-y-6">
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">Lot Details</h3>
+                <h3 className="text-lg font-semibold text-foreground">Lot Details</h3>
                 <Badge variant="secondary">{mockTenderDetail.lots.length} Lots</Badge>
               </div>
               <div className="space-y-4">
                 {mockTenderDetail.lots.map((lot, index) => (
-                  <div key={lot.id} className="p-4 rounded-lg bg-gray-700/30 space-y-3">
+                  <div key={lot.id} className="p-4 rounded-lg bg-muted-foreground/10/30 space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-white">Lot {lot.id}</h4>
+                      <h4 className="font-medium text-foreground">Lot {lot.id}</h4>
                       <Badge>{lot.grade} Grade</Badge>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-400">Species</p>
-                        <p className="text-white font-medium">{lot.species}</p>
+                        <p className="text-muted-foreground">Species</p>
+                        <p className="text-foreground font-medium">{lot.species}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400">Volume</p>
-                        <p className="text-white font-medium">{lot.volumeCbm} cbm</p>
+                        <p className="text-muted-foreground">Volume</p>
+                        <p className="text-foreground font-medium">{lot.volumeCbm} cbm</p>
                       </div>
                       <div>
-                        <p className="text-gray-400">Reserve Price</p>
-                        <p className="text-white font-medium">{lot.reservePrice}</p>
+                        <p className="text-muted-foreground">Reserve Price</p>
+                        <p className="text-foreground font-medium">{lot.reservePrice}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400">Depot</p>
-                        <p className="text-white font-medium">{lot.depot}</p>
+                        <p className="text-muted-foreground">Depot</p>
+                        <p className="text-foreground font-medium">{lot.depot}</p>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400">Dimensions</p>
-                      <p className="text-sm text-white">{lot.dimensions}</p>
+                      <p className="text-xs text-muted-foreground">Dimensions</p>
+                      <p className="text-sm text-foreground">{lot.dimensions}</p>
                     </div>
                   </div>
                 ))}
@@ -330,7 +330,7 @@ export default function TenderDetailPage() {
                   <Brain className="h-6 w-6 text-purple-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white">AI Bid Recommendation</h3>
+                  <h3 className="text-lg font-semibold text-foreground">AI Bid Recommendation</h3>
                   <p className="text-sm text-gray-300 mt-1">
                     Based on historical data, competitor analysis, and market conditions
                   </p>
@@ -340,34 +340,34 @@ export default function TenderDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Bid Strategy</p>
+                    <p className="text-sm text-muted-foreground mb-2">Bid Strategy</p>
                     <div className="flex items-center gap-3">
                       <Target className="h-5 w-5 text-amber-400" />
-                      <p className="text-xl font-semibold text-white capitalize">
+                      <p className="text-xl font-semibold text-foreground capitalize">
                         {mockTenderDetail.bidStrategy.recommendation}
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Confidence Level</p>
+                    <p className="text-sm text-muted-foreground mb-2">Confidence Level</p>
                     <Progress value={mockTenderDetail.bidStrategy.confidence} className="h-3" />
-                    <p className="text-sm text-white mt-1">
+                    <p className="text-sm text-foreground mt-1">
                       {mockTenderDetail.bidStrategy.confidence}% confidence
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Suggested Margin</p>
-                    <p className="text-lg font-medium text-white">
+                    <p className="text-sm text-muted-foreground mb-2">Suggested Margin</p>
+                    <p className="text-lg font-medium text-foreground">
                       {mockTenderDetail.bidStrategy.suggestedMargin}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
-                    <span className="text-gray-400">Risk Level</span>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted-foreground/10/30">
+                    <span className="text-muted-foreground">Risk Level</span>
                     <Badge
                       variant={
                         mockTenderDetail.bidStrategy.riskLevel === 'low' ? 'default' : 'secondary'
@@ -376,15 +376,15 @@ export default function TenderDetailPage() {
                       {mockTenderDetail.bidStrategy.riskLevel}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
-                    <span className="text-gray-400">Competitors</span>
-                    <span className="text-white font-medium">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted-foreground/10/30">
+                    <span className="text-muted-foreground">Competitors</span>
+                    <span className="text-foreground font-medium">
                       {mockTenderDetail.bidStrategy.competitorCount}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
-                    <span className="text-gray-400">Historical Win Rate</span>
-                    <span className="text-white font-medium">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted-foreground/10/30">
+                    <span className="text-muted-foreground">Historical Win Rate</span>
+                    <span className="text-foreground font-medium">
                       {mockTenderDetail.bidStrategy.historicalWinRate}
                     </span>
                   </div>
@@ -398,8 +398,8 @@ export default function TenderDetailPage() {
           </TabsContent>
 
           <TabsContent value="timeline" className="space-y-6">
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Tender Timeline</h3>
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Tender Timeline</h3>
               <div className="space-y-4">
                 {mockTenderDetail.timeline.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
@@ -410,7 +410,7 @@ export default function TenderDetailPage() {
                             ? 'bg-green-600/20'
                             : item.status === 'pending'
                               ? 'bg-amber-600/20'
-                              : 'bg-gray-600/20'
+                              : 'bg-muted-foreground/20'
                         }`}
                       >
                         {item.status === 'completed' ? (
@@ -418,16 +418,16 @@ export default function TenderDetailPage() {
                         ) : item.status === 'pending' ? (
                           <Clock className="h-5 w-5 text-amber-400" />
                         ) : (
-                          <Info className="h-5 w-5 text-gray-400" />
+                          <Info className="h-5 w-5 text-muted-foreground" />
                         )}
                       </div>
                       {index < mockTenderDetail.timeline.length - 1 && (
-                        <div className="w-0.5 h-16 bg-gray-700/50 mt-2" />
+                        <div className="w-0.5 h-16 bg-muted-foreground/10/50 mt-2" />
                       )}
                     </div>
                     <div className="flex-1 pb-8">
-                      <h4 className="font-medium text-white">{item.event}</h4>
-                      <p className="text-sm text-gray-400 mt-1">{item.date}</p>
+                      <h4 className="font-medium text-foreground">{item.event}</h4>
+                      <p className="text-sm text-muted-foreground mt-1">{item.date}</p>
                     </div>
                   </div>
                 ))}

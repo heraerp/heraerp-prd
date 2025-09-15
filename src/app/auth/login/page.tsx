@@ -168,7 +168,7 @@ function LoginForm() {
                       Email Address
                     </Label>
                     <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400" />
+                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
                       <Input
                         id="email"
                         type="email"
@@ -193,13 +193,13 @@ function LoginForm() {
                       </Label>
                       <Link
                         href="/auth/forgot-password"
-                        className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="text-sm font-medium text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                       >
                         Forgot?
                       </Link>
                     </div>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400" />
+                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
@@ -250,7 +250,7 @@ function LoginForm() {
                       Don't have an account?{' '}
                       <Link
                         href="/auth/signup"
-                        className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="font-semibold text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                       >
                         Sign up
                       </Link>
@@ -280,19 +280,19 @@ function LoginForm() {
             <div className="mt-12 mb-8">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">99.9%</div>
+                  <div className="text-2xl font-bold text-primary dark:text-blue-400">99.9%</div>
                   <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                     Uptime SLA
                   </div>
                 </div>
                 <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">SOC 2</div>
+                  <div className="text-2xl font-bold text-primary dark:text-blue-400">SOC 2</div>
                   <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                     Certified
                   </div>
                 </div>
                 <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">24/7</div>
+                  <div className="text-2xl font-bold text-primary dark:text-blue-400">24/7</div>
                   <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                     Support
                   </div>
@@ -306,14 +306,14 @@ function LoginForm() {
                 By signing in, you agree to our{' '}
                 <Link
                   href="/terms"
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
                   Terms
                 </Link>{' '}
                 and{' '}
                 <Link
                   href="/privacy"
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
                   Privacy Policy
                 </Link>
@@ -336,7 +336,7 @@ export default function CentralLoginPage() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-background dark:bg-muted/50 backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border dark:border-border">
-              <Loader2 className="w-10 h-10 animate-spin text-blue-600 dark:text-blue-400" />
+              <Loader2 className="w-10 h-10 animate-spin text-primary dark:text-blue-400" />
             </div>
             <p className="text-muted-foreground dark:text-muted-foreground">Loading...</p>
           </div>

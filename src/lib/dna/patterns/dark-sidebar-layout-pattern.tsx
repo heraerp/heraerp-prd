@@ -52,7 +52,7 @@ export function DarkSidebarLayout({
       blue: {
         bg: 'bg-blue-600',
         hover: 'hover:bg-blue-700',
-        text: 'text-blue-600'
+        text: 'text-primary'
       },
       green: {
         bg: 'bg-green-600',
@@ -71,7 +71,7 @@ export function DarkSidebarLayout({
   const colors = getColorClasses(config.themeColor)
 
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex h-screen bg-background">
       {/* Sidebar - fixed width 80px */}
       <div className="w-20 bg-gray-950 border-r border-gray-800">
         <div className="flex flex-col h-full">
@@ -94,18 +94,18 @@ export function DarkSidebarLayout({
                           className={cn(
                             'w-full h-12 relative',
                             isActive && `${colors.bg} ${colors.text} hover:${colors.bg}`,
-                            !isActive && 'hover:bg-gray-800'
+                            !isActive && 'hover:bg-muted'
                           )}
                         >
                           <item.icon
-                            className={cn('h-5 w-5', isActive ? 'text-white' : 'text-gray-400')}
+                            className={cn('h-5 w-5', isActive ? 'text-foreground' : 'text-muted-foreground')}
                           />
                           {item.badge && (
                             <span
                               className={cn(
                                 'absolute top-1 right-1 h-5 w-5 text-xs rounded-full flex items-center justify-center',
                                 colors.bg,
-                                'text-white'
+                                'text-foreground'
                               )}
                             >
                               {item.badge}
@@ -140,7 +140,7 @@ export function DarkSidebarLayout({
                 size="icon"
                 className={cn('relative', isActive && `${colors.text}`)}
               >
-                <item.icon className={cn('h-5 w-5', isActive ? colors.text : 'text-gray-400')} />
+                <item.icon className={cn('h-5 w-5', isActive ? colors.text : 'text-muted-foreground')} />
               </Button>
             </Link>
           )

@@ -36,9 +36,9 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
       case 'sick':
         return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
       case 'unpaid':
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 border-gray-200 dark:border-gray-800'
+        return 'bg-muted text-gray-700 dark:bg-background/30 dark:text-muted-foreground border-border dark:border-gray-800'
       default:
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 border-gray-200 dark:border-gray-800'
+        return 'bg-muted text-gray-700 dark:bg-background/30 dark:text-muted-foreground border-border dark:border-gray-800'
     }
   }
 
@@ -74,7 +74,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
     >
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white">
+          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
             Pending Approvals
           </h3>
           <span className="px-3 py-1 text-sm font-medium rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
@@ -86,19 +86,19 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
           {pendingRequests.map(request => (
             <div
               key={request.id}
-              className="p-4 rounded-xl bg-gray-800/50 hover:bg-gray-800/70 transition-all duration-300 border border-gray-700/50"
+              className="p-4 rounded-xl bg-muted/50 hover:bg-muted/70 transition-all duration-300 border border-border/50"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                      <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    <div className="p-2 rounded-lg bg-muted dark:bg-muted">
+                      <User className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900 dark:text-white">
+                      <h4 className="font-medium text-gray-900 dark:text-foreground">
                         {request.employeeName}
                       </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                         {request.employeeRole}
                       </p>
                     </div>
@@ -106,12 +106,12 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
 
                   <div className="grid gap-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-600 dark:text-gray-400">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground dark:text-muted-foreground">
                         {formatDate(request.startDate, 'MMM d')} -{' '}
                         {formatDate(request.endDate, 'MMM d, yyyy')}
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="font-medium text-gray-900 dark:text-foreground">
                         ({request.days} {request.days === 1 ? 'day' : 'days'})
                       </span>
                     </div>
@@ -127,7 +127,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
                       </span>
                     </div>
 
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-muted-foreground dark:text-muted-foreground mt-1">
                       <span className="font-medium">Reason:</span> {request.reason}
                     </p>
                   </div>
@@ -145,7 +145,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
                   <Button
                     size="sm"
                     onClick={() => handleApprove(request.id)}
-                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-foreground"
                   >
                     <Check className="h-4 w-4" />
                   </Button>
@@ -156,8 +156,8 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
 
           {pendingRequests.length === 0 && (
             <div className="text-center py-8">
-              <Clock className="h-12 w-12 text-gray-600 mx-auto mb-3" />
-              <p className="!text-gray-600 dark:!text-gray-400">No pending leave requests</p>
+              <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <p className="!text-muted-foreground dark:!text-muted-foreground">No pending leave requests</p>
             </div>
           )}
         </div>

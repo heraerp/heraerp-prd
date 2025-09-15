@@ -43,7 +43,7 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-              <TestTube className="w-5 h-5 text-white" />
+              <TestTube className="w-5 h-5 text-foreground" />
             </div>
             <div>
               <CardTitle>Rule Testing</CardTitle>
@@ -61,15 +61,15 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
       <CardContent className="space-y-4">
         {/* Testing Benefits */}
         <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-600" />
             <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Validate Logic</p>
           </div>
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <AlertCircle className="w-6 h-6 mx-auto mb-1 text-yellow-600" />
             <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Find Edge Cases</p>
           </div>
-          <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+          <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <XCircle className="w-6 h-6 mx-auto mb-1 text-red-600" />
             <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Prevent Errors</p>
           </div>
@@ -77,14 +77,14 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
 
         {/* Recent Tests */}
         <div>
-          <h4 className="text-sm font-medium mb-3 text-gray-900 dark:text-gray-100">
+          <h4 className="text-sm font-medium mb-3 text-gray-900 dark:text-foreground">
             Recent Test Results
           </h4>
           <div className="space-y-2">
             {tests.map((test, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-white/70 dark:bg-gray-800/70 rounded-lg"
+                className="flex items-center justify-between p-3 bg-background/70 dark:bg-muted/70 rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -97,10 +97,10 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
                     }`}
                   />
                   <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                       {test.ruleName}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                       Tested {test.lastTested}
                     </p>
                   </div>

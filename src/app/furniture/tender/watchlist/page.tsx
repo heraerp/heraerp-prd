@@ -290,7 +290,7 @@ export default function WatchlistPage() {
                       <div>
                         <Link
                           href={`/furniture/tender/${item.tender_code}`}
-                          className="font-medium text-blue-600 hover:underline"
+                          className="font-medium text-primary hover:underline"
                         >
                           {item.tender_code}
                         </Link>

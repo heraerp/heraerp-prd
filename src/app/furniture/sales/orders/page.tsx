@@ -181,7 +181,7 @@ export default function FurnitureSalesOrders() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -209,7 +209,7 @@ export default function FurnitureSalesOrders() {
 
         {/* Tabs for Order Management */}
         <Tabs defaultValue="pos" className="space-y-4">
-          <TabsList className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-background/50 dark:bg-muted/50 backdrop-blur-sm">
             <TabsTrigger value="pos">Quick Order</TabsTrigger>
             <TabsTrigger value="orders">Order List</TabsTrigger>
             <TabsTrigger value="pipeline">Sales Pipeline</TabsTrigger>
@@ -219,7 +219,7 @@ export default function FurnitureSalesOrders() {
             {/* Quick Order Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Product Selection */}
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <h3 className="text-lg font-semibold mb-4">Select Products</h3>
                 <div className="space-y-3">
                   {loading ? (
@@ -228,7 +228,7 @@ export default function FurnitureSalesOrders() {
                     furnitureItems.map(item => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted dark:hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
@@ -254,7 +254,7 @@ export default function FurnitureSalesOrders() {
               </Card>
 
               {/* Cart */}
-              <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-6 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <h3 className="text-lg font-semibold mb-4">Cart ({selectedItems.length} items)</h3>
                 <div className="space-y-3 mb-4">
                   {selectedItems.length === 0 ? (
@@ -322,7 +322,7 @@ export default function FurnitureSalesOrders() {
           <TabsContent value="orders" className="space-y-4">
             {/* Order Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-4 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Active Orders</p>
@@ -332,7 +332,7 @@ export default function FurnitureSalesOrders() {
                 </div>
               </Card>
 
-              <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-4 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">This Month</p>
@@ -344,7 +344,7 @@ export default function FurnitureSalesOrders() {
                 </div>
               </Card>
 
-              <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-4 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Avg Order Size</p>
@@ -356,7 +356,7 @@ export default function FurnitureSalesOrders() {
                 </div>
               </Card>
 
-              <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="p-4 bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Pending Delivery</p>
@@ -370,12 +370,12 @@ export default function FurnitureSalesOrders() {
             {/* Recent Orders List */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Recent Orders</h3>
-              <Card className="overflow-hidden bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
+              <Card className="overflow-hidden bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50">
                 <div className="divide-y divide-gray-200 dark:divide-gray-700">
                   {recentOrders.map(order => (
                     <div
                       key={order.id}
-                      className="p-4 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="p-4 hover:bg-muted/50 dark:hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
@@ -418,7 +418,7 @@ export default function FurnitureSalesOrders() {
                     </div>
                   ))}
                 </div>
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="p-4 border-t border-border dark:border-border">
                   <Link href="/furniture/sales/orders/all">
                     <Button variant="outline" className="w-full">
                       View All Orders

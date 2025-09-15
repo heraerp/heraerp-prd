@@ -56,12 +56,12 @@ export default function APIMonitorPage() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+          <div className="bg-background/10 backdrop-blur-xl rounded-3xl border border-border/20 shadow-2xl p-8">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <Activity className="w-8 h-8 text-white" />
+                <Activity className="w-8 h-8 text-foreground" />
               </div>
-              <h1 className="text-2xl font-light text-white mb-2">HERA API Monitor</h1>
+              <h1 className="text-2xl font-light text-foreground mb-2">HERA API Monitor</h1>
               <p className="text-gray-300 text-sm">System Performance Dashboard</p>
             </div>
 
@@ -72,14 +72,14 @@ export default function APIMonitorPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                  className="bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20"
+                  className="bg-background/10 border-border/20 text-foreground placeholder-white/50 focus:bg-background/20"
                   placeholder="Enter developer access code"
                 />
               </div>
 
               <Button
                 onClick={handleLogin}
-                className="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white border-0 py-3 rounded-xl font-medium"
+                className="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-foreground border-0 py-3 rounded-xl font-medium"
               >
                 Access Monitor Dashboard
               </Button>
@@ -169,7 +169,7 @@ export default function APIMonitorPage() {
       case 'down':
         return 'text-red-400 bg-red-500/20 border-red-500/30'
       default:
-        return 'text-gray-400 bg-gray-500/20 border-gray-500/30'
+        return 'text-muted-foreground bg-gray-500/20 border-gray-500/30'
     }
   }
 
@@ -181,18 +181,18 @@ export default function APIMonitorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-foreground">
       {/* Header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl">
+      <div className="border-b border-border/10 bg-background/20 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center">
-                <Activity className="w-5 h-5 text-white" />
+                <Activity className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <h1 className="text-xl font-light">HERA API Monitor</h1>
-                <p className="text-sm text-gray-400">Real-time Performance Dashboard</p>
+                <p className="text-sm text-muted-foreground">Real-time Performance Dashboard</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -208,11 +208,11 @@ export default function APIMonitorPage() {
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* System Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Uptime</p>
+                  <p className="text-sm text-muted-foreground">Uptime</p>
                   <p className="text-2xl font-light text-emerald-400">{systemMetrics.uptime}</p>
                 </div>
                 <Server className="w-8 h-8 text-emerald-400" />
@@ -220,11 +220,11 @@ export default function APIMonitorPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Total Requests</p>
+                  <p className="text-sm text-muted-foreground">Total Requests</p>
                   <p className="text-2xl font-light text-blue-400">
                     {systemMetrics.totalRequests.toLocaleString()}
                   </p>
@@ -234,11 +234,11 @@ export default function APIMonitorPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Avg Response</p>
+                  <p className="text-sm text-muted-foreground">Avg Response</p>
                   <p className="text-2xl font-light text-purple-400">
                     {systemMetrics.avgResponseTime}ms
                   </p>
@@ -248,11 +248,11 @@ export default function APIMonitorPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Error Rate</p>
+                  <p className="text-sm text-muted-foreground">Error Rate</p>
                   <p className="text-2xl font-light text-amber-400">{systemMetrics.errorRate}%</p>
                 </div>
                 <AlertCircle className="w-8 h-8 text-amber-400" />
@@ -260,11 +260,11 @@ export default function APIMonitorPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Throughput</p>
+                  <p className="text-sm text-muted-foreground">Throughput</p>
                   <p className="text-2xl font-light text-cyan-400">
                     {systemMetrics.throughput}/min
                   </p>
@@ -276,13 +276,13 @@ export default function APIMonitorPage() {
         </div>
 
         {/* API Endpoints Performance */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+        <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
           <CardHeader>
-            <CardTitle className="text-white flex items-center space-x-2">
+            <CardTitle className="text-foreground flex items-center space-x-2">
               <Gauge className="w-5 h-5" />
               <span>API Endpoint Performance</span>
             </CardTitle>
-            <CardDescription className="text-gray-400">
+            <CardDescription className="text-muted-foreground">
               Real-time monitoring of all HERA-SPEAR endpoints
             </CardDescription>
           </CardHeader>
@@ -296,24 +296,24 @@ export default function APIMonitorPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="p-4 bg-white/5 rounded-lg border border-white/10"
+                    className="p-4 bg-background/5 rounded-lg border border-border/10"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div
                           className={`w-10 h-10 bg-gradient-to-r from-${api.color}-400 to-${api.color}-600 rounded-lg flex items-center justify-center`}
                         >
-                          <Icon className="w-5 h-5 text-white" />
+                          <Icon className="w-5 h-5 text-foreground" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-white">{api.name}</h3>
-                          <p className="text-sm text-gray-400 font-mono">{api.endpoint}</p>
+                          <h3 className="font-medium text-foreground">{api.name}</h3>
+                          <p className="text-sm text-muted-foreground font-mono">{api.endpoint}</p>
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-6">
                         <div className="text-right">
-                          <p className="text-sm text-gray-400">Response Time</p>
+                          <p className="text-sm text-muted-foreground">Response Time</p>
                           <p
                             className={`text-lg font-mono ${getResponseTimeColor(api.responseTime)}`}
                           >
@@ -322,14 +322,14 @@ export default function APIMonitorPage() {
                         </div>
 
                         <div className="text-right">
-                          <p className="text-sm text-gray-400">24h Requests</p>
-                          <p className="text-lg font-mono text-white">
+                          <p className="text-sm text-muted-foreground">24h Requests</p>
+                          <p className="text-lg font-mono text-foreground">
                             {api.requests24h.toLocaleString()}
                           </p>
                         </div>
 
                         <div className="text-right">
-                          <p className="text-sm text-gray-400">Success Rate</p>
+                          <p className="text-sm text-muted-foreground">Success Rate</p>
                           <p className="text-lg font-mono text-emerald-400">{api.successRate}%</p>
                         </div>
 
@@ -339,7 +339,7 @@ export default function APIMonitorPage() {
 
                     {/* Success Rate Progress Bar */}
                     <div className="mt-3">
-                      <Progress value={api.successRate} className="h-2 bg-white/10" />
+                      <Progress value={api.successRate} className="h-2 bg-background/10" />
                     </div>
                   </motion.div>
                 )
@@ -350,9 +350,9 @@ export default function APIMonitorPage() {
 
         {/* Performance Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
+              <CardTitle className="text-foreground flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5" />
                 <span>Performance Insights</span>
               </CardTitle>
@@ -393,27 +393,27 @@ export default function APIMonitorPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-background/5 border-border/10 backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
+              <CardTitle className="text-foreground flex items-center space-x-2">
                 <Code className="w-5 h-5" />
                 <span>Quick Actions</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full justify-start bg-white/10 hover:bg-white/20 text-white border-white/20">
+              <Button className="w-full justify-start bg-background/10 hover:bg-background/20 text-foreground border-border/20">
                 <Activity className="w-4 h-4 mr-2" />
                 View Detailed Logs
               </Button>
-              <Button className="w-full justify-start bg-white/10 hover:bg-white/20 text-white border-white/20">
+              <Button className="w-full justify-start bg-background/10 hover:bg-background/20 text-foreground border-border/20">
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Performance Analytics
               </Button>
-              <Button className="w-full justify-start bg-white/10 hover:bg-white/20 text-white border-white/20">
+              <Button className="w-full justify-start bg-background/10 hover:bg-background/20 text-foreground border-border/20">
                 <AlertCircle className="w-4 h-4 mr-2" />
                 Configure Alerts
               </Button>
-              <Button className="w-full justify-start bg-white/10 hover:bg-white/20 text-white border-white/20">
+              <Button className="w-full justify-start bg-background/10 hover:bg-background/20 text-foreground border-border/20">
                 <Server className="w-4 h-4 mr-2" />
                 System Diagnostics
               </Button>
@@ -422,15 +422,15 @@ export default function APIMonitorPage() {
         </div>
 
         {/* Footer Status */}
-        <div className="p-4 bg-black/20 rounded-xl border border-white/10">
+        <div className="p-4 bg-background/20 rounded-xl border border-border/10">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-4">
               <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                 16 APIs Monitored
               </Badge>
-              <span className="text-gray-400">Last updated: {new Date().toLocaleTimeString()}</span>
+              <span className="text-muted-foreground">Last updated: {new Date().toLocaleTimeString()}</span>
             </div>
-            <div className="text-gray-500">
+            <div className="text-muted-foreground">
               "Performance is not just about speed, it's about reliability" - Steve Jobs
             </div>
           </div>

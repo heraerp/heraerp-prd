@@ -238,13 +238,13 @@ export function SupplierManager() {
       case 'active':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'inactive':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
       case 'pending':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       case 'suspended':
         return 'bg-red-100 text-red-800 border-red-200'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -257,7 +257,7 @@ export function SupplierManager() {
       case 'suspended':
         return <AlertCircle className="w-4 h-4 text-red-600" />
       default:
-        return <CheckCircle className="w-4 h-4 text-gray-600" />
+        return <CheckCircle className="w-4 h-4 text-muted-foreground" />
     }
   }
 
@@ -284,8 +284,8 @@ export function SupplierManager() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-3">
-            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-lg text-gray-600">Loading suppliers...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg text-muted-foreground">Loading suppliers...</span>
           </div>
         </div>
       </div>
@@ -298,7 +298,7 @@ export function SupplierManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Supplier Management</h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Manage suppliers using HERA's universal architecture - same system, infinite
             possibilities
           </p>
@@ -306,14 +306,14 @@ export function SupplierManager() {
         <div className="flex items-center space-x-3">
           <button
             onClick={loadSuppliers}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="flex items-center space-x-2 px-4 py-2 text-muted-foreground hover:text-gray-800 border border-border rounded-lg hover:bg-muted"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+            className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
             <span>Add Supplier</span>
@@ -326,13 +326,13 @@ export function SupplierManager() {
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <input
               type="text"
               placeholder="Search suppliers..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background"
             />
           </div>
 
@@ -341,7 +341,7 @@ export function SupplierManager() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              className="px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -353,7 +353,7 @@ export function SupplierManager() {
             <select
               value={categoryFilter}
               onChange={e => setCategoryFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              className="px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background"
             >
               <option value="">All Categories</option>
               <option value="general">General</option>
@@ -373,7 +373,7 @@ export function SupplierManager() {
                 <p className="text-sm font-medium text-blue-800">Total Suppliers</p>
                 <p className="text-2xl font-bold text-blue-900">{suppliers.length}</p>
               </div>
-              <Building2 className="w-8 h-8 text-blue-600" />
+              <Building2 className="w-8 h-8 text-primary" />
             </div>
           </div>
 
@@ -442,10 +442,10 @@ export function SupplierManager() {
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-primary transition-colors">
                     {supplier.name}
                   </h3>
-                  <p className="text-sm text-gray-500">{supplier.code}</p>
+                  <p className="text-sm text-muted-foreground">{supplier.code}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge className={getStatusColor(supplier.status)}>
@@ -458,8 +458,8 @@ export function SupplierManager() {
               </div>
 
               {/* Contact Person */}
-              <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-2">
+                <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold">
                     {supplier.contact_person
                       .split(' ')
@@ -472,7 +472,7 @@ export function SupplierManager() {
               </div>
 
               {/* Category & Payment Terms */}
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span className="capitalize">{supplier.category.replace('_', ' ')}</span>
                 <span>{supplier.payment_terms}</span>
               </div>
@@ -482,10 +482,10 @@ export function SupplierManager() {
             <div className="p-6 space-y-3">
               {supplier.email && (
                 <div className="flex items-center space-x-3 text-sm">
-                  <Mail className="w-4 h-4 text-gray-400" />
+                  <Mail className="w-4 h-4 text-muted-foreground" />
                   <a
                     href={`mailto:${supplier.email}`}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-primary hover:text-blue-800"
                   >
                     {supplier.email}
                   </a>
@@ -494,8 +494,8 @@ export function SupplierManager() {
 
               {supplier.phone && (
                 <div className="flex items-center space-x-3 text-sm">
-                  <Phone className="w-4 h-4 text-gray-400" />
-                  <a href={`tel:${supplier.phone}`} className="text-gray-600 hover:text-gray-800">
+                  <Phone className="w-4 h-4 text-muted-foreground" />
+                  <a href={`tel:${supplier.phone}`} className="text-muted-foreground hover:text-gray-800">
                     {supplier.phone}
                   </a>
                 </div>
@@ -503,7 +503,7 @@ export function SupplierManager() {
 
               {supplier.website && (
                 <div className="flex items-center space-x-3 text-sm">
-                  <Globe className="w-4 h-4 text-gray-400" />
+                  <Globe className="w-4 h-4 text-muted-foreground" />
                   <a
                     href={
                       supplier.website.startsWith('http')
@@ -512,7 +512,7 @@ export function SupplierManager() {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-primary hover:text-blue-800"
                   >
                     {supplier.website}
                   </a>
@@ -521,8 +521,8 @@ export function SupplierManager() {
 
               {(supplier.city || supplier.country) && (
                 <div className="flex items-center space-x-3 text-sm">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
                     {[supplier.city, supplier.country].filter(Boolean).join(', ')}
                   </span>
                 </div>
@@ -531,8 +531,8 @@ export function SupplierManager() {
               {/* Credit Limit */}
               {supplier.credit_limit > 0 && (
                 <div className="flex items-center space-x-3 text-sm">
-                  <CreditCard className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">
+                  <CreditCard className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
                     Credit Limit: {formatCurrency(supplier.credit_limit, supplier.currency)}
                   </span>
                 </div>
@@ -542,14 +542,14 @@ export function SupplierManager() {
             {/* Performance Metrics (if available) */}
             {supplier.total_orders !== undefined && (
               <div className="px-6 pb-6">
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                <div className="bg-muted rounded-lg p-4 space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Total Orders</span>
+                    <span className="text-muted-foreground">Total Orders</span>
                     <span className="font-semibold">{supplier.total_orders}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Total Spent</span>
+                    <span className="text-muted-foreground">Total Spent</span>
                     <span className="font-semibold text-green-600">
                       {formatCurrency(supplier.total_spent || 0, supplier.currency)}
                     </span>
@@ -557,7 +557,7 @@ export function SupplierManager() {
 
                   {supplier.performance_rating !== undefined && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Rating</span>
+                      <span className="text-muted-foreground">Rating</span>
                       <div className="flex items-center space-x-1">
                         {getPerformanceRating(supplier.performance_rating)}
                       </div>
@@ -566,8 +566,8 @@ export function SupplierManager() {
 
                   {supplier.on_time_delivery_rate !== undefined && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">On-Time Delivery</span>
-                      <span className="font-semibold text-blue-600">
+                      <span className="text-muted-foreground">On-Time Delivery</span>
+                      <span className="font-semibold text-primary">
                         {(supplier.on_time_delivery_rate * 100).toFixed(1)}%
                       </span>
                     </div>
@@ -581,7 +581,7 @@ export function SupplierManager() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setViewingSupplier(supplier)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-center space-x-2"
                 >
                   <Eye className="w-4 h-4" />
                   <span>View</span>
@@ -602,13 +602,13 @@ export function SupplierManager() {
       {/* Empty State */}
       {filteredSuppliers.length === 0 && !isLoading && (
         <Card className="p-12 text-center">
-          <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <Building2 className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             {searchTerm || statusFilter !== 'all' || categoryFilter
               ? 'No suppliers found'
               : 'No suppliers yet'}
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             {searchTerm || statusFilter !== 'all' || categoryFilter
               ? 'Try adjusting your search or filters'
               : 'Get started by adding your first supplier to the system'}
@@ -616,7 +616,7 @@ export function SupplierManager() {
           {!searchTerm && statusFilter === 'all' && !categoryFilter && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
             >
               Add Your First Supplier
             </button>
@@ -626,9 +626,9 @@ export function SupplierManager() {
 
       {/* Add Supplier Modal - Jobs: "Design is how it works" */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Add New Supplier</h2>
                 <button
@@ -636,7 +636,7 @@ export function SupplierManager() {
                     setShowAddModal(false)
                     resetForm()
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-muted-foreground hover:text-muted-foreground"
                 >
                   ×
                 </button>
@@ -657,7 +657,7 @@ export function SupplierManager() {
                       required
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="ABC Supplies Ltd."
                     />
                   </div>
@@ -667,7 +667,7 @@ export function SupplierManager() {
                     <select
                       value={formData.category}
                       onChange={e => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="general">General</option>
                       <option value="raw_materials">Raw Materials</option>
@@ -692,7 +692,7 @@ export function SupplierManager() {
                       required
                       value={formData.contact_person}
                       onChange={e => setFormData({ ...formData, contact_person: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="John Smith"
                     />
                   </div>
@@ -704,7 +704,7 @@ export function SupplierManager() {
                       required
                       value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="john@abcsupplies.com"
                     />
                   </div>
@@ -715,7 +715,7 @@ export function SupplierManager() {
                       type="tel"
                       value={formData.phone}
                       onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="+1-555-0123"
                     />
                   </div>
@@ -726,7 +726,7 @@ export function SupplierManager() {
                       type="url"
                       value={formData.website}
                       onChange={e => setFormData({ ...formData, website: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="www.abcsupplies.com"
                     />
                   </div>
@@ -744,7 +744,7 @@ export function SupplierManager() {
                     <select
                       value={formData.payment_terms}
                       onChange={e => setFormData({ ...formData, payment_terms: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="NET15">NET 15</option>
                       <option value="NET30">NET 30</option>
@@ -766,7 +766,7 @@ export function SupplierManager() {
                       onChange={e =>
                         setFormData({ ...formData, credit_limit: parseFloat(e.target.value) || 0 })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="50000"
                     />
                   </div>
@@ -776,7 +776,7 @@ export function SupplierManager() {
                     <select
                       value={formData.currency}
                       onChange={e => setFormData({ ...formData, currency: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="USD">USD</option>
                       <option value="EUR">EUR</option>
@@ -800,7 +800,7 @@ export function SupplierManager() {
                       type="text"
                       value={formData.address_line1}
                       onChange={e => setFormData({ ...formData, address_line1: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="123 Business Street"
                     />
                   </div>
@@ -813,7 +813,7 @@ export function SupplierManager() {
                       type="text"
                       value={formData.address_line2}
                       onChange={e => setFormData({ ...formData, address_line2: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Suite 100"
                     />
                   </div>
@@ -825,7 +825,7 @@ export function SupplierManager() {
                         type="text"
                         value={formData.city}
                         onChange={e => setFormData({ ...formData, city: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="New York"
                       />
                     </div>
@@ -836,7 +836,7 @@ export function SupplierManager() {
                         type="text"
                         value={formData.state}
                         onChange={e => setFormData({ ...formData, state: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="NY"
                       />
                     </div>
@@ -849,7 +849,7 @@ export function SupplierManager() {
                         type="text"
                         value={formData.postal_code}
                         onChange={e => setFormData({ ...formData, postal_code: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="10001"
                       />
                     </div>
@@ -862,7 +862,7 @@ export function SupplierManager() {
                         type="text"
                         value={formData.country}
                         onChange={e => setFormData({ ...formData, country: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="United States"
                       />
                     </div>
@@ -879,13 +879,13 @@ export function SupplierManager() {
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Additional notes about this supplier..."
                 />
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              <div className="flex justify-end space-x-3 pt-6 border-t border-border">
                 <button
                   type="button"
                   onClick={() => {
@@ -893,14 +893,14 @@ export function SupplierManager() {
                     resetForm()
                   }}
                   disabled={isLoading}
-                  className="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="px-6 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
+                  className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
                 >
                   {isLoading && <RefreshCw className="w-4 h-4 animate-spin" />}
                   <span>{isLoading ? 'Creating...' : 'Create Supplier'}</span>
@@ -922,24 +922,24 @@ export function SupplierManager() {
             complex procurement feel as intuitive as using an iPhone.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Universal Entities</strong>
               <br />
               Suppliers stored with infinite flexibility - same table handles restaurants,
               manufacturers, or hospitals
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Dynamic Properties</strong>
               <br />
               Payment terms, contacts, ratings - all stored without schema changes
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Elegant APIs</strong>
               <br />
               One endpoint handles all supplier operations with Jobs-level UX design
             </div>
           </div>
-          <p className="text-xs text-blue-600 mt-4">
+          <p className="text-xs text-primary mt-4">
             "Design is not just what it looks like and feels like. Design is how it works." - Steve
             Jobs
           </p>

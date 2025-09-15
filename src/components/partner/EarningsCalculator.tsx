@@ -121,7 +121,7 @@ export default function EarningsCalculator() {
             </div>
             <div className="text-center">
               <span className="text-4xl font-bold text-emerald-600">{customers}</span>
-              <span className="text-slate-600 ml-2">customers</span>
+              <span className="text-muted-foreground ml-2">customers</span>
             </div>
 
             {/* Quick Scenarios */}
@@ -133,12 +133,12 @@ export default function EarningsCalculator() {
                   className={`p-3 rounded-lg border-2 transition-all text-sm ${
                     customers === scenario.customers
                       ? 'border-emerald-500 bg-emerald-50'
-                      : 'border-slate-200 hover:border-emerald-300'
+                      : 'border-border hover:border-emerald-300'
                   }`}
                 >
                   <div className="text-lg mb-1">{scenario.icon}</div>
                   <div className="font-semibold">{scenario.label}</div>
-                  <div className="text-slate-600">{scenario.customers} customers</div>
+                  <div className="text-muted-foreground">{scenario.customers} customers</div>
                 </button>
               ))}
             </div>
@@ -161,10 +161,10 @@ export default function EarningsCalculator() {
               />
             </div>
             <div className="text-center">
-              <span className="text-4xl font-bold text-blue-600">
+              <span className="text-4xl font-bold text-primary">
                 {formatCurrency(avgMonthlyValue)}
               </span>
-              <span className="text-slate-600 ml-2">per customer/month</span>
+              <span className="text-muted-foreground ml-2">per customer/month</span>
             </div>
 
             {/* Quick Scenarios */}
@@ -176,12 +176,12 @@ export default function EarningsCalculator() {
                   className={`p-3 rounded-lg border-2 transition-all text-sm ${
                     avgMonthlyValue === scenario.price
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-slate-200 hover:border-blue-300'
+                      : 'border-border hover:border-blue-300'
                   }`}
                 >
                   <div className="text-lg mb-1">{scenario.icon}</div>
                   <div className="font-semibold">{scenario.label}</div>
-                  <div className="text-slate-600">{formatCurrency(scenario.price)}/mo</div>
+                  <div className="text-muted-foreground">{formatCurrency(scenario.price)}/mo</div>
                 </button>
               ))}
             </div>
@@ -203,7 +203,7 @@ export default function EarningsCalculator() {
                   {formatCurrency(projections.monthly)}
                 </div>
                 <div className="text-emerald-600 font-semibold">Monthly Income</div>
-                <div className="text-sm text-slate-600 mt-2">Your 50% share</div>
+                <div className="text-sm text-muted-foreground mt-2">Your 50% share</div>
               </CardContent>
             </Card>
 
@@ -211,12 +211,12 @@ export default function EarningsCalculator() {
               className={`relative overflow-hidden transition-all duration-1000 delay-200 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
             >
               <CardContent className="p-6 text-center bg-gradient-to-br from-blue-50 to-blue-100">
-                <Calendar className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+                <Calendar className="h-8 w-8 text-primary mx-auto mb-3" />
                 <div className="text-3xl font-bold text-blue-700 mb-2">
                   {formatCurrency(projections.yearly)}
                 </div>
-                <div className="text-blue-600 font-semibold">Annual Income</div>
-                <div className="text-sm text-slate-600 mt-2">Recurring revenue</div>
+                <div className="text-primary font-semibold">Annual Income</div>
+                <div className="text-sm text-muted-foreground mt-2">Recurring revenue</div>
               </CardContent>
             </Card>
 
@@ -229,13 +229,13 @@ export default function EarningsCalculator() {
                   {formatCurrency(projections.lifetime, true)}
                 </div>
                 <div className="text-purple-600 font-semibold">5-Year Value</div>
-                <div className="text-sm text-slate-600 mt-2">Conservative estimate</div>
+                <div className="text-sm text-muted-foreground mt-2">Conservative estimate</div>
               </CardContent>
             </Card>
           </div>
 
           {/* Comparison & Context */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
+          <div className="bg-background rounded-2xl shadow-xl p-8 border border-border">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold mb-4">How This Compares</h3>
@@ -251,7 +251,7 @@ export default function EarningsCalculator() {
                     <span className="text-red-600 font-bold">$75,000</span>
                   </div>
                   <div className="text-center py-4">
-                    <Badge className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 text-lg">
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-blue-500 text-foreground px-6 py-3 text-lg">
                       {projections.comparisonToJob > 1
                         ? `${projections.comparisonToJob.toFixed(1)}x Better`
                         : 'Building Your Foundation'}
@@ -264,7 +264,7 @@ export default function EarningsCalculator() {
                 <div className="mb-6">
                   <Sparkles className="h-16 w-16 text-amber-500 mx-auto mb-4" />
                   <h4 className="text-xl font-bold mb-2">The Magic Formula</h4>
-                  <p className="text-slate-600">
+                  <p className="text-muted-foreground">
                     {customers} customers × {formatCurrency(avgMonthlyValue)}/month × 50% =
                     <strong className="text-emerald-600">
                       {' '}
@@ -276,7 +276,7 @@ export default function EarningsCalculator() {
                 <Button
                   size="lg"
                   onClick={() => router.push('/partner-system/register')}
-                  className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-xl"
+                  className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-xl"
                 >
                   <Target className="h-6 w-6 mr-3" />
                   Make This My Reality

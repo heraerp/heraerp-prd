@@ -56,8 +56,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               transition-all duration-300 ease-in-out transform translate-x-0
               ${
                 toast.variant === 'destructive'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-white text-gray-900 border border-gray-200'
+                  ? 'bg-red-600 text-foreground'
+                  : 'bg-background text-gray-900 border border-border'
               }
             `}
           >
@@ -65,7 +65,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               {toast.title && <div className="font-semibold">{toast.title}</div>}
               {toast.description && (
                 <div
-                  className={`text-sm ${toast.variant === 'destructive' ? 'text-red-100' : 'text-gray-600'}`}
+                  className={`text-sm ${toast.variant === 'destructive' ? 'text-red-100' : 'text-muted-foreground'}`}
                 >
                   {toast.description}
                 </div>
@@ -75,7 +75,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               onClick={() => dismiss(toast.id)}
               className={`
                 absolute top-2 right-2 p-1 rounded-md
-                ${toast.variant === 'destructive' ? 'hover:bg-red-700' : 'hover:bg-gray-100'}
+                ${toast.variant === 'destructive' ? 'hover:bg-red-700' : 'hover:bg-muted'}
               `}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

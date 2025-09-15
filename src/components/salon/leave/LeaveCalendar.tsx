@@ -101,7 +101,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       case 'sick':
         return 'bg-emerald-500 border-emerald-600'
       case 'unpaid':
-        return 'bg-gray-500 border-gray-600'
+        return 'bg-gray-500 border-border'
       default:
         return 'bg-purple-500 border-purple-600'
     }
@@ -116,14 +116,14 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
             {formatDate(currentDate, 'MMMM yyyy')}
           </h2>
           <Button
             variant="outline"
             size="sm"
             onClick={goToToday}
-            className="backdrop-blur-xl bg-white/30 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+            className="backdrop-blur-xl bg-background/30 dark:bg-background/30 border-border/20 dark:border-border/30"
           >
             Today
           </Button>
@@ -134,7 +134,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
             variant="outline"
             size="icon"
             onClick={goToPreviousMonth}
-            className="backdrop-blur-xl bg-white/30 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+            className="backdrop-blur-xl bg-background/30 dark:bg-background/30 border-border/20 dark:border-border/30"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -142,7 +142,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
             variant="outline"
             size="icon"
             onClick={goToNextMonth}
-            className="backdrop-blur-xl bg-white/30 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+            className="backdrop-blur-xl bg-background/30 dark:bg-background/30 border-border/20 dark:border-border/30"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -153,25 +153,25 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       <div className="flex gap-4 mb-6 text-sm">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-sm bg-blue-500 border border-blue-600" />
-          <span className="text-gray-600 dark:text-gray-400">Annual Leave</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Annual Leave</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-sm bg-emerald-500 border border-emerald-600" />
-          <span className="text-gray-600 dark:text-gray-400">Sick Leave</span>
+          <span className="text-muted-foreground dark:text-muted-foreground">Sick Leave</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-gray-500 border border-gray-600" />
-          <span className="text-gray-600 dark:text-gray-400">Unpaid Leave</span>
+          <div className="w-3 h-3 rounded-sm bg-gray-500 border border-border" />
+          <span className="text-muted-foreground dark:text-muted-foreground">Unpaid Leave</span>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-muted-foreground/10 rounded-xl overflow-hidden">
         {/* Day Headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div
             key={day}
-            className="bg-gray-50 dark:bg-gray-800 p-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300"
+            className="bg-muted dark:bg-muted p-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300"
           >
             {day}
           </div>
@@ -186,7 +186,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
           return (
             <div
               key={index}
-              className={`bg-white dark:bg-gray-900 p-2 min-h-[100px] ${
+              className={`bg-background dark:bg-background p-2 min-h-[100px] ${
                 !isCurrentMonth ? 'opacity-50' : ''
               } ${isCurrentDay ? 'ring-2 ring-inset ring-indigo-500' : ''}`}
             >
@@ -195,13 +195,13 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                   className={`text-sm font-medium ${
                     isCurrentDay
                       ? 'text-indigo-600 dark:text-indigo-400'
-                      : 'text-gray-900 dark:text-white'
+                      : 'text-gray-900 dark:text-foreground'
                   }`}
                 >
                   {formatDate(day, 'd')}
                 </span>
                 {dayEvents.length > 0 && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                  <span className="text-xs text-muted-foreground dark:text-muted-foreground flex items-center gap-1">
                     <Users className="h-3 w-3" />
                     {dayEvents.length}
                   </span>
@@ -212,7 +212,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                 {dayEvents.slice(0, 3).map(event => (
                   <div
                     key={event.id}
-                    className={`px-1.5 py-0.5 text-xs rounded text-white font-medium ${getLeaveTypeColor(
+                    className={`px-1.5 py-0.5 text-xs rounded text-foreground font-medium ${getLeaveTypeColor(
                       event.leaveType
                     )} cursor-pointer hover:opacity-90 transition-opacity`}
                     title={`${event.employeeName} - ${event.department}`}
@@ -221,7 +221,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                   </div>
                 ))}
                 {dayEvents.length > 3 && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                  <div className="text-xs text-muted-foreground dark:text-muted-foreground text-center">
                     +{dayEvents.length - 3} more
                   </div>
                 )}

@@ -269,7 +269,7 @@ export default function TrialBalancePage() {
     return (
       <React.Fragment key={entry.account.id}>
         <tr
-          className={`border-b hover:bg-gray-50 ${entry.account.is_control_account ? 'font-semibold bg-gray-50' : ''}`}
+          className={`border-b hover:bg-muted ${entry.account.is_control_account ? 'font-semibold bg-muted' : ''}`}
         >
           <td className="py-2 px-4" style={{ paddingLeft: `${indent + 16}px` }}>
             <div className="flex items-center gap-2">
@@ -360,15 +360,15 @@ export default function TrialBalancePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Generating trial balance...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Generating trial balance...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <div className="p-6 max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -385,7 +385,7 @@ export default function TrialBalancePage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Trial Balance Report</h1>
-              <p className="text-gray-600 text-lg">Enterprise financial position statement</p>
+              <p className="text-muted-foreground text-lg">Enterprise financial position statement</p>
             </div>
             <div className="flex items-center gap-4">
               <Button onClick={() => fetchTrialBalance()} variant="outline">
@@ -405,14 +405,14 @@ export default function TrialBalancePage() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                       <Building2 className="w-4 h-4" />
                       Organization
                     </div>
                     <p className="font-medium">{trialBalanceData.organization.name}</p>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                       <Calendar className="w-4 h-4" />
                       Period
                     </div>
@@ -422,7 +422,7 @@ export default function TrialBalancePage() {
                     </p>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                       <Globe className="w-4 h-4" />
                       Currency
                     </div>
@@ -439,7 +439,7 @@ export default function TrialBalancePage() {
                     </Select>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                       <Hash className="w-4 h-4" />
                       Fiscal Period
                     </div>
@@ -504,7 +504,7 @@ export default function TrialBalancePage() {
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-100 border-b-2 border-gray-200">
+                  <thead className="bg-muted border-b-2 border-border">
                     <tr>
                       <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                         Account Code & Name
@@ -531,27 +531,27 @@ export default function TrialBalancePage() {
                         Actions
                       </th>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <th className="text-left py-2 px-4 font-medium text-xs text-gray-600"></th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                    <tr className="bg-muted">
+                      <th className="text-left py-2 px-4 font-medium text-xs text-muted-foreground"></th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Debit
                       </th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Credit
                       </th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Debit
                       </th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Credit
                       </th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Debit
                       </th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                      <th className="text-right py-2 px-4 font-medium text-xs text-muted-foreground">
                         Credit
                       </th>
-                      <th className="text-center py-2 px-4 font-medium text-xs text-gray-600"></th>
+                      <th className="text-center py-2 px-4 font-medium text-xs text-muted-foreground"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -564,7 +564,7 @@ export default function TrialBalancePage() {
                     {renderAccountTypeSection('expenses', trialBalanceData.entries)}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-gray-300 bg-gray-100 font-bold">
+                    <tr className="border-t-2 border-border bg-muted font-bold">
                       <td className="py-3 px-4">TOTAL</td>
                       <td className="py-3 px-4 text-right">
                         {formatNumber(trialBalanceData.totals.opening_debit)}
@@ -626,7 +626,7 @@ export default function TrialBalancePage() {
         )}
 
         {/* Footer */}
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-6 text-center text-sm text-muted-foreground">
           Generated on {new Date().toLocaleString()} |{' '}
           {trialBalanceData?.organization?.name || 'Beauty Salon'} | Report Currency:{' '}
           {selectedCurrency}

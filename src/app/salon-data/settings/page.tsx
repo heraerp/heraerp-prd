@@ -183,7 +183,7 @@ export default function SalonDataSettingsPage() {
           <div>
             <Link
               href="/salon-data"
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Dashboard
@@ -191,7 +191,7 @@ export default function SalonDataSettingsPage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
               Salon Settings
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Configure your Hair Talkz salon settings and preferences
             </p>
           </div>
@@ -200,7 +200,7 @@ export default function SalonDataSettingsPage() {
         {/* Setting Sections */}
         {settingSections.map(section => (
           <div key={section.title} className="space-y-4">
-            <h2 className="text-xl font-semibold text-white/90">{section.title}</h2>
+            <h2 className="text-xl font-semibold text-foreground/90">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {section.items.map(item => {
                 const gradientColors = {
@@ -220,24 +220,24 @@ export default function SalonDataSettingsPage() {
 
                 return (
                   <Link key={item.name} href={item.href} className="group">
-                    <div className="relative h-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 cursor-pointer">
+                    <div className="relative h-full bg-background/5 backdrop-blur-lg border border-border/10 rounded-2xl p-6 hover:bg-background/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-border/20 cursor-pointer">
                       <div className="flex items-start gap-4">
                         <div
                           className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}
                         >
-                          <item.icon className="h-6 w-6 text-white" />
+                          <item.icon className="h-6 w-6 text-foreground" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white/90 mb-1 group-hover:text-white transition-colors">
+                          <h3 className="font-semibold text-foreground/90 mb-1 group-hover:text-foreground transition-colors">
                             {item.name}
                           </h3>
-                          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                          <p className="text-sm text-muted-foreground group-hover:text-gray-300 transition-colors">
                             {item.description}
                           </p>
                         </div>
                       </div>
                       <ChevronRight
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground 
                         opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"
                       />
                     </div>
@@ -251,13 +251,13 @@ export default function SalonDataSettingsPage() {
         {/* UCR Highlight Card */}
         <div className="relative mt-12">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl blur-xl" />
-          <div className="relative bg-gradient-to-r from-purple-900/50 via-pink-900/50 to-blue-900/50 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:border-white/30 transition-colors">
+          <div className="relative bg-gradient-to-r from-purple-900/50 via-pink-900/50 to-blue-900/50 backdrop-blur-lg border border-border/20 rounded-2xl p-8 hover:border-white/30 transition-colors">
             <div className="flex items-start gap-6">
               <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center shadow-2xl">
-                <Code className="h-8 w-8 text-white" />
+                <Code className="h-8 w-8 text-foreground" />
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-white mb-3">
+                <h3 className="text-2xl font-bold text-foreground mb-3">
                   Revolutionary: Universal Configuration Rules (UCR) for Salons
                 </h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">

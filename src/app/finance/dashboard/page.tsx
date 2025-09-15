@@ -73,10 +73,10 @@ function MetricCard({
       <div
         className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`}
       />
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6 hover:bg-background/10 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-foreground" />
           </div>
           {change !== undefined && (
             <div
@@ -91,10 +91,10 @@ function MetricCard({
             </div>
           )}
         </div>
-        <h3 className="text-white/60 text-sm font-medium mb-1">{title}</h3>
-        <p className="text-2xl font-bold text-white mb-1">{value}</p>
-        {subValue && <p className="text-xs text-white/40">{subValue}</p>}
-        {changeLabel && <p className="text-xs text-white/40">{changeLabel}</p>}
+        <h3 className="text-foreground/60 text-sm font-medium mb-1">{title}</h3>
+        <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
+        {subValue && <p className="text-xs text-foreground/40">{subValue}</p>}
+        {changeLabel && <p className="text-xs text-foreground/40">{changeLabel}</p>}
       </div>
     </div>
   )
@@ -205,17 +205,17 @@ export default function FinanceDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Financial Dashboard
           </h1>
-          <p className="text-white/60 mt-1">Real-time financial insights and performance metrics</p>
+          <p className="text-foreground/60 mt-1">Real-time financial insights and performance metrics</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300">
             <Download className="h-5 w-5" />
             <span>Export Report</span>
           </button>
@@ -261,21 +261,21 @@ export default function FinanceDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Cash Flow Trend</h2>
+              <h2 className="text-xl font-semibold text-foreground">Cash Flow Trend</h2>
               <div className="flex items-center space-x-4 text-xs">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                  <span className="text-white/60">Inflow</span>
+                  <span className="text-foreground/60">Inflow</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <span className="text-white/60">Outflow</span>
+                  <span className="text-foreground/60">Outflow</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-[#00DDFF]" />
-                  <span className="text-white/60">Net</span>
+                  <span className="text-foreground/60">Net</span>
                 </div>
               </div>
             </div>
@@ -302,8 +302,8 @@ export default function FinanceDashboard() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Revenue Breakdown</h2>
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Revenue Breakdown</h2>
             <ResponsiveContainer width="100%" height={200}>
               <RePieChart>
                 <Pie
@@ -334,9 +334,9 @@ export default function FinanceDashboard() {
                 <div key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-sm text-white/80">{item.name}</span>
+                    <span className="text-sm text-foreground/80">{item.name}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">₹{item.value} Cr</span>
+                  <span className="text-sm font-medium text-foreground">₹{item.value} Cr</span>
                 </div>
               ))}
             </div>
@@ -349,29 +349,29 @@ export default function FinanceDashboard() {
         {/* Profit Centers */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Profit Centers Performance</h2>
+              <h2 className="text-xl font-semibold text-foreground">Profit Centers Performance</h2>
               <TrendingUp className="h-5 w-5 text-[#fff685]" />
             </div>
             <div className="space-y-4">
               {profitCenters.map(center => (
                 <div key={center.name} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-white">{center.name}</span>
+                    <span className="text-sm font-medium text-foreground">{center.name}</span>
                     <span className="text-sm text-emerald-400">+{center.margin}% margin</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="text-center p-2 rounded bg-white/5">
-                      <p className="text-white/60">Revenue</p>
-                      <p className="text-white font-medium">₹{center.revenue} Cr</p>
+                    <div className="text-center p-2 rounded bg-background/5">
+                      <p className="text-foreground/60">Revenue</p>
+                      <p className="text-foreground font-medium">₹{center.revenue} Cr</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-white/5">
-                      <p className="text-white/60">Cost</p>
-                      <p className="text-white font-medium">₹{center.cost} Cr</p>
+                    <div className="text-center p-2 rounded bg-background/5">
+                      <p className="text-foreground/60">Cost</p>
+                      <p className="text-foreground font-medium">₹{center.cost} Cr</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-white/5">
-                      <p className="text-white/60">Profit</p>
+                    <div className="text-center p-2 rounded bg-background/5">
+                      <p className="text-foreground/60">Profit</p>
                       <p className="text-emerald-400 font-medium">₹{center.profit} Cr</p>
                     </div>
                   </div>
@@ -384,16 +384,16 @@ export default function FinanceDashboard() {
         {/* Cost Centers */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Cost Center Analysis</h2>
+              <h2 className="text-xl font-semibold text-foreground">Cost Center Analysis</h2>
               <Calculator className="h-5 w-5 text-purple-400" />
             </div>
             <div className="space-y-4">
               {costCenters.map(center => (
                 <div key={center.name}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-white">{center.name}</span>
+                    <span className="text-sm font-medium text-foreground">{center.name}</span>
                     <span
                       className={`text-sm font-medium ${
                         center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'
@@ -404,7 +404,7 @@ export default function FinanceDashboard() {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="flex-1 h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="flex-1 h-2 rounded-full bg-background/10 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           center.variance >= 0
@@ -414,7 +414,7 @@ export default function FinanceDashboard() {
                         style={{ width: `${(center.actual / center.budget) * 100}%` }}
                       />
                     </div>
-                    <span className="text-xs text-white/60">
+                    <span className="text-xs text-foreground/60">
                       ₹{center.actual}/{center.budget} Cr
                     </span>
                   </div>
@@ -428,25 +428,25 @@ export default function FinanceDashboard() {
       {/* Pending Transactions */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Pending Transactions</h2>
+            <h2 className="text-xl font-semibold text-foreground">Pending Transactions</h2>
             <FileText className="h-5 w-5 text-emerald-400" />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left border-b border-white/10">
-                  <th className="pb-3 text-sm font-medium text-white/60">Type</th>
-                  <th className="pb-3 text-sm font-medium text-white/60">Party</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Amount</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-center">Status</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Action</th>
+                <tr className="text-left border-b border-border/10">
+                  <th className="pb-3 text-sm font-medium text-foreground/60">Type</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60">Party</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Amount</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-center">Status</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {pendingTransactions.map((txn, index) => (
-                  <tr key={index} className="hover:bg-white/5 transition-colors">
+                  <tr key={index} className="hover:bg-background/5 transition-colors">
                     <td className="py-4">
                       <div className="flex items-center space-x-2">
                         {txn.type === 'Receivable' ? (
@@ -454,11 +454,11 @@ export default function FinanceDashboard() {
                         ) : (
                           <ArrowDownRight className="h-4 w-4 text-red-400" />
                         )}
-                        <span className="text-white font-medium">{txn.type}</span>
+                        <span className="text-foreground font-medium">{txn.type}</span>
                       </div>
                     </td>
-                    <td className="py-4 text-white/80">{txn.customer || txn.vendor}</td>
-                    <td className="py-4 text-white text-right">₹{txn.amount} Cr</td>
+                    <td className="py-4 text-foreground/80">{txn.customer || txn.vendor}</td>
+                    <td className="py-4 text-foreground text-right">₹{txn.amount} Cr</td>
                     <td className="py-4 text-center">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -491,55 +491,55 @@ export default function FinanceDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <button className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 group">
+        <button className="p-4 bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl hover:bg-background/10 transition-all duration-300 group">
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600">
-              <BookOpen className="h-5 w-5 text-white" />
+              <BookOpen className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">General Ledger</p>
-              <p className="text-xs text-white/60">View all accounts</p>
+              <p className="text-sm font-medium text-foreground">General Ledger</p>
+              <p className="text-xs text-foreground/60">View all accounts</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/40 group-hover:text-white/60 transition-colors ml-auto" />
+            <ChevronRight className="h-4 w-4 text-foreground/40 group-hover:text-foreground/60 transition-colors ml-auto" />
           </div>
         </button>
 
-        <button className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 group">
+        <button className="p-4 bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl hover:bg-background/10 transition-all duration-300 group">
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-gradient-to-br from-[#00DDFF] to-[#0049B7]">
-              <CreditCard className="h-5 w-5 text-white" />
+              <CreditCard className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">New Payment</p>
-              <p className="text-xs text-white/60">Process payment</p>
+              <p className="text-sm font-medium text-foreground">New Payment</p>
+              <p className="text-xs text-foreground/60">Process payment</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/40 group-hover:text-white/60 transition-colors ml-auto" />
+            <ChevronRight className="h-4 w-4 text-foreground/40 group-hover:text-foreground/60 transition-colors ml-auto" />
           </div>
         </button>
 
-        <button className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 group">
+        <button className="p-4 bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl hover:bg-background/10 transition-all duration-300 group">
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-gradient-to-br from-[#fff685] to-amber-500">
-              <PieChart className="h-5 w-5 text-white" />
+              <PieChart className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">Cost Analysis</p>
-              <p className="text-xs text-white/60">Detailed breakdown</p>
+              <p className="text-sm font-medium text-foreground">Cost Analysis</p>
+              <p className="text-xs text-foreground/60">Detailed breakdown</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/40 group-hover:text-white/60 transition-colors ml-auto" />
+            <ChevronRight className="h-4 w-4 text-foreground/40 group-hover:text-foreground/60 transition-colors ml-auto" />
           </div>
         </button>
 
-        <button className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 group">
+        <button className="p-4 bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl hover:bg-background/10 transition-all duration-300 group">
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
-              <BarChart3 className="h-5 w-5 text-white" />
+              <BarChart3 className="h-5 w-5 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-white">Reports</p>
-              <p className="text-xs text-white/60">Financial reports</p>
+              <p className="text-sm font-medium text-foreground">Reports</p>
+              <p className="text-xs text-foreground/60">Financial reports</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/40 group-hover:text-white/60 transition-colors ml-auto" />
+            <ChevronRight className="h-4 w-4 text-foreground/40 group-hover:text-foreground/60 transition-colors ml-auto" />
           </div>
         </button>
       </div>

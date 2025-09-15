@@ -454,7 +454,7 @@ const sofp = await universalApi.generateIFRSStatement({
 
         <section className="mb-12">
           <h2>Industry Recognition</h2>
-          <div className="docs-card bg-success-emphasis text-white">
+          <div className="docs-card bg-success-emphasis text-foreground">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
                 <p className="text-3xl font-bold mb-2">100%</p>

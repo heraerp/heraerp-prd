@@ -207,10 +207,10 @@ export function HeraMCPChat({
         key={message.id}
         className={cn(
           'flex gap-3 p-4 rounded-lg mx-2 my-2',
-          isUser ? 'bg-blue-50 dark:bg-blue-950/30' : 'bg-gray-50 dark:bg-gray-900/50',
+          isUser ? 'bg-blue-50 dark:bg-blue-950/30' : 'bg-muted dark:bg-background/50',
           (message.metadata as any)?.error && 'bg-red-50 dark:bg-red-950/30',
           'border',
-          isUser ? 'border-blue-200 dark:border-blue-800' : 'border-gray-200 dark:border-gray-800'
+          isUser ? 'border-blue-200 dark:border-blue-800' : 'border-border dark:border-gray-800'
         )}
       >
         <div
@@ -225,7 +225,7 @@ export function HeraMCPChat({
         <div className="flex-1 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <div className="max-w-none">
-              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-900 dark:text-gray-100 font-medium">
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-900 dark:text-foreground font-medium">
                 {message.content}
               </p>
             </div>
@@ -293,7 +293,7 @@ export function HeraMCPChat({
             </div>
           )}
 
-          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-muted-foreground">
             <span>{message.timestamp.toLocaleTimeString()}</span>
             {(message.metadata as any)?.organizationId && mode === 'internal' && (
               <span>Org: {message.metadata.organizationId.slice(0, 8)}...</span>
@@ -307,17 +307,17 @@ export function HeraMCPChat({
   return (
     <Card
       className={cn(
-        'flex flex-col h-[600px] w-full max-w-4xl mx-auto bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-lg',
+        'flex flex-col h-[600px] w-full max-w-4xl mx-auto bg-background dark:bg-gray-950 border-border dark:border-gray-800 shadow-lg',
         className
       )}
     >
       {/* Header */}
-      <div className="border-b border-gray-200 dark:border-gray-800 px-4 py-3 bg-gray-50 dark:bg-gray-900">
+      <div className="border-b border-border dark:border-gray-800 px-4 py-3 bg-muted dark:bg-background">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+              <Sparkles className="h-5 w-5 text-primary dark:text-blue-400" />
+              <h2 className="font-semibold text-gray-900 dark:text-foreground">
                 HERA {mode === 'internal' ? 'MCP Debug Console' : 'AI Assistant'}
               </h2>
             </div>
@@ -366,7 +366,7 @@ export function HeraMCPChat({
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 px-4 bg-white dark:bg-gray-950">
+      <ScrollArea className="flex-1 px-4 bg-background dark:bg-gray-950">
         <div className="py-4 space-y-1">
           {messages.map(renderMessage)}
           {isLoading && (
@@ -420,7 +420,7 @@ export function HeraMCPChat({
                 ? "Test a command... (e.g., 'create customer', 'query transactions')"
                 : 'Ask me anything about your business...'
             }
-            className="min-h-[60px] max-h-[120px] resize-none text-base bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-gray-300 dark:border-gray-700"
+            className="min-h-[60px] max-h-[120px] resize-none text-base bg-background dark:bg-background text-gray-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground border-border dark:border-border"
             disabled={isLoading}
           />
           <Button

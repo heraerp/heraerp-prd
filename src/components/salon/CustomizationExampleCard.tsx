@@ -18,18 +18,18 @@ export function CustomizationExampleCard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Before */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100">Template Default</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-foreground">Template Default</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gray-500" />
+                <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-gray-700 dark:text-gray-300">Grace period: 15 min</span>
               </div>
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-gray-500" />
+                <DollarSign className="w-4 h-4 text-muted-foreground" />
                 <span className="text-gray-700 dark:text-gray-300">No-show fee: 100%</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-gray-500" />
+                <Users className="w-4 h-4 text-muted-foreground" />
                 <span className="text-gray-700 dark:text-gray-300">VIP fee: 25%</span>
               </div>
             </div>

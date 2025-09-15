@@ -379,7 +379,7 @@ export function BookAppointmentModalGlass({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         ref={modalRef}
-        className="salon-modal-glass max-w-5xl h-[85vh] p-0 overflow-hidden border-0 [&_input]:!bg-gray-800/70 [&_input]:!border-gray-700 [&_textarea]:!bg-gray-800/70 [&_textarea]:!border-gray-700 [&_button[role='combobox']]:!bg-gray-800/70 [&_button[role='combobox']]:!border-gray-700 [&_input:focus]:!bg-gray-800/90 [&_input:focus]:!border-purple-500/50 [&_textarea:focus]:!bg-gray-800/90 [&_textarea:focus]:!border-purple-500/50 [&_input[type='date']]:!bg-gray-800/70 [&_input[type='time']]:!bg-gray-800/70 [&_input::placeholder]:!text-gray-400 [&_[data-radix-ui-select-content]]:!bg-gray-900 [&_[data-radix-ui-select-content]]:!border-gray-700 [&_[data-radix-ui-select-item]]:!text-white [&_[data-radix-ui-select-item]:hover]:!bg-gray-800/50"
+        className="salon-modal-glass max-w-5xl h-[85vh] p-0 overflow-hidden border-0 [&_input]:!bg-muted/70 [&_input]:!border-border [&_textarea]:!bg-muted/70 [&_textarea]:!border-border [&_button[role='combobox']]:!bg-muted/70 [&_button[role='combobox']]:!border-border [&_input:focus]:!bg-muted/90 [&_input:focus]:!border-purple-500/50 [&_textarea:focus]:!bg-muted/90 [&_textarea:focus]:!border-purple-500/50 [&_input[type='date']]:!bg-muted/70 [&_input[type='time']]:!bg-muted/70 [&_input::placeholder]:!text-muted-foreground [&_[data-radix-ui-select-content]]:!bg-background [&_[data-radix-ui-select-content]]:!border-border [&_[data-radix-ui-select-item]]:!text-foreground [&_[data-radix-ui-select-item]:hover]:!bg-muted/50"
         style={{
           background: `
             linear-gradient(135deg, 
@@ -474,16 +474,16 @@ export function BookAppointmentModalGlass({
                     `
                   }}
                 >
-                  <Calendar className="w-7 h-7 text-white drop-shadow-lg" />
+                  <Calendar className="w-7 h-7 text-foreground drop-shadow-lg" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold !text-white flex items-center gap-2">
+                  <h2 className="text-2xl font-bold !text-foreground flex items-center gap-2">
                     Book Appointment
-                    <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground border-0">
                       Modern Booking Experience
                     </Badge>
                   </h2>
-                  <p className="text-sm !text-gray-400 mt-1">
+                  <p className="text-sm !text-muted-foreground mt-1">
                     Quick booking, smart recommendations, VIP experience
                   </p>
                 </div>
@@ -492,7 +492,7 @@ export function BookAppointmentModalGlass({
                 onClick={onClose}
                 variant="ghost"
                 size="icon"
-                className="text-gray-400 hover:text-white hover:bg-white/10"
+                className="text-muted-foreground hover:text-foreground hover:bg-background/10"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -514,24 +514,24 @@ export function BookAppointmentModalGlass({
                 borderColor: 'rgba(255, 255, 255, 0.05)'
               }}
             >
-              <TabsList className="grid w-full max-w-md grid-cols-3 bg-gray-800/50 backdrop-blur-xl border border-gray-700">
+              <TabsList className="grid w-full max-w-md grid-cols-3 bg-muted/50 backdrop-blur-xl border border-border">
                 <TabsTrigger
                   value="quick"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-foreground"
                 >
                   <Zap className="w-4 h-4 mr-2" />
                   Quick Book
                 </TabsTrigger>
                 <TabsTrigger
                   value="detailed"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-foreground"
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   Detailed
                 </TabsTrigger>
                 <TabsTrigger
                   value="assistant"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-foreground"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   AI Assistant
@@ -559,7 +559,7 @@ export function BookAppointmentModalGlass({
                     }}
                   >
                     <CardHeader>
-                      <CardTitle className="!text-white flex items-center gap-2">
+                      <CardTitle className="!text-foreground flex items-center gap-2">
                         <Zap className="w-5 h-5 text-yellow-400" />
                         Quick Actions
                       </CardTitle>
@@ -568,12 +568,12 @@ export function BookAppointmentModalGlass({
                       <div className="grid grid-cols-3 gap-4">
                         <Button
                           variant="outline"
-                          className="h-auto py-6 flex-col gap-3 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border-blue-500/30 hover:border-blue-500/50 hover:from-blue-500/20 hover:to-indigo-500/20 group"
+                          className="h-auto py-6 flex-col gap-3 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border-blue-500/30 hover:border-primary/50 hover:from-blue-500/20 hover:to-indigo-500/20 group"
                           onClick={() => handleQuickBook('walk-in')}
                         >
                           <Users className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
-                          <span className="font-semibold text-white">Walk-In</span>
-                          <span className="text-xs text-gray-400">Quick 30-min service</span>
+                          <span className="font-semibold text-foreground">Walk-In</span>
+                          <span className="text-xs text-muted-foreground">Quick 30-min service</span>
                         </Button>
 
                         <Button
@@ -582,8 +582,8 @@ export function BookAppointmentModalGlass({
                           onClick={() => handleQuickBook('regular')}
                         >
                           <Calendar className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform" />
-                          <span className="font-semibold text-white">Regular Booking</span>
-                          <span className="text-xs text-gray-400">Standard appointment</span>
+                          <span className="font-semibold text-foreground">Regular Booking</span>
+                          <span className="text-xs text-muted-foreground">Standard appointment</span>
                         </Button>
 
                         <Button
@@ -592,8 +592,8 @@ export function BookAppointmentModalGlass({
                           onClick={() => handleQuickBook('vip')}
                         >
                           <Crown className="w-8 h-8 text-yellow-400 group-hover:scale-110 transition-transform" />
-                          <span className="font-semibold text-white">VIP Priority</span>
-                          <span className="text-xs text-gray-400">Premium experience</span>
+                          <span className="font-semibold text-foreground">VIP Priority</span>
+                          <span className="text-xs text-muted-foreground">Premium experience</span>
                         </Button>
                       </div>
                     </CardContent>
@@ -615,7 +615,7 @@ export function BookAppointmentModalGlass({
                     }}
                   >
                     <CardHeader>
-                      <CardTitle className="!text-white flex items-center gap-2">
+                      <CardTitle className="!text-foreground flex items-center gap-2">
                         <User className="w-5 h-5" />
                         Select Customer
                       </CardTitle>
@@ -624,18 +624,18 @@ export function BookAppointmentModalGlass({
                       <div className="space-y-4">
                         {/* Customer Search */}
                         <div className="relative">
-                          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                           <Input
                             placeholder="Search customer by name or phone..."
                             value={customerSearch}
                             onChange={e => setCustomerSearch(e.target.value)}
-                            className="pl-10 bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
+                            className="pl-10 bg-muted/70 border-border text-foreground placeholder:text-muted-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all"
                           />
                         </div>
 
                         {/* VIP Customers */}
                         <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-400 flex items-center gap-2">
+                          <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                             <Crown className="w-4 h-4 text-yellow-400" />
                             VIP Customers
                           </p>
@@ -648,7 +648,7 @@ export function BookAppointmentModalGlass({
                                   key={customer.id}
                                   variant="outline"
                                   className={cn(
-                                    'justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                                    'justify-start gap-3 bg-muted/50 border-border hover:bg-muted/70 transition-all',
                                     selectedCustomer?.id === customer.id &&
                                       'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                                   )}
@@ -667,7 +667,7 @@ export function BookAppointmentModalGlass({
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="flex-1 text-left">
-                                    <p className="text-sm font-medium text-white flex items-center gap-2">
+                                    <p className="text-sm font-medium text-foreground flex items-center gap-2">
                                       {customer.entity_name}
                                       {customer.vip_level === 'platinum' && (
                                         <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900 border-0">
@@ -680,7 +680,7 @@ export function BookAppointmentModalGlass({
                                         </Badge>
                                       )}
                                     </p>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="text-xs text-muted-foreground">
                                       {customer.visit_count || 0} visits • AED{' '}
                                       {customer.total_spent || 0}
                                     </p>
@@ -692,7 +692,7 @@ export function BookAppointmentModalGlass({
 
                         {/* Recent Customers */}
                         <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-400">Recent Customers</p>
+                          <p className="text-sm font-medium text-muted-foreground">Recent Customers</p>
                           <div className="grid grid-cols-2 gap-3">
                             {customers
                               .filter(
@@ -709,22 +709,22 @@ export function BookAppointmentModalGlass({
                                   key={customer.id}
                                   variant="outline"
                                   className={cn(
-                                    'justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                                    'justify-start gap-3 bg-muted/50 border-border hover:bg-muted/70 transition-all',
                                     selectedCustomer?.id === customer.id &&
                                       'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                                   )}
                                   onClick={() => setSelectedCustomer(customer)}
                                 >
                                   <Avatar className="w-8 h-8">
-                                    <AvatarFallback className="bg-gray-700 text-white text-xs">
+                                    <AvatarFallback className="bg-muted-foreground/10 text-foreground text-xs">
                                       {customer.entity_name.charAt(0)}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="flex-1 text-left">
-                                    <p className="text-sm font-medium text-white">
+                                    <p className="text-sm font-medium text-foreground">
                                       {customer.entity_name}
                                     </p>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="text-xs text-muted-foreground">
                                       {customer.phone || 'No phone'}
                                     </p>
                                   </div>
@@ -752,7 +752,7 @@ export function BookAppointmentModalGlass({
                     }}
                   >
                     <CardHeader>
-                      <CardTitle className="!text-white flex items-center gap-2">
+                      <CardTitle className="!text-foreground flex items-center gap-2">
                         <Scissors className="w-5 h-5" />
                         Services
                       </CardTitle>
@@ -764,7 +764,7 @@ export function BookAppointmentModalGlass({
                             key={service.id}
                             variant="outline"
                             className={cn(
-                              'justify-between h-auto py-3 px-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                              'justify-between h-auto py-3 px-4 bg-muted/50 border-border hover:bg-muted/70 transition-all',
                               selectedServices.find(s => s.id === service.id) &&
                                 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                             )}
@@ -779,8 +779,8 @@ export function BookAppointmentModalGlass({
                             }}
                           >
                             <div className="text-left">
-                              <p className="font-medium text-white">{service.entity_name}</p>
-                              <p className="text-xs text-gray-400">{service.duration} min</p>
+                              <p className="font-medium text-foreground">{service.entity_name}</p>
+                              <p className="text-xs text-muted-foreground">{service.duration} min</p>
                             </div>
                             <p className="font-semibold text-green-400">AED {service.price}</p>
                           </Button>
@@ -805,7 +805,7 @@ export function BookAppointmentModalGlass({
                     }}
                   >
                     <CardHeader>
-                      <CardTitle className="!text-white flex items-center gap-2">
+                      <CardTitle className="!text-foreground flex items-center gap-2">
                         <Star className="w-5 h-5" />
                         Select Stylist
                       </CardTitle>
@@ -817,7 +817,7 @@ export function BookAppointmentModalGlass({
                             key={stylist.id}
                             variant="outline"
                             className={cn(
-                              'justify-start gap-3 h-auto py-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                              'justify-start gap-3 h-auto py-3 bg-muted/50 border-border hover:bg-muted/70 transition-all',
                               selectedStylist?.id === stylist.id &&
                                 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                             )}
@@ -828,25 +828,25 @@ export function BookAppointmentModalGlass({
                                 className={cn(
                                   'font-bold',
                                   stylist.level === 'celebrity'
-                                    ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white'
+                                    ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-foreground'
                                     : stylist.level === 'senior'
-                                      ? 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white'
-                                      : 'bg-gray-700 text-white'
+                                      ? 'bg-gradient-to-br from-blue-500 to-indigo-500 text-foreground'
+                                      : 'bg-muted-foreground/10 text-foreground'
                                 )}
                               >
                                 {stylist.entity_name.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
                             <div className="text-left flex-1">
-                              <p className="font-medium text-white flex items-center gap-2">
+                              <p className="font-medium text-foreground flex items-center gap-2">
                                 {stylist.entity_name}
                                 {stylist.level === 'celebrity' && (
-                                  <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+                                  <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-purple-500 to-pink-500 text-foreground border-0">
                                     Celebrity
                                   </Badge>
                                 )}
                               </p>
-                              <p className="text-xs text-gray-400">
+                              <p className="text-xs text-muted-foreground">
                                 {stylist.skills.slice(0, 2).join(', ')}
                               </p>
                             </div>
@@ -860,7 +860,7 @@ export function BookAppointmentModalGlass({
                   {selectedCustomer && (
                     <Alert className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/30">
                       <TrendingUp className="h-4 w-4 text-purple-400" />
-                      <AlertDescription className="text-white">
+                      <AlertDescription className="text-foreground">
                         <strong>Smart Recommendation:</strong> {selectedCustomer.entity_name}{' '}
                         usually books{' '}
                         {selectedCustomer.preferences?.favorite_service || 'Hair Color'} with{' '}
@@ -875,12 +875,12 @@ export function BookAppointmentModalGlass({
                     <Button
                       variant="outline"
                       onClick={onClose}
-                      className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800/70 transition-all"
+                      className="bg-muted/50 border-border text-foreground hover:bg-muted/70 transition-all"
                     >
                       Cancel
                     </Button>
                     <Button
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground"
                       onClick={() => handleQuickBook('regular')}
                       disabled={
                         loading ||
@@ -910,7 +910,7 @@ export function BookAppointmentModalGlass({
                 <div className="space-y-6">
                   {/* Customer Selection */}
                   <div className="space-y-2">
-                    <Label className="text-white">Customer *</Label>
+                    <Label className="text-foreground">Customer *</Label>
                     <Select
                       value={selectedCustomer?.id || ''}
                       onValueChange={value => {
@@ -918,15 +918,15 @@ export function BookAppointmentModalGlass({
                         setSelectedCustomer(customer || null)
                       }}
                     >
-                      <SelectTrigger className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all">
+                      <SelectTrigger className="bg-muted/70 border-border text-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all">
                         <SelectValue placeholder="Select customer" />
                       </SelectTrigger>
-                      <SelectContent className="bg-gray-900 border-gray-700 backdrop-blur-xl">
+                      <SelectContent className="bg-background border-border backdrop-blur-xl">
                         {customers.map(customer => (
                           <SelectItem
                             key={customer.id}
                             value={customer.id}
-                            className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50"
+                            className="text-foreground hover:bg-muted/50 focus:bg-muted/50"
                           >
                             <div className="flex items-center gap-2">
                               <span>{customer.entity_name}</span>
@@ -951,40 +951,40 @@ export function BookAppointmentModalGlass({
 
                   {/* Title */}
                   <div className="space-y-2">
-                    <Label className="text-white">Appointment Title</Label>
+                    <Label className="text-foreground">Appointment Title</Label>
                     <Input
                       value={title}
                       onChange={e => setTitle(e.target.value)}
                       placeholder="e.g., Hair Color and Cut"
-                      className="bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
+                      className="bg-muted/70 border-border text-foreground placeholder:text-muted-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all"
                     />
                   </div>
 
                   {/* Date and Time */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white">Date *</Label>
+                      <Label className="text-foreground">Date *</Label>
                       <Input
                         type="date"
                         value={format(selectedDate, 'yyyy-MM-dd')}
                         onChange={e => setSelectedDate(new Date(e.target.value))}
-                        className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
+                        className="bg-muted/70 border-border text-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white">Time *</Label>
+                      <Label className="text-foreground">Time *</Label>
                       <Input
                         type="time"
                         value={startTime}
                         onChange={e => setStartTime(e.target.value)}
-                        className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
+                        className="bg-muted/70 border-border text-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all"
                       />
                     </div>
                   </div>
 
                   {/* Services */}
                   <div className="space-y-2">
-                    <Label className="text-white">Services * (Select multiple)</Label>
+                    <Label className="text-foreground">Services * (Select multiple)</Label>
                     <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
                       {services.map(service => (
                         <label
@@ -993,7 +993,7 @@ export function BookAppointmentModalGlass({
                             'flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-all',
                             selectedServices.find(s => s.id === service.id)
                               ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/50'
-                              : 'bg-gray-800/50 border border-gray-700 hover:bg-gray-800/70 transition-all'
+                              : 'bg-muted/50 border border-border hover:bg-muted/70 transition-all'
                           )}
                         >
                           <Checkbox
@@ -1007,11 +1007,11 @@ export function BookAppointmentModalGlass({
                                 )
                               }
                             }}
-                            className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                            className="border-border data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                           />
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-white">{service.entity_name}</p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-sm font-medium text-foreground">{service.entity_name}</p>
+                            <p className="text-xs text-muted-foreground">
                               {service.duration} min • AED {service.price}
                             </p>
                           </div>
@@ -1022,7 +1022,7 @@ export function BookAppointmentModalGlass({
 
                   {/* Stylist */}
                   <div className="space-y-2">
-                    <Label className="text-white">Stylist *</Label>
+                    <Label className="text-foreground">Stylist *</Label>
                     <Select
                       value={selectedStylist?.id || ''}
                       onValueChange={value => {
@@ -1030,20 +1030,20 @@ export function BookAppointmentModalGlass({
                         setSelectedStylist(stylist || null)
                       }}
                     >
-                      <SelectTrigger className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all">
+                      <SelectTrigger className="bg-muted/70 border-border text-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all">
                         <SelectValue placeholder="Select stylist" />
                       </SelectTrigger>
-                      <SelectContent className="bg-gray-900 border-gray-700 backdrop-blur-xl">
+                      <SelectContent className="bg-background border-border backdrop-blur-xl">
                         {stylists.map(stylist => (
                           <SelectItem
                             key={stylist.id}
                             value={stylist.id}
-                            className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50"
+                            className="text-foreground hover:bg-muted/50 focus:bg-muted/50"
                           >
                             <div className="flex items-center gap-2">
                               <span>{stylist.entity_name}</span>
                               {stylist.level === 'celebrity' && (
-                                <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+                                <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-purple-500 to-pink-500 text-foreground border-0">
                                   Celebrity
                                 </Badge>
                               )}
@@ -1056,12 +1056,12 @@ export function BookAppointmentModalGlass({
 
                   {/* Notes */}
                   <div className="space-y-2">
-                    <Label className="text-white">Notes</Label>
+                    <Label className="text-foreground">Notes</Label>
                     <Textarea
                       value={notes}
                       onChange={e => setNotes(e.target.value)}
                       placeholder="Any special requests or notes..."
-                      className="bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all min-h-[80px]"
+                      className="bg-muted/70 border-border text-foreground placeholder:text-muted-foreground focus:bg-muted/90 focus:border-purple-500/50 transition-all min-h-[80px]"
                     />
                   </div>
 
@@ -1071,17 +1071,17 @@ export function BookAppointmentModalGlass({
                       <Checkbox
                         checked={isHold}
                         onCheckedChange={checked => setIsHold(checked as boolean)}
-                        className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                        className="border-border data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
-                      <span className="text-sm text-white">Mark as Hold</span>
+                      <span className="text-sm text-foreground">Mark as Hold</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <Checkbox
                         checked={isPrivate}
                         onCheckedChange={checked => setIsPrivate(checked as boolean)}
-                        className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                        className="border-border data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
-                      <span className="text-sm text-white">Private Appointment</span>
+                      <span className="text-sm text-foreground">Private Appointment</span>
                     </label>
                   </div>
 
@@ -1104,14 +1104,14 @@ export function BookAppointmentModalGlass({
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm text-gray-400">Total Duration</p>
-                            <p className="text-lg font-semibold text-white">
+                            <p className="text-sm text-muted-foreground">Total Duration</p>
+                            <p className="text-lg font-semibold text-foreground">
                               {selectedServices.reduce((sum, service) => sum + service.duration, 0)}{' '}
                               minutes
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-gray-400">Total Amount</p>
+                            <p className="text-sm text-muted-foreground">Total Amount</p>
                             <p className="text-2xl font-bold text-green-400">
                               AED{' '}
                               {selectedServices.reduce((sum, service) => sum + service.price, 0)}
@@ -1127,12 +1127,12 @@ export function BookAppointmentModalGlass({
                     <Button
                       variant="outline"
                       onClick={onClose}
-                      className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800/70 transition-all"
+                      className="bg-muted/50 border-border text-foreground hover:bg-muted/70 transition-all"
                     >
                       Cancel
                     </Button>
                     <Button
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground"
                       onClick={async () => {
                         setLoading(true)
                         try {

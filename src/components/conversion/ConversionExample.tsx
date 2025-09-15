@@ -76,7 +76,7 @@ export function ConversionExample() {
               </div>
               <div>
                 <strong>Access URL:</strong>
-                <a href={conversionResult.accessUrl} className="text-blue-600 hover:underline ml-2">
+                <a href={conversionResult.accessUrl} className="text-primary hover:underline ml-2">
                   {conversionResult.accessUrl}
                 </a>
               </div>
@@ -102,7 +102,7 @@ export function ConversionExample() {
               setConversionResult(null)
               setShowWizard(false)
             }}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-blue-600 text-foreground px-6 py-2 rounded-lg hover:bg-blue-700"
           >
             Try Another Conversion
           </button>
@@ -121,7 +121,7 @@ export function ConversionExample() {
         onConvert={handleStartConversion}
       />
 
-      <div className="mt-8 bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+      <div className="mt-8 bg-muted dark:bg-muted rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">How It Works:</h2>
         <ol className="list-decimal list-inside space-y-2">
           <li>Customer explores demo and builds engagement metrics</li>
@@ -133,7 +133,7 @@ export function ConversionExample() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+        <div className="bg-background dark:bg-muted rounded-lg p-4 border">
           <h3 className="font-semibold text-green-600">✅ Demo Benefits</h3>
           <ul className="text-sm mt-2 space-y-1">
             <li>• Rich demo data for exploration</li>
@@ -143,8 +143,8 @@ export function ConversionExample() {
           </ul>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
-          <h3 className="font-semibold text-blue-600">🚀 Production Benefits</h3>
+        <div className="bg-background dark:bg-muted rounded-lg p-4 border">
+          <h3 className="font-semibold text-primary">🚀 Production Benefits</h3>
           <ul className="text-sm mt-2 space-y-1">
             <li>• Clean, professional start</li>
             <li>• Industry-specific templates</li>
@@ -153,7 +153,7 @@ export function ConversionExample() {
           </ul>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+        <div className="bg-background dark:bg-muted rounded-lg p-4 border">
           <h3 className="font-semibold text-purple-600">💰 Business Impact</h3>
           <ul className="text-sm mt-2 space-y-1">
             <li>• High conversion rates</li>

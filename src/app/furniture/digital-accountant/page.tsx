@@ -113,7 +113,7 @@ const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
     icon: CreditCard,
     label: 'Card Sale',
     prompt: 'Customer paid by card',
-    color: 'text-blue-600',
+    color: 'text-primary',
     category: 'revenue'
   },
   {
@@ -324,17 +324,17 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
   // Authorization checks
   if (isAuthenticated && contextLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading digital accountant...</p>
+          <p className="text-muted-foreground">Loading digital accountant...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={cn('min-h-screen', isDarkMode ? 'bg-gray-900' : 'bg-gray-50')}>
+    <div className={cn('min-h-screen', isDarkMode ? 'bg-background' : 'bg-muted')}>
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -365,7 +365,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
             <Card
               className={cn(
                 'h-[600px] flex flex-col',
-                isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white'
+                isDarkMode ? 'bg-muted/50 border-border' : 'bg-background'
               )}
             >
               {/* Chat Messages */}
@@ -395,15 +395,15 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                           'max-w-[80%] rounded-lg p-3',
                           message.type === 'user'
                             ? isDarkMode
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-blue-500 text-white'
+                              ? 'bg-blue-600 text-foreground'
+                              : 'bg-blue-500 text-foreground'
                             : message.type === 'system'
                               ? isDarkMode
                                 ? 'bg-yellow-600/20 border border-yellow-600/40'
                                 : 'bg-yellow-100 border border-yellow-400'
                               : isDarkMode
-                                ? 'bg-gray-700'
-                                : 'bg-gray-100'
+                                ? 'bg-muted-foreground/10'
+                                : 'bg-muted'
                         )}
                       >
                         <p
@@ -416,7 +416,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         </p>
 
                         {message.amount && (
-                          <div className="mt-2 pt-2 border-t border-gray-600">
+                          <div className="mt-2 pt-2 border-t border-border">
                             <p className="text-2xl font-bold">
                               ₹{message.amount.toLocaleString('en-IN')}
                             </p>
@@ -424,8 +424,8 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         )}
 
                         {message.journalEntry && (
-                          <div className="mt-3 p-2 bg-black/20 rounded text-xs font-mono">
-                            <p className="text-gray-400 mb-1">Journal Entry:</p>
+                          <div className="mt-3 p-2 bg-background/20 rounded text-xs font-mono">
+                            <p className="text-muted-foreground mb-1">Journal Entry:</p>
                             {message.journalEntry.debits.map((debit, i) => (
                               <p key={i} className="text-green-400">
                                 DR: {debit.account} - ₹{debit.amount.toLocaleString('en-IN')}
@@ -460,7 +460,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         <div
                           className={cn(
                             'w-8 h-8 rounded-full flex items-center justify-center',
-                            isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+                            isDarkMode ? 'bg-muted-foreground/10' : 'bg-gray-200'
                           )}
                         >
                           <Users className="h-4 w-4" />
@@ -480,7 +480,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         <Brain className="h-4 w-4 text-blue-500" />
                       </div>
                       <div
-                        className={cn('rounded-lg p-3', isDarkMode ? 'bg-gray-700' : 'bg-gray-100')}
+                        className={cn('rounded-lg p-3', isDarkMode ? 'bg-muted-foreground/10' : 'bg-muted')}
                       >
                         <div className="flex items-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -494,7 +494,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
 
               {/* Quick Actions */}
               {showExamples && (
-                <div className="p-3 border-t border-gray-700">
+                <div className="p-3 border-t border-border">
                   <div className="flex gap-2 flex-wrap">
                     {FURNITURE_QUICK_PROMPTS.map((prompt, i) => (
                       <Button
@@ -504,7 +504,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         onClick={() => handleQuickPrompt(prompt.prompt)}
                         className={cn(
                           'gap-2',
-                          isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                          isDarkMode ? 'hover:bg-muted-foreground/10' : 'hover:bg-muted'
                         )}
                       >
                         <prompt.icon className={cn('h-4 w-4', prompt.color)} />
@@ -516,7 +516,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
               )}
 
               {/* Input Area */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-gray-700">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-border">
                 <div className="flex gap-2">
                   <Input
                     ref={inputRef}
@@ -526,7 +526,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                     disabled={loading}
                     className={cn(
                       'flex-1',
-                      isDarkMode ? 'bg-gray-900/50 border-gray-600' : 'bg-white border-gray-300'
+                      isDarkMode ? 'bg-background/50 border-border' : 'bg-background border-border'
                     )}
                   />
                   <Button type="submit" disabled={loading || !input.trim()}>
@@ -544,7 +544,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
           {/* Side Panel */}
           <div className="space-y-4">
             {/* Quick Expenses */}
-            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
+            <Card className={cn(isDarkMode ? 'bg-muted/50 border-border' : 'bg-background')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">Quick Expenses</CardTitle>
               </CardHeader>
@@ -558,7 +558,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                       onClick={() => handleQuickExpense(expense)}
                       className={cn(
                         'h-auto flex-col py-3 gap-1',
-                        isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                        isDarkMode ? 'hover:bg-muted-foreground/10' : 'hover:bg-muted'
                       )}
                     >
                       <expense.icon className="h-4 w-4 text-orange-500" />
@@ -571,21 +571,21 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
             </Card>
 
             {/* Today's Summary */}
-            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
+            <Card className={cn(isDarkMode ? 'bg-muted/50 border-border' : 'bg-background')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">Today's Summary</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Revenue</span>
+                    <span className="text-sm text-muted-foreground">Revenue</span>
                     <span className="text-sm font-bold text-green-500">₹1,25,000</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Expenses</span>
+                    <span className="text-sm text-muted-foreground">Expenses</span>
                     <span className="text-sm font-bold text-red-500">₹48,500</span>
                   </div>
-                  <div className="pt-2 border-t border-gray-700">
+                  <div className="pt-2 border-t border-border">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium">Net Profit</span>
                       <span className="text-lg font-bold text-blue-500">₹76,500</span>
@@ -603,7 +603,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
             />
 
             {/* Help Tips */}
-            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
+            <Card className={cn(isDarkMode ? 'bg-muted/50 border-border' : 'bg-background')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" />
@@ -611,7 +611,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2 text-xs text-gray-400">
+                <div className="space-y-2 text-xs text-muted-foreground">
                   <p>• Just describe transactions naturally</p>
                   <p>• Include amounts and customer names</p>
                   <p>• Ask for summaries anytime</p>

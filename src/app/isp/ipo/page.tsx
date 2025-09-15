@@ -379,19 +379,19 @@ export default function IPOPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             IPO Preparation Dashboard
           </h1>
-          <p className="text-white/60 mt-1">
+          <p className="text-foreground/60 mt-1">
             Track India Vision's journey to Initial Public Offering
           </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/20 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/50 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/20 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
             <Download className="h-5 w-5" />
             <span>IPO Report</span>
           </button>
@@ -401,17 +401,17 @@ export default function IPOPage() {
       {/* IPO Readiness Score */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
-        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+        <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-semibold text-white">IPO Readiness Score</h2>
-              <p className="text-white/60 mt-1">Overall preparedness for public listing</p>
+              <h2 className="text-2xl font-semibold text-foreground">IPO Readiness Score</h2>
+              <p className="text-foreground/60 mt-1">Overall preparedness for public listing</p>
             </div>
             <div className="text-right">
               <div className="text-5xl font-bold bg-gradient-to-r from-[#00DDFF] to-[#fff685] bg-clip-text text-transparent">
                 {ipoReadiness}%
               </div>
-              <p className="text-sm text-white/60 mt-1">Ready for IPO</p>
+              <p className="text-sm text-foreground/60 mt-1">Ready for IPO</p>
             </div>
           </div>
 
@@ -421,10 +421,10 @@ export default function IPOPage() {
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/80">Financial Compliance</span>
+                    <span className="text-sm text-foreground/80">Financial Compliance</span>
                     <span className="text-sm font-medium text-[#00DDFF]">90%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-full"
                       style={{ width: '90%' }}
@@ -433,10 +433,10 @@ export default function IPOPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/80">Corporate Governance</span>
+                    <span className="text-sm text-foreground/80">Corporate Governance</span>
                     <span className="text-sm font-medium text-[#fff685]">75%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-full"
                       style={{ width: '75%' }}
@@ -445,10 +445,10 @@ export default function IPOPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/80">Market Position</span>
+                    <span className="text-sm text-foreground/80">Market Position</span>
                     <span className="text-sm font-medium text-emerald-400">85%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full"
                       style={{ width: '85%' }}
@@ -457,10 +457,10 @@ export default function IPOPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/80">Technology Infrastructure</span>
+                    <span className="text-sm text-foreground/80">Technology Infrastructure</span>
                     <span className="text-sm font-medium text-purple-400">70%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-2 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-purple-400 to-pink-500 rounded-full"
                       style={{ width: '70%' }}
@@ -501,8 +501,8 @@ export default function IPOPage() {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className="text-sm text-white/60">Current</p>
-                    <p className="text-2xl font-bold text-white">₹{currentValuation} Cr</p>
+                    <p className="text-sm text-foreground/60">Current</p>
+                    <p className="text-2xl font-bold text-foreground">₹{currentValuation} Cr</p>
                     <p className="text-xs text-[#fff685] mt-1">Target: ₹{targetValuation} Cr</p>
                   </div>
                 </div>
@@ -521,13 +521,13 @@ export default function IPOPage() {
           return (
             <div key={key} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+              <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-white/60 text-sm font-medium mb-1">
+                    <h3 className="text-foreground/60 text-sm font-medium mb-1">
                       {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                     </h3>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-2xl font-bold text-foreground">
                       {metric.current}
                       {metric.unit}
                     </p>
@@ -544,13 +544,13 @@ export default function IPOPage() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/40">Target</span>
-                    <span className="text-white/60">
+                    <span className="text-foreground/40">Target</span>
+                    <span className="text-foreground/60">
                       {metric.target}
                       {metric.unit}
                     </span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-background/10 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         isOnTrack
@@ -571,8 +571,8 @@ export default function IPOPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Growth Trajectory</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Growth Trajectory</h2>
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart data={safeGrowthMetrics}>
                 <defs>
@@ -622,27 +622,27 @@ export default function IPOPage() {
 
         <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Peer Valuation</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Peer Valuation</h2>
             <div className="space-y-4">
               {peerComparison.map(peer => (
                 <div key={peer.company} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-white">{peer.company}</span>
+                    <span className="text-sm font-medium text-foreground">{peer.company}</span>
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: peer.color }} />
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="text-center p-2 rounded bg-slate-900/50">
-                      <p className="text-white/60">P/E</p>
-                      <p className="text-white font-medium">{peer.pe}x</p>
+                    <div className="text-center p-2 rounded bg-background/50">
+                      <p className="text-foreground/60">P/E</p>
+                      <p className="text-foreground font-medium">{peer.pe}x</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-slate-900/50">
-                      <p className="text-white/60">EV/EBITDA</p>
-                      <p className="text-white font-medium">{peer.evEbitda}x</p>
+                    <div className="text-center p-2 rounded bg-background/50">
+                      <p className="text-foreground/60">EV/EBITDA</p>
+                      <p className="text-foreground font-medium">{peer.evEbitda}x</p>
                     </div>
-                    <div className="text-center p-2 rounded bg-slate-900/50">
-                      <p className="text-white/60">P/BV</p>
-                      <p className="text-white font-medium">{peer.pbv}x</p>
+                    <div className="text-center p-2 rounded bg-background/50">
+                      <p className="text-foreground/60">P/BV</p>
+                      <p className="text-foreground font-medium">{peer.pbv}x</p>
                     </div>
                   </div>
                 </div>
@@ -655,17 +655,17 @@ export default function IPOPage() {
       {/* Compliance Tracker */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Compliance Tracker</h2>
+            <h2 className="text-xl font-semibold text-foreground">Compliance Tracker</h2>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-2xl font-bold text-white">{complianceProgress}%</p>
-                <p className="text-xs text-white/60">Complete</p>
+                <p className="text-2xl font-bold text-foreground">{complianceProgress}%</p>
+                <p className="text-xs text-foreground/60">Complete</p>
               </div>
               <div className="flex items-center space-x-2 text-xs">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span className="text-white/60">
+                <span className="text-foreground/60">
                   {completedCompliance}/{totalCompliance}
                 </span>
               </div>
@@ -698,11 +698,11 @@ export default function IPOPage() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-sm font-bold text-white">{cat.progress}%</span>
+                    <span className="text-sm font-bold text-foreground">{cat.progress}%</span>
                   </div>
                 </div>
-                <p className="text-xs text-white/60">{cat.category}</p>
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-foreground/60">{cat.category}</p>
+                <p className="text-xs text-foreground/40">
                   {cat.completed}/{cat.total}
                 </p>
               </div>
@@ -714,7 +714,7 @@ export default function IPOPage() {
             {complianceItems.slice(0, 5).map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg bg-background/50 hover:bg-background/20 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <div
@@ -735,8 +735,8 @@ export default function IPOPage() {
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">{item.item}</p>
-                    <p className="text-xs text-white/40">{item.category}</p>
+                    <p className="text-sm font-medium text-foreground">{item.item}</p>
+                    <p className="text-xs text-foreground/40">{item.category}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -744,7 +744,7 @@ export default function IPOPage() {
                     <p className="text-sm font-medium text-[#00DDFF]">{item.progress}%</p>
                   )}
                   {item.dueDate && (
-                    <p className="text-xs text-white/40">
+                    <p className="text-xs text-foreground/40">
                       Due: {new Date(item.dueDate).toLocaleDateString()}
                     </p>
                   )}
@@ -771,8 +771,8 @@ export default function IPOPage() {
         {/* Investor Metrics Radar */}
         <div className="relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Investor Appeal Metrics</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Investor Appeal Metrics</h2>
             <ResponsiveContainer width="100%" height={300}>
               <RadarChart data={safeInvestorMetrics}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
@@ -809,23 +809,23 @@ export default function IPOPage() {
         {/* Key Milestones */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff1d58] to-[#f75990] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">IPO Journey Milestones</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">IPO Journey Milestones</h2>
             <div className="space-y-4 relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-white/10" />
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-background/10" />
               {milestones.map((milestone, index) => (
                 <div key={index} className="relative flex items-start space-x-4">
                   <div
                     className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center ${
                       milestone.status === 'achieved'
                         ? 'bg-emerald-500/20 border-2 border-emerald-500'
-                        : 'bg-white/10 border-2 border-white/20'
+                        : 'bg-background/10 border-2 border-border/20'
                     }`}
                   >
                     {milestone.status === 'achieved' ? (
                       <CheckCircle2 className="h-6 w-6 text-emerald-400" />
                     ) : (
-                      <Clock className="h-6 w-6 text-white/40" />
+                      <Clock className="h-6 w-6 text-foreground/40" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -833,15 +833,15 @@ export default function IPOPage() {
                       <div>
                         <h3
                           className={`font-medium ${
-                            milestone.status === 'achieved' ? 'text-white' : 'text-white/60'
+                            milestone.status === 'achieved' ? 'text-foreground' : 'text-foreground/60'
                           }`}
                         >
                           {milestone.title}
                         </h3>
-                        <p className="text-xs text-white/40 mt-1">{milestone.description}</p>
+                        <p className="text-xs text-foreground/40 mt-1">{milestone.description}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-white/60">
+                        <p className="text-xs text-foreground/60">
                           {new Date(milestone.date).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -872,21 +872,21 @@ export default function IPOPage() {
       {/* Action Items */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">Next Steps for IPO Readiness</h2>
+        <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
+          <h2 className="text-xl font-semibold text-foreground mb-4">Next Steps for IPO Readiness</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
               <div className="flex items-center space-x-2 mb-2">
                 <AlertTriangle className="h-5 w-5 text-red-400" />
                 <span className="font-medium text-red-400">Critical Actions</span>
               </div>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-2 text-sm text-foreground/80">
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Complete SEBI compliance documentation</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Appoint remaining independent directors</span>
                 </li>
               </ul>
@@ -897,13 +897,13 @@ export default function IPOPage() {
                 <Clock className="h-5 w-5 text-yellow-400" />
                 <span className="font-medium text-yellow-400">In Progress</span>
               </div>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-2 text-sm text-foreground/80">
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Risk management framework implementation</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Investment banker selection process</span>
                 </li>
               </ul>
@@ -914,13 +914,13 @@ export default function IPOPage() {
                 <Target className="h-5 w-5 text-emerald-400" />
                 <span className="font-medium text-emerald-400">Upcoming</span>
               </div>
-              <ul className="space-y-2 text-sm text-white/80">
+              <ul className="space-y-2 text-sm text-foreground/80">
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Roadshow preparation and investor deck</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <ChevronRight className="h-4 w-4 text-white/40 mt-0.5" />
+                  <ChevronRight className="h-4 w-4 text-foreground/40 mt-0.5" />
                   <span>Price band determination with bankers</span>
                 </li>
               </ul>

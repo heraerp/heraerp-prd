@@ -633,7 +633,7 @@ export default function SettingsPage() {
             type="text"
             value={setting.value}
             onChange={e => handleSettingChange(sectionId, setting.key, e.target.value)}
-            className="w-full px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
+            className="w-full px-3 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
           />
         )
 
@@ -649,9 +649,9 @@ export default function SettingsPage() {
               min={setting.min}
               max={setting.max}
               step={setting.step}
-              className="flex-1 px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
+              className="flex-1 px-3 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
             />
-            {setting.unit && <span className="text-white/60 text-sm">{setting.unit}</span>}
+            {setting.unit && <span className="text-foreground/60 text-sm">{setting.unit}</span>}
           </div>
         )
 
@@ -660,11 +660,11 @@ export default function SettingsPage() {
           <button
             onClick={() => handleSettingChange(sectionId, setting.key, !setting.value)}
             className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
-              setting.value ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7]' : 'bg-white/20'
+              setting.value ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7]' : 'bg-background/20'
             }`}
           >
             <div
-              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 ${
+              className={`absolute top-1 left-1 w-5 h-5 bg-background rounded-full transition-transform duration-300 ${
                 setting.value ? 'translate-x-7' : 'translate-x-0'
               }`}
             />
@@ -676,10 +676,10 @@ export default function SettingsPage() {
           <select
             value={setting.value}
             onChange={e => handleSettingChange(sectionId, setting.key, e.target.value)}
-            className="w-full px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#00DDFF] transition-colors"
+            className="w-full px-3 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#00DDFF] transition-colors"
           >
             {setting.options?.map(option => (
-              <option key={option.value} value={option.value} className="bg-slate-800">
+              <option key={option.value} value={option.value} className="bg-muted">
                 {option.label}
               </option>
             ))}
@@ -702,11 +702,11 @@ export default function SettingsPage() {
                 className="flex-1 mr-4"
               />
               <div className="flex items-center space-x-1">
-                <span className="text-white font-medium">{setting.value}</span>
-                {setting.unit && <span className="text-white/60 text-sm">{setting.unit}</span>}
+                <span className="text-foreground font-medium">{setting.value}</span>
+                {setting.unit && <span className="text-foreground/60 text-sm">{setting.unit}</span>}
               </div>
             </div>
-            <div className="h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-1 rounded-full bg-background/10 overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-full transition-all duration-300"
                 style={{
@@ -728,8 +728,8 @@ export default function SettingsPage() {
     <div className="flex gap-6">
       {/* Sidebar Navigation */}
       <div className="w-64 space-y-2">
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
-          <h2 className="text-lg font-semibold text-white mb-4">Configuration</h2>
+        <div className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-4">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Configuration</h2>
           <nav className="space-y-1">
             {configSections.map(section => {
               const Icon = section.icon
@@ -741,8 +741,8 @@ export default function SettingsPage() {
                   onClick={() => setActiveSection(section.id)}
                   className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-300 ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#ff1d58]/20 to-[#f75990]/20 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                      ? 'bg-gradient-to-r from-[#ff1d58]/20 to-[#f75990]/20 text-foreground'
+                      : 'text-foreground/70 hover:text-foreground hover:bg-background/5'
                   }`}
                 >
                   <Icon className="h-5 w-5" />
@@ -755,14 +755,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Save Status */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
+        <div className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-white">Save Status</h3>
+            <h3 className="text-sm font-medium text-foreground">Save Status</h3>
             {hasChanges && <span className="text-xs text-yellow-400">Unsaved changes</span>}
           </div>
 
           {lastSaved && (
-            <p className="text-xs text-white/60 mb-3">
+            <p className="text-xs text-foreground/60 mb-3">
               Last saved: {lastSaved.toLocaleTimeString()}
             </p>
           )}
@@ -772,8 +772,8 @@ export default function SettingsPage() {
             disabled={!hasChanges || isSaving}
             className={`w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
               hasChanges && !isSaving
-                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white hover:shadow-lg hover:shadow-[#00DDFF]/30'
-                : 'bg-white/10 text-white/40 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground hover:shadow-lg hover:shadow-[#00DDFF]/30'
+                : 'bg-background/10 text-foreground/40 cursor-not-allowed'
             }`}
           >
             {isSaving ? (
@@ -798,21 +798,21 @@ export default function SettingsPage() {
             <div
               className={`absolute -inset-0.5 bg-gradient-to-r ${activeConfig.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
             />
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               {/* Section Header */}
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <div className="flex items-center space-x-3 mb-2">
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${activeConfig.color}`}>
-                      <activeConfig.icon className="h-6 w-6 text-white" />
+                      <activeConfig.icon className="h-6 w-6 text-foreground" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">{activeConfig.title}</h1>
+                    <h1 className="text-2xl font-bold text-foreground">{activeConfig.title}</h1>
                   </div>
-                  <p className="text-white/60">{activeConfig.description}</p>
+                  <p className="text-foreground/60">{activeConfig.description}</p>
                 </div>
                 <button
                   onClick={() => resetSection(activeConfig.id)}
-                  className="flex items-center space-x-2 px-3 py-1.5 text-sm text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all duration-300"
+                  className="flex items-center space-x-2 px-3 py-1.5 text-sm text-foreground/60 hover:text-foreground bg-background/5 hover:bg-background/10 border border-border/10 rounded-lg transition-all duration-300"
                 >
                   <RefreshCw className="h-4 w-4" />
                   <span>Reset</span>
@@ -824,12 +824,12 @@ export default function SettingsPage() {
                 {activeConfig.settings.map(setting => (
                   <div key={setting.key} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-white">{setting.label}</label>
+                      <label className="text-sm font-medium text-foreground">{setting.label}</label>
                       {setting.description && (
                         <div className="group/info relative">
-                          <Info className="h-4 w-4 text-white/40 cursor-help" />
-                          <div className="absolute right-0 bottom-full mb-2 w-64 p-3 bg-black/90 backdrop-blur-xl border border-white/20 rounded-lg opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-200 z-10">
-                            <p className="text-xs text-white/80">{setting.description}</p>
+                          <Info className="h-4 w-4 text-foreground/40 cursor-help" />
+                          <div className="absolute right-0 bottom-full mb-2 w-64 p-3 bg-background/90 backdrop-blur-xl border border-border/20 rounded-lg opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all duration-200 z-10">
+                            <p className="text-xs text-foreground/80">{setting.description}</p>
                           </div>
                         </div>
                       )}

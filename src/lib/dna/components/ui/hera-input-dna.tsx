@@ -36,14 +36,14 @@ export function HeraInputDNA({
       )}
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
             {icon}
           </div>
         )}
         <input
           id={inputId}
           className={cn(
-            'w-full h-10 md:h-12 bg-gray-50 border-gray-200',
+            'w-full h-10 md:h-12 bg-muted border-border',
             'focus:ring-2 focus:ring-violet-500 focus:border-transparent',
             'transition-all rounded-md',
             {
@@ -56,13 +56,13 @@ export function HeraInputDNA({
           {...props}
         />
         {rightIcon && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
             {rightIcon}
           </div>
         )}
       </div>
       {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
-      {helperText && !error && <p className="text-sm text-gray-600">{helperText}</p>}
+      {helperText && !error && <p className="text-sm text-muted-foreground">{helperText}</p>}
     </div>
   )
 }

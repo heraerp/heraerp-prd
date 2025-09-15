@@ -188,7 +188,7 @@ export function NotificationCenter({
                           <Icon className={cn('w-4 h-4', getNotificationColor(type))} />
                           <span className="capitalize">{type}s</span>
                         </div>
-                        {isMuted && <BellOff className="w-3 h-3 text-gray-400" />}
+                        {isMuted && <BellOff className="w-3 h-3 text-muted-foreground" />}
                       </div>
                     </DropdownMenuItem>
                   )
@@ -202,7 +202,7 @@ export function NotificationCenter({
 
         <ScrollArea className="h-[400px]">
           {visibleNotifications.length === 0 ? (
-            <div className="px-4 py-8 text-center text-gray-500">
+            <div className="px-4 py-8 text-center text-muted-foreground">
               <Bell className="w-8 h-8 mx-auto mb-2 opacity-20" />
               <p className="text-sm">No notifications</p>
             </div>
@@ -221,7 +221,7 @@ export function NotificationCenter({
                       className={cn(
                         'relative p-3 rounded-lg border cursor-pointer transition-colors',
                         getBgColor(notification.type),
-                        'hover:bg-gray-100 dark:hover:bg-gray-800',
+                        'hover:bg-muted dark:hover:bg-muted',
                         !notification.read && 'border-l-4',
                         !notification.read && notification.type === 'error' && 'border-l-red-500',
                         !notification.read &&
@@ -243,9 +243,9 @@ export function NotificationCenter({
                           e.stopPropagation()
                           onDismiss(notification.id)
                         }}
-                        className="absolute top-2 right-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                        className="absolute top-2 right-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-muted-foreground/10"
                       >
-                        <X className="w-3 h-3 text-gray-500" />
+                        <X className="w-3 h-3 text-muted-foreground" />
                       </button>
 
                       <div className="flex gap-3 pr-6">
@@ -255,10 +255,10 @@ export function NotificationCenter({
                           />
                         </div>
                         <div className="flex-1 space-y-1">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                          <h4 className="text-sm font-medium text-gray-900 dark:text-foreground">
                             {notification.title}
                           </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {notification.message}
                           </p>
                           {notification.actionLabel && (
@@ -275,8 +275,8 @@ export function NotificationCenter({
                             </Button>
                           )}
                           <div className="flex items-center gap-2 mt-2">
-                            <Clock className="w-3 h-3 text-gray-400" />
-                            <span className="text-xs text-gray-500">
+                            <Clock className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
                               {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
                             </span>
                           </div>

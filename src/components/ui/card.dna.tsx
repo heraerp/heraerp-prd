@@ -58,7 +58,7 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
       ref={ref}
       className={cn(
         'text-2xl font-semibold leading-none tracking-tight',
-        'text-gray-900 dark:text-gray-100', // Ensure text visibility
+        'text-gray-900 dark:text-foreground', // Ensure text visibility
         className
       )}
       {...props}
@@ -75,7 +75,7 @@ const CardDescription = React.forwardRef<
     ref={ref}
     className={cn(
       'text-sm text-muted-foreground',
-      'text-gray-600 dark:text-gray-400', // Ensure text visibility
+      'text-muted-foreground dark:text-muted-foreground', // Ensure text visibility
       className
     )}
     {...props}

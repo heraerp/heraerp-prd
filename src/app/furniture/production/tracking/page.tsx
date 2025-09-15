@@ -107,13 +107,13 @@ export default function ProductionTracking() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white">Real-Time Production Tracking</h1>
-            <p className="text-gray-400 mt-1">Monitor live production status and performance</p>
+            <h1 className="text-3xl font-bold text-foreground">Real-Time Production Tracking</h1>
+            <p className="text-muted-foreground mt-1">Monitor live production status and performance</p>
             <OrganizationInfo name={organizationName} id={organizationId} />
           </div>
           <div className="flex gap-3">
@@ -126,48 +126,48 @@ export default function ProductionTracking() {
 
         {/* Live Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-2">
               <Activity className="h-8 w-8 text-green-500" />
               <Badge variant="secondary" className="bg-green-500/10 text-green-400 animate-pulse">
                 LIVE
               </Badge>
             </div>
-            <p className="text-2xl font-bold text-white">{stats.activeOperations}</p>
-            <p className="text-sm text-gray-400 mt-1">Active Operations</p>
+            <p className="text-2xl font-bold text-foreground">{stats.activeOperations}</p>
+            <p className="text-sm text-muted-foreground mt-1">Active Operations</p>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-2">
               <Package className="h-8 w-8 text-blue-500" />
               <TrendingUp className="h-4 w-4 text-blue-400" />
             </div>
-            <p className="text-2xl font-bold text-white">{stats.unitsInProgress}</p>
-            <p className="text-sm text-gray-400 mt-1">Units in Progress</p>
+            <p className="text-2xl font-bold text-foreground">{stats.unitsInProgress}</p>
+            <p className="text-sm text-muted-foreground mt-1">Units in Progress</p>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-2">
               <Gauge className="h-8 w-8 text-purple-500" />
-              <span className="text-sm font-medium text-white">{stats.avgEfficiency}%</span>
+              <span className="text-sm font-medium text-foreground">{stats.avgEfficiency}%</span>
             </div>
-            <Progress value={stats.avgEfficiency} className="h-2 bg-gray-700" />
-            <p className="text-sm text-gray-400 mt-2">Average Efficiency</p>
+            <Progress value={stats.avgEfficiency} className="h-2 bg-muted-foreground/10" />
+            <p className="text-sm text-muted-foreground mt-2">Average Efficiency</p>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-2">
               <Clock className="h-8 w-8 text-amber-500" />
-              <span className="text-sm font-medium text-white">{stats.onTimeRate}%</span>
+              <span className="text-sm font-medium text-foreground">{stats.onTimeRate}%</span>
             </div>
-            <Progress value={stats.onTimeRate} className="h-2 bg-gray-700" />
-            <p className="text-sm text-gray-400 mt-2">On-Time Rate</p>
+            <Progress value={stats.onTimeRate} className="h-2 bg-muted-foreground/10" />
+            <p className="text-sm text-muted-foreground mt-2">On-Time Rate</p>
           </Card>
         </div>
 
         {/* Work Center Status Grid */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-4">Work Center Status</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">Work Center Status</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {workCenters.map(center => {
               // Find active order for this work center
@@ -191,12 +191,12 @@ export default function ProductionTracking() {
               return (
                 <Card
                   key={center.id}
-                  className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50"
+                  className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-semibold text-white">{center.entity_name}</h3>
-                      <p className="text-sm text-gray-400">
+                      <h3 className="font-semibold text-foreground">{center.entity_name}</h3>
+                      <p className="text-sm text-muted-foreground">
                         {(center.metadata as any)?.location || 'Shop Floor'}
                       </p>
                     </div>
@@ -204,7 +204,7 @@ export default function ProductionTracking() {
                       className={
                         activeOrder
                           ? 'bg-green-500/10 text-green-400'
-                          : 'bg-gray-500/10 text-gray-400'
+                          : 'bg-gray-500/10 text-muted-foreground'
                       }
                     >
                       {activeOrder ? 'Running' : 'Idle'}
@@ -214,25 +214,25 @@ export default function ProductionTracking() {
                   {activeOrder ? (
                     <div className="space-y-3">
                       <div>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           {activeOrder.transaction_code}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-muted-foreground">
                           {product?.entity_name || 'Unknown Product'}
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-400">Progress</span>
-                          <span className="text-white">{Math.round(progress)}%</span>
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="text-foreground">{Math.round(progress)}%</span>
                         </div>
-                        <Progress value={progress} className="h-2 bg-gray-700" />
+                        <Progress value={progress} className="h-2 bg-muted-foreground/10" />
                       </div>
 
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-400">Current Operation</span>
-                        <span className="text-white">
+                        <span className="text-muted-foreground">Current Operation</span>
+                        <span className="text-foreground">
                           {currentOperation?.metadata?.operation || 'Setup'}
                         </span>
                       </div>
@@ -250,8 +250,8 @@ export default function ProductionTracking() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <Factory className="h-12 w-12 mx-auto text-gray-600 mb-2" />
-                      <p className="text-sm text-gray-500">No active order</p>
+                      <Factory className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">No active order</p>
                       <Link href="/furniture/production/orders/new">
                         <Button size="sm" variant="outline" className="mt-2">
                           <Play className="h-3 w-3 mr-1" />
@@ -268,12 +268,12 @@ export default function ProductionTracking() {
 
         {/* Active Production Orders */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-4">Active Production Orders</h2>
-          <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <h2 className="text-xl font-semibold text-foreground mb-4">Active Production Orders</h2>
+          <Card className="bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="p-6">
               <div className="space-y-4">
                 {activeOrders.length === 0 ? (
-                  <div className="text-center text-gray-400 py-8">
+                  <div className="text-center text-muted-foreground py-8">
                     No active production orders at this time
                   </div>
                 ) : (
@@ -293,14 +293,14 @@ export default function ProductionTracking() {
                     return (
                       <div
                         key={order.id}
-                        className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
+                        className="p-4 bg-background/50 rounded-lg border border-border/50"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-4">
                               <div>
-                                <p className="font-semibold text-white">{order.transaction_code}</p>
-                                <p className="text-sm text-gray-400">
+                                <p className="font-semibold text-foreground">{order.transaction_code}</p>
+                                <p className="text-sm text-muted-foreground">
                                   {product?.entity_name} - {order.total_amount} units
                                 </p>
                               </div>
@@ -311,25 +311,25 @@ export default function ProductionTracking() {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                               <div>
-                                <p className="text-xs text-gray-400">Work Center</p>
-                                <p className="text-sm font-medium text-white">
+                                <p className="text-xs text-muted-foreground">Work Center</p>
+                                <p className="text-sm font-medium text-foreground">
                                   {workCenter?.entity_name || 'Not assigned'}
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-gray-400">Completed</p>
-                                <p className="text-sm font-medium text-white">
+                                <p className="text-xs text-muted-foreground">Completed</p>
+                                <p className="text-sm font-medium text-foreground">
                                   {completedQty} / {order.total_amount} units
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-gray-400">Time Elapsed</p>
-                                <p className="text-sm font-medium text-white">2h 35m</p>
+                                <p className="text-xs text-muted-foreground">Time Elapsed</p>
+                                <p className="text-sm font-medium text-foreground">2h 35m</p>
                               </div>
                             </div>
 
                             <div className="mt-3">
-                              <Progress value={progress} className="h-3 bg-gray-700" />
+                              <Progress value={progress} className="h-3 bg-muted-foreground/10" />
                             </div>
                           </div>
 
@@ -352,8 +352,8 @@ export default function ProductionTracking() {
 
         {/* Recent Activities */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-4">Recent Activities</h2>
-          <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <h2 className="text-xl font-semibold text-foreground mb-4">Recent Activities</h2>
+          <Card className="bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="p-6">
               <div className="space-y-3">
                 <div className="flex items-start gap-3 text-sm">
@@ -361,8 +361,8 @@ export default function ProductionTracking() {
                     <CheckCircle className="h-4 w-4 text-green-500" />
                   </div>
                   <div>
-                    <p className="text-white">Operation completed on PRD-FRN-2025-0002</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-foreground">Operation completed on PRD-FRN-2025-0002</p>
+                    <p className="text-xs text-muted-foreground">
                       Cutting completed - 15 units • 2 minutes ago
                     </p>
                   </div>
@@ -373,8 +373,8 @@ export default function ProductionTracking() {
                     <Activity className="h-4 w-4 text-blue-500" />
                   </div>
                   <div>
-                    <p className="text-white">Production started on Assembly Line 1</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-foreground">Production started on Assembly Line 1</p>
+                    <p className="text-xs text-muted-foreground">
                       Order PRD-FRN-2025-0002 • 15 minutes ago
                     </p>
                   </div>
@@ -385,8 +385,8 @@ export default function ProductionTracking() {
                     <AlertCircle className="h-4 w-4 text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-white">Quality check required</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-foreground">Quality check required</p>
+                    <p className="text-xs text-muted-foreground">
                       Batch BATCH-2025-002 ready for inspection • 30 minutes ago
                     </p>
                   </div>

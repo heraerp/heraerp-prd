@@ -12,9 +12,9 @@ import { Button } from '@/components/ui/button'
 
 export default function SalonTemplatesPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Page Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <div className="border-b border-border dark:border-border bg-background dark:bg-muted">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/salon-data">
@@ -24,10 +24,10 @@ export default function SalonTemplatesPage() {
               </Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
                 Business Rule Templates
               </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 Ready-to-use configurations for your salon operations
               </p>
             </div>

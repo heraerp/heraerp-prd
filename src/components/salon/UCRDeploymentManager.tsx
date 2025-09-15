@@ -283,23 +283,23 @@ export function UCRDeploymentManager({
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm text-gray-600">Rule Name</Label>
+                <Label className="text-sm text-muted-foreground">Rule Name</Label>
                 <p className="font-medium">{currentRule.title || currentRule.entity_name}</p>
               </div>
               <div>
-                <Label className="text-sm text-gray-600">Smart Code</Label>
-                <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                <Label className="text-sm text-muted-foreground">Smart Code</Label>
+                <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded">
                   {currentRule.smart_code}
                 </code>
               </div>
               <div>
-                <Label className="text-sm text-gray-600">Current Status</Label>
+                <Label className="text-sm text-muted-foreground">Current Status</Label>
                 <Badge variant={currentRule.status === 'draft' ? 'secondary' : 'default'}>
                   {currentRule.status}
                 </Badge>
               </div>
               <div>
-                <Label className="text-sm text-gray-600">Version</Label>
+                <Label className="text-sm text-muted-foreground">Version</Label>
                 <Badge variant="outline">v{(currentRule.metadata as any)?.rule_version || 1}</Badge>
               </div>
             </div>
@@ -317,28 +317,28 @@ export function UCRDeploymentManager({
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Validation Status */}
-              <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center gap-3 p-4 bg-muted dark:bg-muted rounded-lg">
                 <CheckCircle className="w-8 h-8 text-green-500" />
                 <div>
                   <p className="font-medium">Validation Status</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     Rule structure is valid
                   </p>
                 </div>
               </div>
 
               {/* Test Results */}
-              <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center gap-3 p-4 bg-muted dark:bg-muted rounded-lg">
                 {hasTestResults && testPassRate >= 80 ? (
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 ) : hasTestResults ? (
                   <AlertCircle className="w-8 h-8 text-yellow-500" />
                 ) : (
-                  <XCircle className="w-8 h-8 text-gray-400" />
+                  <XCircle className="w-8 h-8 text-muted-foreground" />
                 )}
                 <div>
                   <p className="font-medium">Test Results</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {hasTestResults
                       ? `${testPassRate.toFixed(0)}% tests passing`
                       : 'No test results available'}
@@ -347,22 +347,22 @@ export function UCRDeploymentManager({
               </div>
 
               {/* Previous Deployments */}
-              <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center gap-3 p-4 bg-muted dark:bg-muted rounded-lg">
                 <Activity className="w-8 h-8 text-blue-500" />
                 <div>
                   <p className="font-medium">Deployment History</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {deploymentHistory.length} previous deployments
                   </p>
                 </div>
               </div>
 
               {/* Risk Assessment */}
-              <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center gap-3 p-4 bg-muted dark:bg-muted rounded-lg">
                 <TrendingUp className="w-8 h-8 text-purple-500" />
                 <div>
                   <p className="font-medium">Risk Level</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     Low - Isolated rule change
                   </p>
                 </div>
@@ -493,7 +493,7 @@ export function UCRDeploymentManager({
                   className="mt-2"
                   min={effectiveFrom}
                 />
-                <p className="text-xs text-gray-500 mt-1">Leave empty for permanent deployment</p>
+                <p className="text-xs text-muted-foreground mt-1">Leave empty for permanent deployment</p>
               </div>
             </div>
 
@@ -544,7 +544,7 @@ export function UCRDeploymentManager({
               rows={4}
               className="w-full"
             />
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               These notes will be included in the deployment history
             </p>
           </CardContent>
@@ -565,10 +565,10 @@ export function UCRDeploymentManager({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-muted dark:bg-muted rounded-lg">
               <div>
                 <Label htmlFor="requires_approval">Require Approval</Label>
-                <p className="text-sm text-gray-500">Manager approval needed before deployment</p>
+                <p className="text-sm text-muted-foreground">Manager approval needed before deployment</p>
               </div>
               <Switch
                 id="requires_approval"
@@ -617,7 +617,7 @@ export function UCRDeploymentManager({
                           {approval.role}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                         Approved on{' '}
                         {formatDate(new Date(approval.approved_at), 'MMM dd, yyyy HH:mm')}
                       </p>
@@ -628,10 +628,10 @@ export function UCRDeploymentManager({
               </div>
             ) : (
               <div className="text-center py-8">
-                <UserCheck className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                <p className="text-gray-500">No approvals yet</p>
+                <UserCheck className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                <p className="text-muted-foreground">No approvals yet</p>
                 {requiresApproval && (
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     Add an approval to proceed with deployment
                   </p>
                 )}
@@ -720,7 +720,7 @@ export function UCRDeploymentManager({
                       <p className="font-medium">
                         {(event.metadata as any)?.action || 'Deployment'}
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                         {formatDate(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
                       </p>
                       {(event.metadata as any)?.notes && (
@@ -740,9 +740,9 @@ export function UCRDeploymentManager({
               </div>
             ) : (
               <div className="text-center py-8">
-                <Clock className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                <p className="text-gray-500">No deployment history</p>
-                <p className="text-sm text-gray-400 mt-1">This will be the first deployment</p>
+                <Clock className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                <p className="text-muted-foreground">No deployment history</p>
+                <p className="text-sm text-muted-foreground mt-1">This will be the first deployment</p>
               </div>
             )}
           </CardContent>
@@ -781,7 +781,7 @@ export function UCRDeploymentManager({
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <Rocket className="w-12 h-12 animate-pulse mx-auto text-purple-600 mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading deployment manager...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading deployment manager...</p>
         </div>
       </div>
     )
@@ -804,7 +804,7 @@ export function UCRDeploymentManager({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                <Rocket className="w-5 h-5 text-white" />
+                <Rocket className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <CardTitle>Deploy Rule to Production</CardTitle>
@@ -814,7 +814,7 @@ export function UCRDeploymentManager({
             <Button
               onClick={handleDeploy}
               disabled={deploying || !Object.values(checklist).every(v => v)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-foreground"
             >
               {deploying ? (
                 <>
@@ -842,7 +842,7 @@ export function UCRDeploymentManager({
                 <span className="text-sm">{deploymentProgress}%</span>
               </div>
               <Progress value={deploymentProgress} className="h-2" />
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground">
                 <Sparkles className="w-4 h-4 animate-pulse" />
                 <span>
                   {deploymentProgress < 30 && 'Validating rule...'}

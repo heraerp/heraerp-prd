@@ -248,9 +248,9 @@ export function ResourceEditModal({
                     id="resource_type"
                     value={formData.resource_type}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-muted"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Cannot change resource type</p>
+                  <p className="text-xs text-muted-foreground mt-1">Cannot change resource type</p>
                 </div>
 
                 <div>
@@ -360,7 +360,7 @@ export function ResourceEditModal({
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
                   <span>Smart Code:</span>
-                  <code className="bg-gray-100 px-2 py-1 rounded text-xs">
+                  <code className="bg-muted px-2 py-1 rounded text-xs">
                     {formData.smart_code}
                   </code>
                 </div>

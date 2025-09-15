@@ -239,7 +239,7 @@ export default function SalonBudgetingPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading organization context...</p>
+          <p className="text-muted-foreground">Loading organization context...</p>
         </div>
       </div>
     )
@@ -374,9 +374,9 @@ export default function SalonBudgetingPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl flex items-center justify-center animate-pulse">
-            <Scissors className="w-8 h-8 text-white" />
+            <Scissors className="w-8 h-8 text-foreground" />
           </div>
-          <p className="text-gray-600">Loading salon budgeting workspace...</p>
+          <p className="text-muted-foreground">Loading salon budgeting workspace...</p>
         </div>
       </div>
     )
@@ -385,7 +385,7 @@ export default function SalonBudgetingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-white">
       {/* Header */}
-      <header className="border-b bg-white/90 backdrop-blur-sm">
+      <header className="border-b bg-background/90 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -399,13 +399,13 @@ export default function SalonBudgetingPage() {
                 Back
               </Button>
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 shadow-lg">
-                <Scissors className="h-6 w-6 text-white" />
+                <Scissors className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+                <h1 className="text-2xl font-bold text-foreground">
                   {salonOrg.organization_name} - Budgeting
                 </h1>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-muted-foreground">
                   Beauty salon budgeting with service-based revenue planning
                 </p>
               </div>
@@ -455,7 +455,7 @@ export default function SalonBudgetingPage() {
                   <p className="text-2xl font-bold text-purple-900">{salonMetrics.totalServices}</p>
                   <div className="flex items-center mt-2">
                     <Users className="w-4 h-4 text-blue-500 mr-1" />
-                    <span className="text-sm text-blue-600">{salonMetrics.servicesPerDay}/day</span>
+                    <span className="text-sm text-primary">{salonMetrics.servicesPerDay}/day</span>
                   </div>
                 </div>
                 <Scissors className="w-8 h-8 text-purple-600" />
@@ -467,7 +467,7 @@ export default function SalonBudgetingPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600">Average Ticket</p>
+                  <p className="text-sm font-medium text-primary">Average Ticket</p>
                   <p className="text-2xl font-bold text-blue-900">
                     {formatCurrency(salonMetrics.averageTicket)}
                   </p>
@@ -476,7 +476,7 @@ export default function SalonBudgetingPage() {
                     <span className="text-sm text-orange-600">Target: {formatCurrency(95)}</span>
                   </div>
                 </div>
-                <Star className="w-8 h-8 text-blue-600" />
+                <Star className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -501,13 +501,13 @@ export default function SalonBudgetingPage() {
         {/* Service Categories */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {salonServices.map((category, index) => (
-            <Card key={index} className="bg-white/80 backdrop-blur-sm">
+            <Card key={index} className="bg-background/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div
                     className={`w-8 h-8 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}
                   >
-                    <category.icon className="w-5 h-5 text-white" />
+                    <category.icon className="w-5 h-5 text-foreground" />
                   </div>
                   {category.category}
                 </CardTitle>
@@ -523,11 +523,11 @@ export default function SalonBudgetingPage() {
                   {category.services.map((service, svcIndex) => (
                     <div
                       key={svcIndex}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
                     >
                       <div>
                         <div className="font-medium text-gray-900">{service.name}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-muted-foreground">
                           {service.monthly_volume} services × {formatCurrency(service.price)}
                         </div>
                       </div>
@@ -535,7 +535,7 @@ export default function SalonBudgetingPage() {
                         <div className="font-semibold text-gray-900">
                           {formatCurrency(service.revenue)}
                         </div>
-                        <div className="text-xs text-gray-500">monthly</div>
+                        <div className="text-xs text-muted-foreground">monthly</div>
                       </div>
                     </div>
                   ))}
@@ -546,10 +546,10 @@ export default function SalonBudgetingPage() {
         </div>
 
         {/* Staff Performance */}
-        <Card className="mb-8 bg-white/80 backdrop-blur-sm">
+        <Card className="mb-8 bg-background/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-600" />
+              <Users className="w-5 h-5 text-primary" />
               Staff Performance & Budget
             </CardTitle>
             <CardDescription>
@@ -563,7 +563,7 @@ export default function SalonBudgetingPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <h4 className="font-semibold text-gray-900">{staff.name}</h4>
-                      <p className="text-sm text-gray-600">{staff.role}</p>
+                      <p className="text-sm text-muted-foreground">{staff.role}</p>
                     </div>
                     <Badge variant="outline" className="bg-blue-50">
                       {staff.commission_rate}% Commission
@@ -572,23 +572,23 @@ export default function SalonBudgetingPage() {
 
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Daily Services:</span>
+                      <span className="text-muted-foreground">Daily Services:</span>
                       <span className="font-medium">{staff.services_per_day}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Daily Revenue:</span>
+                      <span className="text-muted-foreground">Daily Revenue:</span>
                       <span className="font-medium">{formatCurrency(staff.revenue_per_day)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Monthly Revenue:</span>
-                      <span className="font-semibold text-blue-600">
+                      <span className="text-muted-foreground">Monthly Revenue:</span>
+                      <span className="font-semibold text-primary">
                         {formatCurrency(staff.monthly_revenue)}
                       </span>
                     </div>
 
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-gray-600">Utilization:</span>
+                        <span className="text-muted-foreground">Utilization:</span>
                         <span className="font-medium">{staff.utilization}%</span>
                       </div>
                       <Progress value={staff.utilization} className="h-2" />
@@ -601,7 +601,7 @@ export default function SalonBudgetingPage() {
         </Card>
 
         {/* Seasonal Trends */}
-        <Card className="mb-8 bg-white/80 backdrop-blur-sm">
+        <Card className="mb-8 bg-background/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-green-600" />
@@ -622,13 +622,13 @@ export default function SalonBudgetingPage() {
                       trend.factor >= 1.2
                         ? 'text-green-600'
                         : trend.factor >= 1.0
-                          ? 'text-blue-600'
+                          ? 'text-primary'
                           : 'text-orange-600'
                     }`}
                   >
                     {(trend.factor * 100).toFixed(0)}%
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-muted-foreground">
                     {formatCurrency(salonMetrics.totalRevenue * trend.factor)}
                   </div>
                   {trend.events.map((event, eventIndex) => (
@@ -655,7 +655,7 @@ export default function SalonBudgetingPage() {
         </Card>
 
         {/* Budget Summary */}
-        <Card className="bg-gradient-to-r from-pink-600 to-purple-600 text-white">
+        <Card className="bg-gradient-to-r from-pink-600 to-purple-600 text-foreground">
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <Crown className="w-16 h-16 mx-auto mb-4" />
@@ -704,7 +704,7 @@ export default function SalonBudgetingPage() {
                 size="lg"
                 variant="secondary"
                 onClick={createSalonBudget}
-                className="bg-white text-pink-600 hover:bg-pink-50"
+                className="bg-background text-pink-600 hover:bg-pink-50"
               >
                 <Target className="w-5 h-5 mr-2" />
                 Generate Complete Budget

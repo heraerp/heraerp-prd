@@ -25,10 +25,10 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
   // Show loading state during demo auth
   if (isProcessing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400 mx-auto" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">{message || 'Loading demo...'}</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary dark:text-blue-400 mx-auto" />
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground">{message || 'Loading demo...'}</p>
         </div>
       </div>
     )
@@ -38,7 +38,7 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
   if (message && !isProcessing) {
     return (
       <>
-        <div className="fixed top-4 right-4 z-50 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-4 right-4 z-50 bg-blue-600 text-foreground px-4 py-2 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-300">
           {message}
         </div>
         {children}

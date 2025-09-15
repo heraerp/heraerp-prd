@@ -337,8 +337,8 @@ export default function SQLManagerPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white">HERA SQL Manager</h1>
-            <p className="text-slate-400 mt-1">
+            <h1 className="text-4xl font-bold text-foreground">HERA SQL Manager</h1>
+            <p className="text-muted-foreground mt-1">
               Advanced database management with universal functions
             </p>
           </div>
@@ -350,7 +350,7 @@ export default function SQLManagerPage() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-slate-800/50 border-slate-700">
+          <TabsList className="bg-muted/50 border-border">
             <TabsTrigger value="functions" className="data-[state=active]:bg-slate-700">
               <Function className="h-4 w-4 mr-2" />
               Universal Functions
@@ -371,17 +371,17 @@ export default function SQLManagerPage() {
 
           {/* Functions Tab */}
           <TabsContent value="functions" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white">Universal Function Library</CardTitle>
+                  <CardTitle className="text-foreground">Universal Function Library</CardTitle>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search functions..."
                       value={searchTerm}
                       onChange={e => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-slate-700 border-slate-600 text-white"
+                      className="pl-10 bg-slate-700 border-input text-foreground"
                     />
                   </div>
                 </div>
@@ -393,7 +393,7 @@ export default function SQLManagerPage() {
                     return (
                       <div
                         key={category.category}
-                        className="bg-slate-700/50 rounded-lg border border-slate-600 p-4"
+                        className="bg-slate-700/50 rounded-lg border border-input p-4"
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <div
@@ -417,19 +417,19 @@ export default function SQLManagerPage() {
                               )}
                             />
                           </div>
-                          <h3 className="text-lg font-semibold text-white">{category.category}</h3>
+                          <h3 className="text-lg font-semibold text-foreground">{category.category}</h3>
                         </div>
 
                         <div className="space-y-3">
                           {category.functions.map(func => (
                             <div
                               key={func.name}
-                              className="bg-slate-800/50 rounded-lg p-3 border border-slate-600"
+                              className="bg-muted/50 rounded-lg p-3 border border-input"
                             >
                               <div className="flex items-start justify-between mb-2">
                                 <div>
                                   <h4 className="font-mono text-sm text-blue-400">{func.name}</h4>
-                                  <p className="text-xs text-slate-400 mt-1">{func.description}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">{func.description}</p>
                                 </div>
                                 <Button
                                   size="sm"
@@ -441,7 +441,7 @@ export default function SQLManagerPage() {
                                 </Button>
                               </div>
                               <div className="mt-2">
-                                <code className="text-xs text-slate-300 bg-slate-900 px-2 py-1 rounded">
+                                <code className="text-xs text-slate-300 bg-background px-2 py-1 rounded">
                                   {func.signature}
                                 </code>
                               </div>
@@ -458,10 +458,10 @@ export default function SQLManagerPage() {
 
           {/* Management Tab */}
           <TabsContent value="management" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader>
-                <CardTitle className="text-white">Database Management Queries</CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardTitle className="text-foreground">Database Management Queries</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Pre-configured queries for monitoring and optimization
                 </CardDescription>
               </CardHeader>
@@ -469,21 +469,21 @@ export default function SQLManagerPage() {
                 <div className="space-y-6">
                   {Object.entries(MANAGEMENT_QUERIES).map(([category, queries]) => (
                     <div key={category}>
-                      <h3 className="text-lg font-semibold text-white mb-3">{category}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-3">{category}</h3>
                       <div className="grid grid-cols-1 gap-3">
                         {Object.entries(queries).map(([name, sql]) => (
                           <div
                             key={name}
-                            className="bg-slate-700/50 rounded-lg p-4 border border-slate-600"
+                            className="bg-slate-700/50 rounded-lg p-4 border border-input"
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-medium text-white">{name}</h4>
+                              <h4 className="font-medium text-foreground">{name}</h4>
                               <div className="flex gap-2">
                                 <Button
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => copyToClipboard(sql)}
-                                  className="text-slate-400 hover:text-white"
+                                  className="text-muted-foreground hover:text-foreground"
                                 >
                                   <Copy className="h-3 w-3" />
                                 </Button>
@@ -497,7 +497,7 @@ export default function SQLManagerPage() {
                                 </Button>
                               </div>
                             </div>
-                            <pre className="text-xs text-slate-300 bg-slate-900 p-2 rounded overflow-x-auto">
+                            <pre className="text-xs text-slate-300 bg-background p-2 rounded overflow-x-auto">
                               {sql}
                             </pre>
                           </div>
@@ -512,10 +512,10 @@ export default function SQLManagerPage() {
 
           {/* Query Tab */}
           <TabsContent value="query" className="space-y-4">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-muted/50 border-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white">Custom Query Editor</CardTitle>
+                  <CardTitle className="text-foreground">Custom Query Editor</CardTitle>
                   <Button
                     onClick={() => executeQuery(query)}
                     disabled={loading || !query}
@@ -540,7 +540,7 @@ export default function SQLManagerPage() {
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                   placeholder="Enter your SQL query here..."
-                  className="font-mono text-sm h-96 bg-slate-900 text-slate-100 border-slate-700"
+                  className="font-mono text-sm h-96 bg-background text-slate-100 border-border"
                   spellCheck={false}
                 />
               </CardContent>
@@ -557,10 +557,10 @@ export default function SQLManagerPage() {
           {/* Results Tab */}
           <TabsContent value="results">
             {results && results.data && (
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-muted/50 border-border">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-white">
+                    <CardTitle className="text-foreground">
                       Query Results ({results.rowCount} rows)
                     </CardTitle>
                     <Button
@@ -586,7 +586,7 @@ export default function SQLManagerPage() {
                         document.body.removeChild(a)
                         URL.revokeObjectURL(url)
                       }}
-                      className="text-white border-slate-600"
+                      className="text-foreground border-input"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Export CSV
@@ -597,7 +597,7 @@ export default function SQLManagerPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-slate-700">
+                        <tr className="border-b border-border">
                           {results.data.length > 0 &&
                             Object.keys(results.data[0]).map(key => (
                               <th key={key} className="text-left p-2 font-medium text-slate-300">
@@ -608,7 +608,7 @@ export default function SQLManagerPage() {
                       </thead>
                       <tbody>
                         {results.data.map((row: any, i: number) => (
-                          <tr key={i} className="border-b border-slate-700 hover:bg-slate-700/50">
+                          <tr key={i} className="border-b border-border hover:bg-slate-700/50">
                             {Object.values(row).map((value: any, j: number) => (
                               <td key={j} className="p-2 text-slate-300">
                                 {value === null ? (

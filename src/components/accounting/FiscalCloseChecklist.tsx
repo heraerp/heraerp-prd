@@ -237,7 +237,7 @@ export function FiscalCloseChecklist({
       accruals: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       closing: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       reporting: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      archive: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      archive: 'bg-muted text-gray-800 dark:bg-background dark:text-gray-200'
     }
     return colors[category] || colors.validation
   }
@@ -249,7 +249,7 @@ export function FiscalCloseChecklist({
       case 'in_progress':
         return <Clock className="h-5 w-5 text-yellow-600 animate-pulse" />
       case 'skipped':
-        return <Circle className="h-5 w-5 text-gray-400" />
+        return <Circle className="h-5 w-5 text-muted-foreground" />
       default:
         return <Circle className="h-5 w-5 text-gray-300" />
     }
@@ -304,7 +304,7 @@ export function FiscalCloseChecklist({
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-gray-500" />
+                          <Icon className="h-4 w-4 text-muted-foreground" />
                           <h4 className="font-medium">{item.title}</h4>
                           {item.required && (
                             <Badge variant="destructive" className="text-xs">

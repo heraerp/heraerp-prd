@@ -22,9 +22,9 @@ export function HeraWordmark({
   const variantClasses = {
     gradient:
       'bg-gradient-to-r from-slate-800 via-blue-500 to-sky-500 bg-clip-text text-transparent',
-    dark: 'text-slate-900',
-    light: 'text-slate-600',
-    white: 'text-white'
+    dark: 'text-foreground',
+    light: 'text-muted-foreground',
+    white: 'text-foreground'
   }
 
   return (

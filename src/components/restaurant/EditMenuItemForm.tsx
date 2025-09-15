@@ -116,24 +116,24 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="bg-white p-6 overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div className="bg-background p-6 overflow-y-auto max-h-[90vh]">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 bg-white">
+          <div className="flex items-center justify-between mb-6 bg-background">
             <h2 className="text-2xl font-bold text-gray-900">Pencil Menu Item</h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-500 bg-white p-1 rounded"
+              className="text-muted-foreground hover:text-muted-foreground bg-background p-1 rounded"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 bg-white">
+          <form onSubmit={handleSubmit} className="space-y-6 bg-background">
             {/* Basic Information */}
-            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4 bg-muted p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -152,7 +152,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     onChange={handleInputChange}
                     placeholder="e.g., Margherita Pizza"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -170,7 +170,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     value={formData.entity_code}
                     onChange={handleInputChange}
                     placeholder="e.g., PIZZA_001"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
               </div>
@@ -188,14 +188,14 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   placeholder="Describe your dish..."
                 />
               </div>
             </div>
 
             {/* Pricing & Preparation */}
-            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4 bg-muted p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Pricing & Preparation</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -204,7 +204,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     Price *
                   </label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <input
                       id="price"
                       name="price"
@@ -212,7 +212,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                       step="0.01"
                       value={formData.price}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       placeholder="0.00"
                       required
                     />
@@ -227,14 +227,14 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     Prep Time (minutes)
                   </label>
                   <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <input
                       id="prep_time"
                       name="prep_time"
                       type="number"
                       value={formData.prep_time}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                       placeholder="15"
                     />
                   </div>
@@ -243,7 +243,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             </div>
 
             {/* Category */}
-            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4 bg-muted p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Category *</h3>
 
               <div className="space-y-3">
@@ -262,7 +262,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
                 {!predefinedCategories.includes(formData.category) && formData.category && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Custom:</span>
+                    <span className="text-sm text-muted-foreground">Custom:</span>
                     <Badge variant="default">{formData.category}</Badge>
                   </div>
                 )}
@@ -280,7 +280,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                         setCustomCategory('')
                       }
                     }}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                   <button
                     type="button"
@@ -290,7 +290,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                         setCustomCategory('')
                       }
                     }}
-                    className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-700"
+                    className="px-3 py-2 border border-border rounded-lg hover:bg-muted bg-background text-gray-700"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -299,7 +299,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             </div>
 
             {/* Dietary Tags */}
-            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4 bg-muted p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Dietary Information</h3>
 
               <div className="flex flex-wrap gap-2">
@@ -318,7 +318,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             </div>
 
             {/* Ingredients */}
-            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4 bg-muted p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Ingredients</h3>
 
               <textarea
@@ -327,17 +327,17 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 value={formData.ingredients}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                 placeholder="List main ingredients..."
               />
             </div>
 
             {/* Submit Button */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <div className="flex gap-3 pt-4 border-t border-border">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+                className="flex-1 bg-green-600 text-foreground py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
               >
                 {isSubmitting ? (
                   <>
@@ -356,7 +356,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 border border-border rounded-lg hover:bg-muted transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>

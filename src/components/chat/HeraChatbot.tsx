@@ -146,19 +146,19 @@ export function HeraChatbot({
           onClick={() => setIsOpen(true)}
           className={`fixed ${positionClasses[position]} z-50 rounded-full w-14 h-14 shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700`}
         >
-          <MessageCircle className="w-6 h-6 text-white" />
+          <MessageCircle className="w-6 h-6 text-foreground" />
         </Button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
         <Card
-          className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}
+          className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme === 'dark' ? 'bg-background text-foreground' : 'bg-background'}`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
+          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-600 to-pink-600 text-foreground rounded-t-lg">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-background/20 rounded-full flex items-center justify-center">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
@@ -170,7 +170,7 @@ export function HeraChatbot({
               onClick={() => setIsOpen(false)}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20"
+              className="text-foreground hover:bg-background/20"
             >
               <X className="w-4 h-4" />
             </Button>
@@ -202,18 +202,18 @@ export function HeraChatbot({
                     <div
                       className={`rounded-lg px-4 py-2 ${
                         message.role === 'user'
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-foreground'
                           : message.role === 'error'
                             ? 'bg-red-50 text-red-900 border border-red-200'
                             : theme === 'dark'
-                              ? 'bg-gray-800 text-gray-100'
-                              : 'bg-gray-100 text-gray-900'
+                              ? 'bg-muted text-gray-100'
+                              : 'bg-muted text-gray-900'
                       }`}
                     >
                       <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                     </div>
                     <p
-                      className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`text-xs mt-1 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                     >
                       {message.timestamp.toLocaleTimeString()}
                     </p>
@@ -221,7 +221,7 @@ export function HeraChatbot({
 
                   {message.role === 'user' && (
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0 order-2">
-                      <User className="w-5 h-5 text-white" />
+                      <User className="w-5 h-5 text-foreground" />
                     </div>
                   )}
                 </div>
@@ -233,7 +233,7 @@ export function HeraChatbot({
                     <Bot className="w-5 h-5 text-purple-600" />
                   </div>
                   <div
-                    className={`rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+                    className={`rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-muted' : 'bg-muted'}`}
                   >
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
@@ -252,7 +252,7 @@ export function HeraChatbot({
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
                 disabled={isLoading}
-                className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}
+                className={theme === 'dark' ? 'bg-muted border-border' : ''}
               />
               <Button
                 onClick={sendMessage}
@@ -266,7 +266,7 @@ export function HeraChatbot({
                 )}
               </Button>
             </div>
-            <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+            <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
               Powered by HERA Universal Architecture •{' '}
               {organizationId === DEFAULT_ORG_ID ? 'Test Mode' : currentOrganization?.name}
             </p>

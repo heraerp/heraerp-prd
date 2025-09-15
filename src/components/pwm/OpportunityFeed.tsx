@@ -88,7 +88,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
               <Lightbulb className="h-6 w-6 text-emerald-400" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-white">Active Opportunities</h3>
+              <h3 className="text-xl font-semibold text-foreground">Active Opportunities</h3>
               <p className="text-sm text-emerald-400">
                 {allOpportunities.length} opportunities • +$
                 {allOpportunities.reduce((sum, o) => sum + o.impact, 0) / 1000000}M potential
@@ -106,16 +106,16 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <DollarSign className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-foreground">
               ${allOpportunities.reduce((sum, o) => sum + o.impact, 0) / 1000000}M
             </p>
-            <p className="text-xs text-slate-400">Total Potential</p>
+            <p className="text-xs text-muted-foreground">Total Potential</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <TrendingUp className="h-5 w-5 text-blue-400 mx-auto mb-1" />
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-foreground">
               {(
                 (allOpportunities.reduce((sum, o) => sum + o.confidence, 0) /
                   allOpportunities.length) *
@@ -123,14 +123,14 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
               ).toFixed(0)}
               %
             </p>
-            <p className="text-xs text-slate-400">Avg Confidence</p>
+            <p className="text-xs text-muted-foreground">Avg Confidence</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-slate-800/50">
+          <div className="text-center p-3 rounded-lg bg-muted/50">
             <Clock className="h-5 w-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-foreground">
               {allOpportunities.filter(o => o.priority === 'high').length}
             </p>
-            <p className="text-xs text-slate-400">Time Sensitive</p>
+            <p className="text-xs text-muted-foreground">Time Sensitive</p>
           </div>
         </div>
       </Card>
@@ -140,7 +140,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
         {allOpportunities.map(opportunity => (
           <Card
             key={opportunity.id}
-            className="p-5 bg-slate-900/50 backdrop-blur-sm border-slate-800 hover:border-slate-700 transition-all"
+            className="p-5 bg-background/50 backdrop-blur-sm border-slate-800 hover:border-border transition-all"
           >
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
@@ -168,8 +168,8 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                     {opportunity.priority} priority
                   </Badge>
                 </div>
-                <h4 className="font-semibold text-white text-lg mb-1">{opportunity.title}</h4>
-                <p className="text-sm text-slate-400 leading-relaxed">{opportunity.description}</p>
+                <h4 className="font-semibold text-foreground text-lg mb-1">{opportunity.title}</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">{opportunity.description}</p>
               </div>
             </div>
 
@@ -184,7 +184,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
               <div className="h-8 w-px bg-slate-700" />
               <div>
                 <p className="text-xs text-slate-500">AI Confidence</p>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-foreground">
                   {(opportunity.confidence * 100).toFixed(0)}%
                 </p>
               </div>
@@ -193,7 +193,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                   <div className="h-8 w-px bg-slate-700" />
                   <div>
                     <p className="text-xs text-slate-500">Timeframe</p>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {(opportunity as any).timeframe}
                     </p>
                   </div>
@@ -210,7 +210,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                 Explore Opportunity
                 <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
-              <Button size="icon" variant="ghost" className="text-slate-400 hover:text-white">
+              <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-foreground">
                 <Clock className="h-4 w-4" />
               </Button>
             </div>
@@ -219,7 +219,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
       </div>
 
       {/* AI Analysis Note */}
-      <Card className="p-4 bg-slate-800/30 border-slate-700/50">
+      <Card className="p-4 bg-muted/30 border-border/50">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-purple-500/20">
             <Zap className="h-4 w-4 text-purple-400" />

@@ -12,16 +12,16 @@ export default function AuthLandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+                <Building2 className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">HERA ERP</h1>
-                <p className="text-xs text-slate-600">Universal Business Platform</p>
+                <h1 className="text-xl font-bold text-foreground">HERA ERP</h1>
+                <p className="text-xs text-muted-foreground">Universal Business Platform</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -32,7 +32,7 @@ export default function AuthLandingPage() {
                 <Button variant="ghost">Sign In</Button>
               </Link>
               <Link href="/auth/signup">
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -49,14 +49,14 @@ export default function AuthLandingPage() {
             <Sparkles className="w-4 h-4 mr-2" />
             30-Second Business Setup
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
             One Platform.
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               {' '}
               Infinite Business.
             </span>
           </h1>
-          <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
             HERA's revolutionary 6-table architecture handles any business complexity. From
             restaurants to healthcare, manufacturing to services - all on one universal platform.
           </p>
@@ -64,7 +64,7 @@ export default function AuthLandingPage() {
             <Link href="/how-it-works">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground px-8"
               >
                 See Live Demos
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -85,10 +85,10 @@ export default function AuthLandingPage() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                <Globe className="h-6 w-6 text-blue-600" />
+                <Globe className="h-6 w-6 text-primary" />
               </div>
               <h3 className="text-lg font-semibold mb-2">Multi-Organization</h3>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Manage multiple businesses from one account. Each with its own subdomain and
                 complete isolation.
               </p>
@@ -101,7 +101,7 @@ export default function AuthLandingPage() {
                 <Zap className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-lg font-semibold mb-2">Instant Apps</h3>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Install pre-built apps for your industry in seconds. CRM, inventory, accounting -
                 all integrated.
               </p>
@@ -114,7 +114,7 @@ export default function AuthLandingPage() {
                 <Shield className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="text-lg font-semibold mb-2">Enterprise Security</h3>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Bank-grade security with complete data isolation between organizations. Your data is
                 always safe.
               </p>
@@ -125,13 +125,13 @@ export default function AuthLandingPage() {
 
       {/* CTA Section */}
       <section className="container mx-auto px-6 py-16">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-white">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-foreground">
           <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Business?</h2>
           <p className="text-xl mb-8 text-blue-100">
             Join thousands of businesses already using HERA's universal platform.
           </p>
           <Link href="/auth/signup">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+            <Button size="lg" className="bg-background text-primary hover:bg-primary/10">
               Create Your First Organization
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

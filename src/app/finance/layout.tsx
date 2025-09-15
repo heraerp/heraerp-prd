@@ -55,7 +55,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-background/50 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -66,15 +66,15 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="h-full bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border-r border-white/10">
+        <div className="h-full bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border-r border-border/10">
           <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center justify-between px-6 border-b border-white/10">
+            <div className="flex h-16 items-center justify-between px-6 border-b border-border/10">
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg blur-lg opacity-60 animate-pulse" />
                   <div className="relative bg-gradient-to-br from-emerald-500 to-green-600 p-2.5 rounded-lg">
-                    <Landmark className="h-6 w-6 text-white" />
+                    <Landmark className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
                 <div>
@@ -88,7 +88,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden text-white/60 hover:text-white transition-colors"
+                className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -103,7 +103,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                     key={item.name}
                     href={item.href}
                     className={`group relative flex items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
-                      isActive ? 'text-white' : 'text-white/70 hover:text-white'
+                      isActive ? 'text-foreground' : 'text-foreground/70 hover:text-foreground'
                     }`}
                     style={{
                       animationDelay: `${index * 50}ms`
@@ -114,7 +114,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                       className={`absolute inset-0 rounded-xl transition-all duration-300 ${
                         isActive
                           ? 'bg-gradient-to-r from-emerald-500/20 to-green-600/20 shadow-lg shadow-emerald-500/20'
-                          : 'bg-transparent group-hover:bg-white/5'
+                          : 'bg-transparent group-hover:bg-background/5'
                       }`}
                     />
 
@@ -124,7 +124,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                         className={`h-5 w-5 transition-all duration-300 ${
                           isActive
                             ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]'
-                            : 'text-white/70 group-hover:text-white'
+                            : 'text-foreground/70 group-hover:text-foreground'
                         }`}
                       />
                     </div>
@@ -144,35 +144,35 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
             <div className="p-4">
               <div className="relative rounded-2xl overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-green-600/20 to-[#00DDFF]/20 animate-gradient-shift" />
-                <div className="relative bg-white/5 backdrop-blur-xl p-4 border border-white/10">
+                <div className="relative bg-background/5 backdrop-blur-xl p-4 border border-border/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600">
-                        <DollarSign className="h-4 w-4 text-white" />
+                        <DollarSign className="h-4 w-4 text-foreground" />
                       </div>
-                      <span className="text-sm font-semibold text-white">Financial Health</span>
+                      <span className="text-sm font-semibold text-foreground">Financial Health</span>
                     </div>
                     <span className="text-xs font-medium text-emerald-400">Good</span>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
-                      <span className="text-white/60">Revenue YTD</span>
+                      <span className="text-foreground/60">Revenue YTD</span>
                       <span className="text-emerald-400 font-medium">₹540 Cr</span>
                     </div>
                     <div className="flex justify-between text-xs">
-                      <span className="text-white/60">Profit Margin</span>
+                      <span className="text-foreground/60">Profit Margin</span>
                       <span className="text-[#fff685] font-medium">22.5%</span>
                     </div>
                     <div className="flex justify-between text-xs">
-                      <span className="text-white/60">Cash Flow</span>
+                      <span className="text-foreground/60">Cash Flow</span>
                       <span className="text-[#00DDFF] font-medium">₹85 Cr</span>
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-white/10">
+                  <div className="mt-3 pt-3 border-t border-border/10">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/60">Working Capital</span>
+                      <span className="text-foreground/60">Working Capital</span>
                       <div className="flex items-center space-x-1">
                         <TrendingUp className="h-3 w-3 text-emerald-400" />
                         <span className="text-emerald-400 font-medium">Healthy</span>
@@ -189,11 +189,11 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-white/5 backdrop-blur-2xl border-b border-white/10">
+        <header className="sticky top-0 z-20 bg-background/5 backdrop-blur-2xl border-b border-border/10">
           <div className="flex h-16 items-center justify-between px-4 lg:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-white/60 hover:text-white transition-colors"
+              className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
             >
               <Menu className="h-6 w-6" />
             </button>
@@ -204,7 +204,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                 <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                   <ArrowUpRight className="h-4 w-4 text-emerald-400" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Receivables</span>
+                    <span className="text-xs text-foreground/60">Receivables</span>
                     <span className="text-xs font-semibold text-emerald-400">₹125 Cr</span>
                   </div>
                 </div>
@@ -212,7 +212,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                 <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
                   <ArrowDownRight className="h-4 w-4 text-red-400" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Payables</span>
+                    <span className="text-xs text-foreground/60">Payables</span>
                     <span className="text-xs font-semibold text-red-400">₹82 Cr</span>
                   </div>
                 </div>
@@ -220,7 +220,7 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                 <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[#00DDFF]/10 border border-[#00DDFF]/20">
                   <Wallet className="h-4 w-4 text-[#00DDFF]" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Cash Balance</span>
+                    <span className="text-xs text-foreground/60">Cash Balance</span>
                     <span className="text-xs font-semibold text-[#00DDFF]">₹45 Cr</span>
                   </div>
                 </div>

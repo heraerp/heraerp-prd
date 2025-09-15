@@ -18,18 +18,18 @@ const HERA_ASSESSMENT_COLORS = {
   poor: { bg: 'bg-red-500/20', text: 'text-red-300', border: 'border-red-500/50' },
 
   // Text Colors with WCAG AAA compliance
-  primary: 'text-gray-900 dark:text-gray-100',
+  primary: 'text-gray-900 dark:text-foreground',
   secondary: 'text-gray-700 dark:text-gray-200',
-  muted: 'text-gray-600 dark:text-gray-300',
+  muted: 'text-muted-foreground dark:text-gray-300',
 
   // Status Colors
   complete: 'text-emerald-400',
   pending: 'text-amber-400',
-  incomplete: 'text-gray-400',
+  incomplete: 'text-muted-foreground',
 
   // Tab Colors (high contrast)
   tabInactive: 'text-teal-200 hover:text-teal-100',
-  tabActive: 'text-white'
+  tabActive: 'text-foreground'
 }
 
 interface TabConfig {
@@ -77,8 +77,8 @@ export function AssessmentDashboardDNA({
       <Card
         className={cn(
           'relative overflow-hidden backdrop-blur-xl',
-          'bg-white/90 dark:bg-gray-900/90',
-          'border border-white/20 dark:border-gray-800/50',
+          'bg-background/90 dark:bg-background/90',
+          'border border-border/20 dark:border-gray-800/50',
           'shadow-xl',
           className
         )}
@@ -202,8 +202,8 @@ export function AssessmentScoreCard({
       transition={{ duration: 0.3 }}
       className={cn(
         'p-6 rounded-xl',
-        'bg-white/50 dark:bg-gray-800/50',
-        'border border-gray-200/50 dark:border-gray-700/50',
+        'bg-background/50 dark:bg-muted/50',
+        'border border-border/50 dark:border-border/50',
         'backdrop-blur-sm',
         className
       )}

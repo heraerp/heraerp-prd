@@ -115,13 +115,13 @@ export function RestaurantIntegratedDashboard() {
     return (
       <div className="space-y-6">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-lg">
+        <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-foreground p-6 rounded-lg">
           <h1 className="text-3xl font-bold mb-2">Welcome to HERA Restaurant Pro</h1>
           <p className="text-orange-100">
             Comprehensive restaurant management with real-time financial integration
           </p>
           {organization && (
-            <Badge className="mt-2 bg-white text-orange-600">
+            <Badge className="mt-2 bg-background text-orange-600">
               {organization.organization_name}
             </Badge>
           )}
@@ -131,7 +131,7 @@ export function RestaurantIntegratedDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="restaurant-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-600">Today's Revenue</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Today's Revenue</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold text-orange-600">$8,750</p>
@@ -144,7 +144,7 @@ export function RestaurantIntegratedDashboard() {
 
           <Card className="restaurant-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-600">Active Orders</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Active Orders</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">24</p>
@@ -158,21 +158,21 @@ export function RestaurantIntegratedDashboard() {
 
           <Card className="restaurant-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-600">Food Cost %</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Food Cost %</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold text-green-600">28.5%</p>
-              <p className="text-sm text-gray-500 mt-1">Target: 30%</p>
+              <p className="text-sm text-muted-foreground mt-1">Target: 30%</p>
             </CardContent>
           </Card>
 
           <Card className="restaurant-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-600">Net Margin</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Net Margin</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold text-green-600">22%</p>
-              <p className="text-sm text-gray-500 mt-1">Profit: $1,925</p>
+              <p className="text-sm text-muted-foreground mt-1">Profit: $1,925</p>
             </CardContent>
           </Card>
         </div>
@@ -188,18 +188,18 @@ export function RestaurantIntegratedDashboard() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {heraIntegrations.map((integration, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                   <div className="p-2 bg-green-100 rounded-lg">{integration.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold">{integration.name}</h3>
-                      <Badge className="bg-green-500 text-white text-xs">
+                      <Badge className="bg-green-500 text-foreground text-xs">
                         <CheckCircle className="w-3 h-3 mr-1" />
                         Active
                       </Badge>
                     </div>
-                    <p className="text-sm text-gray-600">{integration.description}</p>
-                    <p className="text-xs text-gray-400 mt-1 font-mono">{integration.smartCode}</p>
+                    <p className="text-sm text-muted-foreground">{integration.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono">{integration.smartCode}</p>
                   </div>
                 </div>
               ))}
@@ -257,35 +257,35 @@ export function RestaurantIntegratedDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <div className="flex items-center justify-between p-2 hover:bg-muted rounded">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <div>
                     <p className="font-medium">Order #0142 completed</p>
-                    <p className="text-xs text-gray-500">Table 12 - $124.50</p>
+                    <p className="text-xs text-muted-foreground">Table 12 - $124.50</p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400">2 min ago</span>
+                <span className="text-xs text-muted-foreground">2 min ago</span>
               </div>
-              <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <div className="flex items-center justify-between p-2 hover:bg-muted rounded">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div>
                     <p className="font-medium">Auto-journal posted</p>
-                    <p className="text-xs text-gray-500">Sales transactions batch processed</p>
+                    <p className="text-xs text-muted-foreground">Sales transactions batch processed</p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400">5 min ago</span>
+                <span className="text-xs text-muted-foreground">5 min ago</span>
               </div>
-              <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <div className="flex items-center justify-between p-2 hover:bg-muted rounded">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                   <div>
                     <p className="font-medium">Low stock alert</p>
-                    <p className="text-xs text-gray-500">Salmon fillet below reorder point</p>
+                    <p className="text-xs text-muted-foreground">Salmon fillet below reorder point</p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400">15 min ago</span>
+                <span className="text-xs text-muted-foreground">15 min ago</span>
               </div>
             </div>
           </CardContent>

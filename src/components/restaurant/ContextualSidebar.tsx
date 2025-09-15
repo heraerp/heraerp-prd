@@ -411,7 +411,7 @@ export function ContextualSidebar({
   if (isCollapsed) {
     return (
       <div
-        className={`w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 space-y-4 ${className}`}
+        className={`w-16 bg-background border-r border-border flex flex-col items-center py-4 space-y-4 ${className}`}
       >
         {/* Collapsed view - only icons */}
         <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="w-10 h-10 p-0">
@@ -431,12 +431,12 @@ export function ContextualSidebar({
                   variant="ghost"
                   size="sm"
                   className={`w-10 h-10 p-0 ${
-                    pathname === item.href ? 'bg-blue-100 text-blue-600' : ''
+                    pathname === item.href ? 'bg-blue-100 text-primary' : ''
                   }`}
                 >
                   {item.icon}
                   {item.badge && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-foreground text-xs rounded-full flex items-center justify-center">
                       {typeof item.badge === 'string' && item.badge.length > 3 ? '•' : item.badge}
                     </span>
                   )}
@@ -450,9 +450,9 @@ export function ContextualSidebar({
 
             {/* Tooltip on hover */}
             {hoveredItem === item.id && (
-              <div className="absolute left-full ml-2 top-0 z-50 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+              <div className="absolute left-full ml-2 top-0 z-50 bg-background text-foreground text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
                 {item.label}
-                {item.hotkey && <span className="ml-2 text-gray-400">{item.hotkey}</span>}
+                {item.hotkey && <span className="ml-2 text-muted-foreground">{item.hotkey}</span>}
               </div>
             )}
           </div>
@@ -462,13 +462,13 @@ export function ContextualSidebar({
   }
 
   return (
-    <div className={`w-80 bg-white border-r border-gray-200 flex flex-col ${className}`}>
+    <div className={`w-80 bg-background border-r border-border flex flex-col ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
-            <p className="text-sm text-gray-500 mt-1">Context-aware shortcuts</p>
+            <p className="text-sm text-muted-foreground mt-1">Context-aware shortcuts</p>
           </div>
           <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="w-8 h-8 p-0">
             <ChevronLeft className="w-4 h-4" />
@@ -484,11 +484,11 @@ export function ContextualSidebar({
               className="flex items-center justify-between mb-3 cursor-pointer"
               onClick={() => toggleSection(section.id)}
             >
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {section.title}
               </h3>
               <ChevronRight
-                className={`w-3 h-3 text-gray-400 transition-transform ${
+                className={`w-3 h-3 text-muted-foreground transition-transform ${
                   expandedSections.has(section.id) ? 'rotate-90' : ''
                 }`}
               />
@@ -501,10 +501,10 @@ export function ContextualSidebar({
                     {item.href ? (
                       <Link href={item.href}>
                         <div
-                          className={`flex items-center justify-between p-3 rounded-lg transition-all hover:bg-gray-50 ${
+                          className={`flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted ${
                             pathname === item.href
-                              ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-500 pl-2'
-                              : 'text-gray-700 hover:text-gray-900'
+                              ? 'bg-blue-50 text-primary border-l-4 border-blue-500 pl-2'
+                              : 'text-gray-700 hover:text-foreground'
                           }`}
                         >
                           <div className="flex items-center space-x-3">
@@ -512,7 +512,7 @@ export function ContextualSidebar({
                             <div>
                               <span className="text-sm font-medium">{item.label}</span>
                               {item.description && (
-                                <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
                               )}
                             </div>
                           </div>
@@ -520,21 +520,21 @@ export function ContextualSidebar({
                             {item.badge && (
                               <Badge
                                 variant="secondary"
-                                className="text-xs bg-gray-100 text-gray-600"
+                                className="text-xs bg-muted text-muted-foreground"
                               >
                                 {item.badge}
                               </Badge>
                             )}
                             {item.hotkey && (
-                              <span className="text-xs text-gray-400 font-mono">{item.hotkey}</span>
+                              <span className="text-xs text-muted-foreground font-mono">{item.hotkey}</span>
                             )}
-                            <ArrowUpRight className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <ArrowUpRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
                       </Link>
                     ) : (
                       <div
-                        className="flex items-center justify-between p-3 rounded-lg transition-all hover:bg-gray-50 cursor-pointer text-gray-700 hover:text-gray-900"
+                        className="flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted cursor-pointer text-gray-700 hover:text-foreground"
                         onClick={item.action}
                       >
                         <div className="flex items-center space-x-3">
@@ -542,7 +542,7 @@ export function ContextualSidebar({
                           <div>
                             <span className="text-sm font-medium">{item.label}</span>
                             {item.description && (
-                              <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
                             )}
                           </div>
                         </div>
@@ -550,13 +550,13 @@ export function ContextualSidebar({
                           {item.badge && (
                             <Badge
                               variant="secondary"
-                              className="text-xs bg-gray-100 text-gray-600"
+                              className="text-xs bg-muted text-muted-foreground"
                             >
                               {item.badge}
                             </Badge>
                           )}
                           {item.hotkey && (
-                            <span className="text-xs text-gray-400 font-mono">{item.hotkey}</span>
+                            <span className="text-xs text-muted-foreground font-mono">{item.hotkey}</span>
                           )}
                         </div>
                       </div>
@@ -570,8 +570,8 @@ export function ContextualSidebar({
       </div>
 
       {/* Footer with keyboard shortcuts hint */}
-      <div className="p-6 border-t border-gray-200">
-        <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="p-6 border-t border-border">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Press ⌘K for quick actions</span>
           <div className="flex items-center space-x-1">
             <Command className="w-3 h-3" />

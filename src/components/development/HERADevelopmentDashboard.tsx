@@ -250,11 +250,11 @@ export function HERADevelopmentDashboard() {
       case 'completed':
         return 'text-green-600 bg-green-50 border-green-200'
       case 'in_progress':
-        return 'text-blue-600 bg-blue-50 border-blue-200'
+        return 'text-primary bg-blue-50 border-blue-200'
       case 'blocked':
         return 'text-red-600 bg-red-50 border-red-200'
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200'
+        return 'text-muted-foreground bg-muted border-border'
     }
   }
 
@@ -267,7 +267,7 @@ export function HERADevelopmentDashboard() {
       case 'medium':
         return 'bg-yellow-100 text-yellow-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -292,11 +292,11 @@ export function HERADevelopmentDashboard() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center">
-            <Zap className="w-7 h-7 text-white" />
+            <Zap className="w-7 h-7 text-foreground" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">HERA Development Dashboard</h1>
-            <p className="text-gray-600 mt-1">Meta-system tracking HERA's own development</p>
+            <p className="text-muted-foreground mt-1">Meta-system tracking HERA's own development</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -374,7 +374,7 @@ export function HERADevelopmentDashboard() {
                 {recentTasks.map(task => (
                   <div
                     key={task.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    className="border rounded-lg p-4 hover:bg-muted transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -386,7 +386,7 @@ export function HERADevelopmentDashboard() {
                           </Badge>
                         </div>
                         <h4 className="font-semibold text-gray-900 mb-1">{task.entity_name}</h4>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="w-3 h-3" />
                             {task.assignee}
@@ -431,10 +431,10 @@ export function HERADevelopmentDashboard() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">
+                  <div className="text-3xl font-bold text-primary">
                     {currentSprint.story_points_completed}
                   </div>
-                  <div className="text-sm text-gray-600">Points Completed</div>
+                  <div className="text-sm text-muted-foreground">Points Completed</div>
                   <Progress
                     value={
                       (currentSprint.story_points_completed / currentSprint.story_points_planned) *
@@ -445,11 +445,11 @@ export function HERADevelopmentDashboard() {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600">{currentSprint.velocity}</div>
-                  <div className="text-sm text-gray-600">Velocity</div>
+                  <div className="text-sm text-muted-foreground">Velocity</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-purple-600">7</div>
-                  <div className="text-sm text-gray-600">Days Remaining</div>
+                  <div className="text-sm text-muted-foreground">Days Remaining</div>
                 </div>
               </div>
 
@@ -458,14 +458,14 @@ export function HERADevelopmentDashboard() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    <span className="line-through text-gray-500">Complete Smart Code System</span>
+                    <span className="line-through text-muted-foreground">Complete Smart Code System</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Circle className="w-5 h-5 text-blue-500" />
                     <span>Build Development Dashboard</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Circle className="w-5 h-5 text-gray-400" />
+                    <Circle className="w-5 h-5 text-muted-foreground" />
                     <span>Implement Audit Workflow System</span>
                   </div>
                 </div>
@@ -488,14 +488,14 @@ export function HERADevelopmentDashboard() {
                 {gitActivity.map(activity => (
                   <div
                     key={activity.id}
-                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+                    className="flex items-start gap-4 p-4 bg-muted rounded-lg"
                   >
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.type === 'commit'
                           ? 'bg-green-100 text-green-600'
                           : activity.type === 'pr'
-                            ? 'bg-blue-100 text-blue-600'
+                            ? 'bg-blue-100 text-primary'
                             : activity.type === 'issue'
                               ? 'bg-red-100 text-red-600'
                               : 'bg-purple-100 text-purple-600'
@@ -505,16 +505,16 @@ export function HERADevelopmentDashboard() {
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-gray-900">{activity.message}</div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                         <span>{activity.author}</span>
                         <span>{new Date(activity.timestamp).toLocaleString()}</span>
-                        <span className="text-blue-600">{activity.branch}</span>
+                        <span className="text-primary">{activity.branch}</span>
                       </div>
                       {activity.stats && (
                         <div className="flex items-center gap-4 text-sm mt-2">
                           <span className="text-green-600">+{activity.stats.additions}</span>
                           <span className="text-red-600">-{activity.stats.deletions}</span>
-                          <span className="text-gray-500">{activity.stats.files} files</span>
+                          <span className="text-muted-foreground">{activity.stats.files} files</span>
                         </div>
                       )}
                     </div>
@@ -542,7 +542,7 @@ export function HERADevelopmentDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-600 mb-4">{category.description}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{category.description}</p>
                     <div className="space-y-2">
                       {category.tasks.map(task => (
                         <div key={task.name} className="flex items-center justify-between">
@@ -553,7 +553,7 @@ export function HERADevelopmentDashboard() {
                                 ? 'bg-green-100 text-green-800'
                                 : task.status === 'in_progress'
                                   ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-gray-100 text-gray-800'
+                                  : 'bg-muted text-gray-800'
                             }
                           >
                             {task.status.replace('_', ' ')}
@@ -581,17 +581,17 @@ export function HERADevelopmentDashboard() {
             metrics are stored in the same universal 6-table architecture:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong className="text-purple-900">core_entities</strong>
               <p className="text-purple-700 mt-1">Tasks stored as entity_type='development_task'</p>
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong className="text-purple-900">universal_transactions</strong>
               <p className="text-purple-700 mt-1">
                 Work logs as transaction_type='development_work'
               </p>
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong className="text-purple-900">core_dynamic_data</strong>
               <p className="text-purple-700 mt-1">Sprint velocity, story points, git stats</p>
             </div>

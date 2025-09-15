@@ -50,7 +50,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
         {/* Mobile sidebar backdrop */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-30 bg-background/50 backdrop-blur-sm lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -69,7 +69,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg blur-lg opacity-80 animate-pulse" />
                     <div className="relative bg-gradient-to-br from-[#0099CC] to-[#0049B7] p-2 rounded-lg">
-                      <Radio className="h-6 w-6 text-white" />
+                      <Radio className="h-6 w-6 text-foreground" />
                     </div>
                   </div>
                   <div>
@@ -83,7 +83,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden text-white/60 hover:text-white transition-colors"
+                  className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
                 >
                   <Menu className="h-6 w-6" />
                 </button>
@@ -98,8 +98,8 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                       key={item.name}
                       href={item.href}
                       icon={item.icon}
-                      className="text-sm font-medium text-white/70 hover:text-white"
-                      activeClassName="!bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 !text-white shadow-lg shadow-[#E91E63]/30"
+                      className="text-sm font-medium text-foreground/70 hover:text-foreground"
+                      activeClassName="!bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 !text-foreground shadow-lg shadow-[#E91E63]/30"
                     >
                       {item.name}
                     </NavigationLink>
@@ -117,14 +117,14 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                         <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#0099CC]">
                           <Globe className="h-4 w-4 text-[#0049B7]" />
                         </div>
-                        <span className="text-sm font-semibold text-white">IPO Readiness</span>
+                        <span className="text-sm font-semibold text-foreground">IPO Readiness</span>
                       </div>
                       <span className="text-xs font-medium text-[#FFD700]">2028</span>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-xs">
-                        <span className="text-white/60">Progress</span>
+                        <span className="text-foreground/60">Progress</span>
                         <span className="text-[#0099CC] font-medium">72%</span>
                       </div>
                       <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -134,11 +134,11 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       <div className="text-center">
-                        <p className="text-xs text-white/60">SEBI Score</p>
+                        <p className="text-xs text-foreground/60">SEBI Score</p>
                         <p className="text-sm font-bold text-[#0099CC]">8.5/10</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-xs text-white/60">Compliance</p>
+                        <p className="text-xs text-foreground/60">Compliance</p>
                         <p className="text-sm font-bold text-[#FFD700]">96%</p>
                       </div>
                     </div>
@@ -156,7 +156,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
             <div className="flex h-16 items-center justify-between px-4 lg:px-6">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-white/60 hover:text-white transition-colors"
+                className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -171,7 +171,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Network</span>
+                    <span className="text-xs text-foreground/60">Network</span>
                     <span className="text-xs font-semibold text-emerald-400">Operational</span>
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#0099CC]/20 to-[#0049B7]/20 border border-[#0099CC]/30">
                   <Activity className="h-4 w-4 text-[#0099CC]" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Active Users</span>
+                    <span className="text-xs text-foreground/60">Active Users</span>
                     <span className="text-sm font-bold bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent">
                       45,832
                     </span>
@@ -191,7 +191,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 <div className="hidden lg:flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E91E63]/20 to-[#C2185B]/20 border border-[#E91E63]/30">
                   <TrendingUp className="h-4 w-4 text-[#E91E63]" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-white/60">Monthly Revenue</span>
+                    <span className="text-xs text-foreground/60">Monthly Revenue</span>
                     <span className="text-sm font-bold bg-gradient-to-r from-[#E91E63] to-[#C2185B] bg-clip-text text-transparent">
                       ₹4.2 Cr
                     </span>

@@ -127,8 +127,8 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-gray-400" />
-          <p className="text-gray-600">Loading email history...</p>
+          <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-muted-foreground" />
+          <p className="text-muted-foreground">Loading email history...</p>
         </CardContent>
       </Card>
     )
@@ -173,9 +173,9 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
       <CardContent>
         {emails.length === 0 ? (
           <div className="text-center py-12">
-            <Inbox className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <Inbox className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">No email history</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               Start a conversation with {contact.name} by sending your first email.
             </p>
             <Button onClick={() => onComposeReply?.(contact)}>
@@ -189,11 +189,11 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
               const isExpanded = expandedEmails.has(email.id || '')
 
               return (
-                <Card key={email.id} className="border border-gray-200">
+                <Card key={email.id} className="border border-border">
                   <CardContent className="p-0">
                     {/* Email Header */}
                     <div
-                      className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                      className="p-4 cursor-pointer hover:bg-muted transition-colors"
                       onClick={() => toggleEmailExpansion(email.id || '')}
                     >
                       <div className="flex items-start justify-between">
@@ -210,7 +210,7 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                               {getStatusBadge(email.status || 'draft')}
                             </div>
 
-                            <div className="flex items-center gap-4 text-xs text-gray-600">
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
                                 {formatDate(email.sentAt || '')}
@@ -222,7 +222,7 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                             </div>
 
                             {!isExpanded && (
-                              <p className="text-sm text-gray-600 mt-2">
+                              <p className="text-sm text-muted-foreground mt-2">
                                 {truncateText(email.body)}
                               </p>
                             )}
@@ -231,9 +231,9 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
 
                         <div className="flex items-center gap-2 ml-4">
                           {isExpanded ? (
-                            <ChevronUp className="h-4 w-4 text-gray-400" />
+                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <ChevronDown className="h-4 w-4 text-gray-400" />
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
                           )}
                         </div>
                       </div>
@@ -241,10 +241,10 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
 
                     {/* Expanded Email Content */}
                     {isExpanded && (
-                      <div className="border-t bg-gray-50">
+                      <div className="border-t bg-muted">
                         <div className="p-4">
                           {/* Email Metadata */}
-                          <div className="bg-white p-3 rounded-lg border mb-4 text-xs text-gray-600">
+                          <div className="bg-background p-3 rounded-lg border mb-4 text-xs text-muted-foreground">
                             <div className="grid grid-cols-2 gap-2">
                               <div>
                                 <strong>From:</strong> Your Organization
@@ -271,7 +271,7 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                           </div>
 
                           {/* Email Body */}
-                          <div className="bg-white p-4 rounded-lg border">
+                          <div className="bg-background p-4 rounded-lg border">
                             <div className="whitespace-pre-wrap text-sm">{email.body}</div>
                           </div>
 

@@ -222,7 +222,7 @@ const movementColumns = [
       const config = movementTypes[value as keyof typeof movementTypes] || {
         label: value,
         icon: Package,
-        color: 'text-gray-500',
+        color: 'text-muted-foreground',
         bgColor: 'bg-gray-500/20'
       }
       const Icon = config.icon

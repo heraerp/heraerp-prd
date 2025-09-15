@@ -121,7 +121,7 @@ export function AppointmentCalendarView({
       {/* Calendar Header */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-white">
+          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-foreground">
             {formatDate(currentMonth, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
@@ -129,7 +129,7 @@ export function AppointmentCalendarView({
               variant="outline"
               size="sm"
               onClick={handlePreviousMonth}
-              className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+              className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -137,7 +137,7 @@ export function AppointmentCalendarView({
               variant="outline"
               size="sm"
               onClick={handleToday}
-              className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+              className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30"
             >
               Today
             </Button>
@@ -145,7 +145,7 @@ export function AppointmentCalendarView({
               variant="outline"
               size="sm"
               onClick={handleNextMonth}
-              className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/30 border-white/20 dark:border-gray-700/30"
+              className="backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -159,7 +159,7 @@ export function AppointmentCalendarView({
         <div className="grid grid-cols-7 gap-2 mb-4">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
             <div key={day} className="text-center">
-              <p className="text-sm font-medium !text-gray-600 dark:!text-gray-400">{day}</p>
+              <p className="text-sm font-medium !text-muted-foreground dark:!text-muted-foreground">{day}</p>
             </div>
           ))}
         </div>
@@ -180,7 +180,7 @@ export function AppointmentCalendarView({
                   'hover:scale-105',
                   isSelected
                     ? 'bg-gradient-to-br from-purple-600/20 to-blue-600/20 border-2 border-purple-500/50'
-                    : 'bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/30',
+                    : 'bg-muted/30 hover:bg-muted/50 border border-border/30',
                   isCurrentDay && !isSelected && 'ring-2 ring-blue-500/50'
                 )}
                 style={{
@@ -208,7 +208,7 @@ export function AppointmentCalendarView({
                           className={cn(
                             'text-xs px-1 py-0.5 rounded truncate',
                             getStatusColor(apt.status),
-                            'bg-opacity-20 text-white'
+                            'bg-opacity-20 text-foreground'
                           )}
                         >
                           <span className="font-medium">{apt.appointmentTime}</span>
@@ -216,7 +216,7 @@ export function AppointmentCalendarView({
                         </div>
                       ))}
                       {dayAppointments.length > 3 && (
-                        <p className="text-xs !text-gray-500 dark:!text-gray-400">
+                        <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                           +{dayAppointments.length - 3} more
                         </p>
                       )}
@@ -248,14 +248,14 @@ export function AppointmentCalendarView({
 
         {/* Selected day appointments */}
         <div className="mt-6 pt-6 border-t border-gray-800">
-          <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-4">
+          <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-4">
             Appointments on {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
           </h3>
 
           {getDayAppointments(selectedDate).length === 0 ? (
             <div className="text-center py-8">
-              <CalendarIcon className="h-10 w-10 text-gray-600 mx-auto mb-3" />
-              <p className="!text-gray-600 dark:!text-gray-400">
+              <CalendarIcon className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+              <p className="!text-muted-foreground dark:!text-muted-foreground">
                 No appointments scheduled for this day
               </p>
             </div>
@@ -266,7 +266,7 @@ export function AppointmentCalendarView({
                 .map(apt => (
                   <div
                     key={apt.id}
-                    className="p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
+                    className="p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
                     style={{
                       backdropFilter: 'blur(10px) saturate(120%)',
                       WebkitBackdropFilter: 'blur(10px) saturate(120%)'
@@ -275,11 +275,11 @@ export function AppointmentCalendarView({
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <Clock className="h-4 w-4 text-gray-400" />
-                          <span className="font-medium !text-gray-900 dark:!text-white">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium !text-gray-900 dark:!text-foreground">
                             {apt.appointmentTime}
                           </span>
-                          <span className="text-sm !text-gray-600 dark:!text-gray-400">
+                          <span className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                             ({apt.duration} min)
                           </span>
                           <Badge
@@ -298,7 +298,7 @@ export function AppointmentCalendarView({
 
                         <div className="grid grid-cols-3 gap-4 text-sm">
                           <div className="flex items-center gap-2">
-                            <User className="h-3.5 w-3.5 text-gray-400" />
+                            <User className="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="!text-gray-700 dark:!text-gray-300">
                               {apt.customerName}
                             </span>
@@ -307,7 +307,7 @@ export function AppointmentCalendarView({
                             {apt.serviceName}
                           </div>
                           <div className="flex items-center gap-2">
-                            <DollarSign className="h-3.5 w-3.5 text-gray-400" />
+                            <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="!text-gray-700 dark:!text-gray-300">
                               AED {apt.price}
                             </span>
@@ -315,7 +315,7 @@ export function AppointmentCalendarView({
                         </div>
 
                         {apt.notes && (
-                          <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-2">
+                          <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
                             Note: {apt.notes}
                           </p>
                         )}

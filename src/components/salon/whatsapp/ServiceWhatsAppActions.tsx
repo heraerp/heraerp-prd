@@ -152,13 +152,13 @@ export function ServiceWhatsAppActions({
             <div className="flex items-start gap-3">
               <Rocket className="w-5 h-5 text-purple-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-white flex items-center gap-2">
+                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground flex items-center gap-2">
                   New Service Launch
                   <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-800/30 dark:text-purple-300">
                     NEW
                   </Badge>
                 </h4>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Announce this service to your customers
                 </p>
               </div>
@@ -210,11 +210,11 @@ export function ServiceWhatsAppActions({
             {/* Service Details */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Service Details</Label>
-              <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg space-y-1">
-                <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+              <div className="bg-muted dark:bg-muted p-3 rounded-lg space-y-1">
+                <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                   {service.name}
                 </p>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Price: AED {service.price} • Duration: {service.duration} minutes
                 </p>
               </div>
@@ -268,7 +268,7 @@ export function ServiceWhatsAppActions({
                   </Button>
                 ))}
               </div>
-              <p className="text-xs !text-gray-600 dark:!text-gray-400">
+              <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                 Estimated recipients: {campaignConfig.estimatedRecipients} customers
               </p>
             </div>
@@ -276,7 +276,7 @@ export function ServiceWhatsAppActions({
             {/* Message Preview */}
             <div className="space-y-2">
               <Label>Message Preview</Label>
-              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+              <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                 <pre className="whitespace-pre-wrap text-xs !text-gray-700 dark:!text-gray-300 font-mono">
                   {getCampaignPreview()}
                 </pre>
@@ -292,7 +292,7 @@ export function ServiceWhatsAppActions({
                     AED {(campaignConfig.estimatedRecipients * 0.05).toFixed(2)}
                   </span>
                 </div>
-                <div className="text-xs !text-gray-600 dark:!text-gray-400 mt-1">
+                <div className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                   {campaignConfig.estimatedRecipients} messages × AED 0.05 per message
                 </div>
               </AlertDescription>
@@ -306,7 +306,7 @@ export function ServiceWhatsAppActions({
             <Button
               onClick={handleSendNewServiceCampaign}
               disabled={sending}
-              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
             >
               {sending ? (
                 <>

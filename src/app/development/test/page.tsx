@@ -324,7 +324,7 @@ export default function ModuleTestPage() {
       case 'warning':
         return 'text-yellow-500'
       default:
-        return 'text-gray-500'
+        return 'text-muted-foreground'
     }
   }
 
@@ -350,20 +350,20 @@ export default function ModuleTestPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl flex items-center justify-center">
-              <TestTube className="w-6 h-6 text-white" />
+              <TestTube className="w-6 h-6 text-foreground" />
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-600 bg-clip-text text-transparent">
                 🧪 Module Testing Center
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Verify generated modules work correctly - Test UI, API, CRUD operations
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6 text-sm text-gray-500">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4" />
                 <span>Automated testing suite</span>
@@ -405,7 +405,7 @@ export default function ModuleTestPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-lg">{module.name}</CardTitle>
-                      <p className="text-sm text-gray-500 mt-1">{module.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{module.description}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       {testResult && (
@@ -430,11 +430,11 @@ export default function ModuleTestPage() {
                     {/* Module Stats */}
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">UI Pages:</span>
+                        <span className="text-muted-foreground">UI Pages:</span>
                         <span className="font-medium ml-2">{module.stats.uiPages}</span>
                       </div>
                       <div>
-                        <span className="text-gray-500">API Endpoints:</span>
+                        <span className="text-muted-foreground">API Endpoints:</span>
                         <span className="font-medium ml-2">{module.stats.apiEndpoints}</span>
                       </div>
                     </div>
@@ -522,9 +522,9 @@ export default function ModuleTestPage() {
         {modules.length === 0 && !loading && (
           <Card className="text-center py-12">
             <CardContent>
-              <TestTube className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <TestTube className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-xl font-semibold mb-2">No Modules to Test</h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Generate some modules first using the Module Generator
               </p>
               <Button

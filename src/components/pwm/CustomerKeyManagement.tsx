@@ -113,7 +113,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                   </div>
                   <div>
                     <div className="font-medium">Platform-Managed Encryption</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-muted-foreground">
                       HERA handles all key generation, rotation, and storage
                     </div>
                   </div>
@@ -124,7 +124,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                   </div>
                   <div>
                     <div className="font-medium">Zero Configuration</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-muted-foreground">
                       Works immediately with no setup required
                     </div>
                   </div>
@@ -135,7 +135,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                   </div>
                   <div>
                     <div className="font-medium">Automatic Backups</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-muted-foreground">
                       Keys are securely backed up and recoverable
                     </div>
                   </div>
@@ -209,7 +209,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                         </div>
                       ))}
                     </div>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-muted-foreground">
                       Write down these words in order. They can help verify your key.
                     </p>
                   </div>

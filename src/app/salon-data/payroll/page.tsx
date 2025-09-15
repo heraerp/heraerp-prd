@@ -262,22 +262,22 @@ export default function SalonPayrollSystem() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Total Employees</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Total Employees</span>
               <Users className="w-4 h-4 text-purple-600" />
             </div>
             <p className="text-2xl font-bold">{payrollStats.totalEmployees}</p>
-            <p className="text-xs text-gray-500 mt-1">{payrollStats.activePayroll} active</p>
+            <p className="text-xs text-muted-foreground mt-1">{payrollStats.activePayroll} active</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">YTD Payroll</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">YTD Payroll</span>
               <DollarSign className="w-4 h-4 text-green-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(payrollStats.ytdPayroll)}</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {formatCurrency(payrollStats.avgPayPerEmployee)} avg/employee
             </p>
           </CardContent>
@@ -286,19 +286,19 @@ export default function SalonPayrollSystem() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">YTD Taxes</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">YTD Taxes</span>
               <Receipt className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(payrollStats.ytdTaxes)}</p>
-            <p className="text-xs text-gray-500 mt-1">Federal, State, FICA</p>
+            <p className="text-xs text-muted-foreground mt-1">Federal, State, FICA</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Next Pay Date</span>
-              <Calendar className="w-4 h-4 text-blue-600" />
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Next Pay Date</span>
+              <Calendar className="w-4 h-4 text-primary" />
             </div>
             <p className="text-2xl font-bold">
               {payrollStats.nextPayDate.toLocaleDateString('en-US', {
@@ -306,7 +306,7 @@ export default function SalonPayrollSystem() {
                 day: 'numeric'
               })}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               In{' '}
               {Math.ceil(
                 (payrollStats.nextPayDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
@@ -327,7 +327,7 @@ export default function SalonPayrollSystem() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button
               onClick={() => setShowPayrollModal(true)}
-              className="h-24 flex-col bg-purple-600 hover:bg-purple-700 text-white"
+              className="h-24 flex-col bg-purple-600 hover:bg-purple-700 text-foreground"
             >
               <Play className="w-8 h-8 mb-2" />
               Run Payroll
@@ -359,7 +359,7 @@ export default function SalonPayrollSystem() {
             {mockPayrollRuns.map(run => (
               <div
                 key={run.id}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                className="flex items-center justify-between p-4 bg-muted dark:bg-muted rounded-lg"
               >
                 <div className="flex items-center gap-4">
                   <div
@@ -380,7 +380,7 @@ export default function SalonPayrollSystem() {
                     <p className="font-medium">
                       {run.run_type.charAt(0).toUpperCase() + run.run_type.slice(1)} Payroll
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {run.pay_period_start.toLocaleDateString()} -{' '}
                       {run.pay_period_end.toLocaleDateString()}
                     </p>
@@ -388,7 +388,7 @@ export default function SalonPayrollSystem() {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">{formatCurrency(run.gross_total)}</p>
-                  <p className="text-sm text-gray-500">{run.employee_count} employees</p>
+                  <p className="text-sm text-muted-foreground">{run.employee_count} employees</p>
                 </div>
               </div>
             ))}
@@ -404,7 +404,7 @@ export default function SalonPayrollSystem() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative flex-1 min-w-[300px]">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search employees..."
               value={searchQuery}
@@ -419,7 +419,7 @@ export default function SalonPayrollSystem() {
         </div>
         <Button
           onClick={() => setShowEmployeeModal(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
+          className="bg-purple-600 hover:bg-purple-700 text-foreground"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Employee
@@ -431,41 +431,41 @@ export default function SalonPayrollSystem() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-800 border-b">
+              <thead className="bg-muted dark:bg-muted border-b">
                 <tr>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Employee
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Department
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Classification
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Pay Schedule
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Compensation
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     YTD Earnings
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {mockEmployees.map(employee => (
-                  <tr key={employee.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <tr key={employee.id} className="hover:bg-muted dark:hover:bg-muted">
                     <td className="px-6 py-4">
                       <div>
                         <p className="font-medium">{employee.entity_name}</p>
-                        <p className="text-sm text-gray-500">{employee.entity_code}</p>
+                        <p className="text-sm text-muted-foreground">{employee.entity_code}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm">{employee.department}</td>
@@ -622,7 +622,7 @@ export default function SalonPayrollSystem() {
                       ? 'bg-green-100 text-green-600'
                       : step.status === 'current'
                         ? 'bg-purple-100 text-purple-600'
-                        : 'bg-gray-100 text-gray-400'
+                        : 'bg-muted text-muted-foreground'
                   )}
                 >
                   {step.status === 'completed' ? (
@@ -633,7 +633,7 @@ export default function SalonPayrollSystem() {
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{step.title}</p>
-                  <p className="text-sm text-gray-500">{step.description}</p>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -689,16 +689,16 @@ export default function SalonPayrollSystem() {
               <div className="flex items-center justify-between mb-4">
                 <div
                   className={cn(
-                    'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white',
+                    'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-foreground',
                     report.color
                   )}
                 >
                   {report.icon}
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </div>
               <h3 className="font-semibold text-lg mb-1">{report.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{report.description}</p>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">{report.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -726,7 +726,7 @@ export default function SalonPayrollSystem() {
                 >
                   <div>
                     <p className="font-medium">{schedule.label}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {schedule.value === 'weekly' && 'Every Friday'}
                       {schedule.value === 'bi-weekly' && '1st & 15th'}
                       {schedule.value === 'semi-monthly' && 'Every other Friday'}
@@ -748,7 +748,7 @@ export default function SalonPayrollSystem() {
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div>
                   <p className="font-medium">Federal Tax ID</p>
-                  <p className="text-sm text-gray-500">XX-XXXXXXX</p>
+                  <p className="text-sm text-muted-foreground">XX-XXXXXXX</p>
                 </div>
                 <Button variant="outline" size="sm">
                   Update
@@ -757,7 +757,7 @@ export default function SalonPayrollSystem() {
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div>
                   <p className="font-medium">State Tax Registration</p>
-                  <p className="text-sm text-gray-500">Active in 1 state</p>
+                  <p className="text-sm text-muted-foreground">Active in 1 state</p>
                 </div>
                 <Button variant="outline" size="sm">
                   Manage
@@ -777,7 +777,7 @@ export default function SalonPayrollSystem() {
                   </div>
                   <div>
                     <p className="font-medium">Direct Deposit Enabled</p>
-                    <p className="text-sm text-gray-500">Bank of America ****1234</p>
+                    <p className="text-sm text-muted-foreground">Bank of America ****1234</p>
                   </div>
                 </div>
                 <Badge variant="default" className="bg-green-600">
@@ -819,7 +819,7 @@ export default function SalonPayrollSystem() {
     if (!showPayrollModal) return null
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
         <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -835,25 +835,25 @@ export default function SalonPayrollSystem() {
             <div className="grid grid-cols-4 gap-4 mb-6">
               <Card>
                 <CardContent className="p-4">
-                  <p className="text-sm text-gray-600">Gross Pay</p>
+                  <p className="text-sm text-muted-foreground">Gross Pay</p>
                   <p className="text-xl font-bold">{formatCurrency(45600)}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <p className="text-sm text-gray-600">Taxes</p>
+                  <p className="text-sm text-muted-foreground">Taxes</p>
                   <p className="text-xl font-bold text-orange-600">{formatCurrency(8900)}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <p className="text-sm text-gray-600">Deductions</p>
+                  <p className="text-sm text-muted-foreground">Deductions</p>
                   <p className="text-xl font-bold text-red-600">{formatCurrency(4300)}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <p className="text-sm text-gray-600">Net Pay</p>
+                  <p className="text-sm text-muted-foreground">Net Pay</p>
                   <p className="text-xl font-bold text-green-600">{formatCurrency(32400)}</p>
                 </CardContent>
               </Card>
@@ -864,7 +864,7 @@ export default function SalonPayrollSystem() {
               <h3 className="font-semibold mb-4">Employee Breakdown</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
+                  <thead className="bg-muted dark:bg-muted">
                     <tr>
                       <th className="text-left px-4 py-2">Employee</th>
                       <th className="text-right px-4 py-2">Hours</th>
@@ -942,7 +942,7 @@ export default function SalonPayrollSystem() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between max-w-[1600px] mx-auto">
             <div className="flex items-center gap-4">
@@ -960,7 +960,7 @@ export default function SalonPayrollSystem() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Payroll Management
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Process payroll, manage employees, and generate reports
                 </p>
               </div>
@@ -973,7 +973,7 @@ export default function SalonPayrollSystem() {
               </Button>
               <Button
                 onClick={() => setShowPayrollModal(true)}
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="bg-purple-600 hover:bg-purple-700 text-foreground"
               >
                 <Play className="w-4 h-4 mr-2" />
                 Run Payroll

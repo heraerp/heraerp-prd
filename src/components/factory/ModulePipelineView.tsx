@@ -68,7 +68,7 @@ const getStageColor = (status: string) => {
     case 'partial':
       return 'bg-orange-500'
     default:
-      return 'bg-gray-300 dark:bg-gray-700'
+      return 'bg-gray-300 dark:bg-muted-foreground/10'
   }
 }
 
@@ -164,8 +164,8 @@ export function ModulePipelineView({
                       <Icon className={cn('w-5 h-5', `text-${info.color}-600`)} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{info.name}</h3>
-                      <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                      <h3 className="font-semibold text-gray-900 dark:text-foreground">{info.name}</h3>
+                      <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                         <span>Module: {moduleCode}</span>
                         <span>Duration: {formattedDuration}</span>
                         <span>Coverage: {avgCoverage.toFixed(1)}%</span>
@@ -217,7 +217,7 @@ export function ModulePipelineView({
                 {/* Pipeline Timeline */}
                 <div className="relative">
                   {/* Background line */}
-                  <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700" />
+                  <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-200 dark:bg-muted-foreground/10" />
 
                   {/* Stage nodes */}
                   <div className="relative grid grid-cols-5 gap-0">
@@ -236,7 +236,7 @@ export function ModulePipelineView({
                                 'absolute top-6 -left-1/2 right-1/2 h-0.5',
                                 status !== 'pending'
                                   ? getStageColor(status)
-                                  : 'bg-gray-300 dark:bg-gray-700'
+                                  : 'bg-gray-300 dark:bg-muted-foreground/10'
                               )}
                             />
                           )}
@@ -256,7 +256,7 @@ export function ModulePipelineView({
                                   >
                                     <StageIcon
                                       className={cn(
-                                        'w-6 h-6 text-white',
+                                        'w-6 h-6 text-foreground',
                                         isRunning && 'animate-spin'
                                       )}
                                     />
@@ -274,7 +274,7 @@ export function ModulePipelineView({
                               </Tooltip>
                             </TooltipProvider>
 
-                            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2">
+                            <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground mt-2">
                               {stage}
                             </p>
 
@@ -282,7 +282,7 @@ export function ModulePipelineView({
                             {stageTxns.length > 0 && (
                               <div className="mt-1 space-y-1">
                                 {stageTxns[0].metadata?.duration_ms && (
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs text-muted-foreground">
                                     {Math.round(stageTxns[0].metadata.duration_ms / 1000)}s
                                   </p>
                                 )}
@@ -320,9 +320,9 @@ export function ModulePipelineView({
 
                 {/* Coverage Trend Sparkline */}
                 {data.coverage.length > 0 && (
-                  <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <div className="mt-4 p-3 bg-muted dark:bg-background rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                      <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground">
                         Coverage Trend
                       </p>
                       <Badge variant={avgCoverage >= 85 ? 'default' : 'destructive'}>
@@ -359,7 +359,7 @@ export function ModulePipelineView({
       {filteredModules.length === 0 && (
         <Card className="text-center py-12">
           <CardContent>
-            <p className="text-gray-500">No modules match the current filters</p>
+            <p className="text-muted-foreground">No modules match the current filters</p>
           </CardContent>
         </Card>
       )}

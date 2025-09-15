@@ -47,10 +47,10 @@ function DeploymentContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600 mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading deployment manager...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading deployment manager...</p>
         </div>
       </div>
     )
@@ -58,13 +58,13 @@ function DeploymentContent() {
 
   if (!ruleId || !rule) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+      <div className="min-h-screen bg-muted dark:bg-background p-4">
         <Card className="max-w-2xl mx-auto mt-12">
           <CardHeader>
             <CardTitle className="text-center">No Rule Selected</CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground dark:text-muted-foreground">
               Please select a rule to deploy from the rules list.
             </p>
             <Link href="/salon-data/config?tab=rules">
@@ -80,9 +80,9 @@ function DeploymentContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-background">
       {/* Page Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <div className="border-b border-border dark:border-border bg-background dark:bg-muted">
         <div className="px-4 py-6">
           <div className="flex items-center gap-4">
             <Link href="/salon-data/config?tab=rules">
@@ -92,13 +92,13 @@ function DeploymentContent() {
             </Link>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                <Rocket className="w-5 h-5 text-white" />
+                <Rocket className="w-5 h-5 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   Deploy Rule to Production
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Configure and deploy your business rule
                 </p>
               </div>
@@ -119,10 +119,10 @@ export default function DeploymentPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600 mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">Loading deployment manager...</p>
+            <p className="text-muted-foreground dark:text-muted-foreground">Loading deployment manager...</p>
           </div>
         </div>
       }

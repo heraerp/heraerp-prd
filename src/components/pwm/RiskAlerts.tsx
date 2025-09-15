@@ -40,15 +40,15 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
   return (
     <div className="space-y-6">
       {/* Risk Overview Card */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
               <Shield className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white">Portfolio Risk Analysis</h3>
-              <p className="text-sm text-slate-400">Real-time risk monitoring</p>
+              <h3 className="text-lg font-semibold text-foreground">Portfolio Risk Analysis</h3>
+              <p className="text-sm text-muted-foreground">Real-time risk monitoring</p>
             </div>
           </div>
           <Badge variant="outline" className={cn(riskLevel.color)}>
@@ -59,8 +59,8 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
         {/* Risk Score Gauge */}
         <div className="mb-6">
           <div className="flex items-end justify-between mb-2">
-            <span className="text-sm text-slate-400">Overall Risk Score</span>
-            <span className="text-3xl font-bold text-white">{riskMetrics.overallScore}/10</span>
+            <span className="text-sm text-muted-foreground">Overall Risk Score</span>
+            <span className="text-3xl font-bold text-foreground">{riskMetrics.overallScore}/10</span>
           </div>
           <Progress value={riskMetrics.overallScore * 10} className="h-3" />
           <div className="flex justify-between mt-2 text-xs text-slate-500">
@@ -73,35 +73,35 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
 
         {/* Key Risk Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">Volatility</p>
-            <p className="text-lg font-semibold text-white">{riskMetrics.volatility}%</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Volatility</p>
+            <p className="text-lg font-semibold text-foreground">{riskMetrics.volatility}%</p>
             <p className="text-xs text-slate-500 mt-1">Annual</p>
           </div>
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">Correlation</p>
-            <p className="text-lg font-semibold text-white">{riskMetrics.correlation}</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Correlation</p>
+            <p className="text-lg font-semibold text-foreground">{riskMetrics.correlation}</p>
             <p className="text-xs text-slate-500 mt-1">To market</p>
           </div>
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">Max Drawdown</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Max Drawdown</p>
             <p className="text-lg font-semibold text-red-400">{riskMetrics.maxDrawdown}%</p>
             <p className="text-xs text-slate-500 mt-1">Last 12 months</p>
           </div>
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">VaR (95%)</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">VaR (95%)</p>
             <p className="text-lg font-semibold text-orange-400">
               ${Math.abs(riskMetrics.varAt95 / 1000000).toFixed(1)}M
             </p>
             <p className="text-xs text-slate-500 mt-1">1-day</p>
           </div>
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">Stress Test</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Stress Test</p>
             <p className="text-lg font-semibold text-yellow-400">{riskMetrics.stressTestResult}%</p>
             <p className="text-xs text-slate-500 mt-1">Market crash</p>
           </div>
-          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
-            <p className="text-xs text-slate-400 mb-1">Diversification</p>
+          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Diversification</p>
             <p className="text-lg font-semibold text-emerald-400">Good</p>
             <p className="text-xs text-slate-500 mt-1">15 sectors</p>
           </div>
@@ -109,12 +109,12 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
       </Card>
 
       {/* Active Risk Alerts */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-        <h3 className="text-lg font-semibold text-white mb-4">Active Risk Alerts</h3>
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Active Risk Alerts</h3>
 
         <div className="space-y-4">
           {insights.length === 0 ? (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8 text-muted-foreground">
               <Shield className="h-12 w-12 mx-auto mb-3 opacity-50" />
               <p>No active risk alerts</p>
               <p className="text-sm mt-1">Your portfolio is well-protected</p>
@@ -123,27 +123,27 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
             insights.map(insight => (
               <div
                 key={insight.id}
-                className="p-4 rounded-xl border bg-slate-800/30 border-slate-700/50"
+                className="p-4 rounded-xl border bg-muted/30 border-border/50"
               >
                 <div className="flex items-start gap-3">
                   <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
                     <AlertTriangle className="h-4 w-4 text-red-400" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-medium text-white mb-1">{insight.title}</h4>
-                    <p className="text-sm text-slate-400 mb-3">{insight.description}</p>
+                    <h4 className="font-medium text-foreground mb-1">{insight.title}</h4>
+                    <p className="text-sm text-muted-foreground mb-3">{insight.description}</p>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 text-sm">
-                        <span className="text-slate-400">
+                        <span className="text-muted-foreground">
                           Impact:
                           <span className="ml-1 font-medium text-red-400">
                             -${Math.abs(insight.impact / 1000000).toFixed(1)}M
                           </span>
                         </span>
-                        <span className="text-slate-400">
+                        <span className="text-muted-foreground">
                           Confidence:
-                          <span className="ml-1 font-medium text-white">
+                          <span className="ml-1 font-medium text-foreground">
                             {(insight.confidence * 100).toFixed(0)}%
                           </span>
                         </span>
@@ -166,30 +166,30 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
       </Card>
 
       {/* Risk Mitigation Recommendations */}
-      <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-        <h3 className="text-lg font-semibold text-white mb-4">Recommended Actions</h3>
+      <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Recommended Actions</h3>
 
         <div className="space-y-3">
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
             <div className="p-1.5 rounded bg-blue-500/20">
               <TrendingDown className="h-4 w-4 text-blue-400" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-white">Reduce Tech Exposure</p>
-              <p className="text-xs text-slate-400">Decrease allocation by 5% to balance risk</p>
+              <p className="text-sm font-medium text-foreground">Reduce Tech Exposure</p>
+              <p className="text-xs text-muted-foreground">Decrease allocation by 5% to balance risk</p>
             </div>
             <Button size="sm" variant="ghost" className="text-blue-400">
               Review
             </Button>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
             <div className="p-1.5 rounded bg-emerald-500/20">
               <Shield className="h-4 w-4 text-emerald-400" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-white">Add Hedge Position</p>
-              <p className="text-xs text-slate-400">Consider gold or bonds for protection</p>
+              <p className="text-sm font-medium text-foreground">Add Hedge Position</p>
+              <p className="text-xs text-muted-foreground">Consider gold or bonds for protection</p>
             </div>
             <Button size="sm" variant="ghost" className="text-emerald-400">
               Explore

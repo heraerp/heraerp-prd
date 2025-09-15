@@ -75,7 +75,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
   const getChangeColor = (change: number) => {
     if (change > 0) return 'text-emerald-400'
     if (change < 0) return 'text-red-400'
-    return 'text-gray-400'
+    return 'text-muted-foreground'
   }
 
   const getChangeIcon = (change: number) => {
@@ -86,7 +86,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
 
   if (loading && !marketData) {
     return (
-      <Card className={`bg-slate-900/50 border-slate-700 ${className}`}>
+      <Card className={`bg-background/50 border-border ${className}`}>
         <CardHeader className="pb-3">
           <CardTitle className="text-slate-200 text-lg flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
@@ -109,7 +109,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
   }
 
   return (
-    <Card className={`bg-slate-900/50 border-slate-700 ${className}`}>
+    <Card className={`bg-background/50 border-border ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-slate-200 text-lg flex items-center gap-2">
@@ -125,14 +125,14 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
               className="p-1 hover:bg-slate-700 rounded"
               disabled={loading}
             >
-              <RefreshCcw className={`h-3 w-3 text-slate-400 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCcw className={`h-3 w-3 text-muted-foreground ${loading ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="indices" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-4 bg-muted">
             <TabsTrigger value="indices" className="text-xs">
               Indices
             </TabsTrigger>
@@ -210,7 +210,7 @@ function MarketQuoteRow({ quote, showCurrency = true }: MarketQuoteRowProps) {
   const getChangeColor = (change: number) => {
     if (change > 0) return 'text-emerald-400'
     if (change < 0) return 'text-red-400'
-    return 'text-gray-400'
+    return 'text-muted-foreground'
   }
 
   const getChangeIcon = (change: number) => {

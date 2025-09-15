@@ -121,7 +121,7 @@ export function ForwardMessageDialog({
         <div className="space-y-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search contacts..."
               value={searchQuery}
@@ -133,7 +133,7 @@ export function ForwardMessageDialog({
           {/* Selected contacts count */}
           {selectedContacts.length > 0 && (
             <div className="flex items-center justify-between px-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                 {selectedContacts.length} selected
               </span>
               <Button variant="ghost" size="sm" onClick={() => setSelectedContacts([])}>
@@ -146,14 +146,14 @@ export function ForwardMessageDialog({
           <ScrollArea className="h-80">
             {loading ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">Loading contacts...</p>
+                <p className="text-muted-foreground">Loading contacts...</p>
               </div>
             ) : (
               <div className="space-y-1">
                 {/* Recent section */}
                 {!searchQuery && recentContacts.length > 0 && (
                   <>
-                    <div className="flex items-center gap-2 px-2 py-1 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 px-2 py-1 text-xs text-muted-foreground">
                       <Clock className="w-3 h-3" />
                       <span>Recent</span>
                     </div>
@@ -170,7 +170,7 @@ export function ForwardMessageDialog({
                 )}
 
                 {/* All contacts */}
-                <div className="flex items-center gap-2 px-2 py-1 text-xs text-gray-500">
+                <div className="flex items-center gap-2 px-2 py-1 text-xs text-muted-foreground">
                   <Users className="w-3 h-3" />
                   <span>All Contacts</span>
                 </div>
@@ -212,7 +212,7 @@ function ContactItem({
 }) {
   return (
     <div
-      className="flex items-center gap-3 px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer"
+      className="flex items-center gap-3 px-2 py-2 hover:bg-muted dark:hover:bg-muted rounded cursor-pointer"
       onClick={onToggle}
     >
       <Checkbox
@@ -241,7 +241,7 @@ function ContactItem({
             </Badge>
           )}
         </div>
-        <p className="text-xs text-gray-500">{contact.phone}</p>
+        <p className="text-xs text-muted-foreground">{contact.phone}</p>
       </div>
     </div>
   )

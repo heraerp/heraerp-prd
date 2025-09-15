@@ -209,8 +209,8 @@ export function DocumentManager({
     if (mimeType.startsWith('image/')) return <Image className="h-5 w-5 text-green-600" />
     if (mimeType.includes('pdf')) return <FileText className="h-5 w-5 text-red-600" />
     if (mimeType.includes('word') || mimeType.includes('document'))
-      return <FileText className="h-5 w-5 text-blue-600" />
-    return <File className="h-5 w-5 text-gray-600" />
+      return <FileText className="h-5 w-5 text-primary" />
+    return <File className="h-5 w-5 text-muted-foreground" />
   }
 
   // Format file size
@@ -237,12 +237,12 @@ export function DocumentManager({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <FolderOpen className="h-5 w-5 text-blue-600" />
+              <FolderOpen className="h-5 w-5 text-primary" />
               Document Manager
               {contact && (
                 <Badge variant="outline" className="ml-2">
@@ -282,7 +282,7 @@ export function DocumentManager({
             <Card className="border-blue-200 bg-blue-50 mb-4">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                  <Loader2 className="h-5 w-5 text-primary animate-spin" />
                   <span className="text-blue-800 font-medium">Uploading documents...</span>
                 </div>
                 <Progress value={uploadProgress} className="w-full" />
@@ -295,7 +295,7 @@ export function DocumentManager({
             <div className="flex items-center gap-4">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search documents..."
                   value={searchTerm}
@@ -339,7 +339,7 @@ export function DocumentManager({
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                     dragActive
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      : 'border-border hover:border-gray-400'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -347,9 +347,9 @@ export function DocumentManager({
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-lg font-medium mb-2">Drop files here or click to browse</p>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-muted-foreground mb-4">
                     Support for PDF, DOC, XLS, PPT, images, and more. Max 10MB per file.
                   </p>
                   <Button variant="outline">
@@ -438,9 +438,9 @@ export function DocumentManager({
             <CardContent>
               {filteredDocuments.length === 0 ? (
                 <div className="text-center py-12">
-                  <FolderOpen className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <FolderOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">No documents found</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     {searchTerm || categoryFilter !== 'all'
                       ? 'No documents match your search criteria.'
                       : 'Start by uploading your first document.'}
@@ -455,14 +455,14 @@ export function DocumentManager({
                   {filteredDocuments.map(document => (
                     <div
                       key={document.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted"
                     >
                       <div className="flex items-center gap-4 flex-1">
                         {getFileIcon(document.mimeType)}
 
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium truncate">{document.originalName}</h4>
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                             <span>{formatFileSize(document.size)}</span>
                             <Badge variant="outline" className="text-xs">
                               {document.category}
@@ -479,7 +479,7 @@ export function DocumentManager({
 
                           {document.tags.length > 0 && (
                             <div className="flex items-center gap-1 mt-2">
-                              <Tag className="h-3 w-3 text-gray-400" />
+                              <Tag className="h-3 w-3 text-muted-foreground" />
                               {document.tags.map((tag, idx) => (
                                 <Badge key={idx} variant="outline" className="text-xs">
                                   {tag}
@@ -489,7 +489,7 @@ export function DocumentManager({
                           )}
 
                           {document.notes && (
-                            <p className="text-sm text-gray-600 mt-1 truncate">{document.notes}</p>
+                            <p className="text-sm text-muted-foreground mt-1 truncate">{document.notes}</p>
                           )}
                         </div>
                       </div>

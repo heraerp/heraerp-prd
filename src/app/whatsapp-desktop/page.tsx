@@ -531,7 +531,7 @@ export default function WhatsAppDesktop() {
                       {conv.lastMessage?.text || 'No messages yet'}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <Badge className="bg-green-500 text-white">{conv.unreadCount}</Badge>
+                      <Badge className="bg-green-500 text-foreground">{conv.unreadCount}</Badge>
                     )}
                   </div>
                 </div>
@@ -683,7 +683,7 @@ export default function WhatsAppDesktop() {
                                   max-w-[70%] p-3 rounded-lg relative
                                   ${
                                     message.direction === 'outbound'
-                                      ? 'bg-green-500 text-white dark:bg-green-600'
+                                      ? 'bg-green-500 text-foreground dark:bg-green-600'
                                       : 'bg-muted'
                                   }
                                   ${selectedMessages.has(message.id) ? 'ring-2 ring-blue-500' : ''}
@@ -713,7 +713,7 @@ export default function WhatsAppDesktop() {
                                   <span
                                     className={`text-xs ${
                                       message.direction === 'outbound'
-                                        ? 'text-white/70'
+                                        ? 'text-foreground/70'
                                         : 'text-muted-foreground'
                                     }`}
                                   >

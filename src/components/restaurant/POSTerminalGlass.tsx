@@ -137,7 +137,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -158,13 +158,13 @@ const DialogContent = React.forwardRef<
         'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2',
         'data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-        'rounded-lg bg-slate-900 border border-slate-700 text-white',
+        'rounded-lg bg-background border border-border text-foreground',
         className
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none text-white hover:text-white">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none text-foreground hover:text-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -192,7 +192,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold leading-none tracking-tight text-white', className)}
+    className={cn('text-lg font-semibold leading-none tracking-tight text-foreground', className)}
     {...props}
   />
 ))
@@ -901,7 +901,7 @@ export function POSTerminalGlass({
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-purple-400 mx-auto mb-4" />
-          <p className="text-white/70">Loading POS Terminal...</p>
+          <p className="text-foreground/70">Loading POS Terminal...</p>
         </div>
       </div>
     )
@@ -919,24 +919,24 @@ export function POSTerminalGlass({
       {/* Left Panel - Menu Items */}
       <div className="flex-1 flex flex-col z-10">
         {/* Glass Header */}
-        <div className="backdrop-blur-xl bg-white/10 border-b border-white/20 p-4">
+        <div className="backdrop-blur-xl bg-background/10 border-b border-border/20 p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Link href="/restaurant">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-white/80 hover:text-white hover:bg-white/20"
+                  className="text-foreground/80 hover:text-foreground hover:bg-background/20"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
                 <Sparkles className="h-6 w-6 text-yellow-400" />
                 Point of Sale
               </h1>
-              <Badge className="bg-white/20 text-white border-white/30">
+              <Badge className="bg-background/20 text-foreground border-white/30">
                 {formatDate(new Date(), 'MMM dd, yyyy HH:mm')}
               </Badge>
             </div>
@@ -947,8 +947,8 @@ export function POSTerminalGlass({
                 onClick={() => setViewMode('grid')}
                 className={
                   viewMode === 'grid'
-                    ? 'bg-white/20 text-white'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    ? 'bg-background/20 text-foreground'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-background/10'
                 }
               >
                 <Grid3x3 className="h-4 w-4" />
@@ -959,8 +959,8 @@ export function POSTerminalGlass({
                 onClick={() => setViewMode('list')}
                 className={
                   viewMode === 'list'
-                    ? 'bg-white/20 text-white'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    ? 'bg-background/20 text-foreground'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-background/10'
                 }
               >
                 <List className="h-4 w-4" />
@@ -971,26 +971,26 @@ export function POSTerminalGlass({
           {/* Search and Categories */}
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50" />
               <Input
                 placeholder="Search menu items..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20"
+                className="pl-10 bg-background/10 border-border/20 text-foreground placeholder:text-foreground/50 focus:bg-background/20"
               />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white">
+              <SelectTrigger className="w-[180px] bg-background/10 border-border/20 text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20">
+              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/20">
                 {categories.map(category => {
                   const Icon = category === 'all' ? ShoppingBag : CATEGORY_ICONS[category] || Coffee
                   return (
                     <SelectItem
                       key={category}
                       value={category}
-                      className="text-white hover:bg-white/10"
+                      className="text-foreground hover:bg-background/10"
                     >
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4" />
@@ -1013,7 +1013,7 @@ export function POSTerminalGlass({
                 return (
                   <div
                     key={item.id}
-                    className="group relative backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/20"
+                    className="group relative backdrop-blur-xl bg-background/10 rounded-2xl border border-border/20 overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-background/20"
                     onClick={() => addToCart(item)}
                   >
                     {/* Image */}
@@ -1030,7 +1030,7 @@ export function POSTerminalGlass({
                         <div
                           className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}
                         >
-                          <Icon className="h-16 w-16 text-white/30" />
+                          <Icon className="h-16 w-16 text-foreground/30" />
                         </div>
                       )}
 
@@ -1044,7 +1044,7 @@ export function POSTerminalGlass({
 
                       {/* Price overlay */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                        <p className="text-white text-xl font-bold">
+                        <p className="text-foreground text-xl font-bold">
                           {formatCurrency((item.metadata as any)?.price || 0)}
                         </p>
                       </div>
@@ -1052,8 +1052,8 @@ export function POSTerminalGlass({
 
                     {/* Content */}
                     <div className="p-4">
-                      <h3 className="font-semibold text-white mb-1">{item.entity_name}</h3>
-                      <p className="text-xs text-white/70 line-clamp-2 mb-2">
+                      <h3 className="font-semibold text-foreground mb-1">{item.entity_name}</h3>
+                      <p className="text-xs text-foreground/70 line-clamp-2 mb-2">
                         {(item.metadata as any)?.description}
                       </p>
 
@@ -1062,14 +1062,14 @@ export function POSTerminalGlass({
                           {(item.metadata as any)?.rating && (
                             <>
                               <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                              <span className="text-xs text-white/70">{item.metadata.rating}</span>
+                              <span className="text-xs text-foreground/70">{item.metadata.rating}</span>
                             </>
                           )}
                         </div>
 
                         <div className="flex items-center gap-2">
                           {(item.metadata as any)?.preparation_time && (
-                            <div className="flex items-center gap-1 text-xs text-white/50">
+                            <div className="flex items-center gap-1 text-xs text-foreground/50">
                               <Clock className="h-3 w-3" />
                               {item.metadata.preparation_time}m
                             </div>
@@ -1079,7 +1079,7 @@ export function POSTerminalGlass({
                             item.metadata.modifiers.length > 0 && (
                               <Badge
                                 variant="outline"
-                                className="text-xs border-white/30 text-white/70"
+                                className="text-xs border-white/30 text-foreground/70"
                               >
                                 <Pencil className="h-3 w-3 mr-1" />
                                 Custom
@@ -1089,8 +1089,8 @@ export function POSTerminalGlass({
                       </div>
 
                       {/* Add button overlay on hover */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Button className="bg-white text-black hover:bg-gray-200">
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <Button className="bg-background text-black hover:bg-gray-200">
                           <Plus className="h-5 w-5 mr-2" />
                           Add to Cart
                         </Button>
@@ -1107,7 +1107,7 @@ export function POSTerminalGlass({
                 return (
                   <div
                     key={item.id}
-                    className="group backdrop-blur-xl bg-white/10 rounded-xl border border-white/20 p-3 cursor-pointer transition-all hover:bg-white/20"
+                    className="group backdrop-blur-xl bg-background/10 rounded-xl border border-border/20 p-3 cursor-pointer transition-all hover:bg-background/20"
                     onClick={() => addToCart(item)}
                   >
                     <div className="flex items-center gap-4">
@@ -1125,7 +1125,7 @@ export function POSTerminalGlass({
                           <div
                             className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}
                           >
-                            <Icon className="h-8 w-8 text-white/30" />
+                            <Icon className="h-8 w-8 text-foreground/30" />
                           </div>
                         )}
                       </div>
@@ -1134,7 +1134,7 @@ export function POSTerminalGlass({
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
                           <div>
-                            <h3 className="font-semibold text-white flex items-center gap-2">
+                            <h3 className="font-semibold text-foreground flex items-center gap-2">
                               {item.entity_name}
                               {(item.metadata as any)?.popular && (
                                 <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
@@ -1143,27 +1143,27 @@ export function POSTerminalGlass({
                                 </Badge>
                               )}
                             </h3>
-                            <p className="text-sm text-white/70">
+                            <p className="text-sm text-foreground/70">
                               {(item.metadata as any)?.description}
                             </p>
                             <div className="flex items-center gap-3 mt-1">
                               {(item.metadata as any)?.rating && (
                                 <div className="flex items-center gap-1">
                                   <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                                  <span className="text-xs text-white/70">
+                                  <span className="text-xs text-foreground/70">
                                     {item.metadata.rating}
                                   </span>
                                 </div>
                               )}
                               {(item.metadata as any)?.preparation_time && (
-                                <div className="flex items-center gap-1 text-xs text-white/50">
+                                <div className="flex items-center gap-1 text-xs text-foreground/50">
                                   <Clock className="h-3 w-3" />
                                   {item.metadata.preparation_time}m
                                 </div>
                               )}
                             </div>
                           </div>
-                          <span className="font-bold text-white text-lg">
+                          <span className="font-bold text-foreground text-lg">
                             {formatCurrency((item.metadata as any)?.price || 0)}
                           </span>
                         </div>
@@ -1171,7 +1171,7 @@ export function POSTerminalGlass({
 
                       <Button
                         size="sm"
-                        className="bg-white/20 hover:bg-white/30 text-white border-0"
+                        className="bg-background/20 hover:bg-background/30 text-foreground border-0"
                         onClick={e => {
                           e.stopPropagation()
                           addToCart(item)
@@ -1189,10 +1189,10 @@ export function POSTerminalGlass({
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="w-96 backdrop-blur-xl bg-white/10 border-l border-white/20 flex flex-col z-10">
+      <div className="w-96 backdrop-blur-xl bg-background/10 border-l border-border/20 flex flex-col z-10">
         {/* Order Type Selector */}
-        <div className="p-4 border-b border-white/20">
-          <Label className="text-sm font-medium mb-2 block text-white/80">Order Type</Label>
+        <div className="p-4 border-b border-border/20">
+          <Label className="text-sm font-medium mb-2 block text-foreground/80">Order Type</Label>
           <div className="grid grid-cols-3 gap-2">
             <Button
               variant={orderType === 'dine-in' ? 'default' : 'ghost'}
@@ -1200,8 +1200,8 @@ export function POSTerminalGlass({
               onClick={() => setOrderType('dine-in')}
               className={
                 orderType === 'dine-in'
-                  ? 'bg-white/20 text-white border-0'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-background/20 text-foreground border-0'
+                  : 'text-foreground/70 hover:text-foreground hover:bg-background/10'
               }
             >
               <Utensils className="h-4 w-4 mr-1" />
@@ -1213,8 +1213,8 @@ export function POSTerminalGlass({
               onClick={() => setOrderType('takeout')}
               className={
                 orderType === 'takeout'
-                  ? 'bg-white/20 text-white border-0'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-background/20 text-foreground border-0'
+                  : 'text-foreground/70 hover:text-foreground hover:bg-background/10'
               }
             >
               <Package className="h-4 w-4 mr-1" />
@@ -1226,8 +1226,8 @@ export function POSTerminalGlass({
               onClick={() => setOrderType('delivery')}
               className={
                 orderType === 'delivery'
-                  ? 'bg-white/20 text-white border-0'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-background/20 text-foreground border-0'
+                  : 'text-foreground/70 hover:text-foreground hover:bg-background/10'
               }
             >
               <Truck className="h-4 w-4 mr-1" />
@@ -1238,20 +1238,20 @@ export function POSTerminalGlass({
 
         {/* Table Selection for Dine-in */}
         {orderType === 'dine-in' && (
-          <div className="p-4 border-b border-white/20">
-            <Label className="text-sm font-medium mb-2 block text-white/80">Select Table</Label>
+          <div className="p-4 border-b border-border/20">
+            <Label className="text-sm font-medium mb-2 block text-foreground/80">Select Table</Label>
             <Select value={selectedTable} onValueChange={setSelectedTable}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white">
+              <SelectTrigger className="bg-background/10 border-border/20 text-foreground">
                 <SelectValue placeholder="Choose a table" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20">
+              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/20">
                 {tables
                   .filter(table => (table.metadata as any)?.status === 'available')
                   .map(table => (
                     <SelectItem
                       key={table.id}
                       value={table.id}
-                      className="text-white hover:bg-white/10"
+                      className="text-foreground hover:bg-background/10"
                     >
                       <div className="flex items-center gap-2">
                         <Table className="h-4 w-4" />
@@ -1266,33 +1266,33 @@ export function POSTerminalGlass({
 
         {/* Customer Info for Takeout/Delivery */}
         {(orderType === 'takeout' || orderType === 'delivery') && (
-          <div className="p-4 border-b border-white/20 space-y-3">
+          <div className="p-4 border-b border-border/20 space-y-3">
             <div>
-              <Label className="text-sm text-white/80">Customer Name</Label>
+              <Label className="text-sm text-foreground/80">Customer Name</Label>
               <Input
                 value={customerName}
                 onChange={e => setCustomerName(e.target.value)}
                 placeholder="John Doe"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                className="bg-background/10 border-border/20 text-foreground placeholder:text-foreground/50"
               />
             </div>
             <div>
-              <Label className="text-sm text-white/80">Phone Number</Label>
+              <Label className="text-sm text-foreground/80">Phone Number</Label>
               <Input
                 value={customerPhone}
                 onChange={e => setCustomerPhone(e.target.value)}
                 placeholder="+1-555-0123"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                className="bg-background/10 border-border/20 text-foreground placeholder:text-foreground/50"
               />
             </div>
             {orderType === 'delivery' && (
               <div>
-                <Label className="text-sm text-white/80">Delivery Address</Label>
+                <Label className="text-sm text-foreground/80">Delivery Address</Label>
                 <Input
                   value={deliveryAddress}
                   onChange={e => setDeliveryAddress(e.target.value)}
                   placeholder="123 Main St, City"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                  className="bg-background/10 border-border/20 text-foreground placeholder:text-foreground/50"
                 />
               </div>
             )}
@@ -1301,12 +1301,12 @@ export function POSTerminalGlass({
 
         {/* Cart Items */}
         <ScrollArea className="flex-1 p-4">
-          <h3 className="font-semibold mb-3 text-white flex items-center gap-2">
+          <h3 className="font-semibold mb-3 text-foreground flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
             Order Items
           </h3>
           {cart.length === 0 ? (
-            <div className="text-center text-white/50 py-8">
+            <div className="text-center text-foreground/50 py-8">
               <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-20" />
               <p>Cart is empty</p>
               <p className="text-xs mt-1">Add items to get started</p>
@@ -1316,12 +1316,12 @@ export function POSTerminalGlass({
               {cart.map(item => (
                 <div
                   key={item.menuItem.id}
-                  className="backdrop-blur-sm bg-white/5 rounded-lg p-3 border border-white/10"
+                  className="backdrop-blur-sm bg-background/5 rounded-lg p-3 border border-border/10"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="font-medium text-white">{item.menuItem.entity_name}</h4>
-                      <p className="text-sm text-white/60">
+                      <h4 className="font-medium text-foreground">{item.menuItem.entity_name}</h4>
+                      <p className="text-sm text-foreground/60">
                         {formatCurrency((item.menuItem.metadata as any)?.price || 0)} each
                       </p>
                     </div>
@@ -1329,7 +1329,7 @@ export function POSTerminalGlass({
                       variant="ghost"
                       size="sm"
                       onClick={() => removeFromCart(item.menuItem.id)}
-                      className="text-white/60 hover:text-white hover:bg-white/10"
+                      className="text-foreground/60 hover:text-foreground hover:bg-background/10"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1340,23 +1340,23 @@ export function POSTerminalGlass({
                         variant="outline"
                         size="sm"
                         onClick={() => updateQuantity(item.menuItem.id, item.quantity - 1)}
-                        className="h-7 w-7 p-0 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        className="h-7 w-7 p-0 bg-background/10 border-border/20 text-foreground hover:bg-background/20"
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="w-12 text-center text-white font-medium">
+                      <span className="w-12 text-center text-foreground font-medium">
                         {item.quantity}
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => updateQuantity(item.menuItem.id, item.quantity + 1)}
-                        className="h-7 w-7 p-0 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        className="h-7 w-7 p-0 bg-background/10 border-border/20 text-foreground hover:bg-background/20"
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-foreground">
                       {formatCurrency(item.lineTotal)}
                     </span>
                   </div>
@@ -1367,9 +1367,9 @@ export function POSTerminalGlass({
         </ScrollArea>
 
         {/* Totals and Actions */}
-        <div className="border-t border-white/20 p-4 backdrop-blur-sm bg-white/5 space-y-3">
+        <div className="border-t border-border/20 p-4 backdrop-blur-sm bg-background/5 space-y-3">
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-white/80">
+            <div className="flex justify-between text-foreground/80">
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
@@ -1379,12 +1379,12 @@ export function POSTerminalGlass({
                 <span>-{formatCurrency(discountAmount)}</span>
               </div>
             )}
-            <div className="flex justify-between text-white/80">
+            <div className="flex justify-between text-foreground/80">
               <span>Tax (5%)</span>
               <span>{formatCurrency(taxAmount)}</span>
             </div>
-            <Separator className="bg-white/20" />
-            <div className="flex justify-between text-lg font-semibold text-white">
+            <Separator className="bg-background/20" />
+            <div className="flex justify-between text-lg font-semibold text-foreground">
               <span>Total</span>
               <span>{formatCurrency(total)}</span>
             </div>
@@ -1395,7 +1395,7 @@ export function POSTerminalGlass({
               variant="outline"
               onClick={() => setShowCheckout(true)}
               disabled={cart.length === 0}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-50"
+              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:opacity-50"
             >
               <Percent className="h-4 w-4 mr-1" />
               Discount
@@ -1404,7 +1404,7 @@ export function POSTerminalGlass({
               variant="outline"
               onClick={clearCart}
               disabled={cart.length === 0}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-50"
+              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:opacity-50"
             >
               <Trash2 className="h-4 w-4 mr-1" />
               Clear
@@ -1412,7 +1412,7 @@ export function POSTerminalGlass({
           </div>
 
           <Button
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground border-0"
             size="lg"
             onClick={() => setShowPayment(true)}
             disabled={cart.length === 0 || processing}
@@ -1444,11 +1444,11 @@ export function POSTerminalGlass({
                 max="100"
                 value={discountPercent}
                 onChange={e => setDiscountPercent(parseInt(e.target.value) || 0)}
-                className="bg-slate-800 border-slate-600 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
+                className="bg-muted border-input text-foreground placeholder:text-muted-foreground focus:border-purple-500 focus:ring-purple-500"
               />
             </div>
             <div>
-              <Label className="text-gray-400 text-sm mb-2 block">Quick Select</Label>
+              <Label className="text-muted-foreground text-sm mb-2 block">Quick Select</Label>
               <div className="grid grid-cols-4 gap-2">
                 {[5, 10, 15, 20].map(percent => (
                   <Button
@@ -1457,8 +1457,8 @@ export function POSTerminalGlass({
                     onClick={() => setDiscountPercent(percent)}
                     className={
                       discountPercent === percent
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-500'
-                        : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white'
+                        ? 'bg-purple-600 hover:bg-purple-700 text-foreground border-purple-500'
+                        : 'bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground'
                     }
                   >
                     {percent}%
@@ -1467,9 +1467,9 @@ export function POSTerminalGlass({
               </div>
             </div>
             {discountPercent > 0 && (
-              <div className="p-3 bg-slate-800 rounded-lg border border-slate-700">
+              <div className="p-3 bg-muted rounded-lg border border-border">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Discount Amount:</span>
+                  <span className="text-muted-foreground">Discount Amount:</span>
                   <span className="text-emerald-400 font-semibold">
                     -{formatCurrency(subtotal * (discountPercent / 100))}
                   </span>
@@ -1481,13 +1481,13 @@ export function POSTerminalGlass({
             <Button
               variant="outline"
               onClick={() => setShowCheckout(false)}
-              className="bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white"
+              className="bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground"
             >
               Cancel
             </Button>
             <Button
               onClick={() => setShowCheckout(false)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground border-0"
             >
               Apply Discount
             </Button>
@@ -1502,9 +1502,9 @@ export function POSTerminalGlass({
             <DialogTitle className="text-xl font-semibold">Payment</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="text-center p-6 bg-slate-800 rounded-xl border border-slate-700">
-              <p className="text-sm text-gray-400 mb-2">Total Amount Due</p>
-              <p className="text-5xl font-bold text-white">{formatCurrency(total)}</p>
+            <div className="text-center p-6 bg-muted rounded-xl border border-border">
+              <p className="text-sm text-muted-foreground mb-2">Total Amount Due</p>
+              <p className="text-5xl font-bold text-foreground">{formatCurrency(total)}</p>
             </div>
             <div>
               <Label className="text-gray-300 font-medium mb-3 block">Select Payment Method</Label>
@@ -1514,8 +1514,8 @@ export function POSTerminalGlass({
                   onClick={() => setPaymentMethod('cash')}
                   className={
                     paymentMethod === 'cash'
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-500'
-                      : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white'
+                      ? 'bg-purple-600 hover:bg-purple-700 text-foreground border-purple-500'
+                      : 'bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground'
                   }
                 >
                   <DollarSign className="h-4 w-4 mr-1" />
@@ -1526,8 +1526,8 @@ export function POSTerminalGlass({
                   onClick={() => setPaymentMethod('card')}
                   className={
                     paymentMethod === 'card'
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-500'
-                      : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white'
+                      ? 'bg-purple-600 hover:bg-purple-700 text-foreground border-purple-500'
+                      : 'bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground'
                   }
                 >
                   <CreditCard className="h-4 w-4 mr-1" />
@@ -1538,8 +1538,8 @@ export function POSTerminalGlass({
                   onClick={() => setPaymentMethod('online')}
                   className={
                     paymentMethod === 'online'
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-500'
-                      : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white'
+                      ? 'bg-purple-600 hover:bg-purple-700 text-foreground border-purple-500'
+                      : 'bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground'
                   }
                 >
                   <Phone className="h-4 w-4 mr-1" />
@@ -1556,11 +1556,11 @@ export function POSTerminalGlass({
                     value={cashReceived}
                     onChange={e => setCashReceived(e.target.value)}
                     placeholder="Enter amount received"
-                    className="text-lg bg-slate-800 border-slate-600 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
+                    className="text-lg bg-muted border-input text-foreground placeholder:text-muted-foreground focus:border-purple-500 focus:ring-purple-500"
                   />
                 </div>
                 {cashAmount > 0 && (
-                  <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                  <div className="p-4 bg-muted rounded-lg border border-border">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-300 font-medium">Change Due:</span>
                       <span
@@ -1582,14 +1582,14 @@ export function POSTerminalGlass({
             <Button
               variant="outline"
               onClick={() => setShowPayment(false)}
-              className="bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300 hover:text-white"
+              className="bg-muted hover:bg-slate-700 border-input text-gray-300 hover:text-foreground"
             >
               Cancel
             </Button>
             <Button
               onClick={processOrder}
               disabled={processing || (paymentMethod === 'cash' && change < 0)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground border-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {processing ? (
                 <>

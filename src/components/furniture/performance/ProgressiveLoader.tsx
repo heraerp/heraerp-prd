@@ -131,13 +131,13 @@ export function ProgressiveLoader({
   const getStageIcon = (status: StageState['status']) => {
     switch (status) {
       case 'loading':
-        return <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+        return <Loader2 className="h-5 w-5 animate-spin text-primary" />
       case 'completed':
         return <CheckCircle className="h-5 w-5 text-green-600" />
       case 'error':
         return <AlertCircle className="h-5 w-5 text-red-600" />
       default:
-        return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+        return <div className="h-5 w-5 rounded-full border-2 border-border" />
     }
   }
 
@@ -148,13 +148,13 @@ export function ProgressiveLoader({
       {/* Progress bar */}
       {showProgress && (
         <div className="relative">
-          <div className="overflow-hidden h-2 text-xs flex rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="overflow-hidden h-2 text-xs flex rounded-full bg-gray-200 dark:bg-muted-foreground/10">
             <div
               style={{ width: `${progress}%` }}
-              className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-500"
+              className="shadow-none flex flex-col text-center whitespace-nowrap text-foreground justify-center bg-blue-600 transition-all duration-500"
             />
           </div>
-          <div className="mt-1 text-sm text-gray-600 dark:text-gray-400 text-center">
+          <div className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground text-center">
             {progress.toFixed(0)}% Complete
           </div>
         </div>
@@ -163,8 +163,8 @@ export function ProgressiveLoader({
       {/* Current stage indicator */}
       {currentStage && !isComplete && !error && (
         <div className="flex items-center justify-center space-x-2 py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-          <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <span className="text-lg font-medium text-gray-900 dark:text-foreground">
             {stages.find(s => s.id === currentStage.id)?.label}
           </span>
         </div>
@@ -194,7 +194,7 @@ export function ProgressiveLoader({
                     stageState.status === 'completed' && 'text-green-900 dark:text-green-100',
                     stageState.status === 'error' && 'text-red-900 dark:text-red-100',
                     stageState.status === 'loading' && 'text-blue-900 dark:text-blue-100',
-                    stageState.status === 'pending' && 'text-gray-500 dark:text-gray-400'
+                    stageState.status === 'pending' && 'text-muted-foreground dark:text-muted-foreground'
                   )}
                 >
                   {stage.label}
@@ -237,7 +237,7 @@ export function ProgressiveLoader({
           {error && (
             <button
               onClick={() => start()}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-foreground bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
             >
               Retry
             </button>

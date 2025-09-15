@@ -34,15 +34,15 @@ export default function GlassmorphicDarkDemo() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">Glassmorphic Dark Template</h1>
-            <p className="text-white/60 mt-1">HERA DNA Design System Showcase</p>
+            <h1 className="text-3xl font-bold text-foreground">Glassmorphic Dark Template</h1>
+            <p className="text-foreground/60 mt-1">HERA DNA Design System Showcase</p>
           </div>
 
           {/* Theme Selector */}
           <select
             value={selectedTheme}
             onChange={e => setSelectedTheme(e.target.value)}
-            className="px-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/20"
+            className="px-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-border/20"
           >
             {Object.keys(glassmorphicThemes).map(key => (
               <option key={key} value={key}>
@@ -98,12 +98,12 @@ export default function GlassmorphicDarkDemo() {
           {/* Large Card */}
           <div className="lg:col-span-2">
             <GlassmorphicCard theme={theme}>
-              <h2 className="text-xl font-semibold text-white mb-4">Recent Activity</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Recent Activity</h2>
               <div className="space-y-4">
                 {[1, 2, 3, 4].map(item => (
                   <div
                     key={item}
-                    className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-lg bg-background/5 hover:bg-background/10 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
                       <div
@@ -112,14 +112,14 @@ export default function GlassmorphicDarkDemo() {
                           background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})`
                         }}
                       >
-                        <Package className="h-4 w-4 text-white" />
+                        <Package className="h-4 w-4 text-foreground" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">Order #{1000 + item}</p>
-                        <p className="text-xs text-white/60">2 hours ago</p>
+                        <p className="text-sm font-medium text-foreground">Order #{1000 + item}</p>
+                        <p className="text-xs text-foreground/60">2 hours ago</p>
                       </div>
                     </div>
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm font-medium text-foreground">
                       ${(Math.random() * 1000).toFixed(2)}
                     </span>
                   </div>
@@ -132,7 +132,7 @@ export default function GlassmorphicDarkDemo() {
           <div className="space-y-4">
             {/* Quick Actions */}
             <GlassmorphicCard theme={theme}>
-              <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <GlassmorphicButton theme={theme} variant="primary" className="w-full">
                   <CreditCard className="h-4 w-4" />
@@ -152,12 +152,12 @@ export default function GlassmorphicDarkDemo() {
             {/* Settings Card */}
             <GlassmorphicCard theme={theme}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">Settings</h3>
-                <Settings className="h-5 w-5 text-white/60" />
+                <h3 className="text-lg font-semibold text-foreground">Settings</h3>
+                <Settings className="h-5 w-5 text-foreground/60" />
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-white/80">Notifications</span>
+                  <span className="text-sm text-foreground/80">Notifications</span>
                   <div
                     className="w-10 h-6 rounded-full p-1 cursor-pointer transition-colors"
                     style={{ backgroundColor: theme.colors.secondary + '30' }}
@@ -169,9 +169,9 @@ export default function GlassmorphicDarkDemo() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-white/80">Dark Mode</span>
-                  <div className="w-10 h-6 bg-white/10 rounded-full p-1 cursor-pointer">
-                    <div className="w-4 h-4 bg-white/40 rounded-full" />
+                  <span className="text-sm text-foreground/80">Dark Mode</span>
+                  <div className="w-10 h-6 bg-background/10 rounded-full p-1 cursor-pointer">
+                    <div className="w-4 h-4 bg-background/40 rounded-full" />
                   </div>
                 </div>
               </div>
@@ -181,16 +181,16 @@ export default function GlassmorphicDarkDemo() {
 
         {/* Color Palette Display */}
         <GlassmorphicCard theme={theme}>
-          <h3 className="text-lg font-semibold text-white mb-4">Current Theme Colors</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Current Theme Colors</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {Object.entries(theme.colors).map(([name, color]) => (
               <div key={name} className="text-center">
                 <div
-                  className="w-full h-20 rounded-lg mb-2 border border-white/20"
+                  className="w-full h-20 rounded-lg mb-2 border border-border/20"
                   style={{ backgroundColor: color }}
                 />
-                <p className="text-xs text-white/60 capitalize">{name}</p>
-                <p className="text-xs text-white/80 font-mono">{color}</p>
+                <p className="text-xs text-foreground/60 capitalize">{name}</p>
+                <p className="text-xs text-foreground/80 font-mono">{color}</p>
               </div>
             ))}
           </div>

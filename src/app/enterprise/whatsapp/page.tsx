@@ -355,15 +355,15 @@ export default function EnterpriseWhatsApp() {
         case 'sent':
           return (
             <div className="flex items-center gap-0.5">
-              <Check className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-[10px] text-gray-400">Sent</span>
+              <Check className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground">Sent</span>
             </div>
           )
         case 'delivered':
           return (
             <div className="flex items-center gap-0.5">
-              <CheckCheck className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-[10px] text-gray-400">Delivered</span>
+              <CheckCheck className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground">Delivered</span>
             </div>
           )
         case 'read':
@@ -383,8 +383,8 @@ export default function EnterpriseWhatsApp() {
         default:
           return (
             <div className="flex items-center gap-0.5">
-              <Clock className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-[10px] text-gray-400">Pending</span>
+              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground">Pending</span>
             </div>
           )
       }
@@ -393,7 +393,7 @@ export default function EnterpriseWhatsApp() {
     return onClick ? (
       <button
         onClick={onClick}
-        className="hover:bg-black/5 dark:hover:bg-white/5 rounded px-1 transition-colors"
+        className="hover:bg-background/5 dark:hover:bg-background/5 rounded px-1 transition-colors"
       >
         {content}
       </button>
@@ -403,11 +403,11 @@ export default function EnterpriseWhatsApp() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex h-screen bg-muted dark:bg-background">
       {/* Sidebar - Conversations List */}
-      <div className="w-96 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+      <div className="w-96 bg-background dark:bg-muted border-r border-border dark:border-border">
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-semibold">WhatsApp Business</h1>
             <div className="flex items-center gap-2">
@@ -434,7 +434,7 @@ export default function EnterpriseWhatsApp() {
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
@@ -488,8 +488,8 @@ export default function EnterpriseWhatsApp() {
                 fetchMessages(conv.id)
               }}
               className={cn(
-                'p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50',
-                selectedConversation?.id === conv.id && 'bg-gray-100 dark:bg-gray-700'
+                'p-4 border-b border-gray-100 dark:border-border cursor-pointer hover:bg-muted dark:hover:bg-muted-foreground/10/50',
+                selectedConversation?.id === conv.id && 'bg-muted dark:bg-muted-foreground/10'
               )}
             >
               <div className="flex items-start gap-3">
@@ -509,13 +509,13 @@ export default function EnterpriseWhatsApp() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-medium truncate">{conv.entity_name}</h3>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {formatLastSeen(conv.metadata.last_activity || conv.created_at)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground truncate">
                       {conv.metadata.phone}
                     </p>
                     <div className="flex items-center gap-2">
@@ -540,7 +540,7 @@ export default function EnterpriseWhatsApp() {
       {selectedConversation ? (
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
-          <div className="bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="bg-background dark:bg-muted p-4 border-b border-border dark:border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Avatar>
@@ -557,7 +557,7 @@ export default function EnterpriseWhatsApp() {
                 </Avatar>
                 <div>
                   <h2 className="font-semibold">{selectedConversation.entity_name}</h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {selectedConversation.metadata.phone}
                   </p>
                 </div>
@@ -591,12 +591,12 @@ export default function EnterpriseWhatsApp() {
             <div className="space-y-4">
               {loading ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">Loading messages...</p>
+                  <p className="text-muted-foreground">Loading messages...</p>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="text-center py-8">
-                  <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No messages yet</p>
+                  <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No messages yet</p>
                 </div>
               ) : (
                 messages.map(message => (
@@ -611,8 +611,8 @@ export default function EnterpriseWhatsApp() {
                       className={cn(
                         'max-w-[70%] rounded-lg px-4 py-2',
                         message.direction === 'inbound'
-                          ? 'bg-gray-200 dark:bg-gray-700'
-                          : 'bg-green-500 text-white'
+                          ? 'bg-gray-200 dark:bg-muted-foreground/10'
+                          : 'bg-green-500 text-foreground'
                       )}
                     >
                       <p className="text-sm">{message.text}</p>
@@ -639,7 +639,7 @@ export default function EnterpriseWhatsApp() {
           </ScrollArea>
 
           {/* Message Input */}
-          <div className="bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="bg-background dark:bg-muted p-4 border-t border-border dark:border-border">
             <div className="flex items-end gap-2">
               <Button variant="ghost" size="icon">
                 <Paperclip className="w-5 h-5" />
@@ -697,8 +697,8 @@ export default function EnterpriseWhatsApp() {
       ) : (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+            <MessageSquare className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-muted-foreground dark:text-muted-foreground">
               Select a conversation to start chatting
             </h3>
           </div>

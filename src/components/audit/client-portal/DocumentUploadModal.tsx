@@ -206,16 +206,16 @@ export function DocumentUploadModal({
           {/* Drop Zone */}
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+              dragActive ? 'border-blue-500 bg-blue-50' : 'border-border hover:border-gray-400'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-2">Drag and drop files here, or click to browse</p>
-            <p className="text-sm text-gray-500 mb-4">
+            <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-2">Drag and drop files here, or click to browse</p>
+            <p className="text-sm text-muted-foreground mb-4">
               Supported formats: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX (Max 10MB)
             </p>
             <input
@@ -252,13 +252,13 @@ export function DocumentUploadModal({
                 {uploadedFiles.map(file => (
                   <div
                     key={file.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <File className="w-5 h-5 text-gray-400" />
+                      <File className="w-5 h-5 text-muted-foreground" />
                       <div>
                         <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                        <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                        <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
                     <Button
@@ -292,7 +292,7 @@ export function DocumentUploadModal({
           {isUploading && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Uploading...</span>
+                <span className="text-muted-foreground">Uploading...</span>
                 <span className="text-gray-900 font-medium">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">

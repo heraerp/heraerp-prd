@@ -156,7 +156,7 @@ export function CustomerWhatsAppActions({
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <MessageCircle className="w-5 h-5 text-green-500" />
-        <span className="text-sm font-semibold !text-gray-900 dark:!text-white">
+        <span className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
           WhatsApp Actions
         </span>
       </div>
@@ -183,10 +183,10 @@ export function CustomerWhatsAppActions({
             <div className="flex items-start gap-3">
               <Gift className="w-5 h-5 text-pink-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-white mb-1">
+                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground mb-1">
                   Birthday Special
                 </h4>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Birthday: {formatDate(new Date(customer.metadata.birthday), 'MMMM d')}
                 </p>
                 {isBirthdayNear && (
@@ -215,7 +215,7 @@ export function CustomerWhatsAppActions({
                 </DialogHeader>
 
                 <div className="mt-4">
-                  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getBirthdayPreview()}
                     </pre>
@@ -228,7 +228,7 @@ export function CustomerWhatsAppActions({
                     <Button
                       onClick={handleSendBirthdayMessage}
                       disabled={sendingBirthday}
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
                     >
                       {sendingBirthday ? 'Sending...' : 'Send Birthday Special'}
                     </Button>
@@ -247,10 +247,10 @@ export function CustomerWhatsAppActions({
             <div className="flex items-start gap-3">
               <Users className="w-5 h-5 text-orange-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-white mb-1">
+                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground mb-1">
                   Win-back Campaign
                 </h4>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Last visit: {daysSinceLastVisit} days ago
                 </p>
                 <Badge className="mt-2 bg-orange-100 text-orange-700 dark:bg-orange-800/30 dark:text-orange-300">
@@ -277,7 +277,7 @@ export function CustomerWhatsAppActions({
                 </DialogHeader>
 
                 <div className="mt-4">
-                  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getWinbackPreview()}
                     </pre>
@@ -290,7 +290,7 @@ export function CustomerWhatsAppActions({
                     <Button
                       onClick={handleSendWinbackMessage}
                       disabled={sendingWinback}
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
                     >
                       {sendingWinback ? 'Sending...' : 'Send Win-back Offer'}
                     </Button>

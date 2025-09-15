@@ -159,11 +159,11 @@ export function OrderManager() {
       case 'approved':
         return 'bg-green-100 text-green-800 border-green-300'
       case 'completed':
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-muted text-gray-800 border-border'
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-300'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -272,13 +272,13 @@ export function OrderManager() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Order Management</h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Real-time order tracking using HERA's universal transaction system
               </p>
             </div>
             <Button
               onClick={() => setShowNewOrderForm(true)}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-green-600 hover:bg-green-700 text-foreground"
             >
               <Plus className="w-4 h-4 mr-2" />
               New Order
@@ -295,7 +295,7 @@ export function OrderManager() {
 
         {/* Status Filter Tabs */}
         <div className="mb-6">
-          <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg w-fit">
+          <div className="flex space-x-2 bg-muted p-1 rounded-lg w-fit">
             {[
               { key: 'all', label: 'All Orders', count: statusCounts.all },
               { key: 'pending', label: 'Pending', count: statusCounts.pending },
@@ -308,8 +308,8 @@ export function OrderManager() {
                 onClick={() => setSelectedStatus(tab.key)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedStatus === tab.key
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-background text-gray-900 shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.label} ({tab.count})
@@ -335,7 +335,7 @@ export function OrderManager() {
                   </Badge>
                 </div>
 
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   <p className="font-medium">{order.customer_name}</p>
                   {order.table_number && <p>{order.table_number}</p>}
                   {order.phone && <p>{order.phone}</p>}
@@ -347,7 +347,7 @@ export function OrderManager() {
               <div className="p-4">
                 {/* Timing Info */}
                 <div className="flex justify-between items-center mb-4 text-sm">
-                  <span className="text-gray-500">Ordered: {formatTimeAgo(order.order_time)}</span>
+                  <span className="text-muted-foreground">Ordered: {formatTimeAgo(order.order_time)}</span>
                   <span
                     className={`font-medium ${
                       order.status === 'approved' ? 'text-green-600' : 'text-orange-600'
@@ -368,7 +368,7 @@ export function OrderManager() {
                           {item.quantity || 0}x {item.menu_item_name || 'Unknown Item'}
                         </span>
                         {item.modifications && item.modifications.length > 0 && (
-                          <div className="text-xs text-blue-600 mt-1">
+                          <div className="text-xs text-primary mt-1">
                             Mods: {item.modifications.join(', ')}
                           </div>
                         )}
@@ -406,7 +406,7 @@ export function OrderManager() {
 
                 {/* Server Info */}
                 {order.server_name && (
-                  <p className="text-xs text-gray-500 mb-4">Server: {order.server_name}</p>
+                  <p className="text-xs text-muted-foreground mb-4">Server: {order.server_name}</p>
                 )}
 
                 {/* Action Buttons */}
@@ -433,7 +433,7 @@ export function OrderManager() {
                     <Button
                       size="sm"
                       onClick={() => updateOrderStatus(order.id, 'completed')}
-                      className="flex-1 bg-gray-600 hover:bg-gray-700"
+                      className="flex-1 bg-gray-600 hover:bg-muted-foreground/10"
                     >
                       Complete Order
                     </Button>
@@ -454,9 +454,9 @@ export function OrderManager() {
         {/* Empty State */}
         {sortedOrders.length === 0 && (
           <Card className="p-12 text-center">
-            <Clock className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+            <Clock className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {selectedStatus === 'all'
                 ? 'No orders yet today. Orders will appear here as they come in.'
                 : `No ${selectedStatus} orders at the moment.`}
@@ -474,13 +474,13 @@ export function OrderManager() {
               This order management system uses HERA's universal transaction architecture:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-green-700">
-              <div className="bg-white/50 p-3 rounded-lg">
+              <div className="bg-background/50 p-3 rounded-lg">
                 <strong>universal_transactions</strong>
                 <br />
                 Each order is a transaction with type "order", storing header info like customer,
                 total, status
               </div>
-              <div className="bg-white/50 p-3 rounded-lg">
+              <div className="bg-background/50 p-3 rounded-lg">
                 <strong>universal_transaction_lines</strong>
                 <br />
                 Order items stored as transaction lines with quantity, price, modifications

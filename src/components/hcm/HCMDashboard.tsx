@@ -237,7 +237,7 @@ export function HCMDashboard() {
     value,
     icon: Icon,
     trend,
-    color = 'text-blue-600',
+    color = 'text-primary',
     suffix = ''
   }: {
     title: string
@@ -251,7 +251,7 @@ export function HCMDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
             <p className="text-2xl font-bold mt-1">
               {value}
               {suffix}
@@ -273,7 +273,7 @@ export function HCMDashboard() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4 animate-spin" />
+          <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4 animate-spin" />
           <p>Loading HCM metrics...</p>
         </div>
       </div>
@@ -286,7 +286,7 @@ export function HCMDashboard() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Human Capital Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Complete HR operations on HERA's 6 universal tables - 95% cost savings vs Workday
           </p>
         </div>
@@ -376,7 +376,7 @@ export function HCMDashboard() {
                       <span className="font-medium">{dept.name}</span>
                       <div className="flex items-center space-x-4">
                         <Badge variant="secondary">{dept.headcount} employees</Badge>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           {formatCurrency(dept.payrollCost / 12)}/month
                         </span>
                       </div>
@@ -423,7 +423,7 @@ export function HCMDashboard() {
             <Card className="hera-card">
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Target className="w-5 h-5 mr-2 text-blue-600" />
+                  <Target className="w-5 h-5 mr-2 text-primary" />
                   Performance Reviews
                 </CardTitle>
               </CardHeader>
@@ -458,21 +458,21 @@ export function HCMDashboard() {
             <CardContent>
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <Globe className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                    <p className="text-sm text-gray-600">Countries</p>
+                  <div className="text-center p-4 bg-muted dark:bg-muted rounded-lg">
+                    <Globe className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-sm text-muted-foreground">Countries</p>
                     <p className="text-2xl font-bold">5</p>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div className="text-center p-4 bg-muted dark:bg-muted rounded-lg">
                     <DollarSign className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                    <p className="text-sm text-gray-600">This Month</p>
+                    <p className="text-sm text-muted-foreground">This Month</p>
                     <p className="text-2xl font-bold">
                       {formatCurrency(metrics.totalPayrollCost / 12)}
                     </p>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div className="text-center p-4 bg-muted dark:bg-muted rounded-lg">
                     <Clock className="w-8 h-8 mx-auto mb-2 text-orange-600" />
-                    <p className="text-sm text-gray-600">Processing Time</p>
+                    <p className="text-sm text-muted-foreground">Processing Time</p>
                     <p className="text-2xl font-bold">2 hrs</p>
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export function HCMDashboard() {
               <CardDescription>Biometric integration and real-time tracking</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Attendance tracking and leave management interface would be displayed here
               </p>
             </CardContent>
@@ -503,7 +503,7 @@ export function HCMDashboard() {
               <CardDescription>360° reviews and goal tracking</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Performance review and goal management interface would be displayed here
               </p>
             </CardContent>
@@ -517,7 +517,7 @@ export function HCMDashboard() {
               <CardDescription>Health, retirement, and other benefits management</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground">
                 Benefits enrollment and management interface would be displayed here
               </p>
             </CardContent>
@@ -536,24 +536,24 @@ export function HCMDashboard() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Diversity Index</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Diversity Index</p>
                   <p className="text-2xl font-bold">{metrics.diversityIndex.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500">Shannon Index</p>
+                  <p className="text-xs text-muted-foreground">Shannon Index</p>
                 </div>
                 <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Avg Tenure</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg Tenure</p>
                   <p className="text-2xl font-bold">{metrics.averageTenure} years</p>
-                  <p className="text-xs text-gray-500">Organization average</p>
+                  <p className="text-xs text-muted-foreground">Organization average</p>
                 </div>
                 <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Overtime Hours</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Overtime Hours</p>
                   <p className="text-2xl font-bold">{metrics.overtimeHours}</p>
-                  <p className="text-xs text-gray-500">This month</p>
+                  <p className="text-xs text-muted-foreground">This month</p>
                 </div>
                 <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">eNPS Score</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">eNPS Score</p>
                   <p className="text-2xl font-bold">+42</p>
-                  <p className="text-xs text-gray-500">Employee satisfaction</p>
+                  <p className="text-xs text-muted-foreground">Employee satisfaction</p>
                 </div>
               </div>
             </CardContent>

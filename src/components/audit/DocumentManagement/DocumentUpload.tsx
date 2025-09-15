@@ -74,7 +74,7 @@ export function DocumentUpload({
     if (type.includes('excel') || type.includes('spreadsheet'))
       return <FileText className="w-4 h-4 text-green-600" />
     if (type.includes('word') || type.includes('document'))
-      return <FileText className="w-4 h-4 text-blue-600" />
+      return <FileText className="w-4 h-4 text-primary" />
     return <File className="w-4 h-4" />
   }
 
@@ -239,8 +239,8 @@ export function DocumentUpload({
             dragOver
               ? 'border-blue-500 bg-blue-50'
               : uploading
-                ? 'border-gray-300 bg-gray-50'
-                : 'border-gray-300 hover:border-gray-400'
+                ? 'border-border bg-muted'
+                : 'border-border hover:border-gray-400'
           }`}
           onDrop={handleDrop}
           onDragOver={e => {
@@ -252,18 +252,18 @@ export function DocumentUpload({
           {uploading ? (
             <div className="space-y-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="text-sm text-gray-600">Uploading files...</p>
+              <p className="text-sm text-muted-foreground">Uploading files...</p>
               <Progress value={uploadProgress} className="w-full" />
-              <p className="text-xs text-gray-500">{Math.round(uploadProgress)}% complete</p>
+              <p className="text-xs text-muted-foreground">{Math.round(uploadProgress)}% complete</p>
             </div>
           ) : (
             <div className="space-y-4">
-              <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+              <Upload className="w-12 h-12 text-muted-foreground mx-auto" />
               <div>
                 <p className="text-lg font-medium text-gray-900">
                   Drop files here or click to browse
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Max {maxFiles} files, {maxFileSize}MB each. Accepted: {acceptedTypes.join(', ')}
                 </p>
               </div>
@@ -314,13 +314,13 @@ export function DocumentUpload({
               {currentFiles.map(file => (
                 <div
                   key={file.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {getFileIcon(file.type)}
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900 truncate">{file.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {formatFileSize(file.size)} • Uploaded{' '}
                         {new Date(file.uploaded_at).toLocaleDateString()}
                       </p>

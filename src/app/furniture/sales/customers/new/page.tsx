@@ -198,13 +198,13 @@ export default function NewCustomerPage() {
         <div className="flex items-center space-x-4">
           <Link
             href="/furniture/sales/customers"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+            className="p-2 hover:bg-muted dark:hover:bg-muted rounded-md transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">New Customer</h1>
-            <p className="text-gray-600 dark:text-gray-400">Add a new customer to your database</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">New Customer</h1>
+            <p className="text-muted-foreground dark:text-muted-foreground">Add a new customer to your database</p>
           </div>
         </div>
       </div>
@@ -224,10 +224,10 @@ export default function NewCustomerPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <Building2 className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Basic Information</h2>
+            <Building2 className="h-5 w-5 text-muted-foreground mr-2" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">Basic Information</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,7 +240,7 @@ export default function NewCustomerPage() {
                 name="entity_name"
                 value={formData.entity_name}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                 required
               />
             </div>
@@ -255,7 +255,7 @@ export default function NewCustomerPage() {
                 value={formData.entity_code}
                 onChange={handleInputChange}
                 placeholder="Auto-generated if blank"
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -268,17 +268,17 @@ export default function NewCustomerPage() {
                 name="contact_person"
                 value={formData.contact_person}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
           </div>
         </div>
 
         {/* Contact Information */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <Phone className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+            <Phone className="h-5 w-5 text-muted-foreground mr-2" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">
               Contact Information
             </h2>
           </div>
@@ -293,7 +293,7 @@ export default function NewCustomerPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -306,7 +306,7 @@ export default function NewCustomerPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -319,17 +319,17 @@ export default function NewCustomerPage() {
                 name="mobile"
                 value={formData.mobile}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
           </div>
         </div>
 
         {/* Address */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <MapPin className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Address</h2>
+            <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">Address</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -342,7 +342,7 @@ export default function NewCustomerPage() {
                 value={formData.address}
                 onChange={handleInputChange}
                 rows={2}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -355,7 +355,7 @@ export default function NewCustomerPage() {
                 name="city"
                 value={formData.city}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -368,7 +368,7 @@ export default function NewCustomerPage() {
                 name="state"
                 value={formData.state}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -381,17 +381,17 @@ export default function NewCustomerPage() {
                 name="pincode"
                 value={formData.pincode}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
           </div>
         </div>
 
         {/* Business Information */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <CreditCard className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+            <CreditCard className="h-5 w-5 text-muted-foreground mr-2" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">
               Business Information
             </h2>
           </div>
@@ -407,7 +407,7 @@ export default function NewCustomerPage() {
                 value={formData.gstin}
                 onChange={handleInputChange}
                 placeholder="29AAAAA0000A1Z5"
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -421,7 +421,7 @@ export default function NewCustomerPage() {
                 value={formData.pan_number}
                 onChange={handleInputChange}
                 placeholder="AAAAA0000A"
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -436,7 +436,7 @@ export default function NewCustomerPage() {
                 onChange={handleInputChange}
                 min="0"
                 step="1000"
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               />
             </div>
 
@@ -448,7 +448,7 @@ export default function NewCustomerPage() {
                 name="payment_terms"
                 value={formData.payment_terms}
                 onChange={handleInputChange}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               >
                 <option value="Cash">Cash</option>
                 <option value="Net 15">Net 15</option>
@@ -461,10 +461,10 @@ export default function NewCustomerPage() {
         </div>
 
         {/* Additional Information */}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <FileText className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+            <FileText className="h-5 w-5 text-muted-foreground mr-2" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-foreground">
               Additional Information
             </h2>
           </div>
@@ -478,7 +478,7 @@ export default function NewCustomerPage() {
               value={formData.notes}
               onChange={handleInputChange}
               rows={4}
-              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+              className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
               placeholder="Any additional information about this customer..."
             />
           </div>
@@ -488,14 +488,14 @@ export default function NewCustomerPage() {
         <div className="flex justify-end space-x-4">
           <Link
             href="/furniture/sales/customers"
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="px-4 py-2 border border-border dark:border-border text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

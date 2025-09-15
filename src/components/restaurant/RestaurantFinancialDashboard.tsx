@@ -171,7 +171,7 @@ export function RestaurantFinancialDashboard() {
         </div>
       )
     }
-    return <span className="text-gray-500">0%</span>
+    return <span className="text-muted-foreground">0%</span>
   }
 
   const getCostColor = (percentage: number) => {
@@ -188,7 +188,7 @@ export function RestaurantFinancialDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             Financial Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Real-time financial metrics and profitability analysis
           </p>
         </div>
@@ -211,7 +211,7 @@ export function RestaurantFinancialDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="restaurant-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -228,7 +228,7 @@ export function RestaurantFinancialDashboard() {
 
         <Card className="restaurant-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Net Profit</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Net Profit</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -236,7 +236,7 @@ export function RestaurantFinancialDashboard() {
                 <p className="text-2xl font-bold text-green-600">
                   ${metrics.profitability.netProfit.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-500">Margin: {metrics.profitability.netMargin}%</p>
+                <p className="text-sm text-muted-foreground">Margin: {metrics.profitability.netMargin}%</p>
               </div>
               <Target className="w-8 h-8 text-green-400 opacity-50" />
             </div>
@@ -245,7 +245,7 @@ export function RestaurantFinancialDashboard() {
 
         <Card className="restaurant-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Food Cost</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Food Cost</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -253,7 +253,7 @@ export function RestaurantFinancialDashboard() {
                 <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.foodCost))}>
                   {metrics.kpis.foodCost}%
                 </p>
-                <p className="text-sm text-gray-500">${metrics.costs.food.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">${metrics.costs.food.toLocaleString()}</p>
               </div>
               <Package className="w-8 h-8 text-amber-400 opacity-50" />
             </div>
@@ -262,7 +262,7 @@ export function RestaurantFinancialDashboard() {
 
         <Card className="restaurant-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Labor Cost</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Labor Cost</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -270,7 +270,7 @@ export function RestaurantFinancialDashboard() {
                 <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.laborCost))}>
                   {metrics.kpis.laborCost}%
                 </p>
-                <p className="text-sm text-gray-500">${metrics.costs.labor.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">${metrics.costs.labor.toLocaleString()}</p>
               </div>
               <Users className="w-8 h-8 text-blue-400 opacity-50" />
             </div>
@@ -346,7 +346,7 @@ export function RestaurantFinancialDashboard() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
                     <div>
-                      <p className="text-sm text-gray-600">Average Check</p>
+                      <p className="text-sm text-muted-foreground">Average Check</p>
                       <p className="text-xl font-bold text-orange-600">
                         ${metrics.kpis.averageCheck}
                       </p>
@@ -355,7 +355,7 @@ export function RestaurantFinancialDashboard() {
                   </div>
                   <div className="flex justify-between items-center p-3 bg-amber-50 rounded-lg">
                     <div>
-                      <p className="text-sm text-gray-600">Tables Turned</p>
+                      <p className="text-sm text-muted-foreground">Tables Turned</p>
                       <p className="text-xl font-bold text-amber-600">
                         {metrics.kpis.tablesTurned}x
                       </p>
@@ -364,7 +364,7 @@ export function RestaurantFinancialDashboard() {
                   </div>
                   <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                     <div>
-                      <p className="text-sm text-gray-600">Prime Cost</p>
+                      <p className="text-sm text-muted-foreground">Prime Cost</p>
                       <p className="text-xl font-bold text-yellow-600">{metrics.kpis.primeCost}%</p>
                     </div>
                     <AlertCircle className="w-6 h-6 text-yellow-400" />
@@ -397,7 +397,7 @@ export function RestaurantFinancialDashboard() {
                           <Badge variant="outline" className="text-xs">
                             {item.category}
                           </Badge>
-                          <span className="text-xs text-gray-500">{item.sold} sold</span>
+                          <span className="text-xs text-muted-foreground">{item.sold} sold</span>
                         </div>
                       </div>
                       <div className="text-right">
@@ -427,7 +427,7 @@ export function RestaurantFinancialDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">{category.category}</p>
-                          <p className="text-xs text-gray-500">{category.percentage}% of revenue</p>
+                          <p className="text-xs text-muted-foreground">{category.percentage}% of revenue</p>
                         </div>
                       </div>
                       <p className="font-semibold text-orange-600">${category.revenue}</p>
@@ -449,10 +449,10 @@ export function RestaurantFinancialDashboard() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {menuPerformance.lowPerformers.map((item, index) => (
-                  <div key={index} className="bg-white p-3 rounded-lg border border-yellow-200">
+                  <div key={index} className="bg-background p-3 rounded-lg border border-yellow-200">
                     <p className="font-medium">{item.name}</p>
                     <div className="flex justify-between mt-2 text-sm">
-                      <span className="text-gray-600">Sold: {item.sold}</span>
+                      <span className="text-muted-foreground">Sold: {item.sold}</span>
                       <span className="text-red-600">Waste: {item.waste}</span>
                     </div>
                   </div>
@@ -471,7 +471,7 @@ export function RestaurantFinancialDashboard() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Food Cost Target</p>
+                    <p className="text-sm text-muted-foreground mb-2">Food Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">28-32%</p>
                       <Badge
@@ -482,7 +482,7 @@ export function RestaurantFinancialDashboard() {
                     </div>
                   </div>
                   <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Labor Cost Target</p>
+                    <p className="text-sm text-muted-foreground mb-2">Labor Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">25-30%</p>
                       <Badge
@@ -493,7 +493,7 @@ export function RestaurantFinancialDashboard() {
                     </div>
                   </div>
                   <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Prime Cost Target</p>
+                    <p className="text-sm text-muted-foreground mb-2">Prime Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">55-60%</p>
                       <Badge
@@ -515,7 +515,7 @@ export function RestaurantFinancialDashboard() {
               <CardTitle>Revenue & Profit Trends</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-center justify-center text-gray-500">
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
                 Chart visualization would go here - integrate with Chart.js or Recharts
               </div>
             </CardContent>

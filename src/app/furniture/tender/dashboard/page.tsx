@@ -103,11 +103,11 @@ export default function TenderDashboardPage() {
 
   if (orgLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2">
             <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400">Loading tender dashboard...</p>
+            <p className="text-muted-foreground">Loading tender dashboard...</p>
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@ export default function TenderDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -130,7 +130,7 @@ export default function TenderDashboardPage() {
 
         {/* Key Metrics */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Performance Overview</h2>
+          <h2 className="text-xl font-semibold text-foreground">Performance Overview</h2>
           <StatCardGrid>
             {dashboardStats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
@@ -140,7 +140,7 @@ export default function TenderDashboardPage() {
 
         {/* Analytics Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-muted/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="trends">Bid Trends</TabsTrigger>
             <TabsTrigger value="competition">Competition</TabsTrigger>
@@ -150,8 +150,8 @@ export default function TenderDashboardPage() {
 
           <TabsContent value="overview" className="space-y-6">
             {/* Monthly Bid Performance */}
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Monthly Bid Performance</h3>
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Monthly Bid Performance</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={monthlyBidData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -173,29 +173,29 @@ export default function TenderDashboardPage() {
 
             {/* Win Rate by Category */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-                <h3 className="text-lg font-semibold text-white mb-4">Win Rate by Wood Type</h3>
+              <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Win Rate by Wood Type</h3>
                 <div className="space-y-3">
                   {winRateByCategory.map(item => (
                     <div key={item.category} className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-400">{item.category}</span>
-                        <span className="text-sm font-medium text-white">{item.winRate}%</span>
+                        <span className="text-sm text-muted-foreground">{item.category}</span>
+                        <span className="text-sm font-medium text-foreground">{item.winRate}%</span>
                       </div>
-                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <div className="h-2 bg-muted-foreground/10 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all"
                           style={{ width: `${item.winRate}%` }}
                         />
                       </div>
-                      <p className="text-xs text-gray-500">{item.totalBids} bids submitted</p>
+                      <p className="text-xs text-muted-foreground">{item.totalBids} bids submitted</p>
                     </div>
                   ))}
                 </div>
               </Card>
 
-              <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-                <h3 className="text-lg font-semibold text-white mb-4">Market Share Analysis</h3>
+              <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Market Share Analysis</h3>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
@@ -227,7 +227,7 @@ export default function TenderDashboardPage() {
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-muted-foreground">
                         {item.name}: {item.share}%
                       </span>
                     </div>
@@ -243,7 +243,7 @@ export default function TenderDashboardPage() {
                   <AlertCircle className="h-6 w-6 text-amber-400" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-white">Upcoming Tender Closures</h4>
+                  <h4 className="font-semibold text-foreground">Upcoming Tender Closures</h4>
                   <p className="text-sm text-gray-300 mt-1">
                     3 tenders closing in the next 7 days. KFD/2025/WOOD/001 requires immediate
                     attention for bid submission.
@@ -262,8 +262,8 @@ export default function TenderDashboardPage() {
           </TabsContent>
 
           <TabsContent value="trends" className="space-y-6">
-            <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Contract Value Trend</h3>
+            <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Contract Value Trend</h3>
               <ResponsiveContainer width="100%" height={350}>
                 <LineChart data={monthlyBidData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -297,7 +297,7 @@ export default function TenderDashboardPage() {
                   <Brain className="h-6 w-6 text-purple-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white">AI Performance Analysis</h3>
+                  <h3 className="text-lg font-semibold text-foreground">AI Performance Analysis</h3>
                   <p className="text-sm text-gray-300 mt-1">
                     Machine learning models achieving 78% accuracy in bid strategy recommendations
                   </p>
@@ -305,20 +305,20 @@ export default function TenderDashboardPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-gray-700/30">
-                  <p className="text-sm text-gray-400">Prediction Accuracy</p>
-                  <p className="text-2xl font-bold text-white mt-1">78%</p>
+                <div className="p-4 rounded-lg bg-muted-foreground/10/30">
+                  <p className="text-sm text-muted-foreground">Prediction Accuracy</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">78%</p>
                   <p className="text-xs text-green-400 mt-1">+12% improvement</p>
                 </div>
-                <div className="p-4 rounded-lg bg-gray-700/30">
-                  <p className="text-sm text-gray-400">Revenue Impact</p>
-                  <p className="text-2xl font-bold text-white mt-1">₹45L</p>
-                  <p className="text-xs text-gray-400 mt-1">Additional revenue from AI</p>
+                <div className="p-4 rounded-lg bg-muted-foreground/10/30">
+                  <p className="text-sm text-muted-foreground">Revenue Impact</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">₹45L</p>
+                  <p className="text-xs text-muted-foreground mt-1">Additional revenue from AI</p>
                 </div>
-                <div className="p-4 rounded-lg bg-gray-700/30">
-                  <p className="text-sm text-gray-400">Time Saved</p>
-                  <p className="text-2xl font-bold text-white mt-1">120hrs</p>
-                  <p className="text-xs text-gray-400 mt-1">Monthly automation benefit</p>
+                <div className="p-4 rounded-lg bg-muted-foreground/10/30">
+                  <p className="text-sm text-muted-foreground">Time Saved</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">120hrs</p>
+                  <p className="text-xs text-muted-foreground mt-1">Monthly automation benefit</p>
                 </div>
               </div>
             </Card>

@@ -327,7 +327,7 @@ const getStockStatus = (current: number, reorderPoint: number) => {
     return { status: 'low', color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-900/30' }
   if (ratio <= 2)
     return { status: 'good', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-900/30' }
-  return { status: 'excess', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-900/30' }
+  return { status: 'excess', color: 'text-primary', bg: 'bg-blue-100 dark:bg-blue-900/30' }
 }
 
 // ----------------------------- Main Component ------------------------------------
@@ -491,7 +491,7 @@ export default function SalonInventoryManagement() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                 Total Inventory Value
               </CardTitle>
               <Package className="w-4 h-4 text-purple-600" />
@@ -499,14 +499,14 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(inventoryMetrics.totalValue)}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Cost basis</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Cost basis</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                 Retail Value
               </CardTitle>
               <DollarSign className="w-4 h-4 text-green-600" />
@@ -514,7 +514,7 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(inventoryMetrics.retailValue)}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
               {inventoryMetrics.avgMargin.toFixed(1)}% margin
             </p>
           </CardContent>
@@ -523,7 +523,7 @@ export default function SalonInventoryManagement() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                 Low Stock Items
               </CardTitle>
               <AlertCircle className="w-4 h-4 text-orange-600" />
@@ -531,22 +531,22 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.lowStockCount}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Need reordering</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Need reordering</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                 Total Products
               </CardTitle>
-              <BarChart3 className="w-4 h-4 text-blue-600" />
+              <BarChart3 className="w-4 h-4 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.totalItems}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Active items</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Active items</p>
           </CardContent>
         </Card>
       </div>
@@ -569,7 +569,7 @@ export default function SalonInventoryManagement() {
                   <AlertDescription className="flex items-center justify-between">
                     <div>
                       <span className="font-medium">{alert.product_name}</span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+                      <span className="text-sm text-muted-foreground dark:text-muted-foreground ml-2">
                         Current: {alert.current_stock} | Reorder at: {alert.reorder_point}
                       </span>
                     </div>
@@ -598,7 +598,7 @@ export default function SalonInventoryManagement() {
             {Object.entries(ownershipBreakdown).map(([type, data]) => (
               <div
                 key={type}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                className="flex items-center justify-between p-4 bg-muted dark:bg-muted rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   {type === 'salon' && <Home className="w-5 h-5 text-purple-500" />}
@@ -606,12 +606,12 @@ export default function SalonInventoryManagement() {
                   {type === 'consignment' && <Package className="w-5 h-5 text-green-500" />}
                   <div>
                     <h4 className="font-medium capitalize">{type.replace('_', ' ')}</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{data.count} items</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">{data.count} items</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">{formatCurrency(data.value)}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {((data.value / inventoryMetrics.totalValue) * 100).toFixed(1)}% of total
                   </p>
                 </div>
@@ -631,7 +631,7 @@ export default function SalonInventoryManagement() {
             {mockMovements.slice(0, 5).map(movement => (
               <div
                 key={movement.id}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   {movement.movement_type === 'in' ? (
@@ -645,7 +645,7 @@ export default function SalonInventoryManagement() {
                   )}
                   <div>
                     <p className="font-medium">{movement.product_name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {movement.reason} • By {movement.staff_name}
                     </p>
                   </div>
@@ -655,7 +655,7 @@ export default function SalonInventoryManagement() {
                     {movement.movement_type === 'in' ? '+' : '-'}
                     {movement.quantity}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                     {movement.transaction_date.toLocaleTimeString()}
                   </p>
                 </div>
@@ -675,7 +675,7 @@ export default function SalonInventoryManagement() {
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search products by name, code, barcode..."
                   value={searchQuery}
@@ -689,7 +689,7 @@ export default function SalonInventoryManagement() {
               <select
                 value={selectedCategory}
                 onChange={e => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm"
+                className="px-3 py-2 bg-background dark:bg-muted-foreground/10 border border-border dark:border-border rounded-md text-sm"
               >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
@@ -702,7 +702,7 @@ export default function SalonInventoryManagement() {
               <select
                 value={selectedOwnership}
                 onChange={e => setSelectedOwnership(e.target.value)}
-                className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm"
+                className="px-3 py-2 bg-background dark:bg-muted-foreground/10 border border-border dark:border-border rounded-md text-sm"
               >
                 <option value="">All Ownership</option>
                 <option value="salon">Salon Owned</option>
@@ -740,13 +740,13 @@ export default function SalonInventoryManagement() {
                   {/* Product Info */}
                   <div className="flex-1">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                        <Package className="w-6 h-6 text-gray-500" />
+                      <div className="w-12 h-12 rounded-lg bg-muted dark:bg-muted flex items-center justify-center">
+                        <Package className="w-6 h-6 text-muted-foreground" />
                       </div>
 
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900 dark:text-white">
+                          <h3 className="font-semibold text-gray-900 dark:text-foreground">
                             {item.entity_name}
                           </h3>
                           <Badge
@@ -767,7 +767,7 @@ export default function SalonInventoryManagement() {
                           )}
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground dark:text-muted-foreground">
                           {item.entity_code && (
                             <span className="flex items-center gap-1">
                               <Hash className="w-3 h-3" />
@@ -812,10 +812,10 @@ export default function SalonInventoryManagement() {
                     <Badge className={cn('mb-2', stockStatus.bg)}>{stockStatus.status}</Badge>
 
                     <div className="space-y-1 text-sm">
-                      <div className="text-gray-500 dark:text-gray-400">
+                      <div className="text-muted-foreground dark:text-muted-foreground">
                         Reorder at: {item.reorder_point}
                       </div>
-                      <div className="text-gray-500 dark:text-gray-400">
+                      <div className="text-muted-foreground dark:text-muted-foreground">
                         Cost: {formatCurrency(item.unit_cost)}
                       </div>
                       {item.retail_price > 0 && (
@@ -829,7 +829,7 @@ export default function SalonInventoryManagement() {
 
                 {/* Commission Info */}
                 {item.commission_rate > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="mt-4 pt-4 border-t border-border dark:border-border">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Award className="w-4 h-4 text-purple-500" />
@@ -847,10 +847,10 @@ export default function SalonInventoryManagement() {
                 )}
 
                 {/* Actions */}
-                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <div className="mt-4 pt-4 border-t border-border dark:border-border flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {item.last_sale_date && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                         Last sale: {item.last_sale_date.toLocaleDateString()}
                       </span>
                     )}
@@ -886,11 +886,11 @@ export default function SalonInventoryManagement() {
 
       {filteredInventory.length === 0 && (
         <div className="text-center py-12">
-          <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
             No products found
           </h3>
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Try adjusting your filters or add new products to inventory.
           </p>
         </div>
@@ -915,7 +915,7 @@ export default function SalonInventoryManagement() {
             {mockMovements.map(movement => (
               <div
                 key={movement.id}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                className="border border-border dark:border-border rounded-lg p-4"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
@@ -929,14 +929,14 @@ export default function SalonInventoryManagement() {
                       </div>
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <RefreshCw className="w-5 h-5 text-blue-600" />
+                        <RefreshCw className="w-5 h-5 text-primary" />
                       </div>
                     )}
 
                     <div className="flex-1">
                       <h4 className="font-semibold">{movement.product_name}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{movement.reason}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">{movement.reason}</p>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <User className="w-3 h-3" />
                           {movement.staff_name}
@@ -964,7 +964,7 @@ export default function SalonInventoryManagement() {
                       {movement.quantity}
                     </p>
                     {movement.reference_number && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                         Ref: {movement.reference_number}
                       </p>
                     )}
@@ -997,22 +997,22 @@ export default function SalonInventoryManagement() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Total Cost Value</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">Total Cost Value</span>
                 <span className="font-semibold">{formatCurrency(inventoryMetrics.totalValue)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Total Retail Value</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">Total Retail Value</span>
                 <span className="font-semibold">
                   {formatCurrency(inventoryMetrics.retailValue)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Potential Profit</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">Potential Profit</span>
                 <span className="font-semibold text-green-600">
                   {formatCurrency(inventoryMetrics.retailValue - inventoryMetrics.totalValue)}
                 </span>
               </div>
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-3 border-t border-border dark:border-border">
                 <Button className="w-full" variant="outline">
                   <FileText className="w-4 h-4 mr-2" />
                   Generate Full Report
@@ -1038,11 +1038,11 @@ export default function SalonInventoryManagement() {
                 .map(item => (
                   <div
                     key={item.id}
-                    className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                    className="flex justify-between items-center p-2 bg-muted dark:bg-muted rounded"
                   >
                     <div>
                       <p className="text-sm font-medium">{item.entity_name}</p>
-                      <p className="text-xs text-gray-500">{item.owner_name}</p>
+                      <p className="text-xs text-muted-foreground">{item.owner_name}</p>
                     </div>
                     <Badge>
                       {item.commission_type === 'percentage'
@@ -1051,7 +1051,7 @@ export default function SalonInventoryManagement() {
                     </Badge>
                   </div>
                 ))}
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-3 border-t border-border dark:border-border">
                 <Button className="w-full" variant="outline" onClick={generateCommissionReport}>
                   <DollarSign className="w-4 h-4 mr-2" />
                   Calculate Commissions
@@ -1071,16 +1071,16 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 Track product costs and profitability over time
               </p>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500">This Month</p>
+                  <p className="text-muted-foreground">This Month</p>
                   <p className="text-xl font-bold">{formatCurrency(12450)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Last Month</p>
+                  <p className="text-muted-foreground">Last Month</p>
                   <p className="text-xl font-bold">{formatCurrency(10280)}</p>
                 </div>
               </div>
@@ -1145,32 +1145,32 @@ export default function SalonInventoryManagement() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Configure when to receive low stock notifications
             </p>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg">
                 <div>
                   <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-gray-500">Receive email alerts for low stock</p>
+                  <p className="text-sm text-muted-foreground">Receive email alerts for low stock</p>
                 </div>
                 <Button variant="outline" size="sm">
                   Configure
                 </Button>
               </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg">
                 <div>
                   <p className="font-medium">SMS Alerts</p>
-                  <p className="text-sm text-gray-500">Get SMS for critical stock levels</p>
+                  <p className="text-sm text-muted-foreground">Get SMS for critical stock levels</p>
                 </div>
                 <Button variant="outline" size="sm">
                   Configure
                 </Button>
               </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg">
                 <div>
                   <p className="font-medium">Dashboard Alerts</p>
-                  <p className="text-sm text-gray-500">Show alerts on main dashboard</p>
+                  <p className="text-sm text-muted-foreground">Show alerts on main dashboard</p>
                 </div>
                 <Button variant="outline" size="sm">
                   Configure
@@ -1191,19 +1191,19 @@ export default function SalonInventoryManagement() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Connect with external systems for automated inventory sync
             </p>
             <div className="space-y-3">
               {/* Shopify */}
-              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="flex items-center justify-between p-4 border border-border dark:border-border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                     <ShoppingCart className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
                     <h4 className="font-medium">Shopify</h4>
-                    <p className="text-sm text-gray-500">Sync products and inventory</p>
+                    <p className="text-sm text-muted-foreground">Sync products and inventory</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1215,14 +1215,14 @@ export default function SalonInventoryManagement() {
               </div>
 
               {/* QuickBooks */}
-              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="flex items-center justify-between p-4 border border-border dark:border-border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                    <FileText className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 className="font-medium">QuickBooks</h4>
-                    <p className="text-sm text-gray-500">Sync inventory valuation</p>
+                    <p className="text-sm text-muted-foreground">Sync inventory valuation</p>
                   </div>
                 </div>
                 <Button variant="outline" size="sm">
@@ -1232,14 +1232,14 @@ export default function SalonInventoryManagement() {
               </div>
 
               {/* Mailchimp */}
-              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="flex items-center justify-between p-4 border border-border dark:border-border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                     <Mail className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
                     <h4 className="font-medium">Mailchimp</h4>
-                    <p className="text-sm text-gray-500">Product recommendations</p>
+                    <p className="text-sm text-muted-foreground">Product recommendations</p>
                   </div>
                 </div>
                 <Button variant="outline" size="sm">
@@ -1262,14 +1262,14 @@ export default function SalonInventoryManagement() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Set default commission rates for product categories
             </p>
             <div className="space-y-3">
               {categories.map(category => (
                 <div
                   key={category.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -1360,7 +1360,7 @@ export default function SalonInventoryManagement() {
     if (!showProductModal) return null
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
         <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -1629,7 +1629,7 @@ export default function SalonInventoryManagement() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between max-w-[1600px] mx-auto">
             <div className="flex items-center gap-4">
@@ -1647,7 +1647,7 @@ export default function SalonInventoryManagement() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Inventory Management
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   Track products, manage stock, and monitor commissions
                 </p>
               </div>
@@ -1661,7 +1661,7 @@ export default function SalonInventoryManagement() {
               <Button
                 variant="default"
                 size="sm"
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="bg-purple-600 hover:bg-purple-700 text-foreground"
                 onClick={() => setShowProductModal(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />

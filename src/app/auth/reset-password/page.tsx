@@ -193,8 +193,8 @@ function ResetPasswordForm() {
           <Card>
             <CardContent className="py-12">
               <div className="flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-                <p className="text-gray-600">Verifying reset link...</p>
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                <p className="text-muted-foreground">Verifying reset link...</p>
               </div>
             </CardContent>
           </Card>
@@ -232,7 +232,7 @@ function ResetPasswordForm() {
                 </Alert>
               )}
 
-              <div className="text-sm text-gray-600 space-y-2">
+              <div className="text-sm text-muted-foreground space-y-2">
                 <p className="text-center">
                   {isExpired
                     ? 'For security reasons, password reset links expire after 1 hour.'
@@ -257,7 +257,7 @@ function ResetPasswordForm() {
               </div>
 
               <div className="pt-4 border-t">
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-muted-foreground text-center">
                   Tip: Check your email spam folder if you don't receive the reset email.
                 </p>
               </div>
@@ -291,7 +291,7 @@ function ResetPasswordForm() {
               </Alert>
 
               <div className="space-y-3">
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-muted-foreground text-center">
                   Redirecting to login page in 2 seconds...
                 </p>
 
@@ -304,7 +304,7 @@ function ResetPasswordForm() {
               </div>
 
               <div className="pt-4 border-t">
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-muted-foreground text-center">
                   Your old password will no longer work. Please use your new password to sign in.
                 </p>
               </div>
@@ -350,12 +350,12 @@ function ResetPasswordForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">Must be at least 6 characters long</p>
+                <p className="text-xs text-muted-foreground">Must be at least 6 characters long</p>
               </div>
 
               <div className="space-y-2">
@@ -374,7 +374,7 @@ function ResetPasswordForm() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -405,7 +405,7 @@ function ResetPasswordForm() {
             </form>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/login" className="text-sm text-gray-600 hover:text-gray-800">
+              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-gray-800">
                 Back to Login
               </Link>
             </div>
@@ -414,7 +414,7 @@ function ResetPasswordForm() {
 
         {/* Security Notice */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500 max-w-sm mx-auto">
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             Make sure to use a strong password that you haven't used before. Your password should be
             at least 6 characters long.
           </p>
@@ -429,7 +429,7 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       }
     >

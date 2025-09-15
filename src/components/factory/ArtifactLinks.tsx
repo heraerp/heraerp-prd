@@ -27,7 +27,7 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
       {artifacts.coverage && (
         <a
           href={artifacts.coverage}
-          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          className="inline-flex items-center gap-1 text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View coverage report"
@@ -39,7 +39,7 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
       {artifacts.sbom && (
         <a
           href={artifacts.sbom}
-          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          className="inline-flex items-center gap-1 text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View SBOM"
@@ -51,7 +51,7 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
       {artifacts.trace && (
         <a
           href={artifacts.trace}
-          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          className="inline-flex items-center gap-1 text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View trace"

@@ -69,7 +69,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
       case 'upcoming':
         return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
       default:
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 border-gray-200 dark:border-gray-800'
+        return 'bg-muted text-gray-700 dark:bg-background/30 dark:text-muted-foreground border-border dark:border-gray-800'
     }
   }
 
@@ -92,7 +92,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
       case 'critical':
         return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
       default:
-        return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/30'
+        return 'text-muted-foreground dark:text-muted-foreground bg-muted dark:bg-background/30'
     }
   }
 
@@ -118,7 +118,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
     >
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white">
+          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
             Team Leave Overview
           </h3>
           <div className="flex items-center gap-2">
@@ -139,15 +139,15 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
               const level = getCoverageLevel(dept)
 
               return (
-                <div key={dept} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                <div key={dept} className="p-3 rounded-lg bg-muted/50 border border-border/50">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                       {dept}
                     </span>
                     {level === 'critical' && <AlertCircle className="h-4 w-4 text-red-500" />}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                    <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                       {coverage.total - coverage.onLeave}/{coverage.total} available
                     </span>
                     <span
@@ -171,24 +171,24 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
             {teamLeave.map(member => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50"
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border/50"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                    <Users className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  <div className="p-2 rounded-lg bg-muted dark:bg-muted">
+                    <Users className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white text-sm">
+                    <p className="font-medium text-gray-900 dark:text-foreground text-sm">
                       {member.name}
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                       {member.role} • {member.department}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-600 dark:text-gray-400">
+                  <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                     {formatDate(member.startDate, 'MMM d')} - {formatDate(member.endDate, 'MMM d')}
                   </span>
                   <span

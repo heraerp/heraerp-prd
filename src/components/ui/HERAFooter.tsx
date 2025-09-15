@@ -70,8 +70,8 @@ export function HERAFooter({
               className={cn(
                 'text-xs font-medium tracking-wide transition-colors duration-200',
                 variant === 'dark'
-                  ? 'text-white/70 group-hover:text-white/90'
-                  : 'text-gray-500 group-hover:text-gray-700'
+                  ? 'text-foreground/70 group-hover:text-foreground/90'
+                  : 'text-muted-foreground group-hover:text-foreground'
               )}
             >
               Powered by
@@ -89,21 +89,21 @@ export function HERAFooter({
               <div
                 className={cn(
                   'w-1 h-1 rounded-full transition-all duration-300',
-                  variant === 'dark' ? 'bg-white/40' : 'bg-gray-400',
+                  variant === 'dark' ? 'bg-background/40' : 'bg-gray-400',
                   'group-hover:bg-emerald-400 group-hover:scale-125'
                 )}
               />
               <div
                 className={cn(
                   'w-1 h-1 rounded-full transition-all duration-300 delay-75',
-                  variant === 'dark' ? 'bg-white/40' : 'bg-gray-400',
+                  variant === 'dark' ? 'bg-background/40' : 'bg-gray-400',
                   'group-hover:bg-blue-400 group-hover:scale-125'
                 )}
               />
               <div
                 className={cn(
                   'w-1 h-1 rounded-full transition-all duration-300 delay-150',
-                  variant === 'dark' ? 'bg-white/40' : 'bg-gray-400',
+                  variant === 'dark' ? 'bg-background/40' : 'bg-gray-400',
                   'group-hover:bg-cyan-400 group-hover:scale-125'
                 )}
               />
@@ -123,7 +123,7 @@ export function MinimalHERAFooter({ className }: { className?: string }) {
         href="https://www.heraerp.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="group inline-flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200"
+        className="group inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-muted-foreground transition-colors duration-200"
       >
         <div className="w-4 h-4">
           <svg
@@ -158,7 +158,7 @@ export function MinimalHERAFooter({ className }: { className?: string }) {
           <div className="w-0.5 h-0.5 rounded-full bg-current opacity-40 group-hover:opacity-70 transition-opacity delay-150" />
         </div>
       </Link>
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-muted-foreground">
         Join the network of leading businesses powered by universal architecture
       </p>
     </div>

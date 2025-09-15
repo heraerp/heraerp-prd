@@ -122,7 +122,7 @@ export function JourneyProgressTracker({
                   <div
                     className={cn(
                       'h-0.5 w-full transition-all duration-500',
-                      step.status === 'completed' ? 'bg-purple-600' : 'bg-gray-300 dark:bg-gray-700'
+                      step.status === 'completed' ? 'bg-purple-600' : 'bg-gray-300 dark:bg-muted-foreground/10'
                     )}
                   />
                 </div>
@@ -145,7 +145,7 @@ export function JourneyProgressTracker({
                     'transition-all duration-500 group-hover:scale-110',
                     step.status === 'completed' && 'bg-purple-600 shadow-lg shadow-purple-600/30',
                     step.status === 'current' && 'shadow-lg',
-                    step.status === 'pending' && 'bg-gray-300 dark:bg-gray-700'
+                    step.status === 'pending' && 'bg-gray-300 dark:bg-muted-foreground/10'
                   )}
                   style={
                     step.status === 'current'
@@ -169,12 +169,12 @@ export function JourneyProgressTracker({
                   }
                 >
                   {step.status === 'completed' ? (
-                    <Check className="h-5 w-5 text-white" />
+                    <Check className="h-5 w-5 text-foreground" />
                   ) : (
                     <step.icon
                       className={cn(
                         'h-4 w-4',
-                        step.status === 'current' ? 'text-purple-600' : 'text-gray-500'
+                        step.status === 'current' ? 'text-purple-600' : 'text-muted-foreground'
                       )}
                     />
                   )}
@@ -186,8 +186,8 @@ export function JourneyProgressTracker({
                     className={cn(
                       'text-xs sm:text-sm font-semibold transition-colors duration-300',
                       step.status === 'completed' && 'text-purple-600 dark:text-purple-400',
-                      step.status === 'current' && 'text-gray-900 dark:text-white',
-                      step.status === 'pending' && 'text-gray-500 dark:text-gray-400'
+                      step.status === 'current' && 'text-gray-900 dark:text-foreground',
+                      step.status === 'pending' && 'text-muted-foreground dark:text-muted-foreground'
                     )}
                   >
                     {step.title}
@@ -196,8 +196,8 @@ export function JourneyProgressTracker({
                     className={cn(
                       'hidden sm:block text-xs mt-0.5',
                       step.status === 'current'
-                        ? 'text-gray-600 dark:text-gray-300'
-                        : 'text-gray-500 dark:text-gray-400'
+                        ? 'text-muted-foreground dark:text-gray-300'
+                        : 'text-muted-foreground dark:text-muted-foreground'
                     )}
                   >
                     {step.subtitle}
@@ -212,10 +212,10 @@ export function JourneyProgressTracker({
       {/* Current Step Indicator (Mobile) */}
       <div className="mt-6 sm:hidden">
         <div className="flex items-center justify-center gap-2 text-sm">
-          <span className="text-gray-500">
+          <span className="text-muted-foreground">
             Step {steps.findIndex(s => s.status === 'current') + 1} of {steps.length}:
           </span>
-          <span className="font-semibold text-gray-900 dark:text-white">
+          <span className="font-semibold text-gray-900 dark:text-foreground">
             {steps.find(s => s.status === 'current')?.title}
           </span>
         </div>

@@ -35,7 +35,7 @@ export default function UniversalLearningPage() {
       <div className="relative pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center space-y-6 mb-12">
-            <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-200">
+            <div className="inline-flex items-center space-x-2 bg-background/60 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-200">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium text-blue-700">
                 Revolutionary Universal Learning Model
@@ -50,7 +50,7 @@ export default function UniversalLearningPage() {
               <span className="text-gray-900">for ANY Domain</span>
             </h1>
 
-            <p className="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               Process educational content from <strong>any field</strong> with{' '}
               <strong>95% code reuse</strong>. From CA to Medicine, Law to Engineering - one
               universal platform transforms how we learn.
@@ -63,7 +63,7 @@ export default function UniversalLearningPage() {
                 { label: 'Legal Studies', color: 'bg-purple-100 text-purple-700' },
                 { label: 'Engineering', color: 'bg-orange-100 text-orange-700' },
                 { label: 'Language Learning', color: 'bg-pink-100 text-pink-700' },
-                { label: 'Any Domain', color: 'bg-gray-100 text-gray-700' }
+                { label: 'Any Domain', color: 'bg-muted text-gray-700' }
               ].map((domain, index) => (
                 <span key={index} className={`px-3 py-1 rounded-full font-medium ${domain.color}`}>
                   {domain.label}
@@ -74,10 +74,10 @@ export default function UniversalLearningPage() {
 
           {/* Key Features */}
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-blue-100 hover:border-blue-200 transition-colors">
+            <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-8 border border-blue-100 hover:border-blue-200 transition-colors">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -91,16 +91,16 @@ export default function UniversalLearningPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered Analysis</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Multi-provider AI orchestration with intelligent routing. Automatic fallback ensures
                 99.9% uptime across OpenAI, Claude, and Gemini.
               </p>
             </div>
 
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-purple-100 hover:border-purple-200 transition-colors">
+            <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-8 border border-purple-100 hover:border-purple-200 transition-colors">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -114,16 +114,16 @@ export default function UniversalLearningPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">95% Code Reuse</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Universal-first architecture with domain specialization. Build once, deploy across
                 infinite educational domains with minimal customization.
               </p>
             </div>
 
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-green-100 hover:border-green-200 transition-colors">
+            <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-8 border border-green-100 hover:border-green-200 transition-colors">
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -139,7 +139,7 @@ export default function UniversalLearningPage() {
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Cross-Domain Intelligence
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Revolutionary learning transfer engine. Insights from medical education enhance CA
                 learning, legal reasoning improves engineering problem-solving.
               </p>
@@ -147,10 +147,10 @@ export default function UniversalLearningPage() {
           </div>
 
           {/* Architecture Highlight */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 mb-12">
+          <div className="bg-background/80 backdrop-blur-sm rounded-3xl p-8 border border-border mb-12">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Universal Architecture</h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-muted-foreground">
                 Built on HERA's revolutionary 6-table universal database architecture
               </p>
             </div>
@@ -179,7 +179,7 @@ export default function UniversalLearningPage() {
                 <div key={index} className="p-4">
                   <div className="text-3xl mb-2">{step.icon}</div>
                   <h4 className="font-semibold text-gray-900 mb-1">{step.name}</h4>
-                  <p className="text-sm text-gray-600">{step.desc}</p>
+                  <p className="text-sm text-muted-foreground">{step.desc}</p>
                 </div>
               ))}
             </div>
@@ -191,18 +191,18 @@ export default function UniversalLearningPage() {
       <UniversalLearningInterface />
 
       {/* Footer */}
-      <footer className="mt-20 border-t bg-white/50 backdrop-blur-sm">
+      <footer className="mt-20 border-t bg-background/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-2">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 HERA Universal Learning Platform
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Revolutionary AI-powered learning system that processes ANY educational content
                 across all domains with 95% code reuse and cross-domain intelligence.
               </p>
-              <div className="flex space-x-4 text-sm text-gray-500">
+              <div className="flex space-x-4 text-sm text-muted-foreground">
                 <span>Built with HERA Universal Architecture</span>
                 <span>•</span>
                 <span>Powered by Multi-Provider AI</span>
@@ -211,7 +211,7 @@ export default function UniversalLearningPage() {
 
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Supported Domains</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>Chartered Accountancy (CA)</li>
                 <li>Medical Education</li>
                 <li>Legal Studies</li>
@@ -223,7 +223,7 @@ export default function UniversalLearningPage() {
 
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Key Features</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>Universal Content Processing</li>
                 <li>AI-Powered Analysis</li>
                 <li>Adaptive Learning Paths</li>
@@ -234,7 +234,7 @@ export default function UniversalLearningPage() {
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+          <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
             <p>
               © 2024 HERA Software Systems. Universal Learning Platform - Processing ANY
               educational content across infinite domains.

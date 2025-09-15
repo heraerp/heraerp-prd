@@ -174,7 +174,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Scale className="w-6 h-6 text-blue-600" />
+              <Scale className="w-6 h-6 text-primary" />
               <CardTitle>Universal Configuration Rules</CardTitle>
             </div>
             <div className="flex gap-2">
@@ -188,7 +188,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
               </Button>
               <Button
                 onClick={onCreateRule}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create Rule
@@ -203,7 +203,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
         <CardContent className="pt-6">
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search rules by name or smart code..."
                 value={searchQuery}
@@ -232,8 +232,8 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       <Badge variant="outline">v{rule.metadata.rule_version}</Badge>
                     )}
                   </div>
-                  <div className="text-sm text-gray-500">
-                    <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                  <div className="text-sm text-muted-foreground">
+                    <code className="bg-muted dark:bg-muted px-2 py-1 rounded">
                       {rule.smart_code}
                     </code>
                   </div>
@@ -246,7 +246,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       ))}
                     </div>
                   )}
-                  <div className="text-xs text-gray-400 flex items-center gap-4 mt-2">
+                  <div className="text-xs text-muted-foreground flex items-center gap-4 mt-2">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       Created {formatDate(new Date(rule.created_at), 'MMM dd, yyyy')}
@@ -308,8 +308,8 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
       {filteredRules.length === 0 && !loading && (
         <Card>
           <CardContent className="py-12 text-center">
-            <Scale className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500">
+            <Scale className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">
               {searchQuery ? 'No rules found matching your search' : 'No rules configured yet'}
             </p>
             <Button onClick={() => setShowTemplates(true)} className="mt-4" variant="outline">
@@ -335,14 +335,14 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                 <div className="flex items-start justify-between">
                   <div>
                     <h4 className="font-medium">{template.title}</h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       {template.rule_payload.description}
                     </p>
                     <div className="flex gap-2 mt-2">
                       <Badge variant="outline">{template.industry}</Badge>
                       <Badge variant="outline">{template.module}</Badge>
                     </div>
-                    <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded mt-2 inline-block">
+                    <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded mt-2 inline-block">
                       {template.smart_code}
                     </code>
                   </div>
@@ -368,18 +368,18 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
           </DialogHeader>
           <div className="mt-4 space-y-2">
             {auditEvents.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">No audit events found</p>
+              <p className="text-center text-muted-foreground py-8">No audit events found</p>
             ) : (
               auditEvents.map((event, index) => (
                 <div key={index} className="border rounded-lg p-3 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{event.transaction_type}</span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {formatDate(new Date(event.created_at), 'MMM dd, yyyy HH:mm')}
                     </span>
                   </div>
                   {event.metadata && (
-                    <pre className="text-xs mt-2 bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-x-auto">
+                    <pre className="text-xs mt-2 bg-muted dark:bg-muted p-2 rounded overflow-x-auto">
                       {JSON.stringify(event.metadata, null, 2)}
                     </pre>
                   )}

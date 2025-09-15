@@ -133,7 +133,7 @@ export function VibeContextIndicator({
                 className={`h-10 w-10 p-0 ${getStatusColor()} border-2 border-white shadow-lg`}
                 onClick={() => setIsExpanded(!isExpanded)}
               >
-                <Brain className="h-5 w-5 text-white" />
+                <Brain className="h-5 w-5 text-foreground" />
               </Button>
             </div>
           </TooltipTrigger>
@@ -152,13 +152,13 @@ export function VibeContextIndicator({
   return (
     <div className={`${getPositionClasses()} ${className}`}>
       <div
-        className={`bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-300 ${
+        className={`bg-background border border-border rounded-lg shadow-lg transition-all duration-300 ${
           isExpanded ? 'w-80' : 'w-48'
         }`}
       >
         {/* Header */}
         <div
-          className="p-3 border-b cursor-pointer flex items-center justify-between hover:bg-gray-50"
+          className="p-3 border-b cursor-pointer flex items-center justify-between hover:bg-muted"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ export function VibeContextIndicator({
           <div className="flex items-center gap-2">
             <Badge
               variant="outline"
-              className={`${getStatusColor()} text-white border-none text-xs`}
+              className={`${getStatusColor()} text-foreground border-none text-xs`}
             >
               {getStatusIcon()}
               <span className="ml-1">{getStatusText()}</span>
@@ -183,21 +183,21 @@ export function VibeContextIndicator({
             {isVibeInitialized && currentSession && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Session</span>
+                  <span className="text-muted-foreground">Session</span>
                   <span className="font-mono">{currentSession.session_id.slice(-8)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Quality</span>
+                  <span className="text-muted-foreground">Quality</span>
                   <span className="text-green-600 font-semibold">
                     {currentSession.quality_score}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Contexts</span>
+                  <span className="text-muted-foreground">Contexts</span>
                   <span>{currentSession.context_count}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Integrations</span>
+                  <span className="text-muted-foreground">Integrations</span>
                   <span>{currentSession.integration_count}</span>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export function VibeContextIndicator({
 
             {/* Last Context Save */}
             {lastContextSave && (
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Database className="h-3 w-3" />
                   <span>Last saved: {lastContextSave.toLocaleTimeString()}</span>
@@ -251,7 +251,7 @@ export function VibeContextIndicator({
                 <div className="text-center p-2 bg-blue-50 rounded">
                   <Network className="h-4 w-4 mx-auto text-blue-500 mb-1" />
                   <div className="text-blue-700 font-semibold">98%</div>
-                  <div className="text-blue-600">Integration</div>
+                  <div className="text-primary">Integration</div>
                 </div>
                 <div className="text-center p-2 bg-purple-50 rounded">
                   <Shield className="h-4 w-4 mx-auto text-purple-500 mb-1" />
@@ -299,7 +299,7 @@ export function VibeContextIndicator({
         {/* Minimized Status */}
         {!isExpanded && isVibeInitialized && (
           <div className="px-3 pb-2">
-            <div className="flex items-center justify-between text-xs text-gray-600">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Auto-save: {autoSaveTimer}s</span>
               <div className="flex items-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${getStatusColor()}`} />

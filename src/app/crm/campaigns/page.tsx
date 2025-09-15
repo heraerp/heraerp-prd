@@ -150,11 +150,11 @@ export default function CampaignsPage() {
       case 'completed':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       case 'draft':
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
       case 'scheduled':
         return 'bg-purple-500/20 text-purple-400 border-purple-500/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -218,7 +218,7 @@ export default function CampaignsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white">Loading campaigns...</div>
+        <div className="text-foreground">Loading campaigns...</div>
       </div>
     )
   }
@@ -228,14 +228,14 @@ export default function CampaignsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Campaigns</h1>
-          <p className="text-white/60 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Campaigns</h1>
+          <p className="text-foreground/60 mt-1">
             Manage your marketing campaigns and track performance
           </p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>New Campaign</span>
@@ -249,15 +249,15 @@ export default function CampaignsPage() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">+12%</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/60 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
               </div>
             </div>
           )
@@ -267,20 +267,20 @@ export default function CampaignsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
           <input
             type="text"
             placeholder="Search campaigns..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
 
         <select
           value={selectedType}
           onChange={e => setSelectedType(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
           <option value="Email">Email</option>
@@ -292,7 +292,7 @@ export default function CampaignsPage() {
         <select
           value={selectedStatus}
           onChange={e => setSelectedStatus(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
           <option value="Active">Active</option>
@@ -302,7 +302,7 @@ export default function CampaignsPage() {
           <option value="Scheduled">Scheduled</option>
         </select>
 
-        <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
           <Filter className="h-5 w-5" />
           <span>More Filters</span>
         </button>
@@ -319,18 +319,18 @@ export default function CampaignsPage() {
           return (
             <div key={campaign.id} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
                     <div
                       className={`p-3 rounded-xl bg-gradient-to-br ${getTypeColor(campaign.metadata?.type || '')}`}
                     >
-                      <TypeIcon className="h-6 w-6 text-white" />
+                      <TypeIcon className="h-6 w-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">{campaign.entity_name}</h3>
-                      <p className="text-sm text-white/60 mt-1">
+                      <h3 className="text-lg font-semibold text-foreground">{campaign.entity_name}</h3>
+                      <p className="text-sm text-foreground/60 mt-1">
                         {campaign.metadata?.type} Campaign
                       </p>
                     </div>
@@ -342,7 +342,7 @@ export default function CampaignsPage() {
                       <StatusIcon className="h-3 w-3" />
                       <span>{campaign.metadata?.status}</span>
                     </span>
-                    <button className="text-white/40 hover:text-white transition-colors">
+                    <button className="text-foreground/40 hover:text-foreground transition-colors">
                       <MoreVertical className="h-5 w-5" />
                     </button>
                   </div>
@@ -351,13 +351,13 @@ export default function CampaignsPage() {
                 {/* Campaign Info */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-xs text-white/60 mb-1">Target Audience</p>
-                    <p className="text-sm text-white">
+                    <p className="text-xs text-foreground/60 mb-1">Target Audience</p>
+                    <p className="text-sm text-foreground">
                       {campaign.metadata?.target_audience || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-white/60 mb-1">Budget</p>
+                    <p className="text-xs text-foreground/60 mb-1">Budget</p>
                     <p className="text-sm font-semibold text-[#FF5A09]">
                       {campaign.metadata?.budget
                         ? `₹${(campaign.metadata.budget / 100000).toFixed(1)}L`
@@ -365,8 +365,8 @@ export default function CampaignsPage() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-white/60 mb-1">Duration</p>
-                    <div className="flex items-center space-x-1 text-sm text-white">
+                    <p className="text-xs text-foreground/60 mb-1">Duration</p>
+                    <div className="flex items-center space-x-1 text-sm text-foreground">
                       <Calendar className="h-3 w-3" />
                       <span>
                         {campaign.metadata?.start_date
@@ -380,8 +380,8 @@ export default function CampaignsPage() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-white/60 mb-1">Expected Revenue</p>
-                    <p className="text-sm text-white">
+                    <p className="text-xs text-foreground/60 mb-1">Expected Revenue</p>
+                    <p className="text-sm text-foreground">
                       {campaign.metadata?.expected_revenue
                         ? `₹${(campaign.metadata.expected_revenue / 100000).toFixed(1)}L`
                         : 'N/A'}
@@ -391,32 +391,32 @@ export default function CampaignsPage() {
 
                 {/* Metrics */}
                 {metrics.sent && (
-                  <div className="space-y-3 mb-4 pt-4 border-t border-white/10">
+                  <div className="space-y-3 mb-4 pt-4 border-t border-border/10">
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
-                        <div className="flex items-center justify-center space-x-1 text-white/60 mb-1">
+                        <div className="flex items-center justify-center space-x-1 text-foreground/60 mb-1">
                           <Send className="h-4 w-4" />
                           <span className="text-xs">Sent</span>
                         </div>
-                        <p className="text-lg font-semibold text-white">
+                        <p className="text-lg font-semibold text-foreground">
                           {(metrics.sent / 1000).toFixed(1)}K
                         </p>
                       </div>
                       <div>
-                        <div className="flex items-center justify-center space-x-1 text-white/60 mb-1">
+                        <div className="flex items-center justify-center space-x-1 text-foreground/60 mb-1">
                           <Eye className="h-4 w-4" />
                           <span className="text-xs">Opened</span>
                         </div>
-                        <p className="text-lg font-semibold text-white">
+                        <p className="text-lg font-semibold text-foreground">
                           {(((metrics.opened || 0) / metrics.sent) * 100).toFixed(1)}%
                         </p>
                       </div>
                       <div>
-                        <div className="flex items-center justify-center space-x-1 text-white/60 mb-1">
+                        <div className="flex items-center justify-center space-x-1 text-foreground/60 mb-1">
                           <MousePointer className="h-4 w-4" />
                           <span className="text-xs">Clicked</span>
                         </div>
-                        <p className="text-lg font-semibold text-white">
+                        <p className="text-lg font-semibold text-foreground">
                           {(((metrics.clicked || 0) / metrics.sent) * 100).toFixed(1)}%
                         </p>
                       </div>
@@ -425,13 +425,13 @@ export default function CampaignsPage() {
                     {/* Conversion Funnel */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-white/60">Conversion</span>
+                        <span className="text-foreground/60">Conversion</span>
                         <span className="text-[#FF5A09] font-medium">
                           {metrics.converted} (
                           {(((metrics.converted || 0) / metrics.sent) * 100).toFixed(1)}%)
                         </span>
                       </div>
-                      <div className="w-full bg-white/10 rounded-full h-2">
+                      <div className="w-full bg-background/10 rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] h-2 rounded-full transition-all duration-500"
                           style={{ width: `${((metrics.converted || 0) / metrics.sent) * 100}%` }}
@@ -442,7 +442,7 @@ export default function CampaignsPage() {
                     {/* ROI */}
                     {roi > 0 && (
                       <div className="flex items-center justify-between pt-2">
-                        <span className="text-xs text-white/60">ROI</span>
+                        <span className="text-xs text-foreground/60">ROI</span>
                         <span
                           className={`text-sm font-semibold ${roi > 0 ? 'text-emerald-400' : 'text-red-400'}`}
                         >
@@ -457,13 +457,13 @@ export default function CampaignsPage() {
                 {/* Actions */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                    <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                       <BarChart3 className="h-4 w-4" />
                     </button>
-                    <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                    <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                       <Target className="h-4 w-4" />
                     </button>
-                    <button className="p-2 text-white/40 hover:text-[#FF5A09] transition-colors">
+                    <button className="p-2 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                       <Users className="h-4 w-4" />
                     </button>
                   </div>
@@ -481,9 +481,9 @@ export default function CampaignsPage() {
       {/* Empty State */}
       {filteredCampaigns.length === 0 && (
         <div className="text-center py-12">
-          <Megaphone className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No campaigns found</h3>
-          <p className="text-white/60">Try adjusting your search or filters</p>
+          <Megaphone className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No campaigns found</h3>
+          <p className="text-foreground/60">Try adjusting your search or filters</p>
         </div>
       )}
     </div>

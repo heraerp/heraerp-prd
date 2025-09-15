@@ -120,18 +120,18 @@ export default function SignUpPage() {
       </div>
 
       {/* Header with Logo - Same as homepage */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 dark:bg-background/70 border-b border-border dark:border-slate-800">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 sm:space-x-4">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-lg">H</span>
+                <span className="text-foreground font-bold text-sm sm:text-lg">H</span>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                <h1 className="text-lg sm:text-xl font-bold text-foreground dark:text-foreground">
                   HERA ERP
                 </h1>
-                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
+                <p className="text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground hidden sm:block">
                   Universal Business Platform
                 </p>
               </div>
@@ -152,12 +152,12 @@ export default function SignUpPage() {
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
               <div
-                className={`flex items-center ${step >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 1 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
                     step >= 1
-                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110'
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -169,12 +169,12 @@ export default function SignUpPage() {
                 className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
               />
               <div
-                className={`flex items-center ${step >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 2 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
                     step >= 2
-                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110'
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -183,7 +183,7 @@ export default function SignUpPage() {
                 <span className="ml-2 hidden sm:inline font-medium">Profile</span>
               </div>
               <div className={`w-16 h-1 rounded-full bg-slate-200 dark:bg-slate-700`} />
-              <div className="flex items-center text-slate-400 dark:text-slate-500">
+              <div className="flex items-center text-muted-foreground dark:text-slate-500">
                 <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shadow-lg">
                   <span className="font-semibold">3</span>
                 </div>
@@ -193,12 +193,12 @@ export default function SignUpPage() {
           </div>
 
           {step === 1 && (
-            <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border border-border dark:border-border overflow-hidden">
               <CardHeader className="text-center pb-6 pt-8">
-                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
+                <CardTitle className="text-2xl font-bold text-foreground dark:text-foreground">
                   Create Your HERA Account
                 </CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
+                <CardDescription className="text-muted-foreground dark:text-muted-foreground mt-2">
                   Start your journey to enterprise-grade ERP in minutes
                 </CardDescription>
               </CardHeader>
@@ -231,7 +231,7 @@ export default function SignUpPage() {
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
                       required
                       disabled={isLoading}
-                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                      className="h-12 bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                     />
                   </div>
 
@@ -251,9 +251,9 @@ export default function SignUpPage() {
                       required
                       disabled={isLoading}
                       minLength={8}
-                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                      className="h-12 bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                     />
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                       Must be at least 8 characters
                     </p>
                   </div>
@@ -273,13 +273,13 @@ export default function SignUpPage() {
                       onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
                       required
                       disabled={isLoading}
-                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                      className="h-12 bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-foreground font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -297,12 +297,12 @@ export default function SignUpPage() {
                 </form>
 
                 <div className="mt-6 text-center text-sm">
-                  <span className="text-slate-600 dark:text-slate-400">
+                  <span className="text-muted-foreground dark:text-muted-foreground">
                     Already have an account?
                   </span>{' '}
                   <Link
                     href="/auth/login"
-                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-all duration-200"
+                    className="text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-all duration-200"
                   >
                     Sign in
                   </Link>
@@ -312,12 +312,12 @@ export default function SignUpPage() {
           )}
 
           {step === 2 && (
-            <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border border-border dark:border-border overflow-hidden">
               <CardHeader className="text-center pb-6 pt-8">
-                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
+                <CardTitle className="text-2xl font-bold text-foreground dark:text-foreground">
                   Complete Your Profile
                 </CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
+                <CardDescription className="text-muted-foreground dark:text-muted-foreground mt-2">
                   Tell us a bit about yourself (optional)
                 </CardDescription>
               </CardHeader>
@@ -343,7 +343,7 @@ export default function SignUpPage() {
                       value={formData.full_name}
                       onChange={e => setFormData({ ...formData, full_name: e.target.value })}
                       disabled={isLoading}
-                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                      className="h-12 bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                     />
                   </div>
 
@@ -361,7 +361,7 @@ export default function SignUpPage() {
                       value={formData.phone}
                       onChange={e => setFormData({ ...formData, phone: e.target.value })}
                       disabled={isLoading}
-                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                      className="h-12 bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                     />
                   </div>
 
@@ -369,14 +369,14 @@ export default function SignUpPage() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="flex-1 h-12 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="flex-1 h-12 border-input dark:border-input text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-muted"
                       onClick={() => router.push('/auth/organizations/new')}
                     >
                       Skip
                     </Button>
                     <Button
                       type="submit"
-                      className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                      className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-foreground font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                       disabled={isLoading}
                     >
                       Continue

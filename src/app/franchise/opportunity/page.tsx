@@ -169,13 +169,13 @@ export default function OpportunityPage() {
       />
 
       {/* Market Opportunity */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               The $50B Opportunity
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               You're not just selling software – you're disrupting an entire industry
             </p>
           </div>
@@ -184,16 +184,16 @@ export default function OpportunityPage() {
             {marketOpportunity.map((item, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center"
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-border dark:border-border text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="h-6 w-6 text-white" />
+                  <item.icon className="h-6 w-6 text-foreground" />
                 </div>
-                <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                <div className="text-3xl font-bold text-foreground dark:text-foreground mb-2">
                   {item.stat}
                 </div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{item.label}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-2">{item.label}</h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{item.description}</p>
               </div>
             ))}
           </div>
@@ -201,13 +201,13 @@ export default function OpportunityPage() {
       </section>
 
       {/* What You Do vs What We Do */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Perfect Division of Labor
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               You do what you're great at. We handle the technical complexity.
             </p>
           </div>
@@ -249,7 +249,7 @@ export default function OpportunityPage() {
             <div>
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-8 border-2 border-blue-200 dark:border-blue-800">
                 <div className="flex items-center mb-6">
-                  <Building2 className="h-8 w-8 text-blue-600 mr-3" />
+                  <Building2 className="h-8 w-8 text-primary mr-3" />
                   <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                     What HERA Provides
                   </h3>
@@ -261,7 +261,7 @@ export default function OpportunityPage() {
                   {heraProvides.map((item, index) => (
                     <div key={index} className="flex items-start">
                       <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                        <item.icon className="h-5 w-5 text-blue-600" />
+                        <item.icon className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
@@ -281,30 +281,30 @@ export default function OpportunityPage() {
       </section>
 
       {/* Comparison Table */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               HERA vs Traditional Business Models
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               See why the HERA franchise model is superior to going it alone
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-slate-50 dark:bg-muted rounded-2xl p-8 border border-border dark:border-border">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-6 font-semibold text-slate-900 dark:text-white">
+                    <tr className="border-b border-border dark:border-border">
+                      <th className="text-left py-4 px-6 font-semibold text-foreground dark:text-foreground">
                         Category
                       </th>
                       <th className="text-left py-4 px-6 font-semibold text-green-600">
                         HERA Franchise
                       </th>
-                      <th className="text-left py-4 px-6 font-semibold text-slate-600 dark:text-slate-400">
+                      <th className="text-left py-4 px-6 font-semibold text-muted-foreground dark:text-muted-foreground">
                         Traditional Model
                       </th>
                     </tr>
@@ -313,9 +313,9 @@ export default function OpportunityPage() {
                     {comparison.map((row, index) => (
                       <tr
                         key={index}
-                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                        className="border-b border-border dark:border-border last:border-b-0"
                       >
-                        <td className="py-4 px-6 font-medium text-slate-900 dark:text-white">
+                        <td className="py-4 px-6 font-medium text-foreground dark:text-foreground">
                           {row.category}
                         </td>
                         <td className="py-4 px-6">
@@ -327,7 +327,7 @@ export default function OpportunityPage() {
                         <td className="py-4 px-6">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">
+                            <span className="text-muted-foreground dark:text-muted-foreground">
                               {row.traditional}
                             </span>
                           </div>
@@ -346,39 +346,39 @@ export default function OpportunityPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Real Success Story</h2>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-8">
-              <blockquote className="text-xl text-white leading-relaxed mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">Real Success Story</h2>
+            <div className="bg-background/10 backdrop-blur-sm rounded-2xl p-8 border border-border/20 mb-8">
+              <blockquote className="text-xl text-foreground leading-relaxed mb-6">
                 "I was burned out from 15 years of SAP consulting. Implementation projects took 18
                 months, cost millions, and half of them failed. With HERA, I close bigger deals
                 faster because clients get results in 24 hours. I've never been happier or earned
                 more."
               </blockquote>
               <div className="flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-semibold">M</span>
+                <div className="w-12 h-12 bg-background/20 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-foreground font-semibold">M</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-white">Mike Rodriguez</p>
+                  <p className="font-semibold text-foreground">Mike Rodriguez</p>
                   <p className="text-blue-100">Former SAP Consultant, Now HERA Partner</p>
                 </div>
               </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Zap className="h-8 w-8 text-yellow-400 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">24-Hour Delivery</h3>
+                <h3 className="font-semibold text-foreground mb-2">24-Hour Delivery</h3>
                 <p className="text-sm text-blue-100">vs 18-month traditional implementations</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <TrendingUp className="h-8 w-8 text-green-400 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Higher Close Rate</h3>
+                <h3 className="font-semibold text-foreground mb-2">Higher Close Rate</h3>
                 <p className="text-sm text-blue-100">Clients love guaranteed 24-hour results</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Award className="h-8 w-8 text-purple-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Better Income</h3>
+                <h3 className="font-semibold text-foreground mb-2">Better Income</h3>
                 <p className="text-sm text-blue-100">30-50% commission vs 10-15% traditional</p>
               </div>
             </div>
@@ -387,13 +387,13 @@ export default function OpportunityPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Ready to Own Your Territory?
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               Limited territories available. Exclusive protection guaranteed for approved partners.
             </p>
 
@@ -401,7 +401,7 @@ export default function OpportunityPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Apply for Territory

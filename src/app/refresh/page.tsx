@@ -49,7 +49,7 @@ export default function RefreshPage() {
               <CheckCircle className="w-5 h-5" />
               <span>Loading latest version...</span>
             </div>
-            <p className="text-sm text-gray-600 text-center mt-4">
+            <p className="text-sm text-muted-foreground text-center mt-4">
               You will be redirected to the latest version in a moment...
             </p>
           </div>

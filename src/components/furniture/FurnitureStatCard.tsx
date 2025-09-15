@@ -28,14 +28,14 @@ export function FurnitureStatCard({
   const changeColorClass = {
     up: 'text-green-400',
     down: 'text-red-400',
-    neutral: 'text-gray-400'
+    neutral: 'text-muted-foreground'
   }[trend]
 
   return (
     <Card
       className={cn(
-        'backdrop-blur-xl bg-gray-800/70',
-        'border-gray-700/50',
+        'backdrop-blur-xl bg-muted/70',
+        'border-border/50',
         'shadow-lg hover:shadow-xl transition-shadow',
         className
       )}
@@ -44,7 +44,7 @@ export function FurnitureStatCard({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <p className="text-sm font-medium text-gray-300 uppercase tracking-wide">{label}</p>
-            <p className="text-3xl font-bold mt-2 text-white">
+            <p className="text-3xl font-bold mt-2 text-foreground">
               {typeof value === 'number' ? value.toLocaleString() : value}
             </p>
             {change && <p className={cn('text-xs mt-1 font-medium', changeColorClass)}>{change}</p>}
@@ -57,7 +57,7 @@ export function FurnitureStatCard({
                 gradient
               )}
             >
-              <Icon className="w-7 h-7 text-white" />
+              <Icon className="w-7 h-7 text-foreground" />
             </div>
           )}
         </div>

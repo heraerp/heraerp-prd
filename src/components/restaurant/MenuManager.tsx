@@ -172,7 +172,7 @@ export function MenuManager() {
       case 'healthy':
         return 'bg-emerald-100 text-emerald-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -185,7 +185,7 @@ export function MenuManager() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Menu Management</h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Manage your restaurant menu using HERA's universal entity system
         </p>
       </div>
@@ -196,7 +196,7 @@ export function MenuManager() {
           <div className="flex-1 flex gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search menu items..."
                 value={searchTerm}
@@ -209,7 +209,7 @@ export function MenuManager() {
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {categories.map(category => (
                 <option key={category} value={category}>
@@ -222,7 +222,7 @@ export function MenuManager() {
           {/* Add New Item */}
           <Button
             onClick={() => setShowAddItemForm(true)}
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-green-600 hover:bg-green-700 text-foreground"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Menu Item
@@ -255,7 +255,7 @@ export function MenuManager() {
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
                         {item.entity_name}
                       </h3>
-                      <p className="text-sm text-gray-500 mb-2">Code: {item.entity_code}</p>
+                      <p className="text-sm text-muted-foreground mb-2">Code: {item.entity_code}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-green-600">${item.price.toFixed(2)}</p>
@@ -263,10 +263,10 @@ export function MenuManager() {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-gray-600 mb-4">{item.description}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
 
                   {/* Stats Row */}
-                  <div className="flex items-center gap-4 mb-4 text-xs text-gray-500">
+                  <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>{item.prep_time} min</span>
@@ -298,7 +298,7 @@ export function MenuManager() {
 
                   {/* Ingredients */}
                   <div className="mb-4">
-                    <p className="text-xs text-gray-500 mb-1">Ingredients:</p>
+                    <p className="text-xs text-muted-foreground mb-1">Ingredients:</p>
                     <p className="text-xs text-gray-700">{item.ingredients}</p>
                   </div>
 
@@ -306,7 +306,7 @@ export function MenuManager() {
                   <div className="flex gap-2 pt-4 border-t border-gray-100">
                     <button
                       type="button"
-                      className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
+                      className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
                       onClick={e => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -319,7 +319,7 @@ export function MenuManager() {
                     </button>
                     <button
                       type="button"
-                      className="px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 hover:text-red-700 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center"
+                      className="px-3 py-1.5 text-sm font-medium text-red-600 bg-background border border-red-200 rounded-md hover:bg-red-50 hover:text-red-700 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center"
                       onClick={e => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -338,11 +338,11 @@ export function MenuManager() {
           {/* Empty State */}
           {filteredItems.length === 0 && (
             <Card className="p-12 text-center">
-              <div className="text-gray-400 mb-4">
+              <div className="text-muted-foreground mb-4">
                 <Search className="w-12 h-12 mx-auto" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No menu items found</h3>
-              <p className="text-gray-600 mb-4">Try adjusting your search terms or filters</p>
+              <p className="text-muted-foreground mb-4">Try adjusting your search terms or filters</p>
               <Button variant="outline">Clear Filters</Button>
             </Card>
           )}
@@ -359,17 +359,17 @@ export function MenuManager() {
             This menu system demonstrates HERA's universal 6-table architecture:
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs text-blue-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_entities</strong>
               <br />
               Menu items stored as entities with type "menu_item"
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_dynamic_data</strong>
               <br />
               Price, ingredients, dietary tags as flexible fields
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_relationships</strong>
               <br />
               Recipe ingredients linked to inventory items

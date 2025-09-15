@@ -93,16 +93,16 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
     if (active && payload && payload[0]) {
       const isHistorical = payload[0].payload.isHistorical
       return (
-        <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">
-          <p className="text-sm text-slate-400 mb-2">
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+          <p className="text-sm text-muted-foreground mb-2">
             {formatDate(label)} • {isHistorical ? 'Historical' : 'Predicted'}
           </p>
           {payload.map(
             (entry: any, index: number) =>
               entry.value && (
                 <p key={index} className="text-sm">
-                  <span className="text-slate-400">{entry.name}:</span>
-                  <span className="ml-2 font-medium text-white">{formatCurrency(entry.value)}</span>
+                  <span className="text-muted-foreground">{entry.name}:</span>
+                  <span className="ml-2 font-medium text-foreground">{formatCurrency(entry.value)}</span>
                 </p>
               )
           )}
@@ -113,7 +113,7 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -121,8 +121,8 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
             <Brain className="h-5 w-5 text-purple-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Wealth Trajectory</h3>
-            <p className="text-sm text-slate-400">AI-powered 24-month projection</p>
+            <h3 className="text-lg font-semibold text-foreground">Wealth Trajectory</h3>
+            <p className="text-sm text-muted-foreground">AI-powered 24-month projection</p>
           </div>
         </div>
         <Badge variant="outline" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
@@ -132,26 +132,26 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
 
       {/* Key Metrics */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+        <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
           <div className="flex items-center gap-2 mb-1">
-            <Calendar className="h-4 w-4 text-slate-400" />
-            <span className="text-xs text-slate-400">24 Month Target</span>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">24 Month Target</span>
           </div>
-          <p className="text-lg font-bold text-white">
+          <p className="text-lg font-bold text-foreground">
             {formatCurrency(lastPrediction.predicted!)}
           </p>
         </div>
-        <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+        <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp className="h-4 w-4 text-emerald-400" />
-            <span className="text-xs text-slate-400">Projected Growth</span>
+            <span className="text-xs text-muted-foreground">Projected Growth</span>
           </div>
           <p className="text-lg font-bold text-emerald-400">+{projectedReturn.toFixed(1)}%</p>
         </div>
-        <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+        <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
           <div className="flex items-center gap-2 mb-1">
             <DollarSign className="h-4 w-4 text-blue-400" />
-            <span className="text-xs text-slate-400">Expected Gain</span>
+            <span className="text-xs text-muted-foreground">Expected Gain</span>
           </div>
           <p className="text-lg font-bold text-blue-400">+{formatCurrency(projectedGrowth)}</p>
         </div>
@@ -253,23 +253,23 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
       </div>
 
       {/* Scenario Analysis */}
-      <div className="mt-6 p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
-        <h4 className="text-sm font-medium text-white mb-3">Scenario Analysis</h4>
+      <div className="mt-6 p-4 rounded-lg bg-muted/30 border border-border/50">
+        <h4 className="text-sm font-medium text-foreground mb-3">Scenario Analysis</h4>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-400">Bull Market (15% annual)</span>
+            <span className="text-muted-foreground">Bull Market (15% annual)</span>
             <span className="text-emerald-400 font-medium">
               {formatCurrency(lastPrediction.optimistic!)}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-400">Base Case (12% annual)</span>
+            <span className="text-muted-foreground">Base Case (12% annual)</span>
             <span className="text-purple-400 font-medium">
               {formatCurrency(lastPrediction.predicted!)}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-400">Bear Market (6% annual)</span>
+            <span className="text-muted-foreground">Bear Market (6% annual)</span>
             <span className="text-yellow-400 font-medium">
               {formatCurrency(lastPrediction.conservative!)}
             </span>

@@ -30,8 +30,8 @@ export function FurnitureModalLink({
       }}
       className={cn(
         'flex flex-col items-center justify-center p-4 rounded-xl group',
-        'bg-gray-700/30 hover:bg-gradient-to-br hover:from-amber-600/20 hover:to-orange-600/20',
-        'border border-gray-700/50 hover:border-amber-500/30'
+        'bg-muted-foreground/10/30 hover:bg-gradient-to-br hover:from-amber-600/20 hover:to-orange-600/20',
+        'border border-border/50 hover:border-amber-500/30'
       )}
       activeClassName="!bg-gradient-to-br from-amber-600/20 to-orange-600/20 !border-amber-500/30"
     >
@@ -46,14 +46,14 @@ export function FurnitureModalLink({
         <Icon
           className={cn(
             'h-6 w-6 transition-colors duration-300',
-            active ? 'text-white' : 'text-gray-400 group-hover:text-white'
+            active ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'
           )}
         />
       </div>
       <span
         className={cn(
           'text-xs font-medium text-center transition-colors duration-300',
-          active ? 'text-amber-400' : 'text-gray-400 group-hover:text-white'
+          active ? 'text-amber-400' : 'text-muted-foreground group-hover:text-foreground'
         )}
       >
         {title}

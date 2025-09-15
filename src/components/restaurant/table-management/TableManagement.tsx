@@ -170,20 +170,20 @@ export function TableManagement() {
       case 'cleaning':
         return 'bg-blue-100 text-blue-800'
       case 'maintenance':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-muted p-4 md:p-6">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Table Management</h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Manage your restaurant floor plan and table assignments
             </p>
           </div>
@@ -199,7 +199,7 @@ export function TableManagement() {
                   setShowRealtimeUpdates(true)
                 }
               }}
-              className={isConnected ? 'text-green-600' : 'text-gray-600'}
+              className={isConnected ? 'text-green-600' : 'text-muted-foreground'}
             >
               <Activity className="w-4 h-4 mr-2" />
               {isConnected ? 'Live Updates On' : 'Live Updates Off'}
@@ -217,7 +217,7 @@ export function TableManagement() {
             <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-blue-600 font-medium">Total Tables</p>
+                  <p className="text-sm text-primary font-medium">Total Tables</p>
                   <p className="text-2xl font-bold text-blue-900">{stats.total_tables}</p>
                 </div>
                 <LayoutGrid className="w-8 h-8 text-blue-500" />
@@ -301,7 +301,7 @@ export function TableManagement() {
         {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input
               placeholder="Search tables, servers..."
               value={searchQuery}
@@ -314,7 +314,7 @@ export function TableManagement() {
             <select
               value={filterLocation}
               onChange={e => setFilterLocation(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Locations</option>
               <option value="indoor">Indoor</option>
@@ -327,7 +327,7 @@ export function TableManagement() {
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
               <option value="available">Available</option>

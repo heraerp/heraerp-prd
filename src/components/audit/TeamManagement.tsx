@@ -266,11 +266,11 @@ export function TeamManagement() {
       case 'partner':
         return <Crown className="w-4 h-4 text-yellow-600" />
       case 'manager':
-        return <Briefcase className="w-4 h-4 text-blue-600" />
+        return <Briefcase className="w-4 h-4 text-primary" />
       case 'senior':
         return <GraduationCap className="w-4 h-4 text-green-600" />
       case 'staff':
-        return <Users className="w-4 h-4 text-gray-600" />
+        return <Users className="w-4 h-4 text-muted-foreground" />
       case 'intern':
         return <Star className="w-4 h-4 text-purple-600" />
       default:
@@ -289,7 +289,7 @@ export function TeamManagement() {
       case 'training':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -314,7 +314,7 @@ export function TeamManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">GSPU Team Management</h1>
-          <p className="text-gray-600 mt-1">Manage audit teams, assignments, and performance</p>
+          <p className="text-muted-foreground mt-1">Manage audit teams, assignments, and performance</p>
         </div>
         <div className="flex items-center gap-3">
           <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
@@ -326,12 +326,12 @@ export function TeamManagement() {
             </DialogTrigger>
             {showCreateForm && (
               <div
-                className="fixed inset-0 bg-black/60 z-[90]"
+                className="fixed inset-0 bg-background/60 z-[90]"
                 onClick={() => setShowCreateForm(false)}
               />
             )}
             <DialogContent
-              className="max-w-2xl bg-white border border-gray-200 shadow-2xl z-[100] 
+              className="max-w-2xl bg-background border border-border shadow-2xl z-[100] 
                          fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
                          rounded-lg p-6"
               style={{
@@ -367,7 +367,7 @@ export function TeamManagement() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Teams</p>
+                <p className="text-sm text-muted-foreground">Total Teams</p>
                 <p className="text-2xl font-bold text-gray-900">{teams.length}</p>
               </div>
               <Users className="w-8 h-8 text-blue-500" />
@@ -379,7 +379,7 @@ export function TeamManagement() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Active Teams</p>
+                <p className="text-sm text-muted-foreground">Active Teams</p>
                 <p className="text-2xl font-bold text-green-600">
                   {teams.filter(t => t.status === 'active').length}
                 </p>
@@ -393,7 +393,7 @@ export function TeamManagement() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Avg Utilization</p>
+                <p className="text-sm text-muted-foreground">Avg Utilization</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {Math.round(teams.reduce((sum, t) => sum + t.current_workload, 0) / teams.length)}
                   %
@@ -408,7 +408,7 @@ export function TeamManagement() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Members</p>
+                <p className="text-sm text-muted-foreground">Total Members</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {teams.reduce((sum, t) => sum + (t.member_count || 0), 0)}
                 </p>
@@ -435,7 +435,7 @@ export function TeamManagement() {
                 <div
                   key={team.id}
                   className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                    selectedTeam?.id === team.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                    selectedTeam?.id === team.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-muted'
                   }`}
                   onClick={() => {
                     setSelectedTeam(team)
@@ -445,7 +445,7 @@ export function TeamManagement() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">{team.entity_name}</h3>
-                      <p className="text-sm text-gray-600 mt-1">{team.entity_code}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{team.entity_code}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Badge className={getTeamTypeColor(team.team_type)}>
                           {team.team_type.replace('_', ' ')}
@@ -458,10 +458,10 @@ export function TeamManagement() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">{team.member_count || 0} members</p>
+                      <p className="text-sm text-muted-foreground">{team.member_count || 0} members</p>
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="w-3 h-3 text-yellow-500" />
-                        <span className="text-xs text-gray-600">
+                        <span className="text-xs text-muted-foreground">
                           {team.metadata.team_performance_rating}/5.0
                         </span>
                       </div>
@@ -487,8 +487,8 @@ export function TeamManagement() {
             <Card>
               <CardContent className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-600">Select a team to view details</p>
+                  <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Select a team to view details</p>
                 </div>
               </CardContent>
             </Card>
@@ -526,7 +526,7 @@ function CreateTeamForm({
   ]
 
   return (
-    <div className="space-y-6 bg-white p-1">
+    <div className="space-y-6 bg-background p-1">
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="team_name" className="text-gray-700 font-medium">
@@ -534,7 +534,7 @@ function CreateTeamForm({
           </Label>
           <Input
             id="team_name"
-            className="mt-1 bg-white border border-gray-300 text-gray-900"
+            className="mt-1 bg-background border border-border text-gray-900"
             value={formData.team_name}
             onChange={e => setFormData({ ...formData, team_name: e.target.value })}
             placeholder="Senior Engagement Team Alpha"
@@ -546,7 +546,7 @@ function CreateTeamForm({
           </Label>
           <Input
             id="team_code"
-            className="mt-1 bg-white border border-gray-300 text-gray-900"
+            className="mt-1 bg-background border border-border text-gray-900"
             value={formData.team_code}
             onChange={e => setFormData({ ...formData, team_code: e.target.value })}
             placeholder="GSPU-ENG-001"
@@ -629,14 +629,14 @@ function CreateTeamForm({
         <Button
           variant="outline"
           onClick={onCancel}
-          className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="bg-background border-border text-gray-700 hover:bg-muted focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           Cancel
         </Button>
         <Button
           onClick={onSubmit}
           disabled={!formData.team_name || !formData.team_lead_name}
-          className="bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-blue-600 text-foreground hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Create Team
         </Button>
@@ -667,7 +667,7 @@ function TeamDetails({
               <Building className="w-5 h-5" />
               {team.entity_name}
             </CardTitle>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {team.entity_code} • {team.office_location}
             </p>
           </div>
@@ -702,7 +702,7 @@ function TeamDetails({
                 <h4 className="font-medium text-gray-900 mb-2">Team Information</h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Type:</span>
+                    <span className="text-sm text-muted-foreground">Type:</span>
                     <Badge
                       className={
                         team.team_type === 'engagement'
@@ -714,17 +714,17 @@ function TeamDetails({
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Lead:</span>
+                    <span className="text-sm text-muted-foreground">Lead:</span>
                     <span className="text-sm font-medium">{team.team_lead_name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Capacity:</span>
+                    <span className="text-sm text-muted-foreground">Capacity:</span>
                     <span className="text-sm font-medium">
                       {members.length}/{team.max_capacity}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Utilization:</span>
+                    <span className="text-sm text-muted-foreground">Utilization:</span>
                     <span
                       className={`text-sm font-medium ${team.current_workload >= 90 ? 'text-red-600' : 'text-green-600'}`}
                     >
@@ -748,7 +748,7 @@ function TeamDetails({
             {team.description && (
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-                <p className="text-sm text-gray-600">{team.description}</p>
+                <p className="text-sm text-muted-foreground">{team.description}</p>
               </div>
             )}
           </TabsContent>
@@ -772,7 +772,7 @@ function TeamDetails({
                     {getRoleIcon(member.role)}
                     <div>
                       <p className="font-medium text-gray-900">{member.member_name}</p>
-                      <p className="text-sm text-gray-600 capitalize">{member.role}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -780,7 +780,7 @@ function TeamDetails({
                       {member.availability_percentage}% available
                     </p>
                     {member.specialization.length > 0 && (
-                      <p className="text-xs text-gray-600">{member.specialization.join(', ')}</p>
+                      <p className="text-xs text-muted-foreground">{member.specialization.join(', ')}</p>
                     )}
                   </div>
                 </div>
@@ -804,7 +804,7 @@ function TeamDetails({
                 <h4 className="font-medium text-gray-900 mb-3">Team Metrics</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Performance Rating</span>
+                    <span className="text-sm text-muted-foreground">Performance Rating</span>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-500" />
                       <span className="font-medium">
@@ -813,18 +813,18 @@ function TeamDetails({
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Completed Engagements</span>
+                    <span className="text-sm text-muted-foreground">Completed Engagements</span>
                     <span className="font-medium">{team.metadata.completed_engagements}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Avg Duration</span>
+                    <span className="text-sm text-muted-foreground">Avg Duration</span>
                     <span className="font-medium">
                       {team.metadata.avg_engagement_duration} days
                     </span>
                   </div>
                   {team.metadata.client_satisfaction_rating && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Client Satisfaction</span>
+                      <span className="text-sm text-muted-foreground">Client Satisfaction</span>
                       <span className="font-medium">
                         {team.metadata.client_satisfaction_rating}/5.0
                       </span>
@@ -845,11 +845,11 @@ function getRoleIcon(role: string) {
     case 'partner':
       return <Crown className="w-4 h-4 text-yellow-600" />
     case 'manager':
-      return <Briefcase className="w-4 h-4 text-blue-600" />
+      return <Briefcase className="w-4 h-4 text-primary" />
     case 'senior':
       return <GraduationCap className="w-4 h-4 text-green-600" />
     case 'staff':
-      return <Users className="w-4 h-4 text-gray-600" />
+      return <Users className="w-4 h-4 text-muted-foreground" />
     case 'intern':
       return <Star className="w-4 h-4 text-purple-600" />
     default:

@@ -115,7 +115,7 @@ export function TransactionHistory({
       case 'expense':
         return <TrendingDown className="w-4 h-4 text-red-600" />
       case 'payment':
-        return <DollarSign className="w-4 h-4 text-blue-600" />
+        return <DollarSign className="w-4 h-4 text-primary" />
       case 'commission':
         return <DollarSign className="w-4 h-4 text-purple-600" />
     }
@@ -199,7 +199,7 @@ export function TransactionHistory({
           <div className="p-4 space-y-4">
             {Object.entries(groupedTransactions).map(([date, dayTransactions]) => (
               <div key={date} className="space-y-2">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 sticky top-0 bg-white dark:bg-gray-800 py-1">
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground sticky top-0 bg-background dark:bg-muted py-1">
                   {date === new Date().toDateString() ? 'Today' : date}
                 </p>
                 <div className="space-y-2">
@@ -208,7 +208,7 @@ export function TransactionHistory({
                       key={transaction.id}
                       className={cn(
                         'p-3 rounded-lg border transition-colors',
-                        'hover:bg-gray-50 dark:hover:bg-gray-800',
+                        'hover:bg-muted dark:hover:bg-muted',
                         transaction.status === 'cancelled' && 'opacity-60'
                       )}
                     >
@@ -220,21 +220,21 @@ export function TransactionHistory({
                               {transaction.description}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-muted-foreground">
                                 {formatTime(transaction.date)}
                               </span>
                               {transaction.category && (
                                 <>
-                                  <span className="text-xs text-gray-400">•</span>
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-muted-foreground">•</span>
+                                  <span className="text-xs text-muted-foreground">
                                     {transaction.category}
                                   </span>
                                 </>
                               )}
                               {transaction.vatAmount && (
                                 <>
-                                  <span className="text-xs text-gray-400">•</span>
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-muted-foreground">•</span>
+                                  <span className="text-xs text-muted-foreground">
                                     VAT: {formatCurrency(transaction.vatAmount)}
                                   </span>
                                 </>
@@ -300,9 +300,9 @@ export function TransactionHistory({
         </ScrollArea>
 
         {/* Summary footer */}
-        <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900">
+        <div className="border-t border-border dark:border-border p-4 bg-muted dark:bg-background">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-muted-foreground dark:text-muted-foreground">
               {transactions.length} transactions today
             </span>
             <div className="flex items-center gap-4">

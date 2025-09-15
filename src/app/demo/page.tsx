@@ -413,18 +413,18 @@ export default function DemoAppsPage() {
       </div>
 
       {/* Glassmorphic Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 dark:bg-slate-900/60 border-b border-white/20 dark:border-slate-800/50 shadow-lg">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/60 dark:bg-background/60 border-b border-border/20 dark:border-slate-800/50 shadow-lg">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/25">
-                <span className="text-white font-bold text-lg sm:text-xl">H</span>
+                <span className="text-foreground font-bold text-lg sm:text-xl">H</span>
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
                   HERA Demo Apps
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
                   Explore Live Business Applications
                 </p>
               </div>
@@ -434,26 +434,26 @@ export default function DemoAppsPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 href="/"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Home
               </Link>
               <Link
                 href="/docs"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Documentation
               </Link>
               <Link
                 href="/pricing"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Pricing
               </Link>
               <Button
                 variant="outline"
                 size="sm"
-                className="!text-slate-700 dark:!text-slate-200 border-slate-300/50 hover:border-slate-300"
+                className="!text-slate-700 dark:!text-slate-200 border-input/50 hover:border-input"
                 onClick={() => setShowRequestForm(true)}
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
@@ -461,7 +461,7 @@ export default function DemoAppsPage() {
               </Button>
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white shadow-lg shadow-blue-600/25"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground shadow-lg shadow-blue-600/25"
               >
                 Get Started
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -471,12 +471,12 @@ export default function DemoAppsPage() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm"
+              className="md:hidden p-2 rounded-lg bg-background/50 dark:bg-muted/50 backdrop-blur-sm"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                <X className="w-5 h-5 text-muted-foreground dark:text-slate-300" />
               ) : (
-                <Menu className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                <Menu className="w-5 h-5 text-muted-foreground dark:text-slate-300" />
               )}
             </button>
           </div>
@@ -484,7 +484,7 @@ export default function DemoAppsPage() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-white/20 dark:border-slate-800/50">
+          <div className="md:hidden bg-background/95 dark:bg-background/95 backdrop-blur-xl border-t border-border/20 dark:border-slate-800/50">
             <div className="container mx-auto px-4 py-4 space-y-3">
               <Link href="/" className="block py-2 text-slate-700 dark:text-slate-300">
                 Home
@@ -525,7 +525,7 @@ export default function DemoAppsPage() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-50 animate-pulse"></div>
                 <Badge className="relative px-4 py-2 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-blue-600/20 backdrop-blur-sm">
-                  <Sparkles className="w-4 h-4 mr-2 text-blue-600" />
+                  <Sparkles className="w-4 h-4 mr-2 text-primary" />
                   <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     12 Live Demo Apps Available
                   </span>
@@ -550,7 +550,7 @@ export default function DemoAppsPage() {
 
             {/* Subtitle */}
             <p
-              className={`text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto transition-all duration-700 delay-200 ${
+              className={`text-lg sm:text-xl text-muted-foreground dark:text-slate-300 max-w-3xl mx-auto transition-all duration-700 delay-200 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
@@ -569,13 +569,13 @@ export default function DemoAppsPage() {
                 }`}
                 style={{ transitionDelay: `${300 + index * 100}ms` }}
               >
-                <div className="inline-flex p-3 rounded-2xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 shadow-lg mb-3">
-                  <stat.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="inline-flex p-3 rounded-2xl bg-background/50 dark:bg-muted/50 backdrop-blur-sm border border-border/20 dark:border-border/50 shadow-lg mb-3">
+                  <stat.icon className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                <div className="text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground">
                   {stat.value}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">{stat.label}</div>
+                <div className="text-sm text-muted-foreground dark:text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -588,13 +588,13 @@ export default function DemoAppsPage() {
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search demo apps by name, category, or features..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-4 text-base rounded-2xl border-slate-200/50 dark:border-slate-700/50 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
+                className="pl-12 pr-4 py-4 text-base rounded-2xl border-border/50 dark:border-border/50 bg-background/70 dark:bg-muted/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
               />
             </div>
 
@@ -608,12 +608,12 @@ export default function DemoAppsPage() {
                   onClick={() => setSelectedCategory(category.id)}
                   className={
                     selectedCategory === category.id
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 !text-white border-0'
-                      : 'bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 !text-foreground border-0'
+                      : 'bg-background/50 dark:bg-muted/50 backdrop-blur-sm border-border/50 dark:border-border/50'
                   }
                 >
                   {category.name}
-                  <Badge variant="secondary" className="ml-2 bg-white/20 text-xs">
+                  <Badge variant="secondary" className="ml-2 bg-background/20 text-xs">
                     {category.count}
                   </Badge>
                 </Button>
@@ -627,10 +627,10 @@ export default function DemoAppsPage() {
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground mb-2">
               Featured Demo Apps
             </h2>
-            <p className="text-slate-600 dark:text-slate-300">
+            <p className="text-muted-foreground dark:text-slate-300">
               Popular apps that showcase HERA's capabilities
             </p>
           </div>
@@ -644,7 +644,7 @@ export default function DemoAppsPage() {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card className="h-full overflow-hidden bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-white/20 dark:border-slate-700/50 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <Card className="h-full overflow-hidden bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-border/20 dark:border-border/50 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                   <div className={`h-2 bg-gradient-to-r ${app.color}`} />
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between mb-3">
@@ -660,15 +660,15 @@ export default function DemoAppsPage() {
                         {app.status === 'live' ? 'Live' : 'Beta'}
                       </Badge>
                     </div>
-                    <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                    <CardTitle className="text-lg font-semibold text-foreground dark:text-foreground">
                       {app.shortTitle}
                     </CardTitle>
-                    <CardDescription className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                    <CardDescription className="text-sm text-muted-foreground dark:text-slate-300 line-clamp-2">
                       {app.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground dark:text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
                         <span>{app.stats.activeUsers}</span>
@@ -683,7 +683,7 @@ export default function DemoAppsPage() {
                       </div>
                     </div>
                     <Button
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white"
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground"
                       onClick={() => router.push(app.demoUrl)}
                     >
                       <Play className="w-4 h-4 mr-2" />
@@ -701,10 +701,10 @@ export default function DemoAppsPage() {
       <section className="py-12 bg-gradient-to-b from-transparent via-slate-50/50 to-transparent dark:via-slate-900/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground mb-2">
               All Demo Applications
             </h2>
-            <p className="text-slate-600 dark:text-slate-300">
+            <p className="text-muted-foreground dark:text-slate-300">
               {filteredApps.length} apps matching your criteria
             </p>
           </div>
@@ -725,7 +725,7 @@ export default function DemoAppsPage() {
                     }`}
                     style={{ transitionDelay: `${index * 50}ms` }}
                   >
-                    <Card className="h-full overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-white/50 dark:border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+                    <Card className="h-full overflow-hidden bg-background/80 dark:bg-muted/80 backdrop-blur-md border-white/50 dark:border-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
                       <div
                         className={`h-1 bg-gradient-to-r ${app.color} transition-all duration-300 group-hover:h-2`}
                       />
@@ -753,17 +753,17 @@ export default function DemoAppsPage() {
                             )}
                           </div>
                         </div>
-                        <CardTitle className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                        <CardTitle className="text-xl font-bold text-foreground dark:text-foreground mb-2">
                           {app.title}
                         </CardTitle>
-                        <CardDescription className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                        <CardDescription className="text-sm text-muted-foreground dark:text-slate-300 line-clamp-2">
                           {app.description}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Features */}
                         <div className="space-y-2">
-                          <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+                          <p className="text-xs font-semibold text-slate-700 dark:text-foreground uppercase tracking-wider">
                             Key Features
                           </p>
                           <div className="flex flex-wrap gap-1">
@@ -775,7 +775,7 @@ export default function DemoAppsPage() {
                             {app.features.length > 3 && (
                               <Badge
                                 variant="outline"
-                                className="text-xs py-0.5 px-2 bg-slate-50 dark:bg-slate-800"
+                                className="text-xs py-0.5 px-2 bg-slate-50 dark:bg-muted"
                               >
                                 +{app.features.length - 3} more
                               </Badge>
@@ -784,34 +784,34 @@ export default function DemoAppsPage() {
                         </div>
 
                         {/* Stats */}
-                        <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 dark:border-slate-700/50">
+                        <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 dark:border-border/50">
                           <div className="text-center">
-                            <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                            <div className="text-sm font-semibold text-foreground dark:text-foreground">
                               {app.stats.activeUsers}
                             </div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">Users</div>
+                            <div className="text-xs text-slate-500 dark:text-muted-foreground">Users</div>
                           </div>
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-0.5">
                               <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
-                              <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                              <span className="text-sm font-semibold text-foreground dark:text-foreground">
                                 {app.stats.rating}
                               </span>
                             </div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">Rating</div>
+                            <div className="text-xs text-slate-500 dark:text-muted-foreground">Rating</div>
                           </div>
                           <div className="text-center">
-                            <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                            <div className="text-sm font-semibold text-foreground dark:text-foreground">
                               {app.stats.setupTime}
                             </div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">Setup</div>
+                            <div className="text-xs text-slate-500 dark:text-muted-foreground">Setup</div>
                           </div>
                         </div>
 
                         {/* Actions */}
                         <div className="space-y-2">
                           <Button
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground shadow-lg hover:shadow-xl transition-all duration-300"
                             onClick={() => router.push(app.demoUrl)}
                           >
                             <Play className="w-4 h-4 mr-2" />
@@ -855,7 +855,7 @@ export default function DemoAppsPage() {
                     }`}
                     style={{ transitionDelay: `${index * 50}ms` }}
                   >
-                    <Card className="overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-white/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Card className="overflow-hidden bg-background/80 dark:bg-muted/80 backdrop-blur-md border-white/50 dark:border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <div className="flex items-center gap-6 p-6">
                         <div
                           className={`p-4 rounded-2xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm shrink-0`}
@@ -866,10 +866,10 @@ export default function DemoAppsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-4 mb-2">
                             <div>
-                              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                              <h3 className="text-lg font-semibold text-foreground dark:text-foreground">
                                 {app.title}
                               </h3>
-                              <p className="text-sm text-slate-600 dark:text-slate-300">
+                              <p className="text-sm text-muted-foreground dark:text-slate-300">
                                 {app.description}
                               </p>
                             </div>
@@ -922,13 +922,13 @@ export default function DemoAppsPage() {
 
           {filteredApps.length === 0 && (
             <div className="text-center py-12">
-              <div className="inline-flex p-4 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                <Search className="w-8 h-8 text-slate-400" />
+              <div className="inline-flex p-4 rounded-full bg-slate-100 dark:bg-muted mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-foreground dark:text-foreground mb-2">
                 No apps found
               </h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
+              <p className="text-muted-foreground dark:text-slate-300 mb-4">
                 Try adjusting your search or filters
               </p>
               <Button
@@ -949,10 +949,10 @@ export default function DemoAppsPage() {
       <section className="py-16 sm:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground mb-3">
               Coming Soon
             </h2>
-            <p className="text-slate-600 dark:text-slate-300">
+            <p className="text-muted-foreground dark:text-slate-300">
               Next-generation demo apps in development
             </p>
           </div>
@@ -966,22 +966,22 @@ export default function DemoAppsPage() {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card className="h-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50 hover:shadow-lg transition-all duration-300">
+                <Card className="h-full bg-background/80 dark:bg-muted/80 backdrop-blur-sm border-border/50 dark:border-border/50 hover:shadow-lg transition-all duration-300">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mb-3">
-                      <app.icon className="w-6 h-6 text-slate-500 dark:text-slate-400" />
+                      <app.icon className="w-6 h-6 text-slate-500 dark:text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-lg text-slate-900 dark:text-white">
+                    <CardTitle className="text-lg text-foreground dark:text-foreground">
                       {app.title}
                     </CardTitle>
-                    <CardDescription className="text-sm text-slate-600 dark:text-slate-400">
+                    <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {app.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Badge
                       variant="outline"
-                      className="w-full justify-center py-1 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600"
+                      className="w-full justify-center py-1 text-slate-700 dark:text-slate-300 border-input dark:border-input"
                     >
                       {app.category}
                     </Badge>
@@ -996,20 +996,20 @@ export default function DemoAppsPage() {
       {/* Request Demo Form Modal */}
       {showRequestForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/50 backdrop-blur-sm"
           onClick={() => setShowRequestForm(false)}
         >
           <div
-            className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 max-w-md w-full"
+            className="bg-background dark:bg-background rounded-2xl shadow-2xl p-6 max-w-md w-full"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xl font-bold text-foreground dark:text-foreground">
                 Request a New Demo
               </h3>
               <button
                 onClick={() => setShowRequestForm(false)}
-                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-muted transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1043,12 +1043,12 @@ export default function DemoAppsPage() {
                 </label>
                 <textarea
                   placeholder="Tell us about your business needs..."
-                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
+                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted text-foreground dark:text-foreground focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
                   rows={3}
                 />
               </div>
               <Button
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground"
                 onClick={e => {
                   e.preventDefault()
                   setShowRequestForm(false)
@@ -1066,7 +1066,7 @@ export default function DemoAppsPage() {
       <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
               Ready to Build Your Business App?
             </h2>
             <p className="text-lg md:text-xl text-slate-300 mb-8">
@@ -1076,7 +1076,7 @@ export default function DemoAppsPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-slate-900 hover:bg-slate-100 !text-slate-900 px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-background text-foreground hover:bg-slate-100 !text-foreground px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={() => router.push('/auth/signup')}
               >
                 Get Started Free
@@ -1085,7 +1085,7 @@ export default function DemoAppsPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white !text-white hover:bg-white hover:!text-slate-900 px-8 py-6 text-lg"
+                className="border-white !text-foreground hover:bg-background hover:!text-foreground px-8 py-6 text-lg"
                 onClick={() => setShowRequestForm(true)}
               >
                 Request Custom Demo
@@ -1093,7 +1093,7 @@ export default function DemoAppsPage() {
               </Button>
             </div>
 
-            <p className="mt-6 text-sm text-slate-400">
+            <p className="mt-6 text-sm text-muted-foreground">
               No credit card required • 14-day free trial • Deploy instantly
             </p>
           </div>
@@ -1101,17 +1101,17 @@ export default function DemoAppsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 sm:py-12">
+      <footer className="bg-background dark:bg-background border-t border-border dark:border-slate-800 py-8 sm:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
               © 2025 HERA ERP. All rights reserved. •
-              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white">
+              <Link href="/privacy" className="hover:text-foreground dark:hover:text-foreground">
                 {' '}
                 Privacy
               </Link>{' '}
               •
-              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white">
+              <Link href="/terms" className="hover:text-foreground dark:hover:text-foreground">
                 {' '}
                 Terms
               </Link>

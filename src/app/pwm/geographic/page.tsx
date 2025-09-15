@@ -17,12 +17,12 @@ export default function GeographicMapPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800">
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/pwm">
-                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to PWM
                 </Button>
@@ -32,8 +32,8 @@ export default function GeographicMapPage() {
                   <Globe2 className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-white">Geographic Distribution</h1>
-                  <p className="text-sm text-slate-400">Interactive global investment map</p>
+                  <h1 className="text-xl font-bold text-foreground">Geographic Distribution</h1>
+                  <p className="text-sm text-muted-foreground">Interactive global investment map</p>
                 </div>
               </div>
             </div>
@@ -52,34 +52,34 @@ export default function GeographicMapPage() {
           {/* Additional Information */}
           <div className="space-y-6">
             {/* Investment Summary */}
-            <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-              <h3 className="text-lg font-semibold text-white mb-4">Investment Summary</h3>
+            <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Investment Summary</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Total Global Assets</span>
-                  <span className="text-xl font-bold text-white">$100M</span>
+                  <span className="text-muted-foreground">Total Global Assets</span>
+                  <span className="text-xl font-bold text-foreground">$100M</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Active Regions</span>
+                  <span className="text-muted-foreground">Active Regions</span>
                   <span className="text-lg font-semibold text-blue-400">4</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Top Performing</span>
+                  <span className="text-muted-foreground">Top Performing</span>
                   <span className="text-lg font-semibold text-emerald-400">Asia Pacific</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Average Growth</span>
+                  <span className="text-muted-foreground">Average Growth</span>
                   <span className="text-lg font-semibold text-emerald-400">+3.8%</span>
                 </div>
               </div>
             </Card>
 
             {/* Risk Distribution */}
-            <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-              <h3 className="text-lg font-semibold text-white mb-4">Risk Distribution</h3>
+            <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Risk Distribution</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Low Risk</span>
+                  <span className="text-muted-foreground">Low Risk</span>
                   <div className="flex items-center gap-2">
                     <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div className="h-full bg-emerald-500" style={{ width: '60%' }} />
@@ -88,7 +88,7 @@ export default function GeographicMapPage() {
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Medium Risk</span>
+                  <span className="text-muted-foreground">Medium Risk</span>
                   <div className="flex items-center gap-2">
                     <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div className="h-full bg-amber-500" style={{ width: '30%' }} />
@@ -97,7 +97,7 @@ export default function GeographicMapPage() {
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">High Risk</span>
+                  <span className="text-muted-foreground">High Risk</span>
                   <div className="flex items-center gap-2">
                     <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div className="h-full bg-red-500" style={{ width: '10%' }} />
@@ -109,24 +109,24 @@ export default function GeographicMapPage() {
             </Card>
 
             {/* Currency Exposure */}
-            <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-              <h3 className="text-lg font-semibold text-white mb-4">Currency Exposure</h3>
+            <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Currency Exposure</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">USD</span>
-                  <span className="text-sm font-medium text-white">55%</span>
+                  <span className="text-muted-foreground">USD</span>
+                  <span className="text-sm font-medium text-foreground">55%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">EUR</span>
-                  <span className="text-sm font-medium text-white">25%</span>
+                  <span className="text-muted-foreground">EUR</span>
+                  <span className="text-sm font-medium text-foreground">25%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">JPY</span>
-                  <span className="text-sm font-medium text-white">12%</span>
+                  <span className="text-muted-foreground">JPY</span>
+                  <span className="text-sm font-medium text-foreground">12%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Other</span>
-                  <span className="text-sm font-medium text-white">8%</span>
+                  <span className="text-muted-foreground">Other</span>
+                  <span className="text-sm font-medium text-foreground">8%</span>
                 </div>
               </div>
             </Card>

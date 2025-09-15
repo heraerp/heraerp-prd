@@ -24,7 +24,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={inputType}
           className={cn(
-            'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm shadow-hera-sm',
+            'flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-hera-sm',
             'text-hera-ink-900 placeholder:text-hera-ink-500',
             'border-hera-line-200 focus-visible:border-transparent',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hera-primary-400',

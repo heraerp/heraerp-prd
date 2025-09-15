@@ -171,10 +171,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 overflow-x-hidden">
       {/* Prelaunch Notification Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground py-3 px-4 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-background/10 backdrop-blur-sm"></div>
         <div className="relative z-10 flex items-center justify-center gap-3 text-sm md:text-base flex-wrap">
-          <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+          <Badge className="bg-background/20 text-foreground border-white/30 hover:bg-background/30">
             <Rocket className="w-3 h-3 mr-1" />
             PRELAUNCH
           </Badge>
@@ -196,18 +196,18 @@ export default function LandingPage() {
       </div>
 
       {/* Header with Mobile Menu */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-800">
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 dark:bg-background/70 border-b border-border dark:border-slate-800">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-lg">H</span>
+                <span className="text-foreground font-bold text-sm sm:text-lg">H</span>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                <h1 className="text-lg sm:text-xl font-bold text-foreground dark:text-foreground">
                   HERA ERP
                 </h1>
-                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
+                <p className="text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground hidden sm:block">
                   Universal Business Platform
                 </p>
               </div>
@@ -217,31 +217,31 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 href="/discover"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Discover
               </Link>
               <Link
                 href="/demo"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Demo Apps
               </Link>
               <Link
                 href="/validate"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Solutions
               </Link>
               <Link
                 href="/pricing"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Pricing
               </Link>
               <Link
                 href="/docs"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
               >
                 Docs
               </Link>
@@ -254,7 +254,7 @@ export default function LandingPage() {
               </Button>
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground"
               >
                 Start Free Trial
               </Button>
@@ -263,12 +263,12 @@ export default function LandingPage() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-muted transition-colors"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                <X className="w-5 h-5 text-muted-foreground dark:text-slate-300" />
               ) : (
-                <Menu className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                <Menu className="w-5 h-5 text-muted-foreground dark:text-slate-300" />
               )}
             </button>
           </div>
@@ -276,39 +276,39 @@ export default function LandingPage() {
 
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+          <div className="md:hidden bg-background dark:bg-background border-t border-border dark:border-slate-800">
             <div className="container mx-auto px-4 py-4 space-y-4">
               <Link
                 href="/discover"
-                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="block text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Discover
               </Link>
               <Link
                 href="/demo"
-                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="block text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Demo Apps
               </Link>
               <Link
                 href="/validate"
-                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="block text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Solutions
               </Link>
               <Link
                 href="/pricing"
-                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="block text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Pricing
               </Link>
               <Link
                 href="/docs"
-                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="block text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Docs
@@ -320,7 +320,7 @@ export default function LandingPage() {
                   </Link>
                 </Button>
                 <Button
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground"
                   asChild
                 >
                   <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
@@ -337,8 +337,8 @@ export default function LandingPage() {
       <section className="relative pt-20 pb-16 sm:pt-32 sm:pb-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 sm:space-y-8 animate-fadeIn">
-            <Badge className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700">
-              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
+            <Badge className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 dark:bg-muted text-slate-700 dark:text-foreground border-border dark:border-border">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary dark:text-blue-400" />
               <span className="text-xs sm:text-sm">Trusted by 10,000+ businesses worldwide</span>
             </Badge>
 
@@ -352,7 +352,7 @@ export default function LandingPage() {
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl md:max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground dark:text-slate-300 max-w-2xl md:max-w-3xl mx-auto">
               HERA transforms how businesses operate. Explore live demos of real companies, then
               build your own customized version in minutes.
             </p>
@@ -360,7 +360,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/demo')}
               >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
@@ -368,7 +368,7 @@ export default function LandingPage() {
               </Button>
               <Button
                 size="lg"
-                className="bg-purple-600 hover:bg-purple-700 !text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                className="bg-purple-600 hover:bg-purple-700 !text-foreground px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/readiness-questionnaire')}
               >
                 <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
@@ -400,16 +400,16 @@ export default function LandingPage() {
             ].map((stat, index) => (
               <div
                 key={index}
-                className={`bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 ${
+                className={`bg-background dark:bg-muted rounded-xl p-4 sm:p-6 border border-border dark:border-border shadow-sm hover:shadow-md transition-all duration-300 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 mb-2" />
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary dark:text-blue-400 mb-2" />
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground dark:text-foreground">
                   {stat.value}
                 </div>
-                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                <div className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
                   {stat.label}
                 </div>
               </div>
@@ -422,10 +422,10 @@ export default function LandingPage() {
       <section id="discover" className="py-16 sm:py-20 md:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground dark:text-foreground mb-3 sm:mb-4">
               Your Journey to Modern Business
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-base sm:text-lg text-muted-foreground dark:text-slate-300">
               From discovery to deployment in{' '}
               <span className="text-[#B0B0B0] font-semibold">days, not months</span>
             </p>
@@ -443,9 +443,9 @@ export default function LandingPage() {
                 <Card className="hover:shadow-lg transition-all duration-300 h-full">
                   <CardHeader>
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
-                      <stage.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                      <stage.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary dark:text-blue-400" />
                     </div>
-                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-white">
+                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-foreground">
                       {stage.stage}
                     </CardTitle>
                     <CardDescription className="text-sm sm:text-base text-[#B0B0B0] font-medium">
@@ -455,7 +455,7 @@ export default function LandingPage() {
                   <CardContent>
                     <Button
                       variant="link"
-                      className="p-0 h-auto text-sm sm:text-base !text-blue-600 dark:!text-blue-400 hover:!text-blue-700 dark:hover:!text-blue-300"
+                      className="p-0 h-auto text-sm sm:text-base !text-primary dark:!text-blue-400 hover:!text-blue-700 dark:hover:!text-blue-300"
                     >
                       {stage.action} <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                     </Button>
@@ -479,10 +479,10 @@ export default function LandingPage() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground dark:text-foreground mb-3 sm:mb-4">
               <span className="text-[#B0B0B0]">Explore</span> Real Business Demos
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground dark:text-slate-300 max-w-2xl mx-auto">
               See how successful businesses use HERA. Each demo is a{' '}
               <span className="text-[#B0B0B0] font-semibold">real implementation</span> you can
               explore and customize.
@@ -509,12 +509,12 @@ export default function LandingPage() {
                       </div>
                       <Badge
                         variant="secondary"
-                        className="text-xs sm:text-sm text-slate-700 dark:text-slate-200"
+                        className="text-xs sm:text-sm text-slate-700 dark:text-foreground"
                       >
                         Live Demo
                       </Badge>
                     </div>
-                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">
+                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-foreground">
                       {industry.title}
                     </CardTitle>
                     <CardDescription className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
@@ -527,7 +527,7 @@ export default function LandingPage() {
                         <Badge
                           key={featureIndex}
                           variant="outline"
-                          className="text-xs text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600"
+                          className="text-xs text-slate-700 dark:text-foreground border-input dark:border-input"
                         >
                           {feature}
                         </Badge>
@@ -536,29 +536,29 @@ export default function LandingPage() {
 
                     <div className="grid grid-cols-3 gap-4 py-3 sm:py-4 border-y">
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                        <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.businesses}
                         </div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">Active</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Active</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                        <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.revenue}
                         </div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">Revenue</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Revenue</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                        <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.time}
                         </div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">Setup</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Setup</div>
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex gap-2 sm:gap-3">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
+                          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground text-sm sm:text-base"
                           onClick={() => router.push(industry.demoUrl)}
                         >
                           <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
@@ -583,17 +583,17 @@ export default function LandingPage() {
           <div className="mt-12 sm:mt-16 text-center">
             <Card className="max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">
+                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-foreground">
                   Don't see your industry?
                 </CardTitle>
-                <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                <CardDescription className="text-sm sm:text-base text-muted-foreground dark:text-gray-300">
                   HERA's universal architecture works for any business type
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-foreground dark:!text-foreground text-sm sm:text-base"
                   onClick={() => router.push('/build')}
                 >
                   Build Custom Solution
@@ -609,10 +609,10 @@ export default function LandingPage() {
       <section className="py-16 sm:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10">
-            <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3">
+            <h3 className="text-xl sm:text-2xl font-semibold text-foreground dark:text-foreground mb-2 sm:mb-3">
               Coming Soon
             </h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+            <p className="text-sm sm:text-base text-muted-foreground dark:text-slate-300">
               More industry-specific demos launching soon
             </p>
           </div>
@@ -620,10 +620,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-3xl mx-auto">
             {comingSoon.map((item, index) => (
               <div key={index} className="text-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                  <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-muted rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                  <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-muted-foreground" />
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
                   {item.title}
                 </p>
               </div>
@@ -636,10 +636,10 @@ export default function LandingPage() {
       <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground dark:text-foreground mb-3 sm:mb-4">
               Why Businesses Choose HERA
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-base sm:text-lg text-muted-foreground dark:text-slate-300">
               Revolutionary architecture that delivers{' '}
               <span className="text-[#B0B0B0] font-semibold">real results</span>
             </p>
@@ -655,15 +655,15 @@ export default function LandingPage() {
                 style={{ transitionDelay: `${(index + 12) * 100}ms` }}
               >
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <prop.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" />
+                  <prop.icon className="w-7 h-7 sm:w-8 sm:h-8 text-primary dark:text-blue-400" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white mb-1 sm:mb-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-foreground dark:text-foreground mb-1 sm:mb-2">
                   {prop.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2">
+                <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground mb-2">
                   {prop.description}
                 </p>
-                <p className="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-400">
+                <p className="text-sm sm:text-base font-medium text-primary dark:text-blue-400">
                   {prop.metric}
                 </p>
               </div>
@@ -676,7 +676,7 @@ export default function LandingPage() {
       <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6">
               Ready to Transform Your Business?
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 sm:mb-8">
@@ -687,7 +687,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-slate-900 hover:bg-slate-100 !text-slate-900 dark:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                className="bg-background text-foreground hover:bg-slate-100 !text-foreground dark:!text-foreground px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/auth/signup')}
               >
                 Start Your Free Trial
@@ -696,14 +696,14 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white !text-white hover:bg-white hover:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
+                className="border-white !text-foreground hover:bg-background hover:!text-foreground px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
                 onClick={() => router.push('/contact')}
               >
                 Talk to Sales
               </Button>
             </div>
 
-            <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-slate-400">
+            <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-muted-foreground">
               <span className="text-[#B0B0B0]">No credit card required</span> •{' '}
               <span className="text-[#B0B0B0]">14-day free trial</span> • Cancel anytime
             </p>
@@ -712,17 +712,17 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 sm:py-12">
+      <footer className="bg-background dark:bg-background border-t border-border dark:border-slate-800 py-8 sm:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
               © 2025 HERA ERP. All rights reserved. •
-              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white">
+              <Link href="/privacy" className="hover:text-foreground dark:hover:text-foreground">
                 {' '}
                 Privacy
               </Link>{' '}
               •
-              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white">
+              <Link href="/terms" className="hover:text-foreground dark:hover:text-foreground">
                 {' '}
                 Terms
               </Link>

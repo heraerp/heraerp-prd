@@ -93,7 +93,7 @@ export function GlassmorphicCard({
           }}
         />
       )}
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
         {children}
       </div>
     </div>
@@ -140,7 +140,7 @@ export function GlassmorphicButton({
         style={{ background: gradients[variant] }}
       />
       <div
-        className="relative flex items-center justify-center space-x-2 px-4 py-2 text-white rounded-lg font-medium transition-all duration-300"
+        className="relative flex items-center justify-center space-x-2 px-4 py-2 text-foreground rounded-lg font-medium transition-all duration-300"
         style={{
           background: gradients[variant],
           boxShadow: `0 0 0 0 ${shadowColors[variant]}40`
@@ -188,11 +188,11 @@ export function GlassmorphicStatCard({
           background: `linear-gradient(to right, ${theme.colors.secondary}, ${theme.colors.primary})`
         }}
       />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white/60 text-sm">{label}</p>
-            <p className="text-2xl font-bold text-white mt-1">{value}</p>
+            <p className="text-foreground/60 text-sm">{label}</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
             {trend && (
               <p
                 className={`text-xs mt-1 ${trend.isPositive ? 'text-emerald-400' : 'text-red-400'}`}
@@ -208,7 +208,7 @@ export function GlassmorphicStatCard({
               background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})`
             }}
           >
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-foreground" />
           </div>
         </div>
       </div>
@@ -238,14 +238,14 @@ export function GlassmorphicInput({
   return (
     <div className={`relative ${className}`}>
       {Icon && (
-        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
       )}
       <input
         type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full ${Icon ? 'pl-10' : 'pl-4'} pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:bg-white/10 transition-all duration-200`}
+        className={`w-full ${Icon ? 'pl-10' : 'pl-4'} pr-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground placeholder-white/40 focus:outline-none focus:bg-background/10 transition-all duration-200`}
         style={
           {
             '--tw-ring-color': `${theme.colors.secondary}50`,

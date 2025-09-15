@@ -192,7 +192,7 @@ export function EmployeeManagerView({
       case 'denied':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+        return 'bg-muted text-gray-800 dark:bg-muted-foreground/10 dark:text-gray-200'
     }
   }
 
@@ -215,13 +215,13 @@ export function EmployeeManagerView({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-            <Users className="w-5 h-5 text-white" />
+            <Users className="w-5 h-5 text-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
               {userRole === 'employee' ? 'My Schedule & Leave' : 'Team Management'}
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               {userRole === 'employee'
                 ? 'Request leave and view your schedule'
                 : 'Manage team schedules and approve leave requests'}
@@ -242,7 +242,7 @@ export function EmployeeManagerView({
 
       {/* Navigation Tabs */}
       <Tabs value={selectedTab} onValueChange={v => setSelectedTab(v as any)}>
-        <TabsList className="bg-gray-100 dark:bg-gray-800">
+        <TabsList className="bg-muted dark:bg-muted">
           <TabsTrigger value="calendar" className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Calendar
@@ -271,10 +271,10 @@ export function EmployeeManagerView({
 
         {/* Calendar View */}
         <TabsContent value="calendar" className="mt-6">
-          <Card className="bg-white dark:bg-gray-800">
+          <Card className="bg-background dark:bg-muted">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
+                <Calendar className="w-5 h-5 text-primary" />
                 {userRole === 'employee' ? 'My Schedule' : 'Team Calendar'}
               </CardTitle>
             </CardHeader>
@@ -291,7 +291,7 @@ export function EmployeeManagerView({
 
         {/* Leave Requests View */}
         <TabsContent value="requests" className="mt-6">
-          <Card className="bg-white dark:bg-gray-800">
+          <Card className="bg-background dark:bg-muted">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export function EmployeeManagerView({
               <ScrollArea className="max-h-[600px]">
                 <div className="space-y-4">
                   {getFilteredRequests().length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <div className="text-center py-8 text-muted-foreground dark:text-muted-foreground">
                       <UserCheck className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p className="text-lg font-medium">No leave requests found</p>
                       <p className="text-sm">
@@ -334,21 +334,21 @@ export function EmployeeManagerView({
                     getFilteredRequests().map(request => (
                       <div
                         key={request.id}
-                        className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4"
+                        className="border border-border dark:border-border rounded-lg p-4 space-y-4"
                       >
                         {/* Request Header */}
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar className="h-10 w-10 bg-purple-600">
-                              <AvatarFallback className="text-white font-semibold">
+                              <AvatarFallback className="text-foreground font-semibold">
                                 {request.employeeAvatar}
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-white">
+                              <h3 className="font-semibold text-gray-900 dark:text-foreground">
                                 {request.employeeName}
                               </h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 {request.employeeTitle} • {request.branchName}
                               </p>
                             </div>
@@ -365,22 +365,22 @@ export function EmployeeManagerView({
                               className="w-8 h-8 rounded-full flex items-center justify-center"
                               style={{ backgroundColor: request.leaveTypeColor }}
                             >
-                              <UserX className="w-4 h-4 text-white" />
+                              <UserX className="w-4 h-4 text-foreground" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                                 {request.leaveTypeName}
                               </p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                 {request.reason.charAt(0).toUpperCase() + request.reason.slice(1)}
                               </p>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <Calendar className="w-5 h-5 text-gray-400" />
+                            <Calendar className="w-5 h-5 text-muted-foreground" />
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                                 {request.startDate.toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric'
@@ -389,19 +389,19 @@ export function EmployeeManagerView({
                                   request.endDate.toDateString() &&
                                   ` - ${request.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
                               </p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                 {request.duration}
                               </p>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-gray-400" />
+                            <Clock className="w-5 h-5 text-muted-foreground" />
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                                 Submitted
                               </p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                 {request.submittedAt.toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric'
@@ -413,7 +413,7 @@ export function EmployeeManagerView({
 
                         {/* Description */}
                         {request.description && (
-                          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                          <div className="bg-muted dark:bg-muted-foreground/10 rounded-lg p-3">
                             <p className="text-sm text-gray-700 dark:text-gray-300">
                               <span className="font-medium">Note: </span>
                               {request.description}
@@ -428,7 +428,7 @@ export function EmployeeManagerView({
                               <Button
                                 size="sm"
                                 onClick={() => handleApproval(request.id, true)}
-                                className="bg-green-600 hover:bg-green-700 text-white"
+                                className="bg-green-600 hover:bg-green-700 text-foreground"
                               >
                                 <CheckSquare className="w-4 h-4 mr-2" />
                                 Approve
@@ -447,7 +447,7 @@ export function EmployeeManagerView({
 
                         {/* Review Status */}
                         {request.status !== 'pending' && request.reviewedAt && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
+                          <div className="text-xs text-muted-foreground dark:text-muted-foreground border-t border-border dark:border-border pt-2">
                             {request.status === 'approved' ? 'Approved' : 'Denied'} by{' '}
                             {request.reviewedBy} on{' '}
                             {request.reviewedAt.toLocaleDateString('en-US', {
@@ -473,17 +473,17 @@ export function EmployeeManagerView({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Team Member Cards */}
               {['Rocky', 'Maya', 'Sophia'].map((member, idx) => (
-                <Card key={member} className="bg-white dark:bg-gray-800">
+                <Card key={member} className="bg-background dark:bg-muted">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <Avatar className="h-12 w-12 bg-purple-600">
-                        <AvatarFallback className="text-white font-bold">
+                        <AvatarFallback className="text-foreground font-bold">
                           {member[0]}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">{member}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <h3 className="font-semibold text-gray-900 dark:text-foreground">{member}</h3>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {idx === 0
                             ? 'Celebrity Hair Artist'
                             : idx === 1
@@ -495,14 +495,14 @@ export function EmployeeManagerView({
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">This Month</span>
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">This Month</span>
                         <Badge variant="outline" className="text-xs">
                           {Math.floor(Math.random() * 3)} days off
                         </Badge>
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                           Pending Requests
                         </span>
                         <Badge variant={idx === 0 ? 'default' : 'secondary'} className="text-xs">

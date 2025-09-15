@@ -41,7 +41,7 @@ export function LoadingSkeleton({
 // App Card Skeleton for loading states
 export function AppCardSkeleton() {
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 space-y-4">
+    <div className="bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 p-6 space-y-4">
       <div className="flex items-start justify-between">
         <LoadingSkeleton variant="circle" className="w-14 h-14" />
         <div className="space-y-2">

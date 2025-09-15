@@ -622,7 +622,7 @@ export default function DubaiPOSSystem() {
         >
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-2">
-              <h4 className="font-semibold text-sm !text-gray-900 dark:!text-white line-clamp-2">
+              <h4 className="font-semibold text-sm !text-gray-900 dark:!text-foreground line-clamp-2">
                 {product.entity_name}
               </h4>
               {product.stock_on_hand !== undefined && product.stock_on_hand < 10 && (
@@ -632,7 +632,7 @@ export default function DubaiPOSSystem() {
               )}
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-muted-foreground mb-2">
               {product.entity_code && (
                 <>
                   <Hash className="w-3 h-3" />
@@ -646,11 +646,11 @@ export default function DubaiPOSSystem() {
                 {formatCurrency(product.price)}
               </span>
               {product.stock_on_hand !== undefined && (
-                <span className="text-xs text-gray-500">Stock: {product.stock_on_hand}</span>
+                <span className="text-xs text-muted-foreground">Stock: {product.stock_on_hand}</span>
               )}
             </div>
 
-            <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div className="mt-2 pt-2 border-t border-gray-100 dark:border-border">
               <Badge
                 variant="outline"
                 className="text-xs"
@@ -693,7 +693,7 @@ export default function DubaiPOSSystem() {
 
       <CardContent className="flex-1 flex flex-col">
         {/* Customer Info */}
-        <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="mb-4 p-3 bg-muted dark:bg-muted rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Customer</span>
             <Button variant="ghost" size="sm">
@@ -706,7 +706,7 @@ export default function DubaiPOSSystem() {
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto space-y-2 mb-4">
           {cart.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-muted-foreground">
               <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-gray-300" />
               <p>Cart is empty</p>
               <p className="text-sm mt-1">Add items to start a sale</p>
@@ -715,14 +715,14 @@ export default function DubaiPOSSystem() {
             cart.map((item, index) => (
               <div
                 key={index}
-                className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+                className="p-3 bg-background dark:bg-muted border border-border dark:border-border rounded-lg"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h5 className="font-medium text-sm !text-gray-900 dark:!text-white">
+                    <h5 className="font-medium text-sm !text-gray-900 dark:!text-foreground">
                       {item.product.entity_name}
                     </h5>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                       {formatCurrency(item.unit_price)} × {item.quantity}
                     </p>
                   </div>
@@ -791,15 +791,15 @@ export default function DubaiPOSSystem() {
 
         {/* Totals */}
         {cart.length > 0 && (
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
+          <div className="border-t border-border dark:border-border pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+              <span className="text-muted-foreground dark:text-muted-foreground">Subtotal</span>
               <span className="font-medium">{formatCurrency(cartTotals.subtotal)}</span>
             </div>
 
             {cartTotals.discount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Discount</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">Discount</span>
                 <span className="font-medium text-red-600">
                   -{formatCurrency(cartTotals.discount)}
                 </span>
@@ -807,11 +807,11 @@ export default function DubaiPOSSystem() {
             )}
 
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">VAT ({posConfig.vat_rate}%)</span>
+              <span className="text-muted-foreground dark:text-muted-foreground">VAT ({posConfig.vat_rate}%)</span>
               <span className="font-medium">{formatCurrency(cartTotals.tax)}</span>
             </div>
 
-            <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between text-lg font-bold pt-2 border-t border-border dark:border-border">
               <span>Total</span>
               <span className="text-purple-600 dark:text-purple-400">
                 {formatCurrency(cartTotals.total)}
@@ -827,7 +827,7 @@ export default function DubaiPOSSystem() {
             Hold
           </Button>
           <Button
-            className="h-12 bg-purple-600 hover:bg-purple-700 text-white"
+            className="h-12 bg-purple-600 hover:bg-purple-700 text-foreground"
             disabled={cart.length === 0}
             onClick={() => setShowPaymentModal(true)}
           >
@@ -948,9 +948,9 @@ export default function DubaiPOSSystem() {
     }
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
         <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+          <CardHeader className="border-b border-border dark:border-border">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -964,19 +964,19 @@ export default function DubaiPOSSystem() {
 
           <CardContent className="p-6">
             {/* Receipt Summary */}
-            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="mb-6 p-4 bg-muted dark:bg-muted rounded-lg">
               <div className="text-center mb-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Receipt Number</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Receipt Number</p>
                 <p className="text-2xl font-bold">{lastTransactionData.receiptNumber}</p>
               </div>
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Date:</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Date:</span>
                   <span>{lastTransactionData.date.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Items:</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">Items:</span>
                   <span>{lastTransactionData.items.length}</span>
                 </div>
                 <div className="flex justify-between font-semibold">
@@ -1073,9 +1073,9 @@ export default function DubaiPOSSystem() {
     if (!showPaymentModal) return null
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
         <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
-          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+          <CardHeader className="border-b border-border dark:border-border">
             <CardTitle className="flex items-center justify-between">
               <span>Payment - {formatCurrency(cartTotals.total)}</span>
               <Button
@@ -1104,7 +1104,7 @@ export default function DubaiPOSSystem() {
                   <div className="text-sm font-medium mb-2">Payments Made:</div>
                   {payments.map((payment, index) => (
                     <div key={index} className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">
+                      <span className="text-muted-foreground dark:text-muted-foreground">
                         {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
                       </span>
                       <span>{formatCurrency(payment.amount)}</span>
@@ -1127,7 +1127,7 @@ export default function DubaiPOSSystem() {
                 >
                   <Banknote className="w-8 h-8 mb-2 text-green-600" />
                   <span className="text-sm font-medium">Cash</span>
-                  <span className="text-xs text-gray-500">Quick payment</span>
+                  <span className="text-xs text-muted-foreground">Quick payment</span>
                 </Button>
 
                 <Button
@@ -1136,9 +1136,9 @@ export default function DubaiPOSSystem() {
                   onClick={() => handlePayment('card', remainingAmount)}
                   disabled={isProcessing || remainingAmount <= 0}
                 >
-                  <CardIcon className="w-8 h-8 mb-2 text-blue-600" />
+                  <CardIcon className="w-8 h-8 mb-2 text-primary" />
                   <span className="text-sm font-medium">Card</span>
-                  <span className="text-xs text-gray-500">Credit/Debit</span>
+                  <span className="text-xs text-muted-foreground">Credit/Debit</span>
                 </Button>
 
                 <Button
@@ -1149,7 +1149,7 @@ export default function DubaiPOSSystem() {
                 >
                   <Smartphone className="w-8 h-8 mb-2 text-purple-600" />
                   <span className="text-sm font-medium">SoftPOS</span>
-                  <span className="text-xs text-gray-500">Tap to pay</span>
+                  <span className="text-xs text-muted-foreground">Tap to pay</span>
                 </Button>
 
                 <Button
@@ -1160,7 +1160,7 @@ export default function DubaiPOSSystem() {
                 >
                   <Wallet className="w-8 h-8 mb-2 text-orange-600" />
                   <span className="text-sm font-medium">Digital Wallet</span>
-                  <span className="text-xs text-gray-500">Apple/Google Pay</span>
+                  <span className="text-xs text-muted-foreground">Apple/Google Pay</span>
                 </Button>
               </div>
 
@@ -1181,7 +1181,7 @@ export default function DubaiPOSSystem() {
             {/* Complete Sale Button */}
             {remainingAmount <= 0.01 && (
               <Button
-                className="w-full mt-6 h-12 bg-green-600 hover:bg-green-700 text-white"
+                className="w-full mt-6 h-12 bg-green-600 hover:bg-green-700 text-foreground"
                 onClick={completeSale}
                 disabled={isProcessing}
               >
@@ -1217,7 +1217,7 @@ export default function DubaiPOSSystem() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* POS Header */}
-      <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Left Section */}
@@ -1236,14 +1236,14 @@ export default function DubaiPOSSystem() {
                 <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   HERA POS - Dubai
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {currentRegister.location_name} • Register: {currentRegister.entity_name}
                 </p>
               </div>
             </div>
 
             {/* Center Section - Time */}
-            <div className="hidden lg:flex items-center gap-2 text-gray-600 dark:text-gray-400">
+            <div className="hidden lg:flex items-center gap-2 text-muted-foreground dark:text-muted-foreground">
               <Clock className="w-4 h-4" />
               <span className="text-sm font-medium">
                 {new Date().toLocaleString('en-AE', {
@@ -1281,7 +1281,7 @@ export default function DubaiPOSSystem() {
           <div className="mb-4 space-y-4">
             <div className="flex items-center gap-2">
               <div className="relative flex-1 max-w-md">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search by name, code, or barcode..."
                   value={searchQuery}
@@ -1329,7 +1329,7 @@ export default function DubaiPOSSystem() {
         </div>
 
         {/* Cart Section */}
-        <div className="w-96 border-l border-gray-200 dark:border-gray-800 p-4">
+        <div className="w-96 border-l border-border dark:border-gray-800 p-4">
           <CartDisplay />
         </div>
       </div>

@@ -42,11 +42,11 @@ export default function FurnitureProducts() {
   // Show loading state while organization is loading
   if (orgLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2">
             <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400">Loading organization...</p>
+            <p className="text-muted-foreground">Loading organization...</p>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function FurnitureProducts() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -77,7 +77,7 @@ export default function FurnitureProducts() {
         {/* Product Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link href="/furniture/products/catalog">
-            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
               <Package className="h-10 w-10 text-blue-500 mb-3" />
               <h3 className="text-lg font-semibold mb-2">Product Catalog</h3>
               <p className="text-sm text-muted-foreground">Manage furniture products</p>
@@ -85,7 +85,7 @@ export default function FurnitureProducts() {
           </Link>
 
           <Link href="/furniture/products/bom">
-            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
               <ClipboardList className="h-10 w-10 text-purple-500 mb-3" />
               <h3 className="text-lg font-semibold mb-2">Bill of Materials</h3>
               <p className="text-sm text-muted-foreground">Define product components</p>
@@ -93,7 +93,7 @@ export default function FurnitureProducts() {
           </Link>
 
           <Link href="/furniture/products/routing">
-            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
               <Ruler className="h-10 w-10 text-amber-500 mb-3" />
               <h3 className="text-lg font-semibold mb-2">Production Routing</h3>
               <p className="text-sm text-muted-foreground">Define manufacturing steps</p>
@@ -101,7 +101,7 @@ export default function FurnitureProducts() {
           </Link>
 
           <Link href="/furniture/products/costing">
-            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+            <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-background/70 dark:bg-muted/70 backdrop-blur-sm">
               <Calculator className="h-10 w-10 text-green-500 mb-3" />
               <h3 className="text-lg font-semibold mb-2">Product Costing</h3>
               <p className="text-sm text-muted-foreground">Calculate product costs</p>

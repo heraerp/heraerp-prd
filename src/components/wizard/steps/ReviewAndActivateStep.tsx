@@ -211,9 +211,9 @@ export const ReviewAndActivateStep: React.FC<ReviewAndActivateStepProps> = ({
                 {check.completed ? (
                   <CheckCircle className="h-4 w-4 text-green-600" />
                 ) : (
-                  <div className="h-4 w-4 rounded-full border-2 border-gray-300" />
+                  <div className="h-4 w-4 rounded-full border-2 border-border" />
                 )}
-                <span className={check.completed ? 'text-green-700' : 'text-gray-500'}>
+                <span className={check.completed ? 'text-green-700' : 'text-muted-foreground'}>
                   {check.label}
                 </span>
               </div>
@@ -352,7 +352,7 @@ export const ReviewAndActivateStep: React.FC<ReviewAndActivateStepProps> = ({
             </div>
           </div>
 
-          <div className="mt-4 p-3 border rounded bg-white dark:bg-gray-800/50">
+          <div className="mt-4 p-3 border rounded bg-background dark:bg-muted/50">
             <div className="text-xs font-mono">
               <div className="text-muted-foreground mb-1">Generated Smart Code:</div>
               <div>

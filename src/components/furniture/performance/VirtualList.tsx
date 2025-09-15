@@ -155,7 +155,7 @@ export function VirtualList<T>({
           >
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="text-sm text-gray-600">Loading more items...</span>
+              <span className="text-sm text-muted-foreground">Loading more items...</span>
             </div>
           </div>
         )}
@@ -163,7 +163,7 @@ export function VirtualList<T>({
         {/* Empty state */}
         {items.length === 0 && !loading && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-gray-500">{emptyMessage}</p>
+            <p className="text-muted-foreground">{emptyMessage}</p>
           </div>
         )}
       </div>

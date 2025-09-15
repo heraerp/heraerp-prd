@@ -143,7 +143,7 @@ export function AuditProceduresWorkbench() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'planned':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       case 'in_progress':
         return 'bg-blue-100 text-blue-800'
       case 'completed':
@@ -151,7 +151,7 @@ export function AuditProceduresWorkbench() {
       case 'reviewed':
         return 'bg-purple-100 text-purple-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -182,11 +182,11 @@ export function AuditProceduresWorkbench() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
-            <TestTube className="w-6 h-6 text-white" />
+            <TestTube className="w-6 h-6 text-foreground" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Audit Procedures Workbench</h2>
-            <p className="text-gray-600">Plan, execute, and track audit testing procedures</p>
+            <p className="text-muted-foreground">Plan, execute, and track audit testing procedures</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -212,7 +212,7 @@ export function AuditProceduresWorkbench() {
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-600 mb-1">Planning Materiality</p>
+              <p className="text-sm text-primary mb-1">Planning Materiality</p>
               <p className="text-2xl font-bold text-blue-900">
                 ${materialitySettings.planning_materiality.toLocaleString()}
               </p>
@@ -253,7 +253,7 @@ export function AuditProceduresWorkbench() {
                     <Activity className={`w-6 h-6 text-${area.color}-600`} />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">{area.label}</h3>
-                  <div className="space-y-1 text-xs text-gray-600">
+                  <div className="space-y-1 text-xs text-muted-foreground">
                     <p>{stats.total} procedures</p>
                     <p>{stats.completed} completed</p>
                     {stats.exceptions > 0 && (
@@ -261,7 +261,7 @@ export function AuditProceduresWorkbench() {
                     )}
                   </div>
                   <Progress value={stats.avg_completion} className="h-2 mt-2" />
-                  <p className="text-xs text-gray-500 mt-1">{stats.avg_completion}% complete</p>
+                  <p className="text-xs text-muted-foreground mt-1">{stats.avg_completion}% complete</p>
                 </div>
               </CardContent>
             </Card>
@@ -285,7 +285,7 @@ export function AuditProceduresWorkbench() {
             {getAreaProcedures(selectedArea).map(procedure => (
               <div
                 key={procedure.id}
-                className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border rounded-lg p-4 hover:bg-muted transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -305,7 +305,7 @@ export function AuditProceduresWorkbench() {
 
                     <h4 className="font-medium text-gray-900 mb-1">{procedure.description}</h4>
 
-                    <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
+                    <div className="grid grid-cols-3 gap-4 text-sm text-muted-foreground">
                       <div>
                         <span className="font-medium">Assigned to:</span> {procedure.assigned_to}
                       </div>
@@ -346,9 +346,9 @@ export function AuditProceduresWorkbench() {
 
             {getAreaProcedures(selectedArea).length === 0 && (
               <div className="text-center py-8">
-                <TestTube className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">No procedures defined for this area</p>
-                <p className="text-sm text-gray-500 mt-1">
+                <TestTube className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No procedures defined for this area</p>
+                <p className="text-sm text-muted-foreground mt-1">
                   Create audit procedures to start testing
                 </p>
               </div>
@@ -370,7 +370,7 @@ export function AuditProceduresWorkbench() {
             {PROCEDURE_TYPES.map(type => (
               <div key={type.value} className="p-3 border rounded-lg">
                 <h4 className="font-medium text-gray-900 mb-1">{type.label}</h4>
-                <p className="text-sm text-gray-600">{type.description}</p>
+                <p className="text-sm text-muted-foreground">{type.description}</p>
               </div>
             ))}
           </div>

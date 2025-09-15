@@ -151,15 +151,15 @@ export default function AuthCallback() {
           <div className="text-center space-y-6">
             {/* Logo */}
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">H</span>
+              <span className="text-2xl font-bold text-foreground">H</span>
             </div>
 
             {status === 'loading' && (
               <>
                 <div className="space-y-4">
-                  <Loader2 className="w-8 h-8 mx-auto animate-spin text-blue-600" />
+                  <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary" />
                   <h1 className="text-xl font-semibold text-gray-900">Completing Authentication</h1>
-                  <p className="text-gray-600">Please wait while we sign you in...</p>
+                  <p className="text-muted-foreground">Please wait while we sign you in...</p>
                 </div>
               </>
             )}
@@ -171,7 +171,7 @@ export default function AuthCallback() {
                   <h1 className="text-xl font-semibold text-green-900">
                     Authentication Successful!
                   </h1>
-                  <p className="text-gray-600">{message}</p>
+                  <p className="text-muted-foreground">{message}</p>
                 </div>
               </>
             )}
@@ -181,10 +181,10 @@ export default function AuthCallback() {
                 <div className="space-y-4">
                   <AlertCircle className="w-8 h-8 mx-auto text-red-600" />
                   <h1 className="text-xl font-semibold text-red-900">Authentication Failed</h1>
-                  <p className="text-gray-600">{message}</p>
+                  <p className="text-muted-foreground">{message}</p>
                   <button
                     onClick={handleManualRedirect}
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="w-full px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Return to Home
                   </button>

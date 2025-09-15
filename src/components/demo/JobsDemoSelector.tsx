@@ -156,10 +156,10 @@ export default function JobsDemoSelector() {
           </div>
         </div>
 
-        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight">
           Experience HERA
         </h1>
-        <p className="text-xl text-slate-600 leading-relaxed">
+        <p className="text-xl text-muted-foreground leading-relaxed">
           Choose your industry and explore how HERA transforms business operations with our
           interactive demos
         </p>
@@ -191,7 +191,7 @@ export default function JobsDemoSelector() {
                   <div
                     className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${demo.gradient} flex items-center justify-center shadow-lg`}
                   >
-                    <Icon className="w-7 h-7 text-white" />
+                    <Icon className="w-7 h-7 text-foreground" />
                   </div>
                   <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium">
                     Live Demo
@@ -200,20 +200,20 @@ export default function JobsDemoSelector() {
 
                 {/* Content */}
                 <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-blue-900 transition-colors">
+                  <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-blue-900 transition-colors">
                     {demo.title}
                   </h3>
                   <p className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">
                     {demo.subtitle}
                   </p>
-                  <p className="text-slate-600 leading-relaxed">{demo.description}</p>
+                  <p className="text-muted-foreground leading-relaxed">{demo.description}</p>
                 </div>
 
                 {/* Features */}
                 <div className="mb-8">
                   <ul className="space-y-2">
                     {demo.features.map((feature, index) => (
-                      <li key={index} className="flex items-center text-sm text-slate-600">
+                      <li key={index} className="flex items-center text-sm text-muted-foreground">
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-3" />
                         {feature}
                       </li>
@@ -223,7 +223,7 @@ export default function JobsDemoSelector() {
 
                 {/* Action Button */}
                 <Button
-                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-white border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${
+                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-foreground border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${
                     isCurrentlyLoading ? 'cursor-wait' : ''
                   }`}
                   disabled={isLoading}
@@ -251,7 +251,7 @@ export default function JobsDemoSelector() {
         <p className="text-sm text-slate-500 mb-4">
           No registration required • Full feature access • Reset anytime
         </p>
-        <div className="flex items-center justify-center space-x-6 text-xs text-slate-400">
+        <div className="flex items-center justify-center space-x-6 text-xs text-muted-foreground">
           <div className="flex items-center">
             <Users className="w-4 h-4 mr-1" />
             Multi-user simulation

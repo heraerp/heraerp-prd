@@ -156,7 +156,7 @@ export function UniversalWorkflowTracker({
           <>
             <Badge
               style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
-              className="text-white"
+              className="text-foreground"
             >
               {getStatusIcon(currentStatus.entity_code)}
               <span className="ml-1">{currentStatus.entity_name}</span>
@@ -216,7 +216,7 @@ export function UniversalWorkflowTracker({
                 <div className="flex items-center gap-2">
                   <Badge
                     style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
-                    className="text-white"
+                    className="text-foreground"
                   >
                     {getStatusIcon(currentStatus.entity_code)}
                     <span className="ml-1">{currentStatus.entity_name}</span>

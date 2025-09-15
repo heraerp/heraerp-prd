@@ -254,7 +254,7 @@ export default function MCPHubPage() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-400 flex items-center justify-center shadow-xl">
-                <MessageSquare className="h-8 w-8 text-white" />
+                <MessageSquare className="h-8 w-8 text-foreground" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -301,7 +301,7 @@ export default function MCPHubPage() {
                             chat.gradient
                           )}
                         >
-                          <chat.icon className="h-5 w-5 text-white" />
+                          <chat.icon className="h-5 w-5 text-foreground" />
                         </div>
                         <div className="flex-1">
                           <h4 className="font-medium">{chat.title}</h4>
@@ -349,7 +349,7 @@ export default function MCPHubPage() {
                     </Badge>
                   )}
                   {chat.demo && (
-                    <Badge variant="outline" className="gap-1 border-blue-500 text-blue-600">
+                    <Badge variant="outline" className="gap-1 border-blue-500 text-primary">
                       <Sparkles className="h-3 w-3" />
                       Demo
                     </Badge>
@@ -364,7 +364,7 @@ export default function MCPHubPage() {
                         chat.gradient
                       )}
                     >
-                      <chat.icon className="h-7 w-7 text-white" />
+                      <chat.icon className="h-7 w-7 text-foreground" />
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-xl mb-1">{chat.title}</CardTitle>
@@ -390,7 +390,7 @@ export default function MCPHubPage() {
                   </CardDescription>
 
                   {chat.demo && (
-                    <div className="mb-3 text-xs text-blue-600 flex items-center gap-1">
+                    <div className="mb-3 text-xs text-primary flex items-center gap-1">
                       <Sparkles className="h-3 w-3" />
                       <span>Try our demo with real ice cream factory data</span>
                     </div>

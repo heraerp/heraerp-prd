@@ -88,7 +88,7 @@ export function OrganizationSidebar() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <div className="fixed left-0 top-0 h-full w-16 bg-white border-r flex flex-col items-center py-4 shadow-sm">
+    <div className="fixed left-0 top-0 h-full w-16 bg-background border-r flex flex-col items-center py-4 shadow-sm">
       {/* Back Button */}
       <TooltipProvider>
         <Tooltip>
@@ -111,7 +111,7 @@ export function OrganizationSidebar() {
       {/* Organization Icon */}
       <div className="mb-8">
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-          <Building2 className="w-6 h-6 text-white" />
+          <Building2 className="w-6 h-6 text-foreground" />
         </div>
       </div>
 
@@ -127,13 +127,13 @@ export function OrganizationSidebar() {
                     size="icon"
                     className={`relative ${
                       isActive(item.href)
-                        ? 'bg-blue-100 text-blue-600 hover:bg-blue-100'
-                        : 'hover:bg-gray-100'
+                        ? 'bg-blue-100 text-primary hover:bg-blue-100'
+                        : 'hover:bg-muted'
                     }`}
                   >
                     {item.icon}
                     {item.badge && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
                         {typeof item.badge === 'number' ? item.badge : '!'}
                       </span>
                     )}

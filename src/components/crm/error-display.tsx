@@ -112,7 +112,7 @@ export function ErrorDisplay({
                 ? 'text-red-600'
                 : errorMessage.type === 'warning'
                   ? 'text-yellow-600'
-                  : 'text-blue-600'
+                  : 'text-primary'
             }`}
           >
             {getIcon()}
@@ -172,9 +172,9 @@ export function ErrorDisplay({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-3 pt-3 border-t border-gray-200"
+                  className="mt-3 pt-3 border-t border-border"
                 >
-                  <div className="text-xs text-gray-600 space-y-2">
+                  <div className="text-xs text-muted-foreground space-y-2">
                     <div>
                       <strong>Error Code:</strong> {error.code}
                     </div>
@@ -195,7 +195,7 @@ export function ErrorDisplay({
                     {error.details && (
                       <div>
                         <strong>Details:</strong>
-                        <pre className="mt-1 p-2 bg-gray-50 rounded text-xs overflow-auto">
+                        <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-auto">
                           {JSON.stringify(error.details, null, 2)}
                         </pre>
                       </div>
@@ -212,7 +212,7 @@ export function ErrorDisplay({
               size="sm"
               variant="ghost"
               onClick={onDismiss}
-              className="h-6 w-6 p-0 hover:bg-gray-100"
+              className="h-6 w-6 p-0 hover:bg-muted"
             >
               <X className="h-3 w-3" />
             </Button>
@@ -255,7 +255,7 @@ export function ErrorToast({ error, onClose, duration = 5000 }: ErrorToastProps)
  */
 export function ErrorPage({ error, onRetry }: { error: CRMError; onRetry: () => void }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-muted flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
@@ -266,13 +266,13 @@ export function ErrorPage({ error, onRetry }: { error: CRMError; onRetry: () => 
         <CardContent className="space-y-4">
           <ErrorDisplay error={error} onRetry={onRetry} showDetails={true} />
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-muted-foreground">
             If this problem persists, please{' '}
-            <a href="mailto:support@heraerp.com" className="text-blue-600 hover:underline">
+            <a href="mailto:support@heraerp.com" className="text-primary hover:underline">
               contact support
             </a>{' '}
             or{' '}
-            <a href="/docs" className="text-blue-600 hover:underline inline-flex items-center">
+            <a href="/docs" className="text-primary hover:underline inline-flex items-center">
               view documentation
               <ExternalLink className="h-3 w-3 ml-1" />
             </a>
@@ -359,11 +359,11 @@ export function ErrorStatsDashboard() {
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-red-600">{stats.totalErrors}</div>
-            <div className="text-sm text-gray-600">Total Errors (24h)</div>
+            <div className="text-sm text-muted-foreground">Total Errors (24h)</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.recentErrors.length}</div>
-            <div className="text-sm text-gray-600">Recent Errors</div>
+            <div className="text-2xl font-bold text-primary">{stats.recentErrors.length}</div>
+            <div className="text-sm text-muted-foreground">Recent Errors</div>
           </div>
         </div>
 

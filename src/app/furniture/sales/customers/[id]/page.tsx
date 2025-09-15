@@ -216,15 +216,15 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         <div className="flex items-center space-x-4">
           <Link
             href="/furniture/sales/customers"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+            className="p-2 hover:bg-muted dark:hover:bg-muted rounded-md transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
               {customer.entity_name}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">{customer.entity_code}</p>
+            <p className="text-muted-foreground dark:text-muted-foreground">{customer.entity_code}</p>
           </div>
         </div>
 
@@ -232,7 +232,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           {!editMode ? (
             <button
               onClick={() => setEditMode(true)}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+              className="inline-flex items-center px-4 py-2 border border-border dark:border-border text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
             >
               <Edit2 className="h-4 w-4 mr-2" />
               Edit Customer
@@ -241,7 +241,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setEditMode(false)}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="inline-flex items-center px-4 py-2 border border-border dark:border-border text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600"
               >
                 <X className="h-4 w-4 mr-2" />
                 Cancel
@@ -249,7 +249,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -282,18 +282,18 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                <Package className="h-6 w-6 text-white" />
+                <Package className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Total Orders
                   </dt>
-                  <dd className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <dd className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                     {metrics.orderCount}
                   </dd>
                 </dl>
@@ -302,18 +302,18 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                <TrendingUp className="h-6 w-6 text-white" />
+                <TrendingUp className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Total Revenue
                   </dt>
-                  <dd className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <dd className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                     {formatCurrency(metrics.totalRevenue)}
                   </dd>
                 </dl>
@@ -322,18 +322,18 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-amber-500 rounded-md p-3">
-                <CreditCard className="h-6 w-6 text-white" />
+                <CreditCard className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Avg Order Value
                   </dt>
-                  <dd className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <dd className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                     {formatCurrency(metrics.avgOrderValue)}
                   </dd>
                 </dl>
@@ -342,18 +342,18 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-purple-500 rounded-md p-3">
-                <Calendar className="h-6 w-6 text-white" />
+                <Calendar className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Last Order
                   </dt>
-                  <dd className="text-sm font-semibold text-gray-900 dark:text-white">
+                  <dd className="text-sm font-semibold text-gray-900 dark:text-foreground">
                     {metrics.lastOrderDate
                       ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy')
                       : 'No orders yet'}
@@ -366,14 +366,14 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
+      <div className="border-b border-border dark:border-border">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('details')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'details'
                 ? 'border-amber-500 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:text-muted-foreground dark:hover:text-gray-300'
             }`}
           >
             Customer Details
@@ -383,7 +383,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'transactions'
                 ? 'border-amber-500 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border dark:text-muted-foreground dark:hover:text-gray-300'
             }`}
           >
             Order History
@@ -396,17 +396,17 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {/* Contact Information */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <Phone className="h-5 w-5 text-gray-400 mr-2" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <Phone className="h-5 w-5 text-muted-foreground mr-2" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">
                   Contact Information
                 </h3>
               </div>
 
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">Email</dt>
                   <dd className="mt-1">
                     {editMode ? (
                       <input
@@ -414,10 +414,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.email || '-'}
                       </span>
                     )}
@@ -425,7 +425,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</dt>
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">Phone</dt>
                   <dd className="mt-1">
                     {editMode ? (
                       <input
@@ -433,10 +433,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.phone || '-'}
                       </span>
                     )}
@@ -444,7 +444,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Mobile</dt>
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">Mobile</dt>
                   <dd className="mt-1">
                     {editMode ? (
                       <input
@@ -452,10 +452,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.mobile || '-'}
                       </span>
                     )}
@@ -463,7 +463,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                     Contact Person
                   </dt>
                   <dd className="mt-1">
@@ -473,10 +473,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="contact_person"
                         value={formData.contact_person}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.contact_person || '-'}
                       </span>
                     )}
@@ -486,10 +486,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             </div>
 
             {/* Address */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <MapPin className="h-5 w-5 text-gray-400 mr-2" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Address</h3>
+                <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">Address</h3>
               </div>
 
               {editMode ? (
@@ -503,7 +503,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                       value={formData.address}
                       onChange={handleInputChange}
                       rows={2}
-                      className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                      className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -516,7 +516,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="city"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     </div>
                     <div>
@@ -528,7 +528,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="state"
                         value={formData.state}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     </div>
                   </div>
@@ -541,12 +541,12 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                       name="pincode"
                       value={formData.pincode}
                       onChange={handleInputChange}
-                      className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                      className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                     />
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-gray-900 dark:text-white">
+                <div className="text-sm text-gray-900 dark:text-foreground">
                   {formData.address && <p>{formData.address}</p>}
                   {(formData.city || formData.state || formData.pincode) && (
                     <p className="mt-1">
@@ -554,7 +554,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                     </p>
                   )}
                   {!formData.address && !formData.city && !formData.state && !formData.pincode && (
-                    <p className="text-gray-500 dark:text-gray-400">No address provided</p>
+                    <p className="text-muted-foreground dark:text-muted-foreground">No address provided</p>
                   )}
                 </div>
               )}
@@ -564,17 +564,17 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Business Information */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <CreditCard className="h-5 w-5 text-gray-400 mr-2" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <CreditCard className="h-5 w-5 text-muted-foreground mr-2" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">
                   Business Information
                 </h3>
               </div>
 
               <dl className="space-y-3">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">GSTIN</dt>
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">GSTIN</dt>
                   <dd className="mt-1">
                     {editMode ? (
                       <input
@@ -582,10 +582,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="gstin"
                         value={formData.gstin}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.gstin || '-'}
                       </span>
                     )}
@@ -593,7 +593,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                     PAN Number
                   </dt>
                   <dd className="mt-1">
@@ -603,10 +603,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="pan_number"
                         value={formData.pan_number}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.pan_number || '-'}
                       </span>
                     )}
@@ -614,7 +614,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                     Credit Limit
                   </dt>
                   <dd className="mt-1">
@@ -626,10 +626,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         onChange={handleInputChange}
                         min="0"
                         step="1000"
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       />
                     ) : (
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      <span className="text-sm font-medium text-gray-900 dark:text-foreground">
                         {formData.credit_limit
                           ? formatCurrency(Number(formData.credit_limit))
                           : '-'}
@@ -639,7 +639,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                     Payment Terms
                   </dt>
                   <dd className="mt-1">
@@ -648,7 +648,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         name="payment_terms"
                         value={formData.payment_terms}
                         onChange={handleInputChange}
-                        className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                       >
                         <option value="Cash">Cash</option>
                         <option value="Net 15">Net 15</option>
@@ -657,7 +657,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         <option value="Net 60">Net 60</option>
                       </select>
                     ) : (
-                      <span className="text-sm text-gray-900 dark:text-white">
+                      <span className="text-sm text-gray-900 dark:text-foreground">
                         {formData.payment_terms || '-'}
                       </span>
                     )}
@@ -667,10 +667,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             </div>
 
             {/* Notes */}
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div className="bg-background dark:bg-muted shadow rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <FileText className="h-5 w-5 text-gray-400 mr-2" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Notes</h3>
+                <FileText className="h-5 w-5 text-muted-foreground mr-2" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">Notes</h3>
               </div>
 
               {editMode ? (
@@ -679,13 +679,13 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={4}
-                  className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
+                  className="block w-full px-3 py-2 border border-border dark:border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-muted-foreground/10 dark:text-foreground"
                   placeholder="Any additional information..."
                 />
               ) : (
-                <p className="text-sm text-gray-900 dark:text-white">
+                <p className="text-sm text-gray-900 dark:text-foreground">
                   {formData.notes || (
-                    <span className="text-gray-500 dark:text-gray-400">No notes added</span>
+                    <span className="text-muted-foreground dark:text-muted-foreground">No notes added</span>
                   )}
                 </p>
               )}
@@ -695,52 +695,52 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       )}
 
       {activeTab === 'transactions' && (
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="bg-background dark:bg-muted shadow rounded-lg">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-900">
+              <thead className="bg-muted dark:bg-background">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                     Order Number
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-background dark:bg-muted divide-y divide-gray-200 dark:divide-gray-700">
                 {transactions?.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
-                      className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                      className="px-6 py-4 text-center text-muted-foreground dark:text-muted-foreground"
                     >
                       No orders yet
                     </td>
                   </tr>
                 ) : (
                   transactions?.map(transaction => (
-                    <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    <tr key={transaction.id} className="hover:bg-muted dark:hover:bg-muted-foreground/10">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-foreground">
                         {transaction.transaction_code}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground dark:text-muted-foreground">
                         {format(new Date(transaction.transaction_date), 'MMM dd, yyyy')}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {transaction.transaction_type.replace('_', ' ').charAt(0).toUpperCase() +
                           transaction.transaction_type.slice(1).replace('_', ' ')}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-foreground">
                         {formatCurrency(transaction.total_amount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

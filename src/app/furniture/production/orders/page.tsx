@@ -121,14 +121,14 @@ export default function ProductionOrdersPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Production Orders</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">Production Orders</h1>
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Manage manufacturing orders and track production
           </p>
         </div>
         <Link
           href="/furniture/production/orders/new"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
         >
           <Plus className="mr-2 h-4 w-4" />
           New Production Order
@@ -137,19 +137,19 @@ export default function ProductionOrdersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                <Package className="h-6 w-6 text-white" />
+                <Package className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Total Orders
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.total}
                     </div>
                   </dd>
@@ -159,19 +159,19 @@ export default function ProductionOrdersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                <Clock className="h-6 w-6 text-white" />
+                <Clock className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Pending
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.pending}
                     </div>
                   </dd>
@@ -181,19 +181,19 @@ export default function ProductionOrdersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                <Package className="h-6 w-6 text-white" />
+                <Package className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     In Progress
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.inProgress}
                     </div>
                   </dd>
@@ -203,19 +203,19 @@ export default function ProductionOrdersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+        <div className="bg-background dark:bg-muted overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                <CheckCircle className="h-6 w-6 text-white" />
+                <CheckCircle className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground truncate">
                     Completed
                   </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-foreground">
                       {stats.completed}
                     </div>
                   </dd>
@@ -227,22 +227,22 @@ export default function ProductionOrdersPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-background dark:bg-muted shadow rounded-lg">
+        <div className="p-4 border-b border-border dark:border-border">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-border rounded-md leading-5 bg-background dark:bg-muted-foreground/10 dark:border-border placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 placeholder="Search orders..."
               />
             </div>
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+            <button className="inline-flex items-center px-4 py-2 border border-border dark:border-border text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-background dark:bg-muted-foreground/10 hover:text-muted-foreground focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-muted transition ease-in-out duration-150">
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </button>
@@ -252,24 +252,24 @@ export default function ProductionOrdersPage() {
         {/* Orders Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+            <thead className="bg-muted dark:bg-background">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Order Number
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Items
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
                 <th className="relative px-6 py-3">
@@ -277,7 +277,7 @@ export default function ProductionOrdersPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-background dark:bg-muted divide-y divide-gray-200 dark:divide-gray-700">
               {ordersLoading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 text-center">
@@ -288,7 +288,7 @@ export default function ProductionOrdersPage() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                    className="px-6 py-4 text-center text-muted-foreground dark:text-muted-foreground"
                   >
                     No production orders found. Create your first order to get started.
                   </td>
@@ -297,29 +297,29 @@ export default function ProductionOrdersPage() {
                 productionOrders?.map(order => {
                   const items = getOrderItems(order.id)
                   return (
-                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={order.id} className="hover:bg-muted dark:hover:bg-muted-foreground/10">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900 dark:text-foreground">
                           {order.transaction_code}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-gray-900 dark:text-foreground">
                           {getCustomerName(order.from_entity_id || '')}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {format(new Date(order.transaction_date), 'MMM dd, yyyy')}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-gray-900 dark:text-foreground">
                           {items.length} items
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900 dark:text-foreground">
                           {formatCurrency(order.total_amount)}
                         </div>
                       </td>
@@ -347,44 +347,44 @@ export default function ProductionOrdersPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           href="/furniture/production/tracking"
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+          className="bg-background dark:bg-muted p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">
                 Track Production
               </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">
                 Monitor order progress
               </p>
             </div>
-            <ArrowRight className="h-5 w-5 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground" />
           </div>
         </Link>
 
         <Link
           href="/furniture/production/planning"
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+          className="bg-background dark:bg-muted p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Planning</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Schedule production</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">Planning</h3>
+              <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">Schedule production</p>
             </div>
-            <ArrowRight className="h-5 w-5 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground" />
           </div>
         </Link>
 
         <Link
           href="/furniture/inventory"
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+          className="bg-background dark:bg-muted p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Check Inventory</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">View material stock</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">Check Inventory</h3>
+              <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">View material stock</p>
             </div>
-            <ArrowRight className="h-5 w-5 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground" />
           </div>
         </Link>
       </div>

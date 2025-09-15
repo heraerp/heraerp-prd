@@ -48,7 +48,7 @@ export function ProductionMetricsCards({ stats, industryConfig }: ProductionMetr
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Active Orders */}
-      <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+      <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-blue-500/10 rounded-xl">
             <Factory className="h-6 w-6 text-blue-500" />
@@ -58,14 +58,14 @@ export function ProductionMetricsCards({ stats, industryConfig }: ProductionMetr
           </Badge>
         </div>
         <div>
-          <p className="text-sm text-gray-400 mb-1">Active Orders</p>
-          <p className="text-3xl font-bold text-white">{stats.activeOrders}</p>
-          <p className="text-xs text-gray-500 mt-2">In production now</p>
+          <p className="text-sm text-muted-foreground mb-1">Active Orders</p>
+          <p className="text-3xl font-bold text-foreground">{stats.activeOrders}</p>
+          <p className="text-xs text-muted-foreground mt-2">In production now</p>
         </div>
       </Card>
 
       {/* Planned Units */}
-      <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+      <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-purple-500/10 rounded-xl">
             <Package className="h-6 w-6 text-purple-500" />
@@ -73,14 +73,14 @@ export function ProductionMetricsCards({ stats, industryConfig }: ProductionMetr
           <ArrowUp className="h-4 w-4 text-green-500" />
         </div>
         <div>
-          <p className="text-sm text-gray-400 mb-1">Planned Units</p>
-          <p className="text-3xl font-bold text-white">{stats.plannedQuantity}</p>
-          <p className="text-xs text-gray-500 mt-2">Total to produce</p>
+          <p className="text-sm text-muted-foreground mb-1">Planned Units</p>
+          <p className="text-3xl font-bold text-foreground">{stats.plannedQuantity}</p>
+          <p className="text-xs text-muted-foreground mt-2">Total to produce</p>
         </div>
       </Card>
 
       {/* Completed Today */}
-      <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+      <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-green-500/10 rounded-xl">
             <CheckCircle className="h-6 w-6 text-green-500" />
@@ -90,14 +90,14 @@ export function ProductionMetricsCards({ stats, industryConfig }: ProductionMetr
           </Badge>
         </div>
         <div>
-          <p className="text-sm text-gray-400 mb-1">Completed Today</p>
-          <p className="text-3xl font-bold text-white">{stats.completedToday}</p>
-          <p className="text-xs text-gray-500 mt-2">Units finished</p>
+          <p className="text-sm text-muted-foreground mb-1">Completed Today</p>
+          <p className="text-3xl font-bold text-foreground">{stats.completedToday}</p>
+          <p className="text-xs text-muted-foreground mt-2">Units finished</p>
         </div>
       </Card>
 
       {/* Work Center Utilization */}
-      <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+      <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-amber-500/10 rounded-xl">
             <Gauge className="h-6 w-6 text-amber-500" />
@@ -105,9 +105,9 @@ export function ProductionMetricsCards({ stats, industryConfig }: ProductionMetr
           <Activity className="h-4 w-4 text-amber-400" />
         </div>
         <div>
-          <p className="text-sm text-gray-400 mb-1">Utilization</p>
-          <p className="text-3xl font-bold text-white">{stats.workCenterUtilization}%</p>
-          <p className="text-xs text-gray-500 mt-2">Work center capacity</p>
+          <p className="text-sm text-muted-foreground mb-1">Utilization</p>
+          <p className="text-3xl font-bold text-foreground">{stats.workCenterUtilization}%</p>
+          <p className="text-xs text-muted-foreground mt-2">Work center capacity</p>
         </div>
       </Card>
     </div>
@@ -148,7 +148,7 @@ export function ProductionOrderCard({
       case 'STATUS-CANCELLED':
         return 'bg-red-500/10 text-red-400'
       default:
-        return 'bg-gray-500/10 text-gray-400'
+        return 'bg-gray-500/10 text-muted-foreground'
     }
   }
 
@@ -157,16 +157,16 @@ export function ProductionOrderCard({
   }
 
   return (
-    <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50 hover:bg-gray-900/70 transition-colors">
+    <div className="p-4 bg-background/50 rounded-lg border border-border/50 hover:bg-background/70 transition-colors">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="font-semibold text-white">{order.transaction_code}</p>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="font-semibold text-foreground">{order.transaction_code}</p>
+              <p className="text-sm text-muted-foreground mt-1">
                 {product?.entity_name || 'Unknown Product'} - {order.total_amount} units
               </p>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Work Center: {workCenter?.entity_name || 'Not assigned'}
               </p>
             </div>
@@ -175,15 +175,15 @@ export function ProductionOrderCard({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-400">Progress</span>
+              <span className="text-muted-foreground">Progress</span>
               <span className="text-gray-300">
                 {progress.completedQty} / {order.total_amount} units
               </span>
             </div>
-            <Progress value={progress.progress} className="h-2 bg-gray-700" />
+            <Progress value={progress.progress} className="h-2 bg-muted-foreground/10" />
           </div>
 
-          <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               Start:{' '}
@@ -266,11 +266,11 @@ export function WorkCenterGrid({
           : null
 
         return (
-          <Card key={center.id} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card key={center.id} className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="font-semibold text-white">{center.entity_name}</h3>
-                <p className="text-sm text-gray-400">
+                <h3 className="font-semibold text-foreground">{center.entity_name}</h3>
+                <p className="text-sm text-muted-foreground">
                   {(center.metadata as any)?.location || 'Shop Floor'}
                 </p>
 
@@ -283,7 +283,7 @@ export function WorkCenterGrid({
               </div>
               <Badge
                 className={
-                  activeOrder ? 'bg-green-500/10 text-green-400' : 'bg-gray-500/10 text-gray-400'
+                  activeOrder ? 'bg-green-500/10 text-green-400' : 'bg-gray-500/10 text-muted-foreground'
                 }
               >
                 {activeOrder ? 'Running' : 'Idle'}
@@ -293,23 +293,23 @@ export function WorkCenterGrid({
             {activeOrder && progress ? (
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium text-white">{activeOrder.transaction_code}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-sm font-medium text-foreground">{activeOrder.transaction_code}</p>
+                  <p className="text-xs text-muted-foreground">
                     {product?.entity_name || 'Unknown Product'}
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-400">Progress</span>
-                    <span className="text-white">{progress.progress}%</span>
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="text-foreground">{progress.progress}%</span>
                   </div>
-                  <Progress value={progress.progress} className="h-2 bg-gray-700" />
+                  <Progress value={progress.progress} className="h-2 bg-muted-foreground/10" />
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Current Operation</span>
-                  <span className="text-white">
+                  <span className="text-muted-foreground">Current Operation</span>
+                  <span className="text-foreground">
                     {progress.activeOperation?.metadata?.operation || 'Setup'}
                   </span>
                 </div>
@@ -327,8 +327,8 @@ export function WorkCenterGrid({
               </div>
             ) : (
               <div className="text-center py-8">
-                <Factory className="h-12 w-12 mx-auto text-gray-600 mb-2" />
-                <p className="text-sm text-gray-500">No active order</p>
+                <Factory className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground">No active order</p>
                 <Link href={`${baseUrl}/orders/new`}>
                   <Button size="sm" variant="outline" className="mt-2">
                     <Play className="h-3 w-3 mr-1" />
@@ -362,7 +362,7 @@ export function LiveStatusBadge({ isActive, label = 'LIVE' }: LiveStatusBadgePro
     )
   }
   return (
-    <Badge variant="secondary" className="bg-gray-500/10 text-gray-400">
+    <Badge variant="secondary" className="bg-gray-500/10 text-muted-foreground">
       OFFLINE
     </Badge>
   )
@@ -398,7 +398,7 @@ export function ProductionActivityFeed({ activities, maxItems = 5 }: ActivityFee
       case 'alert':
         return <AlertCircle className="h-4 w-4 text-amber-500" />
       default:
-        return <Activity className="h-4 w-4 text-gray-500" />
+        return <Activity className="h-4 w-4 text-muted-foreground" />
     }
   }
 
@@ -425,8 +425,8 @@ export function ProductionActivityFeed({ activities, maxItems = 5 }: ActivityFee
             {getActivityIcon(activity.type)}
           </div>
           <div>
-            <p className="text-white">{activity.description}</p>
-            <p className="text-xs text-gray-500">
+            <p className="text-foreground">{activity.description}</p>
+            <p className="text-xs text-muted-foreground">
               {activity.details} • {activity.timestamp}
             </p>
           </div>
@@ -434,7 +434,7 @@ export function ProductionActivityFeed({ activities, maxItems = 5 }: ActivityFee
       ))}
 
       {activities.length === 0 && (
-        <div className="text-center text-gray-400 py-8">No recent activities</div>
+        <div className="text-center text-muted-foreground py-8">No recent activities</div>
       )}
     </div>
   )
@@ -468,12 +468,12 @@ export function ProductionQuickActions({
 
         return (
           <Link key={action.href} href={`${baseUrl}${action.href}`}>
-            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
+            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30 hover:bg-muted/50">
               <div className="flex flex-col items-center text-center gap-2">
                 <Icon className={cn('h-8 w-8', action.color)} />
                 <span className="text-sm font-medium text-gray-300">{action.title}</span>
                 {action.description && (
-                  <span className="text-xs text-gray-500">{action.description}</span>
+                  <span className="text-xs text-muted-foreground">{action.description}</span>
                 )}
               </div>
             </Card>
@@ -509,7 +509,7 @@ export function ProductionPlanningMetrics({ metrics }: PlanningMetricsProps) {
         const Icon = metric.icon
 
         return (
-          <Card key={index} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card key={index} className="p-6 bg-muted/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-4">
               <Icon className={cn('h-8 w-8', metric.color)} />
               {metric.badge && (
@@ -522,8 +522,8 @@ export function ProductionPlanningMetrics({ metrics }: PlanningMetricsProps) {
               )}
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{metric.value}</p>
-              <p className="text-sm text-gray-400 mt-1">{metric.subtitle}</p>
+              <p className="text-2xl font-bold text-foreground">{metric.value}</p>
+              <p className="text-sm text-muted-foreground mt-1">{metric.subtitle}</p>
             </div>
           </Card>
         )

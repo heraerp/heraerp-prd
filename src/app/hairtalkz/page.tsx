@@ -120,22 +120,22 @@ function HairTalkzDashboardContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-50 via-dusty-rose-50 to-champagne-50">
       {/* Hair Talkz Header */}
-      <div className="bg-gradient-to-r from-sage-500 via-dusty-rose-400 to-champagne-500 text-white py-8 px-6">
+      <div className="bg-gradient-to-r from-sage-500 via-dusty-rose-400 to-champagne-500 text-foreground py-8 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-background/20 backdrop-blur-sm rounded-full flex items-center justify-center">
                 <span className="text-3xl">💇‍♀️</span>
               </div>
               <div>
                 <h1 className="text-3xl font-bold">{organizationName}</h1>
-                <p className="text-white/90">Premium Hair & Beauty Salon • Dubai, UAE</p>
+                <p className="text-foreground/90">Premium Hair & Beauty Salon • Dubai, UAE</p>
                 <div className="flex items-center space-x-4 mt-2">
-                  <Badge className="bg-white/20 text-white border-white/30">
+                  <Badge className="bg-background/20 text-foreground border-white/30">
                     <Award className="w-3 h-3 mr-1" />
                     5-Star Rated
                   </Badge>
-                  <Badge className="bg-white/20 text-white border-white/30">
+                  <Badge className="bg-background/20 text-foreground border-white/30">
                     <Heart className="w-3 h-3 mr-1" />
                     AI-Powered
                   </Badge>
@@ -144,8 +144,8 @@ function HairTalkzDashboardContent() {
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold">Dubai Marina</div>
-              <div className="text-white/90">Open: 9:00 AM - 9:00 PM</div>
-              <div className="text-sm text-white/80 mt-1">+971 4 123 4567</div>
+              <div className="text-foreground/90">Open: 9:00 AM - 9:00 PM</div>
+              <div className="text-sm text-foreground/80 mt-1">+971 4 123 4567</div>
             </div>
           </div>
         </div>
@@ -159,10 +159,10 @@ function HairTalkzDashboardContent() {
             return (
               <Card
                 key={stat.label}
-                className="overflow-hidden border-white/20 bg-white/70 backdrop-blur-sm"
+                className="overflow-hidden border-border/20 bg-background/70 backdrop-blur-sm"
               >
                 <CardContent className="p-0">
-                  <div className={`bg-gradient-to-r ${stat.gradient} p-4 text-white`}>
+                  <div className={`bg-gradient-to-r ${stat.gradient} p-4 text-foreground`}>
                     <div className="flex items-center justify-between">
                       <Icon className="h-8 w-8" />
                       <div className="text-right">
@@ -183,7 +183,7 @@ function HairTalkzDashboardContent() {
         {/* Main Dashboard Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Today's Schedule */}
-          <Card className="bg-white/70 backdrop-blur-sm border-white/20">
+          <Card className="bg-background/70 backdrop-blur-sm border-border/20">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Clock className="h-5 w-5 text-sage-600" />
@@ -208,14 +208,14 @@ function HairTalkzDashboardContent() {
                   <div className="text-sm font-mono text-sage-700 w-16">{appointment.time}</div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-800">{appointment.client}</div>
-                    <div className="text-sm text-gray-600">{appointment.service}</div>
+                    <div className="text-sm text-muted-foreground">{appointment.service}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-gray-600">{appointment.duration}</div>
+                    <div className="text-sm text-muted-foreground">{appointment.duration}</div>
                     <Badge
                       variant={appointment.status === 'premium' ? 'default' : 'secondary'}
                       className={
-                        appointment.status === 'premium' ? 'bg-champagne-500 text-white' : ''
+                        appointment.status === 'premium' ? 'bg-champagne-500 text-foreground' : ''
                       }
                     >
                       {appointment.status}
@@ -232,7 +232,7 @@ function HairTalkzDashboardContent() {
           </Card>
 
           {/* Quick Actions */}
-          <Card className="bg-white/70 backdrop-blur-sm border-white/20">
+          <Card className="bg-background/70 backdrop-blur-sm border-border/20">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Sparkles className="h-5 w-5 text-champagne-600" />
@@ -263,7 +263,7 @@ function HairTalkzDashboardContent() {
               <div className="mt-6 p-4 bg-gradient-to-r from-sage-100 via-dusty-rose-100 to-champagne-100 rounded-lg border border-sage-200">
                 <div className="flex items-start space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-sage-500 to-champagne-500 rounded-full flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-white" />
+                    <Sparkles className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-sage-800">Need to setup a new salon?</h3>
@@ -288,7 +288,7 @@ function HairTalkzDashboardContent() {
         </div>
 
         {/* Feature Preview */}
-        <Card className="bg-gradient-to-r from-white/80 to-white/60 backdrop-blur-sm border-white/20">
+        <Card className="bg-gradient-to-r from-white/80 to-white/60 backdrop-blur-sm border-border/20">
           <CardHeader>
             <CardTitle className="text-center text-2xl bg-gradient-to-r from-sage-600 via-dusty-rose-600 to-champagne-600 bg-clip-text text-transparent">
               HERA AI + ERP + Modern Fusion
@@ -301,7 +301,7 @@ function HairTalkzDashboardContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="space-y-3">
                 <div className="w-16 h-16 bg-gradient-to-r from-sage-400 to-sage-600 rounded-full flex items-center justify-center mx-auto">
-                  <Sparkles className="h-8 w-8 text-white" />
+                  <Sparkles className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="font-semibold text-sage-800">AI-Powered</h3>
                 <p className="text-sm text-sage-600">
@@ -311,7 +311,7 @@ function HairTalkzDashboardContent() {
               </div>
               <div className="space-y-3">
                 <div className="w-16 h-16 bg-gradient-to-r from-dusty-rose-400 to-dusty-rose-600 rounded-full flex items-center justify-center mx-auto">
-                  <TrendingUp className="h-8 w-8 text-white" />
+                  <TrendingUp className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="font-semibold text-dusty-rose-800">Enterprise ERP</h3>
                 <p className="text-sm text-dusty-rose-600">
@@ -320,7 +320,7 @@ function HairTalkzDashboardContent() {
               </div>
               <div className="space-y-3">
                 <div className="w-16 h-16 bg-gradient-to-r from-champagne-400 to-champagne-600 rounded-full flex items-center justify-center mx-auto">
-                  <Award className="h-8 w-8 text-white" />
+                  <Award className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="font-semibold text-champagne-800">Modern Design</h3>
                 <p className="text-sm text-champagne-600">

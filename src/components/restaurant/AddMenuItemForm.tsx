@@ -87,7 +87,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
       case 'spicy':
         return 'bg-red-100 text-red-800 border-red-300'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-muted text-gray-800 border-border'
     }
   }
 
@@ -184,8 +184,8 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         <div className="p-6 overflow-y-auto max-h-[90vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -225,7 +225,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     Price ($) *
                   </Label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
                       type="number"
                       step="0.01"
@@ -241,7 +241,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     Prep Time (minutes) *
                   </Label>
                   <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
                       type="number"
                       placeholder="15"
@@ -261,7 +261,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   placeholder="Describe your menu item..."
                   value={formData.description}
                   onChange={e => handleInputChange('description', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-sm resize-none"
                   rows={3}
                 />
               </div>
@@ -278,7 +278,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   <select
                     value={formData.category}
                     onChange={e => handleInputChange('category', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-sm"
                   >
                     <option value="">Select a category...</option>
                     {predefinedCategories.map(category => (
@@ -317,7 +317,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     className={`p-2 rounded-lg border text-sm font-medium transition-colors ${
                       dietaryTags.includes(tag)
                         ? getDietaryTagColor(tag)
-                        : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                        : 'bg-muted text-gray-700 border-border hover:bg-muted'
                     }`}
                   >
                     {formatDietaryTag(tag)}
@@ -336,7 +336,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                         {formatDietaryTag(tag)}
                         <button
                           onClick={() => toggleDietaryTag(tag)}
-                          className="ml-1 hover:bg-black hover:bg-opacity-20 rounded-full p-0.5"
+                          className="ml-1 hover:bg-background hover:bg-opacity-20 rounded-full p-0.5"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -358,7 +358,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   placeholder="List main ingredients (e.g., Tomato sauce, fresh mozzarella, basil, olive oil)"
                   value={formData.ingredients}
                   onChange={e => handleInputChange('ingredients', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-sm resize-none"
                   rows={3}
                 />
               </div>
@@ -366,17 +366,17 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
             {/* Preview */}
             {formData.entity_name && (
-              <Card className="p-4 bg-gray-50">
+              <Card className="p-4 bg-muted">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
-                <div className="bg-white p-4 rounded-lg border">
+                <div className="bg-background p-4 rounded-lg border">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-semibold text-gray-900">{formData.entity_name}</h4>
                     <span className="text-lg font-bold text-green-600">
                       ${formData.price || '0.00'}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{formData.description}</p>
-                  <div className="flex items-center gap-4 mb-2 text-xs text-gray-500">
+                  <p className="text-sm text-muted-foreground mb-2">{formData.description}</p>
+                  <div className="flex items-center gap-4 mb-2 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>{formData.prep_time || '0'} min</span>
@@ -406,7 +406,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
             )}
 
             {/* Submit Button */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <div className="flex gap-3 pt-4 border-t border-border">
               <Button variant="outline" onClick={onClose} className="flex-1">
                 Cancel
               </Button>

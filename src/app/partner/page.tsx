@@ -18,8 +18,8 @@ export default function PartnerExperienceHub() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto mb-8"></div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Upgrading to Franchise Model</h1>
-        <p className="text-slate-600">Experience the new HERA Franchise opportunity...</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Upgrading to Franchise Model</h1>
+        <p className="text-muted-foreground">Experience the new HERA Franchise opportunity...</p>
       </div>
     </div>
   )
@@ -130,7 +130,7 @@ function OldPartnerExperienceHub() {
               <span className="text-emerald-600">Sell Better.</span>
             </h1>
 
-            <p className="text-2xl text-slate-600 max-w-4xl mx-auto mb-12 leading-relaxed">
+            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto mb-12 leading-relaxed">
               Join the partners who are building real businesses, not just billable hours.
               <br />
               <strong className="text-emerald-600">50% revenue share, forever.</strong>
@@ -140,26 +140,26 @@ function OldPartnerExperienceHub() {
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
               <div className="text-center">
                 <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <DollarSign className="h-8 w-8 text-white" />
+                  <DollarSign className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">50% Forever</h3>
-                <p className="text-slate-600">Not 5%, not 15%. Half of everything. Always.</p>
+                <p className="text-muted-foreground">Not 5%, not 15%. Half of everything. Always.</p>
               </div>
 
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Clock className="h-8 w-8 text-white" />
+                  <Clock className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">48-Hour Onboarding</h3>
-                <p className="text-slate-600">Not 6 months. Not 6 weeks. 48 hours.</p>
+                <p className="text-muted-foreground">Not 6 months. Not 6 weeks. 48 hours.</p>
               </div>
 
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Target className="h-8 w-8 text-white" />
+                  <Target className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">No Quotas</h3>
-                <p className="text-slate-600">No politics. No tiers. Just results.</p>
+                <p className="text-muted-foreground">No politics. No tiers. Just results.</p>
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ function OldPartnerExperienceHub() {
           className={`text-center mb-16 transition-all duration-1000 delay-300 ${isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <h2 className="text-4xl font-bold mb-4">Your Journey to Success</h2>
-          <p className="text-xl text-slate-600">Five steps. Unlimited potential.</p>
+          <p className="text-xl text-muted-foreground">Five steps. Unlimited potential.</p>
         </div>
 
         {/* Journey Steps */}
@@ -201,18 +201,18 @@ function OldPartnerExperienceHub() {
                         }`}
                       >
                         {getStepStatus(index) === 'completed' ? (
-                          <CheckCircle className="h-8 w-8 text-white" />
+                          <CheckCircle className="h-8 w-8 text-foreground" />
                         ) : (
                           <step.icon
                             className={`h-8 w-8 transition-colors ${
                               getStepStatus(index) === 'current'
-                                ? 'text-white'
-                                : 'text-slate-600 group-hover:text-emerald-600'
+                                ? 'text-foreground'
+                                : 'text-muted-foreground group-hover:text-emerald-600'
                             }`}
                           />
                         )}
                       </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-background text-foreground rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
                     </div>
@@ -225,7 +225,7 @@ function OldPartnerExperienceHub() {
                           {step.duration}
                         </Badge>
                       </div>
-                      <p className="text-slate-600 text-lg mb-3">{step.description}</p>
+                      <p className="text-muted-foreground text-lg mb-3">{step.description}</p>
                       <div className="flex items-center gap-4">
                         <span className="text-sm font-semibold text-emerald-600">
                           Value: {step.value}
@@ -243,7 +243,7 @@ function OldPartnerExperienceHub() {
                           ? 'bg-emerald-500 hover:bg-emerald-600'
                           : getStepStatus(index) === 'current'
                             ? 'bg-blue-500 hover:bg-blue-600'
-                            : 'bg-slate-900 hover:bg-emerald-600'
+                            : 'bg-background hover:bg-emerald-600'
                       }`}
                     >
                       {step.action}
@@ -278,7 +278,7 @@ function OldPartnerExperienceHub() {
             <div className="mt-12">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white px-12 py-4 text-lg font-semibold rounded-2xl shadow-xl"
+                className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-foreground px-12 py-4 text-lg font-semibold rounded-2xl shadow-xl"
                 onClick={() => router.push('/partner-system/register')}
               >
                 <Globe className="h-6 w-6 mr-3" />
@@ -292,7 +292,7 @@ function OldPartnerExperienceHub() {
 
       {/* Meta Breakthrough Badge */}
       <div className="text-center py-12">
-        <Badge className="bg-gradient-to-r from-slate-900 to-emerald-600 text-white px-6 py-3 text-lg">
+        <Badge className="bg-gradient-to-r from-slate-900 to-emerald-600 text-foreground px-6 py-3 text-lg">
           🚀 Seamless Experience Powered by HERA's Universal Architecture
         </Badge>
       </div>

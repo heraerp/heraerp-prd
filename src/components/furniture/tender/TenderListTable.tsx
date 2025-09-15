@@ -192,7 +192,7 @@ export default function TenderListTable({
       {/* Search and Filter Bar */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
           <Input
             value={searchQuery}
             onChange={e => {
@@ -200,12 +200,12 @@ export default function TenderListTable({
               onSearch?.(e.target.value)
             }}
             placeholder="Search by code, title, or department..."
-            className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400"
+            className="pl-10 bg-muted/50 border-border text-foreground placeholder-gray-400"
           />
         </div>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-[200px] bg-gray-800/50 border-gray-700 text-white">
+          <SelectTrigger className="w-full md:w-[200px] bg-muted/50 border-border text-foreground">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -219,7 +219,7 @@ export default function TenderListTable({
         </Select>
 
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full md:w-[200px] bg-gray-800/50 border-gray-700 text-white">
+          <SelectTrigger className="w-full md:w-[200px] bg-muted/50 border-border text-foreground">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -236,33 +236,33 @@ export default function TenderListTable({
       </div>
 
       {/* Tender List Table */}
-      <Card className="bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+      <Card className="bg-muted/70 backdrop-blur-sm border-border/50">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-700/50">
-                <TableHead className="text-gray-400">Tender Code</TableHead>
-                <TableHead className="text-gray-400">Title & Department</TableHead>
-                <TableHead className="text-gray-400">Status</TableHead>
-                <TableHead className="text-gray-400">Closing</TableHead>
-                <TableHead className="text-gray-400 text-right">Value</TableHead>
-                <TableHead className="text-gray-400 text-right">EMD</TableHead>
-                <TableHead className="text-gray-400 text-center">Lots</TableHead>
-                <TableHead className="text-gray-400 text-center">AI</TableHead>
-                <TableHead className="text-gray-400">Actions</TableHead>
+              <TableRow className="border-border/50">
+                <TableHead className="text-muted-foreground">Tender Code</TableHead>
+                <TableHead className="text-muted-foreground">Title & Department</TableHead>
+                <TableHead className="text-muted-foreground">Status</TableHead>
+                <TableHead className="text-muted-foreground">Closing</TableHead>
+                <TableHead className="text-muted-foreground text-right">Value</TableHead>
+                <TableHead className="text-muted-foreground text-right">EMD</TableHead>
+                <TableHead className="text-muted-foreground text-center">Lots</TableHead>
+                <TableHead className="text-muted-foreground text-center">AI</TableHead>
+                <TableHead className="text-muted-foreground">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredTenders.map(tender => (
                 <TableRow
                   key={tender.id}
-                  className="border-gray-700/50 hover:bg-gray-700/30 transition-colors"
+                  className="border-border/50 hover:bg-muted-foreground/10/30 transition-colors"
                 >
-                  <TableCell className="font-mono text-sm text-white">{tender.code}</TableCell>
+                  <TableCell className="font-mono text-sm text-foreground">{tender.code}</TableCell>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-white">{tender.title}</p>
-                      <p className="text-sm text-gray-400">{tender.department}</p>
+                      <p className="font-medium text-foreground">{tender.title}</p>
+                      <p className="text-sm text-muted-foreground">{tender.department}</p>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -280,13 +280,13 @@ export default function TenderListTable({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-gray-400" />
+                      <Clock className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-white">{tender.closingDate}</p>
+                        <p className="text-sm text-foreground">{tender.closingDate}</p>
                         <p
                           className={cn(
                             'text-xs',
-                            tender.daysLeft > 0 ? 'text-amber-400' : 'text-gray-500'
+                            tender.daysLeft > 0 ? 'text-amber-400' : 'text-muted-foreground'
                           )}
                         >
                           {tender.daysLeft > 0 ? `${tender.daysLeft} days left` : 'Closed'}
@@ -295,22 +295,22 @@ export default function TenderListTable({
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <p className="font-medium text-white">{tender.estimatedValue}</p>
+                    <p className="font-medium text-foreground">{tender.estimatedValue}</p>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <DollarSign className="h-3 w-3 text-gray-400" />
-                      <span className="text-white">{tender.emdAmount}</span>
+                      <DollarSign className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-foreground">{tender.emdAmount}</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <span className="text-white font-medium">{tender.lots}</span>
+                    <span className="text-foreground font-medium">{tender.lots}</span>
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="flex flex-col items-center gap-1">
                       {getStrategyIcon(tender.bidStrategy)}
                       {tender.aiConfidence && (
-                        <span className="text-xs text-gray-400">{tender.aiConfidence}%</span>
+                        <span className="text-xs text-muted-foreground">{tender.aiConfidence}%</span>
                       )}
                     </div>
                   </TableCell>
@@ -339,11 +339,11 @@ export default function TenderListTable({
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+        <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Active Tenders</p>
-              <p className="text-xl font-bold text-white">
+              <p className="text-xs text-muted-foreground">Active Tenders</p>
+              <p className="text-xl font-bold text-foreground">
                 {filteredTenders.filter(t => t.status === 'active').length}
               </p>
             </div>
@@ -351,31 +351,31 @@ export default function TenderListTable({
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+        <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Total Value</p>
-              <p className="text-xl font-bold text-white">₹2.1Cr</p>
+              <p className="text-xs text-muted-foreground">Total Value</p>
+              <p className="text-xl font-bold text-foreground">₹2.1Cr</p>
             </div>
             <DollarSign className="h-5 w-5 text-green-400" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+        <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Win Rate</p>
-              <p className="text-xl font-bold text-white">42%</p>
+              <p className="text-xs text-muted-foreground">Win Rate</p>
+              <p className="text-xl font-bold text-foreground">42%</p>
             </div>
             <Target className="h-5 w-5 text-purple-400" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+        <Card className="p-4 bg-muted/70 backdrop-blur-sm border-border/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Avg AI Score</p>
-              <p className="text-xl font-bold text-white">72%</p>
+              <p className="text-xs text-muted-foreground">Avg AI Score</p>
+              <p className="text-xl font-bold text-foreground">72%</p>
             </div>
             <Brain className="h-5 w-5 text-blue-400" />
           </div>

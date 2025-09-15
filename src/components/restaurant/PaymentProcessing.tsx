@@ -466,7 +466,7 @@ export function PaymentProcessing({
               </div>
 
               {(paymentAmount || tipAmount) && (
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Subtotal:</span>
@@ -526,7 +526,7 @@ export function PaymentProcessing({
                   {recentPayments.map(payment => (
                     <div
                       key={payment.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted dark:hover:bg-muted"
                     >
                       <div className="flex items-center gap-3">
                         {getMethodIcon((payment.metadata as any)?.payment_method || 'cash')}

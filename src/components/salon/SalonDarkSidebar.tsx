@@ -144,20 +144,20 @@ function AppsModal({
   return createPortal(
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+      <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-800/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
+        <div className="bg-muted/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
+          <div className="flex items-center justify-between p-6 border-b border-border/50">
             <div>
-              <h2 className="text-2xl font-bold text-white">All Apps</h2>
-              <p className="text-sm text-gray-400 mt-1">Access all your salon management tools</p>
+              <h2 className="text-2xl font-bold text-foreground">All Apps</h2>
+              <p className="text-sm text-muted-foreground mt-1">Access all your salon management tools</p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors text-gray-400 hover:text-white"
+              className="p-2 rounded-lg hover:bg-muted-foreground/10/50 transition-colors text-muted-foreground hover:text-foreground"
             >
               <X className="h-6 w-6" />
             </button>
@@ -177,8 +177,8 @@ function AppsModal({
                     onClick={onClose}
                     className={cn(
                       'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
-                      'bg-gray-700/30 hover:bg-gradient-to-br hover:from-violet-600/20 hover:to-cyan-600/20',
-                      'border border-gray-700/50 hover:border-violet-500/30',
+                      'bg-muted-foreground/10/30 hover:bg-gradient-to-br hover:from-violet-600/20 hover:to-cyan-600/20',
+                      'border border-border/50 hover:border-violet-500/30',
                       active &&
                         'bg-gradient-to-br from-violet-600/20 to-cyan-600/20 border-violet-500/30'
                     )}
@@ -194,14 +194,14 @@ function AppsModal({
                       <Icon
                         className={cn(
                           'h-6 w-6',
-                          active ? 'text-white' : 'text-gray-400 group-hover:text-white'
+                          active ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'
                         )}
                       />
                     </div>
                     <span
                       className={cn(
                         'text-xs font-medium text-center',
-                        active ? 'text-violet-400' : 'text-gray-400 group-hover:text-white'
+                        active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-foreground'
                       )}
                     >
                       {app.title}
@@ -229,13 +229,13 @@ export default function SalonDarkSidebar() {
   }
 
   return (
-    <div className="fixed left-0 top-0 h-full bg-gray-800/90 backdrop-blur-xl border-r border-gray-700/50 w-20 z-40 shadow-xl">
+    <div className="fixed left-0 top-0 h-full bg-muted/90 backdrop-blur-xl border-r border-border/50 w-20 z-40 shadow-xl">
       {/* Logo Section */}
-      <div className="h-20 flex flex-col items-center justify-center border-b border-gray-700/50 bg-gray-900/50">
+      <div className="h-20 flex flex-col items-center justify-center border-b border-border/50 bg-background/50">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 flex items-center justify-center">
-          <Sparkles className="h-6 w-6 text-white" />
+          <Sparkles className="h-6 w-6 text-foreground" />
         </div>
-        <span className="text-[10px] text-gray-400 mt-1 font-medium">Salon</span>
+        <span className="text-[10px] text-muted-foreground mt-1 font-medium">Salon</span>
       </div>
 
       {/* Navigation Items */}
@@ -254,15 +254,15 @@ export default function SalonDarkSidebar() {
                 className={cn(
                   'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50'
                 )}
               >
                 <div className="relative">
                   <Icon
                     className={cn(
                       'h-5 w-5',
-                      active ? 'text-violet-400' : 'text-gray-400 group-hover:text-violet-400'
+                      active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-violet-400'
                     )}
                   />
 
@@ -270,7 +270,7 @@ export default function SalonDarkSidebar() {
                   {item.badge && (
                     <span
                       className={cn(
-                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-foreground min-w-[16px] text-center',
                         item.badgeColor || 'bg-gray-600'
                       )}
                     >
@@ -283,17 +283,17 @@ export default function SalonDarkSidebar() {
                 <span
                   className={cn(
                     'text-[9px] mt-0.5 font-medium text-center leading-tight',
-                    active ? 'text-violet-400' : 'text-gray-500 group-hover:text-gray-300'
+                    active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-gray-300'
                   )}
                 >
                   {displayTitle}
                 </span>
 
                 {/* Tooltip for full title */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                   {item.badge && (
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {item.badge}{' '}
                       {item.title === 'Reviews'
                         ? 'rating'
@@ -312,23 +312,23 @@ export default function SalonDarkSidebar() {
             onClick={() => setShowAppsModal(true)}
             className={cn(
               'flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative',
-              'text-gray-400 hover:text-white hover:bg-gray-700/50'
+              'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50'
             )}
           >
-            <Grid3x3 className="h-5 w-5 text-gray-400 group-hover:text-violet-400" />
-            <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-gray-500 group-hover:text-gray-300">
+            <Grid3x3 className="h-5 w-5 text-muted-foreground group-hover:text-violet-400" />
+            <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-muted-foreground group-hover:text-gray-300">
               More
             </span>
 
             {/* Tooltip */}
-            <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>
         </div>
 
         {/* Separator */}
-        <div className="my-2 mx-4 border-t border-gray-700/50" />
+        <div className="my-2 mx-4 border-t border-border/50" />
 
         {/* Bottom Items */}
         <div className="space-y-0">
@@ -343,14 +343,14 @@ export default function SalonDarkSidebar() {
                 className={cn(
                   'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50'
                 )}
               >
                 <Icon
                   className={cn(
                     'h-5 w-5',
-                    active ? 'text-violet-400' : 'text-gray-400 group-hover:text-violet-400'
+                    active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-violet-400'
                   )}
                 />
 
@@ -358,14 +358,14 @@ export default function SalonDarkSidebar() {
                 <span
                   className={cn(
                     'text-[9px] mt-0.5 font-medium text-center leading-tight',
-                    active ? 'text-violet-400' : 'text-gray-500 group-hover:text-gray-300'
+                    active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-gray-300'
                   )}
                 >
                   {item.title}
                 </span>
 
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <p className="font-medium">{item.title}</p>
                 </div>
               </Link>
@@ -375,17 +375,17 @@ export default function SalonDarkSidebar() {
       </nav>
 
       {/* User Profile Section */}
-      <div className="p-2 border-t border-gray-700/50 bg-gray-900/50">
-        <div className="flex flex-col items-center justify-center py-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer group relative">
+      <div className="p-2 border-t border-border/50 bg-background/50">
+        <div className="flex flex-col items-center justify-center py-2 rounded-lg hover:bg-muted-foreground/10/50 transition-colors cursor-pointer group relative">
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">S</span>
+            <span className="text-foreground text-sm font-semibold">S</span>
           </div>
-          <span className="text-[10px] text-gray-500 mt-1 font-medium">Admin</span>
+          <span className="text-[10px] text-muted-foreground mt-1 font-medium">Admin</span>
 
           {/* Tooltip */}
-          <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
+          <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
             <p className="font-medium">Salon Admin</p>
-            <p className="text-gray-400 text-xs">admin@salon.com</p>
+            <p className="text-muted-foreground text-xs">admin@salon.com</p>
           </div>
         </div>
       </div>

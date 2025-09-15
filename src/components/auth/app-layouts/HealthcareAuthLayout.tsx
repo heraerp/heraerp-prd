@@ -15,7 +15,7 @@ export function HealthcareAuthLayout({ children, requiredRole }: HealthcareAuthL
       appName="HERA Healthcare"
       appIcon={
         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Heart className="w-8 h-8 text-white" />
+          <Heart className="w-8 h-8 text-foreground" />
         </div>
       }
       backgroundColor="bg-gradient-to-br from-blue-50 via-teal-50 to-green-50"

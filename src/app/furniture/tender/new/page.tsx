@@ -127,11 +127,11 @@ export default function NewTenderPage() {
 
   if (orgLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2">
             <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400">Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function NewTenderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
           title="Add New Tender"
@@ -153,8 +153,8 @@ export default function NewTenderPage() {
         />
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-            <h3 className="text-lg font-semibold text-white mb-4">Tender Information</h3>
+          <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Tender Information</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -165,7 +165,7 @@ export default function NewTenderPage() {
                   onChange={e => setFormData(prev => ({ ...prev, code: e.target.value }))}
                   placeholder="KFD/2025/WOOD/001"
                   required
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function NewTenderPage() {
                   value={formData.department}
                   onValueChange={value => setFormData(prev => ({ ...prev, department: value }))}
                 >
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600">
+                  <SelectTrigger className="bg-muted-foreground/10/50 border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -198,7 +198,7 @@ export default function NewTenderPage() {
                   onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Teak Wood Supply - Nilambur Range"
                   required
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
 
@@ -209,7 +209,7 @@ export default function NewTenderPage() {
                     <Button
                       variant="outline"
                       className={cn(
-                        'w-full justify-start text-left font-normal bg-gray-700/50 border-gray-600',
+                        'w-full justify-start text-left font-normal bg-muted-foreground/10/50 border-border',
                         !formData.closingDate && 'text-muted-foreground'
                       )}
                     >
@@ -242,7 +242,7 @@ export default function NewTenderPage() {
                   value={formData.lotCount}
                   onChange={e => setFormData(prev => ({ ...prev, lotCount: e.target.value }))}
                   min="1"
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
 
@@ -253,7 +253,7 @@ export default function NewTenderPage() {
                   value={formData.location}
                   onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
                   placeholder="Nilambur Forest Division, Malappuram"
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
 
@@ -265,14 +265,14 @@ export default function NewTenderPage() {
                   onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Provide a brief description of the tender..."
                   rows={4}
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
-            <h3 className="text-lg font-semibold text-white mb-4">Financial Details</h3>
+          <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Financial Details</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -285,7 +285,7 @@ export default function NewTenderPage() {
                   onBlur={calculateEMD}
                   placeholder="4500000"
                   required
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
 
@@ -298,9 +298,9 @@ export default function NewTenderPage() {
                   onChange={e => setFormData(prev => ({ ...prev, emdAmount: e.target.value }))}
                   placeholder="90000"
                   required
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
-                <p className="text-xs text-gray-400">Usually 2% of estimated value</p>
+                <p className="text-xs text-muted-foreground">Usually 2% of estimated value</p>
               </div>
 
               <div className="space-y-2">
@@ -310,7 +310,7 @@ export default function NewTenderPage() {
                   type="number"
                   value={formData.tenderFee}
                   onChange={e => setFormData(prev => ({ ...prev, tenderFee: e.target.value }))}
-                  className="bg-gray-700/50 border-gray-600"
+                  className="bg-muted-foreground/10/50 border-border"
                 />
               </div>
             </div>

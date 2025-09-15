@@ -360,9 +360,9 @@ export function AuditOnboardingWizard() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
+                    <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
                 </button>
               </div>
@@ -463,7 +463,7 @@ export function AuditOnboardingWizard() {
               <select
                 value={formData.registration_country}
                 onChange={e => updateFormData('registration_country', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Bahrain">Bahrain</option>
                 <option value="UAE">United Arab Emirates</option>
@@ -490,7 +490,7 @@ export function AuditOnboardingWizard() {
                     className={`p-4 border rounded-lg text-left transition-all ${
                       formData.firm_type === type.value
                         ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : 'border-border hover:border-border'
                     }`}
                   >
                     <type.icon className="w-5 h-5 mb-2" />
@@ -547,7 +547,7 @@ export function AuditOnboardingWizard() {
                     className={`p-2 text-xs border rounded-md transition-all ${
                       formData.specializations.includes(spec)
                         ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : 'border-border hover:border-border'
                     }`}
                   >
                     {spec}
@@ -577,11 +577,11 @@ export function AuditOnboardingWizard() {
           <div className="text-center space-y-6">
             {isSubmitting ? (
               <div className="space-y-4">
-                <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto" />
+                <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto" />
                 <h3 className="text-xl font-semibold text-gray-900">
                   Setting up your audit firm...
                 </h3>
-                <div className="space-y-2 text-sm text-gray-600">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <p>✅ Creating Supabase account</p>
                   <p>✅ Registering audit firm</p>
                   <p>⏳ Configuring audit system</p>
@@ -591,7 +591,7 @@ export function AuditOnboardingWizard() {
               <div className="space-y-4">
                 <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
                 <h3 className="text-xl font-semibold text-gray-900">Registration Successful!</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Your audit firm has been successfully registered. You'll be redirected to the
                   login page shortly.
                 </p>
@@ -617,17 +617,17 @@ export function AuditOnboardingWizard() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4">
       <div className="w-full max-w-2xl">
-        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-xl">
+        <Card className="shadow-2xl border-0 bg-background/90 backdrop-blur-xl">
           <CardHeader className="text-center pb-6">
             <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Shield className="w-8 h-8 text-white" />
+              <Shield className="w-8 h-8 text-foreground" />
             </div>
 
             <CardTitle className="text-2xl font-light text-gray-900">
               Join HERA Audit Platform
             </CardTitle>
 
-            <p className="text-gray-600 mt-2">Set up your audit firm in minutes</p>
+            <p className="text-muted-foreground mt-2">Set up your audit firm in minutes</p>
 
             {/* Progress Steps */}
             <div className="flex justify-center mt-6">
@@ -637,8 +637,8 @@ export function AuditOnboardingWizard() {
                     <div
                       className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
                         currentStep >= step.id
-                          ? 'border-blue-500 bg-blue-500 text-white'
-                          : 'border-gray-300 text-gray-400'
+                          ? 'border-blue-500 bg-blue-500 text-foreground'
+                          : 'border-border text-muted-foreground'
                       }`}
                     >
                       {currentStep > step.id ? (
@@ -663,7 +663,7 @@ export function AuditOnboardingWizard() {
               <h3 className="font-medium text-gray-900">
                 {ONBOARDING_STEPS[currentStep - 1]?.title}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {ONBOARDING_STEPS[currentStep - 1]?.description}
               </p>
             </div>

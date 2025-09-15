@@ -149,7 +149,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Table Analytics</h3>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Analyze table performance and optimize operations
             </p>
           </div>
@@ -157,7 +157,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
             <select
               value={dateRange}
               onChange={e => setDateRange(e.target.value as any)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="today">Today</option>
               <option value="week">This Week</option>
@@ -175,7 +175,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-blue-600 font-medium">Average Occupancy</span>
+              <span className="text-sm text-primary font-medium">Average Occupancy</span>
               <Percent className="w-5 h-5 text-blue-500" />
             </div>
             <p className="text-2xl font-bold text-blue-900">{stats?.table_occupancy_rate || 0}%</p>
@@ -323,29 +323,29 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
         <h4 className="text-base font-semibold text-gray-900 mb-4">Detailed Table Performance</h4>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Table
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Revenue
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Occupancy
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Turnover
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Avg Party Size
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Performance
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-background divide-y divide-gray-200">
               {tablePerformance.map((table, index) => {
                 const performanceScore =
                   (table.revenue / 5000) * 0.4 +
@@ -356,10 +356,10 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {table.table}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       ${table.revenue.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div className="flex items-center">
                         <span>{table.occupancy}%</span>
                         <div className="ml-2 w-16 bg-gray-200 rounded-full h-2">
@@ -370,10 +370,10 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {table.turnover}/day
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {table.averagePartySize}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">

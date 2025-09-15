@@ -58,11 +58,11 @@ export function StatsCard({
   // Enhanced color variants with better dark mode support
   const variants = {
     default: {
-      card: enableDNA ? '' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700',
-      icon: 'text-blue-600 bg-blue-100/80 dark:bg-blue-900/30',
-      value: '!text-slate-900 dark:!text-white', // Force color with !important
-      title: 'text-slate-600 dark:text-slate-300',
-      trend: 'text-blue-600 dark:text-blue-400'
+      card: enableDNA ? '' : 'bg-background dark:bg-muted border-border dark:border-border',
+      icon: 'text-primary bg-blue-100/80 dark:bg-blue-900/30',
+      value: '!text-foreground dark:!text-foreground', // Force color with !important
+      title: 'text-muted-foreground dark:text-slate-300',
+      trend: 'text-primary dark:text-blue-400'
     },
     success: {
       card: enableDNA
@@ -84,10 +84,10 @@ export function StatsCard({
     },
     info: {
       card: enableDNA ? '' : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-      icon: 'text-blue-600 bg-blue-100/80 dark:bg-blue-900/30',
+      icon: 'text-primary bg-blue-100/80 dark:bg-blue-900/30',
       value: '!text-blue-900 dark:!text-blue-100', // Force color with !important
       title: 'text-blue-700 dark:text-blue-300',
-      trend: 'text-blue-600 dark:text-blue-400'
+      trend: 'text-primary dark:text-blue-400'
     }
   }
 

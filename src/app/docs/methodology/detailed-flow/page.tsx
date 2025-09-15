@@ -151,7 +151,7 @@ sequenceDiagram
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <div className="sticky top-0 z-50 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:border-gray-50/[0.06] bg-white/95 dark:bg-gray-900/75">
+      <div className="sticky top-0 z-50 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:border-gray-50/[0.06] bg-background/95 dark:bg-background/75">
         <div className="max-w-7xl mx-auto">
           <div className="px-4 py-4 lg:px-8">
             <div className="flex items-center justify-between">
@@ -222,16 +222,16 @@ sequenceDiagram
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="w-full overflow-x-auto bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                <div className="w-full overflow-x-auto bg-muted dark:bg-background p-4 rounded-lg">
                   <div style={{ minWidth: '1200px', minHeight: '800px' }}>
                     <MermaidDiagram chart={flowDiagram} id="flow-diagram" />
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
                     <strong>Key Features:</strong>
                   </p>
-                  <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
+                  <ul className="text-sm text-muted-foreground dark:text-gray-300 space-y-1 list-disc list-inside">
                     <li>MCP orchestration at every step</li>
                     <li>Guardrail enforcement points (red boxes)</li>
                     <li>Sacred Six table touchpoints highlighted</li>
@@ -251,16 +251,16 @@ sequenceDiagram
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="w-full overflow-x-auto bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                <div className="w-full overflow-x-auto bg-muted dark:bg-background p-4 rounded-lg">
                   <div style={{ minWidth: '1000px', minHeight: '600px' }}>
                     <MermaidDiagram chart={swimlaneDiagram} id="swimlane-diagram" />
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
                     <strong>Participants:</strong>
                   </p>
-                  <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
+                  <ul className="text-sm text-muted-foreground dark:text-gray-300 space-y-1 list-disc list-inside">
                     <li>
                       <strong>Client Team:</strong> Business stakeholders and end users
                     </li>
@@ -389,8 +389,8 @@ sequenceDiagram
               </TabsList>
 
               <TabsContent value="requirements" className="mt-4">
-                <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-gray-400">
+                <div className="bg-background dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-muted-foreground">
                     // Phase 1: MCP captures requirements as draft entities
                   </div>
                   <pre>{`const requirement = {
@@ -414,8 +414,8 @@ sequenceDiagram
               </TabsContent>
 
               <TabsContent value="sandbox" className="mt-4">
-                <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-gray-400">
+                <div className="bg-background dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-muted-foreground">
                     // Phase 3: Generate test transactions in sandbox
                   </div>
                   <pre>{`const testPO = {
@@ -435,8 +435,8 @@ sequenceDiagram
               </TabsContent>
 
               <TabsContent value="uat" className="mt-4">
-                <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-gray-400">// Phase 5: UAT sign-off as transaction</div>
+                <div className="bg-background dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-muted-foreground">// Phase 5: UAT sign-off as transaction</div>
                   <pre>{`const signoff = {
   transaction_type: 'project_milestone',
   business_context: 'PROJECT.UAT.SIGNOFF.v1',
@@ -464,20 +464,20 @@ sequenceDiagram
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">20x</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Faster Delivery</div>
+                <div className="text-3xl font-bold text-primary dark:text-blue-400">20x</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">Faster Delivery</div>
               </div>
               <div className="text-center p-4 bg-green-50 dark:bg-green-950 rounded-lg">
                 <div className="text-3xl font-bold text-green-600 dark:text-green-400">90%</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Cost Reduction</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">Cost Reduction</div>
               </div>
               <div className="text-center p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
                 <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">0</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Structure Changes</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">Structure Changes</div>
               </div>
               <div className="text-center p-4 bg-cyan-50 dark:bg-cyan-950 rounded-lg">
                 <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">100%</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Module Reuse</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">Module Reuse</div>
               </div>
             </div>
           </CardContent>

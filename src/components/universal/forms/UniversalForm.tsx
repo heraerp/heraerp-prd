@@ -15,21 +15,21 @@ import React, { ReactNode, FormEvent } from 'react'
 // Base styling constants
 const FORM_STYLES = {
   input:
-    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900 placeholder:text-muted-foreground',
   textarea:
-    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500 resize-none',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900 placeholder:text-muted-foreground resize-none',
   label: 'block text-sm font-medium text-gray-700 mb-1',
   select:
-    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900',
   button: {
     primary:
-      'px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+      'px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
     secondary:
-      'px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+      'px-4 py-2 border border-border text-gray-700 bg-background rounded-lg hover:bg-muted focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
     danger:
-      'px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+      'px-4 py-2 bg-red-600 text-foreground rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
   },
-  fieldGroup: 'space-y-4 bg-gray-50 p-4 rounded-lg',
+  fieldGroup: 'space-y-4 bg-muted p-4 rounded-lg',
   error: 'text-red-600 text-sm mt-1',
   required: 'text-red-500'
 }
@@ -294,7 +294,7 @@ export function UniversalFieldGroup({
       {title && (
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          {description && <p className="text-sm text-gray-600 mt-1">{description}</p>}
+          {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
         </div>
       )}
       <div className="space-y-4">{children}</div>
@@ -315,18 +315,18 @@ export function UniversalModal({ isOpen, onClose, title, children, maxWidth = 'l
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div
-        className={`bg-white rounded-lg shadow-xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-hidden`}
+        className={`bg-background rounded-lg shadow-xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-hidden`}
       >
         {/* Header */}
-        <div className="bg-white p-6 border-b border-gray-200">
+        <div className="bg-background p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-500 bg-white p-1 rounded transition-colors"
+              className="text-muted-foreground hover:text-muted-foreground bg-background p-1 rounded transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -341,7 +341,7 @@ export function UniversalModal({ isOpen, onClose, title, children, maxWidth = 'l
         </div>
 
         {/* Content */}
-        <div className="bg-white p-6 overflow-y-auto max-h-[calc(90vh-80px)]">{children}</div>
+        <div className="bg-background p-6 overflow-y-auto max-h-[calc(90vh-80px)]">{children}</div>
       </div>
     </div>
   )

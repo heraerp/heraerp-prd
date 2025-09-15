@@ -189,7 +189,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
       <div className="space-y-4">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search menu items..."
             value={searchQuery}
@@ -310,16 +310,16 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
             {/* Order Items */}
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {currentOrder.length === 0 ? (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-8 text-muted-foreground">
                   <ShoppingBag className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p>No items in order</p>
                 </div>
               ) : (
                 currentOrder.map(item => (
-                  <div key={item.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                  <div key={item.id} className="flex items-center gap-2 p-2 bg-muted rounded">
                     <div className="flex-1">
                       <div className="font-medium text-sm">{item.menuItem.name}</div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-muted-foreground">
                         ${item.menuItem.price.toFixed(2)} each
                       </div>
                     </div>
@@ -409,7 +409,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
                 <div className="flex items-center justify-between p-2 bg-orange-50 rounded">
                   <div>
                     <div className="font-medium">#247 - John D.</div>
-                    <div className="text-xs text-gray-600">2 items • $18.90</div>
+                    <div className="text-xs text-muted-foreground">2 items • $18.90</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary">
@@ -419,10 +419,10 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
                     <Button size="sm">Ready</Button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <div className="flex items-center justify-between p-2 bg-muted rounded">
                   <div>
                     <div className="font-medium">#248 - Sarah M.</div>
-                    <div className="text-xs text-gray-600">4 items • $42.75</div>
+                    <div className="text-xs text-muted-foreground">4 items • $42.75</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary">

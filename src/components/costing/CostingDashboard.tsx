@@ -187,7 +187,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
                 <p className="text-sm font-medium text-muted-foreground">Avg Material Cost %</p>
                 <p className="text-2xl font-bold">45%</p>
               </div>
-              <Layers className="h-8 w-8 text-blue-600" />
+              <Layers className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -476,9 +476,9 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
                       <p className="text-xl font-bold text-green-600">+{formatCurrency(25000)}</p>
                     </div>
                     <div className="p-4 border rounded-lg">
-                      <TrendingUp className="h-6 w-6 mx-auto mb-2 text-blue-600" />
+                      <TrendingUp className="h-6 w-6 mx-auto mb-2 text-primary" />
                       <p className="text-sm text-muted-foreground">Volume Impact</p>
-                      <p className="text-xl font-bold text-blue-600">+{formatCurrency(15000)}</p>
+                      <p className="text-xl font-bold text-primary">+{formatCurrency(15000)}</p>
                     </div>
                     <div className="p-4 border rounded-lg">
                       <Activity className="h-6 w-6 mx-auto mb-2 text-purple-600" />

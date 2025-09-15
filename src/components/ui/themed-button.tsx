@@ -18,7 +18,7 @@ export const ThemedButton = React.forwardRef<HTMLButtonElement, ThemedButtonProp
         <Button
           ref={ref}
           className={cn(
-            `bg-gradient-to-r ${theme.brandGradient} text-white hover:opacity-90 transition-opacity`,
+            `bg-gradient-to-r ${theme.brandGradient} text-foreground hover:opacity-90 transition-opacity`,
             className
           )}
           variant="ghost"

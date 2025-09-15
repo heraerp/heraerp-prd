@@ -164,7 +164,7 @@ export default function ActivitiesPage() {
       case 'overdue':
         return 'bg-red-500/20 text-red-400 border-red-500/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -250,7 +250,7 @@ export default function ActivitiesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white">Loading activities...</div>
+        <div className="text-foreground">Loading activities...</div>
       </div>
     )
   }
@@ -260,12 +260,12 @@ export default function ActivitiesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Activities</h1>
-          <p className="text-white/60 mt-1">Track all your sales activities and engagements</p>
+          <h1 className="text-3xl font-bold text-foreground">Activities</h1>
+          <p className="text-foreground/60 mt-1">Track all your sales activities and engagements</p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>Log Activity</span>
@@ -279,15 +279,15 @@ export default function ActivitiesPage() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">+5%</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/60 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
               </div>
             </div>
           )
@@ -297,20 +297,20 @@ export default function ActivitiesPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
           <input
             type="text"
             placeholder="Search activities..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
 
         <select
           value={selectedType}
           onChange={e => setSelectedType(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
           <option value="call">Calls</option>
@@ -323,7 +323,7 @@ export default function ActivitiesPage() {
         <select
           value={selectedDateRange}
           onChange={e => setSelectedDateRange(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Time</option>
           <option value="today">Today</option>
@@ -331,7 +331,7 @@ export default function ActivitiesPage() {
           <option value="month">This Month</option>
         </select>
 
-        <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
           <Filter className="h-5 w-5" />
           <span>More Filters</span>
         </button>
@@ -341,7 +341,7 @@ export default function ActivitiesPage() {
       <div className="space-y-6">
         {Object.entries(groupedActivities).map(([date, dateActivities]) => (
           <div key={date}>
-            <h3 className="text-sm font-medium text-white/60 mb-4">{date}</h3>
+            <h3 className="text-sm font-medium text-foreground/60 mb-4">{date}</h3>
             <div className="space-y-4">
               {dateActivities.map(activity => {
                 const activityType = activity.business_context?.activity_type || 'activity'
@@ -357,31 +357,31 @@ export default function ActivitiesPage() {
                 return (
                   <div key={activity.id} className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-                    <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+                    <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-4">
                           <div
                             className={`p-3 rounded-xl bg-gradient-to-br ${getActivityColor(activityType)}`}
                           >
-                            <ActivityIcon className="h-5 w-5 text-white" />
+                            <ActivityIcon className="h-5 w-5 text-foreground" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-base font-semibold text-white">
+                            <h4 className="text-base font-semibold text-foreground">
                               {activity.business_context?.title || 'Activity'}
                             </h4>
 
                             {/* Related Entities */}
                             <div className="flex items-center space-x-4 mt-2 text-sm">
                               {sourceEntity && (
-                                <div className="flex items-center space-x-1 text-white/60">
+                                <div className="flex items-center space-x-1 text-foreground/60">
                                   <User className="h-4 w-4" />
                                   <span>{sourceEntity.entity_name}</span>
                                 </div>
                               )}
                               {targetEntity && (
                                 <>
-                                  <ChevronRight className="h-4 w-4 text-white/40" />
-                                  <div className="flex items-center space-x-1 text-white/60">
+                                  <ChevronRight className="h-4 w-4 text-foreground/40" />
+                                  <div className="flex items-center space-x-1 text-foreground/60">
                                     {targetEntity.entity_type === 'opportunity' ? (
                                       <Target className="h-4 w-4" />
                                     ) : targetEntity.entity_type === 'account' ? (
@@ -398,26 +398,26 @@ export default function ActivitiesPage() {
                             {/* Activity Details */}
                             <div className="mt-3 space-y-2">
                               {activity.business_context?.outcome && (
-                                <p className="text-sm text-white/80">
-                                  <span className="text-white/60">Outcome:</span>{' '}
+                                <p className="text-sm text-foreground/80">
+                                  <span className="text-foreground/60">Outcome:</span>{' '}
                                   {activity.business_context.outcome}
                                 </p>
                               )}
                               {activity.business_context?.next_action && (
-                                <p className="text-sm text-white/80">
-                                  <span className="text-white/60">Next Action:</span>{' '}
+                                <p className="text-sm text-foreground/80">
+                                  <span className="text-foreground/60">Next Action:</span>{' '}
                                   {activity.business_context.next_action}
                                 </p>
                               )}
                               {activity.business_context?.duration_minutes && (
-                                <div className="flex items-center space-x-1 text-sm text-white/60">
+                                <div className="flex items-center space-x-1 text-sm text-foreground/60">
                                   <Clock className="h-3 w-3" />
                                   <span>{activity.business_context.duration_minutes} minutes</span>
                                 </div>
                               )}
                               {activity.business_context?.attachments &&
                                 activity.business_context.attachments.length > 0 && (
-                                  <div className="flex items-center space-x-1 text-sm text-white/60">
+                                  <div className="flex items-center space-x-1 text-sm text-foreground/60">
                                     <Link2 className="h-3 w-3" />
                                     <span>
                                       {activity.business_context.attachments.length} attachments
@@ -434,7 +434,7 @@ export default function ActivitiesPage() {
                           >
                             {status}
                           </span>
-                          <span className="text-xs text-white/40">
+                          <span className="text-xs text-foreground/40">
                             {new Date(activity.created_at).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit'
@@ -454,9 +454,9 @@ export default function ActivitiesPage() {
       {/* Empty State */}
       {filteredActivities.length === 0 && (
         <div className="text-center py-12">
-          <Calendar className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No activities found</h3>
-          <p className="text-white/60">Try adjusting your search or filters</p>
+          <Calendar className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No activities found</h3>
+          <p className="text-foreground/60">Try adjusting your search or filters</p>
         </div>
       )}
     </div>

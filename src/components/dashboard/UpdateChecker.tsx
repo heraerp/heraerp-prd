@@ -74,7 +74,7 @@ export function UpdateChecker() {
         <Button
           size="sm"
           onClick={handleUpdate}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white animate-pulse"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground animate-pulse"
         >
           Update Available - Click to Refresh
         </Button>

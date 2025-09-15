@@ -147,7 +147,7 @@ export function BYOCManager({
       id: 'default',
       name: 'HERA Default Storage',
       description: 'Managed storage with automatic backups',
-      icon: <Database className="w-5 h-5 text-blue-600" />,
+      icon: <Database className="w-5 h-5 text-primary" />,
       color: 'blue',
       fields: []
     },
@@ -381,7 +381,7 @@ export function BYOCManager({
           {providerInfo.icon}
           <div>
             <h4 className="font-semibold text-gray-900">{providerInfo.name}</h4>
-            <p className="text-sm text-gray-600">{providerInfo.description}</p>
+            <p className="text-sm text-muted-foreground">{providerInfo.description}</p>
           </div>
         </div>
 
@@ -458,14 +458,14 @@ export function BYOCManager({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Cloud className="w-8 h-8 text-blue-600" />
+            <Cloud className="w-8 h-8 text-primary" />
             Universal BYOC Manager
-            <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
+            <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-foreground border-0">
               <Crown className="w-3 h-3 mr-1" />
               Enterprise
             </Badge>
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Bring Your Own Cloud storage configuration for {applicationId}
           </p>
         </div>
@@ -515,7 +515,7 @@ export function BYOCManager({
                         {provider?.icon}
                         <div>
                           <CardTitle className="text-lg">{config.name}</CardTitle>
-                          <p className="text-sm text-gray-600">{provider?.name}</p>
+                          <p className="text-sm text-muted-foreground">{provider?.name}</p>
                         </div>
                       </div>
 
@@ -527,7 +527,7 @@ export function BYOCManager({
 
                   <CardContent className="space-y-4">
                     {config.description && (
-                      <p className="text-sm text-gray-600">{config.description}</p>
+                      <p className="text-sm text-muted-foreground">{config.description}</p>
                     )}
 
                     {/* Status Indicator */}
@@ -554,7 +554,7 @@ export function BYOCManager({
                         <Badge
                           key={perm}
                           className={`text-xs ${
-                            enabled ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
+                            enabled ? 'bg-blue-100 text-blue-700' : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {perm.toUpperCase()}
@@ -578,7 +578,7 @@ export function BYOCManager({
                         <Button
                           size="sm"
                           onClick={() => activateConfiguration(config.id!)}
-                          className="bg-green-600 hover:bg-green-700 text-white"
+                          className="bg-green-600 hover:bg-green-700 text-foreground"
                         >
                           Activate
                         </Button>
@@ -641,7 +641,7 @@ export function BYOCManager({
                               {provider.icon}
                               <div>
                                 <div className="font-medium">{provider.name}</div>
-                                <div className="text-xs text-gray-500">{provider.description}</div>
+                                <div className="text-xs text-muted-foreground">{provider.description}</div>
                               </div>
                             </div>
                           </SelectItem>
@@ -691,16 +691,16 @@ export function BYOCManager({
                 <Key className="w-5 h-5" />
                 Secret Management
               </CardTitle>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Manage encrypted secrets and credentials for cloud storage providers
               </p>
             </CardHeader>
             <CardContent>
               {!canManageSecrets ? (
                 <div className="text-center py-8">
-                  <Lock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600">You don't have permission to manage secrets</p>
-                  <p className="text-sm text-gray-500">Contact your administrator for access</p>
+                  <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">You don't have permission to manage secrets</p>
+                  <p className="text-sm text-muted-foreground">Contact your administrator for access</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -718,7 +718,7 @@ export function BYOCManager({
                   </div>
 
                   {/* Secret management interface would go here */}
-                  <p className="text-gray-600">
+                  <p className="text-muted-foreground">
                     Secret management interface would be implemented here
                   </p>
                 </div>
@@ -737,7 +737,7 @@ export function BYOCManager({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Connection testing interface would be implemented here
               </p>
             </CardContent>
@@ -754,7 +754,7 @@ export function BYOCManager({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Audit trail interface would be implemented here</p>
+              <p className="text-muted-foreground">Audit trail interface would be implemented here</p>
             </CardContent>
           </Card>
         </TabsContent>

@@ -35,7 +35,7 @@ export const POSReceipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
     }
 
     return (
-      <div ref={ref} className="w-[300px] p-4 bg-white font-mono text-xs">
+      <div ref={ref} className="w-[300px] p-4 bg-background font-mono text-xs">
         {/* Header */}
         <div className="text-center mb-4">
           <h1 className="text-lg font-bold">{organization.name}</h1>
@@ -63,12 +63,12 @@ export const POSReceipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
                 <span className="flex-1">{item.name}</span>
                 <span>{formatCurrency(item.price)}</span>
               </div>
-              <div className="flex justify-between text-xs text-gray-600">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span> Qty: {item.quantity}</span>
                 <span>{formatCurrency(item.price * item.quantity)}</span>
               </div>
               {item.discount > 0 && (
-                <div className="flex justify-between text-xs text-gray-600">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>
                     {' '}
                     Discount:{' '}
@@ -80,7 +80,7 @@ export const POSReceipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
                 </div>
               )}
               {item.type === 'service' && item.staff && (
-                <div className="text-xs text-gray-600">Staff: {item.staff}</div>
+                <div className="text-xs text-muted-foreground">Staff: {item.staff}</div>
               )}
             </div>
           ))}
@@ -136,7 +136,7 @@ export const POSReceipt = React.forwardRef<HTMLDivElement, ReceiptProps>(
 
         {/* Barcode placeholder */}
         <div className="mt-4 text-center">
-          <div className="inline-block bg-black h-12 w-32" />
+          <div className="inline-block bg-background h-12 w-32" />
           <p className="text-xs mt-1">{transaction.transactionCode}</p>
         </div>
       </div>

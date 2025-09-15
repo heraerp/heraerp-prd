@@ -247,15 +247,15 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center">
-              <Briefcase className="w-5 h-5 text-white" />
+              <Briefcase className="w-5 h-5 text-foreground" />
             </div>
             <div>
               <span className="text-xl">New Audit Engagement</span>
-              <p className="text-sm text-gray-600 font-normal mt-1">
+              <p className="text-sm text-muted-foreground font-normal mt-1">
                 Step {currentStep} of 5: {stepTitles[currentStep - 1]}
               </p>
             </div>
@@ -269,10 +269,10 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   step < currentStep
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-green-500 text-foreground'
                     : step === currentStep
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-600'
+                      ? 'bg-blue-500 text-foreground'
+                      : 'bg-gray-200 text-muted-foreground'
                 }`}
               >
                 {step < currentStep ? <CheckCircle2 className="w-4 h-4" /> : step}
@@ -289,14 +289,14 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
         <div className="space-y-4">
           {/* Step 1: Client Information */}
           {currentStep === 1 && (
-            <Card className="bg-white border border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card className="bg-background border border-border shadow-sm">
+              <CardHeader className="bg-muted border-b">
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <Building2 className="w-5 h-5" />
                   Client Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white p-6">
+              <CardContent className="space-y-4 bg-background p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="client_name">Client Name *</Label>
@@ -349,7 +349,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label htmlFor="annual_revenue">Annual Revenue</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="annual_revenue"
                         type="number"
@@ -364,7 +364,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label htmlFor="total_assets">Total Assets</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="total_assets"
                         type="number"
@@ -394,7 +394,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       id="pie"
                       checked={engagementData.public_interest_entity}
                       onChange={e => updateField('public_interest_entity', e.target.checked)}
-                      className="rounded border-gray-300"
+                      className="rounded border-border"
                     />
                     <Label htmlFor="pie" className="text-sm">
                       Public Interest Entity (PIE)
@@ -407,14 +407,14 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
           {/* Step 2: Engagement Details */}
           {currentStep === 2 && (
-            <Card className="bg-white border border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card className="bg-background border border-border shadow-sm">
+              <CardHeader className="bg-muted border-b">
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <Calendar className="w-5 h-5" />
                   Engagement Details
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white p-6">
+              <CardContent className="space-y-4 bg-background p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="engagement_type">Engagement Type *</Label>
@@ -488,7 +488,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label htmlFor="estimated_fees">Estimated Fees</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="estimated_fees"
                         type="number"
@@ -506,14 +506,14 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
           {/* Step 3: Risk Assessment */}
           {currentStep === 3 && (
-            <Card className="bg-white border border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card className="bg-background border border-border shadow-sm">
+              <CardHeader className="bg-muted border-b">
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <AlertTriangle className="w-5 h-5" />
                   Risk Assessment & Materiality
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white p-6">
+              <CardContent className="space-y-4 bg-background p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="risk_rating">Overall Risk Rating *</Label>
@@ -556,7 +556,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                           {isEQCRRequired() ? 'Required' : 'Not Required'}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Based on PIE status and risk rating
                       </p>
                     </div>
@@ -565,7 +565,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label htmlFor="materiality_planning">Planning Materiality</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="materiality_planning"
                         type="number"
@@ -580,7 +580,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label htmlFor="materiality_performance">Performance Materiality</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+                      <DollarSign className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="materiality_performance"
                         type="number"
@@ -609,14 +609,14 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
           {/* Step 4: Team Assignment */}
           {currentStep === 4 && (
-            <Card className="bg-white border border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card className="bg-background border border-border shadow-sm">
+              <CardHeader className="bg-muted border-b">
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <Users className="w-5 h-5" />
                   Team Assignment
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white p-6">
+              <CardContent className="space-y-4 bg-background p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="engagement_partner">Engagement Partner *</Label>
@@ -680,80 +680,80 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
           {/* Step 5: Compliance & Review */}
           {currentStep === 5 && (
-            <Card className="bg-white border border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card className="bg-background border border-border shadow-sm">
+              <CardHeader className="bg-muted border-b">
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <Shield className="w-5 h-5" />
                   Compliance & Final Review
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white p-6">
+              <CardContent className="space-y-4 bg-background p-6">
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
                         checked={engagementData.independence_confirmed}
                         onChange={e => updateField('independence_confirmed', e.target.checked)}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Independence Confirmed</span>
                     </div>
                     {engagementData.independence_confirmed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <AlertTriangle className="w-5 h-5 text-gray-600" />
+                      <AlertTriangle className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
 
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
                         checked={engagementData.conflict_check_completed}
                         onChange={e => updateField('conflict_check_completed', e.target.checked)}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Conflict Check Completed</span>
                     </div>
                     {engagementData.conflict_check_completed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <AlertTriangle className="w-5 h-5 text-gray-600" />
+                      <AlertTriangle className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
 
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
                         checked={engagementData.aml_assessment_done}
                         onChange={e => updateField('aml_assessment_done', e.target.checked)}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">AML Assessment Completed</span>
                     </div>
                     {engagementData.aml_assessment_done ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <AlertTriangle className="w-5 h-5 text-gray-600" />
+                      <AlertTriangle className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
 
-                  <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
                         checked={engagementData.compliance_approval}
                         onChange={e => updateField('compliance_approval', e.target.checked)}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm text-gray-700">Compliance Officer Approval</span>
                     </div>
                     {engagementData.compliance_approval ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
-                      <AlertTriangle className="w-5 h-5 text-gray-600" />
+                      <AlertTriangle className="w-5 h-5 text-muted-foreground" />
                     )}
                   </label>
                 </div>
@@ -796,7 +796,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between pt-4 border-t bg-white">
+        <div className="flex items-center justify-between pt-4 border-t bg-background">
           <div>
             {currentStep > 1 && (
               <Button variant="outline" onClick={handlePrevious}>

@@ -63,11 +63,11 @@ export function useFurnitureOrg() {
 // Loading component for consistent loading state
 export function FurnitureOrgLoading() {
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <div className="inline-flex items-center space-x-2">
           <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-400">Loading organization...</p>
+          <p className="text-muted-foreground">Loading organization...</p>
         </div>
       </div>
     </div>

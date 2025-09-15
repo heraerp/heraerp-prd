@@ -159,10 +159,10 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
     const indentClass = `pl-${Math.min(level * 4, 16)}`
 
     return (
-      <div key={node.id} className="border-l-2 border-gray-700/50 ml-2">
+      <div key={node.id} className="border-l-2 border-border/50 ml-2">
         <div
           className={cn(
-            'flex items-center gap-3 p-3 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer',
+            'flex items-center gap-3 p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer',
             indentClass
           )}
           onClick={() => hasChildren && toggleNode(node.id)}
@@ -186,13 +186,13 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-white">{node.name}</span>
+                <span className="font-medium text-foreground">{node.name}</span>
                 <Badge variant="outline" className="text-xs">
                   {node.code}
                 </Badge>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                 <span>
                   {node.quantity} {node.unit}
                 </span>
@@ -231,7 +231,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
             {node.totalCost && level === 0 && (
               <div className="text-right">
-                <div className="text-sm text-gray-400">Total Cost</div>
+                <div className="text-sm text-muted-foreground">Total Cost</div>
                 <div className="font-semibold text-amber-500">
                   ₹{node.totalCost.toLocaleString()}
                 </div>
@@ -249,7 +249,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (loading) {
     return (
-      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
+      <Card className={cn('bg-muted/50 border-border', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -269,7 +269,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (error) {
     return (
-      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
+      <Card className={cn('bg-muted/50 border-border', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -279,7 +279,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         <CardContent>
           <div className="text-center py-8">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-3" />
-            <p className="text-gray-400">{error}</p>
+            <p className="text-muted-foreground">{error}</p>
             <Button onClick={loadBOMData} className="mt-4">
               Retry
             </Button>
@@ -291,7 +291,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (!bomData) {
     return (
-      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
+      <Card className={cn('bg-muted/50 border-border', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -299,14 +299,14 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-gray-400 py-8">No BOM data available</p>
+          <p className="text-center text-muted-foreground py-8">No BOM data available</p>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
+    <Card className={cn('bg-muted/50 border-border', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Layers className="h-5 w-5" />
@@ -317,14 +317,14 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         {renderBOMNode(bomData)}
 
         {bomData.children && bomData.children.length > 0 && (
-          <div className="mt-6 pt-4 border-t border-gray-700">
+          <div className="mt-6 pt-4 border-t border-border">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400">Total Components</span>
+              <span className="text-muted-foreground">Total Components</span>
               <span className="font-semibold">{bomData.children.length}</span>
             </div>
             {bomData.totalCost && (
               <div className="flex justify-between items-center text-sm mt-2">
-                <span className="text-gray-400">Total Material Cost</span>
+                <span className="text-muted-foreground">Total Material Cost</span>
                 <span className="font-semibold text-amber-500">
                   ₹{bomData.totalCost.toLocaleString()}
                 </span>

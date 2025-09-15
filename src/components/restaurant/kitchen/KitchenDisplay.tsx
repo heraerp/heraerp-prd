@@ -247,7 +247,7 @@ export function KitchenDisplay() {
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-orange-200 border-t-orange-500 rounded-full" />
           </div>
-          <p className="text-gray-600">Loading kitchen orders...</p>
+          <p className="text-muted-foreground">Loading kitchen orders...</p>
         </div>
       </div>
     )
@@ -260,41 +260,41 @@ export function KitchenDisplay() {
         <MetricCard
           title="Total Orders"
           value={stats.totalOrders}
-          icon={<Utensils className="w-5 h-5 text-white" />}
+          icon={<Utensils className="w-5 h-5 text-foreground" />}
           color="from-blue-500 to-indigo-600"
         />
 
         <MetricCard
           title="In Progress"
           value={stats.inProgress}
-          icon={<ChefHat className="w-5 h-5 text-white" />}
+          icon={<ChefHat className="w-5 h-5 text-foreground" />}
           color="from-orange-500 to-red-600"
         />
 
         <MetricCard
           title="New Orders"
           value={stats.readyToServe}
-          icon={<Bell className="w-5 h-5 text-white" />}
+          icon={<Bell className="w-5 h-5 text-foreground" />}
           color="from-yellow-500 to-amber-600"
         />
 
         <MetricCard
           title="Avg Cook Time"
           value={`${stats.averageCookTime}m`}
-          icon={<Clock className="w-5 h-5 text-white" />}
+          icon={<Clock className="w-5 h-5 text-foreground" />}
           color="from-green-500 to-emerald-600"
         />
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-background rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-gray-600">On Time Rate</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">On Time Rate</h3>
             <ProgressRing progress={stats.onTimeRate} size={40} showPercentage={true} />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-background rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-gray-600">Efficiency</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">Efficiency</h3>
             <ProgressRing progress={stats.efficiency} size={40} showPercentage={true} />
           </div>
         </div>
@@ -312,7 +312,7 @@ export function KitchenDisplay() {
             <select
               value={filterStation}
               onChange={e => setFilterStation(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Stations</option>
               <option value="grill">Grill</option>
@@ -339,9 +339,9 @@ export function KitchenDisplay() {
       {/* Kitchen Orders */}
       {filteredOrders.length === 0 ? (
         <Card className="p-12 text-center">
-          <ChefHat className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+          <ChefHat className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Orders</h3>
-          <p className="text-gray-500">All caught up! New orders will appear here.</p>
+          <p className="text-muted-foreground">All caught up! New orders will appear here.</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -354,11 +354,11 @@ export function KitchenDisplay() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold text-gray-900">{order.reference_number}</h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {order.table_number ? `Table ${order.table_number}` : order.transaction_type}
                   </p>
                 </div>
-                <Badge className={statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'}>
+                <Badge className={statusConfig[order.status]?.color || 'bg-muted text-gray-800'}>
                   {statusConfig[order.status]?.label || order.status}
                 </Badge>
               </div>
@@ -366,7 +366,7 @@ export function KitchenDisplay() {
               {/* Customer Info */}
               {order.customer_name && (
                 <div className="flex items-center space-x-2 mb-3">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Users className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-gray-700">{order.customer_name}</span>
                 </div>
               )}
@@ -397,8 +397,8 @@ export function KitchenDisplay() {
               {/* Time and Actions */}
               <div className="flex items-center justify-between text-sm mb-4">
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
                     {isClient ? (
                       <>
                         <AnimatedCounter value={getTimeElapsed(order.order_time)} />m ago

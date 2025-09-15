@@ -259,7 +259,7 @@ export function DemoDashboard() {
                           'p-2 rounded-full',
                           transaction.transaction_type === 'sale'
                             ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950'
-                            : 'bg-blue-100 text-blue-600 dark:bg-blue-950'
+                            : 'bg-blue-100 text-primary dark:bg-blue-950'
                         )}
                       >
                         {transaction.transaction_type === 'sale' ? (

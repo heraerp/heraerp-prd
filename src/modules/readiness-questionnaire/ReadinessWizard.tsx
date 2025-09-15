@@ -68,7 +68,7 @@ const TextQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value)}
       placeholder="Type your answer..."
       className={cn(
-        'text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        'text-lg p-4 bg-background/80 dark:bg-muted/80 backdrop-blur-sm border-border dark:border-border text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400',
         validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
     />
@@ -93,7 +93,7 @@ const TextareaQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value)}
       placeholder="Share your thoughts in detail..."
       className={cn(
-        'text-lg p-4 min-h-[120px] bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        'text-lg p-4 min-h-[120px] bg-background/80 dark:bg-muted/80 backdrop-blur-sm border-border dark:border-border text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400',
         validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
       rows={5}
@@ -114,11 +114,11 @@ const SelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onC
         <RadioGroupItem value={option.code} id={option.code} />
         <Label
           htmlFor={option.code}
-          className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all text-gray-900 dark:text-white"
+          className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border border-border dark:border-border hover:bg-background/90 dark:hover:bg-muted/90 transition-all text-gray-900 dark:text-foreground"
         >
           {option.label}
           {option.description && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">
+            <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1 font-normal">
               {option.description}
             </div>
           )}
@@ -150,11 +150,11 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
           />
           <Label
             htmlFor={option.code}
-            className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all text-gray-900 dark:text-white"
+            className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border border-border dark:border-border hover:bg-background/90 dark:hover:bg-muted/90 transition-all text-gray-900 dark:text-foreground"
           >
             {option.label}
             {option.description && (
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1 font-normal">
                 {option.description}
               </div>
             )}
@@ -205,7 +205,7 @@ const NumberQuestion: React.FC<QuestionComponentProps> = ({
       onChange={e => onChange(e.target.value ? parseInt(e.target.value) : 0)}
       placeholder="Enter a number..."
       className={cn(
-        'text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-center text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-semibold',
+        'text-lg p-4 bg-background/80 dark:bg-muted/80 backdrop-blur-sm border-border dark:border-border text-center text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400 font-semibold',
         validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
     />
@@ -344,7 +344,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-4xl mx-auto"
         >
-          <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-white/20 dark:border-gray-700 shadow-2xl">
+          <Card className="bg-background/90 dark:bg-background/90 backdrop-blur-lg border-border/20 dark:border-border shadow-2xl">
             <CardHeader className="text-center">
               <motion.div
                 initial={{ scale: 0 }}
@@ -354,7 +354,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
               >
                 <CheckCircle className="w-10 h-10 text-green-600" />
               </motion.div>
-              <CardTitle className="text-3xl font-bold text-gray-900 dark:text-white">
+              <CardTitle className="text-3xl font-bold text-gray-900 dark:text-foreground">
                 Assessment Complete!
               </CardTitle>
               <p className="text-lg text-gray-700 dark:text-gray-300 font-medium">
@@ -390,7 +390,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <Lightbulb className="w-6 h-6 text-blue-700 dark:text-blue-400" />
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-foreground">
                       AI Insights
                     </h3>
                   </div>
@@ -404,7 +404,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
               <div className="flex justify-center pt-6">
                 <Button
                   size="lg"
-                  className="px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  className="px-8 bg-blue-600 hover:bg-blue-700 text-foreground font-semibold"
                 >
                   View Detailed Report
                   <TrendingUp className="w-5 h-5 ml-2" />
@@ -424,10 +424,10 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-              <BarChart3 className="w-5 h-5 text-white" />
+              <BarChart3 className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
                 ERP Readiness Assessment
               </h1>
               <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -446,9 +446,9 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-700 dark:text-gray-300 font-medium">Progress</span>
-            <span className="text-gray-900 dark:text-white font-bold">{progress.percent}%</span>
+            <span className="text-gray-900 dark:text-foreground font-bold">{progress.percent}%</span>
           </div>
-          <Progress value={progress.percent} className="h-2 bg-gray-200 dark:bg-gray-700" />
+          <Progress value={progress.percent} className="h-2 bg-gray-200 dark:bg-muted-foreground/10" />
         </div>
       </div>
 
@@ -469,7 +469,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
             className="max-w-4xl mx-auto"
           >
             <Card
-              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-white/20 dark:border-gray-700 shadow-2xl"
+              className="bg-background/90 dark:bg-background/90 backdrop-blur-lg border-border/20 dark:border-border shadow-2xl"
               style={{
                 background: `
                   linear-gradient(135deg, 
@@ -498,14 +498,14 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
                     >
                       {currentSection.title}
                     </Badge>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                    <div className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
                       Section {template.sections.indexOf(currentSection) + 1} of{' '}
                       {template.sections.length}
                     </div>
                   </div>
                 )}
 
-                <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-foreground leading-tight">
                   {currentQuestion.prompt}
                 </CardTitle>
 
@@ -540,18 +540,18 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
                 </motion.div>
 
                 {/* Navigation */}
-                <div className="flex items-center justify-between pt-6 border-t border-white/20">
+                <div className="flex items-center justify-between pt-6 border-t border-border/20">
                   <Button
                     variant="ghost"
                     onClick={handlePrev}
                     disabled={session.current_index === 0}
-                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium"
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground font-medium"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     Previous
                   </Button>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground font-medium">
                     <Clock className="w-4 h-4" />
                     <span>
                       ~{Math.max(1, allQuestions.length - progress.current)} min remaining
@@ -561,7 +561,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
                   <Button
                     onClick={handleNext}
                     disabled={!validation.isValid || isSubmitting}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-foreground font-semibold"
                   >
                     {isSubmitting ? (
                       <>

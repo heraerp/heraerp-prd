@@ -251,9 +251,9 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Processing</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.processing}</p>
+                <p className="text-2xl font-bold text-primary">{stats.processing}</p>
               </div>
-              <Send className="h-8 w-8 text-blue-600" />
+              <Send className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -354,7 +354,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                     <TableHead className="w-[50px]">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                         onChange={e => {
                           if (e.target.checked) {
                             setSelectedTransactions(new Set(transactions.map(t => t.id)))
@@ -379,7 +379,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                       <TableCell>
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300"
+                          className="rounded border-border"
                           checked={selectedTransactions.has(transaction.id)}
                           onChange={e => {
                             const newSelected = new Set(selectedTransactions)

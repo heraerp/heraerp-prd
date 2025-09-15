@@ -10,7 +10,7 @@ export default function AnalyticsChatV2Page() {
       <p className="mt-4">
         This page is currently being refactored for the new HERA DNA architecture.
       </p>
-      <p className="mt-2 text-sm text-gray-600">
+      <p className="mt-2 text-sm text-muted-foreground">
         The analytics functionality is temporarily available through the main Analytics Chat page.
       </p>
     </div>

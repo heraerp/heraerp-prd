@@ -144,13 +144,13 @@ export default function HowItWorksPage() {
       />
 
       {/* Process Steps */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               The 5-Step HERA System
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Designed for business professionals who want freedom, income, and impact
             </p>
           </div>
@@ -160,22 +160,22 @@ export default function HowItWorksPage() {
               <div key={index} className="flex flex-col lg:flex-row items-center mb-16 last:mb-0">
                 {/* Step Content */}
                 <div className={`flex-1 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                  <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-2xl p-8 border border-border dark:border-border">
                     <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-foreground font-bold text-lg mr-4">
                         {step.number}
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-2xl font-bold text-foreground dark:text-foreground">
                           {step.title}
                         </h3>
-                        <span className="text-sm text-blue-600 font-medium">
+                        <span className="text-sm text-primary font-medium">
                           Timeline: {step.timeline}
                         </span>
                       </div>
                     </div>
 
-                    <p className="text-lg text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                    <p className="text-lg text-muted-foreground dark:text-slate-300 mb-6 leading-relaxed">
                       {step.description}
                     </p>
 
@@ -194,13 +194,13 @@ export default function HowItWorksPage() {
                 <div
                   className={`w-full lg:w-80 mb-8 lg:mb-0 ${index % 2 === 1 ? 'lg:order-1 lg:mr-8' : 'lg:ml-8'}`}
                 >
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-lg">
-                    <step.icon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+                  <div className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-lg">
+                    <step.icon className="h-16 w-16 text-primary mx-auto mb-4" />
                     <div className="text-center">
-                      <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
+                      <h4 className="font-semibold text-foreground dark:text-foreground mb-2">
                         Step {step.number}
                       </h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{step.timeline}</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">{step.timeline}</p>
                     </div>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function HowItWorksPage() {
                 {/* Connector Arrow */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 mt-32">
-                    <ArrowRight className="h-6 w-6 text-slate-400" />
+                    <ArrowRight className="h-6 w-6 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -218,13 +218,13 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Support Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               You're Never Alone
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Complete franchise support system ensures your success at every step
             </p>
           </div>
@@ -233,15 +233,15 @@ export default function HowItWorksPage() {
             {support.map((item, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200 text-center"
+                className="bg-background dark:bg-background rounded-xl p-6 border border-border dark:border-border shadow-sm hover:shadow-md transition-shadow duration-200 text-center"
               >
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="h-6 w-6 text-blue-600" />
+                  <item.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground mb-3">
                   {item.title}
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p className="text-muted-foreground dark:text-muted-foreground text-sm leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -254,7 +254,7 @@ export default function HowItWorksPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Your Journey Timeline
             </h2>
             <p className="text-xl text-blue-100 mb-12">
@@ -262,19 +262,19 @@ export default function HowItWorksPage() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-6 border border-border/20">
                 <Clock className="h-8 w-8 text-blue-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Weeks 1-2</h3>
+                <h3 className="font-semibold text-foreground mb-2">Weeks 1-2</h3>
                 <p className="text-sm text-blue-100">Application, approval, training completion</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-6 border border-border/20">
                 <Search className="h-8 w-8 text-green-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Weeks 3-6</h3>
+                <h3 className="font-semibold text-foreground mb-2">Weeks 3-6</h3>
                 <p className="text-sm text-blue-100">Prospecting, presentations, first proposals</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-6 border border-border/20">
                 <DollarSign className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Week 7+</h3>
+                <h3 className="font-semibold text-foreground mb-2">Week 7+</h3>
                 <p className="text-sm text-blue-100">
                   First deals close, commissions start flowing
                 </p>
@@ -285,13 +285,13 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Ready to Start Step 1?
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               The hardest part is making the decision. Everything else is just following our proven
               system.
             </p>
@@ -300,7 +300,7 @@ export default function HowItWorksPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Apply Now - Step 1

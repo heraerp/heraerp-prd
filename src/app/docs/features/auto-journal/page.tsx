@@ -128,7 +128,7 @@ export default function AutoJournalDoc() {
             <h3 className="text-lg font-semibold mb-4">Processing Flow</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-foreground flex items-center justify-center flex-shrink-0">
                   1
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function AutoJournalDoc() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-foreground flex items-center justify-center flex-shrink-0">
                   2
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function AutoJournalDoc() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-foreground flex items-center justify-center flex-shrink-0">
                   3
                 </div>
                 <div>
@@ -166,7 +166,7 @@ export default function AutoJournalDoc() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-accent-emphasis text-foreground flex items-center justify-center flex-shrink-0">
                   4
                 </div>
                 <div>
@@ -178,7 +178,7 @@ export default function AutoJournalDoc() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-success-emphasis text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-success-emphasis text-foreground flex items-center justify-center flex-shrink-0">
                   5
                 </div>
                 <div>
@@ -336,7 +336,7 @@ if (smartCode === 'HERA.REST.SALE.ORDER.v1') {
         <section id="business-impact" className="mb-12">
           <h2>Business Impact Analysis</h2>
 
-          <div className="docs-card bg-success-emphasis text-white mb-6">
+          <div className="docs-card bg-success-emphasis text-foreground mb-6">
             <h3 className="text-xl font-semibold mb-4">Quantified Benefits</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>

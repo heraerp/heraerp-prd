@@ -28,11 +28,11 @@ export function StatsCard({
 }: StatsCardProps) {
   const variants = {
     default: {
-      card: 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700',
-      icon: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
-      value: 'text-slate-900 dark:text-white',
-      title: 'text-slate-600 dark:text-slate-400',
-      trend: 'text-blue-600'
+      card: 'bg-background dark:bg-muted border-border dark:border-border',
+      icon: 'text-primary bg-blue-100 dark:bg-blue-900/30',
+      value: 'text-foreground dark:text-foreground',
+      title: 'text-muted-foreground dark:text-muted-foreground',
+      trend: 'text-primary'
     },
     success: {
       card: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
@@ -50,10 +50,10 @@ export function StatsCard({
     },
     info: {
       card: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-      icon: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
+      icon: 'text-primary bg-blue-100 dark:bg-blue-900/30',
       value: 'text-blue-900 dark:text-blue-100',
       title: 'text-blue-700 dark:text-blue-300',
-      trend: 'text-blue-600'
+      trend: 'text-primary'
     }
   }
 

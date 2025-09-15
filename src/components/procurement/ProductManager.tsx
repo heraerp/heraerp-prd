@@ -381,11 +381,11 @@ export function ProductManager() {
       case 'active':
         return 'bg-green-100 text-green-800'
       case 'inactive':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
       case 'discontinued':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-gray-800'
     }
   }
 
@@ -397,8 +397,8 @@ export function ProductManager() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-3">
-            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-lg text-gray-600">Loading product catalog...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg text-muted-foreground">Loading product catalog...</span>
           </div>
         </div>
       </div>
@@ -411,13 +411,13 @@ export function ProductManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Catalog</h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Universal product and material management powered by HERA's dynamic architecture
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add Product</span>
@@ -429,13 +429,13 @@ export function ProductManager() {
         <div className="flex flex-wrap items-center gap-4">
           {/* Search */}
           <div className="flex items-center space-x-2 flex-1 min-w-80">
-            <Search className="w-5 h-5 text-gray-400" />
+            <Search className="w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search products by name, code, or category..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -443,7 +443,7 @@ export function ProductManager() {
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -455,7 +455,7 @@ export function ProductManager() {
           <select
             value={categoryFilter}
             onChange={e => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">All Categories</option>
             {categories.map(category => (
@@ -467,7 +467,7 @@ export function ProductManager() {
 
           <button
             onClick={loadProducts}
-            className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-800 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -495,11 +495,11 @@ export function ProductManager() {
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-white" />
+                  <Package className="w-6 h-6 text-foreground" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                  <p className="text-sm text-gray-600">{product.code}</p>
+                  <p className="text-sm text-muted-foreground">{product.code}</p>
                 </div>
               </div>
               <Badge className={getStatusColor(product.status)}>{product.status}</Badge>
@@ -508,12 +508,12 @@ export function ProductManager() {
             <div className="space-y-3">
               {/* Category & Brand */}
               <div className="flex items-center space-x-4 text-sm">
-                <div className="flex items-center space-x-1 text-gray-600">
+                <div className="flex items-center space-x-1 text-muted-foreground">
                   <Box className="w-4 h-4" />
                   <span>{product.category.replace('_', ' ')}</span>
                 </div>
                 {product.brand && (
-                  <div className="flex items-center space-x-1 text-gray-600">
+                  <div className="flex items-center space-x-1 text-muted-foreground">
                     <Star className="w-4 h-4" />
                     <span>{product.brand}</span>
                   </div>
@@ -522,7 +522,7 @@ export function ProductManager() {
 
               {/* Pricing */}
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Standard Cost:</span>
+                <span className="text-muted-foreground">Standard Cost:</span>
                 <span className="font-semibold text-gray-900">
                   {formatCurrency(product.standard_cost)}
                 </span>
@@ -530,7 +530,7 @@ export function ProductManager() {
 
               {product.list_price > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">List Price:</span>
+                  <span className="text-muted-foreground">List Price:</span>
                   <span className="font-semibold text-gray-900">
                     {formatCurrency(product.list_price)}
                   </span>
@@ -538,7 +538,7 @@ export function ProductManager() {
               )}
 
               {/* Inventory Info */}
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-1">
                   <Truck className="w-4 h-4" />
                   <span>{product.unit_of_measure}</span>
@@ -571,7 +571,7 @@ export function ProductManager() {
               <div className="flex items-center space-x-2 pt-2">
                 <button
                   type="button"
-                  className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
                   onClick={e => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -584,7 +584,7 @@ export function ProductManager() {
                 </button>
                 <button
                   type="button"
-                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
@@ -597,16 +597,16 @@ export function ProductManager() {
       {/* Empty State */}
       {filteredProducts.length === 0 && !isLoading && !error && (
         <Card className="p-12 text-center">
-          <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No Products Found</h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'active' || categoryFilter
               ? 'Try adjusting your filters to see more products.'
               : 'Get started by adding your first product to the catalog.'}
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors"
           >
             Add Product
           </button>
@@ -615,11 +615,11 @@ export function ProductManager() {
 
       {/* Create Product Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-900">Add New Product</h2>
-              <p className="text-gray-600 mt-1">Create a new product or material in your catalog</p>
+              <p className="text-muted-foreground mt-1">Create a new product or material in your catalog</p>
             </div>
 
             <form onSubmit={handleCreateProduct} className="p-6 space-y-6">
@@ -636,7 +636,7 @@ export function ProductManager() {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -653,7 +653,7 @@ export function ProductManager() {
                     required
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   >
                     <option value="">Select Category</option>
                     {categories.map(category => (
@@ -676,7 +676,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.brand}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -690,7 +690,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.model}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -707,7 +707,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.manufacturer}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
               </div>
@@ -727,7 +727,7 @@ export function ProductManager() {
                     required
                     value={formData.unit_of_measure}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   >
                     {units.map(unit => (
                       <option key={unit} value={unit}>
@@ -752,7 +752,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.standard_cost}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -771,7 +771,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.list_price}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -789,7 +789,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.lead_time_days}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
               </div>
@@ -808,7 +808,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -826,7 +826,7 @@ export function ProductManager() {
                     placeholder="L×W×H"
                     value={formData.dimensions}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -840,7 +840,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.color}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -857,7 +857,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.material}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
               </div>
@@ -870,7 +870,7 @@ export function ProductManager() {
                     name="hazardous"
                     checked={formData.hazardous}
                     onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-700">Hazardous Material</span>
                 </label>
@@ -881,7 +881,7 @@ export function ProductManager() {
                     name="perishable"
                     checked={formData.perishable}
                     onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-700">Perishable</span>
                 </label>
@@ -902,7 +902,7 @@ export function ProductManager() {
                   placeholder="e.g., Store in cool, dry place"
                   value={formData.storage_requirements}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                 />
               </div>
 
@@ -920,26 +920,26 @@ export function ProductManager() {
                   rows={3}
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => {
                     setShowCreateModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -961,11 +961,11 @@ export function ProductManager() {
 
       {/* Pencil Product Modal - Similar structure to Create Modal */}
       {showEditModal && editingProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-900">Pencil Product</h2>
-              <p className="text-gray-600 mt-1">Update product information and specifications</p>
+              <p className="text-muted-foreground mt-1">Update product information and specifications</p>
             </div>
 
             <form onSubmit={handleUpdateProduct} className="p-6 space-y-6">
@@ -985,7 +985,7 @@ export function ProductManager() {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   />
                 </div>
 
@@ -1002,7 +1002,7 @@ export function ProductManager() {
                     required
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
                   >
                     <option value="">Select Category</option>
                     {categories.map(category => (
@@ -1015,21 +1015,21 @@ export function ProductManager() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => {
                     setShowEditModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -1060,23 +1060,23 @@ export function ProductManager() {
             specifications:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_entities</strong>
               <br />
               Products stored as universal entities with standard properties
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>core_dynamic_data</strong>
               <br />
               Unlimited custom specifications without schema changes
             </div>
-            <div className="bg-white/50 p-3 rounded-lg">
+            <div className="bg-background/50 p-3 rounded-lg">
               <strong>Steve Jobs Design</strong>
               <br />
               "Simplicity is the ultimate sophistication" - one catalog, infinite possibilities
             </div>
           </div>
-          <p className="text-xs text-blue-600 mt-4">
+          <p className="text-xs text-primary mt-4">
             Same architecture supports manufacturing parts, medical supplies, retail inventory, and
             service materials
           </p>

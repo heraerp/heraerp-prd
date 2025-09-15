@@ -417,7 +417,7 @@ await universalApi.createRelationship({
         <section className="mb-12">
           <h2>Business Impact</h2>
 
-          <div className="docs-card bg-success-emphasis text-white">
+          <div className="docs-card bg-success-emphasis text-foreground">
             <h3 className="text-xl font-semibold mb-4">Proven Results</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>

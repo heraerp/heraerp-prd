@@ -16,8 +16,8 @@ export default function UCRSettingsPage() {
   // Three-layer authorization pattern
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-        <Alert className="max-w-md bg-gray-800/50 border-gray-700">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Alert className="max-w-md bg-muted/50 border-border">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>Please log in to access UCR settings.</AlertDescription>
         </Alert>
@@ -27,7 +27,7 @@ export default function UCRSettingsPage() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 p-6">
+      <div className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <Skeleton className="h-10 w-64" />
           <div className="grid grid-cols-4 gap-4">
@@ -44,8 +44,8 @@ export default function UCRSettingsPage() {
 
   if (!currentOrganization?.id) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-        <Alert className="max-w-md bg-gray-800/50 border-gray-700">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Alert className="max-w-md bg-muted/50 border-border">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             No organization context found. Please select an organization.
@@ -56,7 +56,7 @@ export default function UCRSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <UCRRuleManager organizationId={currentOrganization.id} />
       </div>

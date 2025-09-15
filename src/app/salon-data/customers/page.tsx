@@ -416,7 +416,7 @@ const getSegmentColor = (segment: string): string => {
     case 'New':
       return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200'
+      return 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
   }
 }
 
@@ -525,18 +525,18 @@ const CustomerDetailModal = ({
   return (
     <ModalPortal>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+        className="fixed inset-0 bg-background/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
         onClick={onClose}
       >
         <div
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+          className="bg-background dark:bg-muted rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
+          <div className="border-b border-border dark:border-border bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center text-white text-2xl font-semibold">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center text-foreground text-2xl font-semibold">
                   {customer.entity_name
                     .split(' ')
                     .map(n => n[0])
@@ -545,11 +545,11 @@ const CustomerDetailModal = ({
                     .slice(0, 2)}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
                     {customer.entity_name}
                     {customer.business_rules?.vip && <Crown className="w-5 h-5 text-purple-600" />}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                     Customer since {formatDate(customer.created_at)} • {customer.entity_code}
                   </p>
                   <div className="flex items-center gap-2 mt-2">
@@ -558,7 +558,7 @@ const CustomerDetailModal = ({
                       {customer.status}
                     </Badge>
                     {customer.membership_status === 'active' && (
-                      <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                      <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground">
                         <Award className="w-3 h-3 mr-1" />
                         {customer.membership_name}
                       </Badge>
@@ -570,7 +570,7 @@ const CustomerDetailModal = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="hover:bg-muted dark:hover:bg-muted-foreground/10"
               >
                 <X className="w-5 h-5" />
               </Button>
@@ -578,27 +578,27 @@ const CustomerDetailModal = ({
 
             {/* Quick Stats */}
             <div className="grid grid-cols-4 gap-4 mt-6">
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Lifetime Value</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Lifetime Value</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   {formatCurrency(customer.lifetime_value || 0)}
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Total Visits</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Total Visits</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   {customer.visit_count || 0}
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Avg. Ticket</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Avg. Ticket</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   {formatCurrency(customer.average_ticket || 0)}
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Loyalty Points</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Loyalty Points</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   {customer.loyalty_balance || 0}
                 </p>
               </div>
@@ -641,30 +641,30 @@ const CustomerDetailModal = ({
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-gray-400" />
+                        <Mail className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Email</p>
                           <p className="font-medium">{customer.email || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-gray-400" />
+                        <Phone className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Phone</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Phone</p>
                           <p className="font-medium">{formatPhone(customer.phone)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <MessageCircle className="w-4 h-4 text-gray-400" />
+                        <MessageCircle className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">WhatsApp</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">WhatsApp</p>
                           <p className="font-medium">{formatPhone(customer.whatsapp) || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Home className="w-4 h-4 text-gray-400" />
+                        <Home className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Address</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Address</p>
                           <p className="font-medium">{customer.address || '-'}</p>
                         </div>
                       </div>
@@ -678,25 +678,25 @@ const CustomerDetailModal = ({
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <Cake className="w-4 h-4 text-gray-400" />
+                        <Cake className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Date of Birth</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Date of Birth</p>
                           <p className="font-medium">
                             {customer.dob ? formatDate(customer.dob) : '-'}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <User className="w-4 h-4 text-gray-400" />
+                        <User className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Gender</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Gender</p>
                           <p className="font-medium">{customer.gender || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Last Visit</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Last Visit</p>
                           <p className="font-medium">
                             {customer.last_visit
                               ? `${formatDate(customer.last_visit)} (${daysSinceVisit} days ago)`
@@ -705,9 +705,9 @@ const CustomerDetailModal = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <CalendarCheck className="w-4 h-4 text-gray-400" />
+                        <CalendarCheck className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Next Appointment
                           </p>
                           <p className="font-medium">
@@ -727,39 +727,39 @@ const CustomerDetailModal = ({
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <Sparkles className="w-4 h-4 text-gray-400" />
+                        <Sparkles className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Hair Type</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Hair Type</p>
                           <p className="font-medium">{customer.hair_type || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Palette className="w-4 h-4 text-gray-400" />
+                        <Palette className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Color Formula</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Color Formula</p>
                           <p className="font-medium">{customer.color_formula || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Gem className="w-4 h-4 text-gray-400" />
+                        <Gem className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Skin Type</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Skin Type</p>
                           <p className="font-medium">{customer.skin_type || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Scissors className="w-4 h-4 text-gray-400" />
+                        <Scissors className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Preferred Stylist
                           </p>
                           <p className="font-medium">{customer.preferred_staff || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <MapPin className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Preferred Location
                           </p>
                           <p className="font-medium">{customer.preferred_location || '-'}</p>
@@ -775,7 +775,7 @@ const CustomerDetailModal = ({
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">
                           Consent Status
                         </p>
                         <div className="space-y-2">
@@ -825,7 +825,7 @@ const CustomerDetailModal = ({
                       </div>
 
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Tags</p>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">Tags</p>
                         <div className="flex flex-wrap gap-2">
                           {customer.tags?.map((tag, index) => (
                             <Badge key={index} variant="secondary">
@@ -876,8 +876,8 @@ const CustomerDetailModal = ({
                 {activities.length === 0 ? (
                   <div className="text-center py-12">
                     <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-600 dark:text-gray-400 mb-2">No activity yet</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                    <p className="text-muted-foreground dark:text-muted-foreground mb-2">No activity yet</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       Customer activities will appear here once they start booking appointments.
                     </p>
                   </div>
@@ -894,7 +894,7 @@ const CustomerDetailModal = ({
                                   activity.transaction_type === 'APPOINTMENT'
                                     ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30'
                                     : activity.transaction_type === 'PURCHASE'
-                                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
+                                      ? 'bg-blue-100 text-primary dark:bg-blue-900/30'
                                       : 'bg-green-100 text-green-600 dark:bg-green-900/30'
                                 )}
                               >
@@ -907,16 +907,16 @@ const CustomerDetailModal = ({
                                 )}
                               </div>
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-white">
+                                <p className="font-medium text-gray-900 dark:text-foreground">
                                   {activity.description}
                                 </p>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                                   {formatDate(activity.transaction_date)}
                                 </p>
                               </div>
                             </div>
                             {activity.amount && (
-                              <p className="font-semibold text-gray-900 dark:text-white">
+                              <p className="font-semibold text-gray-900 dark:text-foreground">
                                 {activity.type === 'earn' ? '+' : ''}
                                 {formatCurrency(activity.amount)}
                               </p>
@@ -949,11 +949,11 @@ const CustomerDetailModal = ({
                       {loyaltyHistory.map(transaction => (
                         <div
                           key={transaction.id}
-                          className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                          className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-border last:border-0"
                         >
                           <div>
                             <p className="font-medium">{transaction.description}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                               {formatDate(transaction.date)}
                             </p>
                           </div>
@@ -967,7 +967,7 @@ const CustomerDetailModal = ({
                               {transaction.type === 'EARN' ? '+' : ''}
                               {transaction.points} pts
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                               Balance: {transaction.balance_after}
                             </p>
                           </div>
@@ -996,7 +996,7 @@ const CustomerDetailModal = ({
                           <Crown className="w-5 h-5 text-purple-600" />
                           Membership
                         </span>
-                        <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                        <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground">
                           {currentMembership.status}
                         </Badge>
                       </CardTitle>
@@ -1004,29 +1004,29 @@ const CustomerDetailModal = ({
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Plan</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Plan</span>
                           <span className="font-medium">{currentMembership.plan_name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Monthly Fee</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Monthly Fee</span>
                           <span className="font-medium">
                             {formatCurrency(currentMembership.monthly_fee || 0)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Next Billing</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Next Billing</span>
                           <span className="font-medium">
                             {formatDate(currentMembership.next_billing_date)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Member Since</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">Member Since</span>
                           <span className="font-medium">
                             {formatDate(currentMembership.start_date)}
                           </span>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Benefits</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">Benefits</p>
                           <ul className="space-y-1">
                             {currentMembership.benefits?.map((benefit, index) => (
                               <li key={index} className="flex items-center gap-2 text-sm">
@@ -1043,7 +1043,7 @@ const CustomerDetailModal = ({
                   <Card>
                     <CardContent className="p-8 text-center">
                       <Crown className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-600 dark:text-gray-400 mb-4">No active membership</p>
+                      <p className="text-muted-foreground dark:text-muted-foreground mb-4">No active membership</p>
                       <Button>
                         <UserPlus className="w-4 h-4 mr-2" />
                         Enroll in Membership
@@ -1057,16 +1057,16 @@ const CustomerDetailModal = ({
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <Gift className="w-5 h-5 text-blue-600" />
+                        <Gift className="w-5 h-5 text-primary" />
                         Gift Cards
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center py-4">
-                        <p className="text-3xl font-bold text-blue-600">
+                        <p className="text-3xl font-bold text-primary">
                           {formatCurrency(customer.gift_card_balance || 0)}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                           Available Balance
                         </p>
                         <Button size="sm" className="mt-4">
@@ -1089,7 +1089,7 @@ const CustomerDetailModal = ({
                         <p className="text-3xl font-bold text-green-600">
                           {formatCurrency(customer.deposit_balance || 0)}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">On Account</p>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">On Account</p>
                         <Button size="sm" className="mt-4">
                           <Plus className="w-4 h-4 mr-1" />
                           Collect Deposit
@@ -1104,7 +1104,7 @@ const CustomerDetailModal = ({
               <TabsContent value="files" className="p-6">
                 <div className="text-center py-12">
                   <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">No files uploaded yet</p>
+                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">No files uploaded yet</p>
                   <Button>
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Files
@@ -1124,7 +1124,7 @@ const CustomerDetailModal = ({
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="border-b border-gray-200 dark:border-gray-700">
+                      <thead className="border-b border-border dark:border-border">
                         <tr>
                           <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Date
@@ -1164,7 +1164,7 @@ const CustomerDetailModal = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+          <div className="border-t border-border dark:border-border bg-muted dark:bg-background p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Button
@@ -1876,7 +1876,7 @@ export default function SalonCustomersPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading customer data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">Loading customer data...</p>
         </div>
       </div>
     )
@@ -1888,11 +1888,11 @@ export default function SalonCustomersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
               <Users className="w-8 h-8 text-purple-600" />
               Customers
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground dark:text-muted-foreground mt-1">
               Manage customer profiles, preferences, and loyalty programs
             </p>
           </div>
@@ -1901,7 +1901,7 @@ export default function SalonCustomersPage() {
               variant="outline"
               onClick={() => fetchCustomers()}
               disabled={isLoading}
-              className="bg-white dark:bg-gray-800"
+              className="bg-background dark:bg-muted"
             >
               <RefreshCw className={cn('w-4 h-4 mr-2', isLoading && 'animate-spin')} />
               Refresh
@@ -1909,7 +1909,7 @@ export default function SalonCustomersPage() {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="bg-white dark:bg-gray-800"
+              className="bg-background dark:bg-muted"
             >
               <Filter className="w-4 h-4 mr-2" />
               Filters
@@ -1920,7 +1920,7 @@ export default function SalonCustomersPage() {
               )}
             </Button>
             <Button
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
               onClick={() => setShowCreateModal(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -1931,12 +1931,12 @@ export default function SalonCustomersPage() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {totalCustomers}
                   </p>
                 </div>
@@ -1945,12 +1945,12 @@ export default function SalonCustomersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {activeCustomers}
                   </p>
                 </div>
@@ -1959,24 +1959,24 @@ export default function SalonCustomersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">VIPs</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{vipCustomers}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">VIPs</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">{vipCustomers}</p>
                 </div>
                 <Crown className="w-8 h-8 text-purple-500 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">At Risk</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">At Risk</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {atRiskCustomers}
                   </p>
                 </div>
@@ -1985,12 +1985,12 @@ export default function SalonCustomersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Avg LTV</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg LTV</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {formatCurrency(avgLTV).split(' ')[1]}
                   </p>
                 </div>
@@ -1999,12 +1999,12 @@ export default function SalonCustomersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Booked</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Booked</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     {withAppointments}
                   </p>
                 </div>
@@ -2015,11 +2015,11 @@ export default function SalonCustomersPage() {
         </div>
 
         {/* Search Bar */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   placeholder="Search by name, email, or phone..."
                   value={searchQuery}
@@ -2029,7 +2029,7 @@ export default function SalonCustomersPage() {
               </div>
               {selectedCustomers.size > 0 && (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {selectedCustomers.size} selected
                   </span>
                   <Button size="sm" variant="outline">
@@ -2050,7 +2050,7 @@ export default function SalonCustomersPage() {
 
             {/* Filters */}
             {showFilters && (
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-4 pt-4 border-t border-border dark:border-border">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   <select
                     value={selectedFilters.status || ''}
@@ -2060,7 +2060,7 @@ export default function SalonCustomersPage() {
                         status: e.target.value || undefined
                       })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Status</option>
                     <option value="active">Active</option>
@@ -2076,7 +2076,7 @@ export default function SalonCustomersPage() {
                         segment: e.target.value || undefined
                       })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Segments</option>
                     <option value="VIP">VIP</option>
@@ -2094,7 +2094,7 @@ export default function SalonCustomersPage() {
                         membership: e.target.value || undefined
                       })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Memberships</option>
                     <option value="active">Active Member</option>
@@ -2110,7 +2110,7 @@ export default function SalonCustomersPage() {
                         location: e.target.value || undefined
                       })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Locations</option>
                     <option value="Park Regis">Park Regis</option>
@@ -2122,7 +2122,7 @@ export default function SalonCustomersPage() {
                     onChange={e =>
                       setSelectedFilters({ ...selectedFilters, staff: e.target.value || undefined })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Staff</option>
                     <option value="Rocky">Rocky</option>
@@ -2139,7 +2139,7 @@ export default function SalonCustomersPage() {
                         consent: e.target.value || undefined
                       })
                     }
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                    className="px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-sm"
                   >
                     <option value="">All Consents</option>
                     <option value="email">Email Opt-in</option>
@@ -2164,11 +2164,11 @@ export default function SalonCustomersPage() {
         </Card>
 
         {/* Customer Grid */}
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <thead className="bg-muted dark:bg-background border-b border-border dark:border-border">
                   <tr>
                     <th className="text-left px-6 py-3">
                       <input
@@ -2178,7 +2178,7 @@ export default function SalonCustomersPage() {
                           filteredCustomers.length > 0
                         }
                         onChange={selectAllCustomers}
-                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                        className="rounded border-border text-purple-600 focus:ring-purple-500"
                       />
                     </th>
                     <th className="text-left px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -2210,10 +2210,10 @@ export default function SalonCustomersPage() {
                       <td colSpan={8} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <Users className="w-12 h-12 text-gray-300 mb-4" />
-                          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">
+                          <p className="text-muted-foreground dark:text-muted-foreground text-lg font-medium mb-2">
                             No customers found
                           </p>
-                          <p className="text-gray-400 dark:text-gray-500 text-sm mb-4">
+                          <p className="text-muted-foreground dark:text-muted-foreground text-sm mb-4">
                             {searchQuery
                               ? `No results for "${searchQuery}"`
                               : 'Start by adding your first customer'}
@@ -2221,7 +2221,7 @@ export default function SalonCustomersPage() {
                           {!searchQuery && (
                             <Button
                               size="sm"
-                              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                              className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground"
                               onClick={() => setShowCreateModal(true)}
                             >
                               <Plus className="w-4 h-4 mr-2" />
@@ -2239,14 +2239,14 @@ export default function SalonCustomersPage() {
                       return (
                         <tr
                           key={customer.id}
-                          className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900"
+                          className="border-b border-gray-100 dark:border-gray-800 hover:bg-muted dark:hover:bg-background"
                         >
                           <td className="px-6 py-4">
                             <input
                               type="checkbox"
                               checked={selectedCustomers.has(customer.id)}
                               onChange={() => toggleCustomerSelection(customer.id)}
-                              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                              className="rounded border-border text-purple-600 focus:ring-purple-500"
                             />
                           </td>
                           <td className="px-6 py-4">
@@ -2254,7 +2254,7 @@ export default function SalonCustomersPage() {
                               className="flex items-center gap-3 cursor-pointer"
                               onClick={() => setSelectedCustomer(customer)}
                             >
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center text-white font-medium">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center text-foreground font-medium">
                                 {customer.entity_name
                                   .split(' ')
                                   .map(n => n[0])
@@ -2263,7 +2263,7 @@ export default function SalonCustomersPage() {
                                   .slice(0, 2)}
                               </div>
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                                <p className="font-medium text-gray-900 dark:text-foreground flex items-center gap-2">
                                   {customer.entity_name}
                                   {customer.business_rules?.vip && (
                                     <Crown className="w-4 h-4 text-purple-600" />
@@ -2284,10 +2284,10 @@ export default function SalonCustomersPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div className="space-y-1">
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 {customer.email}
                               </p>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 {formatPhone(customer.phone)}
                               </p>
                               <div className="flex items-center gap-2">
@@ -2325,11 +2325,11 @@ export default function SalonCustomersPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="text-sm text-gray-900 dark:text-white">
+                              <p className="text-sm text-gray-900 dark:text-foreground">
                                 {customer.last_visit ? formatDate(customer.last_visit) : 'Never'}
                               </p>
                               {customer.last_visit && (
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                                   {daysSinceVisit} days ago
                                 </p>
                               )}
@@ -2341,10 +2341,10 @@ export default function SalonCustomersPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <p className="font-semibold text-gray-900 dark:text-white">
+                            <p className="font-semibold text-gray-900 dark:text-foreground">
                               {formatCurrency(customer.lifetime_value || 0)}
                             </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                               {customer.visit_count || 0} visits
                             </p>
                           </td>
@@ -2356,12 +2356,12 @@ export default function SalonCustomersPage() {
                                 </p>
                               ) : null}
                               {customer.membership_status === 'active' && (
-                                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-foreground text-xs">
                                   {customer.membership_name}
                                 </Badge>
                               )}
                               {customer.gift_card_balance ? (
-                                <p className="text-xs text-blue-600">
+                                <p className="text-xs text-primary">
                                   GC: {formatCurrency(customer.gift_card_balance)}
                                 </p>
                               ) : null}
@@ -2391,40 +2391,40 @@ export default function SalonCustomersPage() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
                                   align="end"
-                                  className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
+                                  className="w-56 bg-background dark:bg-muted border border-border dark:border-border shadow-lg"
                                 >
-                                  <DropdownMenuLabel className="text-gray-900 dark:text-gray-100">
+                                  <DropdownMenuLabel className="text-gray-900 dark:text-foreground">
                                     Actions
                                   </DropdownMenuLabel>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
                                   <DropdownMenuItem
                                     onClick={() => setSelectedCustomer(customer)}
-                                    className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                    className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer"
                                   >
                                     <ChevronRight className="w-4 h-4 mr-2" />
                                     View Details
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => setEditingCustomer(customer)}
-                                    className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                    className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer"
                                   >
                                     <Pencil className="w-4 h-4 mr-2" />
                                     Pencil Customer
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
-                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
+                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer">
                                     <Calendar className="w-4 h-4 mr-2" />
                                     Book Appointment
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer">
                                     <MessageCircle className="w-4 h-4 mr-2" />
                                     Send Message
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                  <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer">
                                     <Receipt className="w-4 h-4 mr-2" />
                                     View Transactions
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
                                   <DropdownMenuItem
                                     className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
                                     onClick={() => {
@@ -2453,8 +2453,8 @@ export default function SalonCustomersPage() {
             </div>
 
             {/* Pagination */}
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="px-6 py-4 border-t border-border dark:border-border flex items-center justify-between">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 Showing 1 to {Math.min(20, filteredCustomers.length)} of {filteredCustomers.length}{' '}
                 customers
               </p>

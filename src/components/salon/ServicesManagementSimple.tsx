@@ -50,12 +50,12 @@ export default function ServicesManagementSimple() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="sticky top-0 z-20 px-6 py-4 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="sticky top-0 z-20 px-6 py-4 backdrop-blur-xl bg-background/80 dark:bg-background/80 border-b border-border dark:border-gray-800 shadow-sm">
         <div className="max-w-[1600px] mx-auto">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             Services Management
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-muted-foreground dark:text-muted-foreground mt-2">
             Manage your salon services and pricing
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function ServicesManagementSimple() {
 
               <div className="flex gap-3 items-center w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-none">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Search services..."
                     value={searchQuery}
@@ -95,10 +95,10 @@ export default function ServicesManagementSimple() {
               {filteredServices.map(service => (
                 <div
                   key={service.id}
-                  className="group relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg transition-all duration-200"
+                  className="group relative bg-background dark:bg-muted border border-border dark:border-border rounded-lg p-4 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
+                    <h3 className="font-semibold text-gray-900 dark:text-foreground text-lg">
                       {service.name}
                     </h3>
                     {service.active && (
@@ -108,18 +108,18 @@ export default function ServicesManagementSimple() {
                     )}
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                  <p className="text-muted-foreground dark:text-muted-foreground text-sm mb-4">
                     {service.description}
                   </p>
 
-                  <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       <span>{service.duration}m</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4" />
-                      <span className="font-semibold text-gray-900 dark:text-white">
+                      <span className="font-semibold text-gray-900 dark:text-foreground">
                         AED {service.price}
                       </span>
                     </div>
@@ -140,11 +140,11 @@ export default function ServicesManagementSimple() {
 
             {filteredServices.length === 0 && (
               <div className="text-center py-12">
-                <Scissors className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <Scissors className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
                   No services found
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground dark:text-muted-foreground">
                   {searchQuery
                     ? 'Try adjusting your search'
                     : 'Create your first service to get started'}
@@ -166,7 +166,7 @@ export default function ServicesManagementSimple() {
 
       {/* Simple Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
           <Card className="w-full max-w-md m-4">
             <CardHeader>
               <CardTitle>Add New Service</CardTitle>

@@ -31,8 +31,8 @@ export function EmptyState({
         }
       case 'data':
         return {
-          iconColor: 'text-gray-500',
-          iconBg: 'bg-gray-50 border-gray-200'
+          iconColor: 'text-muted-foreground',
+          iconBg: 'bg-muted border-border'
         }
       case 'error':
         return {
@@ -41,8 +41,8 @@ export function EmptyState({
         }
       default:
         return {
-          iconColor: 'text-gray-500',
-          iconBg: 'bg-gray-50 border-gray-200'
+          iconColor: 'text-muted-foreground',
+          iconBg: 'bg-muted border-border'
         }
     }
   }
@@ -59,12 +59,12 @@ export function EmptyState({
 
       <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
 
-      <p className="text-gray-600 max-w-md mb-6 leading-relaxed">{description}</p>
+      <p className="text-muted-foreground max-w-md mb-6 leading-relaxed">{description}</p>
 
       {action && (
         <Button
           onClick={action.onClick}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground hover:from-blue-700 hover:to-purple-700"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           {action.label}
@@ -101,10 +101,10 @@ export function ComingSoonState() {
   return (
     <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200 p-8 text-center">
       <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-        <Sparkles className="w-8 h-8 text-white" />
+        <Sparkles className="w-8 h-8 text-foreground" />
       </div>
       <h3 className="text-lg font-semibold text-gray-900 mb-2">More Apps Coming Soon</h3>
-      <p className="text-gray-600 text-sm">
+      <p className="text-muted-foreground text-sm">
         We're constantly expanding our progressive app catalog. Check back soon for new industry
         solutions!
       </p>

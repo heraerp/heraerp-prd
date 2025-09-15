@@ -74,7 +74,7 @@ export function TodaysMetrics({ className }: TodaysMetricsProps) {
       <CardHeader className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-            <Activity className="h-4 w-4 text-white" />
+            <Activity className="h-4 w-4 text-foreground" />
           </div>
           Today's Metrics
         </CardTitle>
@@ -95,7 +95,7 @@ export function TodaysMetrics({ className }: TodaysMetricsProps) {
                       metric.color
                     )}
                   >
-                    <Icon className="h-3 w-3 text-white" />
+                    <Icon className="h-3 w-3 text-foreground" />
                   </div>
                   <span className="text-sm font-medium">{metric.label}</span>
                 </div>

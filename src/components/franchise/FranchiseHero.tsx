@@ -34,17 +34,17 @@ export function FranchiseHero({
     default:
       'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900',
     gradient: 'bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700',
-    dark: 'bg-slate-900'
+    dark: 'bg-background'
   }
 
   const textClasses = {
-    default: 'text-slate-900 dark:text-white',
-    gradient: 'text-white',
-    dark: 'text-white'
+    default: 'text-foreground dark:text-foreground',
+    gradient: 'text-foreground',
+    dark: 'text-foreground'
   }
 
   const subtitleClasses = {
-    default: 'text-slate-600 dark:text-slate-300',
+    default: 'text-muted-foreground dark:text-slate-300',
     gradient: 'text-blue-100',
     dark: 'text-slate-300'
   }
@@ -94,7 +94,7 @@ export function FranchiseHero({
                 <Button
                   asChild
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
                 >
                   <Link href={ctaLink} className="flex items-center">
                     {ctaText}
@@ -117,7 +117,7 @@ export function FranchiseHero({
 
               {/* Stats */}
               {showStats && (
-                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border dark:border-border">
                   <div className="text-center">
                     <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>
                       500+
@@ -148,12 +148,12 @@ export function FranchiseHero({
             <div className="flex justify-center lg:justify-end">
               {showVideo ? (
                 <div className="relative w-full max-w-lg">
-                  <div className="aspect-video bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                  <div className="aspect-video bg-muted rounded-2xl shadow-2xl overflow-hidden">
                     <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-600 to-purple-600">
                       <Button
                         size="lg"
                         variant="secondary"
-                        className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
+                        className="bg-background/20 backdrop-blur-sm hover:bg-background/30 text-foreground border-white/30"
                       >
                         <Play className="h-6 w-6 mr-2" />
                         Watch Demo
@@ -167,19 +167,19 @@ export function FranchiseHero({
                 <div className="relative">
                   {/* Feature Cards */}
                   <div className="grid grid-cols-1 gap-4 w-full max-w-sm">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                    <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                       <Users className="h-8 w-8 text-blue-400 mb-3" />
-                      <h3 className="font-semibold text-white mb-2">Work From Home</h3>
+                      <h3 className="font-semibold text-foreground mb-2">Work From Home</h3>
                       <p className="text-sm text-slate-300">Build your empire from anywhere</p>
                     </div>
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 ml-6">
+                    <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20 ml-6">
                       <TrendingUp className="h-8 w-8 text-green-400 mb-3" />
-                      <h3 className="font-semibold text-white mb-2">High Income</h3>
+                      <h3 className="font-semibold text-foreground mb-2">High Income</h3>
                       <p className="text-sm text-slate-300">Earn $25K–$500K+ annually</p>
                     </div>
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                    <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                       <Star className="h-8 w-8 text-yellow-400 mb-3" />
-                      <h3 className="font-semibold text-white mb-2">Market Leader</h3>
+                      <h3 className="font-semibold text-foreground mb-2">Market Leader</h3>
                       <p className="text-sm text-slate-300">Disrupt a $50B industry</p>
                     </div>
                   </div>

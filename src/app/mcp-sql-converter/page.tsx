@@ -277,7 +277,7 @@ SELECT
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <Button variant="outline" asChild className="bg-white/80">
+              <Button variant="outline" asChild className="bg-background/80">
                 <Link href="/">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
@@ -303,10 +303,10 @@ SELECT
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
-            <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+            <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <FileCode className="h-6 w-6 text-blue-600" />
+                  <FileCode className="h-6 w-6 text-primary" />
                   Progressive Page Analysis
                 </CardTitle>
               </CardHeader>
@@ -318,7 +318,7 @@ SELECT
                     placeholder="e.g., Elite Beauty Salon"
                     value={organizationName}
                     onChange={e => setOrganizationName(e.target.value)}
-                    className="bg-white/80 border-slate-200"
+                    className="bg-background/80 border-border"
                   />
                 </div>
 
@@ -328,7 +328,7 @@ SELECT
                     id="business-type"
                     value={businessType}
                     onChange={e => setBusinessType(e.target.value)}
-                    className="w-full p-2 border rounded-lg bg-white/50"
+                    className="w-full p-2 border rounded-lg bg-background/50"
                   >
                     <option value="salon">Salon</option>
                     <option value="restaurant">Restaurant</option>
@@ -370,7 +370,7 @@ SELECT
                           placeholder="e.g., https://heraerp.com/salon-progressive/customers"
                           value={pageUrl}
                           onChange={e => setPageUrl(e.target.value)}
-                          className="bg-white/80 border-slate-200"
+                          className="bg-background/80 border-border"
                         />
                         <p className="text-xs text-slate-700 mt-1 font-medium">
                           Enter the full URL of your progressive page
@@ -416,7 +416,7 @@ SELECT
                           size="sm"
                           onClick={fetchPageContent}
                           disabled={isFetchingPage}
-                          className="w-full bg-white/80 hover:bg-white/90 border-slate-300"
+                          className="w-full bg-background/80 hover:bg-background/90 border-input"
                         >
                           {isFetchingPage ? (
                             <>
@@ -440,7 +440,7 @@ SELECT
                         placeholder="Paste your progressive page code here (the demo data section)..."
                         value={progressiveCode}
                         onChange={e => setProgressiveCode(e.target.value)}
-                        className="h-64 font-mono text-sm bg-white/80 border-slate-200 text-slate-800"
+                        className="h-64 font-mono text-sm bg-background/80 border-border text-slate-800"
                       />
                     </div>
                   )}
@@ -449,7 +449,7 @@ SELECT
                 <Button
                   onClick={analyzeProgressiveCode}
                   disabled={(!progressiveCode && !pageUrl) || !organizationName || isAnalyzing}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-foreground font-medium"
                 >
                   {isAnalyzing ? (
                     <>
@@ -467,7 +467,7 @@ SELECT
             </Card>
 
             {analysisResult && (
-              <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+              <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <CheckCircle className="h-6 w-6 text-green-600" />
@@ -478,19 +478,19 @@ SELECT
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Entities Found:</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-foreground">
                         {analysisResult.entities.length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Customers:</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-foreground">
                         {analysisResult.entities.filter(e => e.type === 'customer').length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Services:</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-foreground">
                         {analysisResult.entities.filter(e => e.type === 'service').length}
                       </span>
                     </div>
@@ -503,13 +503,13 @@ SELECT
           {/* Output Section */}
           <div className="space-y-6">
             <Tabs defaultValue="sql" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2 bg-white/60 border border-white/40">
+              <TabsList className="grid w-full grid-cols-2 bg-background/60 border border-white/40">
                 <TabsTrigger value="sql">SQL Output</TabsTrigger>
                 <TabsTrigger value="mcp">MCP Commands</TabsTrigger>
               </TabsList>
 
               <TabsContent value="sql">
-                <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+                <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-3">
@@ -537,7 +537,7 @@ SELECT
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto">
+                    <div className="bg-background text-slate-100 p-4 rounded-lg overflow-x-auto">
                       <pre className="text-xs font-mono whitespace-pre-wrap">
                         {sqlOutput || '-- SQL will appear here after analysis'}
                       </pre>
@@ -547,7 +547,7 @@ SELECT
               </TabsContent>
 
               <TabsContent value="mcp">
-                <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+                <Card className="bg-background/70 backdrop-blur-xl border-white/30 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3">
                       <Terminal className="h-6 w-6 text-green-600" />
@@ -560,7 +560,7 @@ SELECT
                         mcpCommands.map((cmd, index) => (
                           <div
                             key={index}
-                            className="p-3 bg-white/70 rounded-lg border border-slate-200 font-mono text-sm text-slate-800"
+                            className="p-3 bg-background/70 rounded-lg border border-border font-mono text-sm text-slate-800"
                           >
                             <span className="text-blue-700 font-bold">{index + 1}.</span> {cmd}
                           </div>
@@ -586,20 +586,20 @@ SELECT
                   </h3>
                   <ol className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-blue-600">1.</span>
+                      <span className="font-semibold text-primary">1.</span>
                       <span className="text-slate-800">
                         Execute the SQL in your Supabase database or use MCP commands in Claude
                         Desktop
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-blue-600">2.</span>
+                      <span className="font-semibold text-primary">2.</span>
                       <span className="text-slate-800">
                         Use the Page Production Wizard to update your progressive page code
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-blue-600">3.</span>
+                      <span className="font-semibold text-primary">3.</span>
                       <span className="text-slate-800">
                         Deploy your production-ready application with real data
                       </span>
@@ -608,7 +608,7 @@ SELECT
 
                   <Button
                     asChild
-                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium"
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-foreground font-medium"
                   >
                     <Link href="/mcp-page-wizard">
                       <ArrowRight className="h-4 w-4 mr-2" />

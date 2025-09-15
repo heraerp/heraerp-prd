@@ -181,9 +181,9 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
           {...props}
         >
           <div className="p-6 space-y-4">
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div className="h-4 bg-gray-200 dark:bg-muted-foreground/10 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 dark:bg-muted-foreground/10 rounded w-1/2" />
+            <div className="h-20 bg-gray-200 dark:bg-muted-foreground/10 rounded" />
           </div>
         </div>
       )

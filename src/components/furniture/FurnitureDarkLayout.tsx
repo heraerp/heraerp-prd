@@ -59,7 +59,7 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
         {/* Sidebar - Mobile Drawer */}
         <div
           className={cn(
-            'fixed left-0 top-0 h-full z-50 transition-transform duration-300 lg:transition-none',
+            'fixed left-0 top-0 h-full z-50 transition-transform duration-300 lg:transition-none overflow-hidden',
             isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'
           )}
         >

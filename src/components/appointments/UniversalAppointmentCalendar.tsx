@@ -348,8 +348,8 @@ export function UniversalAppointmentCalendar({
       <Card className="h-96">
         <CardContent className="flex items-center justify-center h-full">
           <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-600">Loading appointments...</p>
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Loading appointments...</p>
           </div>
         </CardContent>
       </Card>
@@ -366,14 +366,14 @@ export function UniversalAppointmentCalendar({
             {getIndustryIcon()} {industry.charAt(0).toUpperCase() + industry.slice(1)} Appointment
             Calendar
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             HERA Universal Appointment System • Smart Code: HERA.UNIV.CRM.APT.CAL.v1
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           {/* View Controls */}
-          <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+          <div className="flex gap-1 p-1 bg-muted rounded-lg">
             {[
               { key: 'dayGridMonth', label: 'Month' },
               { key: 'timeGridWeek', label: 'Week' },
@@ -423,7 +423,7 @@ export function UniversalAppointmentCalendar({
           <Button
             onClick={() => onSlotClick?.({})}
             style={{ background: industryStyle.background }}
-            className="text-white"
+            className="text-foreground"
           >
             <Plus className="w-4 h-4 mr-2" />
             New Appointment
@@ -486,7 +486,7 @@ export function UniversalAppointmentCalendar({
                     <Brain className="w-4 h-4" />
                     AI Analysis
                   </label>
-                  <div className="pl-6 text-xs text-gray-600">
+                  <div className="pl-6 text-xs text-muted-foreground">
                     Show confidence scores and predictions
                   </div>
                 </div>
@@ -543,7 +543,7 @@ export function UniversalAppointmentCalendar({
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" style={{ color: industryStyle.primary }} />
               <div>
-                <p className="text-sm text-gray-600">Total Appointments</p>
+                <p className="text-sm text-muted-foreground">Total Appointments</p>
                 <p className="text-2xl font-bold">{appointments.length}</p>
               </div>
             </div>
@@ -555,7 +555,7 @@ export function UniversalAppointmentCalendar({
             <div className="flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-green-600" />
               <div>
-                <p className="text-sm text-gray-600">Confirmed Today</p>
+                <p className="text-sm text-muted-foreground">Confirmed Today</p>
                 <p className="text-2xl font-bold">
                   {
                     appointments.filter(
@@ -575,7 +575,7 @@ export function UniversalAppointmentCalendar({
             <div className="flex items-center gap-2">
               <Brain className="w-5 h-5 text-purple-600" />
               <div>
-                <p className="text-sm text-gray-600">AI Confidence</p>
+                <p className="text-sm text-muted-foreground">AI Confidence</p>
                 <p className="text-2xl font-bold">
                   {Math.round(
                     appointments
@@ -599,7 +599,7 @@ export function UniversalAppointmentCalendar({
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600" />
               <div>
-                <p className="text-sm text-gray-600">High Risk</p>
+                <p className="text-sm text-muted-foreground">High Risk</p>
                 <p className="text-2xl font-bold">
                   {
                     appointments.filter(

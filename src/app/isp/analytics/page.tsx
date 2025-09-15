@@ -78,10 +78,10 @@ function MetricCard({
       <div
         className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
       />
-      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+      <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6 hover:bg-background/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-foreground" />
           </div>
           <div
             className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}
@@ -94,9 +94,9 @@ function MetricCard({
             <span>{Math.abs(change)}%</span>
           </div>
         </div>
-        <h3 className="text-white/60 text-sm font-medium mb-1">{title}</h3>
-        <p className="text-2xl font-bold text-white mb-1">{value}</p>
-        <p className="text-xs text-white/40">{changeLabel}</p>
+        <h3 className="text-foreground/60 text-sm font-medium mb-1">{title}</h3>
+        <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
+        <p className="text-xs text-foreground/40">{changeLabel}</p>
         {forecast && <p className="text-xs text-[#FFD700] mt-2">Forecast: {forecast}</p>}
       </div>
     </div>
@@ -344,19 +344,19 @@ export default function AnalyticsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Business Analytics & Insights
           </h1>
-          <p className="text-white/60 mt-1">
+          <p className="text-foreground/60 mt-1">
             AI-powered analytics and predictive insights for Kerala Vision
           </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={refreshData}
-            className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
+            className={`flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
             <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#00DDFF]/30 transition-all duration-300">
             <Download className="h-5 w-5" />
             <span>Export Report</span>
           </button>
@@ -407,21 +407,21 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Revenue Trend & Forecast</h2>
+              <h2 className="text-xl font-semibold text-foreground">Revenue Trend & Forecast</h2>
               <div className="flex items-center space-x-4 text-xs">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
-                  <span className="text-white/60">Actual</span>
+                  <span className="text-foreground/60">Actual</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-[#FFD700]" />
-                  <span className="text-white/60">Target</span>
+                  <span className="text-foreground/60">Target</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-[#E91E63]" />
-                  <span className="text-white/60">Forecast</span>
+                  <span className="text-foreground/60">Forecast</span>
                 </div>
               </div>
             </div>
@@ -478,8 +478,8 @@ export default function AnalyticsPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Customer Segments</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Customer Segments</h2>
             <div className="w-full h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -514,10 +514,10 @@ export default function AnalyticsPage() {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: segment.color }}
                     />
-                    <span className="text-sm text-white/80">{segment.name}</span>
+                    <span className="text-sm text-foreground/80">{segment.name}</span>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {segment.value.toLocaleString()}
                     </p>
                     <p className="text-xs text-emerald-400">+{segment.growth}%</p>
@@ -532,19 +532,19 @@ export default function AnalyticsPage() {
       {/* Service Performance */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-6">Service Performance Analysis</h2>
+        <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <h2 className="text-xl font-semibold text-foreground mb-6">Service Performance Analysis</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left border-b border-border/50">
-                  <th className="pb-3 text-sm font-medium text-white/60">Service</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Customers</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Revenue</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">
+                  <th className="pb-3 text-sm font-medium text-foreground/60">Service</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Customers</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Revenue</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">
                     Satisfaction
                   </th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">
                     Revenue/Customer
                   </th>
                 </tr>
@@ -552,11 +552,11 @@ export default function AnalyticsPage() {
               <tbody className="divide-y divide-white/10">
                 {serviceMetrics.map(service => (
                   <tr key={service.service} className="hover:bg-accent/20 transition-colors">
-                    <td className="py-4 text-white font-medium">{service.service}</td>
-                    <td className="py-4 text-white text-right">
+                    <td className="py-4 text-foreground font-medium">{service.service}</td>
+                    <td className="py-4 text-foreground text-right">
                       {service.customers.toLocaleString()}
                     </td>
-                    <td className="py-4 text-white text-right">
+                    <td className="py-4 text-foreground text-right">
                       ₹{(service.revenue / 100000).toFixed(1)}L
                     </td>
                     <td className="py-4 text-right">
@@ -588,8 +588,8 @@ export default function AnalyticsPage() {
         {/* KPI Radar Chart */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">KPI Performance</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">KPI Performance</h2>
             <div className="w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={safeKpiData}>
@@ -628,16 +628,16 @@ export default function AnalyticsPage() {
         {/* Predictive Insights */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">AI-Powered Insights</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">AI-Powered Insights</h2>
             <div className="space-y-4">
               {predictiveInsights.map((insight, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-lg bg-slate-900/50 border border-border/50 hover:bg-accent/20 transition-all duration-300"
+                  className="p-4 rounded-lg bg-background/50 border border-border/50 hover:bg-accent/20 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-medium text-white">{insight.title}</h3>
+                    <h3 className="font-medium text-foreground">{insight.title}</h3>
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${
                         insight.impact === 'high'
@@ -648,7 +648,7 @@ export default function AnalyticsPage() {
                       {insight.impact} impact
                     </span>
                   </div>
-                  <p className="text-sm text-white/60 mb-2">{insight.description}</p>
+                  <p className="text-sm text-foreground/60 mb-2">{insight.description}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
@@ -657,11 +657,11 @@ export default function AnalyticsPage() {
                           style={{ width: `${insight.confidence}%` }}
                         />
                       </div>
-                      <span className="text-xs text-white/40">
+                      <span className="text-xs text-foreground/40">
                         {insight.confidence}% confidence
                       </span>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-white/40" />
+                    <ChevronRight className="h-4 w-4 text-foreground/40" />
                   </div>
                 </div>
               ))}
@@ -675,8 +675,8 @@ export default function AnalyticsPage() {
         {/* Regional Performance */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Regional Performance</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Regional Performance</h2>
             <div className="w-full h-[250px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={safeRegionPerformance}>
@@ -712,14 +712,14 @@ export default function AnalyticsPage() {
         {/* Churn Analysis */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Churn Analysis</h2>
+          <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-6">Churn Analysis</h2>
             <div className="space-y-4">
               {churnAnalysis.map(reason => (
                 <div key={reason.reason}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/80">{reason.reason}</span>
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm text-foreground/80">{reason.reason}</span>
+                    <span className="text-sm font-medium text-foreground">
                       {reason.percentage}% ({reason.count})
                     </span>
                   </div>
@@ -737,7 +737,7 @@ export default function AnalyticsPage() {
                 <AlertTriangle className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm font-medium text-yellow-400">Action Required</span>
               </div>
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-foreground/60">
                 Price sensitivity is the leading churn factor. Consider introducing retention offers
                 for price-sensitive segments.
               </p>

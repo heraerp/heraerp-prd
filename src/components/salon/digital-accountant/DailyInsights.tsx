@@ -114,7 +114,7 @@ export function DailyInsights({
       case 'warning':
         return <AlertTriangle className="w-5 h-5 text-amber-600" />
       case 'info':
-        return <Info className="w-5 h-5 text-blue-600" />
+        return <Info className="w-5 h-5 text-primary" />
       case 'tip':
         return <Sparkles className="w-5 h-5 text-purple-600" />
     }
@@ -169,7 +169,7 @@ export function DailyInsights({
                 </span>
               </div>
               <Progress value={progressPercentage} className="h-3" />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
                 {progressPercentage.toFixed(0)}% of daily target achieved
               </p>
             </div>
@@ -177,15 +177,15 @@ export function DailyInsights({
             {/* Quick stats */}
             <div className="grid grid-cols-3 gap-3 pt-3 border-t">
               <div className="text-center">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Clients</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Clients</p>
                 <p className="text-lg font-semibold">12</p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Avg Ticket</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Avg Ticket</p>
                 <p className="text-lg font-semibold">321</p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Services</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Services</p>
                 <p className="text-lg font-semibold">18</p>
               </div>
             </div>
@@ -244,7 +244,7 @@ export function DailyInsights({
 
       {/* Achievement Badge */}
       {progressPercentage >= 100 && (
-        <Card className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0">
+        <Card className="bg-gradient-to-r from-purple-600 to-pink-600 text-foreground border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

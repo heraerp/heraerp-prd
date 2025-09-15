@@ -272,20 +272,20 @@ export function YearEndClosingWizard({
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Current Period</span>
+                      <span className="text-sm text-muted-foreground">Current Period</span>
                       <Badge variant="outline" className="gap-1">
                         <Calendar className="w-3 h-3" />
                         {currentPeriod?.name || 'None'}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Open Periods</span>
+                      <span className="text-sm text-muted-foreground">Open Periods</span>
                       <Badge variant={openPeriods > 0 ? 'destructive' : 'success'}>
                         {openPeriods} periods
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Total Periods</span>
+                      <span className="text-sm text-muted-foreground">Total Periods</span>
                       <span className="font-medium">{periods.length}</span>
                     </div>
                   </div>
@@ -314,13 +314,13 @@ export function YearEndClosingWizard({
                       className="h-2"
                     />
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Completed</span>
+                      <span className="text-muted-foreground">Completed</span>
                       <span className="font-medium">
                         {completedChecklist} of {checklist.length}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Required Items</span>
+                      <span className="text-muted-foreground">Required Items</span>
                       <span className="font-medium">
                         {requiredCompleted} of {requiredItems.length}
                       </span>
@@ -335,7 +335,7 @@ export function YearEndClosingWizard({
                       ).length
                       return (
                         <div key={category} className="flex items-center justify-between text-sm">
-                          <span className="capitalize text-gray-600">{category}</span>
+                          <span className="capitalize text-muted-foreground">{category}</span>
                           <Badge
                             variant={completed === categoryItems.length ? 'success' : 'secondary'}
                           >
@@ -393,7 +393,7 @@ export function YearEndClosingWizard({
                               <span
                                 className={cn(
                                   'text-sm',
-                                  item.status === 'completed' && 'line-through text-gray-500'
+                                  item.status === 'completed' && 'line-through text-muted-foreground'
                                 )}
                               >
                                 {item.name}
@@ -462,7 +462,7 @@ export function YearEndClosingWizard({
                       <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
                     </div>
                     <Progress value={progress} className="h-2" />
-                    <p className="text-center text-sm text-gray-600">
+                    <p className="text-center text-sm text-muted-foreground">
                       Processing year-end closing... {progress}%
                     </p>
                   </div>
@@ -498,20 +498,20 @@ export function YearEndClosingWizard({
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Total Revenue</span>
+                          <span className="text-sm text-muted-foreground">Total Revenue</span>
                           <span className="font-medium">
                             ${closingResult.totalRevenue.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Total Expenses</span>
+                          <span className="text-sm text-muted-foreground">Total Expenses</span>
                           <span className="font-medium">
                             ${closingResult.totalExpenses.toLocaleString()}
                           </span>
                         </div>
                         {closingResult.otherIncome !== undefined && (
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Other Income</span>
+                            <span className="text-sm text-muted-foreground">Other Income</span>
                             <span className="font-medium">
                               ${closingResult.otherIncome.toLocaleString()}
                             </span>
@@ -544,21 +544,21 @@ export function YearEndClosingWizard({
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Closing Date</span>
+                          <span className="text-sm text-muted-foreground">Closing Date</span>
                           <span className="font-medium">
                             {formatDate(new Date(closingResult.closingDate), 'MMM dd, yyyy')}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Journal Entry</span>
+                          <span className="text-sm text-muted-foreground">Journal Entry</span>
                           <Badge variant="outline">{closingResult.closingEntryId.slice(-8)}</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Periods Closed</span>
+                          <span className="text-sm text-muted-foreground">Periods Closed</span>
                           <span className="font-medium">{closingResult.periodsClosed}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Status</span>
+                          <span className="text-sm text-muted-foreground">Status</span>
                           <Badge variant="success">Completed</Badge>
                         </div>
                       </div>

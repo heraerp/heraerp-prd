@@ -193,10 +193,10 @@ export function PaymentWhatsAppActions({
             <div className="flex items-center gap-3">
               <Receipt className="w-5 h-5 text-green-500" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                   Send Receipt
                 </h4>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Payment confirmation & digital receipt
                 </p>
               </div>
@@ -222,7 +222,7 @@ export function PaymentWhatsAppActions({
                 </DialogHeader>
 
                 <div className="mt-4">
-                  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getConfirmationPreview()}
                     </pre>
@@ -235,7 +235,7 @@ export function PaymentWhatsAppActions({
                     <Button
                       onClick={handleSendConfirmation}
                       disabled={sending}
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
                     >
                       {sending ? 'Sending...' : 'Send Confirmation'}
                     </Button>
@@ -254,10 +254,10 @@ export function PaymentWhatsAppActions({
             <div className="flex items-center gap-3">
               <Clock className="w-5 h-5 text-amber-500" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
                   Payment Reminder
                 </h4>
-                <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
                   Amount due: AED {payment.amount.toFixed(2)}
                 </p>
                 {payment.status === 'overdue' && (
@@ -288,7 +288,7 @@ export function PaymentWhatsAppActions({
                 </DialogHeader>
 
                 <div className="mt-4">
-                  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="bg-muted dark:bg-muted p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getReminderPreview()}
                     </pre>
@@ -301,7 +301,7 @@ export function PaymentWhatsAppActions({
                     <Button
                       onClick={handleSendReminder}
                       disabled={sending}
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-foreground"
                     >
                       {sending ? 'Sending...' : 'Send Reminder'}
                     </Button>
@@ -314,7 +314,7 @@ export function PaymentWhatsAppActions({
       )}
 
       {/* Quick Stats */}
-      <div className="flex items-center justify-between text-xs !text-gray-600 dark:!text-gray-400">
+      <div className="flex items-center justify-between text-xs !text-muted-foreground dark:!text-muted-foreground">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
             <MessageCircle className="w-3 h-3" />

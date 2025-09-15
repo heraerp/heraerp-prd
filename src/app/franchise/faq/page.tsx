@@ -187,16 +187,16 @@ export default function FAQPage() {
       />
 
       {/* Quick Stats */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700"
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-border dark:border-border"
               >
-                <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">{stat.label}</div>
+                <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
+                <div className="text-sm text-muted-foreground dark:text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -204,13 +204,13 @@ export default function FAQPage() {
       </section>
 
       {/* FAQ Sections */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
               Honest answers to help you make an informed decision
             </p>
           </div>
@@ -219,14 +219,14 @@ export default function FAQPage() {
             {faqs.map((category, categoryIndex) => (
               <div
                 key={categoryIndex}
-                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm"
+                className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-sm"
               >
                 {/* Category Header */}
                 <div className="flex items-center mb-6">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-4">
-                    <category.icon className="h-5 w-5 text-white" />
+                    <category.icon className="h-5 w-5 text-foreground" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-xl font-bold text-foreground dark:text-foreground">
                     {category.category}
                   </h3>
                 </div>
@@ -240,13 +240,13 @@ export default function FAQPage() {
                     return (
                       <div
                         key={faqIndex}
-                        className="border border-slate-200 dark:border-slate-700 rounded-lg"
+                        className="border border-border dark:border-border rounded-lg"
                       >
                         <button
                           onClick={() => toggleItem(itemId)}
-                          className="w-full text-left p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200 flex items-center justify-between"
+                          className="w-full text-left p-4 hover:bg-slate-50 dark:hover:bg-muted transition-colors duration-200 flex items-center justify-between"
                         >
-                          <span className="font-medium text-slate-900 dark:text-white pr-4">
+                          <span className="font-medium text-foreground dark:text-foreground pr-4">
                             {faq.question}
                           </span>
                           {isOpen ? (
@@ -257,8 +257,8 @@ export default function FAQPage() {
                         </button>
 
                         {isOpen && (
-                          <div className="px-4 pb-4 border-t border-slate-200 dark:border-slate-700">
-                            <p className="text-slate-600 dark:text-slate-400 pt-4 leading-relaxed">
+                          <div className="px-4 pb-4 border-t border-border dark:border-border">
+                            <p className="text-muted-foreground dark:text-muted-foreground pt-4 leading-relaxed">
                               {faq.answer}
                             </p>
                           </div>
@@ -277,8 +277,8 @@ export default function FAQPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <HelpCircle className="h-16 w-16 text-white mx-auto mb-6" />
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <HelpCircle className="h-16 w-16 text-foreground mx-auto mb-6" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Still Have Questions?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
@@ -286,21 +286,21 @@ export default function FAQPage() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <CheckCircle className="h-8 w-8 text-green-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">No Pressure</h3>
+                <h3 className="font-semibold text-foreground mb-2">No Pressure</h3>
                 <p className="text-sm text-blue-100">Educational conversation to help you decide</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Award className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Territory Analysis</h3>
+                <h3 className="font-semibold text-foreground mb-2">Territory Analysis</h3>
                 <p className="text-sm text-blue-100">
                   Review available territories and market potential
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-border/20">
                 <Globe className="h-8 w-8 text-purple-300 mx-auto mb-3" />
-                <h3 className="font-semibold text-white mb-2">Success Planning</h3>
+                <h3 className="font-semibold text-foreground mb-2">Success Planning</h3>
                 <p className="text-sm text-blue-100">Discuss your goals and path to success</p>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function FAQPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
+                className="bg-background text-primary hover:bg-muted font-semibold px-8 py-6 text-lg"
               >
                 <a href="mailto:franchise@hera.com" className="flex items-center">
                   Schedule Discovery Call
@@ -321,7 +321,7 @@ export default function FAQPage() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
+                className="border-white text-foreground hover:bg-background/10 px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply">Apply Online Now</Link>
               </Button>
@@ -331,14 +331,14 @@ export default function FAQPage() {
       </section>
 
       {/* Common Concerns Addressed */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+              <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
                 Common Concerns Addressed
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-400">
+              <p className="text-lg text-muted-foreground dark:text-muted-foreground">
                 Let us put your mind at ease about the most common hesitations
               </p>
             </div>
@@ -351,7 +351,7 @@ export default function FAQPage() {
                 <p className="text-red-800 dark:text-red-200 text-sm mb-4">
                   Many people worry they need technical skills to succeed.
                 </p>
-                <div className="bg-white dark:bg-slate-900 rounded-lg p-4 border border-red-300 dark:border-red-700">
+                <div className="bg-background dark:bg-background rounded-lg p-4 border border-red-300 dark:border-red-700">
                   <p className="text-slate-700 dark:text-slate-300 text-sm">
                     <strong>Reality:</strong> Our most successful partners are former sales
                     professionals, business consultants, and relationship builders. HERA handles
@@ -367,7 +367,7 @@ export default function FAQPage() {
                 <p className="text-orange-800 dark:text-orange-200 text-sm mb-4">
                   The ERP market seems saturated with big players.
                 </p>
-                <div className="bg-white dark:bg-slate-900 rounded-lg p-4 border border-orange-300 dark:border-orange-700">
+                <div className="bg-background dark:bg-background rounded-lg p-4 border border-orange-300 dark:border-orange-700">
                   <p className="text-slate-700 dark:text-slate-300 text-sm">
                     <strong>Reality:</strong> 95% of businesses still use manual processes.
                     Traditional ERPs have 60% failure rates. HERA's 24-hour implementation is
@@ -383,7 +383,7 @@ export default function FAQPage() {
                 <p className="text-yellow-800 dark:text-yellow-200 text-sm mb-4">
                   24-hour implementation sounds impossible.
                 </p>
-                <div className="bg-white dark:bg-slate-900 rounded-lg p-4 border border-yellow-300 dark:border-yellow-700">
+                <div className="bg-background dark:bg-background rounded-lg p-4 border border-yellow-300 dark:border-yellow-700">
                   <p className="text-slate-700 dark:text-slate-300 text-sm">
                     <strong>Reality:</strong> Our universal 6-table architecture and pre-built
                     templates make rapid deployment possible. 500+ successful implementations prove
@@ -399,7 +399,7 @@ export default function FAQPage() {
                 <p className="text-blue-800 dark:text-blue-200 text-sm mb-4">
                   Worried about losing the franchise investment.
                 </p>
-                <div className="bg-white dark:bg-slate-900 rounded-lg p-4 border border-blue-300 dark:border-blue-700">
+                <div className="bg-background dark:bg-background rounded-lg p-4 border border-blue-300 dark:border-blue-700">
                   <p className="text-slate-700 dark:text-slate-300 text-sm">
                     <strong>Reality:</strong> 95% partner satisfaction rate, average ROI in 6-12
                     months, and exclusive territory protection minimize risk. Most partners break
@@ -413,13 +413,13 @@ export default function FAQPage() {
       </section>
 
       {/* Ready to Take Action */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground dark:text-foreground mb-6">
               Questions Answered. Time to Act.
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed">
               Don't let analysis paralysis cost you the opportunity. Limited territories are being
               claimed by decisive professionals.
             </p>
@@ -428,7 +428,7 @@ export default function FAQPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-foreground font-semibold px-8 py-6 text-lg"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   Apply Now - 3 Minutes
@@ -441,7 +441,7 @@ export default function FAQPage() {
               </Button>
             </div>
 
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-muted-foreground">
               No obligation. No pressure. Just honest answers and real opportunity.
             </p>
           </div>

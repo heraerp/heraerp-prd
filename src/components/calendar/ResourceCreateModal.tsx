@@ -668,11 +668,11 @@ export function ResourceCreateModal({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">Smart Code:</span>
-                    <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
                       {smartCodeSuggestion.smartCode}
                     </code>
                   </div>
-                  <p className="text-sm text-gray-600">{smartCodeSuggestion.reasoning}</p>
+                  <p className="text-sm text-muted-foreground">{smartCodeSuggestion.reasoning}</p>
                 </div>
               </CardContent>
             </Card>

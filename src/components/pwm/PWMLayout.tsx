@@ -25,7 +25,7 @@ export function PWMLayout({ organizationId }: PWMLayoutProps) {
         return <WealthDashboard organizationId={organizationId} />
       case 'portfolio':
         return (
-          <div className="min-h-screen bg-slate-950 text-white pt-20 md:pt-24 pb-20 md:pb-6">
+          <div className="min-h-screen bg-slate-950 text-foreground pt-20 md:pt-24 pb-20 md:pb-6">
             <div className="container mx-auto px-4 py-6 max-w-7xl">
               <PortfolioComposition organizationId={organizationId} />
             </div>
@@ -33,7 +33,7 @@ export function PWMLayout({ organizationId }: PWMLayoutProps) {
         )
       case 'ai':
         return (
-          <div className="min-h-screen bg-slate-950 text-white pt-20 md:pt-24 pb-20 md:pb-6">
+          <div className="min-h-screen bg-slate-950 text-foreground pt-20 md:pt-24 pb-20 md:pb-6">
             <div className="container mx-auto px-4 py-6 max-w-7xl">
               <AIIntelligenceCenter organizationId={organizationId} />
             </div>
@@ -41,7 +41,7 @@ export function PWMLayout({ organizationId }: PWMLayoutProps) {
         )
       case 'actions':
         return (
-          <div className="min-h-screen bg-slate-950 text-white pt-20 md:pt-24 pb-20 md:pb-6">
+          <div className="min-h-screen bg-slate-950 text-foreground pt-20 md:pt-24 pb-20 md:pb-6">
             <div className="container mx-auto px-4 py-6 max-w-7xl">
               <TransactionHistory organizationId={organizationId} />
             </div>
@@ -49,7 +49,7 @@ export function PWMLayout({ organizationId }: PWMLayoutProps) {
         )
       case 'settings':
         return (
-          <div className="min-h-screen bg-slate-950 text-white pt-20 md:pt-24 pb-20 md:pb-6">
+          <div className="min-h-screen bg-slate-950 text-foreground pt-20 md:pt-24 pb-20 md:pb-6">
             <div className="container mx-auto px-4 py-6 max-w-7xl">
               <PWMSettings organizationId={organizationId} />
             </div>
@@ -60,10 +60,10 @@ export function PWMLayout({ organizationId }: PWMLayoutProps) {
           <div className="min-h-screen bg-slate-50 pt-20 md:pt-24 pb-20 md:pb-6">
             <div className="container mx-auto px-4 py-6 max-w-7xl">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                   Data Security & Encryption
                 </h1>
-                <p className="text-slate-600">
+                <p className="text-muted-foreground">
                   Manage encryption settings and data protection for your wealth management data.
                 </p>
               </div>

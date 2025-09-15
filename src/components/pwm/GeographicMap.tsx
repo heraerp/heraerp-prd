@@ -69,19 +69,19 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
           <Globe2 className="h-5 w-5 text-blue-400" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-white">Geographic Distribution</h3>
-          <p className="text-sm text-slate-400">Global investment exposure</p>
+          <h3 className="text-lg font-semibold text-foreground">Geographic Distribution</h3>
+          <p className="text-sm text-muted-foreground">Global investment exposure</p>
         </div>
       </div>
 
       {/* Interactive World Map */}
-      <div className="relative h-64 md:h-80 mb-6 bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+      <div className="relative h-64 md:h-80 mb-6 bg-muted/50 rounded-xl border border-border/50 overflow-hidden">
         <svg
           viewBox="0 0 100 60"
           className="w-full h-full"
@@ -253,12 +253,12 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
         {regions.map(region => (
           <div
             key={region.name}
-            className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50"
+            className="p-4 rounded-lg bg-muted/30 border border-border/50"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-slate-400" />
-                <h4 className="font-medium text-white">{region.name}</h4>
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <h4 className="font-medium text-foreground">{region.name}</h4>
               </div>
               <Badge
                 variant="outline"
@@ -273,7 +273,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
               </Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-400">
+              <span className="text-muted-foreground">
                 {region.percentage}% • {formatCurrency(region.value)}
               </span>
               <div className="w-32 h-2 bg-slate-700 rounded-full overflow-hidden">

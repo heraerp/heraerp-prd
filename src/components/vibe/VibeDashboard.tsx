@@ -106,7 +106,7 @@ export function VibeDashboard() {
       case 'error':
         return 'text-red-500'
       default:
-        return 'text-gray-500'
+        return 'text-muted-foreground'
     }
   }
 

@@ -60,13 +60,13 @@ export function StatCardDNA({
   const changeColorClass = {
     positive: 'text-green-600 dark:text-green-400',
     negative: 'text-red-600 dark:text-red-400',
-    neutral: 'text-gray-600 dark:text-gray-400'
+    neutral: 'text-muted-foreground dark:text-muted-foreground'
   }[changeType]
 
   return (
     <Card
       className={cn(
-        'backdrop-blur-xl bg-white/95 dark:bg-slate-900/95',
+        'backdrop-blur-xl bg-background/95 dark:bg-background/95',
         'border-purple-200/50 dark:border-purple-800/50',
         'shadow-lg hover:shadow-xl transition-shadow',
         className
@@ -77,7 +77,7 @@ export function StatCardDNA({
           <div className="flex-1">
             <p
               className={cn(
-                'text-sm font-medium text-gray-600 dark:text-gray-300',
+                'text-sm font-medium text-muted-foreground dark:text-gray-300',
                 'uppercase tracking-wide',
                 titleClassName
               )}
@@ -107,7 +107,7 @@ export function StatCardDNA({
                 iconGradient
               )}
             >
-              <Icon className="w-7 h-7 text-white" />
+              <Icon className="w-7 h-7 text-foreground" />
             </div>
           )}
         </div>
@@ -142,13 +142,13 @@ export function MiniStatCardDNA({
     <div
       className={cn(
         'flex items-center justify-between p-4',
-        'bg-white/80 dark:bg-slate-900/80 rounded-lg',
-        'border border-gray-200 dark:border-gray-700',
+        'bg-background/80 dark:bg-background/80 rounded-lg',
+        'border border-border dark:border-border',
         className
       )}
     >
       <div>
-        <p className={cn('text-sm text-gray-600 dark:text-gray-400', titleClassName)}>{title}</p>
+        <p className={cn('text-sm text-muted-foreground dark:text-muted-foreground', titleClassName)}>{title}</p>
         <p
           className={cn(
             'text-2xl font-bold mt-1',

@@ -88,7 +88,7 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/50 backdrop-blur-sm">
       <div
         className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl"
         style={{
@@ -110,12 +110,12 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold !text-gray-900 dark:!text-white">Request Time Off</h2>
+            <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground">Request Time Off</h2>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg hover:bg-muted-foreground/10 transition-colors"
             >
-              <X className="h-5 w-5 !text-gray-600 dark:!text-gray-400" />
+              <X className="h-5 w-5 !text-muted-foreground dark:!text-muted-foreground" />
             </button>
           </div>
 
@@ -129,8 +129,8 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                 value={formData.leaveType}
                 onValueChange={value => setFormData({ ...formData, leaveType: value })}
               >
-                <SelectTrigger className="mt-2 bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50">
-                  <SelectValue placeholder="Select leave type" className="!text-gray-400" />
+                <SelectTrigger className="mt-2 bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50">
+                  <SelectValue placeholder="Select leave type" className="!text-muted-foreground" />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
                   <SelectItem value="annual" className="hera-select-item">
@@ -167,10 +167,10 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                     type="date"
                     value={formData.startDate}
                     onChange={e => setFormData({ ...formData, startDate: e.target.value })}
-                    className="pl-10 bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50 [&::-webkit-calendar-picker-indicator]:invert"
+                    className="pl-10 bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50 [&::-webkit-calendar-picker-indicator]:invert"
                     required
                   />
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
 
@@ -185,10 +185,10 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                     value={formData.endDate}
                     onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                     min={formData.startDate}
-                    className="pl-10 bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50 [&::-webkit-calendar-picker-indicator]:invert"
+                    className="pl-10 bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50 [&::-webkit-calendar-picker-indicator]:invert"
                     required
                   />
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
             </div>
@@ -202,7 +202,7 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                 value={formData.partialDay}
                 onValueChange={value => setFormData({ ...formData, partialDay: value })}
               >
-                <SelectTrigger className="mt-2 bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50">
+                <SelectTrigger className="mt-2 bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
@@ -251,7 +251,7 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                 value={formData.reason}
                 onChange={e => setFormData({ ...formData, reason: e.target.value })}
                 placeholder="Please provide a reason for your leave request..."
-                className="mt-2 min-h-[100px] bg-gray-800/50 border-gray-700 !text-white placeholder:!text-gray-500 focus:border-indigo-500 hover:bg-gray-700/50"
+                className="mt-2 min-h-[100px] bg-muted/50 border-border !text-foreground placeholder:!text-muted-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
                 required
               />
             </div>
@@ -266,19 +266,19 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
                 value={formData.coverageNotes}
                 onChange={e => setFormData({ ...formData, coverageNotes: e.target.value })}
                 placeholder="Any arrangements made for coverage during your absence..."
-                className="mt-2 min-h-[80px] bg-gray-800/50 border-gray-700 !text-white placeholder:!text-gray-500 focus:border-indigo-500 hover:bg-gray-700/50"
+                className="mt-2 min-h-[80px] bg-muted/50 border-border !text-foreground placeholder:!text-muted-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
               />
             </div>
 
             {/* Form Actions */}
-            <div className="flex gap-4 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex gap-4 justify-end pt-4 border-t border-border dark:border-border">
               <Button type="button" variant="outline" onClick={onClose} className="min-w-[100px]">
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="min-w-[100px] bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white"
+                className="min-w-[100px] bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-foreground"
               >
                 {loading ? 'Submitting...' : 'Submit Request'}
               </Button>

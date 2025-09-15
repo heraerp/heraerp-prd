@@ -148,7 +148,7 @@ export default function CasesPage() {
       case 'low':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -174,11 +174,11 @@ export default function CasesPage() {
       case 'resolved':
         return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
       case 'closed':
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
       case 'escalated':
         return 'bg-red-500/20 text-red-400 border-red-500/30'
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -206,7 +206,7 @@ export default function CasesPage() {
       case 'resolved':
         return 'text-blue-400'
       default:
-        return 'text-gray-400'
+        return 'text-muted-foreground'
     }
   }
 
@@ -254,7 +254,7 @@ export default function CasesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white">Loading cases...</div>
+        <div className="text-foreground">Loading cases...</div>
       </div>
     )
   }
@@ -264,12 +264,12 @@ export default function CasesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Support Cases</h1>
-          <p className="text-white/60 mt-1">Manage customer support tickets and service requests</p>
+          <h1 className="text-3xl font-bold text-foreground">Support Cases</h1>
+          <p className="text-foreground/60 mt-1">Manage customer support tickets and service requests</p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
+          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           <span>New Case</span>
@@ -283,17 +283,17 @@ export default function CasesPage() {
           return (
             <div key={index} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <span className="text-xs text-emerald-400 font-medium">
                     {index === 0 ? '+3' : index === 2 ? '+2' : ''}
                   </span>
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/60 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
               </div>
             </div>
           )
@@ -303,20 +303,20 @@ export default function CasesPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/40" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
           <input
             type="text"
             placeholder="Search cases..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
 
         <select
           value={selectedType}
           onChange={e => setSelectedType(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
           <option value="Technical">Technical</option>
@@ -328,7 +328,7 @@ export default function CasesPage() {
         <select
           value={selectedPriority}
           onChange={e => setSelectedPriority(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Priorities</option>
           <option value="High">High</option>
@@ -339,7 +339,7 @@ export default function CasesPage() {
         <select
           value={selectedStatus}
           onChange={e => setSelectedStatus(e.target.value)}
-          className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
+          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
           <option value="Open">Open</option>
@@ -361,7 +361,7 @@ export default function CasesPage() {
           return (
             <div key={kase.id} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-6">
                 <div className="flex items-start justify-between">
                   {/* Left Side */}
                   <div className="flex-1">
@@ -371,11 +371,11 @@ export default function CasesPage() {
                         <div
                           className={`p-3 rounded-xl bg-gradient-to-br ${getTypeColor(kase.metadata?.type || '')}`}
                         >
-                          <TypeIcon className="h-5 w-5 text-white" />
+                          <TypeIcon className="h-5 w-5 text-foreground" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-white">{kase.entity_name}</h3>
-                          <p className="text-sm text-white/60 mt-1">{kase.entity_code}</p>
+                          <h3 className="text-lg font-semibold text-foreground">{kase.entity_name}</h3>
+                          <p className="text-sm text-foreground/60 mt-1">{kase.entity_code}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -395,27 +395,27 @@ export default function CasesPage() {
 
                     {/* Description */}
                     {kase.metadata?.description && (
-                      <p className="text-sm text-white/80 mb-4">{kase.metadata.description}</p>
+                      <p className="text-sm text-foreground/80 mb-4">{kase.metadata.description}</p>
                     )}
 
                     {/* Details Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div>
-                        <p className="text-xs text-white/60 mb-1">Account</p>
-                        <div className="flex items-center space-x-1 text-sm text-white">
+                        <p className="text-xs text-foreground/60 mb-1">Account</p>
+                        <div className="flex items-center space-x-1 text-sm text-foreground">
                           <Building2 className="h-3 w-3" />
                           <span>{relation.account || 'N/A'}</span>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-white/60 mb-1">Contact</p>
-                        <div className="flex items-center space-x-1 text-sm text-white">
+                        <p className="text-xs text-foreground/60 mb-1">Contact</p>
+                        <div className="flex items-center space-x-1 text-sm text-foreground">
                           <User className="h-3 w-3" />
                           <span>{relation.contact || 'N/A'}</span>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-white/60 mb-1">SLA</p>
+                        <p className="text-xs text-foreground/60 mb-1">SLA</p>
                         <div
                           className={`flex items-center space-x-1 text-sm font-medium ${getSLAStatusColor(slaStatus)}`}
                         >
@@ -424,14 +424,14 @@ export default function CasesPage() {
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-white/60 mb-1">Assigned To</p>
-                        <p className="text-sm text-white">{relation.assignee || 'Unassigned'}</p>
+                        <p className="text-xs text-foreground/60 mb-1">Assigned To</p>
+                        <p className="text-sm text-foreground">{relation.assignee || 'Unassigned'}</p>
                       </div>
                     </div>
 
                     {/* Timeline */}
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <div className="flex items-center space-x-4 text-xs text-white/60">
+                    <div className="flex items-center justify-between pt-4 border-t border-border/10">
+                      <div className="flex items-center space-x-4 text-xs text-foreground/60">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
                           <span>
@@ -451,13 +451,13 @@ export default function CasesPage() {
                         )}
                       </div>
                       <div className="flex items-center space-x-2">
-                        <button className="p-1 text-white/40 hover:text-[#FF5A09] transition-colors">
+                        <button className="p-1 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                           <Mail className="h-4 w-4" />
                         </button>
-                        <button className="p-1 text-white/40 hover:text-[#FF5A09] transition-colors">
+                        <button className="p-1 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                           <Phone className="h-4 w-4" />
                         </button>
-                        <button className="p-1 text-white/40 hover:text-[#FF5A09] transition-colors">
+                        <button className="p-1 text-foreground/40 hover:text-[#FF5A09] transition-colors">
                           <Paperclip className="h-4 w-4" />
                         </button>
                         <button className="flex items-center space-x-1 text-[#FF5A09] hover:text-[#ec7f37] transition-colors ml-2">
@@ -477,9 +477,9 @@ export default function CasesPage() {
       {/* Empty State */}
       {filteredCases.length === 0 && (
         <div className="text-center py-12">
-          <Headphones className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No cases found</h3>
-          <p className="text-white/60">Try adjusting your search or filters</p>
+          <Headphones className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No cases found</h3>
+          <p className="text-foreground/60">Try adjusting your search or filters</p>
         </div>
       )}
     </div>

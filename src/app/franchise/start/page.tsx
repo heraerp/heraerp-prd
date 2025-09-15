@@ -135,11 +135,11 @@ export default function StartPage() {
             {urgencyFactors.map((factor, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-6 border-2 border-red-200 dark:border-red-800 shadow-lg"
+                className="bg-background dark:bg-background rounded-xl p-6 border-2 border-red-200 dark:border-red-800 shadow-lg"
               >
                 <factor.icon className={`h-8 w-8 ${factor.color} mb-3`} />
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2">{factor.title}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{factor.description}</p>
+                <h3 className="font-bold text-foreground dark:text-foreground mb-2">{factor.title}</h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{factor.description}</p>
               </div>
             ))}
           </div>
@@ -148,7 +148,7 @@ export default function StartPage() {
             <Button
               asChild
               size="lg"
-              className="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-6 text-xl animate-pulse"
+              className="bg-red-600 hover:bg-red-700 text-foreground font-bold px-12 py-6 text-xl animate-pulse"
             >
               <Link href="/franchise/apply" className="flex items-center">
                 Claim Your Territory NOW
@@ -166,7 +166,7 @@ export default function StartPage() {
       <section className="py-16 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               What Are You Really Buying?
             </h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
@@ -179,12 +179,12 @@ export default function StartPage() {
             {emotionalTriggers.map((trigger, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20"
+                className="bg-background/10 backdrop-blur-sm rounded-xl p-8 border border-border/20"
               >
-                <trigger.icon className="h-12 w-12 text-white mb-4" />
-                <h3 className="text-2xl font-bold text-white mb-3">{trigger.title}</h3>
+                <trigger.icon className="h-12 w-12 text-foreground mb-4" />
+                <h3 className="text-2xl font-bold text-foreground mb-3">{trigger.title}</h3>
                 <p className="text-lg text-blue-100 mb-4">{trigger.description}</p>
-                <div className="border-t border-white/20 pt-4">
+                <div className="border-t border-border/20 pt-4">
                   <p className="text-sm text-yellow-300 font-medium">
                     <strong>Real Impact:</strong> {trigger.impact}
                   </p>
@@ -194,7 +194,7 @@ export default function StartPage() {
           </div>
 
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">
+            <h3 className="text-2xl font-bold text-foreground mb-4">
               The Question Isn't "Can I Afford It?"
             </h3>
             <p className="text-xl text-blue-100 mb-8">
@@ -216,13 +216,13 @@ export default function StartPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-16 bg-white dark:bg-slate-900">
+      <section className="py-16 bg-background dark:bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               This Partner Almost Didn't Apply
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground">
               Her biggest regret would have been missing this opportunity
             </p>
           </div>
@@ -234,13 +234,13 @@ export default function StartPage() {
       </section>
 
       {/* Final Stats Push */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-800">
+      <section className="py-16 bg-slate-50 dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-foreground dark:text-foreground mb-4">
               The Numbers That Matter
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground">
               Every statistic represents a life changed, a dream realized, a future secured
             </p>
           </div>
@@ -249,11 +249,11 @@ export default function StartPage() {
             {finalStats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm text-center"
+                className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-sm text-center"
               >
-                <div className="text-4xl font-bold text-blue-600 mb-2">{stat.stat}</div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{stat.label}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{stat.sublabel}</p>
+                <div className="text-4xl font-bold text-primary mb-2">{stat.stat}</div>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-1">{stat.label}</h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{stat.sublabel}</p>
               </div>
             ))}
           </div>
@@ -265,7 +265,7 @@ export default function StartPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
                 Two Paths. One Choice.
               </h2>
             </div>
@@ -337,7 +337,7 @@ export default function StartPage() {
       <section className="py-24 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
               The Time Is NOW
             </h1>
 
@@ -345,12 +345,12 @@ export default function StartPage() {
               You've seen the proof. You know the opportunity. You understand the urgency.
             </p>
 
-            <p className="text-xl text-white mb-12 font-medium">
+            <p className="text-xl text-foreground mb-12 font-medium">
               The only thing standing between you and financial freedom is a decision.
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-12">
-              <h3 className="text-2xl font-bold text-white mb-4">
+            <div className="bg-background/10 backdrop-blur-sm rounded-2xl p-8 border border-border/20 mb-12">
+              <h3 className="text-2xl font-bold text-foreground mb-4">
                 What Happens in the Next 5 Minutes:
               </h3>
               <div className="grid md:grid-cols-3 gap-6 text-left">
@@ -359,7 +359,7 @@ export default function StartPage() {
                     1
                   </div>
                   <div>
-                    <p className="text-white font-semibold">Click Apply</p>
+                    <p className="text-foreground font-semibold">Click Apply</p>
                     <p className="text-blue-100 text-sm">3-minute application</p>
                   </div>
                 </div>
@@ -368,7 +368,7 @@ export default function StartPage() {
                     2
                   </div>
                   <div>
-                    <p className="text-white font-semibold">Get Approved</p>
+                    <p className="text-foreground font-semibold">Get Approved</p>
                     <p className="text-blue-100 text-sm">24-48 hour response</p>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function StartPage() {
                     3
                   </div>
                   <div>
-                    <p className="text-white font-semibold">Start Earning</p>
+                    <p className="text-foreground font-semibold">Start Earning</p>
                     <p className="text-blue-100 text-sm">First commission in 60 days</p>
                   </div>
                 </div>
@@ -405,7 +405,7 @@ export default function StartPage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="border-white text-foreground hover:bg-background/10 px-8 py-4 text-lg"
                 >
                   <a href="tel:+1-800-HERA-NOW">Call Now: 1-800-HERA-NOW</a>
                 </Button>
@@ -414,7 +414,7 @@ export default function StartPage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="border-white text-foreground hover:bg-background/10 px-8 py-4 text-lg"
                 >
                   <a href="mailto:franchise@hera.com">Email: franchise@hera.com</a>
                 </Button>
@@ -429,7 +429,7 @@ export default function StartPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <AlertTriangle className="h-12 w-12 text-yellow-300 mx-auto mb-4" />
-            <p className="text-xl text-white font-bold">
+            <p className="text-xl text-foreground font-bold">
               WARNING: Territories are being claimed daily. Tomorrow might be too late.
             </p>
             <p className="text-red-100 mt-2">

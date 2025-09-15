@@ -76,22 +76,22 @@ export function QuickActions({ onActionClick, disabledActions = [] }: QuickActio
 
   const getButtonStyles = (variant: QuickAction['variant'], disabled: boolean) => {
     if (disabled) {
-      return 'bg-slate-800/30 border-slate-700/50 text-slate-500 cursor-not-allowed'
+      return 'bg-muted/30 border-border/50 text-slate-500 cursor-not-allowed'
     }
 
     switch (variant) {
       case 'primary':
         return 'bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border-emerald-500/30 hover:border-emerald-400/50 text-emerald-400'
       case 'secondary':
-        return 'bg-slate-800/50 border-slate-700 hover:border-slate-600 hover:bg-slate-700/50 text-slate-300'
+        return 'bg-muted/50 border-border hover:border-input hover:bg-slate-700/50 text-slate-300'
       case 'danger':
         return 'bg-red-500/10 border-red-500/30 hover:border-red-400/50 text-red-400'
     }
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
-      <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
+      <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {actions.map(action => {
@@ -120,7 +120,7 @@ export function QuickActions({ onActionClick, disabledActions = [] }: QuickActio
               </div>
               <div className="text-center">
                 <div className="font-medium">{action.label}</div>
-                <div className="text-xs text-slate-400 mt-1">{action.description}</div>
+                <div className="text-xs text-muted-foreground mt-1">{action.description}</div>
               </div>
             </Button>
           )
@@ -128,7 +128,7 @@ export function QuickActions({ onActionClick, disabledActions = [] }: QuickActio
       </div>
 
       {/* Recent Activity Indicator */}
-      <div className="mt-6 p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+      <div className="mt-6 p-4 rounded-lg bg-muted/30 border border-border/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-emerald-500/20">

@@ -42,14 +42,14 @@ export function RestaurantLogin() {
       </div>
 
       <div className="relative w-full max-w-md">
-        <Card className="backdrop-blur-xl bg-white/90 border border-orange-200/50 shadow-2xl shadow-orange-500/10">
+        <Card className="backdrop-blur-xl bg-background/90 border border-orange-200/50 shadow-2xl shadow-orange-500/10">
           {/* Header */}
           <div className="p-8 text-center border-b border-orange-100">
             <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <ChefHat className="w-8 h-8 text-white" />
+              <ChefHat className="w-8 h-8 text-foreground" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Restaurant Manager</h1>
-            <p className="text-gray-600 text-sm">Sign in to manage your restaurant</p>
+            <p className="text-muted-foreground text-sm">Sign in to manage your restaurant</p>
           </div>
 
           {/* Login Form */}
@@ -97,7 +97,7 @@ export function RestaurantLogin() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/25 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-foreground font-semibold rounded-xl shadow-lg shadow-orange-500/25 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isLoading ? (
                   <>
@@ -116,19 +116,19 @@ export function RestaurantLogin() {
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">Try Demo Account</h3>
                 <div className="space-y-2 text-sm text-gray-700">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Restaurant:</span>
+                    <span className="text-muted-foreground">Restaurant:</span>
                     <span className="font-medium">Mario's Italian Bistro</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Owner:</span>
+                    <span className="text-muted-foreground">Owner:</span>
                     <span className="font-medium">Mario Rossi</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Email:</span>
+                    <span className="text-muted-foreground">Email:</span>
                     <span className="font-medium">mario@restaurant.com</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Password:</span>
+                    <span className="text-muted-foreground">Password:</span>
                     <span className="font-medium">demo123</span>
                   </div>
                 </div>
@@ -144,11 +144,11 @@ export function RestaurantLogin() {
 
             {/* HERA Attribution */}
             <div className="mt-6 text-center">
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 Powered by{' '}
-                <span className="font-semibold text-gray-600">HERA Universal Platform</span>
+                <span className="font-semibold text-muted-foreground">HERA Universal Platform</span>
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 One platform, infinite business possibilities
               </p>
             </div>

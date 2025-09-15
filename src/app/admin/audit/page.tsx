@@ -182,7 +182,7 @@ export default function AuditStreamPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Audit Trail</h1>
-          <p className="text-gray-600 mt-1">Real-time security and compliance monitoring</p>
+          <p className="text-muted-foreground mt-1">Real-time security and compliance monitoring</p>
         </div>
         <div className="flex items-center gap-4">
           {streaming ? (
@@ -218,7 +218,7 @@ export default function AuditStreamPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search events..."
                 value={filter.search}
@@ -288,8 +288,8 @@ export default function AuditStreamPage() {
         <CardContent>
           {loading ? (
             <div className="text-center py-8">
-              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
-              <p className="text-gray-600">Loading audit events...</p>
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+              <p className="text-muted-foreground">Loading audit events...</p>
             </div>
           ) : filteredEvents.length === 0 ? (
             <Alert>
@@ -301,7 +301,7 @@ export default function AuditStreamPage() {
               {filteredEvents.map(event => (
                 <div
                   key={event.id}
-                  className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="border rounded-lg p-4 hover:bg-muted dark:hover:bg-muted transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
@@ -312,7 +312,7 @@ export default function AuditStreamPage() {
                           {getResultBadge(event.result)}
                           <Badge variant="outline">{event.smart_code}</Badge>
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-muted-foreground">
                           <span className="font-medium">{event.user_name}</span>
                           {' • '}
                           <span>{event.resource}</span>
@@ -321,17 +321,17 @@ export default function AuditStreamPage() {
                         </div>
                         {event.details && Object.keys(event.details).length > 0 && (
                           <details className="mt-2">
-                            <summary className="cursor-pointer text-sm text-blue-600 hover:text-blue-800">
+                            <summary className="cursor-pointer text-sm text-primary hover:text-blue-800">
                               View Details
                             </summary>
-                            <pre className="mt-2 p-2 bg-gray-100 dark:bg-gray-900 rounded text-xs overflow-x-auto">
+                            <pre className="mt-2 p-2 bg-muted dark:bg-background rounded text-xs overflow-x-auto">
                               {JSON.stringify(event.details, null, 2)}
                             </pre>
                           </details>
                         )}
                       </div>
                     </div>
-                    <div className="text-sm text-gray-500 flex items-center gap-1">
+                    <div className="text-sm text-muted-foreground flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {new Date(event.timestamp).toLocaleString()}
                     </div>

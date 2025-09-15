@@ -768,11 +768,11 @@ export function POSTerminal({ organizationId, smartCodes, isDemoMode = false }: 
   }
 
   return (
-    <div className="flex h-full bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full bg-muted dark:bg-background">
       {/* Left Panel - Menu Items */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 border-b p-4">
+        <div className="bg-background dark:bg-muted border-b p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Link href="/restaurant">
@@ -895,7 +895,7 @@ export function POSTerminal({ organizationId, smartCodes, isDemoMode = false }: 
       </div>
 
       {/* Right Panel - Cart */}
-      <div className="w-96 bg-white dark:bg-gray-800 border-l flex flex-col">
+      <div className="w-96 bg-background dark:bg-muted border-l flex flex-col">
         {/* Order Type Selector */}
         <div className="p-4 border-b">
           <Label className="text-sm font-medium mb-2 block">Order Type</Label>
@@ -1179,7 +1179,7 @@ export function POSTerminal({ organizationId, smartCodes, isDemoMode = false }: 
                   className="text-lg"
                 />
                 {cashAmount > 0 && (
-                  <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-900/20 rounded">
+                  <div className="mt-2 p-3 bg-muted dark:bg-background/20 rounded">
                     <div className="flex justify-between items-center">
                       <span>Change:</span>
                       <span

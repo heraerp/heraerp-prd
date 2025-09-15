@@ -27,7 +27,7 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
   }, [])
 
   return (
-    <div className="relative min-h-screen bg-gray-900">
+    <div className="relative min-h-screen bg-background">
       {/* Sidebar */}
       <div
         className={cn(
@@ -43,7 +43,7 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-4 left-4 z-50 bg-gray-800/80 backdrop-blur-sm text-white hover:bg-gray-700"
+          className="fixed top-4 left-4 z-50 bg-muted/80 backdrop-blur-sm text-foreground hover:bg-muted-foreground/10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -62,7 +62,7 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
 
       {/* Mobile Overlay */}
       {sidebarOpen && isMobile && (
-        <div className="fixed inset-0 bg-black/50 z-30" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-background/50 z-30" onClick={() => setSidebarOpen(false)} />
       )}
     </div>
   )

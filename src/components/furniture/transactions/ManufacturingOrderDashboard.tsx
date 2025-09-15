@@ -216,7 +216,7 @@ export function ManufacturingOrderDashboard() {
             <CardTitle className="text-sm font-medium">In Progress</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{productionStatus.in_progress}</div>
+            <div className="text-2xl font-bold text-primary">{productionStatus.in_progress}</div>
             <Progress
               value={(productionStatus.in_progress / productionStatus.total) * 100}
               className="mt-2"

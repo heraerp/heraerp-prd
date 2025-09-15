@@ -167,7 +167,7 @@ export default function UniversalBudgetDashboard({
   const getVarianceIcon = (variance: number) => {
     if (variance > 0) return <TrendingUp className="w-4 h-4 text-green-500" />
     if (variance < 0) return <TrendingDown className="w-4 h-4 text-red-500" />
-    return <Minus className="w-4 h-4 text-gray-500" />
+    return <Minus className="w-4 h-4 text-muted-foreground" />
   }
 
   const getVarianceColor = (status: string) => {
@@ -179,7 +179,7 @@ export default function UniversalBudgetDashboard({
       case 'acceptable':
         return 'text-green-600 bg-green-50'
       default:
-        return 'text-gray-600 bg-gray-50'
+        return 'text-muted-foreground bg-muted'
     }
   }
 
@@ -195,8 +195,8 @@ export default function UniversalBudgetDashboard({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
-          <RefreshCw className="w-8 h-8 mx-auto mb-4 animate-spin text-blue-600" />
-          <p className="text-gray-600">Loading budget dashboard...</p>
+          <RefreshCw className="w-8 h-8 mx-auto mb-4 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading budget dashboard...</p>
         </div>
       </div>
     )
@@ -210,7 +210,7 @@ export default function UniversalBudgetDashboard({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Budget Management</h2>
-          <p className="text-gray-600">Universal budgeting and variance analysis</p>
+          <p className="text-muted-foreground">Universal budgeting and variance analysis</p>
         </div>
         <div className="flex items-center gap-3">
           {isAnonymous && (
@@ -232,12 +232,12 @@ export default function UniversalBudgetDashboard({
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600">Total Budget</p>
+                <p className="text-sm font-medium text-primary">Total Budget</p>
                 <p className="text-2xl font-bold text-blue-900">
                   {formatCurrency(selectedBudgetData?.total_budget || 0)}
                 </p>
               </div>
-              <DollarSign className="w-8 h-8 text-blue-600" />
+              <DollarSign className="w-8 h-8 text-primary" />
             </div>
             <div className="mt-4">
               <Badge variant="outline" className="text-xs">
@@ -308,7 +308,7 @@ export default function UniversalBudgetDashboard({
             <select
               value={selectedBudget || ''}
               onChange={e => setSelectedBudget(e.target.value)}
-              className="ml-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
+              className="ml-2 px-3 py-1 border border-border rounded-md text-sm"
             >
               {budgets.map(budget => (
                 <option key={budget.budget_id} value={budget.budget_id}>
@@ -327,8 +327,8 @@ export default function UniversalBudgetDashboard({
                   onClick={() => setSelectedPeriod(period)}
                   className={`px-3 py-1 text-sm font-medium border ${
                     selectedPeriod === period
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      ? 'bg-blue-600 text-foreground border-blue-600'
+                      : 'bg-background text-gray-700 border-border hover:bg-muted'
                   } ${period === 'MTD' ? 'rounded-l-md' : period === 'YTD' ? 'rounded-r-md' : ''}`}
                 >
                   {period}
@@ -397,7 +397,7 @@ export default function UniversalBudgetDashboard({
                     {varianceAnalysis.line_variances.slice(0, 5).map((variance, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
@@ -406,7 +406,7 @@ export default function UniversalBudgetDashboard({
                               {variance.status}
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-600">{variance.account_name}</p>
+                          <p className="text-sm text-muted-foreground">{variance.account_name}</p>
                         </div>
                         <div className="text-right">
                           <div className="flex items-center gap-1">
@@ -415,7 +415,7 @@ export default function UniversalBudgetDashboard({
                               {formatCurrency(Math.abs(variance.variance_amount))}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {variance.variance_percent.toFixed(1)}%
                           </p>
                         </div>
@@ -454,7 +454,7 @@ export default function UniversalBudgetDashboard({
                 )}
 
                 <div className="pt-3 border-t">
-                  <p className="text-xs text-gray-500 mb-2">Powered by HERA AI</p>
+                  <p className="text-xs text-muted-foreground mb-2">Powered by HERA AI</p>
                   <Badge variant="outline" className="text-xs">
                     HERA.FIN.BUDGET.AI.INSIGHTS.v1
                   </Badge>
@@ -493,7 +493,7 @@ export default function UniversalBudgetDashboard({
 
       {/* Demo Mode Footer */}
       {isAnonymous && (
-        <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-foreground">
           <CardContent className="p-6">
             <div className="text-center">
               <h3 className="text-xl font-bold mb-2">Experience Universal Budgeting</h3>
@@ -504,7 +504,7 @@ export default function UniversalBudgetDashboard({
               <Button
                 variant="secondary"
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-blue-50"
+                className="bg-background text-primary hover:bg-primary/10"
               >
                 <Target className="w-5 h-5 mr-2" />
                 Save My Budget Data

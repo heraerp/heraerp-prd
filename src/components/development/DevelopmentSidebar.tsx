@@ -99,22 +99,22 @@ export function DevelopmentSidebar() {
 
   return (
     <div
-      className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 bg-white border-r border-gray-200 flex flex-col`}
+      className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 bg-background border-r border-border flex flex-col`}
     >
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
           {!sidebarCollapsed && (
             <div>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
-                  <Rocket className="w-5 h-5 text-white" />
+                  <Rocket className="w-5 h-5 text-foreground" />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                     HERA DNA
                   </h1>
-                  <p className="text-xs text-gray-500">Development Tools</p>
+                  <p className="text-xs text-muted-foreground">Development Tools</p>
                 </div>
               </div>
             </div>
@@ -150,10 +150,10 @@ export function DevelopmentSidebar() {
               <div
                 className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-foreground shadow-lg'
                     : isDisabled
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'text-muted-foreground cursor-not-allowed'
+                      : 'text-gray-700 hover:bg-muted'
                 }`}
               >
                 <IconComponent className={`w-5 h-5 ${sidebarCollapsed ? 'mx-auto' : ''}`} />
@@ -164,7 +164,7 @@ export function DevelopmentSidebar() {
                       <div>
                         <div className="font-medium">{item.name}</div>
                         <div
-                          className={`text-xs ${isActive ? 'text-purple-100' : 'text-gray-500'}`}
+                          className={`text-xs ${isActive ? 'text-purple-100' : 'text-muted-foreground'}`}
                         >
                           {item.description}
                         </div>
@@ -188,7 +188,7 @@ export function DevelopmentSidebar() {
 
       {/* Footer */}
       {!sidebarCollapsed && (
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-border">
           <Card className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4 text-purple-500" />

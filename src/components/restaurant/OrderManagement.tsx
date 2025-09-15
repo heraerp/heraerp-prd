@@ -134,7 +134,7 @@ const STATUS_COLORS = {
   confirmed: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
   preparing: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
   ready: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-  completed: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+  completed: 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-300',
   cancelled: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300'
 }
 
@@ -639,7 +639,7 @@ export function OrderManagement({
       title: 'Avg. Prep Time',
       value: '18 min',
       icon: Clock,
-      className: 'text-blue-600'
+      className: 'text-primary'
     },
     {
       title: "Today's Orders",
@@ -1059,7 +1059,7 @@ export function OrderManagement({
                     {orderItems[selectedOrder.id]?.map(item => (
                       <div
                         key={item.id}
-                        className="flex items-start justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-900/20"
+                        className="flex items-start justify-between p-2 rounded hover:bg-muted dark:hover:bg-background/20"
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
@@ -1104,7 +1104,7 @@ export function OrderManagement({
               </div>
 
               {/* Payment Status */}
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/20 rounded">
+              <div className="flex items-center justify-between p-3 bg-muted dark:bg-background/20 rounded">
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4" />
                   <span>Payment Status:</span>

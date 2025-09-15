@@ -47,12 +47,12 @@ export function SectorTrends({ organizationId }: SectorTrendsProps) {
     if (active && payload && payload[0]) {
       const data = payload[0].payload
       return (
-        <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">
-          <p className="font-semibold text-white mb-2">{data.name}</p>
-          <p className="text-sm text-slate-400">
-            Allocation: <span className="text-white font-medium">{data.value}%</span>
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+          <p className="font-semibold text-foreground mb-2">{data.name}</p>
+          <p className="text-sm text-muted-foreground">
+            Allocation: <span className="text-foreground font-medium">{data.value}%</span>
           </p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Performance:
             <span className={data.change >= 0 ? 'text-emerald-400' : 'text-red-400'}>
               {' '}
@@ -67,14 +67,14 @@ export function SectorTrends({ organizationId }: SectorTrendsProps) {
   }
 
   return (
-    <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+    <Card className="p-6 bg-background/50 backdrop-blur-sm border-slate-800">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
           <BarChart3 className="h-5 w-5 text-purple-400" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-white">Sector Performance</h3>
-          <p className="text-sm text-slate-400">Industry allocation and trends</p>
+          <h3 className="text-lg font-semibold text-foreground">Sector Performance</h3>
+          <p className="text-sm text-muted-foreground">Industry allocation and trends</p>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export function SectorTrends({ organizationId }: SectorTrendsProps) {
         {sectors.map(sector => (
           <div
             key={sector.name}
-            className="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50"
+            className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50"
           >
             <div className="flex items-center gap-3">
               <div
@@ -123,8 +123,8 @@ export function SectorTrends({ organizationId }: SectorTrendsProps) {
                 )}
               </div>
               <div>
-                <p className="font-medium text-white">{sector.name}</p>
-                <p className="text-xs text-slate-400">{sector.value}% of portfolio</p>
+                <p className="font-medium text-foreground">{sector.name}</p>
+                <p className="text-xs text-muted-foreground">{sector.value}% of portfolio</p>
               </div>
             </div>
             <div className="flex items-center gap-2">

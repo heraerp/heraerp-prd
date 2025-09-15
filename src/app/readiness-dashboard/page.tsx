@@ -284,7 +284,7 @@ export default function ReadinessDashboardPage() {
       {/* Skip to main content link for keyboard navigation */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-foreground focus:rounded-lg focus:shadow-lg"
       >
         Skip to main content
       </a>
@@ -397,10 +397,10 @@ export default function ReadinessDashboardPage() {
                       border: '1px solid rgba(255, 255, 255, 0.1)'
                     }}
                   >
-                    <BarChart3 className="w-5 h-5 text-white drop-shadow-md" />
+                    <BarChart3 className="w-5 h-5 text-foreground drop-shadow-md" />
                   </motion.div>
                   <div>
-                    <h1 className="text-xl font-bold !text-white">Readiness Analytics</h1>
+                    <h1 className="text-xl font-bold !text-foreground">Readiness Analytics</h1>
                     <p className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                       ERP Assessment Dashboard
                     </p>
@@ -414,7 +414,7 @@ export default function ReadinessDashboardPage() {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleRefresh}
                     disabled={refreshing}
-                    className="px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg disabled:opacity-50 transition-all"
+                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground shadow-lg disabled:opacity-50 transition-all"
                     style={{
                       background: 'rgba(255, 255, 255, 0.05)',
                       backdropFilter: 'blur(10px)',
@@ -430,7 +430,7 @@ export default function ReadinessDashboardPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => (window.location.href = '/readiness-questionnaire')}
-                    className="px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg transition-all"
+                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground shadow-lg transition-all"
                     style={{
                       background:
                         'linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(147, 51, 234, 0.8) 100%)',
@@ -472,7 +472,7 @@ export default function ReadinessDashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-blue-400 mb-1">Total Assessments</p>
-                        <p className="text-3xl font-bold !text-white">{stats.total}</p>
+                        <p className="text-3xl font-bold !text-foreground">{stats.total}</p>
                       </div>
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -511,7 +511,7 @@ export default function ReadinessDashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-green-400 mb-1">Completed</p>
-                        <p className="text-3xl font-bold !text-white">{stats.completed}</p>
+                        <p className="text-3xl font-bold !text-foreground">{stats.completed}</p>
                       </div>
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -550,7 +550,7 @@ export default function ReadinessDashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-orange-400 mb-1">In Progress</p>
-                        <p className="text-3xl font-bold !text-white">{stats.inProgress}</p>
+                        <p className="text-3xl font-bold !text-foreground">{stats.inProgress}</p>
                       </div>
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -589,7 +589,7 @@ export default function ReadinessDashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-purple-400 mb-1">Average Score</p>
-                        <p className="text-3xl font-bold !text-white">
+                        <p className="text-3xl font-bold !text-foreground">
                           {Math.round(stats.avgScore)}%
                         </p>
                       </div>
@@ -626,12 +626,12 @@ export default function ReadinessDashboardPage() {
                 <CardContent className="p-4">
                   <div className="flex flex-wrap gap-4">
                     <div className="flex-1 min-w-[200px] relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder="Search by email..."
                         value={filter.search}
                         onChange={e => setFilter({ ...filter, search: e.target.value })}
-                        className="w-full pl-10 bg-white/5 border-white/10 text-white placeholder-gray-400 focus:border-blue-500"
+                        className="w-full pl-10 bg-background/5 border-border/10 text-foreground placeholder-gray-400 focus:border-blue-500"
                         style={{
                           background: 'rgba(255, 255, 255, 0.05)'
                         }}
@@ -642,7 +642,7 @@ export default function ReadinessDashboardPage() {
                       onValueChange={value => setFilter({ ...filter, status: value })}
                     >
                       <SelectTrigger
-                        className="w-[180px] bg-white/5 border-white/10 text-white"
+                        className="w-[180px] bg-background/5 border-border/10 text-foreground"
                         style={{
                           background: 'rgba(255, 255, 255, 0.05)'
                         }}
@@ -666,7 +666,7 @@ export default function ReadinessDashboardPage() {
                       onValueChange={value => setFilter({ ...filter, industry: value })}
                     >
                       <SelectTrigger
-                        className="w-[180px] bg-white/5 border-white/10 text-white"
+                        className="w-[180px] bg-background/5 border-border/10 text-foreground"
                         style={{
                           background: 'rgba(255, 255, 255, 0.05)'
                         }}
@@ -705,7 +705,7 @@ export default function ReadinessDashboardPage() {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-16 h-16 rounded-full border-2 border-gray-700 border-t-transparent"
+                    className="w-16 h-16 rounded-full border-2 border-border border-t-transparent"
                     style={{
                       borderTopColor: 'rgba(59, 130, 246, 0.8)',
                       boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)'
@@ -748,15 +748,15 @@ export default function ReadinessDashboardPage() {
                     >
                       <FileText className="h-10 w-10 text-purple-400 drop-shadow-md" />
                     </div>
-                    <h3 className="text-xl font-bold !text-white mb-3">No assessments found</h3>
-                    <p className="text-gray-500 dark:text-gray-300 mb-6">
+                    <h3 className="text-xl font-bold !text-foreground mb-3">No assessments found</h3>
+                    <p className="text-muted-foreground dark:text-gray-300 mb-6">
                       Start by creating your first readiness assessment.
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => (window.location.href = '/readiness-questionnaire')}
-                      className="px-6 py-3 rounded-xl text-sm font-medium text-white shadow-lg transition-all inline-flex items-center"
+                      className="px-6 py-3 rounded-xl text-sm font-medium text-foreground shadow-lg transition-all inline-flex items-center"
                       style={{
                         background:
                           'linear-gradient(135deg, rgba(147, 51, 234, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%)',
@@ -794,7 +794,7 @@ export default function ReadinessDashboardPage() {
                         borderColor: 'rgba(255, 255, 255, 0.1)'
                       }}
                     >
-                      <CardTitle className="text-lg !text-white flex items-center gap-2">
+                      <CardTitle className="text-lg !text-foreground flex items-center gap-2">
                         <Activity className="h-5 w-5 text-blue-400" />
                         Assessment Sessions
                       </CardTitle>
@@ -811,7 +811,7 @@ export default function ReadinessDashboardPage() {
                               'relative px-4 py-4 cursor-pointer transition-all duration-300',
                               selectedSession?.id === session.id
                                 ? 'bg-gradient-to-r from-blue-500/10 to-purple-500/10'
-                                : 'hover:bg-white/5'
+                                : 'hover:bg-background/5'
                             )}
                             onClick={() => setSelectedSession(session)}
                             style={{
@@ -822,7 +822,7 @@ export default function ReadinessDashboardPage() {
                             }}
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-semibold !text-white truncate pr-2">
+                              <span className="text-sm font-semibold !text-foreground truncate pr-2">
                                 {session.metadata.user_email || 'Unknown User'}
                               </span>
                               <Badge
@@ -848,7 +848,7 @@ export default function ReadinessDashboardPage() {
                               </Badge>
                             </div>
                             <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-800 dark:text-gray-100">
+                              <span className="text-gray-800 dark:text-foreground">
                                 {formatDate(new Date(session.transaction_date), 'MMM d, yyyy')}
                               </span>
                               {session.transaction_status === 'completed' && (
@@ -859,7 +859,7 @@ export default function ReadinessDashboardPage() {
                             </div>
                             {session.transaction_status === 'in_progress' && (
                               <div className="mt-3">
-                                <div className="relative h-1 bg-gray-800 rounded-full overflow-hidden">
+                                <div className="relative h-1 bg-muted rounded-full overflow-hidden">
                                   <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${session.metadata.completionRate}%` }}
@@ -902,10 +902,10 @@ export default function ReadinessDashboardPage() {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <CardTitle className="text-xl !text-white mb-1">
+                            <CardTitle className="text-xl !text-foreground mb-1">
                               Assessment Details
                             </CardTitle>
-                            <CardDescription className="text-gray-800 dark:text-gray-100">
+                            <CardDescription className="text-gray-800 dark:text-foreground">
                               {selectedSession.metadata.user_email} •{' '}
                               {formatDate(
                                 new Date(selectedSession.transaction_date),
@@ -917,7 +917,7 @@ export default function ReadinessDashboardPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => exportSession(selectedSession)}
-                            className="px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg transition-all"
+                            className="px-4 py-2 rounded-xl text-sm font-medium text-foreground shadow-lg transition-all"
                             style={{
                               background: 'rgba(255, 255, 255, 0.05)',
                               backdropFilter: 'blur(10px)',
@@ -940,21 +940,21 @@ export default function ReadinessDashboardPage() {
                           >
                             <TabsTrigger
                               value="overview"
-                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-foreground"
                               style={{ color: 'rgb(204, 251, 241)' }}
                             >
                               Overview
                             </TabsTrigger>
                             <TabsTrigger
                               value="categories"
-                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-foreground"
                               style={{ color: 'rgb(204, 251, 241)' }}
                             >
                               Categories
                             </TabsTrigger>
                             <TabsTrigger
                               value="answers"
-                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
+                              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-foreground"
                               style={{ color: 'rgb(204, 251, 241)' }}
                             >
                               Answers
@@ -991,7 +991,7 @@ export default function ReadinessDashboardPage() {
                                         filter: 'blur(20px)'
                                       }}
                                     />
-                                    <div className="relative text-6xl font-bold !text-white drop-shadow-2xl">
+                                    <div className="relative text-6xl font-bold !text-foreground drop-shadow-2xl">
                                       {selectedSession.metadata.overallScore || 0}%
                                     </div>
                                   </div>
@@ -1034,15 +1034,15 @@ export default function ReadinessDashboardPage() {
                                 >
                                   <Activity className="h-10 w-10 text-orange-400 drop-shadow-md" />
                                 </div>
-                                <h3 className="text-xl font-bold !text-white mb-3">
+                                <h3 className="text-xl font-bold !text-foreground mb-3">
                                   Assessment In Progress
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-300 mb-6">
+                                <p className="text-muted-foreground dark:text-gray-300 mb-6">
                                   This assessment is{' '}
                                   {(selectedSession.metadata as any)?.completionRate || 0}% complete
                                 </p>
                                 <div className="max-w-xs mx-auto mb-6">
-                                  <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                                  <div className="relative h-2 bg-muted rounded-full overflow-hidden">
                                     <motion.div
                                       initial={{ width: 0 }}
                                       animate={{
@@ -1059,7 +1059,7 @@ export default function ReadinessDashboardPage() {
                                   onClick={() =>
                                     (window.location.href = '/readiness-questionnaire')
                                   }
-                                  className="px-6 py-3 rounded-xl text-sm font-medium text-white shadow-lg transition-all inline-flex items-center"
+                                  className="px-6 py-3 rounded-xl text-sm font-medium text-foreground shadow-lg transition-all inline-flex items-center"
                                   style={{
                                     background:
                                       'linear-gradient(135deg, rgba(251, 146, 60, 0.8) 0%, rgba(245, 158, 11, 0.8) 100%)',
@@ -1183,7 +1183,7 @@ export default function ReadinessDashboardPage() {
                                       }}
                                     >
                                       <div className="flex items-center justify-between mb-3">
-                                        <span className="text-sm font-semibold capitalize !text-white">
+                                        <span className="text-sm font-semibold capitalize !text-foreground">
                                           {category.replace('_', ' ')}
                                         </span>
                                         <span
@@ -1200,7 +1200,7 @@ export default function ReadinessDashboardPage() {
                                           {data.score}%
                                         </span>
                                       </div>
-                                      <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                                      <div className="relative h-2 bg-muted rounded-full overflow-hidden">
                                         <motion.div
                                           initial={{ width: 0 }}
                                           animate={{ width: `${data.score}%` }}
@@ -1219,7 +1219,7 @@ export default function ReadinessDashboardPage() {
                                 )
                               ) : (
                                 <div className="text-center py-8">
-                                  <p className="text-gray-500 dark:text-gray-300">
+                                  <p className="text-muted-foreground dark:text-gray-300">
                                     No category scores available
                                   </p>
                                 </div>
@@ -1231,7 +1231,7 @@ export default function ReadinessDashboardPage() {
                             {/* Search and pagination controls */}
                             <div className="mb-4 space-y-4">
                               <div className="relative">
-                                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                   type="text"
                                   placeholder="Search questions..."
@@ -1240,12 +1240,12 @@ export default function ReadinessDashboardPage() {
                                     setAnswerSearch(e.target.value)
                                     setCurrentPage(1)
                                   }}
-                                  className="pl-10 bg-white/5 border-white/10 text-gray-900 dark:text-white placeholder-gray-500"
+                                  className="pl-10 bg-background/5 border-border/10 text-gray-900 dark:text-foreground placeholder-gray-500"
                                   aria-label="Search answers"
                                 />
                               </div>
                               {selectedSession.answers && selectedSession.answers.length > 0 && (
-                                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
                                   <span>
                                     Total: {selectedSession.answers.length} questions (
                                     {
@@ -1316,7 +1316,7 @@ export default function ReadinessDashboardPage() {
                                           aria-labelledby={`answer-${index}`}
                                         >
                                           <p
-                                            className="text-sm font-medium text-gray-900 dark:text-white mb-3"
+                                            className="text-sm font-medium text-gray-900 dark:text-foreground mb-3"
                                             aria-label={`Question: ${answer.description}`}
                                           >
                                             {answer.description}
@@ -1344,7 +1344,7 @@ export default function ReadinessDashboardPage() {
                                               {answer.line_data?.answer_value || 'Unknown'}
                                             </Badge>
                                             <span
-                                              className="text-xs text-gray-900 dark:text-white capitalize"
+                                              className="text-xs text-gray-900 dark:text-foreground capitalize"
                                               aria-label={`Category: ${answer.line_data?.category || 'General'}`}
                                             >
                                               {answer.line_data?.category || 'General'}
@@ -1355,8 +1355,8 @@ export default function ReadinessDashboardPage() {
 
                                       {/* Pagination controls */}
                                       {filteredAnswers.length > answersPerPage && (
-                                        <div className="mt-6 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
-                                          <p className="text-sm text-gray-900 dark:text-white">
+                                        <div className="mt-6 flex items-center justify-between border-t border-border dark:border-border pt-4">
+                                          <p className="text-sm text-gray-900 dark:text-foreground">
                                             Showing{' '}
                                             <span className="font-medium">{startIndex + 1}</span> to{' '}
                                             <span className="font-medium">
@@ -1379,7 +1379,7 @@ export default function ReadinessDashboardPage() {
                                                 setCurrentPage(Math.max(1, currentPage - 1))
                                               }
                                               disabled={currentPage === 1}
-                                              className="disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600"
+                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
                                               aria-label="Previous page"
                                             >
                                               Previous
@@ -1405,7 +1405,7 @@ export default function ReadinessDashboardPage() {
                                                     className={
                                                       pageNum === currentPage
                                                         ? ''
-                                                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
+                                                        : 'bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border'
                                                     }
                                                   >
                                                     {pageNum}
@@ -1422,7 +1422,7 @@ export default function ReadinessDashboardPage() {
                                                 )
                                               }
                                               disabled={currentPage === totalPages}
-                                              className="disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600"
+                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
                                               aria-label="Next page"
                                             >
                                               Next
@@ -1448,7 +1448,7 @@ export default function ReadinessDashboardPage() {
                                   <p className="text-gray-300 font-medium mb-2">
                                     No answers recorded yet
                                   </p>
-                                  <p className="text-gray-400 text-sm">
+                                  <p className="text-muted-foreground text-sm">
                                     {selectedSession.transaction_status === 'in_progress'
                                       ? 'This assessment is still in progress. Answers will appear here as they are submitted.'
                                       : 'No answers were recorded for this assessment.'}
@@ -1460,7 +1460,7 @@ export default function ReadinessDashboardPage() {
                                       onClick={() =>
                                         (window.location.href = `/readiness-questionnaire?sessionId=${selectedSession.id}`)
                                       }
-                                      className="mt-4 px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg transition-all inline-flex items-center"
+                                      className="mt-4 px-4 py-2 rounded-xl text-sm font-medium text-foreground shadow-lg transition-all inline-flex items-center"
                                       style={{
                                         background:
                                           'linear-gradient(135deg, rgba(251, 146, 60, 0.8) 0%, rgba(239, 68, 68, 0.8) 100%)',
@@ -1499,7 +1499,7 @@ export default function ReadinessDashboardPage() {
                         >
                           <FileText className="h-10 w-10 text-purple-400 drop-shadow-md" />
                         </div>
-                        <p className="text-gray-400 text-lg">Select a session to view details</p>
+                        <p className="text-muted-foreground text-lg">Select a session to view details</p>
                       </CardContent>
                     </Card>
                   )}

@@ -104,7 +104,7 @@ const INDUSTRY_CONFIG = {
 
 const STATUS_CONFIG = {
   [APPOINTMENT_WORKFLOW.DRAFT]: {
-    color: 'bg-gray-100 text-gray-800',
+    color: 'bg-muted text-gray-800',
     icon: <Pencil className="w-4 h-4" />,
     label: 'Draft'
   },
@@ -144,7 +144,7 @@ const STATUS_CONFIG = {
     label: 'Cancelled'
   },
   [APPOINTMENT_WORKFLOW.NO_SHOW]: {
-    color: 'bg-gray-100 text-gray-800',
+    color: 'bg-muted text-gray-800',
     icon: <AlertTriangle className="w-4 h-4" />,
     label: 'No Show'
   }
@@ -264,12 +264,12 @@ export function AppointmentDetailsModal({
 
           {/* Upsell Opportunity */}
           {props.aiInsights.upsell_opportunity && (
-            <div className="p-3 bg-white rounded-lg border border-purple-200">
+            <div className="p-3 bg-background rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-4 h-4 text-purple-600" />
                 <span className="text-sm font-medium">Upsell Opportunity</span>
               </div>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-muted-foreground">
                 Based on customer profile, consider offering premium services or add-ons.
               </p>
             </div>
@@ -280,7 +280,7 @@ export function AppointmentDetailsModal({
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Predicted Duration</span>
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gray-500" />
+                <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm">{props.aiInsights.predicted_duration} min</span>
                 {props.aiInsights.predicted_duration !== duration && (
                   <Badge variant="outline" className="text-xs">
@@ -306,7 +306,7 @@ export function AppointmentDetailsModal({
               <div className="text-xl font-bold">
                 {props.customerName} - {props.serviceName}
               </div>
-              <div className="text-sm text-gray-600 font-normal">
+              <div className="text-sm text-muted-foreground font-normal">
                 {appointmentDate.toLocaleDateString()} at{' '}
                 {appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
@@ -334,22 +334,22 @@ export function AppointmentDetailsModal({
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Name</label>
+                    <label className="text-sm font-medium text-muted-foreground">Name</label>
                     <p className="font-semibold">{props.customerName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Customer ID</label>
+                    <label className="text-sm font-medium text-muted-foreground">Customer ID</label>
                     <p className="text-sm font-mono">{props.customerId}</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-500" />
+                    <Phone className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm">{props.customerPhone || 'Not provided'}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-500" />
+                    <Mail className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm">{props.customerEmail || 'Not provided'}</span>
                   </div>
                 </div>
@@ -367,13 +367,13 @@ export function AppointmentDetailsModal({
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Service</label>
+                    <label className="text-sm font-medium text-muted-foreground">Service</label>
                     <p className="font-semibold">{props.serviceName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Duration</label>
+                    <label className="text-sm font-medium text-muted-foreground">Duration</label>
                     <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4 text-gray-500" />
+                      <Clock className="w-4 h-4 text-muted-foreground" />
                       <span>{duration} minutes</span>
                     </div>
                   </div>
@@ -381,7 +381,7 @@ export function AppointmentDetailsModal({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Date & Time</label>
+                    <label className="text-sm font-medium text-muted-foreground">Date & Time</label>
                     <p>
                       {appointmentDate.toLocaleDateString()} at{' '}
                       {appointmentDate.toLocaleTimeString([], {
@@ -391,9 +391,9 @@ export function AppointmentDetailsModal({
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Amount</label>
+                    <label className="text-sm font-medium text-muted-foreground">Amount</label>
                     <div className="flex items-center gap-1">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
+                      <DollarSign className="w-4 h-4 text-muted-foreground" />
                       <span className="font-semibold">
                         {formatCurrency(props.totalAmount || 0)}
                       </span>
@@ -402,15 +402,15 @@ export function AppointmentDetailsModal({
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Smart Code</label>
-                  <p className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                  <label className="text-sm font-medium text-muted-foreground">Smart Code</label>
+                  <p className="text-xs font-mono bg-muted px-2 py-1 rounded">
                     {props.smartCode}
                   </p>
                 </div>
 
                 {props.specialRequests && (
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Special Requests</label>
+                    <label className="text-sm font-medium text-muted-foreground">Special Requests</label>
                     <p className="text-sm bg-yellow-50 border border-yellow-200 rounded p-2">
                       {props.specialRequests}
                     </p>
@@ -483,7 +483,7 @@ export function AppointmentDetailsModal({
 
                 {/* Status Notes */}
                 <div>
-                  <label className="text-xs font-medium text-gray-600">Add Notes</label>
+                  <label className="text-xs font-medium text-muted-foreground">Add Notes</label>
                   <Textarea
                     placeholder="Status update notes..."
                     value={statusNotes}
@@ -505,7 +505,7 @@ export function AppointmentDetailsModal({
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-3 h-3" />
                     <span>Created: {new Date(appointment.start).toLocaleDateString()}</span>
                   </div>
@@ -516,7 +516,7 @@ export function AppointmentDetailsModal({
                     </div>
                   )}
                   {props.status === APPOINTMENT_WORKFLOW.COMPLETED && (
-                    <div className="flex items-center gap-2 text-blue-600">
+                    <div className="flex items-center gap-2 text-primary">
                       <Star className="w-3 h-3" />
                       <span>Service completed successfully</span>
                     </div>
@@ -534,7 +534,7 @@ export function AppointmentDetailsModal({
               <Brain className="w-4 h-4 mr-1" />
               {showAIInsights ? 'Hide' : 'Show'} AI
             </Button>
-            <span className="text-xs text-gray-500">Appointment ID: {props.appointmentId}</span>
+            <span className="text-xs text-muted-foreground">Appointment ID: {props.appointmentId}</span>
           </div>
 
           <div className="flex gap-2">
@@ -543,7 +543,7 @@ export function AppointmentDetailsModal({
             </Button>
             <Button
               onClick={() => setIsEditing(!isEditing)}
-              className={`bg-gradient-to-r ${config.gradient} text-white`}
+              className={`bg-gradient-to-r ${config.gradient} text-foreground`}
             >
               <Pencil className="w-4 h-4 mr-1" />
               Edit

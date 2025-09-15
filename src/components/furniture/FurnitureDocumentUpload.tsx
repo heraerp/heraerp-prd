@@ -235,7 +235,7 @@ export function FurnitureDocumentUpload({
   }
 
   return (
-    <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
+    <Card className={cn(isDarkMode ? 'bg-muted/50 border-border' : 'bg-background')}>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <Receipt className="h-4 w-4" />
@@ -250,8 +250,8 @@ export function FurnitureDocumentUpload({
             dragOver
               ? 'border-blue-500 bg-blue-500/10'
               : uploading
-                ? 'border-gray-600 bg-gray-700/50'
-                : 'border-gray-600 hover:border-gray-500'
+                ? 'border-border bg-muted-foreground/10/50'
+                : 'border-border hover:border-gray-500'
           )}
           onDrop={handleDrop}
           onDragOver={e => {
@@ -274,11 +274,11 @@ export function FurnitureDocumentUpload({
           ) : (
             <div className="space-y-2">
               <div className="flex justify-center gap-2">
-                <Upload className="h-8 w-8 text-gray-400" />
-                <Camera className="h-8 w-8 text-gray-400" />
+                <Upload className="h-8 w-8 text-muted-foreground" />
+                <Camera className="h-8 w-8 text-muted-foreground" />
               </div>
-              <p className="text-sm text-gray-400">Drop invoices here or click to browse</p>
-              <p className="text-xs text-gray-500">PDF, JPG, PNG accepted (Max 50MB)</p>
+              <p className="text-sm text-muted-foreground">Drop invoices here or click to browse</p>
+              <p className="text-xs text-muted-foreground">PDF, JPG, PNG accepted (Max 50MB)</p>
               <Button
                 type="button"
                 variant="outline"
@@ -326,14 +326,14 @@ export function FurnitureDocumentUpload({
                   key={file.id}
                   className={cn(
                     'flex items-center justify-between p-3 rounded-lg',
-                    isDarkMode ? 'bg-gray-700/50' : 'bg-gray-100'
+                    isDarkMode ? 'bg-muted-foreground/10/50' : 'bg-muted'
                   )}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {getFileIcon(file.type)}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{file.name}</p>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-muted-foreground">
                         {formatFileSize(file.size)}
                         {file.analysis && (
                           <span className="ml-2">
@@ -384,7 +384,7 @@ export function FurnitureDocumentUpload({
         )}
 
         {/* Help Text */}
-        <div className="text-xs text-gray-500 space-y-1">
+        <div className="text-xs text-muted-foreground space-y-1">
           <p>• Upload invoices or receipts for automatic processing</p>
           <p>• AI will extract vendor, amount, and items</p>
           <p>• Suggested journal entries will appear in chat</p>

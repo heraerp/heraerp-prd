@@ -98,16 +98,16 @@ export default function TenderWorkflowStatus({
   const progressPercentage = (completedStages / stages.length) * 100
 
   return (
-    <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+    <Card className="p-6 bg-muted/70 backdrop-blur-sm border-border/50">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">Tender Workflow Status</h3>
-            <p className="text-sm text-gray-400 mt-1">Tender {tenderCode}</p>
+            <h3 className="text-lg font-semibold text-foreground">Tender Workflow Status</h3>
+            <p className="text-sm text-muted-foreground mt-1">Tender {tenderCode}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-400">Overall Progress</p>
-            <p className="text-2xl font-bold text-white">{Math.round(progressPercentage)}%</p>
+            <p className="text-sm text-muted-foreground">Overall Progress</p>
+            <p className="text-2xl font-bold text-foreground">{Math.round(progressPercentage)}%</p>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ export default function TenderWorkflowStatus({
 
         <div className="relative">
           {/* Vertical line connecting stages */}
-          <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-gray-700"></div>
+          <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-muted-foreground/10"></div>
 
           {/* Workflow stages */}
           <div className="space-y-4">
@@ -134,7 +134,7 @@ export default function TenderWorkflowStatus({
                       isCompleted && 'bg-green-600/20 border-2 border-green-600',
                       isActive && 'bg-amber-600/20 border-2 border-amber-600 animate-pulse',
                       isFailed && 'bg-red-600/20 border-2 border-red-600',
-                      stage.status === 'pending' && 'bg-gray-700/50 border-2 border-gray-600'
+                      stage.status === 'pending' && 'bg-muted-foreground/10/50 border-2 border-border'
                     )}
                   >
                     <Icon
@@ -143,7 +143,7 @@ export default function TenderWorkflowStatus({
                         isCompleted && 'text-green-400',
                         isActive && 'text-amber-400',
                         isFailed && 'text-red-400',
-                        stage.status === 'pending' && 'text-gray-500'
+                        stage.status === 'pending' && 'text-muted-foreground'
                       )}
                     />
                   </div>
@@ -155,14 +155,14 @@ export default function TenderWorkflowStatus({
                         <h4
                           className={cn(
                             'font-semibold text-lg',
-                            stage.status === 'pending' ? 'text-gray-500' : 'text-white'
+                            stage.status === 'pending' ? 'text-muted-foreground' : 'text-foreground'
                           )}
                         >
                           {stage.name}
                         </h4>
-                        <p className="text-sm text-gray-400 mt-1">{stage.details}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{stage.details}</p>
                         {stage.date && (
-                          <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {stage.date}
                           </p>

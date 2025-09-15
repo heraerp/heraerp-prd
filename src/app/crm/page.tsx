@@ -150,8 +150,8 @@ export default function CRMDashboard() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">CRM Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">CRM Dashboard</h1>
+        <p className="text-muted-foreground dark:text-muted-foreground">
           Manage your customer relationships and sales pipeline
         </p>
       </div>
@@ -229,7 +229,7 @@ export default function CRMDashboard() {
               </h2>
               <div className="space-y-4">
                 {recentActivities.length === 0 ? (
-                  <p className="text-gray-500">No recent activities</p>
+                  <p className="text-muted-foreground">No recent activities</p>
                 ) : (
                   recentActivities.map(activity => (
                     <div
@@ -237,17 +237,17 @@ export default function CRMDashboard() {
                       className="flex items-start space-x-3 pb-3 border-b last:border-0"
                     >
                       {activity.type === 'call' ? (
-                        <Phone className="w-5 h-5 text-blue-600 mt-0.5" />
+                        <Phone className="w-5 h-5 text-primary mt-0.5" />
                       ) : activity.type === 'email' ? (
                         <Mail className="w-5 h-5 text-green-600 mt-0.5" />
                       ) : (
                         <Calendar className="w-5 h-5 text-purple-600 mt-0.5" />
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                        <p className="font-medium text-gray-900 dark:text-foreground">
                           {activity.subject}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {activity.date} • {activity.assignedTo}
                         </p>
                       </div>
@@ -264,14 +264,14 @@ export default function CRMDashboard() {
               </h2>
               <div className="space-y-4">
                 {topOpportunities.length === 0 ? (
-                  <p className="text-gray-500">No opportunities yet</p>
+                  <p className="text-muted-foreground">No opportunities yet</p>
                 ) : (
                   topOpportunities.map(opp => (
                     <div key={opp.id} className="pb-3 border-b last:border-0">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">{opp.name}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="font-medium text-gray-900 dark:text-foreground">{opp.name}</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {opp.stage} • {opp.probability}% • Close: {opp.closeDate}
                           </p>
                         </div>

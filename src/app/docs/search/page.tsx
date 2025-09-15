@@ -146,7 +146,7 @@ function SearchFilters({
         href={buildUrl({ type: undefined })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
           !currentType
-            ? 'bg-hera-primary text-white border-hera-primary'
+            ? 'bg-hera-primary text-foreground border-hera-primary'
             : 'bg-background hover:bg-accent border-border'
         }`}
       >
@@ -157,7 +157,7 @@ function SearchFilters({
         href={buildUrl({ type: 'dev' })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
           currentType === 'dev'
-            ? 'bg-hera-primary text-white border-hera-primary'
+            ? 'bg-hera-primary text-foreground border-hera-primary'
             : 'bg-background hover:bg-accent border-border'
         }`}
       >
@@ -168,7 +168,7 @@ function SearchFilters({
         href={buildUrl({ type: 'user' })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
           currentType === 'user'
-            ? 'bg-hera-primary text-white border-hera-primary'
+            ? 'bg-hera-primary text-foreground border-hera-primary'
             : 'bg-background hover:bg-accent border-border'
         }`}
       >

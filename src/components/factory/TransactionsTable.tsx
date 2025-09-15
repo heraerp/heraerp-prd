@@ -110,35 +110,35 @@ export function TransactionsTable({
     <>
       <section
         aria-label="Pipeline Runs"
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden"
+        className="bg-background dark:bg-muted rounded-2xl shadow-lg overflow-hidden"
       >
-        <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Pipeline Runs</h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+        <header className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground">Pipeline Runs</h2>
+          <span className="text-sm text-muted-foreground dark:text-muted-foreground">
             {transactions.length} transactions
           </span>
         </header>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+            <thead className="bg-muted dark:bg-background border-b border-border dark:border-border">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Module / Stage
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Started
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   AI Confidence
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Guardrails
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                   Artifacts
                 </th>
               </tr>
@@ -166,7 +166,7 @@ export function TransactionsTable({
                 return (
                   <React.Fragment key={txn.id}>
                     <tr
-                      className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${hasDetails ? 'cursor-pointer' : ''}`}
+                      className={`hover:bg-muted dark:hover:bg-muted-foreground/10/50 ${hasDetails ? 'cursor-pointer' : ''}`}
                       onClick={() => hasDetails && toggleRow(txn.id)}
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -176,15 +176,15 @@ export function TransactionsTable({
                               animate={{ rotate: isExpanded ? 90 : 0 }}
                               transition={{ duration: 0.2 }}
                             >
-                              <ChevronRight className="w-4 h-4 text-gray-400" />
+                              <ChevronRight className="w-4 h-4 text-muted-foreground" />
                             </motion.div>
                           )}
-                          <Icon className="w-5 h-5 text-gray-400" />
+                          <Icon className="w-5 h-5 text-muted-foreground" />
                           <div>
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                               {txn.smart_code.split('.')[3]}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                               {txn.transaction_type}
                             </p>
                           </div>
@@ -202,7 +202,7 @@ export function TransactionsTable({
                                     ? 'text-orange-500'
                                     : txn.transaction_status === 'running'
                                       ? 'text-blue-500 animate-spin'
-                                      : 'text-gray-400'
+                                      : 'text-muted-foreground'
                             }`}
                           />
                           <span
@@ -220,19 +220,19 @@ export function TransactionsTable({
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground dark:text-muted-foreground">
                         {new Date(txn.transaction_date).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {txn.ai_confidence && (
                           <div className="flex items-center gap-2">
-                            <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div className="w-24 bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
                               <div
                                 className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${txn.ai_confidence * 100}%` }}
                               />
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                               {(txn.ai_confidence * 100).toFixed(0)}%
                             </span>
                           </div>
@@ -256,20 +256,20 @@ export function TransactionsTable({
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.2 }}
-                              className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700"
+                              className="bg-muted dark:bg-background border-y border-border dark:border-border"
                             >
                               <div className="px-12 py-4 space-y-3">
                                 {lines.map((line, idx) => (
                                   <div
                                     key={line.id}
-                                    className="flex items-start justify-between p-3 bg-white dark:bg-gray-800 rounded-lg"
+                                    className="flex items-start justify-between p-3 bg-background dark:bg-muted rounded-lg"
                                   >
                                     <div className="flex-1">
-                                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                                         {line.line_type}
                                       </p>
                                       {(line.metadata as any)?.status && (
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                                           Status: {line.metadata.status}
                                           {line.metadata.coverage &&
                                             ` • Coverage: ${(line.metadata.coverage * 100).toFixed(1)}%`}
@@ -296,7 +296,7 @@ export function TransactionsTable({
                                                         policy: v.policy
                                                       })
                                                     }}
-                                                    className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
+                                                    className="ml-2 text-primary dark:text-blue-400 hover:underline"
                                                   >
                                                     Create waiver
                                                   </button>

@@ -419,7 +419,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       case 'regular':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30'
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30'
+        return 'bg-muted text-gray-800 dark:bg-background/30'
     }
   }
 
@@ -492,8 +492,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Salon Calendar</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Salon Calendar</h1>
+          <p className="text-muted-foreground dark:text-muted-foreground">
             Manage appointments, stylists, and salon operations
           </p>
         </div>
@@ -520,12 +520,12 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className="h-8 w-8 text-primary" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Today's Appointments
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">8</p>
               </div>
             </div>
           </CardContent>
@@ -536,10 +536,10 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <Users className="h-8 w-8 text-purple-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Active Stylists
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   {stylists.length}
                 </p>
               </div>
@@ -552,10 +552,10 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <DollarSign className="h-8 w-8 text-green-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Today's Revenue
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">AED 2,350</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">AED 2,350</p>
               </div>
             </div>
           </CardContent>
@@ -566,8 +566,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <Star className="h-8 w-8 text-yellow-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">VIP Clients</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">VIP Clients</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                   {clients.filter(c => c.vipLevel && c.vipLevel !== 'regular').length}
                 </p>
               </div>
@@ -613,11 +613,11 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             {stylists.map(stylist => (
               <div key={stylist.id} className="flex items-center space-x-3 p-3 border rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">{stylist.name.charAt(0)}</span>
+                  <span className="text-foreground font-bold text-sm">{stylist.name.charAt(0)}</span>
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{stylist.name}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{stylist.title}</p>
+                  <p className="font-medium text-gray-900 dark:text-foreground">{stylist.name}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge
                       variant="outline"
@@ -628,7 +628,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                     >
                       {stylist.level.toUpperCase()}
                     </Badge>
-                    <span className="text-xs text-gray-500">AED {stylist.hourlyRate}/hr</span>
+                    <span className="text-xs text-muted-foreground">AED {stylist.hourlyRate}/hr</span>
                   </div>
                 </div>
               </div>
@@ -650,13 +650,13 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                 className="flex items-center justify-between p-3 border rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{service.name}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="font-medium text-gray-900 dark:text-foreground">{service.name}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {Math.floor(service.duration / 60)}h {service.duration % 60}m
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-gray-900 dark:text-gray-100">AED {service.price}</p>
+                  <p className="font-bold text-gray-900 dark:text-foreground">AED {service.price}</p>
                   <Badge variant="outline" className="text-xs">
                     {service.category.toUpperCase()}
                   </Badge>
@@ -738,7 +738,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                     <SelectItem key={service.id} value={service.id}>
                       <div className="flex items-center justify-between w-full">
                         <span>{service.name}</span>
-                        <span className="text-xs text-gray-500">AED {service.price}</span>
+                        <span className="text-xs text-muted-foreground">AED {service.price}</span>
                       </div>
                     </SelectItem>
                   ))}
