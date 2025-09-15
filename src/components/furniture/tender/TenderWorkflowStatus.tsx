@@ -6,7 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { FileText, Search, Target, DollarSign, Trophy, Truck, CheckCircle, XCircle, Clock, AlertCircle
 } from 'lucide-react'
-import { cn } from '@/lib/utils' interface WorkflowStage { id: string name: string icon: React.ElementType status: 'completed' | 'active' | 'pending' | 'failed' date?: string details?: string
+import { cn } from '@/lib/utils'
+
+
+interface WorkflowStage { id: string name: string icon: React.ElementType status: 'completed' | 'active' | 'pending' | 'failed' date?: string details?: string
 }
 
 interface TenderWorkflowStatusProps { tenderCode: string currentStage: string stages?: WorkflowStage[]

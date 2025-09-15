@@ -39,6 +39,7 @@ import {
   LogOut
 } from 'lucide-react'
 
+
 interface FurnitureDarkSidebarProps {
   onNavigate?: () => void
 }
@@ -196,12 +197,16 @@ const AppsModal = React.memo(function AppsModal({
 
 function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
   const pathname = usePathname()
-  const router = useRouter()
-  const { toast } = useToast()
-  const { logout } = useMultiOrgAuth()
-  const [showAppsModal, setShowAppsModal] = useState(false)
 
-  const isActive = useCallback(
+const router = useRouter()
+
+const { toast } = useToast()
+
+const { logout } = useMultiOrgAuth()
+
+const [showAppsModal, setShowAppsModal] = useState(false)
+
+const isActive = useCallback(
     (href: string) => {
       if (href === '/furniture' && pathname === '/furniture') return true
       if (href !== '/furniture' && pathname.startsWith(href)) return true
@@ -210,13 +215,13 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
     [pathname]
   )
 
-  const handleNavClick = useCallback(() => {
+const handleNavClick = useCallback(() => {
     if (onNavigate) {
       onNavigate()
     }
   }, [onNavigate])
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
     try {
       console.log('Logout button clicked')
       toast({

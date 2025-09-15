@@ -7,13 +7,15 @@ import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 } from 'lucide-
 import { Button } from '@/components/ui/button'
 import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
 
+
 interface FurnitureDarkLayoutProps {
   children: React.ReactNode
 }
 
 function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
+
+const [isMobile, setIsMobile] = useState(true)
 
   useEffect(() => {
     const checkScreenSize = () => {
