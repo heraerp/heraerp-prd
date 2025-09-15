@@ -133,7 +133,7 @@ export default function SalonDataSettingsPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-gray-900 relative overflow-hidden"
       style={{
         background: `
           linear-gradient(135deg, 

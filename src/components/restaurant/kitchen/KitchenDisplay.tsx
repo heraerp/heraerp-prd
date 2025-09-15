@@ -242,7 +242,7 @@ export function KitchenDisplay() {
 
   if (isLoading) {
     return (
-      <div className="p-6 min-h-screen flex items-center justify-center">
+      <div className="p-6 min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-orange-200 border-t-orange-500 rounded-full" />
@@ -340,7 +340,7 @@ export function KitchenDisplay() {
       {filteredOrders.length === 0 ? (
         <Card className="p-12 text-center">
           <ChefHat className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Orders</h3>
+          <h3 className="text-lg font-medium text-gray-100 mb-2">No Active Orders</h3>
           <p className="text-muted-foreground">All caught up! New orders will appear here.</p>
         </Card>
       ) : (
@@ -353,12 +353,12 @@ export function KitchenDisplay() {
               {/* Order Header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{order.reference_number}</h3>
+                  <h3 className="font-semibold text-gray-100">{order.reference_number}</h3>
                   <p className="text-sm text-muted-foreground">
                     {order.table_number ? `Table ${order.table_number}` : order.transaction_type}
                   </p>
                 </div>
-                <Badge className={statusConfig[order.status]?.color || 'bg-muted text-gray-800'}>
+                <Badge className={statusConfig[order.status]?.color || 'bg-muted text-gray-200'}>
                   {statusConfig[order.status]?.label || order.status}
                 </Badge>
               </div>
@@ -408,7 +408,7 @@ export function KitchenDisplay() {
                     )}
                   </span>
                 </div>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-100">
                   ${(order.total_amount || 0).toFixed(2)}
                 </span>
               </div>

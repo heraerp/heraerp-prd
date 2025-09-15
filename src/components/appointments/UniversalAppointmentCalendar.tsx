@@ -361,7 +361,7 @@ export function UniversalAppointmentCalendar({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
             <Calendar className="w-8 h-8" style={{ color: industryStyle.primary }} />
             {getIndustryIcon()} {industry.charAt(0).toUpperCase() + industry.slice(1)} Appointment
             Calendar

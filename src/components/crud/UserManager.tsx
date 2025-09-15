@@ -984,7 +984,7 @@ export function UserManager() {
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-sm">{permission.name}</p>
                                 <p className="text-xs text-muted-foreground">{permission.description}</p>
-                                <code className="text-xs bg-gray-200 px-1 rounded">
+                                <code className="text-xs bg-gray-700 px-1 rounded">
                                   {permission.id}
                                 </code>
                               </div>
@@ -1067,7 +1067,7 @@ export function UserManager() {
                     <div key={dept} className="flex items-center justify-between">
                       <span className="text-sm">{dept}</span>
                       <div className="flex items-center gap-3">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="w-24 bg-gray-700 rounded-full h-2">
                           <div
                             className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${percentage}%` }}

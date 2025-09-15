@@ -135,7 +135,7 @@ export default function CasesPage() {
       case 'complaint':
         return 'from-purple-500 to-purple-600'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 
@@ -148,7 +148,7 @@ export default function CasesPage() {
       case 'low':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -174,11 +174,11 @@ export default function CasesPage() {
       case 'resolved':
         return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
       case 'closed':
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
       case 'escalated':
         return 'bg-red-500/20 text-red-400 border-red-500/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 

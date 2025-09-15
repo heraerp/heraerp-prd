@@ -200,7 +200,7 @@ export class GlobalCRMErrorBoundary extends React.Component<
       return (
         <div className="min-h-screen bg-muted flex items-center justify-center p-4">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h2>
+            <h2 className="text-2xl font-bold text-gray-100 mb-4">Something went wrong</h2>
             <p className="text-muted-foreground mb-6">
               An unexpected error occurred. Please refresh the page to continue.
             </p>

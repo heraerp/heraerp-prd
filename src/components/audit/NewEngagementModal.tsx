@@ -272,14 +272,14 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     ? 'bg-green-500 text-foreground'
                     : step === currentStep
                       ? 'bg-blue-500 text-foreground'
-                      : 'bg-gray-200 text-muted-foreground'
+                      : 'bg-gray-700 text-muted-foreground'
                 }`}
               >
                 {step < currentStep ? <CheckCircle2 className="w-4 h-4" /> : step}
               </div>
               {step < 5 && (
                 <div
-                  className={`w-8 h-1 mx-1 ${step < currentStep ? 'bg-green-500' : 'bg-gray-200'}`}
+                  className={`w-8 h-1 mx-1 ${step < currentStep ? 'bg-green-500' : 'bg-gray-700'}`}
                 />
               )}
             </div>
@@ -291,7 +291,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {currentStep === 1 && (
             <Card className="bg-background border border-border shadow-sm">
               <CardHeader className="bg-muted border-b">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-gray-100">
                   <Building2 className="w-5 h-5" />
                   Client Information
                 </CardTitle>
@@ -409,7 +409,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {currentStep === 2 && (
             <Card className="bg-background border border-border shadow-sm">
               <CardHeader className="bg-muted border-b">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-gray-100">
                   <Calendar className="w-5 h-5" />
                   Engagement Details
                 </CardTitle>
@@ -508,7 +508,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {currentStep === 3 && (
             <Card className="bg-background border border-border shadow-sm">
               <CardHeader className="bg-muted border-b">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-gray-100">
                   <AlertTriangle className="w-5 h-5" />
                   Risk Assessment & Materiality
                 </CardTitle>
@@ -611,7 +611,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {currentStep === 4 && (
             <Card className="bg-background border border-border shadow-sm">
               <CardHeader className="bg-muted border-b">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-gray-100">
                   <Users className="w-5 h-5" />
                   Team Assignment
                 </CardTitle>
@@ -682,7 +682,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {currentStep === 5 && (
             <Card className="bg-background border border-border shadow-sm">
               <CardHeader className="bg-muted border-b">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-gray-100">
                   <Shield className="w-5 h-5" />
                   Compliance & Final Review
                 </CardTitle>
@@ -764,27 +764,27 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-blue-700 font-medium">Client:</span>{' '}
-                      <span className="text-gray-900">{engagementData.client_name}</span>
+                      <span className="text-gray-100">{engagementData.client_name}</span>
                     </div>
                     <div>
                       <span className="text-blue-700 font-medium">Type:</span>{' '}
-                      <span className="text-gray-900">{engagementData.engagement_type}</span>
+                      <span className="text-gray-100">{engagementData.engagement_type}</span>
                     </div>
                     <div>
                       <span className="text-blue-700 font-medium">Year:</span>{' '}
-                      <span className="text-gray-900">{engagementData.audit_year}</span>
+                      <span className="text-gray-100">{engagementData.audit_year}</span>
                     </div>
                     <div>
                       <span className="text-blue-700 font-medium">Risk:</span>{' '}
-                      <span className="text-gray-900">{engagementData.risk_rating}</span>
+                      <span className="text-gray-100">{engagementData.risk_rating}</span>
                     </div>
                     <div>
                       <span className="text-blue-700 font-medium">Partner:</span>{' '}
-                      <span className="text-gray-900">{engagementData.engagement_partner}</span>
+                      <span className="text-gray-100">{engagementData.engagement_partner}</span>
                     </div>
                     <div>
                       <span className="text-blue-700 font-medium">EQCR:</span>{' '}
-                      <span className="text-gray-900">
+                      <span className="text-gray-100">
                         {isEQCRRequired() ? 'Required' : 'Not Required'}
                       </span>
                     </div>

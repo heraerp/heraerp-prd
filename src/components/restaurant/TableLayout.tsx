@@ -156,7 +156,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
       case 'reserved':
         return 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300'
       case 'cleaning':
-        return 'bg-muted hover:bg-gray-200 border-border'
+        return 'bg-muted hover:bg-gray-700 border-border'
     }
   }
 

@@ -240,7 +240,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
       <Card className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+            <h3 className="text-lg font-semibold text-gray-100 flex items-center">
               <Link2 className="w-5 h-5 mr-2" />
               Table Combination & Splitting
             </h3>
@@ -328,7 +328,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
 
                   {selectedTables.length > 0 && (
                     <div className="p-3 bg-muted rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">
+                      <h4 className="text-sm font-medium text-gray-100 mb-2">
                         Combination Summary
                       </h4>
                       <div className="space-y-1 text-sm text-muted-foreground">
@@ -380,7 +380,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Active Combinations */}
         <Card className="p-6">
-          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+          <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
             <Link2 className="w-5 h-5 mr-2" />
             Active Combinations ({combinedGroups.length})
           </h4>
@@ -397,7 +397,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                 <div key={combo.id} className="p-4 border border-border rounded-lg">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <h5 className="font-medium text-gray-900">{combo.name}</h5>
+                      <h5 className="font-medium text-gray-100">{combo.name}</h5>
                       <p className="text-sm text-muted-foreground">
                         {combo.tables.length} tables • {combo.total_capacity} total seats
                       </p>
@@ -420,7 +420,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                         className={`${
                           table.id === combo.master_table_id
                             ? 'bg-blue-100 text-blue-800'
-                            : 'bg-muted text-gray-800'
+                            : 'bg-muted text-gray-200'
                         }`}
                       >
                         {table.id === combo.master_table_id && '★ '}
@@ -453,7 +453,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
 
         {/* Available Tables for Combination */}
         <Card className="p-6">
-          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+          <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
             <Plus className="w-5 h-5 mr-2" />
             Available for Combination ({combinableTables.length})
           </h4>
@@ -506,14 +506,14 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
 
       {/* Combination Rules & Tips */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Settings className="w-5 h-5 mr-2" />
           Combination Rules & Best Practices
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h5 className="text-sm font-medium text-gray-900 mb-2">Requirements</h5>
+            <h5 className="text-sm font-medium text-gray-100 mb-2">Requirements</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start space-x-2">
                 <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
@@ -535,7 +535,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
           </div>
 
           <div>
-            <h5 className="text-sm font-medium text-gray-900 mb-2">Best Practices</h5>
+            <h5 className="text-sm font-medium text-gray-100 mb-2">Best Practices</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start space-x-2">
                 <Eye className="w-4 h-4 text-blue-500 mt-0.5" />

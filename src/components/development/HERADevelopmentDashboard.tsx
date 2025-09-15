@@ -267,7 +267,7 @@ export function HERADevelopmentDashboard() {
       case 'medium':
         return 'bg-yellow-100 text-yellow-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -295,7 +295,7 @@ export function HERADevelopmentDashboard() {
             <Zap className="w-7 h-7 text-foreground" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">HERA Development Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-100">HERA Development Dashboard</h1>
             <p className="text-muted-foreground mt-1">Meta-system tracking HERA's own development</p>
           </div>
         </div>
@@ -339,8 +339,8 @@ export function HERADevelopmentDashboard() {
                   >
                     <Icon className={`w-6 h-6 text-${item.color}-600`} />
                   </div>
-                  <div className="text-sm font-medium text-gray-900">{item.category}</div>
-                  <div className="text-2xl font-bold text-gray-900">{item.percentage}%</div>
+                  <div className="text-sm font-medium text-gray-100">{item.category}</div>
+                  <div className="text-2xl font-bold text-gray-100">{item.percentage}%</div>
                 </div>
               )
             })}
@@ -385,7 +385,7 @@ export function HERADevelopmentDashboard() {
                             {task.status.replace('_', ' ')}
                           </Badge>
                         </div>
-                        <h4 className="font-semibold text-gray-900 mb-1">{task.entity_name}</h4>
+                        <h4 className="font-semibold text-gray-100 mb-1">{task.entity_name}</h4>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="w-3 h-3" />
@@ -406,7 +406,7 @@ export function HERADevelopmentDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-gray-900">
+                        <div className="text-2xl font-bold text-gray-100">
                           {task.completion_percentage}%
                         </div>
                         <Progress value={task.completion_percentage} className="w-24 h-2 mt-1" />
@@ -504,7 +504,7 @@ export function HERADevelopmentDashboard() {
                       {getActivityIcon(activity.type)}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{activity.message}</div>
+                      <div className="font-medium text-gray-100">{activity.message}</div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                         <span>{activity.author}</span>
                         <span>{new Date(activity.timestamp).toLocaleString()}</span>
@@ -553,7 +553,7 @@ export function HERADevelopmentDashboard() {
                                 ? 'bg-green-100 text-green-800'
                                 : task.status === 'in_progress'
                                   ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-muted text-gray-800'
+                                  : 'bg-muted text-gray-200'
                             }
                           >
                             {task.status.replace('_', ' ')}

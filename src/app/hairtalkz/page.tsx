@@ -172,7 +172,7 @@ function HairTalkzDashboardContent() {
                     </div>
                   </div>
                   <div className="p-4">
-                    <div className="font-medium text-gray-800">{stat.label}</div>
+                    <div className="font-medium text-gray-200">{stat.label}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -207,7 +207,7 @@ function HairTalkzDashboardContent() {
                 >
                   <div className="text-sm font-mono text-sage-700 w-16">{appointment.time}</div>
                   <div className="flex-1">
-                    <div className="font-medium text-gray-800">{appointment.client}</div>
+                    <div className="font-medium text-gray-200">{appointment.client}</div>
                     <div className="text-sm text-muted-foreground">{appointment.service}</div>
                   </div>
                   <div className="text-right">

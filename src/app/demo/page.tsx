@@ -217,7 +217,7 @@ const demoApps = [
     category: 'Professional Services',
     tags: ['Projects', 'Time Tracking', 'Billing', 'CRM'],
     color: 'from-slate-500 to-gray-600',
-    bgColor: 'from-slate-50 to-gray-50',
+    bgColor: 'from-slate-50 to-gray-900',
     darkBgColor: 'dark:from-slate-900/20 dark:to-gray-900/20',
     features: [
       'Project Management',
@@ -421,7 +421,7 @@ export default function DemoAppsPage() {
                 <span className="text-foreground font-bold text-lg sm:text-xl">H</span>
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-gray-900 dark:to-slate-200 bg-clip-text text-transparent">
                   HERA Demo Apps
                 </h1>
                 <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
@@ -539,7 +539,7 @@ export default function DemoAppsPage() {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-gray-900 dark:via-slate-200 dark:to-gray-900 bg-clip-text text-transparent">
                 Experience HERA
               </span>
               <br />

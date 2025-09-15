@@ -184,7 +184,7 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     icon: '🚗',
     name: 'Automotive',
     color: '#374151',
-    gradient: 'from-gray-500 to-red-500',
+    gradient: 'from-gray-9000 to-red-500',
     statusActions: ['Confirm Service', 'Vehicle Dropped', 'Service Started', 'Service Complete'],
     customFields: [
       'Vehicle Make/Model',
@@ -245,7 +245,7 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
 
 const STATUS_CONFIG = {
   [APPOINTMENT_WORKFLOW.DRAFT]: {
-    color: 'bg-muted text-gray-800',
+    color: 'bg-muted text-gray-200',
     icon: <Pencil className="w-4 h-4" />,
     label: 'Draft'
   },
@@ -285,7 +285,7 @@ const STATUS_CONFIG = {
     label: 'Cancelled'
   },
   [APPOINTMENT_WORKFLOW.NO_SHOW]: {
-    color: 'bg-muted text-gray-800',
+    color: 'bg-muted text-gray-200',
     icon: <AlertTriangle className="w-4 h-4" />,
     label: 'No Show'
   }
@@ -370,7 +370,7 @@ export function AppointmentDetailsModal({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">AI Confidence</span>
             <div className="flex items-center gap-2">
-              <div className="w-16 bg-gray-200 rounded-full h-2">
+              <div className="w-16 bg-gray-700 rounded-full h-2">
                 <div
                   className="bg-purple-600 h-2 rounded-full"
                   style={{ width: `${props.aiInsights.confidence_score}%` }}

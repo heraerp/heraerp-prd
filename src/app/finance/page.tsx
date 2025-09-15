@@ -421,7 +421,7 @@ export default function FinanceDashboard() {
                   <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                     Current Organization
                   </p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-xl font-bold text-gray-100 dark:text-foreground">
                     {currentOrganization.organization_name}
                   </p>
                 </div>
@@ -470,7 +470,7 @@ export default function FinanceDashboard() {
                     <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                    <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">
                       Finance Setup Required
                     </h3>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -677,7 +677,7 @@ export default function FinanceDashboard() {
                       </Badge>
                     )}
                   </div>
-                  <CardTitle className="text-xl font-bold text-gray-900 dark:text-foreground mb-2">
+                  <CardTitle className="text-xl font-bold text-gray-100 dark:text-foreground mb-2">
                     {updatedModule.title}
                   </CardTitle>
                   <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -691,7 +691,7 @@ export default function FinanceDashboard() {
                         <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                           Current
                         </p>
-                        <p className="text-lg font-bold text-gray-900 dark:text-foreground">
+                        <p className="text-lg font-bold text-gray-100 dark:text-foreground">
                           {updatedModule.stats.value}
                         </p>
                       </div>
@@ -740,7 +740,7 @@ export default function FinanceDashboard() {
         {/* Quick Actions */}
         <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-foreground">
+            <CardTitle className="text-2xl font-bold text-gray-100 dark:text-foreground">
               Quick Actions
             </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-base">

@@ -148,7 +148,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Table Analytics</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Table Analytics</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Analyze table performance and optimize operations
             </p>
@@ -229,7 +229,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Occupancy Trend */}
         <Card className="p-6">
-          <h4 className="text-base font-semibold text-gray-900 mb-4">Occupancy Trend</h4>
+          <h4 className="text-base font-semibold text-gray-100 mb-4">Occupancy Trend</h4>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={analyticsData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -249,7 +249,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
 
         {/* Revenue by Table */}
         <Card className="p-6">
-          <h4 className="text-base font-semibold text-gray-900 mb-4">Top Performing Tables</h4>
+          <h4 className="text-base font-semibold text-gray-100 mb-4">Top Performing Tables</h4>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={tablePerformance.slice(0, 10)}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -266,7 +266,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Location Distribution */}
         <Card className="p-6">
-          <h4 className="text-base font-semibold text-gray-900 mb-4">Tables by Location</h4>
+          <h4 className="text-base font-semibold text-gray-100 mb-4">Tables by Location</h4>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -290,7 +290,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
 
         {/* Peak Hours */}
         <Card className="p-6 lg:col-span-2">
-          <h4 className="text-base font-semibold text-gray-900 mb-4">Peak Hours Analysis</h4>
+          <h4 className="text-base font-semibold text-gray-100 mb-4">Peak Hours Analysis</h4>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={peakHoursData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -320,7 +320,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
 
       {/* Table Performance Details */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4">Detailed Table Performance</h4>
+        <h4 className="text-base font-semibold text-gray-100 mb-4">Detailed Table Performance</h4>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-muted">
@@ -353,7 +353,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
                   (table.turnover / 20) * 0.2
                 return (
                   <tr key={table.table}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                       {table.table}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
@@ -362,7 +362,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div className="flex items-center">
                         <span>{table.occupancy}%</span>
-                        <div className="ml-2 w-16 bg-gray-200 rounded-full h-2">
+                        <div className="ml-2 w-16 bg-gray-700 rounded-full h-2">
                           <div
                             className="bg-blue-500 h-2 rounded-full"
                             style={{ width: `${table.occupancy}%` }}
@@ -403,7 +403,7 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
 
       {/* Insights */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4">Insights & Recommendations</h4>
+        <h4 className="text-base font-semibold text-gray-100 mb-4">Insights & Recommendations</h4>
         <div className="space-y-3">
           <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
             <Target className="w-5 h-5 text-blue-500 mt-0.5" />

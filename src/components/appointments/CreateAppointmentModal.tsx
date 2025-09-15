@@ -741,14 +741,14 @@ export function CreateAppointmentModal({
             <div key={stepNumber} className="flex items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  stepNumber <= step ? 'bg-purple-600 text-foreground' : 'bg-gray-200 text-muted-foreground'
+                  stepNumber <= step ? 'bg-purple-600 text-foreground' : 'bg-gray-700 text-muted-foreground'
                 }`}
               >
                 {stepNumber}
               </div>
               {stepNumber < 4 && (
                 <div
-                  className={`w-16 h-1 ${stepNumber < step ? 'bg-purple-600' : 'bg-gray-200'}`}
+                  className={`w-16 h-1 ${stepNumber < step ? 'bg-purple-600' : 'bg-gray-700'}`}
                 />
               )}
             </div>

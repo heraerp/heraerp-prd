@@ -132,7 +132,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
 // Kbd component if not already available
 export function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-gray-800 bg-muted border border-border rounded dark:bg-muted dark:text-foreground dark:border-border">
+    <kbd className="inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-gray-200 bg-muted border border-border rounded dark:bg-muted dark:text-foreground dark:border-border">
       {children}
     </kbd>
   )

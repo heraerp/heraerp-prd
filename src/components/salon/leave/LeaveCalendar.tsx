@@ -101,7 +101,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       case 'sick':
         return 'bg-emerald-500 border-emerald-600'
       case 'unpaid':
-        return 'bg-gray-500 border-border'
+        return 'bg-gray-9000 border-border'
       default:
         return 'bg-purple-500 border-purple-600'
     }
@@ -116,7 +116,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+          <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground">
             {formatDate(currentDate, 'MMMM yyyy')}
           </h2>
           <Button
@@ -160,13 +160,13 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
           <span className="text-muted-foreground dark:text-muted-foreground">Sick Leave</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-gray-500 border border-border" />
+          <div className="w-3 h-3 rounded-sm bg-gray-9000 border border-border" />
           <span className="text-muted-foreground dark:text-muted-foreground">Unpaid Leave</span>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-muted-foreground/10 rounded-xl overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-gray-700 dark:bg-muted-foreground/10 rounded-xl overflow-hidden">
         {/* Day Headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div
@@ -195,7 +195,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                   className={`text-sm font-medium ${
                     isCurrentDay
                       ? 'text-indigo-600 dark:text-indigo-400'
-                      : 'text-gray-900 dark:text-foreground'
+                      : 'text-gray-100 dark:text-foreground'
                   }`}
                 >
                   {formatDate(day, 'd')}

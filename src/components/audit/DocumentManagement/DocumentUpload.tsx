@@ -260,7 +260,7 @@ export function DocumentUpload({
             <div className="space-y-4">
               <Upload className="w-12 h-12 text-muted-foreground mx-auto" />
               <div>
-                <p className="text-lg font-medium text-gray-900">
+                <p className="text-lg font-medium text-gray-100">
                   Drop files here or click to browse
                 </p>
                 <p className="text-sm text-muted-foreground">
@@ -307,7 +307,7 @@ export function DocumentUpload({
         {/* Current Files */}
         {currentFiles.length > 0 && (
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-900">
+            <h4 className="font-medium text-gray-100">
               Uploaded Files ({currentFiles.length}/{maxFiles})
             </h4>
             <div className="space-y-3">
@@ -319,7 +319,7 @@ export function DocumentUpload({
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {getFileIcon(file.type)}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{file.name}</p>
+                      <p className="font-medium text-gray-100 truncate">{file.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {formatFileSize(file.size)} • Uploaded{' '}
                         {new Date(file.uploaded_at).toLocaleDateString()}

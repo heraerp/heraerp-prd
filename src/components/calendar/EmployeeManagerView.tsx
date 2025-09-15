@@ -192,7 +192,7 @@ export function EmployeeManagerView({
       case 'denied':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
       default:
-        return 'bg-muted text-gray-800 dark:bg-muted-foreground/10 dark:text-gray-200'
+        return 'bg-muted text-gray-200 dark:bg-muted-foreground/10 dark:text-gray-200'
     }
   }
 
@@ -218,7 +218,7 @@ export function EmployeeManagerView({
             <Users className="w-5 h-5 text-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+            <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
               {userRole === 'employee' ? 'My Schedule & Leave' : 'Team Management'}
             </h1>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -345,7 +345,7 @@ export function EmployeeManagerView({
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-foreground">
+                              <h3 className="font-semibold text-gray-100 dark:text-foreground">
                                 {request.employeeName}
                               </h3>
                               <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -368,7 +368,7 @@ export function EmployeeManagerView({
                               <UserX className="w-4 h-4 text-foreground" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                              <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                                 {request.leaveTypeName}
                               </p>
                               <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -380,7 +380,7 @@ export function EmployeeManagerView({
                           <div className="flex items-center gap-2">
                             <Calendar className="w-5 h-5 text-muted-foreground" />
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                              <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                                 {request.startDate.toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric'
@@ -398,7 +398,7 @@ export function EmployeeManagerView({
                           <div className="flex items-center gap-2">
                             <Clock className="w-5 h-5 text-muted-foreground" />
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                              <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                                 Submitted
                               </p>
                               <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -482,7 +482,7 @@ export function EmployeeManagerView({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-foreground">{member}</h3>
+                        <h3 className="font-semibold text-gray-100 dark:text-foreground">{member}</h3>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {idx === 0
                             ? 'Celebrity Hair Artist'

@@ -189,7 +189,7 @@ export default function AuthenticatedRestaurantDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-red-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-orange-50/30 to-red-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8">
@@ -199,7 +199,7 @@ export default function AuthenticatedRestaurantDashboard() {
                 <UtensilsCrossed className="w-5 h-5 text-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
+                <h1 className="text-xl font-bold text-gray-100 dark:text-foreground">
                   {currentOrganization?.organization_name}
                 </h1>
                 <p className="text-xs text-muted-foreground dark:text-gray-300 font-medium">
@@ -259,7 +259,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Orders</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {stats.todayOrders}
                       </p>
                     </div>
@@ -274,7 +274,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Revenue</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         ${stats.todayRevenue}
                       </p>
                     </div>
@@ -288,7 +288,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active Tables</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {isHeadOffice ? '23' : '8'}
                       </p>
                     </div>
@@ -302,7 +302,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg Order Time</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">18 min</p>
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">18 min</p>
                     </div>
                     <Clock className="w-8 h-8 text-primary" />
                   </div>
@@ -327,14 +327,14 @@ export default function AuthenticatedRestaurantDashboard() {
                           <Utensils className="w-5 h-5 text-foreground" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-foreground">{dish.name}</p>
+                          <p className="font-medium text-gray-100 dark:text-foreground">{dish.name}</p>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {dish.orders} orders
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900 dark:text-foreground">
+                        <p className="font-semibold text-gray-100 dark:text-foreground">
                           ${dish.revenue}
                         </p>
                       </div>
@@ -367,7 +367,7 @@ export default function AuthenticatedRestaurantDashboard() {
                           {order.status}
                         </Badge>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-foreground">{order.id}</p>
+                          <p className="font-medium text-gray-100 dark:text-foreground">{order.id}</p>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Table {order.table} • {order.items} items
                           </p>
@@ -429,13 +429,13 @@ export default function AuthenticatedRestaurantDashboard() {
                               <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                                 Today's Revenue
                               </p>
-                              <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                              <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                                 $1,625
                               </p>
                             </div>
                             <div>
                               <p className="text-sm text-muted-foreground dark:text-muted-foreground">Orders</p>
-                              <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                              <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                                 23
                               </p>
                             </div>
@@ -469,7 +469,7 @@ export default function AuthenticatedRestaurantDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-muted dark:bg-muted">
-                    <h3 className="font-medium text-gray-900 dark:text-foreground mb-2">
+                    <h3 className="font-medium text-gray-100 dark:text-foreground mb-2">
                       Organization Type
                     </h3>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -480,7 +480,7 @@ export default function AuthenticatedRestaurantDashboard() {
                   </div>
 
                   <div className="p-4 rounded-lg bg-muted dark:bg-muted">
-                    <h3 className="font-medium text-gray-900 dark:text-foreground mb-2">Access Level</h3>
+                    <h3 className="font-medium text-gray-100 dark:text-foreground mb-2">Access Level</h3>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {isHeadOffice
                         ? 'Full access to all restaurant locations and consolidated reporting'

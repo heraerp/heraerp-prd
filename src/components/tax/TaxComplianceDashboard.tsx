@@ -522,7 +522,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">India (GST)</span>
                       <span className="text-sm font-bold">18%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
+                    <div className="w-full bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div className="bg-blue-600 h-2 rounded-full" style={{ width: '72%' }}></div>
                     </div>
                   </div>
@@ -531,7 +531,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">EU (VAT)</span>
                       <span className="text-sm font-bold">21%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
+                    <div className="w-full bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div className="bg-green-600 h-2 rounded-full" style={{ width: '84%' }}></div>
                     </div>
                   </div>
@@ -540,7 +540,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-medium">US (Sales Tax)</span>
                       <span className="text-sm font-bold">8.5%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
+                    <div className="w-full bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-2">
                       <div
                         className="bg-purple-600 h-2 rounded-full"
                         style={{ width: '34%' }}
@@ -650,7 +650,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="w-16 bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
+                            <div className="w-16 bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-2">
                               <div
                                 className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${anomaly.confidence * 100}%` }}

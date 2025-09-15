@@ -169,7 +169,7 @@ export default function APIMonitorPage() {
       case 'down':
         return 'text-red-400 bg-red-500/20 border-red-500/30'
       default:
-        return 'text-muted-foreground bg-gray-500/20 border-gray-500/30'
+        return 'text-muted-foreground bg-gray-9000/20 border-gray-500/30'
     }
   }
 

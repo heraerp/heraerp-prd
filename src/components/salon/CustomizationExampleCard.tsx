@@ -18,7 +18,7 @@ export function CustomizationExampleCard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Before */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-gray-900 dark:text-foreground">Template Default</h4>
+            <h4 className="font-semibold text-gray-100 dark:text-foreground">Template Default</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-muted-foreground" />

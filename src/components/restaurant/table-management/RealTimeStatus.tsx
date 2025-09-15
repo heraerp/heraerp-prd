@@ -79,7 +79,7 @@ export function RealTimeStatus({
       case 'Closed':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 

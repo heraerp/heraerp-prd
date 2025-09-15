@@ -48,7 +48,7 @@ export default function ServicesManagementSimple() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="sticky top-0 z-20 px-6 py-4 backdrop-blur-xl bg-background/80 dark:bg-background/80 border-b border-border dark:border-gray-800 shadow-sm">
         <div className="max-w-[1600px] mx-auto">
@@ -98,7 +98,7 @@ export default function ServicesManagementSimple() {
                   className="group relative bg-background dark:bg-muted border border-border dark:border-border rounded-lg p-4 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-foreground text-lg">
+                    <h3 className="font-semibold text-gray-100 dark:text-foreground text-lg">
                       {service.name}
                     </h3>
                     {service.active && (
@@ -119,7 +119,7 @@ export default function ServicesManagementSimple() {
                     </div>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4" />
-                      <span className="font-semibold text-gray-900 dark:text-foreground">
+                      <span className="font-semibold text-gray-100 dark:text-foreground">
                         AED {service.price}
                       </span>
                     </div>
@@ -141,7 +141,7 @@ export default function ServicesManagementSimple() {
             {filteredServices.length === 0 && (
               <div className="text-center py-12">
                 <Scissors className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
+                <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground mb-2">
                   No services found
                 </h3>
                 <p className="text-muted-foreground dark:text-muted-foreground">

@@ -360,9 +360,9 @@ export function SalonBookingWorkflow({
       case 'senior':
         return 'bg-blue-100 text-blue-800 border-blue-200'
       case 'junior':
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 

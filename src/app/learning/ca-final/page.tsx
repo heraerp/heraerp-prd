@@ -960,7 +960,7 @@ export default function CALearningPlatform() {
           <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-100 shadow-lg">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-100">
                   Welcome back, {studentData.name}! 👋
                 </h2>
                 <p className="text-muted-foreground">
@@ -1246,7 +1246,7 @@ export default function CALearningPlatform() {
                     <Brain className="w-6 h-6 text-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    <h3 className="text-lg font-semibold text-gray-100 mb-1">
                       HERA AI Learning Assistant
                     </h3>
                     <p className="text-muted-foreground text-sm mb-3">
@@ -1454,7 +1454,7 @@ export default function CALearningPlatform() {
                       <span>Difficulty: Mixed</span>
                     </div>
                     <div className="p-4 bg-background rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2">Sample Question:</h4>
+                      <h4 className="font-semibold text-gray-100 mb-2">Sample Question:</h4>
                       {quizData.questions?.[0] ? (
                         <div>
                           <p className="mb-3">{quizData.questions[0].question}</p>
@@ -1521,7 +1521,7 @@ export default function CALearningPlatform() {
                       </div>
                     </div>
                     <div className="p-4 bg-background rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2">Test Coverage:</h4>
+                      <h4 className="font-semibold text-gray-100 mb-2">Test Coverage:</h4>
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline">GST Basics</Badge>
                         <Badge variant="outline">Customs Valuation</Badge>
@@ -1593,7 +1593,7 @@ export default function CALearningPlatform() {
                       currentQuestion < getQuizQuestions().length && (
                         <div className="space-y-6">
                           <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            <h3 className="text-lg font-semibold text-gray-100 mb-4">
                               {getQuizQuestions()[currentQuestion].question}
                             </h3>
 
@@ -1896,7 +1896,7 @@ export default function CALearningPlatform() {
                                       ? 'bg-blue-600 text-foreground'
                                       : selectedAnswers[index] !== undefined
                                         ? 'bg-green-100 text-green-800 border border-green-300'
-                                        : 'bg-muted text-muted-foreground hover:bg-gray-200'
+                                        : 'bg-muted text-muted-foreground hover:bg-gray-700'
                                   }`}
                                 >
                                   {index + 1}
@@ -1982,7 +1982,7 @@ export default function CALearningPlatform() {
                             <GraduationCap className="h-6 w-6 text-primary" />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900">CA Expert</h3>
+                            <h3 className="font-semibold text-gray-100">CA Expert</h3>
                             <p className="text-sm text-muted-foreground">Professional guidance</p>
                           </div>
                         </div>
@@ -2004,7 +2004,7 @@ export default function CALearningPlatform() {
                             <Users className="h-6 w-6 text-green-600" />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900">Study Buddy</h3>
+                            <h3 className="font-semibold text-gray-100">Study Buddy</h3>
                             <p className="text-sm text-muted-foreground">Your virtual friend</p>
                           </div>
                         </div>

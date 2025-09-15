@@ -57,7 +57,7 @@ export function EmptyState({
         <Icon className={`w-10 h-10 ${styles.iconColor}`} />
       </div>
 
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+      <h3 className="text-xl font-semibold text-gray-100 mb-2">{title}</h3>
 
       <p className="text-muted-foreground max-w-md mb-6 leading-relaxed">{description}</p>
 
@@ -103,7 +103,7 @@ export function ComingSoonState() {
       <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
         <Sparkles className="w-8 h-8 text-foreground" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">More Apps Coming Soon</h3>
+      <h3 className="text-lg font-semibold text-gray-100 mb-2">More Apps Coming Soon</h3>
       <p className="text-muted-foreground text-sm">
         We're constantly expanding our progressive app catalog. Check back soon for new industry
         solutions!

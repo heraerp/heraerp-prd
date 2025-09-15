@@ -287,7 +287,7 @@ export default function ModuleGeneratorPage() {
   const currentModules = moduleTemplates[selectedBusinessType] || []
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-100">
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="mb-8">
@@ -589,7 +589,7 @@ export default function ModuleGeneratorPage() {
                       <span>Progress</span>
                       <span>{generationProgress}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${generationProgress}%` }}

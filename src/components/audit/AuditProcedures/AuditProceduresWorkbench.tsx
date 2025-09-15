@@ -143,7 +143,7 @@ export function AuditProceduresWorkbench() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'planned':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       case 'in_progress':
         return 'bg-blue-100 text-blue-800'
       case 'completed':
@@ -151,7 +151,7 @@ export function AuditProceduresWorkbench() {
       case 'reviewed':
         return 'bg-purple-100 text-purple-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -185,7 +185,7 @@ export function AuditProceduresWorkbench() {
             <TestTube className="w-6 h-6 text-foreground" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Audit Procedures Workbench</h2>
+            <h2 className="text-2xl font-bold text-gray-100">Audit Procedures Workbench</h2>
             <p className="text-muted-foreground">Plan, execute, and track audit testing procedures</p>
           </div>
         </div>
@@ -252,7 +252,7 @@ export function AuditProceduresWorkbench() {
                   >
                     <Activity className={`w-6 h-6 text-${area.color}-600`} />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{area.label}</h3>
+                  <h3 className="font-semibold text-gray-100 mb-2">{area.label}</h3>
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <p>{stats.total} procedures</p>
                     <p>{stats.completed} completed</p>
@@ -303,7 +303,7 @@ export function AuditProceduresWorkbench() {
                       )}
                     </div>
 
-                    <h4 className="font-medium text-gray-900 mb-1">{procedure.description}</h4>
+                    <h4 className="font-medium text-gray-100 mb-1">{procedure.description}</h4>
 
                     <div className="grid grid-cols-3 gap-4 text-sm text-muted-foreground">
                       <div>
@@ -322,7 +322,7 @@ export function AuditProceduresWorkbench() {
                     <div className="mt-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-gray-700">Progress</span>
-                        <span className="text-sm font-bold text-gray-900">
+                        <span className="text-sm font-bold text-gray-100">
                           {procedure.completion_percentage}%
                         </span>
                       </div>
@@ -369,7 +369,7 @@ export function AuditProceduresWorkbench() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {PROCEDURE_TYPES.map(type => (
               <div key={type.value} className="p-3 border rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-1">{type.label}</h4>
+                <h4 className="font-medium text-gray-100 mb-1">{type.label}</h4>
                 <p className="text-sm text-muted-foreground">{type.description}</p>
               </div>
             ))}

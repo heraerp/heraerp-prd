@@ -150,7 +150,7 @@ export default function CRMDashboard() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">CRM Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground">CRM Dashboard</h1>
         <p className="text-muted-foreground dark:text-muted-foreground">
           Manage your customer relationships and sales pipeline
         </p>
@@ -224,7 +224,7 @@ export default function CRMDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Recent Activities */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">
+              <h2 className="text-xl font-semibold mb-4 !text-gray-100 dark:!text-gray-100">
                 Recent Activities
               </h2>
               <div className="space-y-4">
@@ -244,7 +244,7 @@ export default function CRMDashboard() {
                         <Calendar className="w-5 h-5 text-purple-600 mt-0.5" />
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-foreground">
+                        <p className="font-medium text-gray-100 dark:text-foreground">
                           {activity.subject}
                         </p>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -259,7 +259,7 @@ export default function CRMDashboard() {
 
             {/* Top Opportunities */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">
+              <h2 className="text-xl font-semibold mb-4 !text-gray-100 dark:!text-gray-100">
                 Top Opportunities
               </h2>
               <div className="space-y-4">
@@ -270,7 +270,7 @@ export default function CRMDashboard() {
                     <div key={opp.id} className="pb-3 border-b last:border-0">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-foreground">{opp.name}</p>
+                          <p className="font-medium text-gray-100 dark:text-foreground">{opp.name}</p>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {opp.stage} • {opp.probability}% • Close: {opp.closeDate}
                           </p>

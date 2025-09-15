@@ -284,7 +284,7 @@ const BuildManagement = () => {
     if (progress >= 60) return 'bg-yellow-500'
     if (progress >= 40) return 'bg-orange-500'
     if (progress > 0) return 'bg-blue-500'
-    return 'bg-gray-500'
+    return 'bg-gray-9000'
   }
 
   return (

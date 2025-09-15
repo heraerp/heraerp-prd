@@ -115,7 +115,7 @@ export default function SetupPage() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
+            <h1 className="text-4xl font-light text-gray-100 mb-4">Choose Your HERA Application</h1>
             <p className="text-xl text-muted-foreground">
               {currentOrganization
                 ? `Welcome to ${currentOrganization.name}. Select an app to get started.`

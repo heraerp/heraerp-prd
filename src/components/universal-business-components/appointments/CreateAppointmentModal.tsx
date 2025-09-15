@@ -210,7 +210,7 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     icon: '🚗',
     name: 'Automotive',
     color: '#374151',
-    gradient: 'from-gray-500 to-red-500',
+    gradient: 'from-gray-9000 to-red-500',
     customerTitle: 'Customer',
     serviceTitle: 'Automotive Service',
     placeholder: {
@@ -927,7 +927,7 @@ export function CreateAppointmentModal({
             <div key={stepNumber} className="flex items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  stepNumber <= step ? 'text-foreground' : 'bg-gray-200 text-muted-foreground'
+                  stepNumber <= step ? 'text-foreground' : 'bg-gray-700 text-muted-foreground'
                 }`}
                 style={{
                   backgroundColor: stepNumber <= step ? config.color : undefined
@@ -937,7 +937,7 @@ export function CreateAppointmentModal({
               </div>
               {stepNumber < 4 && (
                 <div
-                  className={`w-16 h-1 ${stepNumber < step ? 'bg-purple-600' : 'bg-gray-200'}`}
+                  className={`w-16 h-1 ${stepNumber < step ? 'bg-purple-600' : 'bg-gray-700'}`}
                 />
               )}
             </div>

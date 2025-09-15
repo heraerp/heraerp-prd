@@ -65,7 +65,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
               className={cn(
                 'flex flex-col items-center justify-center py-3 relative',
                 active
-                  ? `bg-gradient-to-t ${moduleColor.from}/10 ${moduleColor.to}/10 text-gray-900`
+                  ? `bg-gradient-to-t ${moduleColor.from}/10 ${moduleColor.to}/10 text-gray-100`
                   : 'text-muted-foreground'
               )}
             >
@@ -85,7 +85,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
               <span
                 className={cn(
                   'text-[10px] mt-1 font-medium',
-                  active ? 'text-gray-900' : 'text-muted-foreground'
+                  active ? 'text-gray-100' : 'text-muted-foreground'
                 )}
               >
                 {item.title}
@@ -263,7 +263,7 @@ function UniversalSidebar({
             >
               <ModuleIcon className="h-5 w-5 text-foreground" />
             </div>
-            <span className="text-sm font-medium text-gray-900">{moduleName}</span>
+            <span className="text-sm font-medium text-gray-100">{moduleName}</span>
           </div>
         </div>
       </div>
@@ -313,7 +313,7 @@ function UniversalSidebar({
                   className={cn(
                     'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                     active
-                      ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
+                      ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-100 backdrop-blur-sm`
                       : 'text-gray-700 hover:text-foreground hover:bg-background/30 hover:backdrop-blur-sm'
                   )}
                 >
@@ -343,7 +343,7 @@ function UniversalSidebar({
                     className={cn(
                       'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
                       active
-                        ? 'text-gray-900'
+                        ? 'text-gray-100'
                         : 'text-muted-foreground lg:text-muted-foreground group-hover:text-foreground lg:group-hover:text-foreground'
                     )}
                   >
@@ -394,7 +394,7 @@ function UniversalSidebar({
                     className={cn(
                       'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                       active
-                        ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
+                        ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-100 backdrop-blur-sm`
                         : 'text-gray-700 hover:text-foreground hover:bg-background/30 hover:backdrop-blur-sm'
                     )}
                   >
@@ -409,7 +409,7 @@ function UniversalSidebar({
                       className={cn(
                         'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
                         active
-                          ? 'text-gray-900'
+                          ? 'text-gray-100'
                           : 'text-muted-foreground lg:text-muted-foreground group-hover:text-foreground lg:group-hover:text-foreground'
                       )}
                     >
@@ -436,7 +436,7 @@ function UniversalSidebar({
                         {indicator.label}
                       </span>
                     </div>
-                    <span className="text-sm lg:text-[9px] text-gray-800 lg:text-gray-700 font-semibold">
+                    <span className="text-sm lg:text-[9px] text-gray-200 lg:text-gray-700 font-semibold">
                       {indicator.value}
                     </span>
                   </div>
@@ -451,7 +451,7 @@ function UniversalSidebar({
           <div className="lg:hidden p-4 border-t border-border/20 bg-background/30">
             <div className="bg-background/50 backdrop-blur-sm rounded-lg p-3 border border-border/20">
               <p className="text-xs text-muted-foreground mb-1">Organization</p>
-              <p className="text-sm text-gray-900 font-medium truncate">{organizationName}</p>
+              <p className="text-sm text-gray-100 font-medium truncate">{organizationName}</p>
               {organizationId && (
                 <p className="text-xs text-muted-foreground mt-1 truncate">
                   ID: {organizationId.slice(0, 8)}...

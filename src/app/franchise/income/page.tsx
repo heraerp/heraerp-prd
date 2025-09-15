@@ -219,7 +219,7 @@ export default function IncomePage() {
                           <span
                             className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
                               index === 0
-                                ? 'bg-muted text-gray-800 dark:bg-muted dark:text-gray-200'
+                                ? 'bg-muted text-gray-200 dark:bg-muted dark:text-gray-200'
                                 : index === 1
                                   ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200'
                                   : index === 2

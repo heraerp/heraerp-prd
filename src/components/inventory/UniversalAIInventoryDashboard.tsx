@@ -160,7 +160,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       medium: 'bg-yellow-100 text-yellow-800',
       low: 'bg-green-100 text-green-800'
     }
-    return colors[urgency as keyof typeof colors] || 'bg-muted text-gray-800'
+    return colors[urgency as keyof typeof colors] || 'bg-muted text-gray-200'
   }
 
   if (!metrics) {
@@ -179,7 +179,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       {/* Header with AI Status */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
             <Brain className="w-8 h-8 text-purple-600" />
             Universal AI Inventory System
           </h2>
@@ -337,7 +337,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                     <div className="flex items-start gap-3">
                       <div className="p-2 rounded-lg bg-background">{getAlertIcon(alert.alertType)}</div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{alert.itemName}</h4>
+                        <h4 className="font-medium text-gray-100">{alert.itemName}</h4>
                         <p className="text-sm text-muted-foreground mt-1">{alert.aiRecommendation}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge className={getUrgencyColor(alert.urgency)}>{alert.urgency}</Badge>

@@ -493,7 +493,7 @@ export function DataImportExport({
                   <CardContent>
                     <div className="grid grid-cols-3 gap-4 mb-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-900">
+                        <div className="text-2xl font-bold text-gray-100">
                           {importResult.totalRecords}
                         </div>
                         <div className="text-sm text-muted-foreground">Total Records</div>

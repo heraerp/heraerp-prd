@@ -110,7 +110,7 @@ export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormPr
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground">Request Time Off</h2>
+            <h2 className="text-2xl font-bold !text-gray-100 dark:!text-foreground">Request Time Off</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-lg hover:bg-muted-foreground/10 transition-colors"

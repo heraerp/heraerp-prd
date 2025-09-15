@@ -153,7 +153,7 @@ export default function OrganizationDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
           <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
+              <CardTitle className="text-base font-semibold text-gray-200 dark:text-gray-200">
                 Total Users
               </CardTitle>
             </CardHeader>
@@ -171,7 +171,7 @@ export default function OrganizationDashboard() {
 
           <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
+              <CardTitle className="text-base font-semibold text-gray-200 dark:text-gray-200">
                 Active Apps
               </CardTitle>
             </CardHeader>
@@ -189,7 +189,7 @@ export default function OrganizationDashboard() {
 
           <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
+              <CardTitle className="text-base font-semibold text-gray-200 dark:text-gray-200">
                 Monthly Spend
               </CardTitle>
             </CardHeader>
@@ -207,7 +207,7 @@ export default function OrganizationDashboard() {
 
           <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
+              <CardTitle className="text-base font-semibold text-gray-200 dark:text-gray-200">
                 Data Usage
               </CardTitle>
             </CardHeader>
@@ -227,7 +227,7 @@ export default function OrganizationDashboard() {
         {/* Installed Apps */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+            <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground">
               Installed Applications
             </h2>
             <Button
@@ -249,7 +249,7 @@ export default function OrganizationDashboard() {
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <Package className="w-10 h-10 text-primary dark:text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-3">
+                <h3 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-3">
                   No apps installed yet
                 </h3>
                 <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-md mx-auto">
@@ -293,7 +293,7 @@ export default function OrganizationDashboard() {
                           {app.status}
                         </Badge>
                       </div>
-                      <CardTitle className="mt-4 text-xl text-gray-900 dark:text-foreground">
+                      <CardTitle className="mt-4 text-xl text-gray-100 dark:text-foreground">
                         {app.name || app.id.toUpperCase()}
                       </CardTitle>
                       <CardDescription className="text-gray-700 dark:text-gray-300 text-base">
@@ -326,7 +326,7 @@ export default function OrganizationDashboard() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-6">Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card
               className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"
@@ -338,7 +338,7 @@ export default function OrganizationDashboard() {
                     <Users className="w-8 h-8 text-primary dark:text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
+                    <CardTitle className="text-xl text-gray-100 dark:text-foreground mb-2">
                       Invite Team Members
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -359,7 +359,7 @@ export default function OrganizationDashboard() {
                     <Settings className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
+                    <CardTitle className="text-xl text-gray-100 dark:text-foreground mb-2">
                       Organization Settings
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
@@ -380,7 +380,7 @@ export default function OrganizationDashboard() {
                     <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-gray-900 dark:text-foreground mb-2">
+                    <CardTitle className="text-xl text-gray-100 dark:text-foreground mb-2">
                       Billing & Subscription
                     </CardTitle>
                     <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">

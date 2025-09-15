@@ -242,7 +242,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
           {/* Left Panel - Menu Items */}
           <div className="flex-1 p-6 overflow-y-auto border-r border-border">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">New Order</h2>
+              <h2 className="text-xl font-semibold text-gray-100">New Order</h2>
               <Button variant="outline" size="sm" onClick={onClose}>
                 <X className="w-4 h-4" />
               </Button>
@@ -283,7 +283,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   onClick={() => addToCart(item)}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900">{item.entity_name}</h3>
+                    <h3 className="font-medium text-gray-100">{item.entity_name}</h3>
                     <span className="text-lg font-bold text-green-600">
                       ${item.price.toFixed(2)}
                     </span>
@@ -305,7 +305,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
           {/* Right Panel - Order Details */}
           <div className="w-96 p-6 overflow-y-auto bg-muted">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-gray-100 mb-4 flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
               Order Details
             </h3>
@@ -385,7 +385,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                     className="flex items-center justify-between p-2 bg-background rounded border"
                   >
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{item.menu_item_name}</p>
+                      <p className="text-sm font-medium text-gray-100">{item.menu_item_name}</p>
                       <p className="text-xs text-muted-foreground">${item.unit_price.toFixed(2)} each</p>
                     </div>
                     <div className="flex items-center gap-2">

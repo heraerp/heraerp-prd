@@ -71,7 +71,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <Utensils className="h-8 w-8 text-foreground" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900">Welcome to the Future of Dining</h3>
+              <h3 className="text-xl font-bold text-gray-100">Welcome to the Future of Dining</h3>
               <p className="text-muted-foreground mt-2">
                 Experience our revolutionary platform that brings together customers, kitchen staff,
                 and management in perfect harmony.
@@ -110,7 +110,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                   <Utensils className="h-8 w-8 text-red-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">Grilled Salmon</h4>
+                  <h4 className="font-semibold text-gray-100">Grilled Salmon</h4>
                   <p className="text-sm text-muted-foreground mb-2">
                     Fresh Atlantic salmon with herb butter
                   </p>
@@ -157,7 +157,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border-green-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Your Order Summary</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Your Order Summary</h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Grilled Salmon × 1</span>
@@ -203,7 +203,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-lg border-blue-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Order #ORD-1234</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Order #ORD-1234</h4>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -298,7 +298,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-orange-50 p-4 rounded-lg border-orange-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Active Orders</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Active Orders</h4>
               <div className="space-y-2">
                 {['ORD-001', 'ORD-002'].map(order => (
                   <div key={order} className="bg-background p-3 rounded border-l-4 border-l-orange-500">
@@ -324,7 +324,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-purple-50 p-4 rounded-lg border-purple-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Inventory Status</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Inventory Status</h4>
               <div className="space-y-2">
                 <div className="p-2 bg-red-50 border border-red-200 rounded">
                   <div className="flex justify-between">
@@ -349,7 +349,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-lg border-blue-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Today's Performance</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Today's Performance</h4>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-background p-3 rounded text-center">
                   <div className="text-xl font-bold text-primary">$2,850</div>
@@ -372,7 +372,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         content: (
           <div className="space-y-4">
             <div className="bg-green-50 p-4 rounded-lg border-green-200 border">
-              <h4 className="font-semibold text-gray-900 mb-3">Staff on Duty</h4>
+              <h4 className="font-semibold text-gray-100 mb-3">Staff on Duty</h4>
               <div className="space-y-2">
                 <div className="flex items-center gap-3 bg-background p-2 rounded">
                   <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold">

@@ -343,7 +343,7 @@ export default function LandingPage() {
             </Badge>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
-              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-gray-900 dark:via-slate-100 dark:to-gray-900 bg-clip-text text-transparent">
                 Run Your Entire Business
               </span>
               <br />
@@ -445,7 +445,7 @@ export default function LandingPage() {
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
                       <stage.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary dark:text-blue-400" />
                     </div>
-                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-foreground">
+                    <CardTitle className="text-lg sm:text-xl text-gray-100 dark:text-foreground">
                       {stage.stage}
                     </CardTitle>
                     <CardDescription className="text-sm sm:text-base text-[#B0B0B0] font-medium">
@@ -475,7 +475,7 @@ export default function LandingPage() {
       {/* Industry Showcase */}
       <section
         id="industries"
-        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-slate-50 to-gray-900 dark:from-slate-900 dark:to-slate-950"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
@@ -514,7 +514,7 @@ export default function LandingPage() {
                         Live Demo
                       </Badge>
                     </div>
-                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-foreground">
+                    <CardTitle className="text-xl sm:text-2xl text-gray-100 dark:text-foreground">
                       {industry.title}
                     </CardTitle>
                     <CardDescription className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
@@ -583,7 +583,7 @@ export default function LandingPage() {
           <div className="mt-12 sm:mt-16 text-center">
             <Card className="max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-foreground">
+                <CardTitle className="text-xl sm:text-2xl text-gray-100 dark:text-foreground">
                   Don't see your industry?
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base text-muted-foreground dark:text-gray-300">
@@ -633,7 +633,7 @@ export default function LandingPage() {
       </section>
 
       {/* Value Props Section */}
-      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
+      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-900 to-slate-50 dark:from-slate-950 dark:to-slate-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground dark:text-foreground mb-3 sm:mb-4">

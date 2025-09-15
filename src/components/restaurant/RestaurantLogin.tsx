@@ -48,7 +48,7 @@ export function RestaurantLogin() {
             <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
               <ChefHat className="w-8 h-8 text-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Restaurant Manager</h1>
+            <h1 className="text-2xl font-bold text-gray-100 mb-2">Restaurant Manager</h1>
             <p className="text-muted-foreground text-sm">Sign in to manage your restaurant</p>
           </div>
 
@@ -113,7 +113,7 @@ export function RestaurantLogin() {
             {/* Demo Credentials */}
             <div className="mt-8 pt-6 border-t border-orange-100">
               <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200/50">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Try Demo Account</h3>
+                <h3 className="text-sm font-semibold text-gray-100 mb-3">Try Demo Account</h3>
                 <div className="space-y-2 text-sm text-gray-700">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Restaurant:</span>

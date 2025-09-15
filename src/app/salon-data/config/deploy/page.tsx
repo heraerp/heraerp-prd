@@ -95,7 +95,7 @@ function DeploymentContent() {
                 <Rocket className="w-5 h-5 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   Deploy Rule to Production
                 </h1>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">

@@ -74,7 +74,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
     >
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+          <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
             Pending Approvals
           </h3>
           <span className="px-3 py-1 text-sm font-medium rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
@@ -95,7 +95,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
                       <User className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900 dark:text-foreground">
+                      <h4 className="font-medium text-gray-100 dark:text-foreground">
                         {request.employeeName}
                       </h4>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -111,7 +111,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
                         {formatDate(request.startDate, 'MMM d')} -{' '}
                         {formatDate(request.endDate, 'MMM d, yyyy')}
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-foreground">
+                      <span className="font-medium text-gray-100 dark:text-foreground">
                         ({request.days} {request.days === 1 ? 'day' : 'days'})
                       </span>
                     </div>

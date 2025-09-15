@@ -166,7 +166,7 @@ export default function HowItWorksPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-800 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -179,7 +179,7 @@ export default function HowItWorksPage() {
                 See it in action right now
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-foreground mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-100 dark:text-foreground mb-6">
                 Experience HERA in
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   3 Simple Steps
@@ -205,7 +205,7 @@ export default function HowItWorksPage() {
                       <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-foreground flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                         {step.number}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
+                      <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground mb-2">
                         {step.title}
                       </h3>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
@@ -231,7 +231,7 @@ export default function HowItWorksPage() {
       <div className="px-4 sm:px-6 lg:px-8 py-16 bg-background dark:bg-muted">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
+            <h2 className="text-3xl font-bold text-gray-100 dark:text-foreground mb-4">
               Step 1: Click Any Demo to Start
             </h2>
             <p className="text-lg text-muted-foreground dark:text-gray-300">
@@ -249,7 +249,7 @@ export default function HowItWorksPage() {
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Card className="h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-border dark:border-border overflow-hidden group hover:shadow-xl transition-all">
+                <Card className="h-full bg-gradient-to-br from-gray-900 to-gray-900 dark:from-gray-800 dark:to-gray-900 border-border dark:border-border overflow-hidden group hover:shadow-xl transition-all">
                   <div
                     className={cn('absolute inset-0 opacity-10 bg-gradient-to-br', demo.gradient)}
                   />
@@ -301,7 +301,7 @@ export default function HowItWorksPage() {
                       <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border dark:border-border">
                         {Object.entries(demo.stats).map(([key, value]) => (
                           <div key={key} className="text-center">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
+                            <p className="text-sm font-semibold text-gray-100 dark:text-foreground">
                               {value}
                             </p>
                             <p className="text-xs text-muted-foreground dark:text-muted-foreground capitalize">
@@ -342,7 +342,7 @@ export default function HowItWorksPage() {
       {/* Request Demo Section */}
       <div className="px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-white to-purple-50 dark:from-gray-800 dark:to-purple-950/20 border-purple-200 dark:border-purple-700">
+          <Card className="bg-gradient-to-br from-gray-900 to-purple-50 dark:from-gray-800 dark:to-purple-950/20 border-purple-200 dark:border-purple-700">
             <CardHeader className="text-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-foreground flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8" />
@@ -387,7 +387,7 @@ export default function HowItWorksPage() {
                   <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
                     <CheckCheck className="w-10 h-10 text-green-600 dark:text-green-400" />
                   </div>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                  <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                     Perfect! Redirecting you to signup...
                   </p>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">

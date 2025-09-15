@@ -175,7 +175,7 @@ export function TeamsSidebar() {
 
         {showLabel && (
           <div className="ml-3 min-w-0 flex-1 overflow-hidden">
-            <p className="font-medium text-gray-900 truncate text-sm">{item.name}</p>
+            <p className="font-medium text-gray-100 truncate text-sm">{item.name}</p>
           </div>
         )}
 
@@ -204,7 +204,7 @@ export function TeamsSidebar() {
             </div>
             {isExpanded && (
               <div className="ml-3 min-w-0">
-                <p className="font-semibold text-gray-900 text-sm truncate">HERA ERP</p>
+                <p className="font-semibold text-gray-100 text-sm truncate">HERA ERP</p>
                 <p className="text-xs text-muted-foreground truncate">Business Platform</p>
               </div>
             )}
@@ -243,7 +243,7 @@ export function TeamsSidebar() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full justify-start text-muted-foreground hover:text-gray-800 hover:bg-muted"
+                className="w-full justify-start text-muted-foreground hover:text-gray-200 hover:bg-muted"
               >
                 <MoreHorizontal className="h-4 w-4 mr-3" />
                 More apps

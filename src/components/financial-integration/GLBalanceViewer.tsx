@@ -175,7 +175,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
       revenue: 'bg-green-100 text-green-800',
       expense: 'bg-orange-100 text-orange-800'
     }
-    return colors[type] || 'bg-muted text-gray-800'
+    return colors[type] || 'bg-muted text-gray-200'
   }
 
   const filteredAccounts = accounts.filter(

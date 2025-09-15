@@ -264,7 +264,7 @@ export function EnhancedDocumentList({
   const getStatusStyling = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       case 'received':
         return 'bg-blue-100 text-blue-800'
       case 'under_review':
@@ -276,7 +276,7 @@ export function EnhancedDocumentList({
       case 'resubmission_required':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -459,7 +459,7 @@ export function EnhancedDocumentList({
                     </div>
 
                     <div className="flex-1">
-                      <CardTitle className="text-lg font-bold text-gray-900 mb-1">
+                      <CardTitle className="text-lg font-bold text-gray-100 mb-1">
                         {document.document_name}
                       </CardTitle>
                       <p className="text-sm text-muted-foreground mb-2">
@@ -568,13 +568,13 @@ export function EnhancedDocumentList({
                             <label className="text-sm font-medium text-gray-700">
                               Document Code
                             </label>
-                            <p className="text-sm text-gray-900 font-mono">
+                            <p className="text-sm text-gray-100 font-mono">
                               {document.document_code}
                             </p>
                           </div>
                           <div>
                             <label className="text-sm font-medium text-gray-700">Category</label>
-                            <p className="text-sm text-gray-900">
+                            <p className="text-sm text-gray-100">
                               {document.category} -{' '}
                               {document.category === 'A'
                                 ? 'Company Formation'
@@ -596,7 +596,7 @@ export function EnhancedDocumentList({
                         <div className="space-y-3">
                           <div>
                             <label className="text-sm font-medium text-gray-700">Due Date</label>
-                            <p className="text-sm text-gray-900">
+                            <p className="text-sm text-gray-100">
                               {new Date(document.due_date).toLocaleDateString()}
                             </p>
                           </div>
@@ -605,14 +605,14 @@ export function EnhancedDocumentList({
                               <label className="text-sm font-medium text-gray-700">
                                 Received Date
                               </label>
-                              <p className="text-sm text-gray-900">
+                              <p className="text-sm text-gray-100">
                                 {new Date(document.received_date).toLocaleDateString()}
                               </p>
                             </div>
                           )}
                           <div>
                             <label className="text-sm font-medium text-gray-700">Version</label>
-                            <p className="text-sm text-gray-900">v{document.version}</p>
+                            <p className="text-sm text-gray-100">v{document.version}</p>
                           </div>
                         </div>
                       </div>
@@ -621,7 +621,7 @@ export function EnhancedDocumentList({
                         <div className="mt-4">
                           <label className="text-sm font-medium text-gray-700">Review Notes</label>
                           <div className="mt-1 p-3 bg-muted rounded-lg">
-                            <p className="text-sm text-gray-900">{document.review_notes}</p>
+                            <p className="text-sm text-gray-100">{document.review_notes}</p>
                           </div>
                         </div>
                       )}
@@ -672,7 +672,7 @@ export function EnhancedDocumentList({
       {filteredDocuments.length === 0 && (
         <div className="text-center py-12">
           <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
+          <h3 className="text-lg font-medium text-gray-100 mb-2">No documents found</h3>
           <p className="text-muted-foreground">
             {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
               ? 'Try adjusting your search or filter criteria'

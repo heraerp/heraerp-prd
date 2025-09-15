@@ -171,7 +171,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
       className="bg-background dark:bg-muted rounded-2xl shadow-lg p-6"
     >
       <header className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-gray-100 dark:text-foreground flex items-center gap-2">
           <GitBranch className="w-5 h-5" />
           Module Dependencies
         </h2>
@@ -202,7 +202,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
             animate={{ opacity: 1, y: 0 }}
             className="absolute top-4 right-4 bg-background dark:bg-muted rounded-lg shadow-lg p-4 w-64 border border-border dark:border-border"
           >
-            <h3 className="font-semibold text-gray-900 dark:text-foreground flex items-center gap-2">
+            <h3 className="font-semibold text-gray-100 dark:text-foreground flex items-center gap-2">
               {selectedNode.type === 'module' ? (
                 <Package className="w-4 h-4" />
               ) : (

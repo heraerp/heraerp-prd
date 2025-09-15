@@ -137,7 +137,7 @@ export default function OrganizationLayout({ children }: { children: React.React
                   <span className="text-sm font-bold text-foreground">H</span>
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-900">
+                  <h1 className="text-lg font-semibold text-gray-100">
                     {currentOrganization.name}
                   </h1>
                   <p className="text-xs text-muted-foreground">
@@ -205,7 +205,7 @@ export default function OrganizationLayout({ children }: { children: React.React
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="gap-2">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium text-gray-700">
                         {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                       </span>

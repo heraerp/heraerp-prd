@@ -134,7 +134,7 @@ const STATUS_COLORS = {
   confirmed: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
   preparing: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
   ready: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-  completed: 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-300',
+  completed: 'bg-muted text-gray-200 dark:bg-background/30 dark:text-gray-300',
   cancelled: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300'
 }
 

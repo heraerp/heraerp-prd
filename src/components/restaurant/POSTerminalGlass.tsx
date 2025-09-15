@@ -1028,7 +1028,7 @@ export function POSTerminalGlass({
                         />
                       ) : (
                         <div
-                          className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}
+                          className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
                         >
                           <Icon className="h-16 w-16 text-foreground/30" />
                         </div>
@@ -1036,7 +1036,7 @@ export function POSTerminalGlass({
 
                       {/* Popular badge */}
                       {(item.metadata as any)?.popular && (
-                        <Badge className="absolute top-2 right-2 bg-yellow-500 text-black">
+                        <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
                           <Star className="h-3 w-3 mr-1" />
                           Popular
                         </Badge>
@@ -1090,7 +1090,7 @@ export function POSTerminalGlass({
 
                       {/* Add button overlay on hover */}
                       <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Button className="bg-background text-black hover:bg-gray-200">
+                        <Button className="bg-background text-white hover:bg-gray-700">
                           <Plus className="h-5 w-5 mr-2" />
                           Add to Cart
                         </Button>
@@ -1123,7 +1123,7 @@ export function POSTerminalGlass({
                           />
                         ) : (
                           <div
-                            className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-500/20'} flex items-center justify-center`}
+                            className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
                           >
                             <Icon className="h-8 w-8 text-foreground/30" />
                           </div>

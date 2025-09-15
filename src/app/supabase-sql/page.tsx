@@ -198,7 +198,7 @@ LIMIT 10;`
       <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-foreground">
+          <h3 className="text-lg font-medium text-gray-100 dark:text-foreground">
             Authentication Required
           </h3>
           <p className="text-muted-foreground dark:text-muted-foreground">
@@ -215,7 +215,7 @@ LIMIT 10;`
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                 <Database className="w-5 h-5 text-foreground" />
               </div>

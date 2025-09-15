@@ -249,11 +249,11 @@ export function DeliveryPlatformManager() {
       case 'active':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'inactive':
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
       case 'configuring':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 
@@ -266,7 +266,7 @@ export function DeliveryPlatformManager() {
       case 'error':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -307,7 +307,7 @@ export function DeliveryPlatformManager() {
       <div className="max-w-7xl mx-auto p-6">
         <Card className="p-8 text-center">
           <AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-100 mb-2">
             Unable to Load Delivery Platforms
           </h3>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -329,7 +329,7 @@ export function DeliveryPlatformManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Delivery Platform Integration</h1>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Delivery Platform Integration</h1>
           <p className="text-muted-foreground">
             Universal integration with delivery platforms powered by HERA's flexible architecture
           </p>
@@ -341,7 +341,7 @@ export function DeliveryPlatformManager() {
           </div>
           <button
             onClick={loadPlatforms}
-            className="flex items-center space-x-2 px-4 py-2 bg-muted text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-muted text-gray-700 rounded-lg hover:bg-gray-700 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -414,7 +414,7 @@ export function DeliveryPlatformManager() {
       {/* Platform List */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Connected Platforms</h3>
+          <h3 className="text-lg font-semibold text-gray-100">Connected Platforms</h3>
           <div className="text-sm text-muted-foreground">
             {platforms.length} of {supported_platforms.length} supported platforms
           </div>
@@ -423,7 +423,7 @@ export function DeliveryPlatformManager() {
         {platforms.length === 0 ? (
           <div className="text-center py-12">
             <Truck className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-100 mb-2">
               No Delivery Platforms Connected
             </h3>
             <p className="text-muted-foreground mb-6">
@@ -445,7 +445,7 @@ export function DeliveryPlatformManager() {
                   <div className="flex items-center space-x-3">
                     <div className="text-2xl">{getPlatformIcon(platform.platform_type)}</div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
+                      <h4 className="font-semibold text-gray-100 flex items-center space-x-2">
                         <span>{platform.name}</span>
                         <Badge className={getStatusColor(platform.status)}>{platform.status}</Badge>
                       </h4>
@@ -465,11 +465,11 @@ export function DeliveryPlatformManager() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="bg-muted p-3 rounded-lg">
                       <p className="text-xs text-muted-foreground">Orders Today</p>
-                      <p className="font-semibold text-gray-900">{platform.stats.total_orders}</p>
+                      <p className="font-semibold text-gray-100">{platform.stats.total_orders}</p>
                     </div>
                     <div className="bg-muted p-3 rounded-lg">
                       <p className="text-xs text-muted-foreground">Revenue</p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-gray-100">
                         {formatCurrency(platform.stats.total_revenue)}
                       </p>
                     </div>
@@ -493,7 +493,7 @@ export function DeliveryPlatformManager() {
                       ) : (
                         <AlertCircle className="w-4 h-4 text-yellow-500" />
                       )}
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-gray-100">
                         {platform.webhook_verified ? 'Verified' : 'Pending'}
                       </span>
                     </div>
@@ -501,7 +501,7 @@ export function DeliveryPlatformManager() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Commission</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-100">
                       {formatPercent(platform.commission_rate)}
                     </span>
                   </div>
@@ -509,7 +509,7 @@ export function DeliveryPlatformManager() {
                   {platform.last_sync_at && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Last Sync</span>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-gray-100">
                         {new Date(platform.last_sync_at).toLocaleString()}
                       </span>
                     </div>
@@ -545,10 +545,10 @@ export function DeliveryPlatformManager() {
       {/* Add/Pencil Platform Modal */}
       {showAddForm && (
         <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-gray-900 rounded-lg shadow-xl border border-border">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-gray-100 rounded-lg shadow-xl border border-border">
             <div className="p-6 bg-background">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-100">
                   {editingPlatform ? 'Pencil Platform' : 'Add New Delivery Platform'}
                 </h3>
                 <button
@@ -566,7 +566,7 @@ export function DeliveryPlatformManager() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Basic Information */}
                 <div className="space-y-4 bg-muted p-4 rounded-lg">
-                  <h4 className="text-md font-semibold text-gray-800">Basic Information</h4>
+                  <h4 className="text-md font-semibold text-gray-200">Basic Information</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -580,7 +580,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.name}
                         onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         placeholder="Mario's Deliveroo"
                         required
                       />
@@ -597,7 +597,7 @@ export function DeliveryPlatformManager() {
                         id="platform_type"
                         value={formData.platform_type}
                         onChange={e => setFormData({ ...formData, platform_type: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         required
                       >
                         {supported_platforms.map(platform => (
@@ -612,7 +612,7 @@ export function DeliveryPlatformManager() {
 
                 {/* API Configuration */}
                 <div className="space-y-4 bg-muted p-4 rounded-lg">
-                  <h4 className="text-md font-semibold text-gray-800">API Configuration</h4>
+                  <h4 className="text-md font-semibold text-gray-200">API Configuration</h4>
 
                   <div>
                     <label
@@ -626,7 +626,7 @@ export function DeliveryPlatformManager() {
                       type="url"
                       value={formData.api_endpoint}
                       onChange={e => setFormData({ ...formData, api_endpoint: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       placeholder="https://api.deliveroo.com/v1/"
                       required
                     />
@@ -645,7 +645,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.api_key}
                         onChange={e => setFormData({ ...formData, api_key: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         placeholder="Your API key"
                       />
                     </div>
@@ -662,7 +662,7 @@ export function DeliveryPlatformManager() {
                         type="password"
                         value={formData.secret_key}
                         onChange={e => setFormData({ ...formData, secret_key: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         placeholder="Your secret key"
                       />
                     </div>
@@ -681,7 +681,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.restaurant_id}
                         onChange={e => setFormData({ ...formData, restaurant_id: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         placeholder="Platform restaurant ID"
                       />
                     </div>
@@ -698,7 +698,7 @@ export function DeliveryPlatformManager() {
                         type="text"
                         value={formData.store_id}
                         onChange={e => setFormData({ ...formData, store_id: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                         placeholder="Platform store ID"
                       />
                     </div>
@@ -707,7 +707,7 @@ export function DeliveryPlatformManager() {
 
                 {/* Business Configuration */}
                 <div className="space-y-4 bg-muted p-4 rounded-lg">
-                  <h4 className="text-md font-semibold text-gray-800">Business Configuration</h4>
+                  <h4 className="text-md font-semibold text-gray-200">Business Configuration</h4>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -732,7 +732,7 @@ export function DeliveryPlatformManager() {
                               commission_rate: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                           placeholder="0.15"
                         />
                       </div>
@@ -759,7 +759,7 @@ export function DeliveryPlatformManager() {
                               delivery_fee: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                           placeholder="2.99"
                         />
                       </div>
@@ -786,7 +786,7 @@ export function DeliveryPlatformManager() {
                               minimum_order_value: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                           placeholder="15.00"
                         />
                       </div>
@@ -813,7 +813,7 @@ export function DeliveryPlatformManager() {
                               max_delivery_distance: parseFloat(e.target.value) || 0
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                          className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                           placeholder="10.0"
                         />
                       </div>
@@ -823,7 +823,7 @@ export function DeliveryPlatformManager() {
 
                 {/* Operational Settings */}
                 <div className="space-y-4 bg-muted p-4 rounded-lg">
-                  <h4 className="text-md font-semibold text-gray-800">Operational Settings</h4>
+                  <h4 className="text-md font-semibold text-gray-200">Operational Settings</h4>
 
                   <div className="space-y-3">
                     <label className="flex items-center space-x-3 cursor-pointer">
@@ -877,7 +877,7 @@ export function DeliveryPlatformManager() {
                       setEditingPlatform(null)
                       resetForm()
                     }}
-                    className="px-4 py-2 text-gray-700 bg-muted rounded-lg hover:bg-gray-200 transition-colors border border-border"
+                    className="px-4 py-2 text-gray-700 bg-muted rounded-lg hover:bg-gray-700 transition-colors border border-border"
                   >
                     Cancel
                   </button>

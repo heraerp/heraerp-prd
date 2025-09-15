@@ -238,7 +238,7 @@ export default function CreateOrganizationPage() {
                 <Building2 className="w-8 h-8 text-primary dark:text-blue-400" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold text-gray-900 dark:text-foreground text-center mb-3">
+            <CardTitle className="text-3xl font-bold text-gray-100 dark:text-foreground text-center mb-3">
               Organization Details
             </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-center text-lg leading-relaxed max-w-lg mx-auto">
@@ -263,7 +263,7 @@ export default function CreateOrganizationPage() {
               <div className="space-y-3">
                 <Label
                   htmlFor="organization_name"
-                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                  className="text-base font-semibold text-gray-200 dark:text-gray-200"
                 >
                   Organization Name
                 </Label>
@@ -275,7 +275,7 @@ export default function CreateOrganizationPage() {
                   onChange={e => setFormData({ ...formData, organization_name: e.target.value })}
                   required
                   disabled={isLoading}
-                  className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
+                  className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-100 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
                 />
                 <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                   Your business or company name
@@ -285,7 +285,7 @@ export default function CreateOrganizationPage() {
               <div className="space-y-3">
                 <Label
                   htmlFor="organization_type"
-                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                  className="text-base font-semibold text-gray-200 dark:text-gray-200"
                 >
                   Business Type
                 </Label>
@@ -296,7 +296,7 @@ export default function CreateOrganizationPage() {
                 >
                   <SelectTrigger
                     id="organization_type"
-                    className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground"
+                    className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-100 dark:text-foreground"
                   >
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
@@ -313,7 +313,7 @@ export default function CreateOrganizationPage() {
                             <div className="p-2 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 rounded-lg">
                               <Icon className="h-5 w-5 text-primary dark:text-blue-400" />
                             </div>
-                            <span className="font-medium text-gray-900 dark:text-foreground">
+                            <span className="font-medium text-gray-100 dark:text-foreground">
                               {type.label}
                             </span>
                           </div>
@@ -330,7 +330,7 @@ export default function CreateOrganizationPage() {
               <div className="space-y-3">
                 <Label
                   htmlFor="subdomain"
-                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                  className="text-base font-semibold text-gray-200 dark:text-gray-200"
                 >
                   Subdomain
                 </Label>
@@ -345,7 +345,7 @@ export default function CreateOrganizationPage() {
                     }
                     required
                     disabled={isLoading}
-                    className="pr-12 h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
+                    className="pr-12 h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-100 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-4">
                     {isCheckingSubdomain && (
@@ -406,7 +406,7 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Globe className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">Custom Domain</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">Custom Domain</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Professional branded URL for your business
             </p>
@@ -415,7 +415,7 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Users className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">
+            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
               Team Collaboration
             </h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -426,7 +426,7 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Zap className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-foreground">Instant Setup</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">Instant Setup</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Start using your enterprise tools immediately
             </p>

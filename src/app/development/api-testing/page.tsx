@@ -554,7 +554,7 @@ export default function APITestingPage() {
                       animate={{ opacity: 1 }}
                       className="text-center py-12"
                     >
-                      <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-9000 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                         <Code className="w-8 h-8 text-foreground" />
                       </div>
                       <h3 className="text-lg font-medium text-foreground mb-2">Select an API to test</h3>

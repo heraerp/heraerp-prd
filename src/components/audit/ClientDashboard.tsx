@@ -161,9 +161,9 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
       case 'reporting':
         return 'bg-green-100 text-green-800'
       case 'completed':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -176,7 +176,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
       case 'pending':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -193,7 +193,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
               <Building2 className="w-6 h-6 text-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{client.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-100">{client.name}</h1>
               <div className="flex items-center gap-3 mt-1">
                 <Badge variant="outline">{client.code}</Badge>
                 <Badge className={getRiskColor(client.risk_rating)}>
@@ -231,7 +231,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Progress</p>
-                <p className="text-2xl font-bold text-gray-900">{client.completion}%</p>
+                <p className="text-2xl font-bold text-gray-100">{client.completion}%</p>
               </div>
               <Activity className="w-8 h-8 text-blue-500" />
             </div>

@@ -137,7 +137,7 @@ export default function CampaignsPage() {
       case 'event':
         return 'from-purple-500 to-purple-600'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 
@@ -150,11 +150,11 @@ export default function CampaignsPage() {
       case 'completed':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       case 'draft':
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
       case 'scheduled':
         return 'bg-purple-500/20 text-purple-400 border-purple-500/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 

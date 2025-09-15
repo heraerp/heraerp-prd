@@ -397,7 +397,7 @@ const getSectionColor = (section: string) => {
     TAX: 'text-muted-foreground',
     KPI: 'text-indigo-600'
   }
-  return colors[section as keyof typeof colors] || 'text-gray-900'
+  return colors[section as keyof typeof colors] || 'text-gray-100'
 }
 
 // ----------------------------- Main Component ------------------------------------
@@ -492,7 +492,7 @@ export default function SalonProfitLossPage() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
           <p className="text-muted-foreground dark:text-muted-foreground">Loading financial data...</p>
@@ -502,12 +502,12 @@ export default function SalonProfitLossPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">
+            <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground">
               Profit & Loss Statement
             </h1>
             <p className="text-muted-foreground dark:text-muted-foreground mt-1">
@@ -570,7 +570,7 @@ export default function SalonProfitLossPage() {
                 <select
                   value={selectedBranch}
                   onChange={e => setSelectedBranch(e.target.value as BranchType)}
-                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground"
+                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-100 dark:text-foreground"
                 >
                   <option value="all">All Branches (Consolidated)</option>
                   <option value="branch1">Park Regis Kris Kin</option>
@@ -618,7 +618,7 @@ export default function SalonProfitLossPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.revenue_net)}
                   </p>
                 </div>
@@ -632,7 +632,7 @@ export default function SalonProfitLossPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Gross Margin</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatPercent(currentReport.kpis.gross_margin)}
                   </p>
                 </div>
@@ -646,7 +646,7 @@ export default function SalonProfitLossPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">EBITDA</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.ebitda)}
                   </p>
                 </div>
@@ -660,7 +660,7 @@ export default function SalonProfitLossPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Profit</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.net_profit)}
                   </p>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -814,13 +814,13 @@ export default function SalonProfitLossPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-muted dark:bg-background rounded-lg p-4">
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">Output VAT (Sales)</p>
-                <p className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_sales)}
                 </p>
               </div>
               <div className="bg-muted dark:bg-background rounded-lg p-4">
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">Input VAT (Purchases)</p>
-                <p className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_purchases)}
                 </p>
               </div>

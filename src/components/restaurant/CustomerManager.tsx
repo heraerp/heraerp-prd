@@ -343,7 +343,7 @@ export function CustomerManager() {
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Customer Management</h1>
+          <h1 className="text-2xl font-bold text-gray-100 mb-2">Customer Management</h1>
           <p className="text-muted-foreground">
             Manage your restaurant customers using HERA's universal entity system
           </p>
@@ -361,7 +361,7 @@ export function CustomerManager() {
                   placeholder="Search customers..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                  className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                 />
               </div>
             </div>
@@ -398,7 +398,7 @@ export function CustomerManager() {
                     {/* Customer Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        <h3 className="text-lg font-semibold text-gray-100 mb-1">
                           {customer.entity_name}
                         </h3>
                         <p className="text-sm text-muted-foreground">{customer.entity_code}</p>
@@ -435,7 +435,7 @@ export function CustomerManager() {
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted rounded-lg">
                       <div className="text-center">
-                        <p className="text-lg font-semibold text-gray-900">
+                        <p className="text-lg font-semibold text-gray-100">
                           {customer.total_orders}
                         </p>
                         <p className="text-xs text-muted-foreground">Orders</p>
@@ -488,7 +488,7 @@ export function CustomerManager() {
                 <div className="text-muted-foreground mb-4">
                   <User className="w-12 h-12 mx-auto" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-gray-100 mb-2">
                   {searchTerm ? 'No customers found' : 'No customers yet'}
                 </h3>
                 <p className="text-muted-foreground mb-4">

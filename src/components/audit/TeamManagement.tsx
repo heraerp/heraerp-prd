@@ -289,7 +289,7 @@ export function TeamManagement() {
       case 'training':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -313,7 +313,7 @@ export function TeamManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">GSPU Team Management</h1>
+          <h1 className="text-3xl font-bold text-gray-100">GSPU Team Management</h1>
           <p className="text-muted-foreground mt-1">Manage audit teams, assignments, and performance</p>
         </div>
         <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ export function TeamManagement() {
               }}
             >
               <DialogHeader className="pb-4 border-b border-gray-100">
-                <DialogTitle className="text-xl font-semibold text-gray-900">
+                <DialogTitle className="text-xl font-semibold text-gray-100">
                   Create New Audit Team
                 </DialogTitle>
               </DialogHeader>
@@ -368,7 +368,7 @@ export function TeamManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Teams</p>
-                <p className="text-2xl font-bold text-gray-900">{teams.length}</p>
+                <p className="text-2xl font-bold text-gray-100">{teams.length}</p>
               </div>
               <Users className="w-8 h-8 text-blue-500" />
             </div>
@@ -444,7 +444,7 @@ export function TeamManagement() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{team.entity_name}</h3>
+                      <h3 className="font-semibold text-gray-100">{team.entity_name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{team.entity_code}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Badge className={getTeamTypeColor(team.team_type)}>
@@ -534,7 +534,7 @@ function CreateTeamForm({
           </Label>
           <Input
             id="team_name"
-            className="mt-1 bg-background border border-border text-gray-900"
+            className="mt-1 bg-background border border-border text-gray-100"
             value={formData.team_name}
             onChange={e => setFormData({ ...formData, team_name: e.target.value })}
             placeholder="Senior Engagement Team Alpha"
@@ -546,7 +546,7 @@ function CreateTeamForm({
           </Label>
           <Input
             id="team_code"
-            className="mt-1 bg-background border border-border text-gray-900"
+            className="mt-1 bg-background border border-border text-gray-100"
             value={formData.team_code}
             onChange={e => setFormData({ ...formData, team_code: e.target.value })}
             placeholder="GSPU-ENG-001"
@@ -699,7 +699,7 @@ function TeamDetails({
           <TabsContent value="overview" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Team Information</h4>
+                <h4 className="font-medium text-gray-100 mb-2">Team Information</h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Type:</span>
@@ -734,7 +734,7 @@ function TeamDetails({
                 </div>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Specializations</h4>
+                <h4 className="font-medium text-gray-100 mb-2">Specializations</h4>
                 <div className="flex flex-wrap gap-1">
                   {team.specializations.map((spec, index) => (
                     <Badge key={index} variant="outline" className="text-xs">
@@ -747,7 +747,7 @@ function TeamDetails({
 
             {team.description && (
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Description</h4>
+                <h4 className="font-medium text-gray-100 mb-2">Description</h4>
                 <p className="text-sm text-muted-foreground">{team.description}</p>
               </div>
             )}
@@ -755,7 +755,7 @@ function TeamDetails({
 
           <TabsContent value="members" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h4 className="font-medium text-gray-900">Team Members</h4>
+              <h4 className="font-medium text-gray-100">Team Members</h4>
               <Button size="sm">
                 <UserPlus className="w-4 h-4 mr-1" />
                 Add Member
@@ -771,7 +771,7 @@ function TeamDetails({
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
-                      <p className="font-medium text-gray-900">{member.member_name}</p>
+                      <p className="font-medium text-gray-100">{member.member_name}</p>
                       <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                     </div>
                   </div>
@@ -801,7 +801,7 @@ function TeamDetails({
           <TabsContent value="performance" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900 mb-3">Team Metrics</h4>
+                <h4 className="font-medium text-gray-100 mb-3">Team Metrics</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Performance Rating</span>

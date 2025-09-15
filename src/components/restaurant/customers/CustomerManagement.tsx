@@ -237,7 +237,7 @@ export function CustomerManagement() {
         }
       default:
         return {
-          color: 'bg-muted text-gray-800',
+          color: 'bg-muted text-gray-200',
           icon: <User className="w-3 h-3" />,
           label: 'Regular'
         }
@@ -255,7 +255,7 @@ export function CustomerManagement() {
 
   if (isLoading) {
     return (
-      <div className="p-6 min-h-screen flex items-center justify-center">
+      <div className="p-6 min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-green-200 border-t-green-500 rounded-full" />
@@ -426,7 +426,7 @@ export function CustomerManagement() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold text-gray-100 group-hover:text-primary transition-colors">
                         {customer.name}
                       </h3>
                       <p className="text-sm text-muted-foreground">{customer.email}</p>
@@ -442,13 +442,13 @@ export function CustomerManagement() {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <p className="text-sm text-muted-foreground">Total Spent</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-100">
                       $<AnimatedCounter value={customer.totalSpent} />
                     </p>
                   </div>
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <p className="text-sm text-muted-foreground">Visits</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-100">
                       <AnimatedCounter value={customer.visitCount} />
                     </p>
                   </div>
@@ -496,7 +496,7 @@ export function CustomerManagement() {
                           }`}
                         />
                       ))}
-                      <span className="ml-1 font-medium text-gray-900">
+                      <span className="ml-1 font-medium text-gray-100">
                         {customer.satisfaction}
                       </span>
                     </div>
@@ -586,7 +586,7 @@ export function CustomerManagement() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium text-gray-900">{customer.name}</p>
+                            <p className="font-medium text-gray-100">{customer.name}</p>
                             <p className="text-sm text-muted-foreground">{customer.email}</p>
                           </div>
                         </div>
@@ -597,7 +597,7 @@ export function CustomerManagement() {
                           <span className="ml-1">{tierConfig.label}</span>
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                         ${customer.totalSpent.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
@@ -624,7 +624,7 @@ export function CustomerManagement() {
                               }`}
                             />
                           ))}
-                          <span className="ml-1 text-sm text-gray-900">
+                          <span className="ml-1 text-sm text-gray-100">
                             {customer.satisfaction}
                           </span>
                         </div>

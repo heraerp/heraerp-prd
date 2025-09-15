@@ -122,14 +122,14 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
       {currentUrl && (
         <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base !text-gray-900 dark:!text-gray-100">
+            <CardTitle className="flex items-center gap-2 text-base !text-gray-100 dark:!text-gray-100">
               Current Subdomain
               <Badge variant="secondary">Active</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <code className="text-sm bg-muted dark:bg-muted px-2 py-1 rounded !text-gray-900 dark:!text-gray-100">
+              <code className="text-sm bg-muted dark:bg-muted px-2 py-1 rounded !text-gray-100 dark:!text-gray-100">
                 {current.subdomain}
               </code>
               <a
@@ -149,7 +149,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
       {/* Subdomain Settings */}
       <Card className="bg-background dark:bg-muted border-border dark:border-border">
         <CardHeader>
-          <CardTitle className="!text-gray-900 dark:!text-gray-100">Subdomain Settings</CardTitle>
+          <CardTitle className="!text-gray-100 dark:!text-gray-100">Subdomain Settings</CardTitle>
           <CardDescription className="!text-muted-foreground dark:!text-muted-foreground">
             Configure your organization's subdomain for branded access to {current.organizationName}
           </CardDescription>
@@ -166,7 +166,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 value={subdomain}
                 onChange={e => handleSubdomainChange(e.target.value)}
                 placeholder="my-organization"
-                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
+                className="flex-1 !text-gray-100 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
               />
               <span className="text-sm !text-muted-foreground dark:!text-muted-foreground whitespace-nowrap">
                 .{current.previewBase}
@@ -175,7 +175,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
             {previewUrl && (
               <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
                 Preview:{' '}
-                <code className="bg-muted dark:bg-muted px-1 rounded !text-gray-900 dark:!text-gray-100">
+                <code className="bg-muted dark:bg-muted px-1 rounded !text-gray-100 dark:!text-gray-100">
                   {previewUrl}
                 </code>
               </p>
@@ -190,7 +190,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 value={domainDraft}
                 onChange={e => setDomainDraft(e.target.value)}
                 placeholder="salon.mycompany.com"
-                className="flex-1 !text-gray-900 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
+                className="flex-1 !text-gray-100 dark:!text-gray-100 bg-background dark:bg-muted border-border dark:border-border"
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -203,9 +203,9 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 variant="outline"
                 onClick={handleAddDomain}
                 disabled={!domainDraft.trim()}
-                className="!text-gray-900 dark:!text-gray-100 border-border dark:border-border"
+                className="!text-gray-100 dark:!text-gray-100 border-border dark:border-border"
               >
-                <Plus className="h-4 w-4 !text-gray-900 dark:!text-gray-100" />
+                <Plus className="h-4 w-4 !text-gray-100 dark:!text-gray-100" />
               </Button>
             </div>
 
@@ -216,7 +216,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                     key={index}
                     className="flex items-center justify-between bg-muted dark:bg-muted rounded p-2"
                   >
-                    <code className="text-sm !text-gray-900 dark:!text-gray-100">{domain}</code>
+                    <code className="text-sm !text-gray-100 dark:!text-gray-100">{domain}</code>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -271,7 +271,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
               setSuccess(false)
             }}
             disabled={saving}
-            className="!text-gray-900 dark:!text-gray-100 border-border dark:border-border"
+            className="!text-gray-100 dark:!text-gray-100 border-border dark:border-border"
           >
             Reset
           </Button>

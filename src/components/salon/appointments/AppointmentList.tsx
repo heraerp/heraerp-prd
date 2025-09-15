@@ -124,7 +124,7 @@ export function AppointmentList({
                     <User className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg !text-gray-900 dark:!text-foreground">
+                    <h3 className="font-semibold text-lg !text-gray-100 dark:!text-foreground">
                       {appointment.customerName}
                     </h3>
                     <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -168,7 +168,7 @@ export function AppointmentList({
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-lg font-semibold !text-gray-900 dark:!text-foreground">
+                    <span className="text-lg font-semibold !text-gray-100 dark:!text-foreground">
                       AED {appointment.price.toFixed(2)}
                     </span>
                   </div>

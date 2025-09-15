@@ -94,7 +94,7 @@ export default function SalonUCRSettings() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-gray-900 relative overflow-hidden"
       style={{
         background: `
           linear-gradient(135deg, 
@@ -479,7 +479,7 @@ export default function SalonUCRSettings() {
                                   'border',
                                   salonConfig.notifications.sms_enabled
                                     ? 'bg-green-500/20 text-green-300 border-green-500/30'
-                                    : 'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                                    : 'bg-gray-9000/20 text-gray-300 border-gray-500/30'
                                 )}
                               >
                                 {salonConfig.notifications.sms_enabled ? 'Enabled' : 'Disabled'}
@@ -492,7 +492,7 @@ export default function SalonUCRSettings() {
                                   'border',
                                   salonConfig.notifications.email_enabled
                                     ? 'bg-green-500/20 text-green-300 border-green-500/30'
-                                    : 'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                                    : 'bg-gray-9000/20 text-gray-300 border-gray-500/30'
                                 )}
                               >
                                 {salonConfig.notifications.email_enabled ? 'Enabled' : 'Disabled'}

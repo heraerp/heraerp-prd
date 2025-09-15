@@ -544,7 +544,7 @@ const getSectionColor = (section: string) => {
     LIABILITY: 'text-orange-600',
     EQUITY: 'text-primary'
   }
-  return colors[section as keyof typeof colors] || 'text-gray-900'
+  return colors[section as keyof typeof colors] || 'text-gray-100'
 }
 
 // ----------------------------- Main Component ------------------------------------
@@ -637,7 +637,7 @@ export default function SalonBalanceSheetPage() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
           <p className="text-muted-foreground dark:text-muted-foreground">Loading balance sheet data...</p>
@@ -647,12 +647,12 @@ export default function SalonBalanceSheetPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground flex items-center gap-2">
               <Scale className="w-8 h-8 text-purple-600" />
               Balance Sheet
             </h1>
@@ -728,7 +728,7 @@ export default function SalonBalanceSheetPage() {
                 <select
                   value={selectedBranch}
                   onChange={e => setSelectedBranch(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground"
+                  className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-100 dark:text-foreground"
                 >
                   <option value="all">All Branches (Consolidated)</option>
                   <option value="branch1">Park Regis Kris Kin</option>
@@ -797,7 +797,7 @@ export default function SalonBalanceSheetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Assets</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(balanceSheet.totals.total_assets)}
                   </p>
                 </div>
@@ -811,7 +811,7 @@ export default function SalonBalanceSheetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Working Capital</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(balanceSheet.kpis.working_capital)}
                   </p>
                 </div>
@@ -825,7 +825,7 @@ export default function SalonBalanceSheetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Current Ratio</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.current_ratio)}
                   </p>
                   <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -842,7 +842,7 @@ export default function SalonBalanceSheetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Debt to Equity</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.debt_to_equity)}
                   </p>
                   <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -859,7 +859,7 @@ export default function SalonBalanceSheetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Equity Ratio</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatPercent(balanceSheet.kpis.equity_ratio * 100)}
                   </p>
                 </div>

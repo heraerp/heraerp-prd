@@ -85,7 +85,7 @@ export function AppointmentManagementDashboard({
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-gray-900 relative overflow-hidden"
       style={{
         background: `
           linear-gradient(135deg, 
@@ -146,7 +146,7 @@ export function AppointmentManagementDashboard({
       <div className="relative z-10 p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-foreground flex items-center gap-3">
+          <h1 className="text-4xl font-bold !text-gray-100 dark:!text-foreground flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
               style={{
@@ -330,7 +330,7 @@ export function AppointmentManagementDashboard({
             }}
           >
             <div className="p-6">
-              <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground mb-4">
+              <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground mb-4">
                 Day View - {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
               </h3>
               {/* Day view implementation would go here */}

@@ -364,9 +364,9 @@ export function MetricCard({
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         <div className="flex items-end space-x-2">
           {typeof value === 'number' ? (
-            <AnimatedCounter value={value} className="text-3xl font-bold text-gray-900" />
+            <AnimatedCounter value={value} className="text-3xl font-bold text-gray-100" />
           ) : (
-            <span className="text-3xl font-bold text-gray-900">{value}</span>
+            <span className="text-3xl font-bold text-gray-100">{value}</span>
           )}
           {change !== undefined && (
             <span

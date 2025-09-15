@@ -207,7 +207,7 @@ export function HeraChatbot({
                             ? 'bg-red-50 text-red-900 border border-red-200'
                             : theme === 'dark'
                               ? 'bg-muted text-gray-100'
-                              : 'bg-muted text-gray-900'
+                              : 'bg-muted text-gray-100'
                       }`}
                     >
                       <p className="whitespace-pre-wrap text-sm">{message.content}</p>

@@ -659,7 +659,7 @@ export function BookAppointmentModalModern({
                                       className={cn(
                                         'text-xs font-bold',
                                         customer.vip_level === 'platinum'
-                                          ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-900'
+                                          ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-100'
                                           : 'bg-gradient-to-br from-yellow-400 to-amber-500 text-yellow-900'
                                       )}
                                     >
@@ -670,7 +670,7 @@ export function BookAppointmentModalModern({
                                     <p className="text-sm font-medium text-foreground flex items-center gap-2">
                                       {customer.entity_name}
                                       {customer.vip_level === 'platinum' && (
-                                        <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900 border-0">
+                                        <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-100 border-0">
                                           Platinum
                                         </Badge>
                                       )}
@@ -935,7 +935,7 @@ export function BookAppointmentModalModern({
                                   className={cn(
                                     'text-[10px] px-1.5 py-0 border-0',
                                     customer.vip_level === 'platinum'
-                                      ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900'
+                                      ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-100'
                                       : 'bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900'
                                   )}
                                 >

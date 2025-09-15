@@ -239,7 +239,7 @@ export default function MCPHubPage() {
 
   return (
     <div
-      className={cn('min-h-screen', isDarkMode && 'dark')}
+      className={cn('min-h-screen bg-gray-900', isDarkMode && 'dark')}
       style={{ backgroundColor: isDarkMode ? '#0a0a0a' : '#fafafa' }}
     >
       <div className="relative overflow-hidden">

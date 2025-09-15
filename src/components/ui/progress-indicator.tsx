@@ -14,7 +14,7 @@ export function ProgressIndicator({
   return (
     <div className={`flex flex-col items-center justify-center py-16 ${className}`}>
       {/* Animated Progress Bar */}
-      <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden mb-6">
+      <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden mb-6">
         <div className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 rounded-full animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]" />
       </div>
 

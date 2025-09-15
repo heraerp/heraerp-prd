@@ -51,7 +51,7 @@ export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPM
         <div className="relative bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-[#0049B7]/20 backdrop-blur-2xl rounded-2xl border border-border/10 shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border/10">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
               {title}
             </h2>
             <button

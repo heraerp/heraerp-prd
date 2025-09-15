@@ -225,7 +225,7 @@ export function NewAppointmentModal({
             >
               <Calendar className="w-5 h-5 text-foreground" />
             </div>
-            <h2 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+            <h2 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
               New Appointment
             </h2>
           </div>

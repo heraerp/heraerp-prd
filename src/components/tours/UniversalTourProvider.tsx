@@ -116,7 +116,7 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
 
         {/* Content */}
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <h3 className="text-lg font-semibold text-gray-100 mb-3">
             Discover Your {industryName} System
           </h3>
 
@@ -129,7 +129,7 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
             <div className="flex items-start gap-3">
               <div className="text-2xl">🎯</div>
               <div>
-                <div className="font-medium text-gray-900 text-sm">What you'll learn:</div>
+                <div className="font-medium text-gray-100 text-sm">What you'll learn:</div>
                 <ul className="text-sm text-muted-foreground mt-1 space-y-1">
                   <li>• Navigate your command center</li>
                   <li>• Understand live metrics</li>

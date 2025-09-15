@@ -183,7 +183,7 @@ export default function LandingPage() {
         <section className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6">
+              <h1 className="text-4xl md:text-6xl font-black text-gray-100 mb-6">
                 See Your Future ERP Working in{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-cyan-600">
                   Two Weeks
@@ -212,11 +212,11 @@ export default function LandingPage() {
             {/* Visual Comparison */}
             <div className="grid md:grid-cols-2 gap-8 mb-16">
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-foreground mb-4">
+                <h3 className="text-xl font-bold text-gray-100 dark:text-foreground mb-4">
                   Traditional ERP Demos
                 </h3>
                 <div className="bg-muted dark:bg-muted rounded-lg p-4 mb-4">
-                  <div className="h-48 bg-gray-200 dark:bg-muted-foreground/10 rounded opacity-50 flex items-center justify-center">
+                  <div className="h-48 bg-gray-700 dark:bg-muted-foreground/10 rounded opacity-50 flex items-center justify-center">
                     <span className="text-muted-foreground dark:text-muted-foreground text-sm">
                       Generic Demo Interface
                     </span>
@@ -236,7 +236,7 @@ export default function LandingPage() {
               </Card>
 
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 transform hover:scale-105 transition-all duration-300">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-foreground mb-4">
+                <h3 className="text-xl font-bold text-gray-100 dark:text-foreground mb-4">
                   HERA Live Preview
                 </h3>
                 <div className="bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-lg p-4 mb-4">
@@ -274,21 +274,21 @@ export default function LandingPage() {
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">SAP</h3>
+                <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">SAP</h3>
                 <p className="text-muted-foreground dark:text-muted-foreground mb-4">Generic sandbox</p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">18 months later</p>
               </Card>
 
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">Oracle</h3>
+                <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">Oracle</h3>
                 <p className="text-muted-foreground dark:text-muted-foreground mb-4">Template demo</p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">12 months later</p>
               </Card>
 
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-2xl border-2 border-blue-500 dark:border-cyan-500 p-6 text-center transform hover:scale-105 transition-all duration-300">
-                <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-foreground">HERA</h3>
+                <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">HERA</h3>
                 <p className="text-primary dark:text-blue-400 font-medium mb-4">
                   Your business working
                 </p>
@@ -306,7 +306,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-lg text-gray-800 dark:text-gray-200 font-medium italic mb-3 leading-relaxed">
+                  <p className="text-lg text-gray-200 dark:text-gray-200 font-medium italic mb-3 leading-relaxed">
                     "I saw my restaurant running perfectly on day 5. Menu management, inventory
                     tracking, staff scheduling - everything was there and working exactly how we
                     operate."
@@ -323,7 +323,7 @@ export default function LandingPage() {
         {/* The Two-Week Process */}
         <section id="process" className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-12">
               Your Two-Week Journey to the Future
             </h2>
 
@@ -340,7 +340,7 @@ export default function LandingPage() {
                     <span className="text-sm font-bold text-violet-600">{step.day}</span>
                     <step.icon className="h-8 w-8 text-violet-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-100 mb-2">{step.title}</h3>
                   <p className="text-gray-700 mb-4">{step.description}</p>
                   {activeStep === index && (
                     <div className="mt-4 pt-4 border-t border-border">
@@ -356,7 +356,7 @@ export default function LandingPage() {
         {/* Industry Showcase */}
         <section id="industries" className="py-16 px-4 sm:px-6 lg:px-8 bg-background/80">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-12">
               Proven Across Every Industry
             </h2>
 
@@ -375,7 +375,7 @@ export default function LandingPage() {
                   <Card className="p-8">
                     <div className="grid md:grid-cols-2 gap-8">
                       <div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                        <h3 className="text-2xl font-bold text-gray-100 mb-4">
                           {industry.example}
                         </h3>
                         <p className="text-lg text-violet-600 font-semibold mb-6">
@@ -412,7 +412,7 @@ export default function LandingPage() {
                         </div>
                       </div>
                       <div className="bg-gradient-to-br from-violet-50 to-cyan-50 rounded-lg p-6">
-                        <h4 className="font-semibold text-gray-900 mb-4">Before & After</h4>
+                        <h4 className="font-semibold text-gray-100 mb-4">Before & After</h4>
                         <div className="space-y-4">
                           <div>
                             <p className="text-sm text-muted-foreground mb-2">Before HERA:</p>
@@ -441,7 +441,7 @@ export default function LandingPage() {
         <section id="testimonials" className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-100 mb-4">
                 Join the Revolution
               </h2>
               <div className="bg-gradient-to-r from-violet-600 to-cyan-600 text-foreground rounded-lg p-6 inline-block">
@@ -498,13 +498,13 @@ export default function LandingPage() {
         {/* Technical Credibility */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background/80">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-12">
               How We Do It
             </h2>
 
             <div className="grid md:grid-cols-3 gap-8">
               <Card className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">6 Universal Tables</h3>
+                <h3 className="text-xl font-bold text-gray-100 mb-4">6 Universal Tables</h3>
                 <p className="text-gray-700 mb-4">
                   Our revolutionary architecture handles infinite complexity with just 6 tables,
                   eliminating the need for custom schemas.
@@ -527,7 +527,7 @@ export default function LandingPage() {
               </Card>
 
               <Card className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Code System</h3>
+                <h3 className="text-xl font-bold text-gray-100 mb-4">Smart Code System</h3>
                 <p className="text-gray-700 mb-4">
                   Every business process is encoded with intelligent patterns that enable instant
                   configuration and automation.
@@ -546,7 +546,7 @@ export default function LandingPage() {
               </Card>
 
               <Card className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">AI-Native Architecture</h3>
+                <h3 className="text-xl font-bold text-gray-100 mb-4">AI-Native Architecture</h3>
                 <p className="text-gray-700 mb-4">
                   Built from the ground up with AI integration, enabling intelligent automation and
                   continuous optimization.
@@ -567,14 +567,14 @@ export default function LandingPage() {
         {/* FAQ Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-12">
               Frequently Asked Questions
             </h2>
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <Card key={index} className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{faq.question}</h3>
+                  <h3 className="text-lg font-semibold text-gray-100 mb-3">{faq.question}</h3>
                   <p className="text-gray-700">{faq.answer}</p>
                 </Card>
               ))}

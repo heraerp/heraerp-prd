@@ -168,7 +168,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
       <Card className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Table Management Settings</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Table Management Settings</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Configure default settings for table management
             </p>
@@ -188,7 +188,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* General Settings */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Settings className="w-5 h-5 mr-2" />
           General Settings
         </h4>
@@ -323,7 +323,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Operating Hours */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Clock className="w-5 h-5 mr-2" />
           Operating Hours
         </h4>
@@ -388,7 +388,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Table Management */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Layout className="w-5 h-5 mr-2" />
           Table Management
         </h4>
@@ -473,7 +473,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Notifications */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Bell className="w-5 h-5 mr-2" />
           Notifications
         </h4>
@@ -542,7 +542,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Pricing Tiers */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <DollarSign className="w-5 h-5 mr-2" />
           Pricing Tiers
         </h4>
@@ -556,7 +556,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                       ? 'bg-purple-100 text-purple-800'
                       : tier === 'premium'
                         ? 'bg-blue-100 text-blue-800'
-                        : 'bg-muted text-gray-800'
+                        : 'bg-muted text-gray-200'
                   }
                 >
                   {config.name}
@@ -588,7 +588,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Integration Settings */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Zap className="w-5 h-5 mr-2" />
           Integrations
         </h4>
@@ -651,7 +651,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
       {/* Status Color Customization */}
       <Card className="p-6">
-        <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+        <h4 className="text-base font-semibold text-gray-100 mb-4 flex items-center">
           <Palette className="w-5 h-5 mr-2" />
           Status Colors
         </h4>

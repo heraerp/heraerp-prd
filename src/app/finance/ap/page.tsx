@@ -231,7 +231,7 @@ export default function AccountsPayablePage() {
       case 'overdue':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
     }
   }
 
@@ -240,7 +240,7 @@ export default function AccountsPayablePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Accounts Payable
           </h1>
           <p className="text-foreground/60 mt-1">Manage vendor payments and outstanding liabilities</p>

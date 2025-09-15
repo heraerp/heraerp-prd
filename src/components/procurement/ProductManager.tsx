@@ -381,11 +381,11 @@ export function ProductManager() {
       case 'active':
         return 'bg-green-100 text-green-800'
       case 'inactive':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       case 'discontinued':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -410,7 +410,7 @@ export function ProductManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Catalog</h1>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Product Catalog</h1>
           <p className="text-muted-foreground">
             Universal product and material management powered by HERA's dynamic architecture
           </p>
@@ -467,7 +467,7 @@ export function ProductManager() {
 
           <button
             onClick={loadProducts}
-            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-800 transition-colors"
+            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-200 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -498,7 +498,7 @@ export function ProductManager() {
                   <Package className="w-6 h-6 text-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                  <h3 className="font-semibold text-gray-100">{product.name}</h3>
                   <p className="text-sm text-muted-foreground">{product.code}</p>
                 </div>
               </div>
@@ -523,7 +523,7 @@ export function ProductManager() {
               {/* Pricing */}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Standard Cost:</span>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-100">
                   {formatCurrency(product.standard_cost)}
                 </span>
               </div>
@@ -531,7 +531,7 @@ export function ProductManager() {
               {product.list_price > 0 && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">List Price:</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-gray-100">
                     {formatCurrency(product.list_price)}
                   </span>
                 </div>
@@ -598,7 +598,7 @@ export function ProductManager() {
       {filteredProducts.length === 0 && !isLoading && !error && (
         <Card className="p-12 text-center">
           <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Products Found</h3>
+          <h3 className="text-lg font-semibold text-gray-100 mb-2">No Products Found</h3>
           <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'active' || categoryFilter
               ? 'Try adjusting your filters to see more products.'
@@ -618,7 +618,7 @@ export function ProductManager() {
         <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
-              <h2 className="text-xl font-semibold text-gray-900">Add New Product</h2>
+              <h2 className="text-xl font-semibold text-gray-100">Add New Product</h2>
               <p className="text-muted-foreground mt-1">Create a new product or material in your catalog</p>
             </div>
 
@@ -636,7 +636,7 @@ export function ProductManager() {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -653,7 +653,7 @@ export function ProductManager() {
                     required
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   >
                     <option value="">Select Category</option>
                     {categories.map(category => (
@@ -676,7 +676,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.brand}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -690,7 +690,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.model}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -707,7 +707,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.manufacturer}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
               </div>
@@ -727,7 +727,7 @@ export function ProductManager() {
                     required
                     value={formData.unit_of_measure}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   >
                     {units.map(unit => (
                       <option key={unit} value={unit}>
@@ -752,7 +752,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.standard_cost}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -771,7 +771,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.list_price}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -789,7 +789,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.lead_time_days}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
               </div>
@@ -808,7 +808,7 @@ export function ProductManager() {
                     min="0"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -826,7 +826,7 @@ export function ProductManager() {
                     placeholder="L×W×H"
                     value={formData.dimensions}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -840,7 +840,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.color}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -857,7 +857,7 @@ export function ProductManager() {
                     type="text"
                     value={formData.material}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
               </div>
@@ -902,7 +902,7 @@ export function ProductManager() {
                   placeholder="e.g., Store in cool, dry place"
                   value={formData.storage_requirements}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                 />
               </div>
 
@@ -920,7 +920,7 @@ export function ProductManager() {
                   rows={3}
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                 />
               </div>
 
@@ -964,7 +964,7 @@ export function ProductManager() {
         <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
-              <h2 className="text-xl font-semibold text-gray-900">Pencil Product</h2>
+              <h2 className="text-xl font-semibold text-gray-100">Pencil Product</h2>
               <p className="text-muted-foreground mt-1">Update product information and specifications</p>
             </div>
 
@@ -985,7 +985,7 @@ export function ProductManager() {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -1002,7 +1002,7 @@ export function ProductManager() {
                     required
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   >
                     <option value="">Select Category</option>
                     {categories.map(category => (

@@ -237,7 +237,7 @@ export function FiscalCloseChecklist({
       accruals: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       closing: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       reporting: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      archive: 'bg-muted text-gray-800 dark:bg-background dark:text-gray-200'
+      archive: 'bg-muted text-gray-200 dark:bg-background dark:text-gray-200'
     }
     return colors[category] || colors.validation
   }

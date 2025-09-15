@@ -634,7 +634,7 @@ export function SchedulingAssistant({
         {/* Timeline View */}
         <Card className="lg:col-span-2 bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader className="border-b border-border dark:border-border">
-            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-foreground">
+            <CardTitle className="text-sm flex items-center gap-2 text-gray-100 dark:text-foreground">
               <Clock className="w-4 h-4 text-primary" />
               Timeline View
             </CardTitle>
@@ -657,7 +657,7 @@ export function SchedulingAssistant({
         {/* Suggestions Panel */}
         <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardHeader className="border-b border-border dark:border-border">
-            <CardTitle className="text-sm flex items-center gap-2 text-gray-900 dark:text-foreground">
+            <CardTitle className="text-sm flex items-center gap-2 text-gray-100 dark:text-foreground">
               <Star className="w-4 h-4 text-primary" />
               Top Suggestions
             </CardTitle>
@@ -689,7 +689,7 @@ export function SchedulingAssistant({
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-foreground">
+                            <p className="font-medium text-gray-100 dark:text-foreground">
                               {formatDate(parseISO(slot.start), 'h:mm a')} -{' '}
                               {formatDate(parseISO(slot.end), 'h:mm a')}
                             </p>

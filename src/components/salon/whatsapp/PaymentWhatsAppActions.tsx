@@ -193,7 +193,7 @@ export function PaymentWhatsAppActions({
             <div className="flex items-center gap-3">
               <Receipt className="w-5 h-5 text-green-500" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                <h4 className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                   Send Receipt
                 </h4>
                 <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -254,7 +254,7 @@ export function PaymentWhatsAppActions({
             <div className="flex items-center gap-3">
               <Clock className="w-5 h-5 text-amber-500" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                <h4 className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                   Payment Reminder
                 </h4>
                 <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">

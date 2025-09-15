@@ -220,7 +220,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
           {/* Sidebar Header */}
           <div className="p-4 border-b border-border dark:border-border">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Calendar</h3>
+              <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">Calendar</h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -234,7 +234,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
             {/* Mini Calendar */}
             <div className="bg-background dark:bg-muted rounded-lg p-3 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-900 dark:text-foreground">
+                <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                   {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <div className="flex gap-1">
@@ -256,7 +256,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
           {/* Team Members */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
+              <h4 className="text-sm font-semibold text-gray-100 dark:text-foreground mb-3">
                 Team Members
               </h4>
               <div className="space-y-2">
@@ -289,7 +289,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                      <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {stylist.name}
                       </p>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
@@ -312,7 +312,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
 
             {/* Upcoming Appointments */}
             <div className="p-4 border-t border-border dark:border-border">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
+              <h4 className="text-sm font-semibold text-gray-100 dark:text-foreground mb-3">
                 Today's Appointments
               </h4>
               <div className="space-y-2">
@@ -327,7 +327,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                         style={{ backgroundColor: apt.color }}
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                        <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                           {apt.title}
                         </p>
                         <p className="text-xs text-muted-foreground dark:text-muted-foreground">{apt.client}</p>
@@ -397,7 +397,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                 </Button>
               </div>
 
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
+              <h2 className="text-xl font-semibold text-gray-100 dark:text-foreground">
                 {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </h2>
             </div>
@@ -486,7 +486,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                               'text-xl font-extrabold',
                               isToday
                                 ? 'text-primary dark:text-blue-400'
-                                : 'text-gray-900 dark:text-foreground'
+                                : 'text-gray-100 dark:text-foreground'
                             )}
                           >
                             {dayNumber}
@@ -555,7 +555,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                                           {apt.icon}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
+                                          <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
                                             {apt.title}
                                           </p>
                                           <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">

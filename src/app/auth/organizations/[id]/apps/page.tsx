@@ -326,7 +326,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             <Sparkles className="w-4 h-4 mr-2" />
             Recommended apps pre-selected
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
+          <h2 className="text-3xl font-bold text-gray-100 dark:text-foreground mb-4">
             Choose Your Business Apps
           </h2>
           <p className="text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
@@ -382,7 +382,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                       )}
                     </div>
                   </div>
-                  <CardTitle className="mt-4 text-gray-900 dark:text-foreground">{app.name}</CardTitle>
+                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">{app.name}</CardTitle>
                   <CardDescription className="text-muted-foreground dark:text-muted-foreground">
                     {app.description}
                   </CardDescription>
@@ -448,7 +448,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Zap className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Instant Setup</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Instant Setup</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Apps are ready to use immediately after installation
             </p>
@@ -457,7 +457,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Shield className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Fully Integrated</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Fully Integrated</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               All apps work seamlessly together with shared data
             </p>
@@ -466,7 +466,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Settings className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Flexible</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Flexible</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Add, remove, or configure apps anytime from settings
             </p>

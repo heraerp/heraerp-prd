@@ -140,7 +140,7 @@ export const WSAGAuditReport = {
   codeExamples: {
     goodPractices: `
 // Good contrast example
-<p className="text-gray-900 dark:text-foreground">
+<p className="text-gray-100 dark:text-foreground">
   Visible text in both modes
 </p>
 
@@ -166,7 +166,7 @@ export const WSAGAuditReport = {
 <p className="text-muted-foreground dark:text-muted-foreground">
 
 // After (good contrast)  
-<p className="text-gray-900 dark:text-foreground">
+<p className="text-gray-100 dark:text-foreground">
 
 // Before (no ARIA)
 <Button>Next</Button>

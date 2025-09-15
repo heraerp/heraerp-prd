@@ -212,8 +212,8 @@ export function UnifiedRestaurantInterface() {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 ${
-        darkMode ? 'bg-background' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
+      className={`min-h-screen bg-gray-900 transition-all duration-300 ${
+        darkMode ? 'bg-background' : 'bg-gradient-to-br from-gray-900 via-white to-gray-100'
       }`}
     >
       {/* Header - Jobs-inspired minimal header */}
@@ -231,7 +231,7 @@ export function UnifiedRestaurantInterface() {
               </div>
               <div>
                 <h1
-                  className={`text-lg font-semibold ${darkMode ? 'text-foreground' : 'text-gray-900'}`}
+                  className={`text-lg font-semibold ${darkMode ? 'text-foreground' : 'text-gray-100'}`}
                 >
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
@@ -256,7 +256,7 @@ export function UnifiedRestaurantInterface() {
                   className={`pl-10 pr-4 py-2 rounded-full border-0 shadow-sm transition-all ${
                     darkMode
                       ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
-                      : 'bg-muted text-gray-900 placeholder-gray-500 focus:bg-background focus:shadow-md'
+                      : 'bg-muted text-gray-100 placeholder-gray-500 focus:bg-background focus:shadow-md'
                   }`}
                   onFocus={() => setIsCommandPaletteOpen(true)}
                 />
@@ -400,7 +400,7 @@ export function UnifiedRestaurantInterface() {
               </div>
 
               <div className="space-y-2 mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-800">
+                <h3 className="text-xl font-semibold text-gray-100 group-hover:text-gray-200">
                   {view.title}
                 </h3>
                 <p className="text-muted-foreground group-hover:text-foreground">{view.subtitle}</p>

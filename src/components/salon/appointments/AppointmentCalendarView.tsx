@@ -94,7 +94,7 @@ export function AppointmentCalendarView({
       case 'completed':
         return 'bg-blue-500'
       default:
-        return 'bg-gray-500'
+        return 'bg-gray-9000'
     }
   }
 
@@ -121,7 +121,7 @@ export function AppointmentCalendarView({
       {/* Calendar Header */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-foreground">
+          <h2 className="text-2xl font-semibold !text-gray-100 dark:!text-foreground">
             {formatDate(currentMonth, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
@@ -248,7 +248,7 @@ export function AppointmentCalendarView({
 
         {/* Selected day appointments */}
         <div className="mt-6 pt-6 border-t border-gray-800">
-          <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-4">
+          <h3 className="text-lg font-semibold !text-gray-100 dark:!text-foreground mb-4">
             Appointments on {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
           </h3>
 
@@ -276,7 +276,7 @@ export function AppointmentCalendarView({
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium !text-gray-900 dark:!text-foreground">
+                          <span className="font-medium !text-gray-100 dark:!text-foreground">
                             {apt.appointmentTime}
                           </span>
                           <span className="text-sm !text-muted-foreground dark:!text-muted-foreground">

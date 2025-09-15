@@ -238,7 +238,7 @@ export default function ProvisioningDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground flex items-center gap-3">
               <Building2 className="w-8 h-8 text-primary" />
               Tenant Provisioning
             </h1>

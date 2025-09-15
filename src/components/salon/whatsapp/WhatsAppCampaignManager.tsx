@@ -155,7 +155,7 @@ export function WhatsAppCampaignManager({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold !text-gray-900 dark:!text-foreground flex items-center gap-2">
+          <h2 className="text-2xl font-semibold !text-gray-100 dark:!text-foreground flex items-center gap-2">
             <MessageCircle className="w-6 h-6 text-green-500" />
             WhatsApp Campaign Manager
           </h2>
@@ -177,7 +177,7 @@ export function WhatsAppCampaignManager({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Messages Sent</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 {totalStats.totalSent.toLocaleString()}
               </p>
             </div>
@@ -189,7 +189,7 @@ export function WhatsAppCampaignManager({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Failed</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 {totalStats.totalFailed}
               </p>
             </div>
@@ -201,7 +201,7 @@ export function WhatsAppCampaignManager({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Total Cost</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 AED {totalStats.totalCost.toFixed(2)}
               </p>
             </div>
@@ -213,7 +213,7 @@ export function WhatsAppCampaignManager({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Active Campaigns</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 {totalStats.activeCampaigns}
               </p>
             </div>
@@ -272,7 +272,7 @@ export function WhatsAppCampaignManager({
 
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-semibold text-lg !text-gray-900 dark:!text-foreground">
+                      <h3 className="font-semibold text-lg !text-gray-100 dark:!text-foreground">
                         {campaign.name}
                       </h3>
                       {getStatusBadge(campaign.status)}

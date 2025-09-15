@@ -57,7 +57,7 @@ export default function ClearSessionPage() {
 
   if (clearing) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="py-12">
             <div className="flex flex-col items-center justify-center space-y-4">
@@ -71,7 +71,7 @@ export default function ClearSessionPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

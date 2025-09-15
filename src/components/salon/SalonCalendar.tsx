@@ -419,7 +419,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       case 'regular':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30'
       default:
-        return 'bg-muted text-gray-800 dark:bg-background/30'
+        return 'bg-muted text-gray-200 dark:bg-background/30'
     }
   }
 
@@ -492,7 +492,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Salon Calendar</h1>
+          <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground">Salon Calendar</h1>
           <p className="text-muted-foreground dark:text-muted-foreground">
             Manage appointments, stylists, and salon operations
           </p>
@@ -525,7 +525,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                 <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Today's Appointments
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">8</p>
+                <p className="text-2xl font-bold text-gray-100 dark:text-foreground">8</p>
               </div>
             </div>
           </CardContent>
@@ -539,7 +539,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                 <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Active Stylists
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   {stylists.length}
                 </p>
               </div>
@@ -555,7 +555,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                 <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
                   Today's Revenue
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">AED 2,350</p>
+                <p className="text-2xl font-bold text-gray-100 dark:text-foreground">AED 2,350</p>
               </div>
             </div>
           </CardContent>
@@ -567,7 +567,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
               <Star className="h-8 w-8 text-yellow-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">VIP Clients</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   {clients.filter(c => c.vipLevel && c.vipLevel !== 'regular').length}
                 </p>
               </div>
@@ -616,7 +616,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                   <span className="text-foreground font-bold text-sm">{stylist.name.charAt(0)}</span>
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-foreground">{stylist.name}</p>
+                  <p className="font-medium text-gray-100 dark:text-foreground">{stylist.name}</p>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge
@@ -650,13 +650,13 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                 className="flex items-center justify-between p-3 border rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-foreground">{service.name}</p>
+                  <p className="font-medium text-gray-100 dark:text-foreground">{service.name}</p>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                     {Math.floor(service.duration / 60)}h {service.duration % 60}m
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-gray-900 dark:text-foreground">AED {service.price}</p>
+                  <p className="font-bold text-gray-100 dark:text-foreground">AED {service.price}</p>
                   <Badge variant="outline" className="text-xs">
                     {service.category.toUpperCase()}
                   </Badge>

@@ -507,7 +507,7 @@ export function SaaSConversionWizard({
           <h3 className="text-2xl font-bold mb-4">Converting Your Demo to Production</h3>
           <p className="text-muted-foreground dark:text-muted-foreground mb-8">{currentTask}</p>
 
-          <div className="w-full bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-3 mb-4">
+          <div className="w-full bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-3 mb-4">
             <div
               className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}

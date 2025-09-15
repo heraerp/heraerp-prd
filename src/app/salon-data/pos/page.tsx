@@ -622,7 +622,7 @@ export default function DubaiPOSSystem() {
         >
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-2">
-              <h4 className="font-semibold text-sm !text-gray-900 dark:!text-foreground line-clamp-2">
+              <h4 className="font-semibold text-sm !text-gray-100 dark:!text-foreground line-clamp-2">
                 {product.entity_name}
               </h4>
               {product.stock_on_hand !== undefined && product.stock_on_hand < 10 && (
@@ -719,7 +719,7 @@ export default function DubaiPOSSystem() {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h5 className="font-medium text-sm !text-gray-900 dark:!text-foreground">
+                    <h5 className="font-medium text-sm !text-gray-100 dark:!text-foreground">
                       {item.product.entity_name}
                     </h5>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -1215,7 +1215,7 @@ export default function DubaiPOSSystem() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* POS Header */}
       <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-4 py-3">

@@ -166,7 +166,7 @@ export function WhatsAppNotificationHistory({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <MessageCircle className="w-6 h-6 text-green-500" />
-              <h2 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+              <h2 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
                 WhatsApp Notifications
               </h2>
             </div>
@@ -208,7 +208,7 @@ export function WhatsAppNotificationHistory({
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         {getStatusIcon(notification.status)}
-                        <span className="font-medium !text-gray-900 dark:!text-foreground capitalize">
+                        <span className="font-medium !text-gray-100 dark:!text-foreground capitalize">
                           {notification.type} Notification
                         </span>
                         <Badge

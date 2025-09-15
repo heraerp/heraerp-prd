@@ -389,7 +389,7 @@ export function SalonProductionSidebar() {
                   </div>
                   {isExpanded && (
                     <>
-                      <span className="font-medium text-gray-900">{item.label}</span>
+                      <span className="font-medium text-gray-100">{item.label}</span>
                       {item.badge && (
                         <Badge
                           className="ml-auto bg-gradient-to-r from-pink-500 to-purple-500 !text-foreground dark:!text-foreground border-0"
@@ -788,7 +788,7 @@ export function SalonProductionSidebar() {
                 variant="outline"
               >
                 <div className="text-purple-600">{item.icon}</div>
-                <span className="font-medium text-sm text-gray-900">{item.label}</span>
+                <span className="font-medium text-sm text-gray-100">{item.label}</span>
                 <span className="text-xs text-muted-foreground text-center">{item.description}</span>
               </Button>
             ))}

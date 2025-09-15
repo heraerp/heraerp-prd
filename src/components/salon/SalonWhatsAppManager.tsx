@@ -325,7 +325,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-foreground">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-100 dark:text-foreground">
             <MessageCircle className="w-6 h-6 text-green-500" />
             WhatsApp Business
           </h2>
@@ -452,7 +452,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                       {action.icon}
                     </div>
                     <div className="text-center">
-                      <p className="font-medium text-sm text-gray-900 dark:text-foreground">
+                      <p className="font-medium text-sm text-gray-100 dark:text-foreground">
                         {action.label}
                       </p>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -495,7 +495,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                             {template.icon}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900 dark:text-foreground">
+                            <h3 className="font-semibold text-gray-100 dark:text-foreground">
                               {template.name}
                             </h3>
                             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
@@ -508,7 +508,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
 
                       <div className="space-y-3">
                         <div className="p-3 bg-muted dark:bg-muted rounded-lg">
-                          <p className="text-sm font-mono text-gray-800 dark:text-gray-200">
+                          <p className="text-sm font-mono text-gray-200 dark:text-gray-200">
                             {template.sampleText}
                           </p>
                         </div>
@@ -585,7 +585,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                 ].map((automation, index) => (
                   <div key={index} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900 dark:text-foreground">
+                      <h3 className="font-semibold text-gray-100 dark:text-foreground">
                         {automation.name}
                       </h3>
                       <Badge variant={automation.status === 'active' ? 'default' : 'secondary'}>

@@ -87,7 +87,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
       case 'spicy':
         return 'bg-red-100 text-red-800 border-red-300'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 
@@ -189,7 +189,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
         <div className="p-6 overflow-y-auto max-h-[90vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Add New Menu Item</h2>
+            <h2 className="text-xl font-semibold text-gray-100">Add New Menu Item</h2>
             <Button variant="outline" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
             </Button>
@@ -198,7 +198,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
           <div className="space-y-6">
             {/* Basic Information */}
             <Card className="p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+              <h3 className="text-lg font-medium text-gray-100 mb-4">Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -269,7 +269,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
             {/* Category */}
             <Card className="p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Category</h3>
+              <h3 className="text-lg font-medium text-gray-100 mb-4">Category</h3>
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -307,7 +307,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
             {/* Dietary Tags */}
             <Card className="p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Dietary Tags</h3>
+              <h3 className="text-lg font-medium text-gray-100 mb-4">Dietary Tags</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {availableDietaryTags.map(tag => (
                   <button
@@ -349,7 +349,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
             {/* Ingredients */}
             <Card className="p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Ingredients</h3>
+              <h3 className="text-lg font-medium text-gray-100 mb-4">Ingredients</h3>
               <div>
                 <Label className="text-sm font-medium text-gray-700 mb-2 block">
                   Ingredients List *
@@ -367,10 +367,10 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
             {/* Preview */}
             {formData.entity_name && (
               <Card className="p-4 bg-muted">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
+                <h3 className="text-lg font-medium text-gray-100 mb-4">Preview</h3>
                 <div className="bg-background p-4 rounded-lg border">
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold text-gray-900">{formData.entity_name}</h4>
+                    <h4 className="font-semibold text-gray-100">{formData.entity_name}</h4>
                     <span className="text-lg font-bold text-green-600">
                       ${formData.price || '0.00'}
                     </span>

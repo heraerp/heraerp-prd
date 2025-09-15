@@ -1108,7 +1108,7 @@ export function HeraDnaUniversalResourceCalendar({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 {config.icon}
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {config.resourceNamePlural} Calendar
                 </h3>
               </div>
@@ -1125,7 +1125,7 @@ export function HeraDnaUniversalResourceCalendar({
             {/* Branch Filter */}
             {organizations.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2">
+                <h4 className="text-sm font-semibold text-gray-100 dark:text-foreground mb-2">
                   Branch Filter
                 </h4>
                 <div className="space-y-2">
@@ -1144,7 +1144,7 @@ export function HeraDnaUniversalResourceCalendar({
                       className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                     />
                     <Building2 className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
-                    <span className="text-sm font-medium text-gray-900 dark:text-foreground">
+                    <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                       All Branches
                     </span>
                   </div>
@@ -1169,7 +1169,7 @@ export function HeraDnaUniversalResourceCalendar({
                           className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                         />
                         <MapPin className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
-                        <span className="text-sm text-gray-900 dark:text-foreground">
+                        <span className="text-sm text-gray-100 dark:text-foreground">
                           {org.organization_name.split('•')[1]?.trim() || org.organization_name}
                         </span>
                       </div>
@@ -1204,7 +1204,7 @@ export function HeraDnaUniversalResourceCalendar({
           {/* Resources List */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3">
+              <h4 className="text-sm font-semibold text-gray-100 dark:text-foreground mb-3">
                 {config.resourceNamePlural}
               </h4>
 
@@ -1223,7 +1223,7 @@ export function HeraDnaUniversalResourceCalendar({
                   className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                  <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                     All {config.resourceNamePlural}
                   </p>
                   <p className="text-xs text-muted-foreground dark:text-muted-foreground">View all team members</p>
@@ -1266,7 +1266,7 @@ export function HeraDnaUniversalResourceCalendar({
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                      <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {resource.name}
                       </p>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">{resource.title}</p>
@@ -1427,7 +1427,7 @@ export function HeraDnaUniversalResourceCalendar({
               </div>
 
               <div className="flex flex-col">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                <h2 className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {selectedView === 'day'
                     ? selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long',
@@ -1568,7 +1568,7 @@ export function HeraDnaUniversalResourceCalendar({
                                     ? 'text-primary dark:text-blue-400'
                                     : isDateInRange(date)
                                       ? 'text-orange-700 dark:text-orange-300'
-                                      : 'text-gray-900 dark:text-foreground'
+                                      : 'text-gray-100 dark:text-foreground'
                                 )}
                               >
                                 {dayNumber}
@@ -1639,7 +1639,7 @@ export function HeraDnaUniversalResourceCalendar({
                                               {apt.icon}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                              <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
+                                              <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
                                                 {apt.title}
                                               </p>
                                               <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
@@ -1704,7 +1704,7 @@ export function HeraDnaUniversalResourceCalendar({
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
+                                <p className="text-sm font-semibold text-gray-100 dark:text-foreground">
                                   {resource.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -1882,7 +1882,7 @@ function AppointmentCard({
             {appointment.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
+            <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
               {appointment.title}
             </p>
             <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
@@ -1949,7 +1949,7 @@ function AppointmentCard({
         {appointment.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-900 dark:text-foreground truncate">
+        <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
           {appointment.title}
         </p>
         <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">{appointment.client}</p>
@@ -2089,7 +2089,7 @@ function LeaveRequestModal({
               <UserX className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Request Leave</h3>
+              <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">Request Leave</h3>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 {startDate && endDate
                   ? daysSelected === 1
@@ -2113,7 +2113,7 @@ function LeaveRequestModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Leave Type Selection */}
           <div>
-            <label className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3 block">
+            <label className="text-sm font-semibold text-gray-100 dark:text-foreground mb-3 block">
               Leave Type
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -2141,7 +2141,7 @@ function LeaveRequestModal({
                   >
                     {type.icon}
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-foreground">
+                  <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                     {type.name}
                   </span>
                 </label>
@@ -2153,7 +2153,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="resource"
-              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
+              className="text-sm font-semibold text-gray-100 dark:text-foreground mb-2 block"
             >
               Employee
             </label>
@@ -2185,7 +2185,7 @@ function LeaveRequestModal({
 
           {/* Duration Selection */}
           <div>
-            <label className="text-sm font-semibold text-gray-900 dark:text-foreground mb-3 block">
+            <label className="text-sm font-semibold text-gray-100 dark:text-foreground mb-3 block">
               Duration
             </label>
 
@@ -2252,7 +2252,7 @@ function LeaveRequestModal({
                       className="text-primary"
                     />
                     <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-foreground">
+                      <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {option.label}
                       </span>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">{option.hours}</p>
@@ -2268,7 +2268,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="reason"
-              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
+              className="text-sm font-semibold text-gray-100 dark:text-foreground mb-2 block"
             >
               Reason
             </label>
@@ -2303,7 +2303,7 @@ function LeaveRequestModal({
           <div>
             <label
               htmlFor="description"
-              className="text-sm font-semibold text-gray-900 dark:text-foreground mb-2 block"
+              className="text-sm font-semibold text-gray-100 dark:text-foreground mb-2 block"
             >
               Additional Notes (Optional)
             </label>
@@ -2312,7 +2312,7 @@ function LeaveRequestModal({
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Provide any additional details..."
-              className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border dark:border-border rounded-lg bg-background dark:bg-muted-foreground/10 text-gray-100 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               rows={3}
             />
           </div>

@@ -138,9 +138,9 @@ export function OperationsDashboard() {
       case 'approved':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'completed':
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 
@@ -166,7 +166,7 @@ export function OperationsDashboard() {
       case 'info':
         return 'bg-blue-50 border-blue-200 text-blue-800'
       default:
-        return 'bg-muted border-border text-gray-800'
+        return 'bg-muted border-border text-gray-200'
     }
   }
 
@@ -188,7 +188,7 @@ export function OperationsDashboard() {
       <div className="max-w-7xl mx-auto p-6">
         <Card className="p-8 text-center">
           <AlertTriangle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-100 mb-2">
             Unable to Load Operations Data
           </h3>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -210,7 +210,7 @@ export function OperationsDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Operations Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Operations Dashboard</h1>
           <p className="text-muted-foreground">
             Real-time restaurant operations powered by HERA's universal architecture
           </p>
@@ -311,7 +311,7 @@ export function OperationsDashboard() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'overview'
                 ? 'bg-blue-600 text-foreground'
-                : 'bg-muted text-gray-700 hover:bg-gray-200'
+                : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
           >
             <BarChart3 className="w-4 h-4 inline mr-2" />
@@ -322,7 +322,7 @@ export function OperationsDashboard() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'tables'
                 ? 'bg-blue-600 text-foreground'
-                : 'bg-muted text-gray-700 hover:bg-gray-200'
+                : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
           >
             <Home className="w-4 h-4 inline mr-2" />
@@ -333,7 +333,7 @@ export function OperationsDashboard() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'delivery'
                 ? 'bg-blue-600 text-foreground'
-                : 'bg-muted text-gray-700 hover:bg-gray-200'
+                : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
           >
             <Truck className="w-4 h-4 inline mr-2" />
@@ -344,7 +344,7 @@ export function OperationsDashboard() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedView === 'pickup'
                 ? 'bg-blue-600 text-foreground'
-                : 'bg-muted text-gray-700 hover:bg-gray-200'
+                : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
           >
             <ShoppingBag className="w-4 h-4 inline mr-2" />
@@ -358,7 +358,7 @@ export function OperationsDashboard() {
         <Card className="p-6">
           <div className="flex items-center mb-4">
             <Activity className="w-5 h-5 text-blue-500 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Operational Insights</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Operational Insights</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {insights.map((insight, index) => (
@@ -381,7 +381,7 @@ export function OperationsDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Order Status Distribution */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Status Distribution</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">Order Status Distribution</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                 <div className="flex items-center space-x-3">
@@ -407,16 +407,16 @@ export function OperationsDashboard() {
               <div className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border">
                 <div className="flex items-center space-x-3">
                   <Target className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-medium text-gray-900">Completed</span>
+                  <span className="font-medium text-gray-100">Completed</span>
                 </div>
-                <Badge className="bg-muted text-gray-800">{metrics.completed_orders}</Badge>
+                <Badge className="bg-muted text-gray-200">{metrics.completed_orders}</Badge>
               </div>
             </div>
           </Card>
 
           {/* Fulfillment Type Breakdown */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Fulfillment Type Breakdown</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">Fulfillment Type Breakdown</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
                 <div className="flex items-center space-x-3">
@@ -471,7 +471,7 @@ export function OperationsDashboard() {
       {selectedView === 'tables' && (
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Table Management</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Table Management</h3>
             <div className="flex items-center space-x-4 text-sm">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -496,7 +496,7 @@ export function OperationsDashboard() {
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-gray-900">Table {table.table_number}</h4>
+                  <h4 className="font-semibold text-gray-100">Table {table.table_number}</h4>
                   <Badge
                     className={
                       table.status === 'occupied'
@@ -544,7 +544,7 @@ export function OperationsDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Driver Status */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Driver Status</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">Driver Status</h3>
             <div className="space-y-4">
               {drivers.map(driver => (
                 <div
@@ -556,7 +556,7 @@ export function OperationsDashboard() {
                       className={`w-3 h-3 rounded-full ${driver.is_available ? 'bg-green-500' : 'bg-red-500'}`}
                     ></div>
                     <div>
-                      <p className="font-medium text-gray-900">{driver.name}</p>
+                      <p className="font-medium text-gray-100">{driver.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {driver.vehicle_type} • {driver.phone}
                       </p>
@@ -584,7 +584,7 @@ export function OperationsDashboard() {
 
           {/* Active Delivery Orders */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Delivery Orders</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">Active Delivery Orders</h3>
             <div className="space-y-3">
               {orders.by_type.delivery
                 .filter((order: any) =>
@@ -594,10 +594,10 @@ export function OperationsDashboard() {
                   <div key={order.id} className="p-4 border border-border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-3">
-                        <span className="font-medium text-gray-900">{order.order_number}</span>
+                        <span className="font-medium text-gray-100">{order.order_number}</span>
                         <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
                       </div>
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-semibold text-gray-100">
                         {formatCurrency(order.total_amount)}
                       </span>
                     </div>
@@ -638,16 +638,16 @@ export function OperationsDashboard() {
 
       {selectedView === 'pickup' && (
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Pick-Up Orders</h3>
+          <h3 className="text-lg font-semibold text-gray-100 mb-4">Pick-Up Orders</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {orders.by_type.pickup.map((order: any) => (
               <div key={order.id} className="p-4 border border-border rounded-lg">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
-                    <span className="font-medium text-gray-900">{order.order_number}</span>
+                    <span className="font-medium text-gray-100">{order.order_number}</span>
                     <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
                   </div>
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-gray-100">
                     {formatCurrency(order.total_amount)}
                   </span>
                 </div>

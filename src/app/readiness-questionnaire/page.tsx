@@ -302,7 +302,7 @@ export default function ReadinessQuestionnairePage() {
               <BarChart3 className="w-10 h-10 text-foreground" />
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-foreground mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-100 dark:text-foreground mb-4">
               ERP Readiness Assessment
             </h1>
 
@@ -346,7 +346,7 @@ export default function ReadinessQuestionnairePage() {
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Clock className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">15 mins</div>
+                    <div className="text-2xl font-bold text-gray-100 dark:text-foreground">15 mins</div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                       Assessment Time
                     </div>
@@ -356,7 +356,7 @@ export default function ReadinessQuestionnairePage() {
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Target className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                    <div className="text-2xl font-bold text-gray-100 dark:text-foreground">
                       12 Sections
                     </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -368,7 +368,7 @@ export default function ReadinessQuestionnairePage() {
                     <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Lightbulb className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                    <div className="text-2xl font-bold text-gray-100 dark:text-foreground">
                       AI Insights
                     </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -396,7 +396,7 @@ export default function ReadinessQuestionnairePage() {
             transition={{ delay: 0.4 }}
             className="mb-12"
           >
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-6 text-center">
+            <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-6 text-center">
               What We'll Assess
             </h2>
 
@@ -425,7 +425,7 @@ export default function ReadinessQuestionnairePage() {
                   >
                     <section.icon className="w-5 h-5 text-foreground" />
                   </div>
-                  <span className="font-semibold text-gray-900 dark:text-foreground">
+                  <span className="font-semibold text-gray-100 dark:text-foreground">
                     {section.title}
                   </span>
                 </motion.div>

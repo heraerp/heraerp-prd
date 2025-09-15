@@ -21,8 +21,8 @@ export function HeraLayout({
 }: HeraLayoutProps) {
   const variantClasses = {
     default: 'container mx-auto',
-    centered: 'container mx-auto flex items-center justify-center min-h-screen',
-    sidebar: 'flex min-h-screen',
+    centered: 'container mx-auto flex items-center justify-center min-h-screen bg-gray-900',
+    sidebar: 'flex min-h-screen bg-gray-900',
     'full-width': 'w-full'
   }
 
@@ -199,7 +199,7 @@ export function HeraDashboardLayout({
   className?: string
 }) {
   return (
-    <HeraLayout variant="full-width" padding="lg" className={cn('min-h-screen', className)}>
+    <HeraLayout variant="full-width" padding="lg" className={cn('min-h-screen bg-gray-900', className)}>
       <div className="dashboard-grid">{children}</div>
     </HeraLayout>
   )

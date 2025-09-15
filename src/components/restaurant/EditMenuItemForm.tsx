@@ -121,7 +121,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
         <div className="bg-background p-6 overflow-y-auto max-h-[90vh]">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 bg-background">
-            <h2 className="text-2xl font-bold text-gray-900">Pencil Menu Item</h2>
+            <h2 className="text-2xl font-bold text-gray-100">Pencil Menu Item</h2>
             <button
               type="button"
               onClick={onClose}
@@ -134,7 +134,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
           <form onSubmit={handleSubmit} className="space-y-6 bg-background">
             {/* Basic Information */}
             <div className="space-y-4 bg-muted p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
+              <h3 className="text-lg font-semibold text-gray-200">Basic Information</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -152,7 +152,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     onChange={handleInputChange}
                     placeholder="e.g., Margherita Pizza"
                     required
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
 
@@ -170,7 +170,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     value={formData.entity_code}
                     onChange={handleInputChange}
                     placeholder="e.g., PIZZA_001"
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
               </div>
@@ -188,7 +188,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   placeholder="Describe your dish..."
                 />
               </div>
@@ -196,7 +196,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
             {/* Pricing & Preparation */}
             <div className="space-y-4 bg-muted p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Pricing & Preparation</h3>
+              <h3 className="text-lg font-semibold text-gray-200">Pricing & Preparation</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -212,7 +212,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                       step="0.01"
                       value={formData.price}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       placeholder="0.00"
                       required
                     />
@@ -234,7 +234,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                       type="number"
                       value={formData.prep_time}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                      className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       placeholder="15"
                     />
                   </div>
@@ -244,7 +244,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
             {/* Category */}
             <div className="space-y-4 bg-muted p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Category *</h3>
+              <h3 className="text-lg font-semibold text-gray-200">Category *</h3>
 
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
@@ -280,7 +280,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                         setCustomCategory('')
                       }
                     }}
-                    className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                   <button
                     type="button"
@@ -300,7 +300,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
             {/* Dietary Tags */}
             <div className="space-y-4 bg-muted p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Dietary Information</h3>
+              <h3 className="text-lg font-semibold text-gray-200">Dietary Information</h3>
 
               <div className="flex flex-wrap gap-2">
                 {availableDietaryTags.map(tag => (
@@ -319,7 +319,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
             {/* Ingredients */}
             <div className="space-y-4 bg-muted p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Ingredients</h3>
+              <h3 className="text-lg font-semibold text-gray-200">Ingredients</h3>
 
               <textarea
                 id="ingredients"
@@ -327,7 +327,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 value={formData.ingredients}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                 placeholder="List main ingredients..."
               />
             </div>

@@ -36,7 +36,7 @@ const sizeClasses = {
 const variantClasses = {
   default: 'bg-background border border-border shadow-2xl',
   glassmorphism: 'bg-background/95 backdrop-blur-xl border border-border/20 shadow-2xl',
-  enterprise: 'bg-gradient-to-br from-slate-50 to-white border border-border shadow-2xl',
+  enterprise: 'bg-gradient-to-br from-slate-50 to-gray-900 border border-border shadow-2xl',
   premium:
     'bg-gradient-to-br from-blue-50 via-white to-purple-50 border border-blue-200/50 shadow-2xl'
 }
@@ -126,7 +126,7 @@ export function ModernModal({
               </div>
 
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{title}</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-100 truncate">{title}</h2>
                 {subtitle && (
                   <p className="text-sm text-muted-foreground mt-0.5 sm:mt-1 truncate">{subtitle}</p>
                 )}

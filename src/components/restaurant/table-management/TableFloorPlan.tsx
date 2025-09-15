@@ -566,7 +566,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
                     ? 'bg-red-100 text-red-800'
                     : selectedTable.status === 'reserved'
                       ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-muted text-gray-800'
+                      : 'bg-muted text-gray-200'
               }
             >
               {selectedTable.status}
@@ -639,7 +639,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
               <span>Cleaning</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-gray-500 rounded"></div>
+              <div className="w-4 h-4 bg-gray-9000 rounded"></div>
               <span>Maintenance</span>
             </div>
           </div>

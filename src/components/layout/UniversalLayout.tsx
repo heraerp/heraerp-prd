@@ -26,7 +26,7 @@ export function UniversalLayout({
   quickActions,
   brandGradient = 'from-pink-400 to-purple-600',
   accentGradient = 'from-pink-50/90 to-purple-50/90',
-  backgroundGradient = 'from-pink-50 via-purple-50 to-white',
+  backgroundGradient = 'from-pink-50 via-purple-50 to-gray-900',
   baseUrl
 }: UniversalLayoutProps) {
   return (

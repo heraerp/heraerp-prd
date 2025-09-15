@@ -940,7 +940,7 @@ export default function SalonPayrollSystem() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-6 py-4">

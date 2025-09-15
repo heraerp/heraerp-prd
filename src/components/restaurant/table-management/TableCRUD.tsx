@@ -278,9 +278,9 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
       occupied: 'bg-red-100 text-red-800',
       reserved: 'bg-yellow-100 text-yellow-800',
       cleaning: 'bg-blue-100 text-blue-800',
-      maintenance: 'bg-muted text-gray-800'
+      maintenance: 'bg-muted text-gray-200'
     }
-    return colors[status as keyof typeof colors] || 'bg-muted text-gray-800'
+    return colors[status as keyof typeof colors] || 'bg-muted text-gray-200'
   }
 
   const exportTables = () => {
@@ -301,7 +301,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
       <Card className="p-6">
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Table Management</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Table Management</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Manage your restaurant tables and their configurations
             </p>
@@ -687,7 +687,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                             ? 'bg-purple-100 text-purple-800'
                             : table.pricing_tier === 'premium'
                               ? 'bg-blue-100 text-blue-800'
-                              : 'bg-muted text-gray-800'
+                              : 'bg-muted text-gray-200'
                         }
                       >
                         {table.pricing_tier}

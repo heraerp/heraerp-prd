@@ -70,7 +70,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-gray-900 relative overflow-hidden"
       style={{
         background: `
           linear-gradient(135deg, 
@@ -148,7 +148,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
       <div className="relative z-10 p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold !text-gray-900 dark:!text-foreground flex items-center gap-3">
+          <h1 className="text-4xl font-bold !text-gray-100 dark:!text-foreground flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
               style={{
@@ -301,7 +301,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Upcoming Leave</p>
-                    <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+                    <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                       {leaveStats.upcomingLeave}
                     </p>
                     <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Next 30 days</p>
@@ -333,7 +333,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Team on Leave</p>
-                    <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+                    <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                       {leaveStats.teamOnLeave}
                     </p>
                     <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Today</p>

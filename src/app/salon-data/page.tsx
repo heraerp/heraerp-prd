@@ -314,7 +314,7 @@ export default function SalonModernDashboard() {
       subtitle: 'appointments',
       icon: CalendarCheck,
       gradient: 'from-purple-500 to-purple-700',
-      bgGradient: 'from-white to-purple-50/50',
+      bgGradient: 'from-gray-900 to-purple-50/50',
       darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
@@ -323,7 +323,7 @@ export default function SalonModernDashboard() {
       subtitle: 'total clients',
       icon: UserCheck,
       gradient: 'from-blue-500 to-indigo-600',
-      bgGradient: 'from-white to-blue-50/50',
+      bgGradient: 'from-gray-900 to-blue-50/50',
       darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
@@ -332,7 +332,7 @@ export default function SalonModernDashboard() {
       subtitle: 'revenue',
       icon: DollarSign,
       gradient: 'from-emerald-500 to-green-600',
-      bgGradient: 'from-white to-emerald-50/50',
+      bgGradient: 'from-gray-900 to-emerald-50/50',
       darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
@@ -341,7 +341,7 @@ export default function SalonModernDashboard() {
       subtitle: 'products',
       icon: Package,
       gradient: 'from-amber-500 to-orange-600',
-      bgGradient: 'from-white to-amber-50/50',
+      bgGradient: 'from-gray-900 to-amber-50/50',
       darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     }
   ]
@@ -593,7 +593,7 @@ export default function SalonModernDashboard() {
                   <Scissors className="w-5 h-5 text-foreground drop-shadow-md" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-foreground">Hair Talkz</h1>
+                  <h1 className="text-xl font-bold !text-gray-100 dark:!text-foreground">Hair Talkz</h1>
                   <p className="text-xs !text-muted-foreground dark:!text-gray-300 font-medium">
                     {isHeadOffice
                       ? 'Head Office - All Branches'
@@ -722,7 +722,7 @@ export default function SalonModernDashboard() {
                     >
                       <stat.icon className="w-6 h-6 text-foreground drop-shadow-md" />
                     </div>
-                    <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground relative z-10">
+                    <p className="text-3xl font-bold !text-gray-100 dark:!text-foreground relative z-10">
                       {stat.value}
                     </p>
                     <p className="text-sm !text-gray-700 dark:!text-gray-300 mt-1 font-medium">
@@ -742,7 +742,7 @@ export default function SalonModernDashboard() {
                       <Settings className="w-7 h-7 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground">
+                      <h3 className="text-lg font-bold !text-gray-100 dark:!text-foreground">
                         Business Configuration Rules
                       </h3>
                       <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -795,7 +795,7 @@ export default function SalonModernDashboard() {
                         <Calendar className="w-7 h-7 text-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground mb-1">
+                        <h3 className="text-lg font-bold !text-gray-100 dark:!text-foreground mb-1">
                           Book Appointment
                         </h3>
                         <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -830,7 +830,7 @@ export default function SalonModernDashboard() {
                         <Settings className="w-7 h-7 text-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold !text-gray-900 dark:!text-foreground mb-1">
+                        <h3 className="text-lg font-bold !text-gray-100 dark:!text-foreground mb-1">
                           Salon Settings
                         </h3>
                         <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -854,7 +854,7 @@ export default function SalonModernDashboard() {
 
             {/* Services Grid */}
             <div>
-              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-6 text-center">
+              <h2 className="text-2xl font-bold !text-gray-100 dark:!text-foreground mb-6 text-center">
                 Popular Services
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -892,7 +892,7 @@ export default function SalonModernDashboard() {
                           </Badge>
                         )}
                       </div>
-                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-2">
+                      <h3 className="text-lg font-semibold !text-gray-100 dark:!text-foreground mb-2">
                         {service.name}
                       </h3>
                       <div className="flex items-center gap-2 text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -903,7 +903,7 @@ export default function SalonModernDashboard() {
                         <span className="text-sm !text-muted-foreground dark:!text-muted-foreground">
                           {service.category}
                         </span>
-                        <span className="text-lg font-bold !text-gray-900 dark:!text-foreground">
+                        <span className="text-lg font-bold !text-gray-100 dark:!text-foreground">
                           {service.price}
                         </span>
                       </div>
@@ -915,7 +915,7 @@ export default function SalonModernDashboard() {
 
             {/* Team Section */}
             <div>
-              <h2 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-6 text-center">
+              <h2 className="text-2xl font-bold !text-gray-100 dark:!text-foreground mb-6 text-center">
                 Our Expert Team
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -944,7 +944,7 @@ export default function SalonModernDashboard() {
                       >
                         {member.avatar}
                       </div>
-                      <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-1">
+                      <h3 className="text-lg font-semibold !text-gray-100 dark:!text-foreground mb-1">
                         {member.name}
                       </h3>
                       <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mb-3">
@@ -975,7 +975,7 @@ export default function SalonModernDashboard() {
                           'text-xs',
                           member.available
                             ? 'bg-green-500/20 text-green-300 border-green-500/50'
-                            : 'bg-gray-500/20 text-gray-300 border-gray-500/50'
+                            : 'bg-gray-9000/20 text-gray-300 border-gray-500/50'
                         )}
                       >
                         {member.available ? 'Available' : 'Busy'}
@@ -1020,7 +1020,7 @@ export default function SalonModernDashboard() {
                 }}
               >
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-foreground">
+                  <CardTitle className="flex items-center gap-2 !text-gray-100 dark:!text-foreground">
                     <CalendarCheck className="w-5 h-5 text-purple-400" />
                     Recent Appointments
                   </CardTitle>
@@ -1041,7 +1041,7 @@ export default function SalonModernDashboard() {
                               <Users className="w-5 h-5 text-foreground" />
                             </div>
                             <div>
-                              <p className="font-medium !text-gray-900 dark:!text-foreground">
+                              <p className="font-medium !text-gray-100 dark:!text-foreground">
                                 {appointment.customer_name || 'Guest Customer'}
                               </p>
                               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -1051,7 +1051,7 @@ export default function SalonModernDashboard() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium !text-gray-900 dark:!text-foreground">
+                            <p className="text-sm font-medium !text-gray-100 dark:!text-foreground">
                               {appointment.transaction_date
                                 ? new Date(appointment.transaction_date).toLocaleDateString()
                                 : 'N/A'}
@@ -1087,7 +1087,7 @@ export default function SalonModernDashboard() {
                 }}
               >
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-foreground">
+                  <CardTitle className="flex items-center gap-2 !text-gray-100 dark:!text-foreground">
                     <TrendingUp className="w-5 h-5 text-green-400" />
                     Top Services
                   </CardTitle>
@@ -1113,13 +1113,13 @@ export default function SalonModernDashboard() {
                                     ? 'from-purple-500 to-pink-500'
                                     : index === 2
                                       ? 'from-blue-500 to-cyan-500'
-                                      : 'from-gray-500 to-gray-600'
+                                      : 'from-gray-9000 to-gray-600'
                               )}
                             >
                               <Scissors className="w-5 h-5 text-foreground" />
                             </div>
                             <div>
-                              <p className="font-medium !text-gray-900 dark:!text-foreground">
+                              <p className="font-medium !text-gray-100 dark:!text-foreground">
                                 {service.entity_name || service.service_name || 'Service'}
                               </p>
                               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
@@ -1128,7 +1128,7 @@ export default function SalonModernDashboard() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium !text-gray-900 dark:!text-foreground">
+                            <p className="text-sm font-medium !text-gray-100 dark:!text-foreground">
                               {(service.metadata as any)?.booking_count || 0} bookings
                             </p>
                             <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -1165,7 +1165,7 @@ export default function SalonModernDashboard() {
           <div className="px-6 py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-4">
+                <h3 className="text-lg font-semibold !text-gray-100 dark:!text-foreground mb-4">
                   Hair Talkz {isHeadOffice ? '- All Branches' : ''}
                 </h3>
                 <p className="!text-muted-foreground dark:!text-muted-foreground text-sm">
@@ -1174,7 +1174,7 @@ export default function SalonModernDashboard() {
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold !text-gray-900 dark:!text-foreground mb-3">Contact</h4>
+                <h4 className="font-semibold !text-gray-100 dark:!text-foreground mb-3">Contact</h4>
                 <div className="space-y-2 text-sm !text-muted-foreground dark:!text-muted-foreground">
                   <p className="flex items-center gap-2">
                     <Phone className="w-4 h-4" />
@@ -1191,7 +1191,7 @@ export default function SalonModernDashboard() {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold !text-gray-900 dark:!text-foreground mb-3">Hours</h4>
+                <h4 className="font-semibold !text-gray-100 dark:!text-foreground mb-3">Hours</h4>
                 <div className="space-y-1 text-sm !text-muted-foreground dark:!text-muted-foreground">
                   <p>Monday - Friday: 9:00 AM - 9:00 PM</p>
                   <p>Saturday: 9:00 AM - 10:00 PM</p>

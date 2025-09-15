@@ -55,7 +55,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
   // Sample stylists
   const stylists = [
-    { id: 'all', name: 'All Stylists', avatar: 'A', color: 'bg-gray-500' },
+    { id: 'all', name: 'All Stylists', avatar: 'A', color: 'bg-gray-9000' },
     { id: 'rocky', name: 'Rocky', avatar: 'R', color: 'bg-purple-500', available: true },
     { id: 'vinay', name: 'Vinay', avatar: 'V', color: 'bg-blue-500', available: true },
     { id: 'maya', name: 'Maya', avatar: 'M', color: 'bg-pink-500', available: false },
@@ -131,7 +131,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                 <ChevronLeft className="w-5 h-5" />
               </Button>
               <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                <h2 className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h2>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">

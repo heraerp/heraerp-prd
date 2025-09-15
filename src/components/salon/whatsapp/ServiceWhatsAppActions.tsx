@@ -152,7 +152,7 @@ export function ServiceWhatsAppActions({
             <div className="flex items-start gap-3">
               <Rocket className="w-5 h-5 text-purple-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground flex items-center gap-2">
+                <h4 className="text-sm font-semibold !text-gray-100 dark:!text-foreground flex items-center gap-2">
                   New Service Launch
                   <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-800/30 dark:text-purple-300">
                     NEW
@@ -211,7 +211,7 @@ export function ServiceWhatsAppActions({
             <div className="space-y-2">
               <Label className="text-sm font-medium">Service Details</Label>
               <div className="bg-muted dark:bg-muted p-3 rounded-lg space-y-1">
-                <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                <p className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                   {service.name}
                 </p>
                 <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">

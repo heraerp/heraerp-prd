@@ -227,11 +227,11 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       pending: 'bg-yellow-100 text-yellow-800',
       confirmed: 'bg-blue-100 text-blue-800',
       seated: 'bg-green-100 text-green-800',
-      completed: 'bg-muted text-gray-800',
+      completed: 'bg-muted text-gray-200',
       cancelled: 'bg-red-100 text-red-800',
       no_show: 'bg-orange-100 text-orange-800'
     }
-    return styles[status as keyof typeof styles] || 'bg-muted text-gray-800'
+    return styles[status as keyof typeof styles] || 'bg-muted text-gray-200'
   }
 
   const getAvailableTables = (date: string, time: string, duration: number) => {
@@ -326,7 +326,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       <Card className="p-6">
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Reservations</h3>
+            <h3 className="text-lg font-semibold text-gray-100">Reservations</h3>
             <p className="text-sm text-muted-foreground mt-1">Manage table reservations and bookings</p>
           </div>
 

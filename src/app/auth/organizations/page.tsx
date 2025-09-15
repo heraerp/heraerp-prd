@@ -128,7 +128,7 @@ export default function OrganizationSelectorPage() {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-12 max-w-6xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
+          <h2 className="text-3xl font-bold text-gray-100 dark:text-foreground mb-4">
             Welcome back{user?.name ? `, ${user.name}` : ''}!
           </h2>
           <p className="text-lg text-muted-foreground dark:text-muted-foreground">
@@ -169,7 +169,7 @@ export default function OrganizationSelectorPage() {
                       {org.role}
                     </Badge>
                   </div>
-                  <CardTitle className="mt-4 text-gray-900 dark:text-foreground">{org.name}</CardTitle>
+                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">{org.name}</CardTitle>
                   <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground">
                     <Globe className="h-3 w-3" />
                     {org.subdomain}.heraerp.com
@@ -179,7 +179,7 @@ export default function OrganizationSelectorPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground dark:text-muted-foreground">Type</span>
-                      <span className="font-medium text-gray-900 dark:text-foreground">
+                      <span className="font-medium text-gray-100 dark:text-foreground">
                         {typeDescriptions[org.type as keyof typeof typeDescriptions] ||
                           'General Business'}
                       </span>
@@ -189,7 +189,7 @@ export default function OrganizationSelectorPage() {
                         <Calendar className="h-3 w-3" />
                         Created
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-foreground">
+                      <span className="font-medium text-gray-100 dark:text-foreground">
                         {new Date(org.created_at).toLocaleDateString()}
                       </span>
                     </div>
@@ -226,7 +226,7 @@ export default function OrganizationSelectorPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Plus className="h-8 w-8 text-primary dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-foreground">
+              <h3 className="text-lg font-semibold mb-2 text-gray-100 dark:text-foreground">
                 Create New Organization
               </h3>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-4">
@@ -249,7 +249,7 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Shield className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Complete Isolation</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Complete Isolation</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Each organization has its own secure data space
             </p>
@@ -258,7 +258,7 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Globe className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Custom Subdomain</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Custom Subdomain</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Access each organization via its unique URL
             </p>
@@ -267,7 +267,7 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Users className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-900 dark:text-foreground">Team Collaboration</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Team Collaboration</h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Invite team members to specific organizations
             </p>

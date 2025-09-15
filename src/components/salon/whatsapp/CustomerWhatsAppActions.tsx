@@ -156,7 +156,7 @@ export function CustomerWhatsAppActions({
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <MessageCircle className="w-5 h-5 text-green-500" />
-        <span className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+        <span className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
           WhatsApp Actions
         </span>
       </div>
@@ -183,7 +183,7 @@ export function CustomerWhatsAppActions({
             <div className="flex items-start gap-3">
               <Gift className="w-5 h-5 text-pink-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground mb-1">
+                <h4 className="text-sm font-semibold !text-gray-100 dark:!text-foreground mb-1">
                   Birthday Special
                 </h4>
                 <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -247,7 +247,7 @@ export function CustomerWhatsAppActions({
             <div className="flex items-start gap-3">
               <Users className="w-5 h-5 text-orange-500 mt-0.5" />
               <div>
-                <h4 className="text-sm font-semibold !text-gray-900 dark:!text-foreground mb-1">
+                <h4 className="text-sm font-semibold !text-gray-100 dark:!text-foreground mb-1">
                   Win-back Campaign
                 </h4>
                 <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">

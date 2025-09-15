@@ -457,7 +457,7 @@ export default function ServicesManagement() {
 
   // ----------------------------- Render ------------------------------------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="sticky top-0 z-20 px-6 py-4 mb-0 backdrop-blur-xl bg-background/80 dark:bg-background/80 border-b border-border dark:border-gray-800 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-[1600px] mx-auto">
@@ -504,7 +504,7 @@ export default function ServicesManagement() {
                 'px-6 py-2 rounded-md transition-all duration-200',
                 activeTab === 'services'
                   ? 'bg-background dark:bg-muted-foreground/10 shadow-sm'
-                  : 'hover:bg-gray-200 dark:hover:bg-muted-foreground/10'
+                  : 'hover:bg-gray-700 dark:hover:bg-muted-foreground/10'
               )}
             >
               <Scissors className="w-4 h-4 mr-2" />
@@ -517,7 +517,7 @@ export default function ServicesManagement() {
                 'px-6 py-2 rounded-md transition-all duration-200',
                 activeTab === 'categories'
                   ? 'bg-background dark:bg-muted-foreground/10 shadow-sm'
-                  : 'hover:bg-gray-200 dark:hover:bg-muted-foreground/10'
+                  : 'hover:bg-gray-700 dark:hover:bg-muted-foreground/10'
               )}
             >
               <Grid3x3 className="w-4 h-4 mr-2" />
@@ -688,7 +688,7 @@ export default function ServicesManagement() {
                                 'text-xs',
                                 service.active
                                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                  : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
+                                  : 'bg-muted text-gray-200 dark:bg-background/30 dark:text-gray-200'
                               )}
                             >
                               {service.active ? 'Active' : 'Inactive'}
@@ -697,7 +697,7 @@ export default function ServicesManagement() {
 
                           {/* Service Details */}
                           <div className="mt-8">
-                            <h3 className="font-semibold text-gray-900 dark:text-foreground text-lg mb-2">
+                            <h3 className="font-semibold text-gray-100 dark:text-foreground text-lg mb-2">
                               {service.name}
                             </h3>
                             <p className="text-muted-foreground dark:text-muted-foreground text-sm mb-4 line-clamp-2">
@@ -730,7 +730,7 @@ export default function ServicesManagement() {
                               </div>
                               <div className="flex items-center gap-1">
                                 <DollarSign className="w-4 h-4" />
-                                <span className="font-semibold text-gray-900 dark:text-foreground">
+                                <span className="font-semibold text-gray-100 dark:text-foreground">
                                   AED {service.price}
                                 </span>
                               </div>
@@ -810,7 +810,7 @@ export default function ServicesManagement() {
                       <table className="w-full">
                         <thead>
                           <tr className="border-b border-border dark:border-border">
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               <Checkbox
                                 checked={
                                   selectedServices.length === filteredServices.length &&
@@ -825,22 +825,22 @@ export default function ServicesManagement() {
                                 }}
                               />
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Service
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Category
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Duration
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Price
                             </th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-left py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Status
                             </th>
-                            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-foreground">
+                            <th className="text-right py-3 px-4 font-medium text-gray-100 dark:text-foreground">
                               Actions
                             </th>
                           </tr>
@@ -867,7 +867,7 @@ export default function ServicesManagement() {
                               </td>
                               <td className="py-4 px-4">
                                 <div>
-                                  <div className="font-medium text-gray-900 dark:text-foreground">
+                                  <div className="font-medium text-gray-100 dark:text-foreground">
                                     {service.name}
                                   </div>
                                   <div className="text-sm text-muted-foreground dark:text-muted-foreground truncate max-w-xs">
@@ -893,7 +893,7 @@ export default function ServicesManagement() {
                               <td className="py-4 px-4 text-sm text-muted-foreground dark:text-muted-foreground">
                                 {service.duration}m
                               </td>
-                              <td className="py-4 px-4 text-sm font-medium text-gray-900 dark:text-foreground">
+                              <td className="py-4 px-4 text-sm font-medium text-gray-100 dark:text-foreground">
                                 AED {service.price}
                               </td>
                               <td className="py-4 px-4">
@@ -903,7 +903,7 @@ export default function ServicesManagement() {
                                       'text-xs',
                                       service.active
                                         ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                        : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
+                                        : 'bg-muted text-gray-200 dark:bg-background/30 dark:text-gray-200'
                                     )}
                                   >
                                     {service.active ? 'Active' : 'Inactive'}
@@ -947,7 +947,7 @@ export default function ServicesManagement() {
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
                         <Scissors className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
+                      <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground mb-2">
                         No services found
                       </h3>
                       <p className="text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto mb-6">
@@ -1031,7 +1031,7 @@ export default function ServicesManagement() {
                               )}
                             </div>
                             <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-foreground">
+                              <h3 className="font-semibold text-gray-100 dark:text-foreground">
                                 {category.name}
                               </h3>
                               <Badge
@@ -1039,7 +1039,7 @@ export default function ServicesManagement() {
                                   'text-xs mt-1',
                                   category.active
                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-                                    : 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
+                                    : 'bg-muted text-gray-200 dark:bg-background/30 dark:text-gray-200'
                                 )}
                               >
                                 {category.active ? 'Active' : 'Inactive'}
@@ -1093,7 +1093,7 @@ export default function ServicesManagement() {
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
                         <Grid3x3 className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
+                      <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground mb-2">
                         No categories found
                       </h3>
                       <p className="text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto mb-6">
@@ -1453,7 +1453,7 @@ export default function ServicesManagement() {
                     )}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900 dark:text-foreground">
+                    <div className="font-semibold text-gray-100 dark:text-foreground">
                       {categoryForm.name || 'Category Name'}
                     </div>
                     <div className="text-sm text-muted-foreground dark:text-muted-foreground">

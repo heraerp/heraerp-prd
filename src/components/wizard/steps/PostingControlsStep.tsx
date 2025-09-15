@@ -257,7 +257,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                             className={`text-xs ${
                               period[module.key] === 'OPEN'
                                 ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                : 'bg-muted text-gray-800 hover:bg-gray-200'
+                                : 'bg-muted text-gray-200 hover:bg-gray-700'
                             }`}
                           >
                             {period[module.key] === 'OPEN' ? (

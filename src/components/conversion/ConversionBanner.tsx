@@ -78,7 +78,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
               <Rocket className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+              <h3 className="text-2xl font-bold text-gray-100 dark:text-foreground">
                 Ready to Go Live? 🚀
               </h3>
               <p className="text-muted-foreground dark:text-gray-300 mt-1">
@@ -98,7 +98,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
+            <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.sessionDuration}
             </div>
             <div className="text-xs text-muted-foreground dark:text-muted-foreground">Time Spent</div>
@@ -106,7 +106,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
+            <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.featuresUsed.length}
             </div>
             <div className="text-xs text-muted-foreground dark:text-muted-foreground">Features Explored</div>
@@ -114,7 +114,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <Database className="w-5 h-5 text-purple-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
+            <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.dataCreated}
             </div>
             <div className="text-xs text-muted-foreground dark:text-muted-foreground">Records Created</div>
@@ -122,7 +122,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
             <TrendingUp className="w-5 h-5 text-orange-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-foreground">
+            <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.returnVisits}
             </div>
             <div className="text-xs text-muted-foreground dark:text-muted-foreground">Return Visits</div>
@@ -131,7 +131,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
         {/* Value Proposition */}
         <div className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/30 dark:to-blue-900/30 rounded-lg p-4 mb-6">
-          <h4 className="font-semibold text-gray-900 dark:text-foreground mb-2 flex items-center gap-2">
+          <h4 className="font-semibold text-gray-100 dark:text-foreground mb-2 flex items-center gap-2">
             <Users className="w-4 h-4" />
             What You Get with Production Conversion:
           </h4>

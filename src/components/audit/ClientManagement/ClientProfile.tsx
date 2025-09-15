@@ -87,7 +87,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
             <Building2 className="w-6 h-6 text-foreground" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-100">
               {mode === 'create' ? 'New Client Engagement' : client.entity_name || 'Client Profile'}
             </h2>
             <p className="text-muted-foreground">
@@ -466,7 +466,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
 
               {/* Compliance Checklist */}
               <div className="space-y-3 pt-4">
-                <h4 className="font-medium text-gray-900">Compliance Checklist</h4>
+                <h4 className="font-medium text-gray-100">Compliance Checklist</h4>
 
                 <div className="space-y-2">
                   <label className="flex items-center justify-between p-3 bg-muted rounded-lg cursor-pointer">

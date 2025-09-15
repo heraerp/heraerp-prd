@@ -204,7 +204,7 @@ export default function StartPage() {
             <Button
               asChild
               size="lg"
-              className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-12 py-6 text-xl"
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-12 py-6 text-xl"
             >
               <Link href="/franchise/apply" className="flex items-center">
                 I Can't Afford NOT To Do This
@@ -355,7 +355,7 @@ export default function StartPage() {
               </h3>
               <div className="grid md:grid-cols-3 gap-6 text-left">
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1">
                     1
                   </div>
                   <div>
@@ -364,7 +364,7 @@ export default function StartPage() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1">
                     2
                   </div>
                   <div>
@@ -373,7 +373,7 @@ export default function StartPage() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1">
                     3
                   </div>
                   <div>
@@ -388,7 +388,7 @@ export default function StartPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-16 py-8 text-2xl shadow-2xl transform hover:scale-105 transition-all duration-200"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-16 py-8 text-2xl shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="/franchise/apply" className="flex items-center">
                   YES! I Want My Territory

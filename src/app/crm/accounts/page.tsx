@@ -183,7 +183,7 @@ export default function AccountsPage() {
       case 'prospect':
         return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 
@@ -196,7 +196,7 @@ export default function AccountsPage() {
       case 'Startup':
         return 'from-[#be4f0c] to-[#FF5A09]'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 

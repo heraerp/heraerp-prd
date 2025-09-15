@@ -159,11 +159,11 @@ export function OrderManager() {
       case 'approved':
         return 'bg-green-100 text-green-800 border-green-300'
       case 'completed':
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-300'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 
@@ -271,7 +271,7 @@ export function OrderManager() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Order Management</h1>
+              <h1 className="text-2xl font-bold text-gray-100 mb-2">Order Management</h1>
               <p className="text-muted-foreground">
                 Real-time order tracking using HERA's universal transaction system
               </p>
@@ -308,7 +308,7 @@ export function OrderManager() {
                 onClick={() => setSelectedStatus(tab.key)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedStatus === tab.key
-                    ? 'bg-background text-gray-900 shadow-sm'
+                    ? 'bg-background text-gray-100 shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -327,7 +327,7 @@ export function OrderManager() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
                     {getOrderTypeIcon(order.transaction_type)}
-                    <span className="font-semibold text-gray-900">{order.reference_number}</span>
+                    <span className="font-semibold text-gray-100">{order.reference_number}</span>
                   </div>
                   <Badge className={`${getStatusColor(order.status)} flex items-center gap-1`}>
                     {getStatusIcon(order.status)}
@@ -364,7 +364,7 @@ export function OrderManager() {
                   {order.items.map(item => (
                     <div key={item.id} className="flex justify-between items-start text-sm">
                       <div className="flex-1">
-                        <span className="text-gray-900">
+                        <span className="text-gray-100">
                           {item.quantity || 0}x {item.menu_item_name || 'Unknown Item'}
                         </span>
                         {item.modifications && item.modifications.length > 0 && (
@@ -396,7 +396,7 @@ export function OrderManager() {
 
                 {/* Total and Payment */}
                 <div className="flex justify-between items-center mb-4 pt-2 border-t border-gray-100">
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-lg font-bold text-gray-100">
                     Total: ${(order.total_amount || 0).toFixed(2)}
                   </span>
                   <Badge variant={order.payment_status === 'paid' ? 'default' : 'secondary'}>
@@ -455,7 +455,7 @@ export function OrderManager() {
         {sortedOrders.length === 0 && (
           <Card className="p-12 text-center">
             <Clock className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+            <h3 className="text-lg font-medium text-gray-100 mb-2">No orders found</h3>
             <p className="text-muted-foreground">
               {selectedStatus === 'all'
                 ? 'No orders yet today. Orders will appear here as they come in.'

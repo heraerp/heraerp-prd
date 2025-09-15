@@ -97,10 +97,10 @@ export function TransactionList({
               <div key={i} className="animate-pulse">
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-2">
-                    <div className="h-4 w-32 bg-gray-200 dark:bg-muted-foreground/10 rounded" />
-                    <div className="h-3 w-24 bg-gray-200 dark:bg-muted-foreground/10 rounded" />
+                    <div className="h-4 w-32 bg-gray-700 dark:bg-muted-foreground/10 rounded" />
+                    <div className="h-3 w-24 bg-gray-700 dark:bg-muted-foreground/10 rounded" />
                   </div>
-                  <div className="h-6 w-20 bg-gray-200 dark:bg-muted-foreground/10 rounded" />
+                  <div className="h-6 w-20 bg-gray-700 dark:bg-muted-foreground/10 rounded" />
                 </div>
               </div>
             ))}

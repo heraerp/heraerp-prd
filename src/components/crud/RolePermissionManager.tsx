@@ -950,7 +950,7 @@ export function RolePermissionManager() {
                         <span className="text-sm">{role.name}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="w-24 bg-gray-700 rounded-full h-2">
                           <div
                             className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${Math.random() * 100}%` }}

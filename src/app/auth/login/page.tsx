@@ -112,7 +112,7 @@ function LoginForm() {
                   <Building2 className="w-12 h-12 text-foreground" />
                 </div>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent mb-3">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-gray-900 dark:to-slate-200 bg-clip-text text-transparent mb-3">
                 HERA Enterprise
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground dark:text-muted-foreground font-light">

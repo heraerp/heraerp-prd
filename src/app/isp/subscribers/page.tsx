@@ -362,7 +362,7 @@ export default function SubscribersPage() {
         )
       case 'inactive':
         return (
-          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-gray-500/10 border border-gray-500/20">
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-gray-9000/10 border border-gray-500/20">
             <XCircle className="h-3 w-3 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">Inactive</span>
           </div>
@@ -397,7 +397,7 @@ export default function SubscribersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Subscribers
           </h1>
           <p className="text-foreground/60 mt-1">Manage your broadband and cable TV subscribers</p>

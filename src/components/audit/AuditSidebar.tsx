@@ -265,7 +265,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Shield className="w-5 h-5 text-foreground" />
                 </div>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-100">
                   {isClient ? 'Client Portal' : 'GSPU Audit'}
                 </span>
               </div>
@@ -290,7 +290,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                  <p className="text-sm font-medium text-gray-100">{user.name}</p>
                   <p className="text-xs text-muted-foreground">{user.role}</p>
                 </div>
               </div>
@@ -337,7 +337,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                                 'ml-auto',
                                 isItemActive
                                   ? 'bg-emerald-600 text-foreground'
-                                  : 'bg-gray-200 text-gray-700'
+                                  : 'bg-gray-700 text-gray-700'
                               )}
                             >
                               {item.badge}

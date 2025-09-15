@@ -42,7 +42,7 @@ export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({
           <div className="mx-auto mb-4 p-3 rounded-full bg-red-100">
             <AlertTriangle className="h-8 w-8 text-red-600" />
           </div>
-          <CardTitle className="text-xl text-gray-900">{title}</CardTitle>
+          <CardTitle className="text-xl text-gray-100">{title}</CardTitle>
           <CardDescription className="text-muted-foreground">{description}</CardDescription>
         </CardHeader>
         <CardContent className="text-center space-y-4">
@@ -373,7 +373,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description
   return (
     <div className="text-center py-12">
       {icon && <div className="mx-auto mb-4 p-3 rounded-full bg-muted">{icon}</div>}
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-gray-100 mb-2">{title}</h3>
       <p className="text-muted-foreground mb-4 max-w-sm mx-auto">{description}</p>
       {action && <Button onClick={action.onClick}>{action.label}</Button>}
     </div>

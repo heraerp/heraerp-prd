@@ -55,7 +55,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Today</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground">{stats.todayTotal}</p>
+            <p className="text-3xl font-bold !text-gray-100 dark:!text-foreground">{stats.todayTotal}</p>
             <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">appointments</p>
           </div>
           <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 text-foreground">
@@ -87,7 +87,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Pending</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground">
+            <p className="text-3xl font-bold !text-gray-100 dark:!text-foreground">
               {stats.pendingCount}
             </p>
             <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">awaiting confirmation</p>
@@ -121,7 +121,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Today's Revenue</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground">
+            <p className="text-3xl font-bold !text-gray-100 dark:!text-foreground">
               AED {stats.revenueToday.toLocaleString()}
             </p>
             <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">from confirmed</p>
@@ -155,7 +155,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">This Month</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-foreground">{stats.monthTotal}</p>
+            <p className="text-3xl font-bold !text-gray-100 dark:!text-foreground">{stats.monthTotal}</p>
             <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">total appointments</p>
           </div>
           <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-foreground">
@@ -184,7 +184,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Confirmed</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 {stats.confirmedCount}
               </p>
             </div>
@@ -210,7 +210,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Cancelled</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 {stats.cancelledCount}
               </p>
             </div>
@@ -236,7 +236,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Month Revenue</p>
-              <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+              <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                 AED {Math.round(stats.revenueMonth).toLocaleString()}
               </p>
             </div>

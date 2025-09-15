@@ -41,7 +41,7 @@ function OldPartnersPage() {
               Partner Program Now Open
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-slate-300 bg-clip-text text-transparent">
               Join the HERA Partner Revolution
             </h1>
 
@@ -464,7 +464,7 @@ function OldPartnersPage() {
             </div>
 
             {/* Compliance */}
-            <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-8 border border-border">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-900 rounded-xl p-8 border border-border">
               <h3 className="text-xl font-bold mb-4">Compliance & Control</h3>
               <ul className="space-y-3 text-slate-700">
                 <li className="flex items-start gap-2">

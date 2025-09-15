@@ -611,7 +611,7 @@ export default function EnterpriseWhatsApp() {
                       className={cn(
                         'max-w-[70%] rounded-lg px-4 py-2',
                         message.direction === 'inbound'
-                          ? 'bg-gray-200 dark:bg-muted-foreground/10'
+                          ? 'bg-gray-700 dark:bg-muted-foreground/10'
                           : 'bg-green-500 text-foreground'
                       )}
                     >

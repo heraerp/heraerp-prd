@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function DevelopmentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-100">
       <DevelopmentSidebar />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>

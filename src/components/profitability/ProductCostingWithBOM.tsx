@@ -193,13 +193,13 @@ export function ProductCostingWithBOM({
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="bg-background p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Cost</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-100">
                   ${selectedProduct.total_cost.toFixed(2)}
                 </p>
               </div>
               <div className="bg-background p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">Selling Price</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-100">
                   ${selectedProduct.selling_price.toFixed(2)}
                 </p>
               </div>
@@ -217,7 +217,7 @@ export function ProductCostingWithBOM({
               </div>
               <div className="bg-background p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">Last Updated</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-gray-100">
                   {new Date(selectedProduct.last_updated).toLocaleString()}
                 </p>
               </div>

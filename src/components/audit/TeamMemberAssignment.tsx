@@ -300,7 +300,7 @@ export function TeamMemberAssignment({
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
-                      <p className="font-medium text-gray-900">{member.member_name}</p>
+                      <p className="font-medium text-gray-100">{member.member_name}</p>
                       <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                       {member.specialization.length > 0 && (
                         <p className="text-xs text-muted-foreground">{member.specialization.join(', ')}</p>
@@ -355,7 +355,7 @@ export function TeamMemberAssignment({
                 }}
               >
                 <DialogHeader className="pb-4 border-b border-gray-100">
-                  <DialogTitle className="text-lg font-semibold text-gray-900">
+                  <DialogTitle className="text-lg font-semibold text-gray-100">
                     Assign {selectedMember?.name} to {teamName}
                   </DialogTitle>
                 </DialogHeader>
@@ -468,7 +468,7 @@ export function TeamMemberAssignment({
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
-                      <p className="font-medium text-gray-900">{member.name}</p>
+                      <p className="font-medium text-gray-100">{member.name}</p>
                       <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                       {member.specializations.length > 0 && (
                         <p className="text-xs text-muted-foreground">
@@ -538,7 +538,7 @@ function AssignmentForm({
       <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
         {getRoleIcon(member.role)}
         <div>
-          <p className="font-medium text-gray-900">{member.name}</p>
+          <p className="font-medium text-gray-100">{member.name}</p>
           <p className="text-sm text-muted-foreground capitalize">
             {member.role} • {member.availability}% available
           </p>

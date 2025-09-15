@@ -101,7 +101,7 @@ export default function GetStartedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-gray-900">
       {/* Header */}
       <header className="py-8 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container mx-auto px-6">
@@ -112,7 +112,7 @@ export default function GetStartedPage() {
               </div>
               <span className="text-xl font-light">HERA</span>
             </Link>
-            <Link href="/apps" className="text-muted-foreground hover:text-black transition-colors">
+            <Link href="/apps" className="text-muted-foreground hover:text-white transition-colors">
               View All Apps
             </Link>
           </div>
@@ -123,7 +123,7 @@ export default function GetStartedPage() {
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl font-light text-gray-900 mb-6">Start Your HERA Journey</h1>
+            <h1 className="text-5xl font-light text-gray-100 mb-6">Start Your HERA Journey</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses already
               transforming their operations with HERA.
@@ -146,7 +146,7 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-900">2-Week Implementation Guarantee</p>
+                        <p className="font-medium text-gray-100">2-Week Implementation Guarantee</p>
                         <p className="text-sm text-muted-foreground">
                           Live in 14 days or your implementation is free
                         </p>
@@ -155,7 +155,7 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-900">70% Cost Savings</p>
+                        <p className="font-medium text-gray-100">70% Cost Savings</p>
                         <p className="text-sm text-muted-foreground">
                           Enterprise features at small business prices
                         </p>
@@ -164,7 +164,7 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-900">Industry-Specific Solutions</p>
+                        <p className="font-medium text-gray-100">Industry-Specific Solutions</p>
                         <p className="text-sm text-muted-foreground">
                           Pre-configured for salon, restaurant, healthcare & more
                         </p>
@@ -173,7 +173,7 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-900">AI-Powered Automation</p>
+                        <p className="font-medium text-gray-100">AI-Powered Automation</p>
                         <p className="text-sm text-muted-foreground">
                           85% journal automation, smart insights, and more
                         </p>
@@ -188,7 +188,7 @@ export default function GetStartedPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
                     <Shield className="w-6 h-6 text-primary" />
-                    <h3 className="text-lg font-semibold text-gray-900">Enterprise Security</h3>
+                    <h3 className="text-lg font-semibold text-gray-100">Enterprise Security</h3>
                   </div>
                   <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-center gap-2">
@@ -384,7 +384,7 @@ export default function GetStartedPage() {
 
           {/* Available Industries */}
           <div className="mt-20">
-            <h2 className="text-2xl font-light text-center text-gray-900 mb-8">
+            <h2 className="text-2xl font-light text-center text-gray-100 mb-8">
               Available Industry Solutions
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">

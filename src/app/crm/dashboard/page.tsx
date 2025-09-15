@@ -276,7 +276,7 @@ export default function CRMDashboard() {
       case 'overdue':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
     }
   }
 

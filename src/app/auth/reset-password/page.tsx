@@ -405,7 +405,7 @@ function ResetPasswordForm() {
             </form>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-gray-800">
+              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-gray-200">
                 Back to Login
               </Link>
             </div>
@@ -428,7 +428,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       }

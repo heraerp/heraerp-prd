@@ -907,7 +907,7 @@ export function RecipeCostingManager() {
                         <span className="text-sm">Proteins</span>
                         <span className="text-sm font-semibold">45%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-red-500" style={{ width: '45%' }}></div>
                       </div>
                     </div>
@@ -916,7 +916,7 @@ export function RecipeCostingManager() {
                         <span className="text-sm">Produce</span>
                         <span className="text-sm font-semibold">20%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-green-500" style={{ width: '20%' }}></div>
                       </div>
                     </div>
@@ -925,7 +925,7 @@ export function RecipeCostingManager() {
                         <span className="text-sm">Dairy</span>
                         <span className="text-sm font-semibold">15%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-blue-500" style={{ width: '15%' }}></div>
                       </div>
                     </div>
@@ -934,7 +934,7 @@ export function RecipeCostingManager() {
                         <span className="text-sm">Grains</span>
                         <span className="text-sm font-semibold">10%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-yellow-500" style={{ width: '10%' }}></div>
                       </div>
                     </div>
@@ -943,7 +943,7 @@ export function RecipeCostingManager() {
                         <span className="text-sm">Other</span>
                         <span className="text-sm font-semibold">10%</span>
                       </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-purple-500" style={{ width: '10%' }}></div>
                       </div>
                     </div>

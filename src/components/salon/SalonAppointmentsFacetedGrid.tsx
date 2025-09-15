@@ -460,7 +460,7 @@ export default function SalonAppointmentsFacetedGrid() {
       Cancelled:
         'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200 border-red-200 dark:border-red-700',
       'No-show':
-        'bg-muted text-gray-800 dark:bg-muted dark:text-gray-200 border-border dark:border-border'
+        'bg-muted text-gray-200 dark:bg-muted dark:text-gray-200 border-border dark:border-border'
     }
     return colors[status]
   }
@@ -485,7 +485,7 @@ export default function SalonAppointmentsFacetedGrid() {
           <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
             {icon}
           </div>
-          <span className="font-semibold !text-gray-900 dark:!text-foreground text-sm">{title}</span>
+          <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">{title}</span>
           {facetFilters[facet].length > 0 && (
             <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-foreground text-xs px-2 py-0.5 rounded-full shadow-sm">
               {facetFilters[facet].length}
@@ -569,7 +569,7 @@ export default function SalonAppointmentsFacetedGrid() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header with glassmorphism */}
       <div className="sticky top-0 z-20 px-6 py-4 mb-0 backdrop-blur-xl bg-background/80 dark:bg-background/80 border-b border-border dark:border-gray-800 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-[1600px] mx-auto">
@@ -631,7 +631,7 @@ export default function SalonAppointmentsFacetedGrid() {
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center shadow-lg">
                     <Filter className="w-5 h-5 text-foreground" />
                   </div>
-                  <span className="text-lg font-semibold !text-gray-900 dark:!text-foreground">
+                  <span className="text-lg font-semibold !text-gray-100 dark:!text-foreground">
                     Advanced Filters
                   </span>
                 </CardTitle>
@@ -648,7 +648,7 @@ export default function SalonAppointmentsFacetedGrid() {
                         <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
                           <Search className="w-4 h-4 text-primary dark:text-blue-400" />
                         </div>
-                        <span className="font-semibold !text-gray-900 dark:!text-foreground text-sm">
+                        <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">
                           Search
                         </span>
                         {searchQuery && (
@@ -703,7 +703,7 @@ export default function SalonAppointmentsFacetedGrid() {
                         <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
                           <Calendar className="w-4 h-4 text-green-600 dark:text-green-400" />
                         </div>
-                        <span className="font-semibold !text-gray-900 dark:!text-foreground text-sm">
+                        <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">
                           Date Filters
                         </span>
                         {(dateRange.start || dateRange.end) && (
@@ -790,7 +790,7 @@ export default function SalonAppointmentsFacetedGrid() {
                         <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
                           <DollarSign className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                         </div>
-                        <span className="font-semibold !text-gray-900 dark:!text-foreground text-sm">
+                        <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">
                           Price & Duration
                         </span>
                         {(priceRange.min > 0 ||
@@ -989,7 +989,7 @@ export default function SalonAppointmentsFacetedGrid() {
                 {/* Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gradient-to-r from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-purple-900/10 border-b border-border dark:border-border">
+                    <thead className="bg-gradient-to-r from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-purple-900/10 border-b border-border dark:border-border">
                       <tr>
                         {[
                           { key: 'date', label: 'Date', icon: <Calendar className="w-4 h-4" /> },
@@ -1020,7 +1020,7 @@ export default function SalonAppointmentsFacetedGrid() {
                         ].map(col => (
                           <th
                             key={col.key}
-                            className="px-6 py-4 text-left text-xs font-semibold !text-gray-900 dark:!text-foreground uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 dark:hover:bg-purple-900/20 transition-colors group"
+                            className="px-6 py-4 text-left text-xs font-semibold !text-gray-100 dark:!text-foreground uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 dark:hover:bg-purple-900/20 transition-colors group"
                             onClick={() => toggleSort(col.key as keyof Appointment)}
                           >
                             <div className="flex items-center gap-2">
@@ -1054,7 +1054,7 @@ export default function SalonAppointmentsFacetedGrid() {
                               : 'bg-muted/50 dark:bg-muted/50'
                           )}
                         >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-900 dark:!text-foreground font-medium">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-100 dark:!text-foreground font-medium">
                             {formatDate(apt.date)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
@@ -1062,7 +1062,7 @@ export default function SalonAppointmentsFacetedGrid() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
-                              <div className="text-sm font-medium !text-gray-900 dark:!text-foreground">
+                              <div className="text-sm font-medium !text-gray-100 dark:!text-foreground">
                                 {apt.client}
                               </div>
                               {apt.phone && (
@@ -1076,7 +1076,7 @@ export default function SalonAppointmentsFacetedGrid() {
                             {apt.stylist}
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm !text-gray-900 dark:!text-foreground font-medium">
+                            <div className="text-sm !text-gray-100 dark:!text-foreground font-medium">
                               {apt.service}
                             </div>
                             {apt.notes && (
@@ -1096,7 +1096,7 @@ export default function SalonAppointmentsFacetedGrid() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
                             {formatDuration(apt.duration)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium !text-gray-900 dark:!text-foreground">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium !text-gray-100 dark:!text-foreground">
                             AED {apt.price}
                           </td>
                         </tr>
@@ -1110,7 +1110,7 @@ export default function SalonAppointmentsFacetedGrid() {
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-6">
                       <Calendar className="w-10 h-10 text-purple-600 dark:text-purple-400" />
                     </div>
-                    <h3 className="text-lg font-semibold !text-gray-900 dark:!text-foreground mb-2">
+                    <h3 className="text-lg font-semibold !text-gray-100 dark:!text-foreground mb-2">
                       No appointments found
                     </h3>
                     <p className="text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto mb-6">

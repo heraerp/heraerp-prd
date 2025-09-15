@@ -127,13 +127,13 @@ export function PurchaseOrderManager() {
 
   // Status configurations
   const statusConfig = {
-    draft: { color: 'bg-muted text-gray-800', icon: Edit },
+    draft: { color: 'bg-muted text-gray-200', icon: Edit },
     submitted: { color: 'bg-blue-100 text-blue-800', icon: Send },
     approved: { color: 'bg-green-100 text-green-800', icon: CheckCircle },
     rejected: { color: 'bg-red-100 text-red-800', icon: XCircle },
     processing: { color: 'bg-yellow-100 text-yellow-800', icon: Clock },
     completed: { color: 'bg-emerald-100 text-emerald-800', icon: CheckCircle },
-    cancelled: { color: 'bg-muted text-gray-800', icon: XCircle }
+    cancelled: { color: 'bg-muted text-gray-200', icon: XCircle }
   }
 
   // Load purchase orders from API
@@ -384,7 +384,7 @@ export function PurchaseOrderManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Purchase Orders</h1>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Purchase Orders</h1>
           <p className="text-muted-foreground">
             Universal procurement workflow powered by HERA's transaction architecture
           </p>
@@ -445,7 +445,7 @@ export function PurchaseOrderManager() {
 
           <button
             onClick={loadPurchaseOrders}
-            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-800 transition-colors"
+            className="flex items-center space-x-2 px-3 py-2 text-muted-foreground hover:text-gray-200 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -479,7 +479,7 @@ export function PurchaseOrderManager() {
                   </div>
                   <div>
                     <div className="flex items-center space-x-3 mb-1">
-                      <h3 className="font-semibold text-gray-900">{po.po_number}</h3>
+                      <h3 className="font-semibold text-gray-100">{po.po_number}</h3>
                       <Badge className={statusConfig[po.status]?.color}>
                         <StatusIcon className="w-3 h-3 mr-1" />
                         {po.status}
@@ -506,7 +506,7 @@ export function PurchaseOrderManager() {
 
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold text-gray-100">
                       {formatCurrency(po.total_amount)}
                     </p>
                     {po.expected_delivery && (
@@ -566,7 +566,7 @@ export function PurchaseOrderManager() {
       {filteredPOs.length === 0 && !isLoading && !error && (
         <Card className="p-12 text-center">
           <FileText className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Purchase Orders Found</h3>
+          <h3 className="text-lg font-semibold text-gray-100 mb-2">No Purchase Orders Found</h3>
           <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'all' || supplierFilter
               ? 'Try adjusting your filters to see more purchase orders.'
@@ -586,7 +586,7 @@ export function PurchaseOrderManager() {
         <div className="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-background rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
-              <h2 className="text-xl font-semibold text-gray-900">Create Purchase Order</h2>
+              <h2 className="text-xl font-semibold text-gray-100">Create Purchase Order</h2>
               <p className="text-muted-foreground mt-1">Create a new purchase order for your supplier</p>
             </div>
 
@@ -606,7 +606,7 @@ export function PurchaseOrderManager() {
                     required
                     value={formData.supplier_id}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   >
                     <option value="">Select Supplier</option>
                     {suppliers.map(supplier => (
@@ -630,7 +630,7 @@ export function PurchaseOrderManager() {
                     type="date"
                     value={formData.expected_delivery}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                   />
                 </div>
               </div>
@@ -658,7 +658,7 @@ export function PurchaseOrderManager() {
                       <select
                         value={line.product_id}
                         onChange={e => updateLineItem(index, 'product_id', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       >
                         <option value="">Select Product</option>
                         {products.map(product => (
@@ -676,7 +676,7 @@ export function PurchaseOrderManager() {
                         onChange={e =>
                           updateLineItem(index, 'quantity', parseInt(e.target.value) || 0)
                         }
-                        className="w-20 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-20 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       />
 
                       <input
@@ -688,10 +688,10 @@ export function PurchaseOrderManager() {
                         onChange={e =>
                           updateLineItem(index, 'unit_price', parseFloat(e.target.value) || 0)
                         }
-                        className="w-24 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                        className="w-24 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                       />
 
-                      <span className="w-20 text-sm font-medium text-gray-900">
+                      <span className="w-20 text-sm font-medium text-gray-100">
                         {formatCurrency(line.quantity * line.unit_price)}
                       </span>
 
@@ -718,7 +718,7 @@ export function PurchaseOrderManager() {
                   <div className="flex justify-end pt-4 border-t border-border mt-4">
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Total Amount</p>
-                      <p className="text-xl font-semibold text-gray-900">
+                      <p className="text-xl font-semibold text-gray-100">
                         {formatCurrency(
                           formData.lines.reduce(
                             (sum, line) => sum + line.quantity * line.unit_price,
@@ -742,7 +742,7 @@ export function PurchaseOrderManager() {
                   rows={3}
                   value={formData.notes}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100"
                 />
               </div>
 
@@ -788,7 +788,7 @@ export function PurchaseOrderManager() {
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">{viewingPO.po_number}</h2>
+                  <h2 className="text-xl font-semibold text-gray-100">{viewingPO.po_number}</h2>
                   <p className="text-muted-foreground mt-1">Purchase Order Details</p>
                 </div>
                 <Badge className={statusConfig[viewingPO.status]?.color}>{viewingPO.status}</Badge>
@@ -799,7 +799,7 @@ export function PurchaseOrderManager() {
               {/* PO Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Order Information</h3>
+                  <h3 className="font-semibold text-gray-100 mb-3">Order Information</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">PO Number:</span>
@@ -825,7 +825,7 @@ export function PurchaseOrderManager() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Supplier</h3>
+                  <h3 className="font-semibold text-gray-100 mb-3">Supplier</h3>
                   {viewingPO.supplier ? (
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -846,7 +846,7 @@ export function PurchaseOrderManager() {
               {/* Line Items */}
               {viewingPO.lines && viewingPO.lines.length > 0 && (
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
+                  <h3 className="font-semibold text-gray-100 mb-3">
                     Line Items ({viewingPO.lines.length})
                   </h3>
                   <div className="space-y-2">
@@ -856,11 +856,11 @@ export function PurchaseOrderManager() {
                         className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900">{line.product_name}</p>
+                          <p className="font-medium text-gray-100">{line.product_name}</p>
                           <p className="text-sm text-muted-foreground">{line.product_code}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-100">
                             {line.quantity} × {formatCurrency(line.unit_price)}
                           </p>
                           <p className="text-sm text-muted-foreground">
@@ -873,7 +873,7 @@ export function PurchaseOrderManager() {
                   <div className="flex justify-end pt-4 border-t border-border mt-4">
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Total Amount</p>
-                      <p className="text-xl font-semibold text-gray-900">
+                      <p className="text-xl font-semibold text-gray-100">
                         {formatCurrency(viewingPO.total_amount)}
                       </p>
                     </div>
@@ -884,7 +884,7 @@ export function PurchaseOrderManager() {
               {/* Notes */}
               {viewingPO.notes && (
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Notes</h3>
+                  <h3 className="font-semibold text-gray-100 mb-3">Notes</h3>
                   <p className="text-gray-700 text-sm">{viewingPO.notes}</p>
                 </div>
               )}

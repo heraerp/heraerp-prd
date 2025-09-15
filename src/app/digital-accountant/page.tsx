@@ -307,7 +307,7 @@ All transactions follow enterprise accounting standards with multi-level approva
 
   return (
     <div
-      className={cn('min-h-screen', isDarkMode && 'dark')}
+      className={cn('min-h-screen bg-gray-900', isDarkMode && 'dark')}
       style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff' }}
     >
       <div className="container mx-auto p-6 max-w-7xl">

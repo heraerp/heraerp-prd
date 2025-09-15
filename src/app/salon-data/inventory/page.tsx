@@ -746,7 +746,7 @@ export default function SalonInventoryManagement() {
 
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900 dark:text-foreground">
+                          <h3 className="font-semibold text-gray-100 dark:text-foreground">
                             {item.entity_name}
                           </h3>
                           <Badge
@@ -887,7 +887,7 @@ export default function SalonInventoryManagement() {
       {filteredInventory.length === 0 && (
         <div className="text-center py-12">
           <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
+          <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground mb-2">
             No products found
           </h3>
           <p className="text-muted-foreground dark:text-muted-foreground">
@@ -1627,7 +1627,7 @@ export default function SalonInventoryManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-border dark:border-gray-800 shadow-sm">
         <div className="px-6 py-4">

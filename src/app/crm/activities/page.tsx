@@ -143,7 +143,7 @@ export default function ActivitiesPage() {
       case 'note':
         return 'from-blue-500 to-blue-600'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 
@@ -164,7 +164,7 @@ export default function ActivitiesPage() {
       case 'overdue':
         return 'bg-red-500/20 text-red-400 border-red-500/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 

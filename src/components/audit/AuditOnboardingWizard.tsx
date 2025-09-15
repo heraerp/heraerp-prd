@@ -578,7 +578,7 @@ export function AuditOnboardingWizard() {
             {isSubmitting ? (
               <div className="space-y-4">
                 <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto" />
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-100">
                   Setting up your audit firm...
                 </h3>
                 <div className="space-y-2 text-sm text-muted-foreground">
@@ -590,7 +590,7 @@ export function AuditOnboardingWizard() {
             ) : (
               <div className="space-y-4">
                 <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
-                <h3 className="text-xl font-semibold text-gray-900">Registration Successful!</h3>
+                <h3 className="text-xl font-semibold text-gray-100">Registration Successful!</h3>
                 <p className="text-muted-foreground">
                   Your audit firm has been successfully registered. You'll be redirected to the
                   login page shortly.
@@ -615,7 +615,7 @@ export function AuditOnboardingWizard() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4">
       <div className="w-full max-w-2xl">
         <Card className="shadow-2xl border-0 bg-background/90 backdrop-blur-xl">
           <CardHeader className="text-center pb-6">
@@ -623,7 +623,7 @@ export function AuditOnboardingWizard() {
               <Shield className="w-8 h-8 text-foreground" />
             </div>
 
-            <CardTitle className="text-2xl font-light text-gray-900">
+            <CardTitle className="text-2xl font-light text-gray-100">
               Join HERA Audit Platform
             </CardTitle>
 
@@ -660,7 +660,7 @@ export function AuditOnboardingWizard() {
             </div>
 
             <div className="mt-4">
-              <h3 className="font-medium text-gray-900">
+              <h3 className="font-medium text-gray-100">
                 {ONBOARDING_STEPS[currentStep - 1]?.title}
               </h3>
               <p className="text-sm text-muted-foreground">

@@ -83,7 +83,7 @@ export default function SalonConfigurationPage() {
             <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+            <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
               Universal Configuration Rules (UCR)
             </h1>
           </div>

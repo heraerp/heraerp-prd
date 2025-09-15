@@ -268,7 +268,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl !text-gray-900 dark:!text-gray-100 flex items-center gap-3">
+              <CardTitle className="text-2xl !text-gray-100 dark:!text-gray-100 flex items-center gap-3">
                 {getTypeIcon(formData.type)}
                 {rule ? 'Pencil Configuration Rule' : 'Create Configuration Rule'}
               </CardTitle>
@@ -359,7 +359,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   <div>
                     <Label
                       htmlFor="name"
-                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                     >
                       Rule Name *
                     </Label>
@@ -375,7 +375,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   <div>
                     <Label
                       htmlFor="category"
-                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                     >
                       Category *
                     </Label>
@@ -392,7 +392,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <div>
                       <Label
                         htmlFor="type"
-                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                        className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                       >
                         Rule Type *
                       </Label>
@@ -435,7 +435,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <div>
                       <Label
                         htmlFor="scope"
-                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                        className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                       >
                         Scope *
                       </Label>
@@ -460,7 +460,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <div>
                       <Label
                         htmlFor="status"
-                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                        className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                       >
                         Status
                       </Label>
@@ -478,7 +478,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                             </Badge>
                           </SelectItem>
                           <SelectItem value="inactive">
-                            <Badge className="bg-muted text-gray-800 dark:bg-muted/30 dark:text-gray-300">
+                            <Badge className="bg-muted text-gray-200 dark:bg-muted/30 dark:text-gray-300">
                               Inactive
                             </Badge>
                           </SelectItem>
@@ -494,7 +494,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <div>
                       <Label
                         htmlFor="priority"
-                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                        className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                       >
                         Priority (1-10)
                       </Label>
@@ -516,7 +516,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   <div>
                     <Label
                       htmlFor="description"
-                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                     >
                       Description *
                     </Label>
@@ -532,7 +532,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   <div>
                     <Label
                       htmlFor="smart_code"
-                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      className="text-sm font-medium !text-gray-100 dark:!text-gray-100"
                     >
                       Smart Code
                     </Label>
@@ -570,7 +570,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         <TabsContent value="conditions" className="space-y-6">
           <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+              <CardTitle className="flex items-center gap-2 !text-gray-100 dark:!text-gray-100">
                 <TestTube className="w-5 h-5" />
                 Rule Conditions
               </CardTitle>
@@ -585,7 +585,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   className="p-4 border border-white/30 dark:border-border/30 rounded-lg bg-background/30 dark:bg-muted/30"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-medium !text-gray-900 dark:!text-gray-100">
+                    <h4 className="font-medium !text-gray-100 dark:!text-gray-100">
                       Condition {index + 1}
                     </h4>
                     {formData.conditions.length > 1 && (
@@ -602,7 +602,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Field
                       </Label>
                       <Input
@@ -614,7 +614,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Operator
                       </Label>
                       <Select
@@ -635,7 +635,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Value
                       </Label>
                       <Input
@@ -647,7 +647,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Logic
                       </Label>
                       <Select
@@ -683,7 +683,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         <TabsContent value="actions" className="space-y-6">
           <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+              <CardTitle className="flex items-center gap-2 !text-gray-100 dark:!text-gray-100">
                 <Zap className="w-5 h-5" />
                 Rule Actions
               </CardTitle>
@@ -698,7 +698,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   className="p-4 border border-white/30 dark:border-border/30 rounded-lg bg-background/30 dark:bg-muted/30"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-medium !text-gray-900 dark:!text-gray-100">
+                    <h4 className="font-medium !text-gray-100 dark:!text-gray-100">
                       Action {index + 1}
                     </h4>
                     {formData.actions.length > 1 && (
@@ -715,7 +715,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Action Type
                       </Label>
                       <Select
@@ -739,7 +739,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Target
                       </Label>
                       <Input
@@ -751,7 +751,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Value
                       </Label>
                       <Input
@@ -781,7 +781,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         <TabsContent value="config" className="space-y-6">
           <Card className="bg-background/50 dark:bg-background/50 backdrop-blur-xl border-border/20 dark:border-border/30">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+              <CardTitle className="flex items-center gap-2 !text-gray-100 dark:!text-gray-100">
                 <Settings className="w-5 h-5" />
                 Advanced Configuration
               </CardTitle>
@@ -793,12 +793,12 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Execution Settings */}
                 <div className="space-y-4">
-                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">
+                  <h3 className="font-medium !text-gray-100 dark:!text-gray-100">
                     Execution Settings
                   </h3>
 
                   <div>
-                    <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                       Timeout (ms)
                     </Label>
                     <Input
@@ -812,7 +812,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                       Retry Count
                     </Label>
                     <Input
@@ -828,7 +828,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                       Failure Action
                     </Label>
                     <Select
@@ -849,13 +849,13 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                 {/* Monitoring Settings */}
                 <div className="space-y-4">
-                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">
+                  <h3 className="font-medium !text-gray-100 dark:!text-gray-100">
                     Monitoring & Logging
                   </h3>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                         Enable Notifications
                       </Label>
                       <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -871,7 +871,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                       Logging Level
                     </Label>
                     <Select

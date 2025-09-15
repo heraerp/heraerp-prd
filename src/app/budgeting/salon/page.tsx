@@ -224,7 +224,7 @@ export default function SalonBudgetingPage() {
   // Layer 1: Authentication Check
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-gray-900">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>Please log in to access the budgeting page.</AlertDescription>
@@ -236,7 +236,7 @@ export default function SalonBudgetingPage() {
   // Layer 2: Context Loading Check
   if (contextLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-gray-900">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-pink-600 mx-auto mb-4" />
           <p className="text-muted-foreground">Loading organization context...</p>
@@ -248,7 +248,7 @@ export default function SalonBudgetingPage() {
   // Layer 3: Organization Check
   if (!organizationId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-gray-900">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>No organization found. Please complete setup.</AlertDescription>
@@ -371,7 +371,7 @@ export default function SalonBudgetingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-gray-900">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl flex items-center justify-center animate-pulse">
             <Scissors className="w-8 h-8 text-foreground" />
@@ -383,7 +383,7 @@ export default function SalonBudgetingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-gray-900">
       {/* Header */}
       <header className="border-b bg-background/90 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
@@ -526,13 +526,13 @@ export default function SalonBudgetingPage() {
                       className="flex items-center justify-between p-3 bg-muted rounded-lg"
                     >
                       <div>
-                        <div className="font-medium text-gray-900">{service.name}</div>
+                        <div className="font-medium text-gray-100">{service.name}</div>
                         <div className="text-sm text-muted-foreground">
                           {service.monthly_volume} services × {formatCurrency(service.price)}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-gray-900">
+                        <div className="font-semibold text-gray-100">
                           {formatCurrency(service.revenue)}
                         </div>
                         <div className="text-xs text-muted-foreground">monthly</div>
@@ -562,7 +562,7 @@ export default function SalonBudgetingPage() {
                 <div key={index} className="p-4 border rounded-lg">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <h4 className="font-semibold text-gray-900">{staff.name}</h4>
+                      <h4 className="font-semibold text-gray-100">{staff.name}</h4>
                       <p className="text-sm text-muted-foreground">{staff.role}</p>
                     </div>
                     <Badge variant="outline" className="bg-blue-50">
@@ -614,9 +614,9 @@ export default function SalonBudgetingPage() {
               {seasonalTrends.map((trend, index) => (
                 <div
                   key={index}
-                  className="text-center p-3 bg-gradient-to-br from-gray-50 to-white rounded-lg border"
+                  className="text-center p-3 bg-gradient-to-br from-gray-900 to-gray-900 rounded-lg border"
                 >
-                  <div className="font-semibold text-gray-900 mb-1">{trend.month}</div>
+                  <div className="font-semibold text-gray-100 mb-1">{trend.month}</div>
                   <div
                     className={`text-sm font-medium mb-2 ${
                       trend.factor >= 1.2

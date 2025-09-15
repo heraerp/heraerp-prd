@@ -186,7 +186,7 @@ export function JourneyProgressTracker({
                     className={cn(
                       'text-xs sm:text-sm font-semibold transition-colors duration-300',
                       step.status === 'completed' && 'text-purple-600 dark:text-purple-400',
-                      step.status === 'current' && 'text-gray-900 dark:text-foreground',
+                      step.status === 'current' && 'text-gray-100 dark:text-foreground',
                       step.status === 'pending' && 'text-muted-foreground dark:text-muted-foreground'
                     )}
                   >
@@ -215,7 +215,7 @@ export function JourneyProgressTracker({
           <span className="text-muted-foreground">
             Step {steps.findIndex(s => s.status === 'current') + 1} of {steps.length}:
           </span>
-          <span className="font-semibold text-gray-900 dark:text-foreground">
+          <span className="font-semibold text-gray-100 dark:text-foreground">
             {steps.find(s => s.status === 'current')?.title}
           </span>
         </div>

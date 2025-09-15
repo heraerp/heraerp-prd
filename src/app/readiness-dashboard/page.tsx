@@ -263,7 +263,7 @@ export default function ReadinessDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
@@ -291,7 +291,7 @@ export default function ReadinessDashboardPage() {
 
       <div
         ref={containerRef}
-        className="min-h-screen relative overflow-hidden"
+        className="min-h-screen bg-gray-900 relative overflow-hidden"
         role="main"
         aria-label="ERP Readiness Assessment Dashboard"
         style={{
@@ -848,7 +848,7 @@ export default function ReadinessDashboardPage() {
                               </Badge>
                             </div>
                             <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-800 dark:text-foreground">
+                              <span className="text-gray-200 dark:text-foreground">
                                 {formatDate(new Date(session.transaction_date), 'MMM d, yyyy')}
                               </span>
                               {session.transaction_status === 'completed' && (
@@ -905,7 +905,7 @@ export default function ReadinessDashboardPage() {
                             <CardTitle className="text-xl !text-foreground mb-1">
                               Assessment Details
                             </CardTitle>
-                            <CardDescription className="text-gray-800 dark:text-foreground">
+                            <CardDescription className="text-gray-200 dark:text-foreground">
                               {selectedSession.metadata.user_email} •{' '}
                               {formatDate(
                                 new Date(selectedSession.transaction_date),
@@ -1240,7 +1240,7 @@ export default function ReadinessDashboardPage() {
                                     setAnswerSearch(e.target.value)
                                     setCurrentPage(1)
                                   }}
-                                  className="pl-10 bg-background/5 border-border/10 text-gray-900 dark:text-foreground placeholder-gray-500"
+                                  className="pl-10 bg-background/5 border-border/10 text-gray-100 dark:text-foreground placeholder-gray-500"
                                   aria-label="Search answers"
                                 />
                               </div>
@@ -1316,7 +1316,7 @@ export default function ReadinessDashboardPage() {
                                           aria-labelledby={`answer-${index}`}
                                         >
                                           <p
-                                            className="text-sm font-medium text-gray-900 dark:text-foreground mb-3"
+                                            className="text-sm font-medium text-gray-100 dark:text-foreground mb-3"
                                             aria-label={`Question: ${answer.description}`}
                                           >
                                             {answer.description}
@@ -1344,7 +1344,7 @@ export default function ReadinessDashboardPage() {
                                               {answer.line_data?.answer_value || 'Unknown'}
                                             </Badge>
                                             <span
-                                              className="text-xs text-gray-900 dark:text-foreground capitalize"
+                                              className="text-xs text-gray-100 dark:text-foreground capitalize"
                                               aria-label={`Category: ${answer.line_data?.category || 'General'}`}
                                             >
                                               {answer.line_data?.category || 'General'}
@@ -1356,7 +1356,7 @@ export default function ReadinessDashboardPage() {
                                       {/* Pagination controls */}
                                       {filteredAnswers.length > answersPerPage && (
                                         <div className="mt-6 flex items-center justify-between border-t border-border dark:border-border pt-4">
-                                          <p className="text-sm text-gray-900 dark:text-foreground">
+                                          <p className="text-sm text-gray-100 dark:text-foreground">
                                             Showing{' '}
                                             <span className="font-medium">{startIndex + 1}</span> to{' '}
                                             <span className="font-medium">
@@ -1379,7 +1379,7 @@ export default function ReadinessDashboardPage() {
                                                 setCurrentPage(Math.max(1, currentPage - 1))
                                               }
                                               disabled={currentPage === 1}
-                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
+                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-100 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
                                               aria-label="Previous page"
                                             >
                                               Previous
@@ -1405,7 +1405,7 @@ export default function ReadinessDashboardPage() {
                                                     className={
                                                       pageNum === currentPage
                                                         ? ''
-                                                        : 'bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border'
+                                                        : 'bg-background dark:bg-muted text-gray-100 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border'
                                                     }
                                                   >
                                                     {pageNum}
@@ -1422,7 +1422,7 @@ export default function ReadinessDashboardPage() {
                                                 )
                                               }
                                               disabled={currentPage === totalPages}
-                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-900 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
+                                              className="disabled:opacity-50 bg-background dark:bg-muted text-gray-100 dark:text-foreground hover:bg-muted dark:hover:bg-muted-foreground/10 border-border dark:border-border"
                                               aria-label="Next page"
                                             >
                                               Next

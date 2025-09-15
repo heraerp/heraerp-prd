@@ -171,7 +171,7 @@ export default function OpportunitiesPage() {
   ])
 
   const stageConfig = [
-    { name: 'Prospecting', color: 'from-gray-500 to-gray-600' },
+    { name: 'Prospecting', color: 'from-gray-9000 to-gray-600' },
     { name: 'Qualification', color: 'from-blue-500 to-blue-600' },
     { name: 'Proposal', color: 'from-[#ec7f37] to-[#be4f0c]' },
     { name: 'Negotiation', color: 'from-[#FF5A09] to-[#ec7f37]' },

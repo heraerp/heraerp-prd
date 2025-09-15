@@ -259,7 +259,7 @@ export function ActivityHistory({
     return (
       <div className="mt-2 text-xs text-muted-foreground">
         <details className="cursor-pointer">
-          <summary className="hover:text-gray-800">View changes ({changes.length})</summary>
+          <summary className="hover:text-gray-200">View changes ({changes.length})</summary>
           <div className="mt-2 space-y-1 pl-4 border-l-2 border-border">
             {changes.map((change, index) => (
               <div key={index} className="flex justify-between">
@@ -446,7 +446,7 @@ export function ActivityHistory({
                 ) : activities.length === 0 ? (
                   <Card className="p-8 text-center">
                     <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No activities found</h3>
+                    <h3 className="text-lg font-medium text-gray-100 mb-2">No activities found</h3>
                     <p className="text-muted-foreground">No activities match your current filters</p>
                   </Card>
                 ) : (
@@ -465,7 +465,7 @@ export function ActivityHistory({
 
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center space-x-2">
-                                  <p className="text-sm font-medium text-gray-900 truncate">
+                                  <p className="text-sm font-medium text-gray-100 truncate">
                                     {activity.description}
                                   </p>
                                   <Badge

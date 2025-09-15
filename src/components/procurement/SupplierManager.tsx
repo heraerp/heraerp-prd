@@ -238,13 +238,13 @@ export function SupplierManager() {
       case 'active':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'inactive':
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
       case 'pending':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       case 'suspended':
         return 'bg-red-100 text-red-800 border-red-200'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 
@@ -297,7 +297,7 @@ export function SupplierManager() {
       {/* Header - Steve Jobs: "Simplicity is the ultimate sophistication" */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Supplier Management</h1>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Supplier Management</h1>
           <p className="text-muted-foreground">
             Manage suppliers using HERA's universal architecture - same system, infinite
             possibilities
@@ -306,7 +306,7 @@ export function SupplierManager() {
         <div className="flex items-center space-x-3">
           <button
             onClick={loadSuppliers}
-            className="flex items-center space-x-2 px-4 py-2 text-muted-foreground hover:text-gray-800 border border-border rounded-lg hover:bg-muted"
+            className="flex items-center space-x-2 px-4 py-2 text-muted-foreground hover:text-gray-200 border border-border rounded-lg hover:bg-muted"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -442,7 +442,7 @@ export function SupplierManager() {
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-semibold text-gray-100 mb-1 group-hover:text-primary transition-colors">
                     {supplier.name}
                   </h3>
                   <p className="text-sm text-muted-foreground">{supplier.code}</p>
@@ -495,7 +495,7 @@ export function SupplierManager() {
               {supplier.phone && (
                 <div className="flex items-center space-x-3 text-sm">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  <a href={`tel:${supplier.phone}`} className="text-muted-foreground hover:text-gray-800">
+                  <a href={`tel:${supplier.phone}`} className="text-muted-foreground hover:text-gray-200">
                     {supplier.phone}
                   </a>
                 </div>
@@ -603,7 +603,7 @@ export function SupplierManager() {
       {filteredSuppliers.length === 0 && !isLoading && (
         <Card className="p-12 text-center">
           <Building2 className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-100 mb-2">
             {searchTerm || statusFilter !== 'all' || categoryFilter
               ? 'No suppliers found'
               : 'No suppliers yet'}
@@ -630,7 +630,7 @@ export function SupplierManager() {
           <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Add New Supplier</h2>
+                <h2 className="text-xl font-semibold text-gray-100">Add New Supplier</h2>
                 <button
                   onClick={() => {
                     setShowAddModal(false)
@@ -646,7 +646,7 @@ export function SupplierManager() {
             <form onSubmit={handleCreateSupplier} className="p-6 space-y-6">
               {/* Basic Information */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                <h3 className="text-lg font-medium text-gray-100 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -681,7 +681,7 @@ export function SupplierManager() {
 
               {/* Contact Information */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                <h3 className="text-lg font-medium text-gray-100 mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -735,7 +735,7 @@ export function SupplierManager() {
 
               {/* Business Terms */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Business Terms</h3>
+                <h3 className="text-lg font-medium text-gray-100 mb-4">Business Terms</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -790,7 +790,7 @@ export function SupplierManager() {
 
               {/* Address */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Address</h3>
+                <h3 className="text-lg font-medium text-gray-100 mb-4">Address</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">

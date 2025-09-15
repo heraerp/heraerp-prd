@@ -61,7 +61,7 @@ export function MessageStatusHistory({
       case 'failed':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
       default:
-        return 'bg-muted text-gray-800 dark:bg-background/20 dark:text-muted-foreground'
+        return 'bg-muted text-gray-200 dark:bg-background/20 dark:text-muted-foreground'
     }
   }
 
@@ -106,7 +106,7 @@ export function MessageStatusHistory({
             <h4 className="text-sm font-medium">Status Timeline</h4>
             <div className="relative">
               {/* Timeline line */}
-              <div className="absolute left-2.5 top-5 bottom-0 w-0.5 bg-gray-200 dark:bg-muted-foreground/10" />
+              <div className="absolute left-2.5 top-5 bottom-0 w-0.5 bg-gray-700 dark:bg-muted-foreground/10" />
 
               {/* Status items */}
               <div className="space-y-4">

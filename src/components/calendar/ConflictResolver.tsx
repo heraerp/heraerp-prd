@@ -80,7 +80,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
       case 'warning':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
       default:
-        return 'bg-muted text-gray-800 border-border'
+        return 'bg-muted text-gray-200 border-border'
     }
   }
 

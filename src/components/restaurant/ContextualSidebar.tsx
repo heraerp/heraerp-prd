@@ -467,7 +467,7 @@ export function ContextualSidebar({
       <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
+            <h2 className="text-lg font-semibold text-gray-100">Navigation</h2>
             <p className="text-sm text-muted-foreground mt-1">Context-aware shortcuts</p>
           </div>
           <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="w-8 h-8 p-0">

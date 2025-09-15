@@ -58,7 +58,7 @@ export default function POSTestPage() {
   return (
     <div className="min-h-screen bg-muted dark:bg-background p-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-foreground">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-100 dark:text-foreground">
           POS Payment Test
         </h1>
 
@@ -135,7 +135,7 @@ export default function POSTestPage() {
             <div className="space-y-4">
               <div className="text-center">
                 <p className="text-muted-foreground mb-2">Total Amount</p>
-                <p className="text-4xl font-bold text-gray-900 dark:text-foreground">
+                <p className="text-4xl font-bold text-gray-100 dark:text-foreground">
                   AED {amount || '0'}
                 </p>
               </div>

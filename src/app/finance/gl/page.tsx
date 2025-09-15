@@ -524,7 +524,7 @@ export default function GeneralLedgerPage() {
               className={`px-2 py-1 rounded-full text-xs font-medium ${
                 account.status === 'active'
                   ? 'bg-emerald-500/20 text-emerald-400'
-                  : 'bg-gray-500/20 text-muted-foreground'
+                  : 'bg-gray-9000/20 text-muted-foreground'
               }`}
             >
               {account.status}
@@ -556,7 +556,7 @@ export default function GeneralLedgerPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             General Ledger
           </h1>
           <p className="text-foreground/60 mt-1">Chart of accounts and journal entries management</p>
@@ -706,7 +706,7 @@ export default function GeneralLedgerPage() {
                               ? 'bg-emerald-500/20 text-emerald-400'
                               : entry.status === 'pending'
                                 ? 'bg-yellow-500/20 text-yellow-400'
-                                : 'bg-gray-500/20 text-muted-foreground'
+                                : 'bg-gray-9000/20 text-muted-foreground'
                           }`}
                         >
                           {entry.status}

@@ -170,9 +170,9 @@ export function TableManagement() {
       case 'cleaning':
         return 'bg-blue-100 text-blue-800'
       case 'maintenance':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -182,7 +182,7 @@ export function TableManagement() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Table Management</h1>
+            <h1 className="text-3xl font-bold text-gray-100">Table Management</h1>
             <p className="text-muted-foreground mt-1">
               Manage your restaurant floor plan and table assignments
             </p>

@@ -234,7 +234,7 @@ export const CustomerFormModal: React.FC<CustomerFormModalProps> = ({
           <div className="border-b border-border dark:border-border bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   {mode === 'create' ? 'Add New Customer' : 'Pencil Customer'}
                 </h2>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">

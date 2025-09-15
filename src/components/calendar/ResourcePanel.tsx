@@ -186,9 +186,9 @@ export function ResourcePanel({
       case 'maintenance':
         return 'bg-orange-100 text-orange-800'
       case 'inactive':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 

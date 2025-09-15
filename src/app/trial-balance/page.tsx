@@ -348,7 +348,7 @@ export default function TrialBalancePage() {
 
     return (
       <div key={type} className="mb-8">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800 uppercase tracking-wide">
+        <h3 className="text-lg font-semibold mb-4 text-gray-200 uppercase tracking-wide">
           {typeMapping[type as keyof typeof typeMapping]}
         </h3>
         {filteredEntries.map(entry => renderAccountRow(entry))}
@@ -384,7 +384,7 @@ export default function TrialBalancePage() {
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Trial Balance Report</h1>
+              <h1 className="text-3xl font-bold text-gray-100 mb-2">Trial Balance Report</h1>
               <p className="text-muted-foreground text-lg">Enterprise financial position statement</p>
             </div>
             <div className="flex items-center gap-4">

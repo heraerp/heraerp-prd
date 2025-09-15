@@ -344,7 +344,7 @@ export default function ModuleTestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-100">
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="mb-8">

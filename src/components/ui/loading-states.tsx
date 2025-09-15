@@ -223,7 +223,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
       <div className="text-center">
         <LoadingSpinner size="lg" />
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">{title}</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-100">{title}</h2>
         <p className="mt-2 text-muted-foreground">{description}</p>
       </div>
     </div>

@@ -113,7 +113,7 @@ export function TransactionsTable({
         className="bg-background dark:bg-muted rounded-2xl shadow-lg overflow-hidden"
       >
         <header className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground">Pipeline Runs</h2>
+          <h2 className="text-lg font-semibold text-gray-100 dark:text-foreground">Pipeline Runs</h2>
           <span className="text-sm text-muted-foreground dark:text-muted-foreground">
             {transactions.length} transactions
           </span>
@@ -181,7 +181,7 @@ export function TransactionsTable({
                           )}
                           <Icon className="w-5 h-5 text-muted-foreground" />
                           <div>
-                            <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                            <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                               {txn.smart_code.split('.')[3]}
                             </p>
                             <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -226,7 +226,7 @@ export function TransactionsTable({
                       <td className="px-6 py-4 whitespace-nowrap">
                         {txn.ai_confidence && (
                           <div className="flex items-center gap-2">
-                            <div className="w-24 bg-gray-200 dark:bg-muted-foreground/10 rounded-full h-2">
+                            <div className="w-24 bg-gray-700 dark:bg-muted-foreground/10 rounded-full h-2">
                               <div
                                 className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${txn.ai_confidence * 100}%` }}
@@ -265,7 +265,7 @@ export function TransactionsTable({
                                     className="flex items-start justify-between p-3 bg-background dark:bg-muted rounded-lg"
                                   >
                                     <div className="flex-1">
-                                      <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                                      <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                                         {line.line_type}
                                       </p>
                                       {(line.metadata as any)?.status && (

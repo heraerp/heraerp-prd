@@ -286,7 +286,7 @@ export default function ValidatePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground mb-2">
+          <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground mb-2">
             {question.title}
           </h3>
           <Progress
@@ -311,7 +311,7 @@ export default function ValidatePage() {
                 >
                   <RadioGroupItem value={option.value} />
                   {option.icon && <span className="text-2xl">{option.icon}</span>}
-                  <span className="!text-gray-900 dark:!text-foreground">{option.label}</span>
+                  <span className="!text-gray-100 dark:!text-foreground">{option.label}</span>
                 </label>
               ))}
             </div>
@@ -334,7 +334,7 @@ export default function ValidatePage() {
                   }}
                 />
                 {option.icon && <option.icon className="w-5 h-5 text-muted-foreground" />}
-                <span className="!text-gray-900 dark:!text-foreground">{option.label}</span>
+                <span className="!text-gray-100 dark:!text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -511,7 +511,7 @@ export default function ValidatePage() {
 
         {/* Next Steps */}
         <div className="text-center">
-          <h3 className="text-2xl font-bold !text-gray-900 dark:!text-foreground mb-4">
+          <h3 className="text-2xl font-bold !text-gray-100 dark:!text-foreground mb-4">
             Ready to build your custom solution?
           </h3>
           <Button
@@ -530,7 +530,7 @@ export default function ValidatePage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-gray-900 relative overflow-hidden"
       style={{
         background: `
           linear-gradient(135deg, 
@@ -636,7 +636,7 @@ export default function ValidatePage() {
                   <Sparkles className="w-5 h-5 text-foreground drop-shadow-md" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-foreground">HERA</h1>
+                  <h1 className="text-xl font-bold !text-gray-100 dark:!text-foreground">HERA</h1>
                   <p className="text-xs !text-muted-foreground dark:!text-gray-300 font-medium">
                     Business Validation
                   </p>
@@ -664,7 +664,7 @@ export default function ValidatePage() {
             <>
               {/* Hero Section */}
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold !text-gray-900 dark:!text-foreground mb-4">
+                <h2 className="text-3xl font-bold !text-gray-100 dark:!text-foreground mb-4">
                   Let's Find Your Perfect Fit
                 </h2>
                 <p className="text-lg !text-gray-700 dark:!text-gray-300">
@@ -706,7 +706,7 @@ export default function ValidatePage() {
                   }}
                 >
                   <Zap className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                  <p className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                     Quick Setup
                   </p>
                   <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -722,7 +722,7 @@ export default function ValidatePage() {
                   }}
                 >
                   <Shield className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                  <p className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                     Data Security
                   </p>
                   <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">
@@ -738,7 +738,7 @@ export default function ValidatePage() {
                   }}
                 >
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-emerald-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-foreground">
+                  <p className="text-sm font-semibold !text-gray-100 dark:!text-foreground">
                     Cost Savings
                   </p>
                   <p className="text-xs !text-muted-foreground dark:!text-muted-foreground">

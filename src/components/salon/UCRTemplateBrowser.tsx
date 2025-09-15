@@ -115,7 +115,7 @@ export function UCRTemplateBrowser() {
       return 'from-emerald-500 to-green-600'
     if (smartCode.includes('NOTIFICATION')) return 'from-blue-500 to-indigo-600'
     if (smartCode.includes('CANCEL')) return 'from-orange-500 to-red-600'
-    return 'from-gray-500 to-gray-700'
+    return 'from-gray-9000 to-gray-700'
   }
 
   const handleCloneTemplate = async (template: UCRTemplate) => {

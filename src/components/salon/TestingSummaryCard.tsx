@@ -77,7 +77,7 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
 
         {/* Recent Tests */}
         <div>
-          <h4 className="text-sm font-medium mb-3 text-gray-900 dark:text-foreground">
+          <h4 className="text-sm font-medium mb-3 text-gray-100 dark:text-foreground">
             Recent Test Results
           </h4>
           <div className="space-y-2">
@@ -97,7 +97,7 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
                     }`}
                   />
                   <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                    <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                       {test.ruleName}
                     </p>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground">

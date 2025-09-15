@@ -715,7 +715,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                 <Brain className="w-8 h-8 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   Salon Smart Accountant
                 </h1>
                 <p className="text-muted-foreground dark:text-muted-foreground">
@@ -877,7 +877,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                           ? 'bg-purple-600 text-foreground'
                                           : message.type === 'system'
                                             ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'
-                                            : 'bg-muted dark:bg-muted-foreground/10 text-gray-900 dark:text-foreground'
+                                            : 'bg-muted dark:bg-muted-foreground/10 text-gray-100 dark:text-foreground'
                                       )}
                                     >
                                       <p className="whitespace-pre-wrap">{message.content}</p>
@@ -1004,7 +1004,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                 onChange={e => setInput(e.target.value)}
                                 placeholder="Tell me what happened... (e.g., 'Sarah paid 350 for hair color')"
                                 disabled={loading}
-                                className="pr-20 bg-muted dark:bg-muted-foreground/10 border-border dark:border-border text-gray-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
+                                className="pr-20 bg-muted dark:bg-muted-foreground/10 border-border dark:border-border text-gray-100 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
                               />
                               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                                 <Button

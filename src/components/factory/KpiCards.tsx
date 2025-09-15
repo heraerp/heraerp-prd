@@ -80,7 +80,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
                 <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">
                   {card.title}
                 </h3>
-                <p className="text-2xl font-bold text-gray-900 dark:text-foreground mt-1">
+                <p className="text-2xl font-bold text-gray-100 dark:text-foreground mt-1">
                   {card.value}
                 </p>
               </div>

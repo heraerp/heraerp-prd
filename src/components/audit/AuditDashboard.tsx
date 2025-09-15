@@ -371,9 +371,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       case 'reporting':
         return 'bg-green-100 text-green-800'
       case 'completed':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -383,9 +383,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">Audit Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-100">Audit Dashboard</h1>
             {isFirmLoading ? (
-              <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <div className="h-6 bg-gray-700 rounded w-32 animate-pulse"></div>
             ) : auditFirm ? (
               <Badge variant="outline" className="text-sm">
                 {auditFirm.entity_name} ({auditFirm.entity_code})
@@ -417,7 +417,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           <Button
             variant="outline"
             onClick={() => router.push('/audit/engagements')}
-            className="border-black text-black hover:bg-background hover:text-foreground"
+            className="border-black text-white hover:bg-background hover:text-foreground"
           >
             <Briefcase className="w-4 h-4 mr-2" />
             Engagements
@@ -425,7 +425,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           <Button
             variant="outline"
             onClick={() => router.push('/audit/workpapers')}
-            className="border-black text-black hover:bg-background hover:text-foreground"
+            className="border-black text-white hover:bg-background hover:text-foreground"
           >
             <FileText className="w-4 h-4 mr-2" />
             Working Papers
@@ -453,7 +453,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 <div>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-gray-100">
                     ABC Trading - Bank confirmations overdue
                   </p>
                   <p className="text-sm text-muted-foreground">Due 3 days ago • Partner: Michael Brown</p>
@@ -481,7 +481,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 <div>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-gray-100">
                     Tech Solutions - Partner review needed
                   </p>
                   <p className="text-sm text-muted-foreground">Waiting 2 days • Manager: David Wilson</p>
@@ -511,7 +511,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="text-center p-4">
-          <div className="text-2xl font-bold text-gray-900">5</div>
+          <div className="text-2xl font-bold text-gray-100">5</div>
           <div className="text-sm text-muted-foreground">Due This Week</div>
         </Card>
         <Card className="text-center p-4">
@@ -546,11 +546,11 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                   <div className="animate-pulse">
                     <div className="flex items-start justify-between">
                       <div className="space-y-2">
-                        <div className="h-5 bg-gray-200 rounded w-48"></div>
-                        <div className="h-4 bg-gray-200 rounded w-32"></div>
-                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-5 bg-gray-700 rounded w-48"></div>
+                        <div className="h-4 bg-gray-700 rounded w-32"></div>
+                        <div className="h-4 bg-gray-700 rounded w-24"></div>
                       </div>
-                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                      <div className="h-6 bg-gray-700 rounded w-16"></div>
                     </div>
                   </div>
                 </Card>
@@ -562,7 +562,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <Card className="p-8 text-center">
                   <div className="space-y-3">
                     <Building2 className="w-12 h-12 text-muted-foreground mx-auto" />
-                    <h3 className="text-lg font-medium text-gray-900">No audit clients found</h3>
+                    <h3 className="text-lg font-medium text-gray-100">No audit clients found</h3>
                     <p className="text-muted-foreground">Start by creating a new engagement</p>
                   </div>
                 </Card>
@@ -583,7 +583,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900">{client.name}</h3>
+                            <h3 className="text-lg font-semibold text-gray-100">{client.name}</h3>
                             <Badge className={getRiskColor(client.risk_rating)}>
                               {client.risk_rating}
                             </Badge>
@@ -673,7 +673,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                         <span className="text-xs font-bold text-primary">SJ</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Sarah Johnson</p>
+                        <p className="font-medium text-gray-100">Sarah Johnson</p>
                         <p className="text-sm text-muted-foreground">Manager • XYZ Manufacturing</p>
                       </div>
                     </div>
@@ -686,7 +686,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                         <span className="text-xs font-bold text-green-600">ED</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Emily Davis</p>
+                        <p className="font-medium text-gray-100">Emily Davis</p>
                         <p className="text-sm text-muted-foreground">Manager • ABC Trading</p>
                       </div>
                     </div>
@@ -699,7 +699,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                         <span className="text-xs font-bold text-purple-600">DW</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">David Wilson</p>
+                        <p className="font-medium text-gray-100">David Wilson</p>
                         <p className="text-sm text-muted-foreground">Manager • Tech Solutions</p>
                       </div>
                     </div>
@@ -720,7 +720,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               <CardContent>
                 <div className="space-y-3">
                   <div className="p-3 border rounded-lg">
-                    <p className="font-medium text-gray-900">Tech Solutions - Revenue Testing</p>
+                    <p className="font-medium text-gray-100">Tech Solutions - Revenue Testing</p>
                     <p className="text-sm text-muted-foreground">Submitted by David Wilson • 2 days ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
@@ -731,7 +731,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                   </div>
 
                   <div className="p-3 border rounded-lg">
-                    <p className="font-medium text-gray-900">XYZ Manufacturing - Inventory Count</p>
+                    <p className="font-medium text-gray-100">XYZ Manufacturing - Inventory Count</p>
                     <p className="text-sm text-muted-foreground">Submitted by Sarah Johnson • 1 day ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
@@ -761,7 +761,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">Tech Solutions Inc - Final Report</p>
+                      <p className="font-medium text-gray-100">Tech Solutions Inc - Final Report</p>
                       <p className="text-sm text-red-600">Due: February 28, 2025 (4 days)</p>
                     </div>
                     <Button size="sm" className="bg-red-600 hover:bg-red-700">
@@ -771,7 +771,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
                   <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">ABC Trading - Fieldwork Complete</p>
+                      <p className="font-medium text-gray-100">ABC Trading - Fieldwork Complete</p>
                       <p className="text-sm text-orange-600">Due: March 1, 2025 (5 days)</p>
                     </div>
                     <Button size="sm" variant="outline">
@@ -794,7 +794,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-gray-100">
                         XYZ Manufacturing - Planning Complete
                       </p>
                       <p className="text-sm text-muted-foreground">Due: March 15, 2025</p>
@@ -806,7 +806,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">Healthcare Corp - Risk Assessment</p>
+                      <p className="font-medium text-gray-100">Healthcare Corp - Risk Assessment</p>
                       <p className="text-sm text-muted-foreground">Due: March 20, 2025</p>
                     </div>
                     <Button size="sm" variant="outline">

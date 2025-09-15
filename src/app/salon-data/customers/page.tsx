@@ -416,7 +416,7 @@ const getSegmentColor = (segment: string): string => {
     case 'New':
       return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
     default:
-      return 'bg-muted text-gray-800 dark:bg-background/30 dark:text-gray-200'
+      return 'bg-muted text-gray-200 dark:bg-background/30 dark:text-gray-200'
   }
 }
 
@@ -545,7 +545,7 @@ const CustomerDetailModal = ({
                     .slice(0, 2)}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
+                  <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground flex items-center gap-2">
                     {customer.entity_name}
                     {customer.business_rules?.vip && <Crown className="w-5 h-5 text-purple-600" />}
                   </h2>
@@ -580,25 +580,25 @@ const CustomerDetailModal = ({
             <div className="grid grid-cols-4 gap-4 mt-6">
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground dark:text-muted-foreground">Lifetime Value</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(customer.lifetime_value || 0)}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground dark:text-muted-foreground">Total Visits</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {customer.visit_count || 0}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground dark:text-muted-foreground">Avg. Ticket</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(customer.average_ticket || 0)}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground dark:text-muted-foreground">Loyalty Points</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-foreground">
+                <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {customer.loyalty_balance || 0}
                 </p>
               </div>
@@ -907,7 +907,7 @@ const CustomerDetailModal = ({
                                 )}
                               </div>
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-foreground">
+                                <p className="font-medium text-gray-100 dark:text-foreground">
                                   {activity.description}
                                 </p>
                                 <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
@@ -916,7 +916,7 @@ const CustomerDetailModal = ({
                               </div>
                             </div>
                             {activity.amount && (
-                              <p className="font-semibold text-gray-900 dark:text-foreground">
+                              <p className="font-semibold text-gray-100 dark:text-foreground">
                                 {activity.type === 'earn' ? '+' : ''}
                                 {formatCurrency(activity.amount)}
                               </p>
@@ -1873,7 +1873,7 @@ export default function SalonCustomersPage() {
 
   if (contextLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
           <p className="text-muted-foreground dark:text-muted-foreground">Loading customer data...</p>
@@ -1883,12 +1883,12 @@ export default function SalonCustomersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground flex items-center gap-2">
               <Users className="w-8 h-8 text-purple-600" />
               Customers
             </h1>
@@ -1936,7 +1936,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {totalCustomers}
                   </p>
                 </div>
@@ -1950,7 +1950,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {activeCustomers}
                   </p>
                 </div>
@@ -1964,7 +1964,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">VIPs</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">{vipCustomers}</p>
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">{vipCustomers}</p>
                 </div>
                 <Crown className="w-8 h-8 text-purple-500 opacity-20" />
               </div>
@@ -1976,7 +1976,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">At Risk</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {atRiskCustomers}
                   </p>
                 </div>
@@ -1990,7 +1990,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg LTV</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(avgLTV).split(' ')[1]}
                   </p>
                 </div>
@@ -2004,7 +2004,7 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">Booked</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {withAppointments}
                   </p>
                 </div>
@@ -2263,7 +2263,7 @@ export default function SalonCustomersPage() {
                                   .slice(0, 2)}
                               </div>
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-foreground flex items-center gap-2">
+                                <p className="font-medium text-gray-100 dark:text-foreground flex items-center gap-2">
                                   {customer.entity_name}
                                   {customer.business_rules?.vip && (
                                     <Crown className="w-4 h-4 text-purple-600" />
@@ -2325,7 +2325,7 @@ export default function SalonCustomersPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="text-sm text-gray-900 dark:text-foreground">
+                              <p className="text-sm text-gray-100 dark:text-foreground">
                                 {customer.last_visit ? formatDate(customer.last_visit) : 'Never'}
                               </p>
                               {customer.last_visit && (
@@ -2341,7 +2341,7 @@ export default function SalonCustomersPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <p className="font-semibold text-gray-900 dark:text-foreground">
+                            <p className="font-semibold text-gray-100 dark:text-foreground">
                               {formatCurrency(customer.lifetime_value || 0)}
                             </p>
                             <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -2393,10 +2393,10 @@ export default function SalonCustomersPage() {
                                   align="end"
                                   className="w-56 bg-background dark:bg-muted border border-border dark:border-border shadow-lg"
                                 >
-                                  <DropdownMenuLabel className="text-gray-900 dark:text-foreground">
+                                  <DropdownMenuLabel className="text-gray-100 dark:text-foreground">
                                     Actions
                                   </DropdownMenuLabel>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
+                                  <DropdownMenuSeparator className="bg-gray-700 dark:bg-muted-foreground/10" />
                                   <DropdownMenuItem
                                     onClick={() => setSelectedCustomer(customer)}
                                     className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer"
@@ -2411,7 +2411,7 @@ export default function SalonCustomersPage() {
                                     <Pencil className="w-4 h-4 mr-2" />
                                     Pencil Customer
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
+                                  <DropdownMenuSeparator className="bg-gray-700 dark:bg-muted-foreground/10" />
                                   <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-muted-foreground/10 cursor-pointer">
                                     <Calendar className="w-4 h-4 mr-2" />
                                     Book Appointment
@@ -2424,7 +2424,7 @@ export default function SalonCustomersPage() {
                                     <Receipt className="w-4 h-4 mr-2" />
                                     View Transactions
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator className="bg-gray-200 dark:bg-muted-foreground/10" />
+                                  <DropdownMenuSeparator className="bg-gray-700 dark:bg-muted-foreground/10" />
                                   <DropdownMenuItem
                                     className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
                                     onClick={() => {

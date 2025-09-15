@@ -192,7 +192,7 @@ export function RulesList({
   const getStatusBadge = (status: string) => {
     const variants: Record<string, string> = {
       active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-      inactive: 'bg-muted text-gray-800 dark:bg-muted/30 dark:text-gray-300',
+      inactive: 'bg-muted text-gray-200 dark:bg-muted/30 dark:text-gray-300',
       draft: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
       deprecated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
     }
@@ -230,7 +230,7 @@ export function RulesList({
       case 'specific':
         return <div className="w-2 h-2 bg-red-500 rounded-full" title="Specific" />
       default:
-        return <div className="w-2 h-2 bg-gray-500 rounded-full" />
+        return <div className="w-2 h-2 bg-gray-9000 rounded-full" />
     }
   }
 
@@ -247,7 +247,7 @@ export function RulesList({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl !text-gray-900 dark:!text-gray-100">
+              <CardTitle className="text-2xl !text-gray-100 dark:!text-gray-100">
                 Configuration Rules
               </CardTitle>
               <CardDescription className="!text-muted-foreground dark:!text-gray-300">
@@ -353,7 +353,7 @@ export function RulesList({
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent border-border/20 dark:border-border/30">
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       <button
                         onClick={() => handleSort('name')}
                         className="flex items-center hover:text-primary dark:hover:text-blue-400 transition-colors"
@@ -364,13 +364,13 @@ export function RulesList({
                         )}
                       </button>
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       Type & Scope
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       Status
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       <button
                         onClick={() => handleSort('priority')}
                         className="flex items-center hover:text-primary dark:hover:text-blue-400 transition-colors"
@@ -381,13 +381,13 @@ export function RulesList({
                         )}
                       </button>
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       Performance
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       Smart Code
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                    <TableHead className="font-semibold !text-gray-100 dark:!text-gray-100">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -400,7 +400,7 @@ export function RulesList({
                     >
                       <TableCell>
                         <div>
-                          <div className="font-medium !text-gray-900 dark:!text-gray-100">
+                          <div className="font-medium !text-gray-100 dark:!text-gray-100">
                             {rule.name}
                           </div>
                           <div className="text-sm !text-muted-foreground dark:!text-muted-foreground truncate max-w-xs">
@@ -434,7 +434,7 @@ export function RulesList({
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             {getSuccessRateIcon(rule.success_rate)}
-                            <span className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                            <span className="text-sm font-medium !text-gray-100 dark:!text-gray-100">
                               {rule.success_rate}%
                             </span>
                           </div>
@@ -449,7 +449,7 @@ export function RulesList({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded font-mono !text-gray-800 dark:!text-gray-200">
+                        <code className="text-xs bg-muted dark:bg-muted px-2 py-1 rounded font-mono !text-gray-200 dark:!text-gray-200">
                           {rule.smart_code}
                         </code>
                       </TableCell>
@@ -491,7 +491,7 @@ export function RulesList({
           {!loading && sortedRules.length === 0 && (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <Filter className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium !text-gray-900 dark:!text-gray-100">
+              <p className="text-lg font-medium !text-gray-100 dark:!text-gray-100">
                 No rules found
               </p>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-1">

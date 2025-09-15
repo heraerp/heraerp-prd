@@ -278,7 +278,7 @@ export default function AppsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-gray-900">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-6 py-4">
@@ -312,7 +312,7 @@ export default function AppsPage() {
       <main className="container mx-auto px-6 py-12">
         {/* Page Title */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
+          <h1 className="text-4xl font-light text-gray-100 mb-4">Choose Your HERA Application</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Select an industry-specific solution or universal business application. All apps include
             sample data to help you get started immediately.
@@ -418,7 +418,7 @@ export default function AppsPage() {
 
                   {!isDisabled && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-900">Open App</span>
+                      <span className="text-sm font-medium text-gray-100">Open App</span>
                       <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     </div>
                   )}

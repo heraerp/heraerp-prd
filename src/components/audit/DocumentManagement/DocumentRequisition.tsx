@@ -99,7 +99,7 @@ export function DocumentRequisition({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
       case 'received':
         return 'bg-blue-100 text-blue-800'
       case 'under_review':
@@ -111,7 +111,7 @@ export function DocumentRequisition({
       case 'resubmission_required':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -185,7 +185,7 @@ export function DocumentRequisition({
             <FileText className="w-6 h-6 text-foreground" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Document Requisition</h2>
+            <h2 className="text-2xl font-bold text-gray-100">Document Requisition</h2>
             <p className="text-muted-foreground">
               {clientName} - FY{auditYear}
             </p>
@@ -196,7 +196,7 @@ export function DocumentRequisition({
           <Badge
             className={
               requisition.status === 'draft'
-                ? 'bg-muted text-gray-800'
+                ? 'bg-muted text-gray-200'
                 : 'bg-blue-100 text-blue-800'
             }
           >
@@ -286,7 +286,7 @@ export function DocumentRequisition({
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-700">Overall Completion</span>
-            <span className="text-sm font-bold text-gray-900">{stats.completion_percentage}%</span>
+            <span className="text-sm font-bold text-gray-100">{stats.completion_percentage}%</span>
           </div>
           <Progress value={stats.completion_percentage} className="h-3" />
         </CardContent>
@@ -394,7 +394,7 @@ export function DocumentRequisition({
                                 {docItem.status.replace('_', ' ')}
                               </Badge>
                             </div>
-                            <h4 className="font-medium text-gray-900 mb-1">{item.name}</h4>
+                            <h4 className="font-medium text-gray-100 mb-1">{item.name}</h4>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />

@@ -384,7 +384,7 @@ export default function DiscoverPage() {
                       'w-full mt-4 group',
                       industry.id === 'salon'
                         ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground'
-                        : 'bg-gray-200 text-muted-foreground cursor-not-allowed'
+                        : 'bg-gray-700 text-muted-foreground cursor-not-allowed'
                     )}
                     disabled={industry.id !== 'salon'}
                   >

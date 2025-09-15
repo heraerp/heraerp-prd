@@ -57,7 +57,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               ${
                 toast.variant === 'destructive'
                   ? 'bg-red-600 text-foreground'
-                  : 'bg-background text-gray-900 border border-border'
+                  : 'bg-background text-gray-100 border border-border'
               }
             `}
           >

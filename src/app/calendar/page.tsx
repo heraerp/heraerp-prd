@@ -105,7 +105,7 @@ function SimpleCalendar() {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
               <Calendar className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-gray-900">HERA Calendar</h1>
+              <h1 className="text-3xl font-bold text-gray-100">HERA Calendar</h1>
             </div>
             <p className="text-muted-foreground">Universal scheduling system for all businesses</p>
           </div>
@@ -175,7 +175,7 @@ function SimpleCalendar() {
                       <div className="flex flex-col h-full">
                         <div
                           className={`text-sm font-medium ${
-                            isToday(day) ? 'text-primary' : 'text-gray-900'
+                            isToday(day) ? 'text-primary' : 'text-gray-100'
                           }`}
                         >
                           {day}
@@ -191,7 +191,7 @@ function SimpleCalendar() {
                                     ? 'bg-green-200 text-green-800'
                                     : event.type === 'review'
                                       ? 'bg-purple-200 text-purple-800'
-                                      : 'bg-gray-200 text-gray-800'
+                                      : 'bg-gray-700 text-gray-200'
                               }`}
                             >
                               {event.time} {event.title}
@@ -235,11 +235,11 @@ function SimpleCalendar() {
                               ? 'bg-green-500'
                               : event.type === 'review'
                                 ? 'bg-purple-500'
-                                : 'bg-gray-500'
+                                : 'bg-gray-9000'
                         }`}
                       ></div>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900">{event.title}</div>
+                        <div className="font-medium text-gray-100">{event.title}</div>
                         <div className="text-sm text-muted-foreground flex items-center space-x-2">
                           <Clock className="h-3 w-3" />
                           <span>{event.time}</span>

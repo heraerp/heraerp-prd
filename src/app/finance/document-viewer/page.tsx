@@ -247,9 +247,9 @@ export default function FinancialDocumentViewer() {
       purchase: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
       payment: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       receipt: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      transfer: 'bg-muted text-gray-800 dark:bg-background dark:text-gray-200'
+      transfer: 'bg-muted text-gray-200 dark:bg-background dark:text-gray-200'
     }
-    return colors[type] || 'bg-muted text-gray-800'
+    return colors[type] || 'bg-muted text-gray-200'
   }
 
   // Get status badge
@@ -311,7 +311,7 @@ export default function FinancialDocumentViewer() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground flex items-center gap-2">
               <FileText className="w-7 h-7 text-primary" />
               Financial Document Display
             </h1>
@@ -572,7 +572,7 @@ export default function FinancialDocumentViewer() {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="font-medium text-sm text-gray-900 dark:text-foreground">
+                            <p className="font-medium text-sm text-gray-100 dark:text-foreground">
                               {doc.transaction_code}
                             </p>
                             <Badge
@@ -589,7 +589,7 @@ export default function FinancialDocumentViewer() {
                             <CalendarDays className="w-3 h-3 inline mr-1" />
                             {formatDate(new Date(doc.transaction_date), 'dd MMM yyyy')}
                           </p>
-                          <p className="font-medium text-gray-900 dark:text-foreground">
+                          <p className="font-medium text-gray-100 dark:text-foreground">
                             {formatCurrency(doc.total_amount, doc.currency)}
                           </p>
                           {doc.description && (

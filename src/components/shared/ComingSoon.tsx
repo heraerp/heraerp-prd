@@ -37,7 +37,7 @@ export default function ComingSoon({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
         {/* Back Button */}
         <div className="mb-8">
@@ -75,7 +75,7 @@ export default function ComingSoon({
             {/* Features Preview */}
             {features.length > 0 && (
               <div className="mb-12">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+                <h3 className="text-xl font-semibold text-gray-100 mb-6 text-center">
                   What&apos;s Coming
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -94,7 +94,7 @@ export default function ComingSoon({
               <div className="max-w-md mx-auto">
                 <div className="bg-muted rounded-2xl p-8 text-center">
                   <Bell className="w-10 h-10 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Get Notified</h3>
+                  <h3 className="text-lg font-semibold text-gray-100 mb-2">Get Notified</h3>
                   <p className="text-muted-foreground mb-6">
                     Be the first to know when this feature launches
                   </p>

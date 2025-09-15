@@ -15,12 +15,12 @@ import React, { ReactNode, FormEvent } from 'react'
 // Base styling constants
 const FORM_STYLES = {
   input:
-    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900 placeholder:text-muted-foreground',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100 placeholder:text-muted-foreground',
   textarea:
-    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900 placeholder:text-muted-foreground resize-none',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100 placeholder:text-muted-foreground resize-none',
   label: 'block text-sm font-medium text-gray-700 mb-1',
   select:
-    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-900',
+    'w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-background text-gray-100',
   button: {
     primary:
       'px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
@@ -293,7 +293,7 @@ export function UniversalFieldGroup({
     <div className={`${FORM_STYLES.fieldGroup} ${className}`}>
       {title && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-200">{title}</h3>
           {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
         </div>
       )}
@@ -322,7 +322,7 @@ export function UniversalModal({ isOpen, onClose, title, children, maxWidth = 'l
         {/* Header */}
         <div className="bg-background p-6 border-b border-border">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <h2 className="text-xl font-semibold text-gray-100">{title}</h2>
             <button
               type="button"
               onClick={onClose}

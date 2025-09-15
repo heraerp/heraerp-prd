@@ -207,14 +207,14 @@ export function UniversalAppointmentCalendar({
   // Get status color
   const getStatusColor = (status: string) => {
     const colors = {
-      draft: 'bg-muted text-gray-800',
+      draft: 'bg-muted text-gray-200',
       scheduled: 'bg-blue-100 text-blue-800',
       confirmed: 'bg-green-100 text-green-800',
       completed: 'bg-purple-100 text-purple-800',
       cancelled: 'bg-red-100 text-red-800',
       no_show: 'bg-orange-100 text-orange-800'
     }
-    return colors[status as keyof typeof colors] || 'bg-muted text-gray-800'
+    return colors[status as keyof typeof colors] || 'bg-muted text-gray-200'
   }
 
   return (
@@ -224,7 +224,7 @@ export function UniversalAppointmentCalendar({
         <div className="flex items-center space-x-3">
           <span className="text-2xl">{config.icon}</span>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-100">
               {customization?.brandName || config.name} {config.appointmentLabels.plural}
             </h1>
             <p className="text-muted-foreground">
@@ -261,13 +261,13 @@ export function UniversalAppointmentCalendar({
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
           <div className="bg-background rounded-lg border p-4 animate-pulse">
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-700 rounded mb-2"></div>
+            <div className="h-3 bg-gray-700 rounded"></div>
           </div>
         ) : filteredAppointments.length === 0 ? (
           <div className="col-span-full bg-background rounded-lg border p-8 text-center">
             <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-100 mb-2">
               No {config.appointmentLabels.plural} Found
             </h3>
             {!readonly && (
@@ -288,7 +288,7 @@ export function UniversalAppointmentCalendar({
               onClick={() => onAppointmentClick?.(appointment)}
             >
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900 flex-1">{appointment.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-100 flex-1">{appointment.title}</h3>
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(appointment.status)}`}
                 >

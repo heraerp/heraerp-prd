@@ -257,7 +257,7 @@ export function DocumentUploadModal({
                     <div className="flex items-center gap-3">
                       <File className="w-5 h-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                        <p className="text-sm font-medium text-gray-100">{file.name}</p>
                         <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
@@ -293,9 +293,9 @@ export function DocumentUploadModal({
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Uploading...</span>
-                <span className="text-gray-900 font-medium">{uploadProgress}%</span>
+                <span className="text-gray-100 font-medium">{uploadProgress}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-700 rounded-full h-2">
                 <div
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}

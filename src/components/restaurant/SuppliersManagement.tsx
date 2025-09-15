@@ -853,7 +853,7 @@ export function SuppliersManagement({
                             <p className="font-medium text-sm">{supplier.entity_name}</p>
                             <span className="text-sm font-medium">{onTimeRate}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-gray-700 rounded-full h-2">
                             <div
                               className={`h-2 rounded-full ${
                                 onTimeRate >= 95

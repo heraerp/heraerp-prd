@@ -128,7 +128,7 @@ function CustomizeTemplateContent() {
               </Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-foreground">
+              <h1 className="text-xl font-bold text-gray-100 dark:text-foreground">
                 Customize Template
               </h1>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground">

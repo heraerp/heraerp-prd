@@ -187,9 +187,9 @@ export default function FixedAssetsPage() {
       case 'disposed':
         return 'bg-red-500/20 text-red-400'
       case 'inactive':
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
       default:
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
     }
   }
 
@@ -215,7 +215,7 @@ export default function FixedAssetsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Fixed Assets
           </h1>
           <p className="text-foreground/60 mt-1">Manage and track company assets and depreciation</p>

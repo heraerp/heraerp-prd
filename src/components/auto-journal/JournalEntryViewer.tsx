@@ -106,7 +106,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
       <Card className="bg-background/80 backdrop-blur-sm">
         <CardContent className="p-12 text-center">
           <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Journal Entries</h3>
+          <h3 className="text-lg font-medium text-gray-100 mb-2">No Journal Entries</h3>
           <p className="text-muted-foreground">
             Journal entries will appear here as transactions are processed
           </p>

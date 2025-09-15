@@ -120,7 +120,7 @@ export function JobsStyleLayout({
 
   return (
     <div
-      className={`min-h-screen flex transition-all duration-300 ${
+      className={`min-h-screen bg-gray-900 flex transition-all duration-300 ${
         darkMode ? 'bg-background' : 'bg-muted'
       }`}
     >
@@ -141,7 +141,7 @@ export function JobsStyleLayout({
             <div className="lg:hidden fixed inset-0 z-50 bg-background/50 backdrop-blur-sm">
               <div className="w-80 h-full bg-background shadow-2xl">
                 <div className="p-4 border-b border-border flex items-center justify-between">
-                  <h2 className="font-semibold text-gray-900">Menu</h2>
+                  <h2 className="font-semibold text-gray-100">Menu</h2>
                   <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(false)}>
                     <X className="w-4 h-4" />
                   </Button>
@@ -183,7 +183,7 @@ export function JobsStyleLayout({
                   <div>
                     <h1
                       className={`text-xl font-semibold ${
-                        darkMode ? 'text-foreground' : 'text-gray-900'
+                        darkMode ? 'text-foreground' : 'text-gray-100'
                       }`}
                     >
                       {getPageTitle()}
@@ -211,7 +211,7 @@ export function JobsStyleLayout({
                     className={`pl-10 rounded-full border-0 transition-all ${
                       darkMode
                         ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
-                        : 'bg-muted text-gray-900 placeholder-gray-500 focus:bg-background focus:shadow-md'
+                        : 'bg-muted text-gray-100 placeholder-gray-500 focus:bg-background focus:shadow-md'
                     }`}
                     onFocus={() => setIsCommandPaletteOpen(true)}
                   />

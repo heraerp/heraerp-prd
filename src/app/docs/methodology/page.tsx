@@ -56,7 +56,7 @@ export default function MethodologyPage() {
       {/* Hero Section */}
       <div className="relative px-4 py-16 mx-auto max-w-7xl">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-foreground mb-4">
+          <h2 className="text-4xl font-bold text-gray-100 dark:text-foreground mb-4">
             21-Day Implementation Journey
           </h2>
           <p className="text-xl text-muted-foreground dark:text-gray-300 max-w-3xl mx-auto">
@@ -102,7 +102,7 @@ export default function MethodologyPage() {
 
         {/* Implementation Phases */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-8 text-center">
+          <h3 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-8 text-center">
             Implementation Phases
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -331,7 +331,7 @@ export default function MethodologyPage() {
 
         {/* Benefits Comparison */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-8 text-center">
+          <h3 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-8 text-center">
             HERA vs Traditional ERP
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

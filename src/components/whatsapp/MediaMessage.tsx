@@ -69,7 +69,7 @@ export function MediaMessage({
             {url ? (
               <img src={url} alt="Image" className="w-full h-auto max-h-64 object-cover" />
             ) : (
-              <div className="w-64 h-48 bg-gray-200 dark:bg-muted-foreground/10 flex items-center justify-center">
+              <div className="w-64 h-48 bg-gray-700 dark:bg-muted-foreground/10 flex items-center justify-center">
                 <span className="text-muted-foreground">Loading image...</span>
               </div>
             )}
@@ -121,7 +121,7 @@ export function MediaMessage({
               />
               <div className="absolute inset-0 flex items-center justify-center bg-background/30">
                 <div className="bg-background/90 rounded-full p-3">
-                  <Play className="w-6 h-6 text-black" />
+                  <Play className="w-6 h-6 text-white" />
                 </div>
               </div>
               {duration && (
@@ -131,7 +131,7 @@ export function MediaMessage({
               )}
             </div>
           ) : (
-            <div className="w-64 h-48 bg-gray-200 dark:bg-muted-foreground/10 flex items-center justify-center">
+            <div className="w-64 h-48 bg-gray-700 dark:bg-muted-foreground/10 flex items-center justify-center">
               <Play className="w-12 h-12 text-muted-foreground" />
             </div>
           )}

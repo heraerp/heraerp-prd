@@ -239,7 +239,7 @@ export function OrdersManagement() {
 
   if (isLoading) {
     return (
-      <div className="p-6 min-h-screen flex items-center justify-center">
+      <div className="p-6 min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-4">
             <div className="animate-spin w-full h-full border-4 border-orange-200 border-t-orange-500 rounded-full" />
@@ -387,7 +387,7 @@ export function OrdersManagement() {
               {/* Order Header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{order.reference_number}</h3>
+                  <h3 className="font-semibold text-gray-100">{order.reference_number}</h3>
                   <p className="text-sm text-muted-foreground">
                     {order.table_number ? `Table ${order.table_number}` : order.transaction_type}
                   </p>
@@ -397,7 +397,7 @@ export function OrdersManagement() {
                 </div>
                 <div className="text-right">
                   <Badge
-                    className={statusConfig[order.status]?.color || 'bg-muted text-gray-800'}
+                    className={statusConfig[order.status]?.color || 'bg-muted text-gray-200'}
                   >
                     {statusConfig[order.status]?.label || order.status}
                   </Badge>
@@ -434,7 +434,7 @@ export function OrdersManagement() {
                     <span className="text-gray-700">
                       {item.quantity}x {item.menu_item_name}
                     </span>
-                    <span className="text-gray-900 font-medium">${item.unit_price}</span>
+                    <span className="text-gray-100 font-medium">${item.unit_price}</span>
                   </div>
                 ))}
                 {order.items.length > 2 && (
@@ -465,7 +465,7 @@ export function OrdersManagement() {
                     )}
                   </span>
                 </div>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-100">
                   ${(order.total_amount || 0).toFixed(2)}
                 </span>
               </div>
@@ -602,7 +602,7 @@ export function OrdersManagement() {
                   <tr key={order.id} className="hover:bg-muted">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <p className="font-medium text-gray-900">{order.reference_number}</p>
+                        <p className="font-medium text-gray-100">{order.reference_number}</p>
                         <p className="text-sm text-muted-foreground">
                           {order.table_number
                             ? `Table ${order.table_number}`
@@ -614,18 +614,18 @@ export function OrdersManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-sm text-gray-900">{order.customer_name || 'Walk-in'}</p>
+                      <p className="text-sm text-gray-100">{order.customer_name || 'Walk-in'}</p>
                       {order.phone && <p className="text-sm text-muted-foreground">{order.phone}</p>}
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm text-gray-900">{order.items.length} items</p>
+                      <p className="text-sm text-gray-100">{order.items.length} items</p>
                       <p className="text-sm text-muted-foreground">{order.items[0]?.menu_item_name}...</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <Badge
                           className={
-                            statusConfig[order.status]?.color || 'bg-muted text-gray-800'
+                            statusConfig[order.status]?.color || 'bg-muted text-gray-200'
                           }
                         >
                           {statusConfig[order.status]?.label || order.status}
@@ -656,7 +656,7 @@ export function OrdersManagement() {
                         'Loading...'
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                       ${(order.total_amount || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

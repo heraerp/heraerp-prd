@@ -380,7 +380,7 @@ export function BYOCManager({
         <div className="flex items-center gap-2 mb-4">
           {providerInfo.icon}
           <div>
-            <h4 className="font-semibold text-gray-900">{providerInfo.name}</h4>
+            <h4 className="font-semibold text-gray-100">{providerInfo.name}</h4>
             <p className="text-sm text-muted-foreground">{providerInfo.description}</p>
           </div>
         </div>
@@ -457,7 +457,7 @@ export function BYOCManager({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-100 flex items-center gap-3">
             <Cloud className="w-8 h-8 text-primary" />
             Universal BYOC Manager
             <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-foreground border-0">

@@ -55,7 +55,7 @@ export default function FactoryDashboard() {
                 <Factory className="w-6 h-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   HERA Universal Factory
                 </h1>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">

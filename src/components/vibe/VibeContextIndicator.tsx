@@ -94,7 +94,7 @@ export function VibeContextIndicator({
   }
 
   const getStatusColor = () => {
-    if (!isVibeInitialized) return 'bg-gray-500'
+    if (!isVibeInitialized) return 'bg-gray-9000'
     if (lastError) return 'bg-red-500'
     return 'bg-green-500'
   }
@@ -318,7 +318,7 @@ export function VibeFloatingIndicator() {
   const { isVibeInitialized, lastError } = useVibe()
 
   const getStatusColor = () => {
-    if (!isVibeInitialized) return 'bg-gray-500'
+    if (!isVibeInitialized) return 'bg-gray-9000'
     if (lastError) return 'bg-red-500'
     return 'bg-green-500'
   }

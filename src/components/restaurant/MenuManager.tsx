@@ -172,7 +172,7 @@ export function MenuManager() {
       case 'healthy':
         return 'bg-emerald-100 text-emerald-800'
       default:
-        return 'bg-muted text-gray-800'
+        return 'bg-muted text-gray-200'
     }
   }
 
@@ -184,7 +184,7 @@ export function MenuManager() {
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Menu Management</h1>
+        <h1 className="text-2xl font-bold text-gray-100 mb-2">Menu Management</h1>
         <p className="text-muted-foreground">
           Manage your restaurant menu using HERA's universal entity system
         </p>
@@ -235,10 +235,10 @@ export function MenuManager() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map(i => (
             <Card key={i} className="p-6 animate-pulse">
-              <div className="h-6 bg-gray-200 rounded mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded mb-3"></div>
-              <div className="h-4 bg-gray-200 rounded mb-3"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
+              <div className="h-6 bg-gray-700 rounded mb-4"></div>
+              <div className="h-4 bg-gray-700 rounded mb-3"></div>
+              <div className="h-4 bg-gray-700 rounded mb-3"></div>
+              <div className="h-20 bg-gray-700 rounded"></div>
             </Card>
           ))}
         </div>
@@ -252,7 +252,7 @@ export function MenuManager() {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h3 className="text-lg font-semibold text-gray-100 mb-1">
                         {item.entity_name}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-2">Code: {item.entity_code}</p>
@@ -341,7 +341,7 @@ export function MenuManager() {
               <div className="text-muted-foreground mb-4">
                 <Search className="w-12 h-12 mx-auto" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No menu items found</h3>
+              <h3 className="text-lg font-medium text-gray-100 mb-2">No menu items found</h3>
               <p className="text-muted-foreground mb-4">Try adjusting your search terms or filters</p>
               <Button variant="outline">Clear Filters</Button>
             </Card>

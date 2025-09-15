@@ -243,7 +243,7 @@ export function NotificationCenter({
                           e.stopPropagation()
                           onDismiss(notification.id)
                         }}
-                        className="absolute top-2 right-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-muted-foreground/10"
+                        className="absolute top-2 right-2 p-1 rounded hover:bg-gray-700 dark:hover:bg-muted-foreground/10"
                       >
                         <X className="w-3 h-3 text-muted-foreground" />
                       </button>
@@ -255,7 +255,7 @@ export function NotificationCenter({
                           />
                         </div>
                         <div className="flex-1 space-y-1">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-foreground">
+                          <h4 className="text-sm font-medium text-gray-100 dark:text-foreground">
                             {notification.title}
                           </h4>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">

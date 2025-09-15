@@ -194,7 +194,7 @@ export default function ReportsPage() {
       case 'custom':
         return 'from-blue-500 to-blue-600'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 
@@ -207,7 +207,7 @@ export default function ReportsPage() {
       case 'scheduled':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       default:
-        return 'bg-gray-500/20 text-muted-foreground border-gray-500/30'
+        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
     }
   }
 

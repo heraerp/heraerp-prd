@@ -225,7 +225,7 @@ export function HeraMCPChat({
         <div className="flex-1 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <div className="max-w-none">
-              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-900 dark:text-foreground font-medium">
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-100 dark:text-foreground font-medium">
                 {message.content}
               </p>
             </div>
@@ -317,7 +317,7 @@ export function HeraMCPChat({
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary dark:text-blue-400" />
-              <h2 className="font-semibold text-gray-900 dark:text-foreground">
+              <h2 className="font-semibold text-gray-100 dark:text-foreground">
                 HERA {mode === 'internal' ? 'MCP Debug Console' : 'AI Assistant'}
               </h2>
             </div>
@@ -420,7 +420,7 @@ export function HeraMCPChat({
                 ? "Test a command... (e.g., 'create customer', 'query transactions')"
                 : 'Ask me anything about your business...'
             }
-            className="min-h-[60px] max-h-[120px] resize-none text-base bg-background dark:bg-background text-gray-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground border-border dark:border-border"
+            className="min-h-[60px] max-h-[120px] resize-none text-base bg-background dark:bg-background text-gray-100 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground border-border dark:border-border"
             disabled={isLoading}
           />
           <Button

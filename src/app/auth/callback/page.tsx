@@ -145,7 +145,7 @@ export default function AuthCallback() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center bg-gradient-to-br from-gray-900 via-white to-gray-900 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardContent className="p-8">
           <div className="text-center space-y-6">
@@ -158,7 +158,7 @@ export default function AuthCallback() {
               <>
                 <div className="space-y-4">
                   <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary" />
-                  <h1 className="text-xl font-semibold text-gray-900">Completing Authentication</h1>
+                  <h1 className="text-xl font-semibold text-gray-100">Completing Authentication</h1>
                   <p className="text-muted-foreground">Please wait while we sign you in...</p>
                 </div>
               </>

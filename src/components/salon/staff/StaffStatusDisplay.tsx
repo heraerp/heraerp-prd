@@ -59,7 +59,7 @@ const STATUS_CONFIG = {
   },
   'STATUS-STAFF-OFF_DUTY': {
     label: 'Off Duty',
-    color: 'bg-gray-500',
+    color: 'bg-gray-9000',
     textColor: 'text-gray-700',
     icon: Power,
     variant: 'outline' as const

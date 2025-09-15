@@ -244,9 +244,9 @@ export default function FinanceReportsPage() {
       case 'active':
         return 'bg-emerald-500/20 text-emerald-400'
       case 'paused':
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
       default:
-        return 'bg-gray-500/20 text-muted-foreground'
+        return 'bg-gray-9000/20 text-muted-foreground'
     }
   }
 
@@ -265,7 +265,7 @@ export default function FinanceReportsPage() {
       case 'Custom':
         return 'from-indigo-500 to-purple-600'
       default:
-        return 'from-gray-500 to-gray-600'
+        return 'from-gray-9000 to-gray-600'
     }
   }
 
@@ -283,7 +283,7 @@ export default function FinanceReportsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Financial Reports
           </h1>
           <p className="text-foreground/60 mt-1">

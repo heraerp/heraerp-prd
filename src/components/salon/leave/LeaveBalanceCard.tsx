@@ -53,7 +53,7 @@ export function LeaveBalanceCard({
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">{type}</p>
-          <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">{remaining} days</p>
+          <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">{remaining} days</p>
         </div>
         <div className={`p-3 rounded-lg bg-gradient-to-r ${color} text-foreground`}>{icon}</div>
       </div>
@@ -61,7 +61,7 @@ export function LeaveBalanceCard({
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="!text-muted-foreground dark:!text-muted-foreground">Used</span>
-          <span className="font-medium !text-gray-900 dark:!text-foreground">{used} days</span>
+          <span className="font-medium !text-gray-100 dark:!text-foreground">{used} days</span>
         </div>
 
         <div className="w-full bg-muted-foreground/10/50 rounded-full h-2 overflow-hidden">

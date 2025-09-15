@@ -47,7 +47,7 @@ export default function UniversalLearningPage() {
                 Universal Learning
               </span>
               <br />
-              <span className="text-gray-900">for ANY Domain</span>
+              <span className="text-gray-100">for ANY Domain</span>
             </h1>
 
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
@@ -90,7 +90,7 @@ export default function UniversalLearningPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered Analysis</h3>
+              <h3 className="text-xl font-semibold text-gray-100 mb-2">AI-Powered Analysis</h3>
               <p className="text-muted-foreground">
                 Multi-provider AI orchestration with intelligent routing. Automatic fallback ensures
                 99.9% uptime across OpenAI, Claude, and Gemini.
@@ -113,7 +113,7 @@ export default function UniversalLearningPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">95% Code Reuse</h3>
+              <h3 className="text-xl font-semibold text-gray-100 mb-2">95% Code Reuse</h3>
               <p className="text-muted-foreground">
                 Universal-first architecture with domain specialization. Build once, deploy across
                 infinite educational domains with minimal customization.
@@ -136,7 +136,7 @@ export default function UniversalLearningPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-100 mb-2">
                 Cross-Domain Intelligence
               </h3>
               <p className="text-muted-foreground">
@@ -149,7 +149,7 @@ export default function UniversalLearningPage() {
           {/* Architecture Highlight */}
           <div className="bg-background/80 backdrop-blur-sm rounded-3xl p-8 border border-border mb-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Universal Architecture</h2>
+              <h2 className="text-3xl font-bold text-gray-100 mb-4">Universal Architecture</h2>
               <p className="text-lg text-muted-foreground">
                 Built on HERA's revolutionary 6-table universal database architecture
               </p>
@@ -178,7 +178,7 @@ export default function UniversalLearningPage() {
               ].map((step, index) => (
                 <div key={index} className="p-4">
                   <div className="text-3xl mb-2">{step.icon}</div>
-                  <h4 className="font-semibold text-gray-900 mb-1">{step.name}</h4>
+                  <h4 className="font-semibold text-gray-100 mb-1">{step.name}</h4>
                   <p className="text-sm text-muted-foreground">{step.desc}</p>
                 </div>
               ))}
@@ -195,7 +195,7 @@ export default function UniversalLearningPage() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-2">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-100 mb-4">
                 HERA Universal Learning Platform
               </h3>
               <p className="text-muted-foreground mb-4">
@@ -210,7 +210,7 @@ export default function UniversalLearningPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Supported Domains</h4>
+              <h4 className="font-semibold text-gray-100 mb-4">Supported Domains</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>Chartered Accountancy (CA)</li>
                 <li>Medical Education</li>
@@ -222,7 +222,7 @@ export default function UniversalLearningPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Key Features</h4>
+              <h4 className="font-semibold text-gray-100 mb-4">Key Features</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>Universal Content Processing</li>
                 <li>AI-Powered Analysis</li>

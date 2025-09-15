@@ -103,13 +103,13 @@ export function UniversalFullPageLoading({
   }, [timeout, onTimeout])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="text-center max-w-md mx-auto px-6">
         <div className="mb-8">
           <UniversalSpinner size="xl" />
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{title}</h2>
+        <h2 className="text-xl font-semibold text-gray-100 mb-2">{title}</h2>
 
         {subtitle && <p className="text-muted-foreground mb-6">{subtitle}</p>}
 
@@ -146,8 +146,8 @@ export function UniversalSkeleton({ rows = 3, className = '' }: SkeletonProps) {
     <div className={`animate-pulse space-y-3 ${className}`}>
       {Array.from({ length: rows }).map((_, index) => (
         <div key={index} className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+          <div className="h-4 bg-gray-700 rounded w-1/2"></div>
         </div>
       ))}
     </div>
@@ -160,14 +160,14 @@ export function UniversalCardSkeleton({ count = 3 }: { count?: number }) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="bg-background border border-border rounded-lg p-6 animate-pulse">
-          <div className="h-6 bg-gray-200 rounded mb-4 w-3/4"></div>
+          <div className="h-6 bg-gray-700 rounded mb-4 w-3/4"></div>
           <div className="space-y-2 mb-4">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            <div className="h-4 bg-gray-700 rounded"></div>
+            <div className="h-4 bg-gray-700 rounded w-5/6"></div>
           </div>
           <div className="flex justify-between items-center">
-            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-8 bg-gray-200 rounded w-20"></div>
+            <div className="h-4 bg-gray-700 rounded w-1/4"></div>
+            <div className="h-8 bg-gray-700 rounded w-20"></div>
           </div>
         </div>
       ))}

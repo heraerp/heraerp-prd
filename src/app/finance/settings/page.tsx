@@ -162,7 +162,7 @@ export default function FinanceSettingsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Finance Settings
           </h1>
           <p className="text-foreground/60 mt-1">Configure financial system preferences and policies</p>

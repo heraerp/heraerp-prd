@@ -118,7 +118,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
     >
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+          <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
             Team Leave Overview
           </h3>
           <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
               return (
                 <div key={dept} className="p-3 rounded-lg bg-muted/50 border border-border/50">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-900 dark:text-foreground">
+                    <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                       {dept}
                     </span>
                     {level === 'critical' && <AlertCircle className="h-4 w-4 text-red-500" />}
@@ -178,7 +178,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
                     <Users className="h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-foreground text-sm">
+                    <p className="font-medium text-gray-100 dark:text-foreground text-sm">
                       {member.name}
                     </p>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground">

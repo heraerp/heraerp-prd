@@ -31,7 +31,7 @@ export default function RefreshPage() {
   }, [])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-purple-900">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-purple-900">
       <Card className="max-w-md w-full mx-4">
         <CardHeader>
           <CardTitle className="text-center flex items-center justify-center gap-2">

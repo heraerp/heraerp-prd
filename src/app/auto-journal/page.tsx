@@ -605,7 +605,7 @@ export default function AutoJournalPage() {
                 {pendingBatches.length === 0 && (
                   <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">All Caught Up!</h3>
+                    <h3 className="text-lg font-medium text-gray-100 mb-2">All Caught Up!</h3>
                     <p className="text-muted-foreground">No transactions pending batch processing</p>
                   </div>
                 )}

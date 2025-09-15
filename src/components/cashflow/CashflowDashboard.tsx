@@ -244,7 +244,7 @@ export default function CashflowDashboard({
       {/* Header Controls */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
+          <h1 className="text-2xl font-bold text-gray-100 dark:text-foreground">
             💰 Cashflow Dashboard
           </h1>
           <p className="text-muted-foreground dark:text-muted-foreground mt-1">
@@ -377,7 +377,7 @@ export default function CashflowDashboard({
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
                     <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground">Beginning Cash</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {formatCurrency(currentStatement.cash_beginning)}
                       </p>
                     </div>
@@ -395,13 +395,13 @@ export default function CashflowDashboard({
                     </div>
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <p className="text-sm text-green-600 dark:text-green-400">Ending Cash</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {formatCurrency(currentStatement.cash_ending)}
                       </p>
                     </div>
                     <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
                       <p className="text-sm text-amber-600 dark:text-amber-400">Method</p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-foreground capitalize">
+                      <p className="text-lg font-semibold text-gray-100 dark:text-foreground capitalize">
                         {currentStatement.method}
                       </p>
                     </div>
@@ -545,7 +545,7 @@ function CashflowMetricCard({
               <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
               <p
                 className={`text-2xl font-bold ${
-                  value >= 0 ? 'text-gray-900 dark:text-foreground' : 'text-red-600 dark:text-red-400'
+                  value >= 0 ? 'text-gray-100 dark:text-foreground' : 'text-red-600 dark:text-red-400'
                 }`}
               >
                 {formatCurrency(value)}
@@ -619,7 +619,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
           <span
             className={`text-lg font-bold ${
               totalAmount >= 0
-                ? 'text-gray-900 dark:text-foreground'
+                ? 'text-gray-100 dark:text-foreground'
                 : 'text-red-600 dark:text-red-400'
             }`}
           >
@@ -637,7 +637,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
             >
               <div>
                 <p
-                  className={`font-medium ${activity.is_subtotal ? 'text-gray-900 dark:text-foreground' : 'text-gray-700 dark:text-gray-300'}`}
+                  className={`font-medium ${activity.is_subtotal ? 'text-gray-100 dark:text-foreground' : 'text-gray-700 dark:text-gray-300'}`}
                 >
                   {activity.description}
                 </p>
@@ -650,7 +650,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
               <p
                 className={`font-semibold ${
                   activity.amount >= 0
-                    ? 'text-gray-900 dark:text-foreground'
+                    ? 'text-gray-100 dark:text-foreground'
                     : 'text-red-600 dark:text-red-400'
                 } ${activity.is_subtotal ? 'text-lg' : ''}`}
               >

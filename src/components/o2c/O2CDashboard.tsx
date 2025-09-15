@@ -106,7 +106,7 @@ export function O2CDashboard() {
 
   if (contextLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading organization context...</p>
@@ -838,7 +838,7 @@ export function O2CDashboard() {
                       <span className="text-sm font-medium">Days Sales Outstanding (DSO)</span>
                       <span className="text-sm font-bold">{metrics?.analytics.dso} days</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full"
                         style={{ width: `${Math.min((32 / 60) * 100, 100)}%` }}
@@ -853,7 +853,7 @@ export function O2CDashboard() {
                         {metrics?.analytics.collection_rate.toFixed(1)}%
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-green-600 h-2 rounded-full"
                         style={{ width: `${metrics?.analytics.collection_rate}%` }}
@@ -868,7 +868,7 @@ export function O2CDashboard() {
                         {metrics?.customers.average_credit_score}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-purple-600 h-2 rounded-full"
                         style={{

@@ -95,7 +95,7 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+              <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
                 Annual Leave Report Generator
               </h3>
               <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-1">
@@ -271,7 +271,7 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
         >
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold !text-gray-900 dark:!text-foreground">
+              <h3 className="text-xl font-semibold !text-gray-100 dark:!text-foreground">
                 Report Preview
               </h3>
               <div className="flex gap-2">
@@ -325,19 +325,19 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
             <div className="grid gap-4 md:grid-cols-4 mb-6">
               <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/30">
                 <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Total Employees</p>
-                <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+                <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                   {generatedReport.summary?.total_employees || 0}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
                 <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Total Leave Taken</p>
-                <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+                <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                   {generatedReport.summary?.total_leave_taken || 0} days
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30">
                 <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Average per Employee</p>
-                <p className="text-2xl font-bold !text-gray-900 dark:!text-foreground">
+                <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                   {generatedReport.summary?.total_employees
                     ? Math.round(
                         generatedReport.summary.total_leave_taken /
@@ -349,7 +349,7 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
               </div>
               <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/30">
                 <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Report Period</p>
-                <p className="text-sm font-bold !text-gray-900 dark:!text-foreground">
+                <p className="text-sm font-bold !text-gray-100 dark:!text-foreground">
                   {formatDate(new Date(reportOptions.fiscalYearStart), 'MMM yyyy')} -{' '}
                   {formatDate(new Date(reportOptions.fiscalYearEnd), 'MMM yyyy')}
                 </p>
@@ -388,26 +388,26 @@ export function AnnualLeaveReport({ organizationId }: AnnualLeaveReportProps) {
                 <tbody className="divide-y divide-gray-700">
                   {/* Sample data rows */}
                   <tr className="hover:bg-muted/50">
-                    <td className="px-4 py-3 text-sm !text-gray-900 dark:!text-foreground">
+                    <td className="px-4 py-3 text-sm !text-gray-100 dark:!text-foreground">
                       Sarah Johnson - Senior Stylist
                     </td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">5</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">21</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">15</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">0</td>
-                    <td className="px-4 py-3 text-sm font-medium !text-gray-900 dark:!text-foreground">
+                    <td className="px-4 py-3 text-sm font-medium !text-gray-100 dark:!text-foreground">
                       11
                     </td>
                   </tr>
                   <tr className="hover:bg-muted/50">
-                    <td className="px-4 py-3 text-sm !text-gray-900 dark:!text-foreground">
+                    <td className="px-4 py-3 text-sm !text-gray-100 dark:!text-foreground">
                       Michael Chen - Colorist
                     </td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">3</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">21</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">12</td>
                     <td className="px-4 py-3 text-sm !text-muted-foreground dark:!text-muted-foreground">0</td>
-                    <td className="px-4 py-3 text-sm font-medium !text-gray-900 dark:!text-foreground">
+                    <td className="px-4 py-3 text-sm font-medium !text-gray-100 dark:!text-foreground">
                       12
                     </td>
                   </tr>
