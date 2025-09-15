@@ -243,7 +243,7 @@ async function createPurchaseOrders(supplierMap) {
           transaction_type: 'purchase_order',
           transaction_code: po.po_number,
           transaction_date: new Date().toISOString(),
-          from_entity_id: supplier.id,
+          source_entity_id: supplier.id,
           total_amount: totalWithVAT,
           smart_code: 'HERA.SALON.PUR.TXN.ORDER.v1',
           metadata: {
@@ -272,7 +272,7 @@ async function createPurchaseOrders(supplierMap) {
             organization_id: ORGANIZATION_ID,
             transaction_id: poTxn.id,
             line_number: lineNumber++,
-            line_entity_id: item.product_id,
+            entity_id: item.product_id,
             quantity: item.quantity,
             unit_price: item.unit_price,
             line_amount: item.line_total,
@@ -313,7 +313,7 @@ async function createApprovalWorkflow() {
       .select('*')
       .eq('organization_id', ORGANIZATION_ID)
       .eq('transaction_type', 'purchase_order')
-      .eq('metadata->po_status', 'draft')
+      .filter('metadata->>po_status', 'eq', 'draft')
 
     console.log(`Found ${draftPOs?.length || 0} draft POs for approval`)
 
@@ -361,8 +361,8 @@ async function createPOCommitments() {
       .select('*')
       .eq('organization_id', ORGANIZATION_ID)
       .eq('transaction_type', 'purchase_order')
-      .eq('metadata->po_status', 'approved')
-      .is('metadata->commitment_posted', null)
+      .filter('metadata->>po_status', 'eq', 'approved')
+      .filter('metadata->>commitment_posted', 'is', null)
 
     for (const po of approvedPOs || []) {
       // Create commitment journal entry
@@ -401,9 +401,9 @@ async function createPOCommitments() {
           organization_id: ORGANIZATION_ID,
           transaction_id: journal.id,
           line_number: 1,
-          line_entity_id: '9100', // Purchase Commitments
+          entity_id: '9100', // Purchase Commitments
           line_amount: po.total_amount,
-          is_debit: true,
+          line_type: 'debit',
           smart_code: 'HERA.FIN.GL.LINE.JE.DEBIT.v1',
           metadata: {
             gl_account: '9100',
@@ -416,9 +416,9 @@ async function createPOCommitments() {
           organization_id: ORGANIZATION_ID,
           transaction_id: journal.id,
           line_number: 2,
-          line_entity_id: '9200', // Purchase Obligations
+          entity_id: '9200', // Purchase Obligations
           line_amount: po.total_amount,
-          is_debit: false,
+          line_type: 'credit',
           smart_code: 'HERA.FIN.GL.LINE.JE.CREDIT.v1',
           metadata: {
             gl_account: '9200',
@@ -465,7 +465,7 @@ async function generatePOSummary() {
       .from('universal_transactions')
       .select(`
         *,
-        supplier:core_entities!from_entity_id(entity_name, entity_code)
+        supplier:core_entities!source_entity_id(entity_name, entity_code)
       `)
       .eq('organization_id', ORGANIZATION_ID)
       .eq('transaction_type', 'purchase_order')

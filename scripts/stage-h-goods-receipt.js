@@ -52,14 +52,14 @@ async function getApprovedPOs() {
         *,
         universal_transaction_lines(
           *,
-          product:core_entities!line_entity_id(entity_name, entity_code)
+          product:core_entities!entity_id(entity_name, entity_code)
         ),
-        supplier:core_entities!from_entity_id(entity_name, entity_code)
+        supplier:core_entities!source_entity_id(entity_name, entity_code)
       `)
       .eq('organization_id', ORGANIZATION_ID)
       .eq('transaction_type', 'purchase_order')
-      .eq('metadata->po_status', 'approved')
-      .is('metadata->goods_receipt_id', null)
+      .filter('metadata->>po_status', 'eq', 'approved')
+      .filter('metadata->>goods_receipt_id', 'is', null)
 
     if (error) throw error
 
@@ -97,11 +97,11 @@ async function createGoodsReceipts(purchaseOrders) {
           transaction_type: 'goods_receipt',
           transaction_code: grNumber,
           transaction_date: new Date().toISOString(),
-          from_entity_id: po.from_entity_id, // Supplier
-          reference_transaction_id: po.id,    // Link to PO
+          source_entity_id: po.source_entity_id, // Supplier
           total_amount: po.total_amount,
           smart_code: 'HERA.SALON.INV.TXN.RECEIPT.v1',
           metadata: {
+            reference_po_id: po.id,
             po_number: po.transaction_code,
             supplier_name: po.supplier.entity_name,
             receipt_status: 'completed',
@@ -125,7 +125,7 @@ async function createGoodsReceipts(purchaseOrders) {
             organization_id: ORGANIZATION_ID,
             transaction_id: grTxn.id,
             line_number: lineNumber++,
-            line_entity_id: poLine.line_entity_id,
+            entity_id: poLine.entity_id,
             quantity: poLine.quantity,
             unit_price: poLine.unit_price,
             line_amount: poLine.line_amount,

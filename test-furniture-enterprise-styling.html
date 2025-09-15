@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furniture Enterprise Styling Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Include the enterprise CSS styles */
+        /* Enhanced depth and layering for dark theme */
+        .furniture-sidebar {
+          background: linear-gradient(180deg, 
+            rgba(23, 23, 23, 0.98) 0%, 
+            rgba(17, 17, 17, 0.98) 100%
+          );
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          box-shadow: 
+            4px 0 24px rgba(0, 0, 0, 0.3),
+            inset -1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Enterprise card depth */
+        .furniture-card {
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.03) 0%, 
+            rgba(255, 255, 255, 0.01) 100%
+          );
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: 
+            0 4px 24px rgba(0, 0, 0, 0.2),
+            0 1px 2px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .furniture-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            0 2px 4px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        /* Multi-layered background for main content */
+        .furniture-main-bg {
+          position: relative;
+          background: #0a0a0a;
+        }
+        
+        .furniture-main-bg::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: 
+            radial-gradient(ellipse at top right, rgba(251, 146, 60, 0.05) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom left, rgba(147, 51, 234, 0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+        
+        /* Enhanced stat cards with depth */
+        .furniture-stat-card {
+          position: relative;
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.05) 0%, 
+            rgba(255, 255, 255, 0.02) 100%
+          );
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          overflow: hidden;
+        }
+        
+        .furniture-stat-card::before {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(135deg, 
+            rgba(251, 146, 60, 0.3) 0%, 
+            rgba(147, 51, 234, 0.3) 100%
+          );
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+        }
+        
+        .furniture-stat-card:hover::before {
+          opacity: 1;
+        }
+        
+        /* Premium button styles */
+        .furniture-btn-premium {
+          position: relative;
+          background: linear-gradient(135deg, 
+            rgba(251, 146, 60, 0.8) 0%, 
+            rgba(234, 88, 12, 0.8) 100%
+          );
+          box-shadow: 
+            0 4px 16px rgba(251, 146, 60, 0.3),
+            0 1px 2px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .furniture-btn-premium:hover {
+          transform: translateY(-1px);
+          box-shadow: 
+            0 8px 24px rgba(251, 146, 60, 0.4),
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Subtle grid pattern overlay */
+        .furniture-grid-pattern {
+          position: relative;
+        }
+        
+        .furniture-grid-pattern::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+          background-size: 50px 50px;
+          pointer-events: none;
+        }
+        
+        /* Glow effects for important elements */
+        .furniture-glow-amber {
+          box-shadow: 
+            0 0 20px rgba(251, 146, 60, 0.3),
+            0 0 40px rgba(251, 146, 60, 0.1);
+        }
+        
+        .furniture-glow-purple {
+          box-shadow: 
+            0 0 20px rgba(147, 51, 234, 0.3),
+            0 0 40px rgba(147, 51, 234, 0.1);
+        }
+        
+        /* Enterprise table styling */
+        .furniture-table {
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: 
+            0 4px 16px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        
+        .furniture-table thead {
+          background: rgba(0, 0, 0, 0.3);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <div class="furniture-main-bg furniture-grid-pattern min-h-screen p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Furniture Enterprise Styling Test</h1>
+        
+        <!-- Stats Cards -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Enterprise Stat Cards</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="furniture-stat-card rounded-lg p-6">
+                    <h3 class="text-sm text-gray-400 mb-1">Total Revenue</h3>
+                    <p class="text-3xl font-bold text-orange-500 furniture-glow-amber">₹28.5L</p>
+                    <p class="text-sm text-green-400 mt-2">+18% from last month</p>
+                </div>
+                <div class="furniture-stat-card rounded-lg p-6">
+                    <h3 class="text-sm text-gray-400 mb-1">Active Orders</h3>
+                    <p class="text-3xl font-bold text-purple-500 furniture-glow-purple">47</p>
+                    <p class="text-sm text-blue-400 mt-2">12 new today</p>
+                </div>
+                <div class="furniture-stat-card rounded-lg p-6">
+                    <h3 class="text-sm text-gray-400 mb-1">Production Queue</h3>
+                    <p class="text-3xl font-bold text-blue-500">23</p>
+                    <p class="text-sm text-amber-400 mt-2">5 urgent</p>
+                </div>
+                <div class="furniture-stat-card rounded-lg p-6">
+                    <h3 class="text-sm text-gray-400 mb-1">Inventory Value</h3>
+                    <p class="text-3xl font-bold text-green-500">₹45.2L</p>
+                    <p class="text-sm text-gray-400 mt-2">Well stocked</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Regular Cards -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Enterprise Cards with Depth</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="furniture-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Card with Glass Effect</h3>
+                    <p class="text-gray-400">This card has glass morphism, depth shadows, and hover effects.</p>
+                </div>
+                <div class="furniture-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Multi-layered Shadows</h3>
+                    <p class="text-gray-400">Notice the multiple shadow layers creating depth.</p>
+                </div>
+                <div class="furniture-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Hover for Elevation</h3>
+                    <p class="text-gray-400">Hover over this card to see the elevation effect.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Premium Buttons -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Premium Buttons</h2>
+            <div class="flex gap-4 flex-wrap">
+                <button class="furniture-btn-premium px-6 py-3 rounded-lg text-white font-medium">
+                    Create Order
+                </button>
+                <button class="furniture-btn-premium px-6 py-3 rounded-lg text-white font-medium">
+                    Generate Report
+                </button>
+                <button class="furniture-btn-premium px-6 py-3 rounded-lg text-white font-medium">
+                    Process Payment
+                </button>
+            </div>
+        </div>
+        
+        <!-- Enterprise Table -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Enterprise Table</h2>
+            <div class="furniture-card rounded-lg overflow-hidden">
+                <table class="furniture-table w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left">Order ID</th>
+                            <th class="px-6 py-3 text-left">Customer</th>
+                            <th class="px-6 py-3 text-left">Amount</th>
+                            <th class="px-6 py-3 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+                            <td class="px-6 py-4">FRN-2025-0234</td>
+                            <td class="px-6 py-4">Marriott Hotels</td>
+                            <td class="px-6 py-4">₹12,50,000</td>
+                            <td class="px-6 py-4"><span class="text-green-400">Completed</span></td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+                            <td class="px-6 py-4">FRN-2025-0235</td>
+                            <td class="px-6 py-4">ITC Hotels</td>
+                            <td class="px-6 py-4">₹8,50,000</td>
+                            <td class="px-6 py-4"><span class="text-amber-400">Processing</span></td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+                            <td class="px-6 py-4">FRN-2025-0236</td>
+                            <td class="px-6 py-4">Hilton Chennai</td>
+                            <td class="px-6 py-4">₹6,75,000</td>
+                            <td class="px-6 py-4"><span class="text-blue-400">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Sidebar Preview -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Sidebar with Depth</h2>
+            <div class="relative h-64">
+                <div class="furniture-sidebar h-full w-20 rounded-r-lg p-4">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
+                            <span class="text-2xl">🪑</span>
+                        </div>
+                        <div class="w-full h-px bg-white/10"></div>
+                        <div class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"></div>
+                        <div class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"></div>
+                        <div class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
